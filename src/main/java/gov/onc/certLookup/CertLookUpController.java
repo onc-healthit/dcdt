@@ -3,6 +3,7 @@ package gov.onc.certLookup;
 import gov.onc.certLookup.dns.CertDecrypt;
 import gov.onc.certLookup.dns.CertDnsValidator;
 import gov.onc.certLookup.ldap.LdapCertLookUp;
+import gov.onc.certLookup.ldap.LdapCertLookUpDTS577;
 import gov.onc.certLookup.ldap.LdapRecordSorter;
 
 import java.util.LinkedList;
@@ -26,12 +27,17 @@ public class CertLookUpController {
 			nodes.add(new CertMessenger());
 			nodes.add(new CertDnsValidator());
 			nodes.add(new CertDecrypt());
-		}else{
+		}else if(!certificateInfo.getIsDts577Test()){
 			nodes.add(new CertDomainParser());
 			nodes.add(new CertMessenger());
 			nodes.add(new LdapRecordSorter());
 			nodes.add(new LdapCertLookUp());
 		}
+		else
+			nodes.add(new CertDomainParser());
+			nodes.add(new CertMessenger());
+			nodes.add(new LdapRecordSorter());
+			nodes.add(new LdapCertLookUpDTS577());
 	}
 	
 	public CertificateInfo run(){
@@ -76,6 +82,7 @@ public class CertLookUpController {
 			case(7):
 				certificateInfo.setIsDomainTest(false);
 				certificateInfo.setIsLDAPTest(true);
+				certificateInfo.setIsDts577Test(true);
 				break;
 			default:
 				throw new CertLookUpException("Error:  Incorrect Test Case.", new Throwable());
