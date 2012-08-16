@@ -7,12 +7,12 @@ function new_window(url){
 }
 </script>
 <hr />
-<div class="textTop"><strong>Please Note:</strong> This is Not a Production Website.</div>
+<div class="textTop"><strong>Please Note:</strong>This Tool is planned to be released on September 30, 2012.</div>
 <br />
 <tr>
-<td colspan="2"  style="background-color:#58ACFA;text-align:center;width:100%">
-<a href="javascript:new_window('http://onctest.wikispaces.com')">
-ONC NwHIN Test Team</a></td>
+<!-- <td colspan="2"  style="background-color:#58ACFA;text-align:center;width:100%">
+   <a href="javascript:new_window('http://onctest.wikispaces.com')">
+ONC NwHIN Test Team</a></td>--> 
 </tr>      
 </table>
 

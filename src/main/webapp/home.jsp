@@ -19,7 +19,8 @@
   <div id="content">
      <h2>Welcome to the Direct Certificate Discovery Testing Tool</h2>
      <p>This tool is intended to allow for the automated testing of Systems implementing the 
-         current Certificate Discovery and Provider Directory specifications. 
+         current Certificate Discovery and Provider Directory Implementation Guidance, 
+         approved by Direct community, as of July 9, 2012. 
      </p>
      <p>Our tool is divided into two main testing areas, one area <a href="dns.jsp">Discovery</a>
      tests that System's host their certificates appropriately for discovery by other implementations.   
