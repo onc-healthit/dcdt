@@ -21,7 +21,6 @@ public class CertificateInfo implements Serializable{
 	private String certOutput;
 	private Boolean isDomainTest;
 	private Boolean isLDAPTest;
-	private Boolean isDts577Test;
 	private Record[] dnsRecord;
 	private Record ldapRecord;
 	private HashMap<Integer,Vector<SRVRecord>> sortedSRVs;
@@ -36,7 +35,6 @@ public class CertificateInfo implements Serializable{
 		certOutput = null;
 		isDomainTest = null;
 		isLDAPTest = null;
-		isDts577Test = null;
 		dnsRecord = null;
 		ldapRecord = null;
 		sortedSRVs = null;
@@ -51,7 +49,6 @@ public class CertificateInfo implements Serializable{
 		this.domain = domain;
 		this.isDomainTest = null;
 		this.isLDAPTest = null;
-		this.isDts577Test = null;
 		result = null;
 		certOutput = null;
 		dnsRecord = null;
@@ -112,12 +109,6 @@ public class CertificateInfo implements Serializable{
 	}
 	public void setIsLDAPTest(Boolean isLDAPTest) {
 		this.isLDAPTest = isLDAPTest;
-	}
-	public Boolean getIsDts577Test() {
-		return isDts577Test;
-	}
-	public void setIsDts577Test(Boolean isLDAPTest) {
-		this.isDts577Test = isDts577Test;
 	}
 	public Record[] getDnsRecord() {
 		return dnsRecord;
