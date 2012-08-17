@@ -57,11 +57,20 @@ public class CertLookUpActionForm extends ActionForm{
 	    	 new ActionMessage("error.common.html.select.required"));
 	    }
 	    
-	    if( getDomainAddr() == null || getDomainAddr().length() < 1){
+	    if( getDomainAddr() == null || getDomainAddr().length() < 1)
+	    {
+           	errors.add("required",
+	    	   new ActionMessage("error.common.html.domain.required"));
+       }else{
+	   
+	    if ( !getDomainAddr().matches("^\\S+@\\S+\\.\\S+$")){
 	    	errors.add("required",
-	    			new ActionMessage("error.common.html.domain.required"));
-	    }
- 
+ 	    			new ActionMessage("error.common.html.domain.email.format"));
+ 	    }
+	    
+    }
+    
+  
 	    return errors;
 	}
 	
