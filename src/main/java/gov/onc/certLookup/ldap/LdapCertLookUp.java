@@ -70,9 +70,21 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			}
 		}
 		
-		if(success == false)
-			throw new CertLookUpException("Fail: Unable to find Certificate for " + certInfo.getOrigAddr()
-					+ " at LDAP.", new Throwable());
+		if(success == false) {
+			
+			  if (certInfo.getTestCase() == 7) {
+					  
+
+				    throw new CertLookUpException("Success: Unable to find Certificate for " + certInfo.getOrigAddr()
+					    	+ " at LDAP.", new Throwable());
+					  
+				  }
+				
+			
+				throw new CertLookUpException("Fail: Unable to find Certificate for " + certInfo.getOrigAddr()
+						+ " at LDAP.", new Throwable());
+				
+			}
 		
 		
 		return certInfo;
