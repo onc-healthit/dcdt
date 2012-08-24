@@ -74,6 +74,10 @@
   </dependencies>
   
   
+   
+            
+         
+  
   <build>
     <plugins>
       <plugin>
@@ -86,9 +90,13 @@
         </configuration>
       </plugin>
     </plugins>
-        <resources>
+    <resources>
       <resource>
-        <directory>src/main/resources/gov/onc</directory>
+        <directory>src/main/java/gov/onc</directory>
+        <filtering>true</filtering>
+      </resource>
+      <resource>
+        <directory>src</directory>
         <filtering>true</filtering>
       </resource>
     </resources>
