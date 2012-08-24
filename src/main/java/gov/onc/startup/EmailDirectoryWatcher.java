@@ -161,8 +161,9 @@ public class EmailDirectoryWatcher extends Thread {
     			+ File.separatorChar + file.getName());
 
     		FileUtils.copyFile(file, movedFile);
-    		file.delete();
-
+    		if(!file.delete())
+    			FileUtils.forceDelete(file);
+    		
     		if (!file.exists() && movedFile.exists()) {
     			log.debug("File moved to: "
     				+ movedFile.getAbsolutePath());
@@ -173,7 +174,7 @@ public class EmailDirectoryWatcher extends Thread {
     		}
     	} catch (IOException e) {
 			// TODO Auto-generated catch block
-			log.error(e.getMessage() + "\n" + e.getStackTrace());
+			log.error(e.getMessage() + "\n" + e.getCause());
 		}
     }
 
