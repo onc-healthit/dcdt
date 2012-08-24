@@ -54,8 +54,17 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			Attribute userCert = getCertFromLdap(srvRec, certInfo);
 			
 			if(userCert != null){
-				certInfo.setResult("Success: Certificate found at LDAP for " + certInfo.getOrigAddr());
-				this.success = true;
+				
+				 if (certInfo.getTestCase() == 7) {
+					 
+					 certInfo.setResult("Fail: Certificate found at LDAP for " + certInfo.getOrigAddr());
+					 
+				 }else {
+					 
+			         certInfo.setResult("Success: Certificate found at LDAP for " + certInfo.getOrigAddr());
+				 }
+				 
+			    this.success = true;
 				String certResult = getCertResult(userCert);
 				System.out.println("Service Record: " + srvRec.toString());
 				if(certResult == null)
