@@ -44,11 +44,11 @@ DTS551. Once you've chosen a test case, read the Purpose/Description and follow 
 
 	<html:option value="2">DTS 551 - DNS Domain-bound Certificate Search</html:option>
 
-	<html:option value="3">DTS 573 - DNS Address-bound Certificate Search - Case Mismatch </html:option>
+	<!-- <html:option value="3">DTS 573 - DNS Address-bound Certificate Search - Case Mismatch </html:option> -->
 
 	<html:option value="4">DTS 556 - LDAP Address-bound Certificate Search</html:option>
 
-	<html:option value="5">DTS 557 - LDAP Address-bound Certificate Search - Case Mismatch</html:option>
+	<!-- <html:option value="5">DTS 557 - LDAP Address-bound Certificate Search - Case Mismatch</html:option> -->
 
 	<html:option value="6">DTS 570 - LDAP Domain-bound Certificate Search</html:option>
 
