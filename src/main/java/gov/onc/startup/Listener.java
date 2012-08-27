@@ -1,5 +1,7 @@
 package gov.onc.startup;
 
+import gov.onc.decrypt.LookupTest;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -58,13 +60,20 @@ public class Listener implements javax.servlet.ServletContextListener {
 
 		Logger log = Logger.getLogger("emailMessageLogger");
 		try {
+			// Load in config files
 			ConfigInfo.loadConfigProperties(APACHE_HOME
 				+ File.separatorChar + CONFIG_PROP_FILE);
 			ConfigInfo.loadEmailProperties(APACHE_HOME
 				+ File.separatorChar + EMAIL_PROP_FILE);
+			
+			// Initialize HashMap with LookupTest-specific info
+			LookupTest.fillMap();
+			
+			// Kick off the thread to watch the directory where emails will arrive
 			directoryWatcher =
 					new EmailDirectoryWatcher(ConfigInfo.getConfigProperty("EmlLocation"));
 			directoryWatcher.start();
+			
 			log.info("Directory Watcher Started.");
 		} catch (ConfigurationException e) {
 			log.error("Error Loading Properties files.\n"
