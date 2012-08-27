@@ -2,6 +2,7 @@ package gov.onc.startup;
 
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.log4j.Logger;
 
 /**
  * Stores configuration properties for both the main application 
@@ -13,6 +14,7 @@ public class ConfigInfo {
 
 	private static PropertiesConfiguration configProperties;
 	private static PropertiesConfiguration emailProperties;
+	private static Logger log = Logger.getLogger("emailMessageLogger");
 
 	/**
 	 * Loads email properties from local file.
@@ -50,7 +52,14 @@ public class ConfigInfo {
 	 * @return application property value
 	 */
 	public static synchronized String getConfigProperty(String key) {
-		return configProperties.getString(key);
+		String value = configProperties.getString(key);
+		if (value == null)
+			log.fatal("Properties file: " + configProperties.getFileName() +
+					" is missing required property: " + key + ".");
+
+		// Currently doesn't shut down, so if missing property at this point,
+		// there may be side effect errors.
+		return value;
 	}
 
 	/**
