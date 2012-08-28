@@ -71,6 +71,10 @@ public class EmailSetActionForm extends ActionForm {
 	    				 new ActionMessage("invalid.direct.email.empty"));
 	    	 }else{
 	    		 
+	    		 if(!getDirectEmail().matches("^\\S+@\\S+\\.\\S+$")){
+	    			 errors.add("required", new ActionMessage("invalid.direct.email.bad"));
+	    		 }
+	    	 
 	    		 String directDom = eph.stripDomain(getDirectEmail());
 	    		 if(!eph.isEmailValid(directDom)){
 	    			 errors.add("required", new ActionMessage("invalid.direct.email.bad"));
@@ -81,6 +85,10 @@ public class EmailSetActionForm extends ActionForm {
 	    		 errors.add("required",
 	    			new ActionMessage("invalid.result.email.empty"));
 	    	 }else{
+	    		 
+	    		 if(!getResultsEmail().matches("^\\S+@\\S+\\.\\S+$")){
+	    			 errors.add("required", new ActionMessage("invalid.result.email.bad"));
+	    		 }
 	    		 String resultsDom = eph.stripDomain(getResultsEmail());
 	    		 if(!eph.isEmailValid(resultsDom)){
 	    			 errors.add("required", new ActionMessage("invalid.result.email.bad"));
