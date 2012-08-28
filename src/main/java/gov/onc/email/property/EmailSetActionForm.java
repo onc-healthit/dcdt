@@ -69,26 +69,32 @@ public class EmailSetActionForm extends ActionForm {
 	    	 {
 	    		 errors.add("required",
 	    				 new ActionMessage("invalid.direct.email.empty"));
-	    	 }else{
-	    		 
-	    		 if(!getDirectEmail().matches("^\\S+@\\S+\\.\\S+$")){
-	    			 errors.add("required", new ActionMessage("invalid.direct.email.bad"));
-	    		 }
-	    	 
+	    	 }
+	    	 else if  
+	    	 (!getDirectEmail().matches("^\\S+@\\S+\\.\\S+$")){
+    			 errors.add("required", new ActionMessage("invalid.direct.email.bad"));
+    		 }
+	    	 else{
 	    		 String directDom = eph.stripDomain(getDirectEmail());
 	    		 if(!eph.isEmailValid(directDom)){
 	    			 errors.add("required", new ActionMessage("invalid.direct.email.bad"));
 	    		 }
+	    		
 	    	 }
 	    	
 	    	 if( getResultsEmail() == null || getResultsEmail().length() < 1){
 	    		 errors.add("required",
 	    			new ActionMessage("invalid.result.email.empty"));
-	    	 }else{
-	    		 
-	    		 if(!getResultsEmail().matches("^\\S+@\\S+\\.\\S+$")){
-	    			 errors.add("required", new ActionMessage("invalid.result.email.bad"));
+	    	 }
+	    	 
+	    	 else if
+	    	 (!getResultsEmail().matches("^\\S+@\\S+\\.\\S+$")){
+	    			errors.add("required", new ActionMessage("invalid.result.email.bad"));
 	    		 }
+	    	 
+	    	 else{
+	    		
+	    		 
 	    		 String resultsDom = eph.stripDomain(getResultsEmail());
 	    		 if(!eph.isEmailValid(resultsDom)){
 	    			 errors.add("required", new ActionMessage("invalid.result.email.bad"));
