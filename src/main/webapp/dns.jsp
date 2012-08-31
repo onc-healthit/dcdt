@@ -24,9 +24,31 @@
  <!-- #BeginEditable "Bodytext" -->
 <body>
 <h2>Certificate Look Up</h2>
-<p> Please choose a test case from the dropdown based on your system's current capabilities. For 
-example, if your system stores domain-bound certificates in DNS CERT Resource Records, you would run
-DTS551. Once you've chosen a test case, read the Purpose/Description and follow the included instructions.</p>
+<p> Use the following table to determine the required test cases for your System. 
+After determining the required test case(s), select them -- one at a time -- from the dropdown menu,
+read the Purpose/Description and follow the included instructions.</p>
+
+<table class="table table-striped">
+<thead>
+ <tr>
+  <td>My System stores certificates in DNS CERT resource records</td>
+  <td>My System stores my certificates in LDAP servers</td>
+ </tr>
+</thead>
+<tbody>
+ <tr>
+  <td>My System stores address-bound certificates</td>
+  <td>DTS 550</td>
+  <td>DTS 556 and DTS 577</td>
+ </tr>
+ <tr>
+  <td>My System stores domain-bound certificates</td>
+  <td>DTS 551</td>
+  <td>DTS 570</td>
+ </tr>
+</tbody>
+</table>
+
 
   <div id="content">          
     <div style="color:red">
