@@ -29,7 +29,7 @@ var val
 
 if (val == 1) {			
   document.getElementById("comments").innerHTML = "<b>Purpose/ Description:</b>" + "<br /> " +
-	 " System's DNS correctly stores X.509 individual Direct address-bound certificate. " + " <br /> " + "<b>Instructions:</b> " + " <br /> " + " For this test case, enter in your Direct Address. If there is a address-bound certificate associated with your Direct Address, the tool will discover it and print the result to the screen."
+	 " System's DNS correctly stores and returns address-bound X.509 certificate. " + " <br /> " + "<b>Instructions:</b> " + " <br /> " + " For this test case, enter in your Direct Address. If there is a address-bound certificate associated with your Direct Address, the tool will discover it and print the result to the screen."
 	 + " Also run this test case " +
 		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573."  + 
 	 "<br /> " +
@@ -37,7 +37,7 @@ if (val == 1) {
 }else if (val == 2) {
   document.getElementById("comments").innerHTML =
 	  "<b>Purpose/ Description:</b>" + "<br /> " +
-		 "System's DNS correctly stores X.509 Direct domain-bound certificate. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in your Direct Address. If there is a domain-bound certificate associated with your domain, the tool will discover it and print the result to the screen." +
+		 "System's DNS correctly stores and returns domain-bound X.509 certificate. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in your Direct Address. If there is a domain-bound certificate associated with your domain, the tool will discover it and print the result to the screen." +
 		 		" Also run this test case " +
 		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573. " + "<br />" + "<b>RTM:</b> " + "<br />" +" 1,3. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" + 
 		 "RFC 4398: Section 2.1 - Direct Applicability Statement for Secure Health Transport: Section 5.3";
@@ -54,7 +54,7 @@ else if (val == 3){
 else if(val ==4 ){
   document.getElementById("comments").innerHTML =
 	  "<b>Purpose/ Description:</b>" + "<br /> " +
-		 "System returns individual X.509 certificate from LDAP server. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in your Direct Address. " +
+		 "System returns address-bound X.509 certificate from LDAP server. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in your Direct Address. " +
 		 		"If there is a certificate stored in an LDAP server associated with your domain, the System will discover it and print it to the screen. Also run this test case " +
 		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS557. " +
 		 		 "<br /> " +"<b>RTM:</b> " +"<br />" +" 2,3,5,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
