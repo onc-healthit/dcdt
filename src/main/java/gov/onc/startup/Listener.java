@@ -5,7 +5,6 @@ import gov.onc.decrypt.LookupTest;
 import java.io.File;
 import java.io.IOException;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
@@ -19,9 +18,10 @@ import org.apache.log4j.PropertyConfigurator;
  */
 public class Listener implements javax.servlet.ServletContextListener {
 
-	private static final String APACHE_HOME = System.getProperty("catalina.home");
-	private static final String CONFIG_PROP_FILE = "conf/direct/config.properties";
-	private static final String EMAIL_PROP_FILE = "conf/direct/email.properties";
+	private String configHome;
+	private static final String CONFIG_HOME_NAME = "CONFIG_DIR";
+	private static final String CONFIG_PROP_FILE = "config.properties";
+	private static final String EMAIL_PROP_FILE = "email.properties";
 		
 	private static EmailDirectoryWatcher directoryWatcher = null;
 
@@ -40,7 +40,7 @@ public class Listener implements javax.servlet.ServletContextListener {
 			logE.info("Directory Watcher Stopped.");
 		}
 		try {
-			ConfigInfo.storeEmailProperties(APACHE_HOME
+			ConfigInfo.storeEmailProperties(configHome
 				+ File.separatorChar + EMAIL_PROP_FILE);
 			logE.info("Server SHUT DOWN");
 			logC.info("Server SHUT DOWN");
@@ -56,14 +56,22 @@ public class Listener implements javax.servlet.ServletContextListener {
 	 * @param arg0
 	 */
 	public void contextInitialized(ServletContextEvent arg0) {
+		configHome = System.getProperty(CONFIG_HOME_NAME);
+		
+		if(configHome == null)
+			System.getenv(CONFIG_HOME_NAME);
+		
+		if(configHome == null)
+			System.out.println("ERROR:  Configuration directory variable not set!!!");
+		
 		setLogging(arg0);
 
 		Logger log = Logger.getLogger("emailMessageLogger");
 		try {
 			// Load in config files
-			ConfigInfo.loadConfigProperties(APACHE_HOME
+			ConfigInfo.loadConfigProperties(configHome
 				+ File.separatorChar + CONFIG_PROP_FILE);
-			ConfigInfo.loadEmailProperties(APACHE_HOME
+			ConfigInfo.loadEmailProperties(configHome
 				+ File.separatorChar + EMAIL_PROP_FILE);
 			
 			// Initialize HashMap with LookupTest-specific info
@@ -77,10 +85,10 @@ public class Listener implements javax.servlet.ServletContextListener {
 			log.info("Directory Watcher Started.");
 		} catch (ConfigurationException e) {
 			log.error("Error Loading Properties files.\n"
-				+ e.getStackTrace());
+				+ e.getMessage());
 		} catch (IOException e) {
 			log.error("IO Error - Loading config files.\n"
-				+ e.getStackTrace());
+				+ e.getMessage());
 		}
 	}
 
@@ -90,16 +98,11 @@ public class Listener implements javax.servlet.ServletContextListener {
 	 * @param e
 	 */
 	private void setLogging(ServletContextEvent e) {
-		ServletContext ctx = e.getServletContext();
-
-		String prefix =  ctx.getRealPath("/");
-		String file = "WEB-INF" + System.getProperty("file.separator")
-				+ "classes" + System.getProperty("file.separator")
-				+ "log4j.properties";
-		File isFile = new File(prefix + file);
+		String loggingProp = configHome + File.separatorChar + "log4j.properties";
+		File isFile = new File(loggingProp);
 
 		if (isFile.exists()) {
-			PropertyConfigurator.configure(prefix + file);
+			PropertyConfigurator.configure(loggingProp);
 			String message = "APPLICATION START - UP";
 
 		    Logger logE = Logger.getLogger("emailMessageLogger");
@@ -108,11 +111,13 @@ public class Listener implements javax.servlet.ServletContextListener {
 		    logE.info(message);
 		    logC.info(message);
 
-		    System.out.println("Log4J Logging started for application: "
-		    	+ prefix + file);
+		    logE.info("Log4J Logging started for application with properties: "
+		    	+ loggingProp);
+		    logC.info("Log4J Logging started for application with properties: "
+			    	+ loggingProp);
 		} else {
-			System.out.println("Log4J is not configured for application: "
-				+ prefix + file);
+			System.out.println("Log4J is not configured for application with properties: "
+				+ loggingProp);
 		}
 	}
 }
