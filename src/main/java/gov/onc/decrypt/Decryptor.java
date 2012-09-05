@@ -3,6 +3,7 @@ package gov.onc.decrypt;
 import gov.onc.startup.ConfigInfo;
 
 import java.io.BufferedReader;
+import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -189,9 +190,10 @@ public class Decryptor implements DecryptDirectHandler {
 
 	    @Override
 	    public void run() {
+	        InputStreamReader isr = new InputStreamReader(is);
+	        BufferedReader br = new BufferedReader(isr);
+	    	
 	        try {
-	            InputStreamReader isr = new InputStreamReader(is);
-	    	    BufferedReader br = new BufferedReader(isr);
 	            String line = null;
 	            while ((line = br.readLine()) != null) {
 	            	buffer.append(type + ">" + line + "\n");
@@ -199,15 +201,27 @@ public class Decryptor implements DecryptDirectHandler {
 	            		System.out.println(type + ">" + line);
 	            	}
 	            }
-            } catch (IOException ioe) {
+            }catch (IOException ioe) {
             	log.error("Error with openSSL stream gobbler <IO Exception> /n"
             			+ ioe.getStackTrace());
-              }
+            }finally {
+            	closeStream(br);
+            	closeStream(isr);
+            	closeStream(this.is);	
+            }
 	    }
 
 	    public StringBuffer getBufferedOutput() {
 			return buffer;
 		}
+	    
+	    private void closeStream(Closeable stream){
+	    	try{
+	    		stream.close();
+	    	}catch(IOException ex){
+	    		log.error(ex.getMessage());
+	    	}
+	    }
 	}
 
 }
