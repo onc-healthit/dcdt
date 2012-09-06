@@ -28,9 +28,11 @@
 After determining the required test case(s), select them -- one at a time -- from the dropdown menu,
 read the Purpose/Description and follow the included instructions.</p>
 
-<table class="table table-striped">
+<table class="table table-striped"> 
+
 <thead>
  <tr>
+  <td></td>
   <td>My System stores certificates in DNS CERT resource records</td>
   <td>My System stores my certificates in LDAP servers</td>
  </tr>
