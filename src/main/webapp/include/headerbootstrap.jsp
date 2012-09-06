@@ -16,7 +16,6 @@
 <link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings-white.png" type="image" />
 <link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings.png" type="image" />
 </head>
- 
  <!-- TOP NAVIGATION -->
  <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
@@ -32,7 +31,7 @@
               <li class=""><a href="home.jsp">Home</a></li>
               <li class=""><a href="dns.jsp">Discovery</a></li>
               <li class=""><a href="download.jsp">Messaging</a></li>
-              <li class=""><a href="javascript:new_window('http://onctest.wikispaces.com/Modular+Specifications+Phase+3+Testing+Tool+FAQ')">
+              <li><a href="http://onctest.wikispaces.com/Modular+Specifications+Phase+3+Testing+Tool+FAQ" class="oncfaq">
                FAQ
             </a>
             </ul>
