@@ -1,6 +1,9 @@
 <%@ page language="java"%>
 <%@ page session="false"%>
 <%@taglib uri="/WEB-INF/struts-bean.tld" prefix="bean" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%> 
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html>
 <head>
@@ -42,20 +45,18 @@
      <br /><br />  
      </div>
     Choose a Direct Address:
+   <jsp:useBean id="addrHelper" class="gov.onc.decrypt.AddressPropertyHelper" scope="page"/>
    <select name="selectEmail" id="selectEmail" size="1" onchange="setText(this);setDropText(this)">
     <option value="">-- None --</option>
-    <option value="500">dts500@direct1.testteam.us</option>
-    <option value="501">dts501@direct1.testteam.us</option>
-    <option value="502">dts502@direct1.testteam.us</option>
-    <option value="505">dts505@direct2.testteam.us</option>
-    <option value="515">dts515@direct2.testteam.us</option>
-    <option value="506">dts506@direct2.testteam.us</option>
-    <option value="507">dts507@direct3.testteam.us</option>
-    <option value="517">dts517@direct3.testteam.us</option>
-    <!--  <option value="519">dts519@direct3.testteam.us</option>--> 
-    <option value="520">dts520@direct5.testteam.us</option>
-    <option value="511">dts511@direct4.testteam.us</option>
-    <option value="512">dts512@direct6.testteam.us</option>
+    
+    <% String[] testIds = {"500", "501", "502", "505", "515", "506", "507", "517", "520", "511", "512" };
+    	for (String testID : testIds){
+    	    String addr = addrHelper.getAddressForTestId(testID);
+ 	    	if (addr != null){%>
+ 	    	    <option value="<%out.print(testID);%>"><%out.print(addr);%></option>
+ 	    	<%}
+    	}
+    %>
    </select>  
     <!--  <input type="button"  id="copyAddress" value="Copy Address" class="btn-primary" onclick="copyAddress()" /> -->
   </p>
