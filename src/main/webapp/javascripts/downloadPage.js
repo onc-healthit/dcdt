@@ -3,79 +3,29 @@
           $(document).ready(function() {
                $("#copyAddress").click(function(){
               //gets the items without any seperater
-                var copyAdd
-                copyAdd = $('#selectEmail option:selected').text();    
+                var copyAdd = $('#selectEmail option:selected').text();    
                 document.getElementById("seldropDown").value = copyAdd; 
                     alert("selected value " +copyAdd);
                      
                  });
                });
           
-          
  
-          //Function to set the drop down
+ //Function to set the drop down
  function setDropText(select_ele){
-  document.getElementById("seldropDown").innerHTML = select_ele.options[select_ele.selectedIndex].value;
-  val = select_ele.options[select_ele.selectedIndex].value;
-  if (val == 500) {			
-      document.getElementById("seldropDown").innerHTML = "dts500@direct1.testteam.us";
-      
+  // Ignore "None"
+  if (select_ele.selectedIndex == 0) {
+	  return;
   }
-  if (val == 501) {			
-      document.getElementById("seldropDown").innerHTML = "dts501@direct1.testteam.us";
+  document.getElementById("seldropDown").innerHTML = select_ele.options[select_ele.selectedIndex].text;
       
-  }
-  if (val == 502) {			
-      document.getElementById("seldropDown").innerHTML = "dts502@direct1.testteam.us";
-      
-  }
-  if (val == 505) {			
-      document.getElementById("seldropDown").innerHTML = "dts505@direct2.testteam.us";
-      
-  }
-  if (val == 515) {			
-      document.getElementById("seldropDown").innerHTML = "dts515@direct2.testteam.us";
-      
-  }
-  if (val == 506) {			
-      document.getElementById("seldropDown").innerHTML = "dts506@direct2.testteam.us";
-      
-  }
-  if (val == 507) {			
-      document.getElementById("seldropDown").innerHTML = "dts507@direct3.testteam.us";
-      
-  }
-  if (val == 517) {			
-      document.getElementById("seldropDown").innerHTML = "dts517@direct3.testteam.us";
-      
-  }
-  if (val == 519) {			
-      document.getElementById("seldropDown").innerHTML = "dts519@direct3.testteam.us";
-      
-  }
-  if (val == 520) {			
-      document.getElementById("seldropDown").innerHTML = "dts520@direct5.testteam.us";
-      
-  }
-  if (val == 511) {			
-      document.getElementById("seldropDown").innerHTML = "dts511@direct4.testteam.us";
-      
-  }
-  if (val == 512) {			
-      document.getElementById("seldropDown").innerHTML = "dts512@direct6.testteam.us";
-      
-  }
-  
  }//End of function
  
  
-var val
 function setText(select_ele){
     document.getElementById("comments").innerHTML = select_ele.options[select_ele.selectedIndex].value;
     val = select_ele.options[select_ele.selectedIndex].value;
     
- 
-           		
      if (val == 500) {			
         document.getElementById("comments").innerHTML = 
         	"<b>Purpose/ Description:</b>" + "<br /> " +
@@ -140,4 +90,4 @@ function setText(select_ele){
 	   		"No certificate found in DNS CERT and no SRV records " + "<br /> " + "<b>Additional Info:</b> " +" <br /> " + " In order for this test case to be a success, you must NOT receive an email in response. You will need to verify that your system did NOT send an email because it could not find a certificate for the Direct address." + "<br /> " +
 	   	 "<b>RTM:</b> " +"<br />" +" 1, 3, 18.";
    } 
-           	}//end of if                
+ }//end of function               
