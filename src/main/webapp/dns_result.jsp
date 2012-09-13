@@ -30,7 +30,7 @@
 	 </textarea>
 	</div>
 </logic:notEmpty>
-<a href="dns.jsp">Back to Discovery</a>
+<a href="dns.jsp">Back to Hosting</a>
 </body>
 
 <!-- #EndEditable "Bodytext" -->

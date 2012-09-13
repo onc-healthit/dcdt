@@ -1,4 +1,5 @@
 <%@ page session="false"%>
+
 <head>
 <meta name="ROBOTS" content="none,noindex,nofollow" />
 <meta http-equiv="Content-Language" content="en-US" />
@@ -16,21 +17,25 @@
 <link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings-white.png" type="image" />
 <link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings.png" type="image" />
 </head>
+
+
  <!-- TOP NAVIGATION -->
  <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
+       <div class="container-fluid">
         <div class="container">
-          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+           <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </a>
-          <a class="brand" href="home.jsp">Direct Certificate Discovery Testing Tool</a>
+          <!--  <a class="brand" href="home.jsp">Direct Certificate Discovery Testing Tool</a>-->
+          <img src="images/DCDT_logo.png" class="brand" >
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class=""><a href="home.jsp">Home</a></li>
-              <li class=""><a href="dns.jsp">Discovery</a></li>
-              <li class=""><a href="download.jsp">Messaging</a></li>
+              <li class=""><a href="dns.jsp">Hosting</a></li>
+              <li class=""><a href="download.jsp">Discovery</a></li>
               <li><a href="http://onctest.wikispaces.com/Modular+Specifications+Phase+3+Testing+Tool+FAQ" class="oncfaq">
                FAQ
             </a>
@@ -38,5 +43,8 @@
           </div><!--/.nav-collapse -->
         </div>
       </div>
+      </div>
     </div><br /><br /><br /><br />
+    
+    
  

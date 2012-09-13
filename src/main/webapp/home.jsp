@@ -18,26 +18,34 @@
 <body>
   <div id="content">
      <h2>Welcome to the Direct Certificate Discovery Testing Tool</h2>
+     <br />
+     <p><strong>Purpose of this Tool</strong></p>
      <p>This tool is intended to allow for the automated testing of Systems implementing the 
-         current Certificate Discovery and Provider Directory Implementation Guidance, 
-         approved by Direct community, as of July 9, 2012. 
-     </p>
-     <p>Our tool is divided into two main testing areas, one area <a href="dns.jsp">Discovery</a>
-     tests that System's host their certificates appropriately for discovery by other implementations.   
-     </p>
-     <p>
-     The other part of our tool <a href="download.jsp">Messaging</a> tests that implementations are able to
+     current Certificate Discovery and Provider Directory Implementation Guidance, 
+     approved by Direct community, as of July 9, 2012. </p>
+     
+     <p><strong>Current State and Future Plans</strong></p>
+      <p>Info under Construction</p>
+  
+ 
+    <p><strong>How to Use this Tool</strong></p>
+    Our tool is divided into two main testing areas, one area <a href="dns.jsp">Hosting</a>
+    tests that System's host their certificates appropriately for discovery by other implementations.  
+    <p>
+     The other part of our tool <a href="download.jsp">Discovery</a> tests that implementations are able to
      discover valid Direct certificates and use them to send Direct messages.
-     </p>
+    </p>
      <p>
-     Both areas contain descriptions of the test cases that it is running and how to run them. If you have any questions about the tool,
-     please feel free to <a href="mailto:alltest@nitorgroup.com" class="mail" >contact us</a>.
+     Both areas contain descriptions of the test cases that it is running and how to run them.   <!-- If you have any questions about the tool,
+    please feel free to <a href="mailto:alltest@nitorgroup.com" class="mail" >contact us</a>.-->
      </p>
+     <p><strong>Have Questions?</strong><br /></p>
+     Feel free to contact us with any questions via email found at the footer of the page "Contact Us".
     </div>
 
 </body>
 
-<a href="javascript:new_window('http://onctest.wikispaces.com')"><img  src="images/onc_image.jpg"></a>
+<!--  <a href="javascript:new_window('http://onctest.wikispaces.com')"><img  src="images/onc_image.jpg"></a>-->
 
 <!-- #EndEditable "Bodytext" -->
 <jsp:include page="/include/footer.jsp" flush="true" />    

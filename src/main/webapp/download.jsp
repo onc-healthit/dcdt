@@ -29,8 +29,10 @@
 
 
 $(document).ready(function(){
+	//alert('Insider the ajax call');
 	var host = (document.getElementById('requestHeader').value);
 	$.ajax({
+		  
 	       type: "GET",
 	       url: "http://"+host+"/ModularSpecPhase3_Tool/Download.do",
 	       //data: "dts500=" +dts500,

@@ -47,7 +47,7 @@ Results Email (NOT a Direct address, but where you can receive regular email): <
 </div>
 </html:form>
 </div>
-<a href="download.jsp">Back to Messaging</a>   
+<a href="download.jsp">Back to Discovery</a>   
 </body>
 <!-- #EndEditable "Bodytext" -->
 <jsp:include page="/include/footer.jsp" flush="true" />

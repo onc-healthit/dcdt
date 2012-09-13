@@ -100,7 +100,7 @@
         <filtering>true</filtering>
       </resource>
     </resources>
-    <finalName>MSP3_Tool_Production</finalName>
+    <finalName>ModularSpecPhase3_Tool</finalName>
   </build>
   
   

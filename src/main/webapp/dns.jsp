@@ -61,9 +61,9 @@ read the Purpose/Description and follow the included instructions.</p>
  
 <div style="padding:20px">
  
-<bean:message key="label.common.html.select.testchoose" /> : 
+  <strong><bean:message key="label.common.html.select.testchoose" /> :</strong><br /> 
 	<html:select property="testcase" styleId="testcase"  onchange="setText(this)">
-    <html:option value="">-- None --</html:option>
+    <html:option value="">-- No Test Case Selected --</html:option>
 	<html:option value="1">DTS 550 - DNS Address-bound Certificate Search</html:option>
 
 	<html:option value="2">DTS 551 - DNS Domain-bound Certificate Search</html:option>
@@ -80,9 +80,11 @@ read the Purpose/Description and follow the included instructions.</p>
     </html:select>
 <br /><br />
 
+
 <div class="textFont" id="comments"></div>
 <br />
-<bean:message key="label.common.html.text.email" /><html:text name="CertLookUpActionForm" property="domainAddr" />
+<strong><bean:message key="label.common.html.text.email" /></strong><br /> 
+<html:text name="CertLookUpActionForm" property="domainAddr" />
 </div>
 <div style="padding:16px">
 	<div style="float:left;padding-right:8px;">
