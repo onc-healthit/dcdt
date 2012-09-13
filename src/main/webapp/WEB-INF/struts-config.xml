@@ -10,7 +10,8 @@
 <struts-config>
     <form-beans>
         <form-bean name="CertLookUpActionForm" type="gov.onc.certLookup.CertLookUpActionForm"/>
-        <form-bean name="EmailSetActionForm" type="gov.onc.email.property.EmailSetActionForm"/>    
+        <form-bean name="EmailSetActionForm" type="gov.onc.email.property.EmailSetActionForm"/>
+        <form-bean name="LookUpDropDownActionForm" type="gov.onc.decrypt.LookUpDropDownActionForm"/>    
     </form-beans>
     
     <global-exceptions>
@@ -26,7 +27,10 @@
         	<forward name="success" path="/dns_result.jsp" />
         </action>
         <action path="/Welcome" forward="/welcomeStruts.jsp"/>
-        
+    
+	        <action name="LookUpDropDownActionForm"  path="/Download" scope="session" validate="true" input="/download.jsp"
+	        type="gov.onc.decrypt.LookUpDropDownAction"/>
+	
         <action path="/Email_Set" input="/emailSet.jsp" name="EmailSetActionForm" validate="true" type="gov.onc.email.property.EmailSetAction">
         	<forward name="samePage" path="/emailSet.jsp" />
         </action>
@@ -34,8 +38,16 @@
     
     <controller processorClass="org.apache.struts.tiles.TilesRequestProcessor"/>
 
-    <message-resources parameter="gov/onc/ApplicationResource"/>
-    
+
+   
+  <!--   <message-resources parameter="gov.onc.ApplicationResource"/> -->
+ 
+  
+      <message-resources parameter="gov/onc/ApplicationResource"/> 
+      <message-resources parameter="src/main/java/gov/onc/ApplicationResource"/> 
+      <message-resources parameter="src.main.java.gov.onc.ApplicationResource"/>
+        <message-resources parameter="gov.onc.ApplicationResource"/>  
+
     <!-- ========================= Tiles plugin ===============================-->
     <!--
     This plugin initialize Tiles definition factory. This later can takes some
