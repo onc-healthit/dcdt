@@ -49,15 +49,15 @@ public class LookupTest {
 					// Bad certs
 					new LookupTestCertInfo[] {
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_2"),
-							"This cert is not for the correct address."),
+							"Your system chose an address-bound DNS certificate for a different Direct address. It MUST have chosen the certificate for the correct address."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_3"),
-							"Should have chosen the address bound first."),
+							"Your System chose a valid domain-bound DNS Certificate. It MUST have chosen the valid address-bound DNS certificate first."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_4"),
-							"Wrong domain and should have chosen the address bound certificate first."),
+							"Your System chose a valid domain-bound DNS certificate for the wrong domain. It MUST have chosen the valid address-bound DNS certificate first."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_5"),
-							"Should have chosen the address bound certificate first."),
+							"Your System chose a valid address-bound LDAP certificate. It MUST have chosen the DNS address-bound certificate first."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_6"), 
-							"Should have chosen the address bound certificate first.")
+							"Your System chose a valid domain-bound LDAP certificate. It MUST have chosen the DNS CERT address-bound certificate first.")
 					}
 			));
 		lookupTests.put(ConfigInfo.getConfigProperty("DTS_501_EMAIL"),
@@ -67,11 +67,13 @@ public class LookupTest {
 					// Bad certs
 					new LookupTestCertInfo[] {
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_7"),
-							"Expired Certificate."),
+							"Your System used an expired certificate. It MUST NOT have used the expired certificate and SHOULD have used the valid domain-bound DNS certificate."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_4"),
-							"Wrong domain."),
+							"Your System chose a valid domain-bound DNS certificate for the wrong domain. It MUST have chosen the valid domain-bound DNS certificate first."),
+						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_37"),
+							"Your System chose an address-bound certificate from the LDAP server. It MUST have chosen the DNS CERT domain-bound certificate first."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_6"), 
-							"Your system chose a domain-bound certificate stored in an LDAP instance. Your system should have chosen the DNS CERT domain-bound certificate first.")
+							"Your System chose a valid domain-bound LDAP certificate. It MUST have chosen the DNS CERT domain-bound certificate first.")
 					}
 			));
 		lookupTests.put(ConfigInfo.getConfigProperty("DTS_502_EMAIL"),
@@ -81,9 +83,9 @@ public class LookupTest {
 					// Bad certs
 					new LookupTestCertInfo[] {
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_3"),
-							"Your system chose a valid domain-bound certificate stored in a CERT resource record. Your system should have chosen the address-bound certificate in the CERT resource record first."),
+							"Your System used a valid domain-bound DNS certificate instead of the valid address-bound DNS certificate. Your System MUST have chosen the address bound first."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_4"),
-							"Wrong domain and should have chosen the address bound certificate first."),
+							" Your System chose a valid domain-bound DNS certificate for the wrong domain. It MUST have chosen the valid address-bound DNS certificate first."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_6"), 
 							"Your System chose a valid domain-bound certificate stored in an LDAP instance. It should have chosen the address-bound certificate in the DNS first.")
 					}
@@ -95,11 +97,11 @@ public class LookupTest {
 					// Bad certs
 					new LookupTestCertInfo[] {
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_13"),
-								"Your system chose an expired certificate from a DNS CERT resource record. It should have chosen the address bound certificate in the LDAP server."),
-						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_15"),
-							"This certificate is not bound correctly."),
+							"Your System used an expired address-bound DNS certificate. It MUST not use this certificate because it is expired. It should have used the address-bound LDAP certificate."),
+						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_38"),
+							"Your System chose an expired DNS domain-bound certificate. It MUST not use this certificate because it is expired. It should have used the address-bound LDAP certificate."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_16"),
-							"Your system chose a valid domain-bound certificate in an LDAP server, but it should have used the valid address-bound certificate in the LDAP server.")
+							"Your system chose a valid domain-bound certificate in an LDAP server, but it MUST have used the valid address-bound certificate in the LDAP server before using the valid domain-bound certificate.")
 					}
 			));
 		lookupTests.put(ConfigInfo.getConfigProperty("DTS_515_EMAIL"),
@@ -108,6 +110,12 @@ public class LookupTest {
 					new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_16"), "Passed."),
 					// Bad certs
 					new LookupTestCertInfo[] {
+						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_39"),
+							"Your System used an expired address-bound DNS certificate. It MUST not use this certificate because it is expired. It SHOULD have used the valid domain-bound LDAP certificate."),
+						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_38"),
+								"Your System chose an expired domain-bound DNS certificate. It MUST not use this certificate because it is expired. It SHOULD have used the valid domain-bound certificate in the Testing Tool's LDAP server."),
+						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_41"),
+								"Your System chose an expired address-bound certificate from the LDAP server. It MUST not use this certificate because it is expired. It SHOULD have used the valid domain-bound certificate in the Testing Tool's LDAP server."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_17"),
 							"Your system chose an address-bound certificate that was stored in a lower priority SRV record LDAP server. It SHOULD have chosen the domain-bound certificate in the higher priority SRV record first, though this is only recommended and not required.")
 					}
@@ -119,9 +127,9 @@ public class LookupTest {
 					// Bad certs
 					new LookupTestCertInfo[] {
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_16"),
-							"Your system chose a domain-bound certificate instead of the valid address-bound certificate stored in the LDAP instance first."),
+							"Your System chose a valid domain-bound LDAP certificate instead of the valid address-bound certificate stored in the LDAP instance. It MUST have chosen the valid address-bound certificate before using the valid domain-bound certificate."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_19"),
-								"Your system chose a valid certificate from a lower priority SRV Record. It SHOULD have chosen the valid address-bound certificate in the higher priority SRV Record LDAP instance. This is recommended practice, but not required.")
+							"Your System chose a valid certificate from a lower priority SRV Record. It SHOULD have chosen the valid address-bound certificate in the higher priority SRV Record LDAP instance. This is recommended practice, but not required.")
 					}
 			));
 		lookupTests.put(ConfigInfo.getConfigProperty("DTS_507_EMAIL"),
@@ -152,13 +160,13 @@ public class LookupTest {
 					// Bad certs
 					new LookupTestCertInfo[] {
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_24"),
-							"Shouldn't use this because it's expired."),
+							"Your System used an expired address-bound DNS certificate. It MUST NOT use this because it's expired."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_25"),
-								"Shouldn't use this because it's expired."),
+								"Your System used an expired domain-bound DNS certificate. It MUST NOT use this because it's expired."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_26"),
-								"Shouldn't use this because it's expired."),
+								"Your System used an expired address-bound LDAP certificate. It MUST NOT use this because it's expired."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_27"),
-								"Shouldn't use this because it's expired.")
+								"Your System used an expired domain-bound LDAP certificate. It MUST NOT use this because it's expired.")
 					}
 			));
 		lookupTests.put(ConfigInfo.getConfigProperty("DTS_512_EMAIL"),
@@ -168,9 +176,9 @@ public class LookupTest {
 					// Bad certs
 					new LookupTestCertInfo[] {
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_28"),
-							"Shouldn't use this because it's expired."),
+							"Your System used an expired address-bound DNS certificate. It MUST NOT use this because it's expired."),
 						new LookupTestCertInfo(ConfigInfo.getConfigProperty("CERT_29"),
-							"Shouldn't use this because it's expired.")
+							"Your System used an expired domain-bound DNS certificate. It MUST NOT use this because it's expired.")
 					}
 			));
 	}
