@@ -54,7 +54,7 @@ function setText(select_ele){
     } else if (val == 506){
        document.getElementById("comments").innerHTML =	
     	   "<b>Purpose/ Description:</b>" + "<br /> " +
-    	   "Query for Direct address from LDAP servers based on priority value - One LDAP instance unavailable. " + "<br /> " +
+    	   "Query for Direct address from LDAP servers based on priority value. " + "<br /> " +
     		 "<b>RTM:</b> " +"<br />" +"15,18" +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
     		 "RFC 2782: Page 3, Priority Section";
     } else if(val == 507 ){
