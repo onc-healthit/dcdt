@@ -30,7 +30,7 @@
             <span class="icon-bar"></span>
           </a>
           <!--  <a class="brand" href="home.jsp">Direct Certificate Discovery Testing Tool</a>-->
-          <img src="images/DCDT_logo.png" class="brand" >
+          <a href="home.jsp"><img src="images/DCDT_logo.png" class="brand" title="DCDT logo image"></a>
           <div class="nav-collapse collapse">
             <ul class="nav">
               <li class=""><a href="home.jsp">Home</a></li>

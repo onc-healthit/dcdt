@@ -47,30 +47,36 @@ $(document).ready(function(){
      <h2>Welcome to the Direct Certificate Discovery Testing Tool</h2>
      <br />
      <p><strong>Purpose of this Tool</strong></p>
-     <p>This tool is intended to allow for the automated testing of Systems implementing the 
-     current Certificate Discovery and Provider Directory Implementation Guidance, 
-     approved by Direct community, as of July 9, 2012. </p>
+     <p>The Direct Certificate Discovery Tool (DCDT) was created to support automated testing of systems implementing the Certificate Discovery and 
+     Provider Directory Implementation Guidance, approved as normative specification by Direct community, as of July 9, 2012. It is based on the written 
+     test package and requirement traceability matrix created by the Modular Specifications project by the Office of the National Coordinator (ONC) and 
+     National Institute of Standards and Technology (NIST).</p>
      
-     <p><strong>Current State and Future Plans</strong></p>
-      <p>Info under Construction</p>
+     <p><strong>Future Plans</strong></p>
+      <p>The tool is planned to be used for Meaningful Use Stage 2 (MU2) and will be rolled into NIST's overall testing toolkit over time. Issues or feedback 
+      received from community usage will be prioritized as received, and the tool will have releases as needed. </p>
   
  
     <p><strong>How to Use this Tool</strong></p>
-    Our tool is divided into two main testing areas, one area <a href="dns.jsp">Hosting</a>
-    tests that System's host their certificates appropriately for discovery by other implementations.  
-    <p>
-     The other part of our tool <a href="download.jsp">Discovery</a> tests that implementations are able to
-     discover valid Direct certificates and use them to send Direct messages.
-    </p>
+    Our tool is divided into two main testing areas:<br />  
+      <ul>
+        <li><a href="dns.jsp">Hosting</a>
+        allows a System Under Test (SUT) to verify that their certificates are hosted correctly, and discoverable by other Direct implementations.</li>
+    
+        <li><a href="download.jsp">Discovery</a> 
+       allows a SUT to verify that they can discover certificates in other Direct implementations by using them to send Direct messages.</li>
+       </ul>
      <p>
-     Both areas contain descriptions of the test cases that it is running and how to run them.   <!-- If you have any questions about the tool,
+     Both areas contain details on the underlying test cases and how to run them.<!-- If you have any questions about the tool,
     please feel free to <a href="mailto:alltest@nitorgroup.com" class="mail" >contact us</a>.-->
      </p>
-     <p><strong>Have Questions?</strong><br /></p>
-     Feel free to contact us with any questions via email found at the footer of the page "Contact Us".
+     <!--  <p><strong>Have Questions?</strong><br /></p>
+     Feel free to contact us with any questions via email found at the footer of the page "Contact Us".-->
     </div>
 
 </body>
+
+
 
 <!--  <a href="javascript:new_window('http://onctest.wikispaces.com')"><img  src="images/onc_image.jpg"></a>-->
 
