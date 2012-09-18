@@ -16,6 +16,7 @@
 <script type="text/javascript" src="/ModularSpecPhase3_Tool/images/js/ootstrap.min.js"></script>
 <link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings-white.png" type="image" />
 <link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings.png" type="image" />
+<link rel="shortcut icon" href="images/favicon.ico" />
 </head>
 
 
