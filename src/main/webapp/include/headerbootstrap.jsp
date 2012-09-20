@@ -7,8 +7,8 @@
 <meta http-equiv="Expires" content="Sat, 01 Jan 2000 23:59:00 GMT" />
 <meta http-equiv="PRAGMA" content="NO-CACHE" />
 <title>Modular Specification Phase 3 Certificate Discovery Testing Tool</title>
-<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.css" type="text/css" />
-<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.min.css" type="text/css" />
+<!--  <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.css" type="text/css" />
+<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.min.css" type="text/css" />-->
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.css" type="text/css" />
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.min.css" type="text/css" />
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/msp3.css" type="text/css" />
@@ -23,7 +23,7 @@
  <!-- TOP NAVIGATION -->
  <div class="navbar navbar-fixed-top">
       <div class="navbar-inner">
-       <div class="container-fluid">
+     
         <div class="container">
            <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
             <span class="icon-bar"></span>
@@ -45,7 +45,7 @@
         </div>
       </div>
       </div>
-    </div><br /><br /><br /><br />
+    <br /><br /><br /><br />
     
     
  
