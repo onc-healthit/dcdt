@@ -42,11 +42,11 @@
    
   <!--   <message-resources parameter="gov.onc.ApplicationResource"/> -->
  
-  
-      <message-resources parameter="gov/onc/ApplicationResource"/> 
+    <message-resources parameter="ApplicationResource"/> 
+     <!--  <message-resources parameter="gov/onc/ApplicationResource"/> 
       <message-resources parameter="src/main/java/gov/onc/ApplicationResource"/> 
       <message-resources parameter="src.main.java.gov.onc.ApplicationResource"/>
-        <message-resources parameter="gov.onc.ApplicationResource"/>  
+        <message-resources parameter="gov.onc.ApplicationResource"/>  --> 
 
     <!-- ========================= Tiles plugin ===============================-->
     <!--
