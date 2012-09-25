@@ -6,7 +6,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="Expires" content="Sat, 01 Jan 2000 23:59:00 GMT" />
 <meta http-equiv="PRAGMA" content="NO-CACHE" />
-<title>Modular Specification Phase 3 Certificate Discovery Testing Tool</title>
+<title>Direct Certificate Discovery Tool</title>
 <!--  <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.css" type="text/css" />
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.min.css" type="text/css" />-->
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.css" type="text/css" />

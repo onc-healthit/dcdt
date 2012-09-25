@@ -17,14 +17,12 @@
  <h2>
  ${param.seldropDown} </br>
  </h2> 
- 
-<br />
-	<bean:write name="CertLookUpActionForm" property="result" />
-<br />
 
+	<h3><bean:write name="CertLookUpActionForm" property="result" /></h3>
 
 <logic:notEmpty name="CertLookUpActionForm" property="certResult">
-	<h3>Here is the discovered certificate for the Direct address that you provided:</h3>
+	<h3>Verify that the discovered certificate is the intended certificate for the Direct address provided:</h3>
+	<br />
 	 <textarea name="certResults" style ="width:600px" styleId="certResults" cols="200" rows="15"> 
 	 	<bean:write name="CertLookUpActionForm" property="certResult" />
 	 </textarea>
