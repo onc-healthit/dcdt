@@ -37,7 +37,7 @@
               <li class=""><a href="home.jsp">Home</a></li>
               <li class=""><a href="dns.jsp">Hosting</a></li>
               <li class=""><a href="download.jsp">Discovery</a></li>
-              <li><a href="http://onctest.wikispaces.com/Modular+Specifications+Phase+3+Testing+Tool+FAQ" class="oncfaq">
+              <li><a href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions" class="oncfaq">
                FAQ
             </a>
             </ul>
