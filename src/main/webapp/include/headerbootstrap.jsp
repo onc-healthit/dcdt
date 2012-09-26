@@ -1,4 +1,13 @@
 <%@ page session="false"%>
+<jsp:include page="ajaxCall.jsp" flush="true">
+  	<jsp:param name="title"
+		value="Home Page" />
+	<jsp:param name="pgDesc"
+		value="Direct Certificate Discovery Testing Tool - Header" />
+	<jsp:param name="pgKey"
+		value="Direct Certificate Discovery Testing Tool - Header" />
+	<jsp:param name="header" value="" />
+</jsp:include>
 
 <head>
 <meta name="ROBOTS" content="none,noindex,nofollow" />

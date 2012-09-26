@@ -5,6 +5,7 @@
 <html:html>
 
 <jsp:include page="/include/headerbootstrap.jsp" flush="true">
+  
 	<jsp:param name="title"
 		value="Home Page" />
 	<jsp:param name="pgDesc"
@@ -14,10 +15,12 @@
 	<jsp:param name="header" value="" />
 </jsp:include>
 
+
+
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="http://www.steamdev.com/zclip/js/jquery.zclip.js"></script>
 <script type="text/javascript" src="javascripts/jquery-latest.js"></script>
-
+ <!--  
 <script type="text/javascript">
 // Funtion to Run call to get drop down Action
 $(document).ready(function(){
@@ -42,6 +45,8 @@ $(document).ready(function(){
 <input type="hidden" name="requestHeader" id="requestHeader" value="<%=request.getHeader("Host")%>" />
 
 <!-- #BeginEditable "Bodytext" -->
+
+
 <body>
   <div id="content">
      <h2>Welcome to the Direct Certificate Discovery Testing Tool</h2>
