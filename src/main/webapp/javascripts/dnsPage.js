@@ -29,7 +29,7 @@ var val
 
 if (val == 1) {			
   document.getElementById("comments").innerHTML = "<b>Purpose/ Description:</b>" + "<br /> " +
-	 " System's DNS correctly stores and returns address-bound X.509 certificate. " + " <br /> " + "<b>Instructions:</b> " + " <br /> " + " For this test case, enter in your Direct Address. If there is a address-bound certificate associated with your Direct Address, the tool will discover it and print the result to the screen."
+	 " System's DNS correctly stores and returns address-bound X.509 certificate. " + " <br /> " + "<b>Instructions:</b> " + " <br /> " + " For this test case, enter in your Direct Address. If there is an address-bound certificate associated with your Direct Address, the tool will discover it and print the result to the screen."
 	 + " Also run this test case " +
 		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573."  + 
 	 "<br /> " +

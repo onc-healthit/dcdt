@@ -29,19 +29,20 @@
   <div id="content">
   <br />
   <p>
-    <strong>Step 1: </strong>Please use the link below to download the Testing Tool's trust anchor. Upload it to your Direct instance so that you can send messages to our tool.<br />
+    <strong>Step 1: </strong>Download the Testing Tool's trust anchor.<br />
            <ul><li><a href="download/root_ca.der" target="_blank"><strong>Download Anchor</strong></a></li></ul> 
-  </p><br />
+  </p>
   <p>
-     <strong>Step 2: </strong> Insert the Direct address that you will be sending from and an email address that can receive
-      plain text emails  (not a Direct email address).
-       Please use the link below to update: <br />
+  <strong>Step 2: </strong> Upload the anchor to your Direct instance.  This will allow you to send messages to our tool.
+  </p>
+  <p>
+     <strong>Step 3: </strong> Using the link below, map the Direct email address from which you will be sending messages to a non-Direct email address that will receive these messages. This email address should be able to receive plain text messages. Make sure you have access to the recipient email address in order to verify the receipt of the messages. <br />
        <ul>
        <li><a href="emailSet.jsp"><strong>Map Email Addresses</strong></a></li>
        </ul>
   </p>
    
-   <strong>Step 3: </strong> Choose a Direct Address, read the description below the dropdown to understand what you'll be testing, copy the Direct address below and proceed to step 4.<br />
+   <strong>Step 4: </strong> Choose a test case from the drop down menu below. Test cases are named after the Direct email address that they use for test. Read the test case description below the "Chose a Direct Address" field, copy the displayed Direct address and proceed to step 4.<br />
        <div id="note" class="medFont">
      <br /><br />  
      </div>
@@ -65,10 +66,7 @@
  <div class="textEmail"  id="seldropDown"></div>
  <div class="textFont" id="comments"></div>
 <br /> 
-    <strong>Step 4: </strong> Attempt to send a message to the Direct address that you've just copied. Please only send to one address at a time. You will receive a response to the results
-    	email telling you if you have passed the test or not. You should run all of the tests in order to verify that your system can correctly discover
-    	certificates in either DNS CERT records or LDAP servers. (Note: your system MUST NOT already contain a certificate for the 
-    	address selected or the test case will not be valid).<br />
+    <strong>Step 5: </strong> Attempt to send a message to the Direct address that you've just copied. Please only send to one address at a time. You will receive a response to the results email telling you if you have passed the test or not. You should run all of the tests in order to verify that your system can correctly discover certificates in either DNS CERT records or LDAP servers. (Note: your system MUST NOT already contain a certificate for the address selected or the test case will not be valid).<br />
       </div>
 </body>
 

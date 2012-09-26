@@ -52,16 +52,10 @@ $(document).ready(function(){
      <h2>Welcome to the Direct Certificate Discovery Testing Tool</h2>
      <br />
      <p><strong>Purpose of this Tool</strong></p>
-     <p>The Direct Certificate Discovery Tool (DCDT) was created to support automated testing of systems implementing the Certificate Discovery and 
-     Provider Directory Implementation Guidance, approved as normative specification by Direct community, as of July 9, 2012. It is based on the written 
-     test package and requirement traceability matrix created by the Modular Specifications project by the Office of the National Coordinator (ONC) and 
-     National Institute of Standards and Technology (NIST).</p>
+     <p>The Direct Certificate Discovery Tool (DCDT) was created to support automated testing of systems that plan to enact the Certificate Discovery and Provider Directory Implementation Guide, approved as normative specification by the Direct community, as of July 9, 2012. It is based on the written test package and requirement traceability matrix created by the Modular Specifications project under the direction of the Office of the National Coordinator (ONC) and National Institute of Standards and Technology (NIST).</p>
      
      <p><strong>Future Plans</strong></p>
-      <p>The tool is planned to be used for Meaningful Use Stage 2 (MU2) and will be rolled into NIST's overall testing toolkit over time. Issues or feedback 
-      received from community usage will be prioritized as received, and the tool will have releases as needed. </p>
-  
- 
+      <p>The tool fulfills Meaningful Use Stage 2 (MU2) and will be rolled into NIST's overall testing toolkit over time. Feedback from community usage will be prioritized as received, and the tool will have additional releases scheduled as needed. </p>
     <p><strong>How to Use this Tool</strong></p>
     Our tool is divided into two main testing areas:<br />  
       <ul>

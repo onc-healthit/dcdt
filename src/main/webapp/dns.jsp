@@ -23,28 +23,32 @@
 
  <!-- #BeginEditable "Bodytext" -->
 <body>
-<h2>Certificate Look Up</h2>
-<p> Use the following table to determine the required test cases for your System. 
-After determining the required test case(s), select them -- one at a time -- from the dropdown menu,
-read the Purpose/Description and follow the included instructions.</p>
+<h2>Hosting - Verify your certificate can be discovered</h2>
+<p> <b>Step 1:</b> Use the table below to help you determine the required test cases for your SUT (System Under Test). Notice that for the address-bound or domain-bound certificates there are two options for certificate storage. The Hosting tool provides tests that map to these options.
+ <br /> <br />
+<b>Step 2:</b> Select the option that reflects the SUT and then select the appropriate test case in the "Choose Test Case" field.
+ <br /> <br />
+<b>Step 3:</b> Read the Purpose/Description and Instructions for the selected test case. Then enter the Direct address and submit. Your SUT configuration may require that you select more than one test case. If so, then select one test case at a time, following the instructions to execute the test after each selection. 
+<br />
+</p>
 
 <table class="table table-striped"> 
 
 <thead>
  <tr>
   <td></td>
-  <td>My System stores certificates in DNS CERT resource records</td>
-  <td>My System stores my certificates in LDAP servers</td>
+  <td><b>My System stores certificates in DNS CERT resource records</b></td>
+  <td><b>My System stores my certificates in LDAP servers</b></td>
  </tr>
 </thead>
 <tbody>
  <tr>
-  <td>My System stores address-bound certificates</td>
+  <td><b>My System stores address-bound certificates</b></td>
   <td>DTS 550</td>
   <td>DTS 556 and DTS 577</td>
  </tr>
  <tr>
-  <td>My System stores domain-bound certificates</td>
+  <td><b>My System stores domain-bound certificates</b></td>
   <td>DTS 551</td>
   <td>DTS 570</td>
  </tr>
