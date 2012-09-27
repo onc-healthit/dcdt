@@ -42,7 +42,7 @@
        </ul>
   </p>
    
-   <strong>Step 4: </strong> Choose a test case from the drop down menu below. Test cases are named after the Direct email address that they use for test. Read the test case description below the "Chose a Direct Address" field, copy the displayed Direct address and proceed to step 4.<br />
+   <strong>Step 4: </strong> Choose a test case from the drop down menu below. Test cases are named after the Direct email address that they use for test. Read the test case description below the "Chose a Direct Address" field, copy the displayed Direct address and proceed to step 5.<br />
        <div id="note" class="medFont">
      <br /><br />  
      </div>
