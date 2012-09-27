@@ -14,6 +14,7 @@ This product includes software developed at The Apache Software Foundation (http
 	- Apache Commons
 	- Apache Log4J
 	- Apache Jakarta Oro
+	- Twitter Bootstrap
 
 This product also includes software developed by :
   - The Direct Project 2010 - Copyright (c),  2010, DirectProject.org All rights reserved.
