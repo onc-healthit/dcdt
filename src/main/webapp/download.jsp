@@ -24,9 +24,9 @@
 <body>
 <!-- #BeginEditable "Bodytext" -->
 
-
+<div class="container">
 <h2>Discover Testing Tool's Certificate</h2>
-  <div id="content">
+
   <br />
   <p>
     <strong>Step 1: </strong>Download the Testing Tool's trust anchor.<br />

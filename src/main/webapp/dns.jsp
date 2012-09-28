@@ -23,6 +23,7 @@
 
  <!-- #BeginEditable "Bodytext" -->
 <body>
+<div class="container">
 <h2>Hosting - Verify your certificate can be discovered</h2>
 <p> <b>Step 1:</b> Use the table below to help you determine the required test cases for your SUT (System Under Test). Notice that for the address-bound or domain-bound certificates there are two options for certificate storage. The Hosting tool provides tests that map to these options.
  <br /> <br />
@@ -105,6 +106,7 @@
  
 <input type="hidden" id="seldropDown" name="seldropDown"/> 
 </html:form> 
+       </div>
        </div>
 </body>
 

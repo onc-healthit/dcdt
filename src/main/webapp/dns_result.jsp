@@ -14,7 +14,7 @@
  
 <!-- #BeginEditable "Bodytext" -->
 <body>
-  <div id="content">
+  <div id="container">
  <h2>
  ${param.seldropDown} </br>
  </h2> 

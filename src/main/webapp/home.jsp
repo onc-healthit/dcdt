@@ -48,7 +48,7 @@ $(document).ready(function(){
 
 
 <body>
-  <div id="content">
+  <div class="container">
      <h2>Welcome to the Direct Certificate Discovery Testing Tool</h2>
      <br />
      <p><strong>Purpose of this Tool</strong></p>
@@ -66,7 +66,13 @@ $(document).ready(function(){
        allows a SUT to verify that they can discover certificates in other Direct implementations by using them to send Direct messages.</li>
        </ul>
      <p>
-     Both areas contain details on the underlying test cases and how to run them.<!-- If you have any questions about the tool,
+     Both areas contain details on the underlying test cases and how to run them.<br />
+     
+     
+     
+     
+     
+     <!-- If you have any questions about the tool,
     please feel free to <a href="mailto:alltest@nitorgroup.com" class="mail" >contact us</a>.-->
      </p>
      <!--  <p><strong>Have Questions?</strong><br /></p>

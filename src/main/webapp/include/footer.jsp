@@ -2,7 +2,7 @@
 <%@ page session="false"%>
 
 <hr />
-<div class="textTop"><strong>If you have any questions about the tool, please check out our<a href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions" class="oncfaq"> FAQ page</a> or 
+<div class="container"><strong>If you have any questions about the tool, please check out our<a href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions" class="oncfaq"> FAQ page</a> or 
      <a href="mailto:alltest@nitorgroup.com" class="mail" >contact us</a>.</strong></div>
 <br />
 

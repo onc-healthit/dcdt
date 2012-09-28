@@ -19,6 +19,7 @@
 <html>
  <!-- #BeginEditable "Bodytext" -->
 <body>
+<div class="container">
 <h2>Please enter your Direct Email and Results Email</h2>
          
  <div id="content">          
@@ -48,6 +49,7 @@ Results Email (NOT a Direct address, but where you can receive regular email): <
 </html:form>
 </div>
 <a href="download.jsp">Back to Discovery</a>   
+</div>
 </body>
 <!-- #EndEditable "Bodytext" -->
 <jsp:include page="/include/footer.jsp" flush="true" />
