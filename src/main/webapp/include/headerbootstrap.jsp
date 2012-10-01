@@ -62,9 +62,9 @@
                       <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
                       <ul class="dropdown-menu" id="" role="menu" aria-labelledby="drop3">
                         <li><a tabindex="-1" href="#">User's Guide</a></li>
-                        <li><a tabindex="-1" class="oncfaq" href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions">FAQ</a></li>
+                        <li><a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions">FAQ</a></li>
                         <li class="divider"></li>
-                        <li><a tabindex="-1" href="#">Code Repository</a></li>
+                        <li><a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/">Code Repository</a></li>
                       </ul>
                     </li>
                    </ul>
