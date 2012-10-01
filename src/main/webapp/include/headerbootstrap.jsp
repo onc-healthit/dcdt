@@ -16,8 +16,8 @@
 <meta http-equiv="Expires" content="Sat, 01 Jan 2000 23:59:00 GMT" />
 <meta http-equiv="PRAGMA" content="NO-CACHE" />
 <title>Direct Certificate Discovery Tool</title>
-<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.css" type="text/css" />
-<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.min.css" type="text/css" />
+<!--  <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.css" type="text/css" />
+<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.min.css" type="text/css" />-->
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.css" type="text/css" />
 <!-- <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.min.css" type="text/css" /> -->
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/msp3.css" type="text/css" />
