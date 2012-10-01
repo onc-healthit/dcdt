@@ -16,20 +16,25 @@
 <meta http-equiv="Expires" content="Sat, 01 Jan 2000 23:59:00 GMT" />
 <meta http-equiv="PRAGMA" content="NO-CACHE" />
 <title>Direct Certificate Discovery Tool</title>
-<!--  <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.css" type="text/css" />
-<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.min.css" type="text/css" />-->
+<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.css" type="text/css" />
+<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.min.css" type="text/css" />
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.css" type="text/css" />
 <!-- <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.min.css" type="text/css" /> -->
 <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/msp3.css" type="text/css" />
 <script type="text/javascript" src="ModularSpecPhase3_Tool/images/js/bootstrap.js"></script>
 <script type="text/javascript" src="ModularSpecPhase3_Tool/images/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="ModularSpecPhase3_Tool/images/js/bootstrap-tab.js"></script>
-<script src="twitter-bootstrap-v2/docs/assets/js/jquery.js"></script> 
-<script src="twitter-bootstrap-v2/docs/assets/js/bootstrap-dropdown.js"></script>
+<!--  <script src="twitter-bootstrap-v2/docs/assets/js/bootstrap-dropdown.js"></script>-->
 <link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings-white.png" type="image" />
 <link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings.png" type="image" />
 <link rel="shortcut icon" href="images/favicon.ico" />
 </head>
+<script type="text/javascript">
+        $(document).ready(function () {
+            $('.dropdown-toggle').dropdown();
+            alert('called the jquery');
+        });
+</script>
 
 
  <!-- TOP NAVIGATION -->
@@ -46,24 +51,23 @@
           <a href="home.jsp"><img src="images/DCDT_logo.png" class="brand" title="DCDT logo image"></a>
           <div class="nav-collapse collapse">
             <ul class="nav">
-              <li class><a href="home.jsp">Home</a></li>
-              <li class><a href="dns.jsp">Hosting</a></li>
-              <li class><a href="download.jsp">Discovery</a></li>
-            </ul>
-           <ul class="pull-right nav">
-              <li class><a href="#" target="_blank">User's Guide</a>              
-              <li class><a href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions" target="_blank">FAQ</a>              
-              <li class><a href="http://code.google.com/p/direct-certificate-discovery-tool/" target="_blank">Code Repository</a>
-            </ul>
-            <!--  <ul class="pull-right nav">
-            	<li><a href="#">About</a>
-            	    <ul>  
-     					<li><a href="#">Web Design</a></li>  
-  						<li><a href="#">Web development</a></li>  
-  						<li><a href="#">Wordpress Theme development</a></li>  
-    				</ul>
- 				</li>
-            </ul> -->
+              <li class="active" id ="home"><a href="home.jsp"><i class="icon-home icon-white"></i> Home</a></li>
+              <li id="hosting"><a href="dns.jsp">Hosting</a></li>
+              <li id="discovery"><a href="download.jsp">Discovery</a></li>
+             <li class="dropdown">
+                 </li>
+                  </ul>
+                  <ul class="nav pull-right">
+                    <li id="fat-menu" class="dropdown">
+                      <a href="#" id="drop3" role="button" class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
+                      <ul class="dropdown-menu" id="" role="menu" aria-labelledby="drop3">
+                        <li><a tabindex="-1" href="#">User's Guide</a></li>
+                        <li><a tabindex="-1" class="oncfaq" href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions">FAQ</a></li>
+                        <li class="divider"></li>
+                        <li><a tabindex="-1" href="#">Code Repository</a></li>
+                      </ul>
+                    </li>
+                   </ul>
           </div><!--/.nav-collapse -->
         </div>
       </div>

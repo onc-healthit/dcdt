@@ -15,6 +15,25 @@
 		value="Direct Certificate Discovery Testing Tool -Set Results Email Screen" />
 	<jsp:param name="header" value="" />
 </jsp:include>
+ <script type="text/javascript" src="dropdown/jquery.js"></script>
+    <script type="text/javascript" src="dropdown/bootstrap-dropdown.js"></script>
+
+
+<script type="text/javascript">
+$(document).ready( function(){
+    $("#home").removeClass("active");
+ });
+
+$(document).ready( function(){
+    $("#hosting").removeClass("active");
+ });
+
+
+ $(document).ready( function(){
+    $("#discovery").addClass("active");
+ });
+
+ </script>
 
 <html>
  <!-- #BeginEditable "Bodytext" -->

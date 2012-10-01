@@ -10,7 +10,31 @@
 		value="Direct Certificate Discovery Testing Tool - Welcome Screen" />
 	<jsp:param name="header" value="" />
 </jsp:include>
- 
+ <script type="text/javascript">
+ <script type="text/javascript" src="dropdown/jquery.js"></script>
+ <script type="text/javascript" src="dropdown/bootstrap-dropdown.js"></script>
+
+
+
+
+$(document).ready( function(){
+    $("#home").removeClass("active");
+ });
+
+$(document).ready( function(){
+    $("#discovery").removeClass("active");
+ });
+
+
+ $(document).ready( function(){
+    $("#hosting").addClass("active");
+ });
+
+
+
+
+
+</script>
  
 <!-- #BeginEditable "Bodytext" -->
 <body>
@@ -26,7 +50,7 @@
     %>  
 
 <logic:notEmpty name="CertLookUpActionForm" property="certResult">
-    	<% if (resultVal.equalsIgnoreCase(val)) { %>
+    	<% if (resultVal.equalsIgnoreCase(val)) { %>   	
     	  <!-- Nothing -->
     	  <%} else { %>
 	<h3>Verify that the discovered certificate is the intended certificate for the Direct address provided:</h3>

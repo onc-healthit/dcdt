@@ -15,11 +15,36 @@
 		value="Direct Certificate Discovery Testing Tool -DNS Look Up Screen" />
 	<jsp:param name="header" value="" />
 </jsp:include>
+ <script type="text/javascript" src="dropdown/jquery.js"></script>
+    <script type="text/javascript" src="dropdown/bootstrap-dropdown.js"></script>
+
 <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
 <script type="text/javascript" src="javascripts/dnsPage.js"></script>
 <script type="text/javascript" src="javascripts/bootstrap-button.js"></script>
 
+<script type="text/javascript">
 
+
+
+
+$(document).ready( function(){
+    $("#home").removeClass("active");
+ });
+
+$(document).ready( function(){
+    $("#discovery").removeClass("active");
+ });
+
+
+ $(document).ready( function(){
+    $("#hosting").addClass("active");
+ });
+
+
+
+
+
+</script>
 
  <!-- #BeginEditable "Bodytext" -->
 <body>

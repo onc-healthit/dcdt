@@ -14,14 +14,28 @@
 		value="Direct Certificate Discovery Testing Tool - Dowload and Upload screen" />
 	<jsp:param name="header" value="" />
 </jsp:include>
-
-<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
-<script type="text/javascript" src="http://www.steamdev.com/zclip/js/jquery.zclip.js"></script>
-<script type="text/javascript" src="javascripts/jquery-latest.js"></script>
-<script type="text/javascript" src="javascripts/downloadPage.js"></script>
+    <script type="text/javascript" src="dropdown/jquery.js"></script>
+    <script type="text/javascript" src="dropdown/bootstrap-dropdown.js"></script>
+    <script type="text/javascript" src="javascripts/downloadPage.js"></script>
 
 </head>
 <body>
+<script type="text/javascript">
+$(document).ready( function(){
+    $("#home").removeClass("active");
+ });
+
+$(document).ready( function(){
+    $("#hosting").removeClass("active");
+ });
+
+
+ $(document).ready( function(){
+    $("#discovery").addClass("active");
+ });
+
+ </script>
+
 <!-- #BeginEditable "Bodytext" -->
 
 <div class="container">
