@@ -14,8 +14,7 @@
  <script type="text/javascript" src="dropdown/jquery.js"></script>
  <script type="text/javascript" src="dropdown/bootstrap-dropdown.js"></script>
 
-
-
+<script type="text/javascript">
 
 $(document).ready( function(){
     $("#home").removeClass("active");
