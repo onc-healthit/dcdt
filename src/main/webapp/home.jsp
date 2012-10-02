@@ -39,7 +39,7 @@
        allows a SUT to verify that they can discover certificates in other Direct implementations by using them to send Direct messages.</li>
        </ul>
      <p>
-     Both areas contain details on the underlying test cases and how to run them.<br />
+     Both areas contain details on the underlying test cases and how to run them. There is also a <a href="http://direct-certificate-discovery-tool.googlecode.com/files/Direct_Cert_Discovery_Test_Tool_Users_Guide_v1.1.pdf">User's Guide</a>.<br />
      
      
      
