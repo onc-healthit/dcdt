@@ -32,7 +32,7 @@
 
 <!-- TOP NAVIGATION -->
  <div class="navbar">
-        <div class="navbar-inner">
+        <div class="navbar-inner navbar-inverse navbar-fixed-top">
             <div class="container">
                 <ul class="nav">
                     <a href="home.jsp"><img src="images/DCDT_logo.png" class="brand" title="DCDT logo image"></a>
@@ -53,6 +53,8 @@
                    </ul>
             </div>
         </div>
-    </div>   
+    </div>  
+    
+    <br /><br /> 
 
  
