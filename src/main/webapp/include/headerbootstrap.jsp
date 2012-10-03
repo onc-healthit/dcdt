@@ -31,11 +31,11 @@
 </head>
 
 <!-- TOP NAVIGATION -->
- <div class="navbar">
-        <div class="navbar-inner navbar-inverse navbar-fixed-top">
+  <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="navbar-inner">
             <div class="container">
+                  <a href="home.jsp"><img src="images/DCDT_logo.png" class="brand" title="DCDT logo image"></a>
                 <ul class="nav">
-                    <a href="home.jsp"><img src="images/DCDT_logo.png" class="brand" title="DCDT logo image"></a>
                     <li class="active" id ="home"><a href="home.jsp"><i class="icon-home icon-white"></i> Home</a></li>
                     <li id="hosting"><a href="dns.jsp">Hosting</a></li>
                     <li id="discovery"><a href="download.jsp">Discovery</a></li>  
@@ -54,7 +54,6 @@
             </div>
         </div>
     </div>  
-    
-    <br /><br /> 
+    <br /><br /><br /><br /> 
 
  

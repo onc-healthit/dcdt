@@ -28,41 +28,48 @@ $(document).ready( function(){
  $(document).ready( function(){
     $("#hosting").addClass("active");
  });
-
-
-
-
-
 </script>
  
 <!-- #BeginEditable "Bodytext" -->
 <body>
-  <div id="container">
- <h2>
- ${param.seldropDown} </br>
- </h2> 
+<div class="container">
+ 	<h2>
+ 		${param.seldropDown} </br>
+ 	</h2> 
+</div>
 
 <bean:define id="resultVal" name="CertLookUpActionForm" property="result" type="java.lang.String"/>
-	<h3><bean:write name="CertLookUpActionForm" property="result" /></h3>
+
+	<div class="container">
+	     <h3><bean:write name="CertLookUpActionForm" property="result" /></h3>
+	</div>
     <%   
       String val = "Fail: Certificate found at LDAP for dts557@onctest.org";  
-    %>  
+     %>  
 
 <logic:notEmpty name="CertLookUpActionForm" property="certResult">
     	<% if (resultVal.equalsIgnoreCase(val)) { %>   	
     	  <!-- Nothing -->
     	  <%} else { %>
-	<h3>Verify that the discovered certificate is the intended certificate for the Direct address provided:</h3>
+    	  <div class="container">
+	          <h3>Verify that the discovered certificate is the intended certificate for the Direct address provided:</h3>
         <%} %>
+          </div> 
 	<br />
 	
+	<div class="container">
 	 <textarea name="certResults" style ="width:600px" styleId="certResults" cols="200" rows="15"> 
 	 	<bean:write name="CertLookUpActionForm" property="certResult" />
 	 </textarea>
-	</div>
+    </div>
+	
 </logic:notEmpty>
-<a href="dns.jsp">Back to Hosting</a>
+<br />
+   <div class="container">
+     <a href="dns.jsp">Back to Hosting</a>
+  </div>
 </body>
+
 
 <!-- #EndEditable "Bodytext" -->
 <jsp:include page="/include/footer.jsp" flush="true" />    
