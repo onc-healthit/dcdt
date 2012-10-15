@@ -32,23 +32,23 @@ if (val == 1) {
 	 " System's DNS correctly stores and returns address-bound X.509 certificate. " + " <br /> " + "<b>Instructions:</b> " + " <br /> " + " For this test case, enter in your Direct Address. If there is an address-bound certificate associated with your Direct Address, the tool will discover it and print the result to the screen."
 	 + " Also run this test case " +
 		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573."  + 
-	 "<br /> " +
-	 "<b>RTM:</b> " +"<br />" +"1,3." +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +"RFC 4398: Section 2.1 - Direct Applicability Statement for Secure Health Transport: Section 5.3 .";		
+	 "<br /> " + "<b>RTM:</b> " +"<br />" +"1,3." +"<br />" +" <b>Underlying Specification References:</b> " +"<br />" + 
+	 "<ul>" + "<li>" + "RFC 4398: Section 2.1" + "</li>" + "<li>" + "Direct Applicability Statement for Secure Health Transport: Section 5.3" + "</li>" + "</ul>";		
 }else if (val == 2) {
   document.getElementById("comments").innerHTML =
 	  "<b>Purpose/ Description:</b>" + "<br /> " +
 		 "System's DNS correctly stores and returns domain-bound X.509 certificate. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in your Direct Address. If there is a domain-bound certificate associated with your domain, the tool will discover it and print the result to the screen." +
 		 		" Also run this test case " +
-		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573. " + "<br />" + "<b>RTM:</b> " + "<br />" +" 1,3. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" + 
-		 "RFC 4398: Section 2.1 - Direct Applicability Statement for Secure Health Transport: Section 5.3";
+		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573. " + "<br />" + "<b>RTM:</b> " + "<br />" +" 1,3. " +"<br />" +" <b>Underlying Specification References:</b> " +"<br />" + 
+		 		"<ul>" + "<li>" +  "RFC 4398: Section 2.1"  + "</li>" + "<li>" + "Direct Applicability Statement for Secure Health Transport: Section 5.3" + "</li>" + "</ul>";
 }
 else if (val == 3){
   document.getElementById("comments").innerHTML =	
 	  "<b>Purpose/ Description:</b>" + "<br /> " +
 		 "System's DNS can respond CERT queries that are in different cases." + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in your Direct Address (for an address-bound certificate) or an an address within your domain (for a domain-bound certificate), but make sure the cases do not match the " +
 		 "configured DNS CERT resource record cases. For exmample, if your DNS entry is all lowercase characters, then enter your Direct email address in a mix of upper and lowercase. The response from the Server may take up to 15 seconds, so please be patient." + "<br />" +
-		 " <b>RTM:</b> " +"<br />" +" 1,3 " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
-		 " - RFC 4398: Section 2.1 - Direct Applicability Statement for Secure Health Transport: Section 5.3" ;
+		 " <b>RTM:</b> " +"<br />" +" 1,3 " +"<br />" +" <b>Underlying Specification References:</b> " +"<br />" +
+		 "<ul>" + "<li>" + "RFC 4398: Section 2.1" + "</li>" + "<li>" +  "Direct Applicability Statement for Secure Health Transport: Section 5.3" + "</li>" + "</ul>";
 
 }
 else if(val ==4 ){
@@ -58,7 +58,7 @@ else if(val ==4 ){
 		 		"If there is a certificate stored in an LDAP server associated with your domain, the System will discover it and print it to the screen. Also run this test case " +
 		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS557. " +
 		 		 "<br /> " +"<b>RTM:</b> " +"<br />" +" 2,3,5,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
-		 "RFC 2798: Section 9.1.2 ";
+		 "RFC 2798: Section 9.1.2";
 }
 else if(val ==5 ){
 	  document.getElementById("comments").innerHTML =
@@ -66,7 +66,7 @@ else if(val ==5 ){
 			 "System's LDAP server responds correctly when cases do not match. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in your Direct Address, but make sure the cases do not match the 'mail'" +
 			 "LDAP attribute. For example, if my 'mail' attribute is 'drwho@onctest.org', enter in 'DRWHO@ONCTEST.ORG'. The response from the Server may take up to 15 seconds, so please be patient." +"<br />" +
 			 " <b>RTM:</b> " +"<br />" +" 2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
-			 " RFC 2798: Section 9.1.3" ;
+			 " RFC 2798: Section 9.1.3";
 	}
 else if(val ==6 ){
 	  document.getElementById("comments").innerHTML =
@@ -81,8 +81,8 @@ else if(val ==7 ){
 		  "<b>Purpose/ Description:</b>" + "<br /> " +
 			 "System's LDAP rejects a mail attribute that they don't have. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter a Direct Address not on your LDAP Server. The response from the Server may take up to "+
 			 "15 seconds, so please be patient." +"<br />" +
-			 " <b>RTM:</b> " +"<br />" +" 2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
-			 " RFC 4511: Section 4.5.2- RFC 4511: Appendix A.2";
+			 " <b>RTM:</b> " +"<br />" +" 2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22. " +"<br />" +" <b>Underlying Specification References:</b> " +"<br />" +
+			 "<ul>" + "<li>" + "RFC 4511: Section 4.5.2" + "</li>" + "<li>" + "RFC 4511: Appendix A.2" + "</li>" + "</ul>";
 	}
 	
 	}//end of if	
