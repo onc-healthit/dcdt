@@ -31,7 +31,7 @@ if (val == 1) {
   document.getElementById("comments").innerHTML = "<b>Purpose/ Description:</b>" + "<br /> " +
 	 " System's DNS correctly stores and returns address-bound X.509 certificate. " + " <br /> " + "<b>Instructions:</b> " + " <br /> " + " For this test case, enter in a Direct Address for which your system has hosted an address-bound certificate hosted in DNS. The tool will attempt to discover it and print the result to the screen."
 	 + " Also run this test case " +
-		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573."  + 
+		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573. Verify that the Direct address is in the rfc822Name extension of the certificate."  + 
 	 "<br /> " + "<b>RTM:</b> " +"<br />" +"1,3." +"<br />" +" <b>Underlying Specification References:</b> " +"<br />" + 
 	 "<ul>" + "<li>" + "RFC 4398: Section 2.1" + "</li>" + "<li>" + "Direct Applicability Statement for Secure Health Transport: Section 5.3" + "</li>" + "</ul>";		
 }else if (val == 2) {
@@ -39,7 +39,7 @@ if (val == 1) {
 	  "<b>Purpose/ Description:</b>" + "<br /> " +
 		 "System's DNS correctly stores and returns domain-bound X.509 certificate. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + "For this test case, enter in a Direct Address for which your system has hosted an domain-bound certificate hosted in DNS. The tool will attempt to discover it and print the result to the screen." +
 		 		" Also run this test case " +
-		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573. " + "<br />" + "<b>RTM:</b> " + "<br />" +" 1,3. " +"<br />" +" <b>Underlying Specification References:</b> " +"<br />" + 
+		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS573. Verify that the Health Domain Name is in the dnsName extension of the certificate. " + "<br />" + "<b>RTM:</b> " + "<br />" +" 1,3. " +"<br />" +" <b>Underlying Specification References:</b> " +"<br />" + 
 		 		"<ul>" + "<li>" +  "RFC 4398: Section 2.1"  + "</li>" + "<li>" + "Direct Applicability Statement for Secure Health Transport: Section 5.3" + "</li>" + "</ul>";
 }
 else if (val == 3){
@@ -56,7 +56,7 @@ else if(val ==4 ){
 	  "<b>Purpose/ Description:</b>" + "<br /> " +
 		 "System returns address-bound X.509 certificate from LDAP server. " + "<br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in a Direct Address for which your system has hosted an address-bound certificate hosted in an LDAP server. The tool will attempt to discover it and print the result to the screen." +
 		 		" Also run this test case " +
-		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS557. " +
+		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS557. Verify that the Direct address is in the rfc822Name extension of the certificate. " +
 		 		 "<br /> " +"<b>RTM:</b> " +"<br />" +" 2,3,5,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
 		 "RFC 2798: Section 9.1.2";
 }
@@ -73,7 +73,7 @@ else if(val ==6 ){
 		  "<b>Purpose/ Description:</b>" + "<br /> " +
 			 "System returns domain-bound X.509 certificate from LDAP server. " +" <br /> " + "<b>Instructions:</b> " +" <br /> " + " For this test case, enter in a Direct Address for which your system has hosted an domain-bound certificate hosted in an LDAP server. The tool will attempt to discover it and print the result to the screen." +
 			 		" Also run this test case " +
-		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS557. " + "<br /> " +"<b>RTM:</b> " +"<br />" +" 2,3,5,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
+		 		"using a mix of upper and lower case characters in order to verify your system can handle queries in different cases. This equates to Test Case DTS557. Verify that the Health Domain Name is in the dnsName extension of the certificate. " + "<br /> " +"<b>RTM:</b> " +"<br />" +" 2,3,5,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22. " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +
 			 "RFC 4515: Section 3";
 	}
 else if(val ==7 ){
