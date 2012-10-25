@@ -39,12 +39,18 @@ public class EmailMessageHandler implements DecryptDirectHandler{
 		
 		StringBuffer body = new StringBuffer("Test case " + emailInfo.getThisTest().getTestCaseName() + " results:");
 		
+//		add test case name header information here - "X-test_case_name"
+		
 		if(emailInfo.getPasses())
 			body.append(" passes.\nCongratulations!");
+//		add pass header information here - use "X-result"
 		else
 			body.append(" fails.\nTry Again.");
+//		add fail header information here - use "X-result"
 		
 		body.append("\nDetails: " + emailInfo.getResults());
+//		add details header information here - "X-details"
+		
 		
 		logMailInfo(TO_ADDR, FROM_ADDR, SUBJECT, body.toString());
 		
