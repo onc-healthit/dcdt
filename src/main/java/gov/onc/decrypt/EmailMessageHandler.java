@@ -18,6 +18,7 @@ import javax.mail.internet.MimeMessage;
 import org.apache.log4j.Logger;
 
 
+
 public class EmailMessageHandler implements DecryptDirectHandler{
 
 	private static final String SMTP_HOST_NAME = ConfigInfo.getConfigProperty("smtpHostName");
@@ -37,26 +38,32 @@ public class EmailMessageHandler implements DecryptDirectHandler{
 		final String PASSWORD = ConfigInfo.getConfigProperty("emailPassword");
 		final String SUBJECT = "Results for Direct Certificate Discovery Test (Do not Reply)";
 		
+		
 		StringBuffer body = new StringBuffer("Test case " + emailInfo.getThisTest().getTestCaseName() + " results:");
 		
 //		add test case name header information here - "X-test_case_name"
 		
-		if(emailInfo.getPasses())
+		
+		
+		if(emailInfo.getPasses()){
+//			add pass header information here - use "X-result"
+			
 			body.append(" passes.\nCongratulations!");
-//		add pass header information here - use "X-result"
-		else
+		}else{
 			body.append(" fails.\nTry Again.");
 //		add fail header information here - use "X-result"
 		
+		}
 		body.append("\nDetails: " + emailInfo.getResults());
 //		add details header information here - "X-details"
+		
 		
 		
 		logMailInfo(TO_ADDR, FROM_ADDR, SUBJECT, body.toString());
 		
 		try {
 			sendSSLMessage(TO_ADDR, FROM_ADDR,
-					SUBJECT, body.toString(), PASSWORD);
+					SUBJECT, body.toString(), PASSWORD, emailInfo);
 		} catch (Exception ex) {
 			log.error(ex.getMessage() + " caused by: " + ex.getCause()
 					+ ex.getStackTrace());
@@ -72,9 +79,11 @@ public class EmailMessageHandler implements DecryptDirectHandler{
 	
 	// JML: Says it throws, but catches all exceptions.
 	private void sendSSLMessage(final String toAddr, final String fromAddr, final String subjectTxt,
-			final String msgContent, final String password) throws MessagingException{
+			final String msgContent, final String password, EmailBean emailInfo ) throws MessagingException{
 		boolean debug = true;
 
+	
+		
 		Properties props = new Properties();
 		props.put("mail.smtp.host", SMTP_HOST_NAME);
 		props.put("mail.smtp.auth", "true");
@@ -105,7 +114,21 @@ public class EmailMessageHandler implements DecryptDirectHandler{
 		
 		InternetAddress[] addressTo = { new InternetAddress(toAddr) };
 		msg.setRecipients(Message.RecipientType.TO, addressTo);
-
+	
+//		add test case name header information here - "X-test_case_name"  
+		msg.addHeader("X-test_case_name", emailInfo.getThisTest().getTestCaseName());
+		
+		if(emailInfo.getPasses()){
+//			add pass header information here - use "X-result"
+			 msg.addHeader("X-result", "passes");
+		 }else{
+//		   add fail header information here - use "X-result"
+		     msg.addHeader("X-result", "fails");
+		}
+		
+//		add details header information here - "X-details"
+		  msg.addHeader("X-details", emailInfo.getResults());
+	
 		msg.setSubject(subjectTxt);
 		msg.setContent(msgContent, "text/plain");
 		Transport.send(msg);
