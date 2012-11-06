@@ -11,10 +11,9 @@
 		value="Direct Certificate Discovery Testing Tool - Welcome Screen" />
 	<jsp:param name="header" value="" />
 </jsp:include>
- <script type="text/javascript">
  <script type="text/javascript" src="dropdown/jquery.js"></script>
  <script type="text/javascript" src="dropdown/bootstrap-dropdown.js"></script>
-
+ <script type="text/javascript" src="javascripts/bootstrap-button.js"></script>
 <script type="text/javascript">
 
 $(document).ready( function(){
@@ -29,6 +28,7 @@ $(document).ready( function(){
  $(document).ready( function(){
     $("#hosting").addClass("active");
  });
+
 </script>
 
 
