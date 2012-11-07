@@ -96,7 +96,7 @@ $(document).ready( function(){
        </ul>
   </p>
    
-   <strong>Step 4: </strong> Choose a test case from the drop down menu below. Read the test case description below the "Chose a Direct Address" field, copy the displayed Direct address and proceed to step 5. You should run all of the tests in order to verify that your system can correctly discover certificates in either DNS CERT records or LDAP servers. (Note: your system MUST NOT already contain a certificate for 
+   <strong>Step 4: </strong> Choose a test case from the drop down menu below. Read the test case description below the "Choose a Direct Address" field, copy the displayed Direct address and proceed to step 5. You should run all of the tests in order to verify that your system can correctly discover certificates in either DNS CERT records or LDAP servers. (Note: your system MUST NOT already contain a certificate for 
    								the address selected or the test case will not be valid).<br />
        <div id="note" class="medFont">
      <br /><br />  
