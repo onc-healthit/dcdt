@@ -45,6 +45,7 @@
                       <a class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
                       <ul class="dropdown-menu">
                         <li><a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/User_Guide">User's Guide</a></li>
+                        <li><a tabindex="-1" target="_blank" href="http://www.youtube.com/watch?v=ceDlKvpvdnE&feature=youtu.be">Video Demo</a></li>
                         <li><a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions">FAQ</a></li>
                         <li class="divider"></li>
                         <li><a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/">Code Repository</a></li>
