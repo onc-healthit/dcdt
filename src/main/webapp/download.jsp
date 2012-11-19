@@ -110,7 +110,7 @@ $(document).ready( function(){
     <option value="505">DTS 505 - Address-bound LDAP certificate discovery</option>
     <option value="506">DTS 506 - Discover LDAP certificate based on SRV record priority value</option>
     <option value="507">DTS 507 - Discover LDAP certificate - one instance unavailable</option>
-    <option value="515">DTS 515 - Address-bound LDAP certificate discovery</option>
+    <option value="515">DTS 515 - Domain-bound LDAP certificate discovery</option>
     <option value="517">DTS 517 - Discover LDAP certificate - one instance returns invalid certificate</option>
     <option value="520">DTS 520 - No valid Certificate found in DNS CERT or LDAP instance</option>
     <option value="511">DTS 511 - No certificate found in DNS CERT or LDAP instance</option>

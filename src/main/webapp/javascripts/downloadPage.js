@@ -77,7 +77,7 @@ function setText(select_ele){
      document.getElementById("comments").innerHTML =
     	 "<b>Purpose/ Description:</b>" + "<br /> " +  "Query for Direct address from LDAP servers based on priority value - one LDAP Instance does not return a valid certificate. " + "<br /> " +
     	 "<b>Target Certificate:</b> " +"<br />" +"A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV Record has its Priority = 1 and Weight = 0" +"<br />" +
-  	   "<b>Background Certificate:</b> " +"<br />" +"An expired address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV Record has its Priority = 0 and Weight = 0" +"<br />" +
+  	   "<b>Background Certificate:</b> " +"<br />" +"An LDAP Entry with the appropriate mail attribute in the InetOrgPerson Schema, but no userCertificate attribute. The associated SRV Record has its Priority = 0 and Weight = 0" +"<br />" +
     	 "<b>RTM:</b> " +"<br />" +" 15, 18 " +"<br />" +" <b>Underlying Specification Reference:</b> " +"<br />" +"RFC 2782: Page 3, Priority Section- Applicability Statement for Secure Health Transport: Section 4";
    } else if(val == 519 ){
 	     document.getElementById("comments").innerHTML =
