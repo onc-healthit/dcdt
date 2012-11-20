@@ -29,12 +29,19 @@ import javax.naming.directory.SearchResult;
 import org.xbill.DNS.SRVRecord;
 
 
+/**
+ * @author daviddegroot
+ *
+ */
 public class LdapCertLookUp implements CertLookUpFactory{
 
 	private String base;
 	private String filter;
+	private String directoryFilter;
+	private String directoryBase;
 	private Properties env;
-	private SearchControls sc;
+	private SearchControls sc1;
+	private SearchControls sc2;
 	private Boolean success;
 	
 	public CertificateInfo execute(CertificateInfo certInfo)
@@ -100,8 +107,8 @@ public class LdapCertLookUp implements CertLookUpFactory{
 	}
 	
 	private void initialize(CertificateInfo certInfo){
-		base = "ou=system";
-		
+		directoryBase = "";
+		directoryFilter = "objectClass=*";
 		if(!certInfo.getIsDomainTest())
 			filter = "mail=" + certInfo.getOrigAddr();
 		else{
@@ -111,8 +118,13 @@ public class LdapCertLookUp implements CertLookUpFactory{
 		
 		env = new Properties();
 		env.put(DirContext.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
-		sc = new SearchControls();
-		sc.setSearchScope(SearchControls.SUBTREE_SCOPE);
+		env.put(DirContext.REFERRAL, "follow");
+		sc1 = new SearchControls();
+		// set the scope of the first directory search
+		sc1.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+		sc2 = new SearchControls();
+		// set the scope of the search on each found directory
+		sc2.setSearchScope(SearchControls.SUBTREE_SCOPE);
 		success = false;
 	}
 	
@@ -141,28 +153,37 @@ public class LdapCertLookUp implements CertLookUpFactory{
 
 		String targetDomain = srvRec.getTarget().toString();
 		try {
-			
 			env.put(DirContext.PROVIDER_URL, "ldap://" + targetDomain + ":" + srvRec.getPort());
+			
+			System.out.println("ldap://" + targetDomain + ":" + srvRec.getPort());
+			
 			DirContext dc = new InitialDirContext(env);
+			NamingEnumeration directoryNE = null;
 			
-			NamingEnumeration ne = null;
-			ne = dc.search(base, filter, sc);
-			SearchResult searchResult;
+			System.out.println("Got HERE!");
+			// Here we set the search for the root directory, searching for any objectClass matches, and the scope is set using the sc1 variable (see above)
+			directoryNE= dc.search("", "objectClass=*", sc1);
 			
-			dc.close();		
-			
-			if (ne.hasMore()) {;
-				searchResult = (SearchResult)ne.next();
-				
-				System.out.println("Search Result: " + searchResult.toString() + "\n\n");
-				Attributes localAttributes = ((SearchResult) searchResult).getAttributes();
-				Attribute localAttribute = localAttributes.get("userCertificate");
-				return localAttribute;
-			}else return null;
-		} catch (NamingException e) {
-			System.out.println("No Results for: " + targetDomain + "\nProblem: " + e.getLocalizedMessage() + "  " + e.getCause());
-		}return null;
-	}
+			System.out.println("SC1 :" + sc1);
+						
+			while (directoryNE.hasMore()){
+                SearchResult result1 = (SearchResult) directoryNE.next();
+
+				// print DN of each directory found.
+				System.out.println("Result.getNameInNamespace: " + result1.getName());
+
+                Attribute foundMail = findMailAttribute(result1.getNameInNamespace()); 
+                
+                if(foundMail != null){
+                	return foundMail;
+                }
+			}		
+			dc.close();	
+	} catch (NamingException e) {
+		System.out.println("No Results for: " + targetDomain + "\nProblem: " + e.getLocalizedMessage() + "  " + e.getCause());
+	} return null;
+
+}
 	
 	private String getCertResult(Attribute attr) throws CertLookUpException{
 		
@@ -202,6 +223,26 @@ public class LdapCertLookUp implements CertLookUpFactory{
 		}
 	}
 	
+	private Attribute findMailAttribute(String directoryName) throws NamingException{
+		Attribute localAttribute = null;
+		DirContext dc = new InitialDirContext(env);
+		NamingEnumeration e = dc.search(directoryName, filter, sc2);
+		
+		while (e.hasMore()) {
+
+            SearchResult nodeResult = (SearchResult) e.next();
+    		System.out.println("Search Result: " + nodeResult.toString() + "\n\n");
+            Attributes localAttributes = ((SearchResult) nodeResult).getAttributes();
+            localAttribute = localAttributes.get("userCertificate");
+            System.out.println("localAttribute: " + localAttribute);
+   
+            if(localAttribute != null)
+            	return localAttribute;
+        }
+		
+		return null;
+	}
+	
 	public static
 	<T extends Comparable<? super T>> List<T> asSortedList(Collection<T> c) {
 	  List<T> list = new ArrayList<T>(c);
@@ -212,3 +253,4 @@ public class LdapCertLookUp implements CertLookUpFactory{
 
 	
 }
+
