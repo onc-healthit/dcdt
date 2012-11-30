@@ -3,6 +3,7 @@ package gov.onc.certLookup.ldap;
 import gov.onc.certLookup.CertLookUpException;
 import gov.onc.certLookup.CertLookUpFactory;
 import gov.onc.certLookup.CertificateInfo;
+import org.apache.log4j.Logger;
 
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
@@ -26,6 +27,7 @@ import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
+import org.apache.log4j.Logger;
 import org.xbill.DNS.SRVRecord;
 
 
@@ -44,6 +46,7 @@ public class LdapCertLookUp implements CertLookUpFactory{
 	private SearchControls sc2;
 	private Boolean success;
 	
+	private Logger log = Logger.getLogger("certDiscoveryLogger");
 	public CertificateInfo execute(CertificateInfo certInfo)
 			throws CertLookUpException {
 		
@@ -80,7 +83,7 @@ public class LdapCertLookUp implements CertLookUpFactory{
 				
 				break;
 			}else {
-				System.out.println("Unable to find certificate at LDAP for: " 
+				 log.debug("Unable to find certificate at LDAP for: " 
 						+ certInfo.getOrigAddr() + "\n"
 						+ srvRec.toString());
 			}
@@ -122,6 +125,7 @@ public class LdapCertLookUp implements CertLookUpFactory{
 		sc1 = new SearchControls();
 		// set the scope of the first directory search
 		sc1.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+		sc1.setReturningAttributes(new String[] { "namingContexts" });
 		sc2 = new SearchControls();
 		// set the scope of the search on each found directory
 		sc2.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -153,9 +157,10 @@ public class LdapCertLookUp implements CertLookUpFactory{
 
 		String targetDomain = srvRec.getTarget().toString();
 		try {
-			env.put(DirContext.PROVIDER_URL, "ldap://" + targetDomain + ":" + srvRec.getPort());
+			   env.put(DirContext.PROVIDER_URL, "ldap://" + targetDomain + ":" + srvRec.getPort());
 			
-			System.out.println("ldap://" + targetDomain + ":" + srvRec.getPort());
+			
+			log.debug("ldap://" + targetDomain + ":" + srvRec.getPort());
 			
 			DirContext dc = new InitialDirContext(env);
 			NamingEnumeration directoryNE = null;
@@ -164,13 +169,13 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			// Here we set the search for the root directory, searching for any objectClass matches, and the scope is set using the sc1 variable (see above)
 			directoryNE= dc.search("", "objectClass=*", sc1);
 			
-			System.out.println("SC1 :" + sc1);
+			log.debug("SC1 :" + sc1);
 						
 			while (directoryNE.hasMore()){
                 SearchResult result1 = (SearchResult) directoryNE.next();
 
 				// print DN of each directory found.
-				System.out.println("Result.getNameInNamespace: " + result1.getName());
+				log.debug("Result.getNameInNamespace: " + result1.getName());
 
                 Attribute foundMail = findMailAttribute(result1.getNameInNamespace()); 
                 
@@ -180,7 +185,7 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			}		
 			dc.close();	
 	} catch (NamingException e) {
-		System.out.println("No Results for: " + targetDomain + "\nProblem: " + e.getLocalizedMessage() + "  " + e.getCause());
+		log.debug("No Results for: " + targetDomain + "\nProblem: " + e.getLocalizedMessage() + "  " + e.getCause());
 	} return null;
 
 }
@@ -231,10 +236,11 @@ public class LdapCertLookUp implements CertLookUpFactory{
 		while (e.hasMore()) {
 
             SearchResult nodeResult = (SearchResult) e.next();
-    		System.out.println("Search Result: " + nodeResult.toString() + "\n\n");
+    		log.debug("Search Result: " + nodeResult.toString() + "\n\n");
             Attributes localAttributes = ((SearchResult) nodeResult).getAttributes();
-            localAttribute = localAttributes.get("userCertificate");
-            System.out.println("localAttribute: " + localAttribute);
+          
+            System.out.println();
+            log.debug("localAttribute: " + localAttribute);
    
             if(localAttribute != null)
             	return localAttribute;
