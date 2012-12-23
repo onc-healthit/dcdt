@@ -15,7 +15,7 @@ $(document).ready(function(){
 	$.ajax({
 		  
 	       type: "GET",
-	       url: "http://"+host+"/ModularSpecPhase3_Tool/Download.do",
+	       url: "http://"+host+"/dcdt/Download.do",
 	       //data: "dts500=" +dts500,
 	       success: function(data){
 	           // we have the response

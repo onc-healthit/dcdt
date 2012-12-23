@@ -16,17 +16,17 @@
 <meta http-equiv="Expires" content="Sat, 01 Jan 2000 23:59:00 GMT" />
 <meta http-equiv="PRAGMA" content="NO-CACHE" />
 <title>Direct Certificate Discovery Tool</title>
-<!-- <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.css" type="text/css" />
- <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap-responsive.min.css" type="text/css" />-->
-<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.css" type="text/css" />
-<!-- <link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/bootstrap.min.css" type="text/css" /> -->
-<link rel="stylesheet" href="/ModularSpecPhase3_Tool/images/css/msp3.css" type="text/css" />
-<!-- <script type="text/javascript" src="ModularSpecPhase3_Tool/images/js/bootstrap.js"></script>
-<script type="text/javascript" src="ModularSpecPhase3_Tool/images/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="ModularSpecPhase3_Tool/images/js/bootstrap-tab.js"></script> -->
+<!-- <link rel="stylesheet" href="/dcdt/images/css/bootstrap-responsive.css" type="text/css" />
+ <link rel="stylesheet" href="/dcdt/images/css/bootstrap-responsive.min.css" type="text/css" />-->
+<link rel="stylesheet" href="/dcdt/images/css/bootstrap.css" type="text/css" />
+<!-- <link rel="stylesheet" href="/dcdt/images/css/bootstrap.min.css" type="text/css" /> -->
+<link rel="stylesheet" href="/dcdt/images/css/msp3.css" type="text/css" />
+<!-- <script type="text/javascript" src="dcdt/images/js/bootstrap.js"></script>
+<script type="text/javascript" src="dcdt/images/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="dcdt/images/js/bootstrap-tab.js"></script> -->
 <!--  <script src="twitter-bootstrap-v2/docs/assets/js/bootstrap-dropdown.js"></script>-->
-<link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings-white.png" type="image" />
-<link rel="image" href="/ModularSpecPhase3_Tool/images/img/glyphicons-halflings.png" type="image" />
+<link rel="image" href="/dcdt/images/img/glyphicons-halflings-white.png" type="image" />
+<link rel="image" href="/dcdt/images/img/glyphicons-halflings.png" type="image" />
 <link rel="shortcut icon" href="images/favicon.ico" />
 </head>
 

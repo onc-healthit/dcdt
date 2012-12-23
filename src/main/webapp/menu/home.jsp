@@ -22,11 +22,11 @@
      <p>This tool is intended to allow for the automated testing of Systems implementing the 
          current Certificate Discovery and Provider Directory. 
      </p>
-     <p>Our tool is divided into two main testing areas, one area <a href="/ModularSpecPhase3_Tool/dns.jsp">Discovery</a>
+     <p>Our tool is divided into two main testing areas, one area <a href="/dcdt/dns.jsp">Discovery</a>
      tests that System's host their certificates appropriately for discovery by other implementations.   
      </p>
      <p>
-     The other part of our tool <a href="/ModularSpecPhase3_Tool/download.jsp">Messaging</a> tests that implementations are able to
+     The other part of our tool <a href="/dcdt/download.jsp">Messaging</a> tests that implementations are able to
      discover valid Direct certificates and use them to send Direct messages.
      </p>
      <p>
