@@ -3,8 +3,6 @@ package gov.hhs.onc.dcdt.cert.lookup.ldap;
 import gov.hhs.onc.dcdt.cert.lookup.CertLookUpException;
 import gov.hhs.onc.dcdt.cert.lookup.CertLookUpFactory;
 import gov.hhs.onc.dcdt.cert.lookup.CertificateInfo;
-import org.apache.log4j.Logger;
-
 import java.io.ByteArrayInputStream;
 import java.io.Closeable;
 import java.io.IOException;
@@ -17,7 +15,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 import java.util.Vector;
-
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -26,7 +23,9 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.InitialDirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.xbill.DNS.SRVRecord;
 
 
@@ -121,10 +120,13 @@ public class LdapCertLookUp implements CertLookUpFactory{
 		env = new Properties();
 		env.put(DirContext.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
 		env.put(DirContext.REFERRAL, "follow");
+		env.put(DirContext.SECURITY_AUTHENTICATION, "none");
+		env.put("java.naming.ldap.attributes.binary", "userCertificate, usercertificate");
 		sc1 = new SearchControls();
 		// set the scope of the first directory search
-		sc1.setSearchScope(SearchControls.ONELEVEL_SCOPE);
+		sc1.setSearchScope(SearchControls.OBJECT_SCOPE);
 		sc1.setReturningAttributes(new String[] { "namingContexts" });
+		sc1.setReturningObjFlag(true);
 		sc2 = new SearchControls();
 		// set the scope of the search on each found directory
 		sc2.setSearchScope(SearchControls.SUBTREE_SCOPE);
@@ -153,8 +155,8 @@ public class LdapCertLookUp implements CertLookUpFactory{
 	}
 	
 	private Attribute getCertFromLdap(SRVRecord srvRec, CertificateInfo certInfo) throws CertLookUpException{
-
-		String targetDomain = srvRec.getTarget().toString();
+		String targetDomain = StringUtils.removeEnd(srvRec.getTarget().toString(), ".");
+		
 		try {
 			   env.put(DirContext.PROVIDER_URL, "ldap://" + targetDomain + ":" + srvRec.getPort());
 			
@@ -164,7 +166,6 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			DirContext dc = new InitialDirContext(env);
 			NamingEnumeration directoryNE = null;
 			
-			System.out.println("Got HERE!");
 			// Here we set the search for the root directory, searching for any objectClass matches, and the scope is set using the sc1 variable (see above)
 			directoryNE= dc.search("", "objectClass=*", sc1);
 			
@@ -172,19 +173,26 @@ public class LdapCertLookUp implements CertLookUpFactory{
 						
 			while (directoryNE.hasMore()){
                 SearchResult result1 = (SearchResult) directoryNE.next();
-
-				// print DN of each directory found.
-				log.debug("Result.getNameInNamespace: " + result1.getName());
-
-                Attribute foundMail = findMailAttribute(result1.getNameInNamespace()); 
-                
-                if(foundMail != null){
-                	return foundMail;
-                }
+				NamingEnumeration<?> result1Attrs = result1.getAttributes().get("namingContexts").getAll();
+				String result1BaseDn;
+				
+				while (result1Attrs.hasMore())
+				{
+					result1BaseDn = ObjectUtils.toString(result1Attrs.next());
+					
+					// print DN of each directory found.
+					log.debug("result1BaseDn: " + result1BaseDn);
+	
+					Attribute foundMail = findMailAttribute(result1BaseDn); 
+					
+					if(foundMail != null){
+						return foundMail;
+					}
+				}
 			}		
 			dc.close();	
 	} catch (NamingException e) {
-		log.debug("No Results for: " + targetDomain + "\nProblem: " + e.getLocalizedMessage() + "  " + e.getCause());
+		log.debug("No Results for: " + targetDomain, e);
 	} return null;
 
 }
@@ -238,7 +246,8 @@ public class LdapCertLookUp implements CertLookUpFactory{
     		log.debug("Search Result: " + nodeResult.toString() + "\n\n");
             Attributes localAttributes = ((SearchResult) nodeResult).getAttributes();
           
-            localAttribute = localAttributes.get("userCertificate");
+            localAttribute = (Attribute)ObjectUtils.defaultIfNull(localAttributes.get("userCertificate;binary"), 
+				localAttributes.get("userCertificate"));
 			
             log.debug("localAttribute: " + localAttribute);
    
