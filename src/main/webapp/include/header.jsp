@@ -7,7 +7,7 @@
 <meta http-equiv="PRAGMA" content="NO-CACHE" />
 <meta name="Description" content="<%=request.getParameter("pgDesc")%>" />
 <meta name="Keywords" content="<%=request.getParameter("pgKey")%>" />
-<link rel="stylesheet" href="/dcdt/images/main.css" type="text/css" />
+<link rel="stylesheet" href="images/main.css" type="text/css" />
 </head>
 <script type="text/javascript">
 function new_window(url){

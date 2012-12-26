@@ -14,19 +14,12 @@
 <meta http-equiv="Content-Language" content="en-US" />
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <meta http-equiv="Expires" content="Sat, 01 Jan 2000 23:59:00 GMT" />
-<meta http-equiv="PRAGMA" content="NO-CACHE" />
+<meta http-equiv="PRAGMA" content="NO-CACHE"/>
 <title>Direct Certificate Discovery Tool</title>
-<!-- <link rel="stylesheet" href="/dcdt/images/css/bootstrap-responsive.css" type="text/css" />
- <link rel="stylesheet" href="/dcdt/images/css/bootstrap-responsive.min.css" type="text/css" />-->
-<link rel="stylesheet" href="/dcdt/images/css/bootstrap.css" type="text/css" />
-<!-- <link rel="stylesheet" href="/dcdt/images/css/bootstrap.min.css" type="text/css" /> -->
-<link rel="stylesheet" href="/dcdt/images/css/msp3.css" type="text/css" />
-<!-- <script type="text/javascript" src="dcdt/images/js/bootstrap.js"></script>
-<script type="text/javascript" src="dcdt/images/js/bootstrap.min.js"></script>
-<script type="text/javascript" src="dcdt/images/js/bootstrap-tab.js"></script> -->
-<!--  <script src="twitter-bootstrap-v2/docs/assets/js/bootstrap-dropdown.js"></script>-->
-<link rel="image" href="/dcdt/images/img/glyphicons-halflings-white.png" type="image" />
-<link rel="image" href="/dcdt/images/img/glyphicons-halflings.png" type="image" />
+<link rel="stylesheet" href="images/css/bootstrap.css" type="text/css" />
+<link rel="stylesheet" href="images/css/msp3.css" type="text/css" />
+<link rel="image" href="images/img/glyphicons-halflings-white.png" type="image" />
+<link rel="image" href="images/img/glyphicons-halflings.png" type="image" />
 <link rel="shortcut icon" href="images/favicon.ico" />
 </head>
 

@@ -32,3 +32,10 @@ a.mail:link {
 	background-color: transparent;
 	text-decoration: none;
 	font-weight: 600 }
+
+div#version
+{
+	text-align: center;
+	color: rgb(150, 150, 150);
+	font-size: 90%;
+}

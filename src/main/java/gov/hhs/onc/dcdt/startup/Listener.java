@@ -21,6 +21,7 @@ public class Listener implements ServletContextListener
 	private static final String CONFIG_HOME_NAME = "CONFIG_DIR";
 	private static final String CONFIG_PROP_FILE = "config.properties";
 	private static final String EMAIL_PROP_FILE = "email.properties";
+	private static final String VERSION_PROP_FILE = "version.properties";
 	
 	private static String configHome;
 	
@@ -81,6 +82,7 @@ public class Listener implements ServletContextListener
 			// Load in config files
 			ConfigInfo.loadConfigProperties(configHome + File.separatorChar + CONFIG_PROP_FILE);
 			ConfigInfo.loadEmailProperties(configHome + File.separatorChar + EMAIL_PROP_FILE);
+			ConfigInfo.loadVerionProperties(contextEvent.getServletContext().getRealPath("/WEB-INF/classes/" + VERSION_PROP_FILE));
 			
 			// Initialize HashMap with LookupTest-specific info
 			LookupTest.fillMap();

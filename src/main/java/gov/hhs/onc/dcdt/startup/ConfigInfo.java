@@ -14,8 +14,20 @@ public class ConfigInfo {
 
 	private static PropertiesConfiguration configProperties;
 	private static PropertiesConfiguration emailProperties;
+	private static PropertiesConfiguration versionProperties;
 	private static Logger log = Logger.getLogger("emailMessageLogger");
 
+	/**
+	 * Loads version properties from local file.
+	 * @param fileLocation
+	 * @throws ConfigurationException
+	 */
+	public static void loadVerionProperties(String fileLocation)
+			throws ConfigurationException
+	{
+		versionProperties = new PropertiesConfiguration(fileLocation);
+	}
+	
 	/**
 	 * Loads email properties from local file.
 	 * @param fileLocation
@@ -36,6 +48,26 @@ public class ConfigInfo {
 		configProperties = new PropertiesConfiguration(fileLocation);
 	}
 
+	/**
+	 * Returns a version property for the given key value.
+	 * @param key
+	 * @return version property value
+	 */
+	public static synchronized String getVersionProperty(String key)
+	{
+		String value = versionProperties.getString(key);
+		
+		if (value == null)
+		{
+			log.error("Properties file: " + versionProperties.getFileName() + 
+				" is missing required property: " + key + ".");
+			
+			return null;
+		}
+		
+		return value;
+	}
+	
 	/**
 	 * Returns the non-Direct email address for the given Direct email
 	 * address.
