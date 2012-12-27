@@ -6,7 +6,7 @@
 	xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
 	
-	<display-name>Direct Certificate Discovery Tool</display-name>
+	<display-name>@{project.name}</display-name>
 	
 	<servlet>
 		<servlet-name>action</servlet-name>

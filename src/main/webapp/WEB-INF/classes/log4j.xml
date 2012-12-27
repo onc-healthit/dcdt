@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration PUBLIC "-//APACHE//DTD LOG4J 1.2//EN" "log4j.dtd">
+<log4j:configuration
+	debug="false"
+	threshold="all"
+	xmlns:log4j="http://jakarta.apache.org/log4j/">
+	
+	<appender name="certDiscoveryApp" class="org.apache.log4j.rolling.RollingFileAppender">
+		<param name="append" value="true"/>
+		<param name="bufferedIO" value="false"/>
+		<param name="encoding" value="UTF-8"/>
+		<param name="immediateFlush" value="true"/>
+		<param name="threshold" value="all"/>
+
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+			<param name="fileNamePattern" value="@{dcdt.log.dir}/certDiscovery.%d{yyyy-MM-dd}.log"/>
+		</rollingPolicy>
+		
+		<triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+			<param name="maxFileSize" value="10485760"/>
+		</triggeringPolicy>
+
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%C %t] %p - %m%n"/>
+		</layout>
+	</appender>
+	
+	<appender name="emailMessageApp" class="org.apache.log4j.rolling.RollingFileAppender">
+		<param name="append" value="true"/>
+		<param name="bufferedIO" value="false"/>
+		<param name="encoding" value="UTF-8"/>
+		<param name="immediateFlush" value="true"/>
+		<param name="threshold" value="all"/>
+
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+			<param name="fileNamePattern" value="@{dcdt.log.dir}/emailMessage.%d{yyyy-MM-dd}.log"/>
+		</rollingPolicy>
+		
+		<triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+			<param name="maxFileSize" value="10485760"/>
+		</triggeringPolicy>
+
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%C %t] %p - %m%n"/>
+		</layout>
+	</appender>
+	
+	<logger name="certDiscoveryLogger" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="certDiscoveryApp"/>
+	</logger>
+	
+	<logger name="emailMessageLogger" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="emailMessageApp"/>
+	</logger>
+	
+	<logger name="org.apache" additivity="false">
+		<level value="error"/>
+		<appender-ref ref="certDiscoveryApp"/>
+	</logger>
+	
+	<root>
+		<level value="warn"/>
+		<appender-ref ref="certDiscoveryApp"/>
+	</root>
+</log4j:configuration>

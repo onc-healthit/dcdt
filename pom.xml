@@ -141,32 +141,72 @@
 				<version>2.6</version>
 				<configuration>
 					<delimiters>
-						<delimiter>${*}</delimiter>
+						<delimiter>@{*}</delimiter>
 					</delimiters>
 					<encoding>${file.encoding}</encoding>
 					<useDefaultDelimiters>false</useDefaultDelimiters>
 				</configuration>
 				<executions>
 					<execution>
+						<id>copy-config-resources</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/config</outputDirectory>
+							<outputDirectory>${project.build.directory}/config-tmp</outputDirectory>
 							<resources>
 								<resource>
 									<directory>src/main/config</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>**.properties</include>
+										<include>**.xml</include>
 									</includes>
 								</resource>
 								<resource>
 									<directory>src/main/config</directory>
 									<excludes>
 										<exclude>**.properties</exclude>
+										<exclude>**.xml</exclude>
 									</excludes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+					<execution>
+						<id>copy-webapp-resources</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/webapp-tmp</outputDirectory>
+							<resources>
+								<resource>
+									<directory>src/main/webapp/WEB-INF/classes</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>**.properties</include>
+										<include>**.xml</include>
+									</includes>
+									<targetPath>WEB-INF/classes</targetPath>
+								</resource>
+								<resource>
+									<directory>src/main/webapp/WEB-INF/classes</directory>
+									<excludes>
+										<exclude>**.properties</exclude>
+										<exclude>**.xml</exclude>
+									</excludes>
+									<targetPath>WEB-INF/classes</targetPath>
+								</resource>
+								<resource>
+									<directory>src/main/webapp/WEB-INF</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>web.xml</include>
+									</includes>
+									<targetPath>WEB-INF</targetPath>
 								</resource>
 							</resources>
 						</configuration>
@@ -179,15 +219,9 @@
 				<version>2.3</version>
 				<configuration>
 					<archiveClasses>true</archiveClasses>
-					<attachClasses>true</attachClasses>
 					<webResources>
 						<resource>
-							<directory>src/main/webapp/WEB-INF/classes</directory>
-							<filtering>true</filtering>
-							<includes>
-								<include>**.properties</include>
-							</includes>
-							<targetPath>WEB-INF/classes</targetPath>
+							<directory>${project.build.directory}/webapp-tmp</directory>
 						</resource>
 					</webResources>
 				</configuration>

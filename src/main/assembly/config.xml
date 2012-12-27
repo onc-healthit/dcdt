@@ -13,7 +13,7 @@
 	
 	<fileSets>
 		<fileSet>
-			<directory>${project.build.directory}/config</directory>
+			<directory>${project.build.directory}/config-tmp</directory>
 			<outputDirectory>/</outputDirectory>
 		</fileSet>
 	</fileSets>
