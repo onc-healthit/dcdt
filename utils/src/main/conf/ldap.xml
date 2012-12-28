@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ldaps>
+	<ldap config-class="gov.hhs.onc.dcdt.utils.beans.LdapService"
+		id="1"
+		name="fake"
+		host="ldap.${util:domain}"
+		port="389"
+		real="false"/>
+	
+	<ldap config-class="gov.hhs.onc.dcdt.utils.beans.LdapService"
+		id="2"
+		name="default"
+		host="ldap.${util:domain}"
+		port="10389"
+		real="true"/>
+	
+	<ldap config-class="gov.hhs.onc.dcdt.utils.beans.LdapService"
+		id="3"
+		name="domain2ldap1"
+		host="ldap.${util:domain}"
+		port="11389"
+		real="true"/>
+</ldaps>

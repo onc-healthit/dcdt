@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dns>
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="1"
+		name="${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="2"
+		name="${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="3"
+		name="direct1.${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="4"
+		name="direct1.${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="5"
+		name="direct2.${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="6"
+		name="direct2.${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="7"
+		name="direct3.${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="8"
+		name="direct3.${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="9"
+		name="direct4.${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="10"
+		name="direct4.${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="11"
+		name="direct5.${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="12"
+		name="direct5.${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="13"
+		name="direct6.${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="14"
+		name="direct6.${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="15"
+		name="direct7.${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="16"
+		name="direct7.${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="17"
+		name="ldap.${util:domain}"
+		ttl="86400"
+		value="ns1.${util:domain}"/>
+	
+	<ns config-class="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"
+		id="18"
+		name="ldap.${util:domain}"
+		ttl="86400"
+		value="ns2.${util:domain}"/>
+</dns>

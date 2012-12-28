@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<certgen>
+	<name>certgen</name>
+	<displayName>Certificate Generator</displayName>
+	<outputDir>out/${util:name}/${util:domain}</outputDir>
+</certgen>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<domains>
+	<domain config-class="gov.hhs.onc.dcdt.utils.beans.Domain"
+		id="1"
+		name="direct1.${util:domain}"/>
+	
+	<domain config-class="gov.hhs.onc.dcdt.utils.beans.Domain"
+		id="2"
+		name="direct2.${util:domain}"/>
+	
+	<domain config-class="gov.hhs.onc.dcdt.utils.beans.Domain"
+		id="3"
+		name="direct3.${util:domain}"/>
+	
+	<domain config-class="gov.hhs.onc.dcdt.utils.beans.Domain"
+		id="4"
+		name="direct4.${util:domain}"/>
+	
+	<domain config-class="gov.hhs.onc.dcdt.utils.beans.Domain"
+		id="5"
+		name="direct5.${util:domain}"/>
+	
+	<domain config-class="gov.hhs.onc.dcdt.utils.beans.Domain"
+		id="6"
+		name="direct6.${util:domain}"/>
+	
+	<domain config-class="gov.hhs.onc.dcdt.utils.beans.Domain"
+		id="7"
+		name="direct7.${util:domain}"/>
+</domains>

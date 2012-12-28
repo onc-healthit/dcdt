@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configgen>
+	<name>configgen</name>
+	<displayName>Configuration Generator</displayName>
+	
+	<inputDir>out/certgen/${util:domain}</inputDir>
+	
+	<outputFile>out/${util:name}/${util:domain}.zip</outputFile>
+	<outputFileInternalPath>config</outputFileInternalPath>
+	
+	<resultMailAddress/>
+	<resultMailPass/>
+	<resultMailHost/>
+	<resultMailPort>465</resultMailPort>
+	
+	<certsDir>/var/lib/direct/direct-cert-discovery-tool/certs</certsDir>
+	<certAnchorFile>${util:certsDir}/ca/${util:domain}_ca.der</certAnchorFile>
+	
+	<rawMailDir>/var/lib/direct/mail/rawmsg</rawMailDir>
+	<inMailDir>/var/lib/direct/mail/inmsg</inMailDir>
+	<outMailDir>/var/lib/direct/mail/outmsg</outMailDir>
+	<badMailDir>/var/lib/direct/mail/badmsg</badMailDir>
+</configgen>

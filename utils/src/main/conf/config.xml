@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<header>
+		<result forceReloadCheck="true">
+			<nodeCombiner config-class="org.apache.commons.configuration.tree.OverrideCombiner"/>
+			<expressionEngine config-class="org.apache.commons.configuration.tree.xpath.XPathExpressionEngine"/>
+		</result>
+		
+		<!-- TODO: remove if not used -->
+		<!--
+		<lookups>
+			<lookup config-prefix="expr" config-class="org.apache.commons.configuration.interpol.ExprLookup">
+			<variables>
+				<variable name="System" value="Class:java.lang.System"/>
+				<variable name="String" value="Class:org.apache.commons.lang3.StringUtils"/>
+			</variables>
+			</lookup>
+		</lookups>
+		-->
+	</header>
+	
+	<override>
+		<!-- DNS record configuration -->
+		<xml fileName="dns/a.xml" throwExceptionOnMissing="true" config-name="dns-a" config-at="dns">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="dns/cname.xml" throwExceptionOnMissing="true" config-name="dns-cname" config-at="dns">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="dns/mx.xml" throwExceptionOnMissing="true" config-name="dns-mx" config-at="dns">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="dns/ns.xml" throwExceptionOnMissing="true" config-name="dns-ns" config-at="dns">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="dns/soa.xml" throwExceptionOnMissing="true" config-name="dns-soa" config-at="dns">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="dns/srv.xml" throwExceptionOnMissing="true" config-name="dns-srv" config-at="dns">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		
+		<!-- Data configuration -->
+		<xml fileName="domains.xml" throwExceptionOnMissing="true" config-name="domains" config-at="domains">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="entries.xml" throwExceptionOnMissing="true" config-name="entries" config-at="entries">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="ldap.xml" throwExceptionOnMissing="true" config-name="ldap" config-at="ldap">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="settings.xml" throwExceptionOnMissing="true" config-name="settings" config-at="settings">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		
+		<!-- Base utility configuration -->
+		<xml fileName="utils.xml" throwExceptionOnMissing="true" config-name="utils">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+	</override>
+	
+	<additional>
+		<!-- Certificate Generator configuration -->
+		<xml fileName="utils/certgen/certgen.xml" throwExceptionOnMissing="true" config-name="certgen" config-at="certgen">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		
+		<!-- Configuration Generator configuration -->
+		<xml fileName="utils/configgen/configgen.xml" throwExceptionOnMissing="true" config-name="configgen" config-at="configgen">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<properties fileName="utils/configgen/config/config.properties" throwExceptionOnMissing="true" config-name="configgen-base-config"/>
+		<properties fileName="utils/configgen/config/email.properties" throwExceptionOnMissing="true" config-name="configgen-base-email"/>
+	</additional>
+</configuration>
