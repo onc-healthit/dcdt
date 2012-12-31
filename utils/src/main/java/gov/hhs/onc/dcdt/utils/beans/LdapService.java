@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.utils.beans;
 import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
 
 @ConfigBean("ldaps/ldap")
-public class LdapService
+public class LdapService extends UtilityBean
 {
 	private String id;
 	private String name;
@@ -29,16 +29,6 @@ public class LdapService
 	public void setHost(String host)
 	{
 		this.host = host;
-	}
-
-	public String getId()
-	{
-		return this.id;
-	}
-
-	public void setId(String id)
-	{
-		this.id = id;
 	}
 
 	public String getName()

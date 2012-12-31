@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	elementFormDefault="qualified"
+	targetNamespace="http://schema.direct-test.com/utils/utils/configgen"
+	xmlns="http://schema.direct-test.com/utils/utils/configgen"
+	xmlns:config="http://schema.direct-test.com/utils/config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:import namespace="http://schema.direct-test.com/utils/config" schemaLocation="http://schema.direct-test.com/utils/config"/>
+	
+	<xs:complexType name="configgen">
+		<xs:annotation>
+			<xs:documentation>
+				Configuration Generator utility.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="config:utility">
+				<xs:attribute name="inputDir" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="outputFile" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="outputFileArchivePath" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="resultMailAddress" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="resultMailPass" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="resultMailHost" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="resultMailPort" type="config:int-positive" use="optional"/>
+				<xs:attribute name="certsDir" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="certsAnchorFile" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="rawMailDir" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="inMailDir" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="outMailDir" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="badMailDir" type="config:string-not-blank" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="configgen" type="configgen">
+		<xs:annotation>
+			<xs:documentation>
+				Configuration Generator utility element.
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+	
+</xs:schema>

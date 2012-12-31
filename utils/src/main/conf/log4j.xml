@@ -12,6 +12,26 @@
 		<param name="threshold" value="all"/>
 
 		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%m%n"/>
+		</layout>
+	</appender>
+	
+	<appender name="fileApp" class="org.apache.log4j.rolling.RollingFileAppender">
+		<param name="append" value="true"/>
+		<param name="bufferedIO" value="false"/>
+		<param name="encoding" value="UTF-8"/>
+		<param name="immediateFlush" value="true"/>
+		<param name="threshold" value="all"/>
+
+		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
+			<param name="fileNamePattern" value="logs/dcdt-utils.%d{yyyy-MM-dd}.log"/>
+		</rollingPolicy>
+		
+		<triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
+			<param name="maxFileSize" value="10485760"/>
+		</triggeringPolicy>
+
+		<layout class="org.apache.log4j.PatternLayout">
 			<param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%C %t] %p - %m%n"/>
 		</layout>
 	</appender>
@@ -21,13 +41,20 @@
 		<appender-ref ref="consoleApp"/>
 	</logger>
 	
+	<logger name="file" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="fileApp"/>
+	</logger>
+	
 	<logger name="org.apache" additivity="false">
 		<level value="warn"/>
 		<appender-ref ref="consoleApp"/>
+		<appender-ref ref="fileApp"/>
 	</logger>
 	
 	<root>
 		<level value="all"/>
 		<appender-ref ref="consoleApp"/>
+		<appender-ref ref="fileApp"/>
 	</root>
 </log4j:configuration>

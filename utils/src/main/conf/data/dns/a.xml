@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dns>
+<dns
+	xmlns="http://schema.direct-test.com/utils/data/dns"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/utils/data/dns http://schema.direct-test.com/utils/data/dns">
+	
 	<a config-class="gov.hhs.onc.dcdt.utils.beans.dns.ARecord"
 		id="1"
 		name="${util:domain}"

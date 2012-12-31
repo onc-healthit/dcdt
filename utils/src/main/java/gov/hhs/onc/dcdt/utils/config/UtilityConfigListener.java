@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.utils.config;
 
 import gov.hhs.onc.dcdt.utils.Utility;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.event.ConfigurationErrorEvent;
 import org.apache.commons.configuration.event.ConfigurationErrorListener;
 import org.apache.commons.configuration.event.ConfigurationEvent;
@@ -9,7 +10,7 @@ import org.apache.log4j.Logger;
 
 public class UtilityConfigListener implements ConfigurationListener, ConfigurationErrorListener
 {
-	private final static Logger LOGGER = Logger.getLogger(UtilityConfigListener.class);
+	private final static Logger LOGGER = Logger.getLogger(Configuration.class);
 	
 	private Utility util;
 	

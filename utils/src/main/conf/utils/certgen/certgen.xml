@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<certgen>
-	<name>certgen</name>
-	<displayName>Certificate Generator</displayName>
-	<outputDir>out/${util:name}/${util:domain}</outputDir>
-</certgen>
+<certgen
+	xmlns="http://schema.direct-test.com/utils/utils/certgen"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/utils/utils/certgen http://schema.direct-test.com/utils/utils/certgen"
+	
+	name="certgen"
+	displayName="Certificate Generator"
+	
+	outputFile="out/${util:name}/${util:domain}-certs.zip"
+	outputFileArchivePath="certs"/>

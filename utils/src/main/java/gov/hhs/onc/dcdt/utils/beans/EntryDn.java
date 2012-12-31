@@ -14,7 +14,7 @@ import org.bouncycastle.asn1.x509.GeneralNames;
 @ConfigBean("entries/entry/dn")
 public class EntryDn
 {
-	private final static String MAIL_ADDRESS_DELIM = "@";
+	public final static String MAIL_ADDRESS_DELIM = "@";
 	
 	private String mail;
 	private String commonName;

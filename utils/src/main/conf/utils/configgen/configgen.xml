@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configgen>
-	<name>configgen</name>
-	<displayName>Configuration Generator</displayName>
+<configgen
+	xmlns="http://schema.direct-test.com/utils/utils/configgen"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/utils/utils/configgen http://schema.direct-test.com/utils/utils/configgen"
 	
-	<inputDir>out/certgen/${util:domain}</inputDir>
+	name="configgen"
+	displayName="Configuration Generator"
 	
-	<outputFile>out/${util:name}/${util:domain}.zip</outputFile>
-	<outputFileInternalPath>config</outputFileInternalPath>
+	inputDir="out/certgen/${util:domain}"
 	
-	<resultMailAddress/>
-	<resultMailPass/>
-	<resultMailHost/>
-	<resultMailPort>465</resultMailPort>
+	outputFile="out/${util:name}/${util:domain}-config.zip"
+	outputFileArchivePath="config"
 	
-	<certsDir>/var/lib/direct/direct-cert-discovery-tool/certs</certsDir>
-	<certAnchorFile>${util:certsDir}/ca/${util:domain}_ca.der</certAnchorFile>
+	resultMailPort="465"
 	
-	<rawMailDir>/var/lib/direct/mail/rawmsg</rawMailDir>
-	<inMailDir>/var/lib/direct/mail/inmsg</inMailDir>
-	<outMailDir>/var/lib/direct/mail/outmsg</outMailDir>
-	<badMailDir>/var/lib/direct/mail/badmsg</badMailDir>
-</configgen>
+	certsDir="/var/lib/direct/direct-cert-discovery-tool/certs"
+	certsAnchorFile="${util:certsDir}/ca/${util:domain}_ca.der"
+	
+	rawMailDir="/var/lib/direct/mail/rawmsg"
+	inMailDir="/var/lib/direct/mail/inmsg"
+	outMailDir="/var/lib/direct/mail/outmsg"
+	badMailDir="/var/lib/direct/mail/badmsg"/>

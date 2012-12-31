@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<domains>
+<domains
+	xmlns="http://schema.direct-test.com/utils/data/domains"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/utils/data/domains http://schema.direct-test.com/utils/data/domains">
+	
 	<domain config-class="gov.hhs.onc.dcdt.utils.beans.Domain"
 		id="1"
 		name="direct1.${util:domain}"/>

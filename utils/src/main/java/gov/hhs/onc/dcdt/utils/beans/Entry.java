@@ -18,7 +18,7 @@ import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 
 @ConfigBean("entries/entry")
-public class Entry
+public class Entry extends UtilityBean
 {
 	private final static String CERT_SUFFIX = "_cert";
 	private final static String KEY_SUFFIX = "_key";
@@ -27,9 +27,8 @@ public class Entry
 	private final static String PEM_EXT = ".pem";
 	private final static String PKCS12_EXT = ".p12";
 	
-	private String id;
 	private String name;
-	private File dir;
+	private String path;
 	private int keyBits;
 	private int validDays;
 	private boolean canSign;
@@ -39,41 +38,49 @@ public class Entry
 	private KeyStore keyStore;
 	private Entry issuer;
 	
-	public File getCertDerFile()
+	public String getCertDerFilePath()
 	{
-		return this.getFile(CERT_SUFFIX, DER_EXT);
+		return this.getFilePath(CERT_SUFFIX, DER_EXT);
 	}
 	
-	public File getCertPemFile()
+	public String getCertPemFilePath()
 	{
-		return this.getFile(CERT_SUFFIX, PEM_EXT);
+		return this.getFilePath(CERT_SUFFIX, PEM_EXT);
 	}
 	
-	public File getKeyDerFile()
+	public String getKeyDerFilePath()
 	{
-		return this.getFile(KEY_SUFFIX, DER_EXT);
+		return this.getFilePath(KEY_SUFFIX, DER_EXT);
 	}
 	
-	public File getKeyPemFile()
+	public String getKeyPemFilePath()
 	{
-		return this.getFile(KEY_SUFFIX, PEM_EXT);
+		return this.getFilePath(KEY_SUFFIX, PEM_EXT);
 	}
 	
-	public File getKeyStoreFile()
+	public String getKeyStoreFilePath()
 	{
-		return this.getFile(PKCS12_EXT);
+		return this.getFilePath(PKCS12_EXT);
 	}
 	
-	private File getFile(String ... suffixes)
+	private String getFilePath(String ... suffixes)
 	{
-		StringBuilder fileNameBuilder = new StringBuilder(this.getName());
+		StringBuilder fileNameBuilder = new StringBuilder();
+		
+		if (this.hasPath())
+		{
+			fileNameBuilder.append(this.getPath());
+			fileNameBuilder.append(File.separatorChar);
+		}
+		
+		fileNameBuilder.append(this.getName());
 		
 		for (String suffix : suffixes)
 		{
 			fileNameBuilder.append(suffix);
 		}
 		
-		return new File(this.getDir(), fileNameBuilder.toString());
+		return fileNameBuilder.toString();
 	}
 	
 	public boolean isCa()
@@ -106,8 +113,8 @@ public class Entry
 		StringBuilder builder = new StringBuilder();
 		builder.append("name=");
 		builder.append(this.getName());
-		builder.append(", dir=");
-		builder.append(this.getDir());
+		builder.append(", path=");
+		builder.append(this.getPath());
 		builder.append(", keyBits=");
 		builder.append(this.getKeyBits());
 		builder.append(", validDays=");
@@ -123,8 +130,8 @@ public class Entry
 			
 			builder.append("name=");
 			builder.append(issuerEntry.getName());
-			builder.append(", dir=");
-			builder.append(issuerEntry.getDir());
+			builder.append(", path=");
+			builder.append(issuerEntry.getPath());
 			builder.append(", dn={");
 			builder.append(issuerEntry.getDn().toString());
 			builder.append("}");
@@ -213,21 +220,6 @@ public class Entry
 		this.cert = cert;
 	}
 
-	public boolean hasDir()
-	{
-		return this.getDir() != null;
-	}
-	
-	public File getDir()
-	{
-		return this.dir;
-	}
-
-	public void setDir(File dir)
-	{
-		this.dir = dir;
-	}
-	
 	public boolean hasDn()
 	{
 		return this.getDn() != null;
@@ -241,21 +233,6 @@ public class Entry
 	public void setDn(EntryDn dn)
 	{
 		this.dn = dn;
-	}
-
-	public boolean hasId()
-	{
-		return !StringUtils.isBlank(this.getId());
-	}
-	
-	public String getId()
-	{
-		return this.id;
-	}
-
-	public void setId(String id)
-	{
-		this.id = id;
 	}
 
 	public boolean hasIssuer()
@@ -326,6 +303,21 @@ public class Entry
 	public void setName(String name)
 	{
 		this.name = name;
+	}
+	
+	public boolean hasPath()
+	{
+		return !StringUtils.isBlank(this.getPath());
+	}
+
+	public String getPath()
+	{
+		return this.path;
+	}
+
+	public void setPath(String path)
+	{
+		this.path = path;
 	}
 
 	public boolean hasValidDays()

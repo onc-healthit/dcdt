@@ -2,9 +2,6 @@ package gov.hhs.onc.dcdt.utils.entry;
 
 import gov.hhs.onc.dcdt.utils.beans.Entry;
 import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.KeyPairGenerator;
@@ -14,13 +11,11 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.security.cert.Certificate;
-import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -34,16 +29,12 @@ import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
 
 public class EntryBuilder
 {
 	private final static String RSA_ALG_NAME = "RSA";
-	private final static String PKCS8_PEM_TYPE = "PRIVATE KEY";
 	private final static String PKCS12_KEYSTORE_TYPE = "PKCS12";
 	private final static String X509_CERT_TYPE = "X.509";
-	private final static String X509_CERT_PEM_TYPE = "CERTIFICATE";
 	
 	private final static int SERIAL_NUM_LENGTH = 64;
 	
@@ -57,7 +48,6 @@ public class EntryBuilder
 		generateKeys(caEntry);
 		generateCert(caEntry);
 		generateKeyStore(caEntry);
-		writeFiles(caEntry);
 	}
 	
 	public void generateLeaf(Entry leafEntry) throws EntryException
@@ -65,67 +55,6 @@ public class EntryBuilder
 		generateKeys(leafEntry);
 		generateCert(leafEntry);
 		generateKeyStore(leafEntry);
-		writeFiles(leafEntry);
-	}
-	
-	private static void writeFiles(Entry entry) throws EntryException
-	{
-		try
-		{
-			FileUtils.writeByteArrayToFile(entry.getKeyDerFile(), entry.getPrivateKey().getEncoded());
-		}
-		catch (IOException e)
-		{
-			throw new EntryException("Unable to write DER-encoded private key to file (path=" + entry.getKeyDerFile() + "): " + 
-				entry.getPrivateKey(), e);
-		}
-		
-		try
-		{
-			writePemFile(entry.getKeyPemFile(), new PemObject(PKCS8_PEM_TYPE, entry.getPrivateKey().getEncoded()));
-		}
-		catch (IOException e)
-		{
-			throw new EntryException("Unable to write PEM-encoded private key to file (path=" + entry.getKeyPemFile() + "): " + 
-				entry.getPrivateKey(), e);
-		}
-		
-		try
-		{
-			FileUtils.writeByteArrayToFile(entry.getCertDerFile(), entry.getCert().getEncoded());
-		}
-		catch (CertificateEncodingException | IOException e)
-		{
-			throw new EntryException("Unable to write DER-encoded certificate to file (path=" + entry.getCertDerFile() + "): " + 
-				entry.getCert(), e);
-		}
-		
-		try
-		{
-			writePemFile(entry.getCertPemFile(), new PemObject(X509_CERT_PEM_TYPE, entry.getCert().getEncoded()));
-		}
-		catch (CertificateEncodingException | IOException e)
-		{
-			throw new EntryException("Unable to write PEM-encoded certificate to file (path=" + entry.getKeyPemFile() + "): " + 
-				entry.getPrivateKey(), e);
-		}
-
-		try
-		{
-			entry.getKeyStore().store(new FileOutputStream(entry.getKeyStoreFile()), "".toCharArray());
-		}
-		catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e)
-		{
-			throw new EntryException("Unable to write keystore to file (path=" + entry.getKeyStoreFile() + "): " + 
-				entry.getKeyStore(), e);
-		}
-	}
-	
-	private static void writePemFile(File pemFile, PemObject pemObj) throws IOException
-	{
-		PemWriter pemWriter = new PemWriter(new FileWriter(pemFile));
-		pemWriter.writeObject(pemObj);
-		pemWriter.flush();
 	}
 	
 	private static void generateKeyStore(Entry entry) throws EntryException

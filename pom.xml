@@ -116,6 +116,9 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.0</version>
 				<configuration>
+					<compilerArguments>
+						<Xlint:unchecked/>
+					</compilerArguments>
 					<encoding>${file.encoding}</encoding>
 					<source>${java.version}</source>
 					<target>${java.version}</target>
@@ -133,9 +136,6 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<version>2.4</version>
-				<configuration>
-					
-				</configuration>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -158,34 +158,6 @@
 				</configuration>
 				<executions>
 					<execution>
-						<id>copy-config-resources</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}/config-tmp</outputDirectory>
-							<resources>
-								<resource>
-									<directory>src/main/config</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>**.properties</include>
-										<include>**.xml</include>
-									</includes>
-								</resource>
-								<resource>
-									<directory>src/main/config</directory>
-									<excludes>
-										<exclude>**.properties</exclude>
-										<exclude>**.xml</exclude>
-									</excludes>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-					<execution>
-						<id>copy-webapp-resources</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -251,6 +223,7 @@
 				<inherited>true</inherited>
 				<configuration>
 					<charset>${file.encoding}</charset>
+					<ignorePackaging>true</ignorePackaging>
 					<password>${tomcat.manager.password}</password>
 					<path>/dcdt</path>
 					<update>true</update>
@@ -278,4 +251,45 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<!-- Set Tomcat manager URL property, if not defined in user settings -->
+		<profile>
+			<id>default-tomcat.manager.url</id>
+			<activation>
+				<property>
+					<name>!settings.tomcat.manager.url</name>
+				</property>
+			</activation>
+			<properties>
+				<tomcat.manager.url>http://localhost:8081/manager/text</tomcat.manager.url>
+			</properties>
+		</profile>
+		
+		<!-- Set Tomcat manager username property, if not defined in user settings -->
+		<profile>
+			<id>default-tomcat.manager.username</id>
+			<activation>
+				<property>
+					<name>!settings.tomcat.manager.username</name>
+				</property>
+			</activation>
+			<properties>
+				<tomcat.manager.username/>
+			</properties>
+		</profile>
+		
+		<!-- Set Tomcat manager password property, if not defined in user settings -->
+		<profile>
+			<id>default-tomcat.manager.password</id>
+			<activation>
+				<property>
+					<name>!settings.tomcat.manager.password</name>
+				</property>
+			</activation>
+			<properties>
+				<tomcat.manager.password/>
+			</properties>
+		</profile>
+	</profiles>
 </project>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<dns>
-	<cname config-class="gov.hhs.onc.dcdt.utils.beans.dns.CnameRecord"
-		id="1"
-		name="www.${util:domain}"
-		ttl="86400"
-		value="${util:domain}"/>
-</dns>

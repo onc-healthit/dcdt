@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.utils.config;
 
 import gov.hhs.onc.dcdt.utils.Utility;
+import gov.hhs.onc.dcdt.utils.UtilityData;
 import org.apache.commons.lang.text.StrLookup;
 
 public class UtilityConfigStrLookup extends StrLookup
@@ -15,6 +16,6 @@ public class UtilityConfigStrLookup extends StrLookup
 	@Override
 	public String lookup(String key)
 	{
-		return this.util.getUtilConfig().getString(key);
+		return this.util.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + key);
 	}
 }

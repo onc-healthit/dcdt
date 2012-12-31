@@ -15,11 +15,14 @@ for utilJarFileName in $(find "$utilLibDir" -mindepth 1 -maxdepth 1 -type "f" -n
 	utilClassPath="$utilClassPath:$utilLibDirName/$utilJarFileName"
 done
 
+utilTermWidth="$(stty -a | egrep -o 'columns [[:digit:]]+' | cut -d " " -f 2)"
+
 (
 	cd "$utilBaseDir" && \
 	\
 	java \
 		-cp "$utilClassPath" \
+		-Ddcdt.utils.term.width="$utilTermWidth" \
 		"$utilMainClass" \
 		"$@"
 )

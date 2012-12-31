@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<settings>
+<settings
+	xmlns="http://schema.direct-test.com/utils/data/settings"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/utils/data/settings http://schema.direct-test.com/utils/data/settings">
+	
 	<setting config-class="gov.hhs.onc.dcdt.utils.beans.Setting"
 		id="1"
 		name="MDNAutoResponse"

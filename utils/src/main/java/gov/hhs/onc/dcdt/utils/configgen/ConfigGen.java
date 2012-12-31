@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.utils.configgen;
 
 import gov.hhs.onc.dcdt.utils.Utility;
+import gov.hhs.onc.dcdt.utils.UtilityData;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
 import gov.hhs.onc.dcdt.utils.configgen.cli.ConfigGenCliOption;
 import java.io.ByteArrayOutputStream;
@@ -17,14 +18,11 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-public class ConfigGen extends Utility
+public class ConfigGen extends Utility<ConfigGenCliOption>
 {
 	private final static String UTIL_NAME = "configgen";
 	
-	private final static String DOMAIN_PROP_NAME = "domain";
-	private final static String INPUT_DIR_PROP_NAME = "inputDir";
-	private final static String OUTPUT_FILE_PROP_NAME = "outputFile";
-	private final static String OUTPUT_FILE_INTERNAL_PATH_PROP_NAME = OUTPUT_FILE_PROP_NAME + "InternalPath";
+	private final static String OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME = ConfigGenCliOption.OUTPUT_FILE.getAttribName() + "ArchivePath";
 	
 	private final static String BASE_CONFIG_PROPS_NAME = UTIL_NAME + "-base-config";
 	private final static String BASE_EMAIL_PROPS_NAME = UTIL_NAME + "-base-email";
@@ -33,7 +31,7 @@ public class ConfigGen extends Utility
 	
 	public ConfigGen()
 	{
-		super(UTIL_NAME, new UtilityCli(ConfigGenCliOption.class));
+		super(UTIL_NAME, new UtilityCli<>(ConfigGenCliOption.class));
 	}
 	
 	public static void main(String ... args)
@@ -51,10 +49,22 @@ public class ConfigGen extends Utility
 		PropertiesConfiguration baseConfigProps = (PropertiesConfiguration)configAdditional.getConfiguration(BASE_CONFIG_PROPS_NAME), 
 			baseEmailProps = (PropertiesConfiguration)configAdditional.getConfiguration(BASE_EMAIL_PROPS_NAME);
 
-		File outputFile = new File(this.getUtilConfig().getString(OUTPUT_FILE_PROP_NAME));
-		String outputFileInternalPath = this.getUtilConfig().getString(OUTPUT_FILE_INTERNAL_PATH_PROP_NAME);
+		File outputFile = new File(this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName()));
+		String outputFileArchivePath = this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME);
 		
-		try
+		if (!outputFile.exists())
+		{
+			try
+			{
+				FileUtils.touch(outputFile);
+			}
+			catch (IOException e)
+			{
+				LOGGER.error("Unable to create output file: " + outputFile, e);
+			}
+		}
+		
+		try (ZipOutputStream outputFileStream = new ZipOutputStream(new FileOutputStream(outputFile)))
 		{
 			if (!outputFile.exists())
 			{
@@ -62,24 +72,24 @@ public class ConfigGen extends Utility
 			}
 			
 			ByteArrayOutputStream outputPropsStream;
-			ZipOutputStream outputFileStream = new ZipOutputStream(new FileOutputStream(outputFile));
 			
 			for (PropertiesConfiguration baseProps : new PropertiesConfiguration[]{ baseConfigProps, baseEmailProps })
 			{
-				outputFileStream.putNextEntry(new ZipEntry(outputFileInternalPath + File.separatorChar + baseProps.getFile().getName()));
+				outputFileStream.putNextEntry(new ZipEntry(outputFileArchivePath + File.separatorChar + baseProps.getFile().getName()));
 				outputPropsStream = new ByteArrayOutputStream();
 				((PropertiesConfiguration)baseProps.interpolatedConfiguration()).save(outputPropsStream);
 				outputFileStream.write(outputPropsStream.toByteArray());
+				outputFileStream.closeEntry();
 			}
 			
 			outputFileStream.finish();
 			outputFileStream.close();
 			
-			LOGGER.info("Successfully generated configuration output file: " + outputFile);
+			LOGGER.info("Successfully wrote output file: " + outputFile);
 		}
 		catch (ConfigurationException | IOException e)
 		{
-			LOGGER.error("Unable to generate configuration output file: " + outputFile, e);
+			LOGGER.error("Unable to write output file: " + outputFile, e);
 		}
 	}
 
@@ -88,24 +98,16 @@ public class ConfigGen extends Utility
 	{
 		super.processCmdLine();
 		
-		String domain = this.cli.getOptionValue(ConfigGenCliOption.DOMAIN.getOption());
+		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.DOMAIN.getAttribName(), 
+			this.cli.getOptionValue(ConfigGenCliOption.DOMAIN));
 		
-		if (StringUtils.isBlank(domain))
-		{
-			LOGGER.error("A domain name must be specified.");
-			
-			exitError();
-		}
-
-		this.getUtilConfig().setProperty(DOMAIN_PROP_NAME, domain);
-		
-		String inputDirPath = this.cli.hasOption(ConfigGenCliOption.INPUT_DIR.getOption()) ? 
-			this.cli.getOptionValue(ConfigGenCliOption.INPUT_DIR.getOption()) : 
-			this.getUtilConfig().getString(INPUT_DIR_PROP_NAME);
+		String inputDirPath = this.cli.hasOption(ConfigGenCliOption.INPUT_DIR) ? 
+			this.cli.getOptionValue(ConfigGenCliOption.INPUT_DIR) : 
+			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.INPUT_DIR.getAttribName());
 		
 		if (StringUtils.isBlank(inputDirPath))
 		{
-			LOGGER.error("Input directory path must not be blank.");
+			LOGGER.error("Input directory path must be specified.");
 			
 			exitError();
 		}
@@ -125,15 +127,16 @@ public class ConfigGen extends Utility
 			exitError();
 		}
 		
-		this.getUtilConfig().setProperty(INPUT_DIR_PROP_NAME, inputDir.toString());
+		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.INPUT_DIR.getAttribName(), 
+			inputDir.toString());
 		
-		String outputFilePath = this.cli.hasOption(ConfigGenCliOption.OUTPUT_FILE.getOption()) ? 
-			this.cli.getOptionValue(ConfigGenCliOption.OUTPUT_FILE.getOption()) : 
-			this.getUtilConfig().getString(OUTPUT_FILE_PROP_NAME);
+		String outputFilePath = this.cli.hasOption(ConfigGenCliOption.OUTPUT_FILE) ? 
+			this.cli.getOptionValue(ConfigGenCliOption.OUTPUT_FILE) : 
+			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName());
 		
 		if (StringUtils.isBlank(outputFilePath))
 		{
-			LOGGER.error("Output file path must not be blank.");
+			LOGGER.error("Output file path must be specified.");
 			
 			exitError();
 		}
@@ -142,11 +145,87 @@ public class ConfigGen extends Utility
 		
 		if (outputFile.exists() && !outputFile.isFile())
 		{
-			LOGGER.error("Output file path is not a directory: " + outputFile);
+			LOGGER.error("Output file path is not a file: " + outputFile);
 			
 			exitError();
 		}
 		
-		this.getUtilConfig().setProperty(OUTPUT_FILE_PROP_NAME, outputFile.toString());
+		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName(), 
+			outputFile.toString());
+		
+		String resultMailAddress = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_ADDRESS) ? 
+			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_ADDRESS) : 
+			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_ADDRESS.getAttribName());
+		
+		if (StringUtils.isBlank(resultMailAddress))
+		{
+			LOGGER.error("Result mail address must be specified.");
+			
+			exitError();
+		}
+		
+		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_ADDRESS.getAttribName(), 
+			resultMailAddress);
+		
+		String resultMailPassword = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_PASSWORD) ? 
+			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_PASSWORD) : 
+			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PASSWORD.getAttribName());
+		
+		if (StringUtils.isBlank(resultMailPassword))
+		{
+			LOGGER.error("Result mail password must be specified.");
+			
+			exitError();
+		}
+		
+		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PASSWORD.getAttribName(), 
+			resultMailPassword);
+		
+		String resultMailHost = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_HOST) ? 
+			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_HOST) : 
+			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_HOST.getAttribName());
+		
+		if (StringUtils.isBlank(resultMailHost))
+		{
+			LOGGER.error("Result mail host must be specified.");
+			
+			exitError();
+		}
+		
+		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_HOST.getAttribName(), 
+			resultMailHost);
+		
+		String resultMailPort = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_PORT) ? 
+			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_PORT) : 
+			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PORT.getAttribName());
+		int resultMailPortNum = 0;
+		
+		if (StringUtils.isBlank(resultMailPort))
+		{
+			LOGGER.error("Result mail port must be specified.");
+			
+			exitError();
+		}
+		
+		if (!StringUtils.isNumeric(resultMailPort))
+		{
+			LOGGER.error("Result mail port must be numeric: " + resultMailPort);
+			
+			exitError();
+		}
+		else
+		{
+			resultMailPortNum = Integer.parseInt(resultMailPort);
+			
+			if (resultMailPortNum <= 0)
+			{
+				LOGGER.error("Result mail port must be a positive integer: " + resultMailPortNum);
+				
+				exitError();
+			}
+		}
+		
+		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PORT.getAttribName(), 
+			Integer.toString(resultMailPortNum));
 	}
 }

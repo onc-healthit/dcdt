@@ -1,28 +1,41 @@
 package gov.hhs.onc.dcdt.utils.cli;
 
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli2.Option;
+import org.apache.commons.cli2.builder.DefaultOptionBuilder;
 
 public enum UtilityCliOption implements CliOption
 {
 	HELP
 	(
-		OptionBuilder
-			.withLongOpt("help")
+		new DefaultOptionBuilder()
 			.withDescription("Print help information.")
-			.create("h")
+			.withLongName("help")
+			.create()
 	);
 	
 	private Option option;
+	private String attribName;
 	
 	UtilityCliOption(Option option)
 	{
+		this(option, null);
+	}
+	
+	UtilityCliOption(Option option, String attribName)
+	{
 		this.option = option;
+		this.attribName = attribName;
 	}
 	
 	@Override
 	public Option getOption()
 	{
 		return this.option;
+	}
+	
+	@Override
+	public String getAttribName()
+	{
+		return this.attribName;
 	}
 }

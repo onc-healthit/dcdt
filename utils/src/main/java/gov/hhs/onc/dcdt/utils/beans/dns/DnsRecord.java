@@ -1,20 +1,11 @@
 package gov.hhs.onc.dcdt.utils.beans.dns;
 
-public abstract class DnsRecord
+import gov.hhs.onc.dcdt.utils.beans.UtilityBean;
+
+public abstract class DnsRecord extends UtilityBean
 {
-	private String id;
 	private String name;
 	private int ttl;
-
-	public String getId()
-	{
-		return this.id;
-	}
-
-	public void setId(String id)
-	{
-		this.id = id;
-	}
 
 	public String getName()
 	{

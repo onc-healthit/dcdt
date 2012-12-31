@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	elementFormDefault="qualified"
+	targetNamespace="http://schema.direct-test.com/utils/config"
+	xmlns="http://schema.direct-test.com/utils/config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:simpleType name="string-bean-class">
+		<xs:annotation>
+			<xs:documentation>
+				A bean class name or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="gov\.hhs\.onc\.dcdt\.utils\.beans\.[a-zA-Z0-9\.]+"/>
+			<xs:pattern value="\$\{[a-zA-Z0-9:]+\}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="string-not-blank">
+		<xs:annotation>
+			<xs:documentation>
+				A non-blank string.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value=".*\S.*"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="string-ip4-address">
+		<xs:annotation>
+			<xs:documentation>
+				A  valid IPv4 address or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])"/>
+			<xs:pattern value="\$\{[a-zA-Z0-9:]+\}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="string-var">
+		<xs:annotation>
+			<xs:documentation>
+				A variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:string">
+			<xs:pattern value="\$\{[a-zA-Z0-9:]+\}"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="int-not-negative">
+		<xs:annotation>
+			<xs:documentation>
+				A non-negative integer.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minInclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="int-positive">
+		<xs:annotation>
+			<xs:documentation>
+				A positive integer.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:int">
+			<xs:minExclusive value="0"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:complexType name="bean" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Abstract bean.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="config-class" type="string-bean-class"/>
+		<xs:attribute name="id" type="string-not-blank"/>
+		<xs:anyAttribute/>
+	</xs:complexType>
+	
+	<xs:complexType name="utility" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Abstract utility.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:attribute name="name" type="string-not-blank"/>
+		<xs:attribute name="displayName" type="string-not-blank"/>
+		<xs:anyAttribute/>
+	</xs:complexType>
+</xs:schema>

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	elementFormDefault="qualified"
+	targetNamespace="http://schema.direct-test.com/utils/data/dns"
+	xmlns="http://schema.direct-test.com/utils/data/dns"
+	xmlns:config="http://schema.direct-test.com/utils/config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:import namespace="http://schema.direct-test.com/utils/config" schemaLocation="http://schema.direct-test.com/utils/config"/>
+	
+	<xs:complexType name="dns-record" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Abstract DNS record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="config:bean">
+				<xs:attribute name="name" type="config:string-not-blank"/>
+				<xs:attribute name="ttl" type="config:int-positive"/>
+				<xs:anyAttribute/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="a-record">
+		<xs:annotation>
+			<xs:documentation>
+				DNS A record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dns-record">
+				<xs:attribute name="config-class" type="config:string-bean-class" fixed="gov.hhs.onc.dcdt.utils.beans.dns.ARecord"/>
+				<xs:attribute name="value" type="config:string-ip4-address"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="cname-record">
+		<xs:annotation>
+			<xs:documentation>
+				DNS CNAME record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dns-record">
+				<xs:attribute name="config-class" type="config:string-bean-class" fixed="gov.hhs.onc.dcdt.utils.beans.dns.CnameRecord"/>
+				<xs:attribute name="value" type="config:string-not-blank"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="mx-record">
+		<xs:annotation>
+			<xs:documentation>
+				DNS MX record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dns-record">
+				<xs:attribute name="config-class" type="config:string-bean-class" fixed="gov.hhs.onc.dcdt.utils.beans.dns.MxRecord"/>
+				<xs:attribute name="priority" type="config:int-not-negative"/>
+				<xs:attribute name="value" type="config:string-not-blank"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="ns-record">
+		<xs:annotation>
+			<xs:documentation>
+				DNS NS record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dns-record">
+				<xs:attribute name="config-class" type="config:string-bean-class" fixed="gov.hhs.onc.dcdt.utils.beans.dns.NsRecord"/>
+				<xs:attribute name="value" type="config:string-not-blank"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="soa-record">
+		<xs:annotation>
+			<xs:documentation>
+				DNS SOA record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dns-record">
+				<xs:attribute name="config-class" type="config:string-bean-class" fixed="gov.hhs.onc.dcdt.utils.beans.dns.SoaRecord"/>
+				<xs:attribute name="nameServer" type="config:string-not-blank"/>
+				<xs:attribute name="hostMaster" type="config:string-not-blank"/>
+				<xs:attribute name="expire" type="config:int-not-negative"/>
+				<xs:attribute name="minimum" type="config:int-not-negative"/>
+				<xs:attribute name="refresh" type="config:int-not-negative"/>
+				<xs:attribute name="serial" type="config:int-not-negative"/>
+				<xs:attribute name="retry" type="config:int-not-negative"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="srv-record">
+		<xs:annotation>
+			<xs:documentation>
+				DNS SRV record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dns-record">
+				<xs:attribute name="config-class" type="config:string-bean-class" fixed="gov.hhs.onc.dcdt.utils.beans.dns.SrvRecord"/>
+				<xs:attribute name="service" type="config:string-not-blank"/>
+				<xs:attribute name="protocol" type="config:string-not-blank"/>
+				<xs:attribute name="priority" type="config:int-not-negative"/>
+				<xs:attribute name="weight" type="config:int-not-negative"/>
+				<xs:attribute name="port" type="config:int-positive"/>
+				<xs:attribute name="target" type="config:string-not-blank"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="dns">
+		<xs:annotation>
+			<xs:documentation>
+				DNS records parent.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="a" type="a-record"/>
+			<xs:element name="cname" type="cname-record"/>
+			<xs:element name="mx" type="mx-record"/>
+			<xs:element name="ns" type="ns-record"/>
+			<xs:element name="soa" type="soa-record"/>
+			<xs:element name="srv" type="srv-record"/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name="dns" type="dns">
+		<xs:annotation>
+			<xs:documentation>
+				DNS records parent element.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:unique name="dns-record-id">
+			<xs:selector xpath="dns/a|dns/cname|dns/mx|dns/ns|dns/soa|dns/srv"/>
+			<xs:field xpath="@id"/>
+		</xs:unique>
+	</xs:element>
+	
+</xs:schema>

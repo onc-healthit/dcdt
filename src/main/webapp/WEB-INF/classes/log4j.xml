@@ -13,7 +13,7 @@
 		<param name="threshold" value="all"/>
 
 		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-			<param name="fileNamePattern" value="@{dcdt.log.dir}/certDiscovery.%d{yyyy-MM-dd}.log"/>
+			<param name="fileNamePattern" value="${dcdt.log.dir}/certDiscovery.%d{yyyy-MM-dd}.log"/>
 		</rollingPolicy>
 		
 		<triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">
@@ -33,7 +33,7 @@
 		<param name="threshold" value="all"/>
 
 		<rollingPolicy class="org.apache.log4j.rolling.TimeBasedRollingPolicy">
-			<param name="fileNamePattern" value="@{dcdt.log.dir}/emailMessage.%d{yyyy-MM-dd}.log"/>
+			<param name="fileNamePattern" value="${dcdt.log.dir}/emailMessage.%d{yyyy-MM-dd}.log"/>
 		</rollingPolicy>
 		
 		<triggeringPolicy class="org.apache.log4j.rolling.SizeBasedTriggeringPolicy">

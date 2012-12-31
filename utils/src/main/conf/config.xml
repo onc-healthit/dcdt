@@ -5,69 +5,58 @@
 			<nodeCombiner config-class="org.apache.commons.configuration.tree.OverrideCombiner"/>
 			<expressionEngine config-class="org.apache.commons.configuration.tree.xpath.XPathExpressionEngine"/>
 		</result>
-		
-		<!-- TODO: remove if not used -->
-		<!--
-		<lookups>
-			<lookup config-prefix="expr" config-class="org.apache.commons.configuration.interpol.ExprLookup">
-			<variables>
-				<variable name="System" value="Class:java.lang.System"/>
-				<variable name="String" value="Class:org.apache.commons.lang3.StringUtils"/>
-			</variables>
-			</lookup>
-		</lookups>
-		-->
 	</header>
 	
 	<override>
 		<!-- DNS record configuration -->
-		<xml fileName="dns/a.xml" throwExceptionOnMissing="true" config-name="dns-a" config-at="dns">
+		<xml fileName="data/dns/a.xml" throwExceptionOnMissing="true" config-name="dns-a" config-at="dns" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
-		<xml fileName="dns/cname.xml" throwExceptionOnMissing="true" config-name="dns-cname" config-at="dns">
+		<xml fileName="data/dns/cname.xml" throwExceptionOnMissing="true" config-name="dns-cname" config-at="dns" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
-		<xml fileName="dns/mx.xml" throwExceptionOnMissing="true" config-name="dns-mx" config-at="dns">
+		<xml fileName="data/dns/mx.xml" throwExceptionOnMissing="true" config-name="dns-mx" config-at="dns" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
-		<xml fileName="dns/ns.xml" throwExceptionOnMissing="true" config-name="dns-ns" config-at="dns">
+		<xml fileName="data/dns/ns.xml" throwExceptionOnMissing="true" config-name="dns-ns" config-at="dns" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
-		<xml fileName="dns/soa.xml" throwExceptionOnMissing="true" config-name="dns-soa" config-at="dns">
+		<xml fileName="data/dns/soa.xml" throwExceptionOnMissing="true" config-name="dns-soa" config-at="dns" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
-		<xml fileName="dns/srv.xml" throwExceptionOnMissing="true" config-name="dns-srv" config-at="dns">
+		<xml fileName="data/dns/srv.xml" throwExceptionOnMissing="true" config-name="dns-srv" config-at="dns" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
 		
 		<!-- Data configuration -->
-		<xml fileName="domains.xml" throwExceptionOnMissing="true" config-name="domains" config-at="domains">
+		<xml fileName="data/domains.xml" throwExceptionOnMissing="true" config-name="domains" config-at="domains" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
-		<xml fileName="entries.xml" throwExceptionOnMissing="true" config-name="entries" config-at="entries">
+		<xml fileName="data/entries.xml" throwExceptionOnMissing="true" config-name="entries" config-at="entries" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
-		<xml fileName="ldap.xml" throwExceptionOnMissing="true" config-name="ldap" config-at="ldap">
+		<xml fileName="data/ldap.xml" throwExceptionOnMissing="true" config-name="ldap" config-at="ldap" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
-		<xml fileName="settings.xml" throwExceptionOnMissing="true" config-name="settings" config-at="settings">
+		<xml fileName="data/settings.xml" throwExceptionOnMissing="true" config-name="settings" config-at="settings" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
 		
 		<!-- Base utility configuration -->
-		<xml fileName="utils.xml" throwExceptionOnMissing="true" config-name="utils">
+		<!-- TODO: remove if unused -->
+		<xml fileName="data/utils.xml" throwExceptionOnMissing="true" config-name="utils">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
 	</override>
 	
 	<additional>
 		<!-- Certificate Generator configuration -->
-		<xml fileName="utils/certgen/certgen.xml" throwExceptionOnMissing="true" config-name="certgen" config-at="certgen">
+		<xml fileName="utils/certgen/certgen.xml" throwExceptionOnMissing="true" config-name="certgen" config-at="certgen" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
 		
 		<!-- Configuration Generator configuration -->
-		<xml fileName="utils/configgen/configgen.xml" throwExceptionOnMissing="true" config-name="configgen" config-at="configgen">
+		<xml fileName="utils/configgen/configgen.xml" throwExceptionOnMissing="true" config-name="configgen" config-at="configgen" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
 		<properties fileName="utils/configgen/config/config.properties" throwExceptionOnMissing="true" config-name="configgen-base-config"/>

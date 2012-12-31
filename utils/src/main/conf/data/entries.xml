@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<entries>
+<entries
+	xmlns="http://schema.direct-test.com/utils/data/entries"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/utils/data/entries http://schema.direct-test.com/utils/data/entries">
+	
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="ca"
 		name="${util:domain}_ca"
-		dir="${util:outputDir}/ca"
+		path="ca"
 		canSign="true"
 		keyBits="1024"
 		validDays="365">
@@ -16,7 +20,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="1"
 		name="dts500_valid_cert_record"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 		
@@ -29,7 +33,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="2"
 		name="othercert"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -42,7 +46,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="3"
 		name="dts501_valid"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -55,7 +59,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="4"
 		name="direct9.${util:domain}"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -68,7 +72,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="5"
 		name="dts500_valid_ldap"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -81,7 +85,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="6"
 		name="dts501_valid_ldap"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -94,7 +98,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="7"
 		name="dts501_expired"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -107,7 +111,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="11"
 		name="dts502"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="4096"
 		validDays="365">
 
@@ -120,7 +124,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="13"
 		name="dts505_expired_cert_record"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -133,7 +137,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="14"
 		name="dts505_mac"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -146,7 +150,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="16"
 		name="dts515_mac"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -159,7 +163,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="17"
 		name="dts515_address_bound"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -172,7 +176,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="18"
 		name="dts506_ldap_1_mac"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -185,7 +189,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="19"
 		name="dts506_ldap_2"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -198,7 +202,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="20"
 		name="dts507"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -211,7 +215,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="21"
 		name="dts517"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -224,7 +228,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="24"
 		name="dts520_invalid_address_cert"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -237,7 +241,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="25"
 		name="dts520_invalid_domain_cert"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -250,7 +254,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="26"
 		name="dts520_invalid_address_ldap"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -263,7 +267,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="27"
 		name="dts520_invalid_domain_ldap"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -276,7 +280,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="28"
 		name="dts512_expired_address_cert"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -289,7 +293,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="29"
 		name="expired_direct6_domain_cert"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -302,7 +306,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="37"
 		name="dts501_valid_add_ldap"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="365">
 
@@ -315,7 +319,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="38"
 		name="direct2.${util:domain}_invalid_dns"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -328,7 +332,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="39"
 		name="dts515_invalid_dns_address"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 
@@ -341,7 +345,7 @@
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="41"
 		name="dts515_invalid_ldap_address"
-		dir="${util:outputDir}"
+		path=""
 		keyBits="1024"
 		validDays="0">
 

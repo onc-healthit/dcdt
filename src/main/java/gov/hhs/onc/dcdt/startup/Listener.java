@@ -18,7 +18,7 @@ import org.apache.log4j.helpers.LogLog;
  */
 public class Listener implements ServletContextListener
 {
-	private static final String CONFIG_HOME_NAME = "CONFIG_DIR";
+	private static final String CONFIG_HOME_NAME = "dcdt.config.dir";
 	private static final String CONFIG_PROP_FILE = "config.properties";
 	private static final String EMAIL_PROP_FILE = "email.properties";
 	private static final String VERSION_PROP_FILE = "version.properties";

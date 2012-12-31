@@ -3,20 +3,10 @@ package gov.hhs.onc.dcdt.utils.beans;
 import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
 
 @ConfigBean("domains/domain")
-public class Domain
+public class Domain extends UtilityBean
 {
 	private String id;
 	private String name;
-
-	public String getId()
-	{
-		return this.id;
-	}
-
-	public void setId(String id)
-	{
-		this.id = id;
-	}
 
 	public String getName()
 	{

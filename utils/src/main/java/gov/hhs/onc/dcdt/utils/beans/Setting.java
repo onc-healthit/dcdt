@@ -3,21 +3,11 @@ package gov.hhs.onc.dcdt.utils.beans;
 import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
 
 @ConfigBean("settings/setting")
-public class Setting
+public class Setting extends UtilityBean
 {
 	private String id;
 	private String name;
 	private String value;
-
-	public String getId()
-	{
-		return this.id;
-	}
-
-	public void setId(String id)
-	{
-		this.id = id;
-	}
 
 	public String getName()
 	{
