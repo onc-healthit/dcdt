@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.utils.ldap;
 
 import gov.hhs.onc.dcdt.utils.beans.LdapService;
-import gov.hhs.onc.dcdt.utils.ldap.model.filter.StringEqualityNode;
+import gov.hhs.onc.dcdt.utils.ldap.filter.StringEqualityNode;
 import gov.hhs.onc.dcdt.utils.test.UtilityTest;
 import gov.hhs.onc.dcdt.utils.test.UtilityTestListener;
 import java.util.List;
@@ -18,8 +18,8 @@ import org.testng.annotations.Test;
 @Test(groups = { "utils.ldap" })
 public class LdapServiceWrapperTest extends UtilityTest
 {
-	private static LdapServiceWrapper serviceWrapper;
-	private static List<Dn> baseDns; 
+	public static LdapServiceWrapper serviceWrapper;
+	public static List<Dn> baseDns;
 	
 	@Test(dependsOnMethods = { "testGetBaseDns" })
 	public void testSearch() throws LdapInvalidAttributeValueException, UtilityLdapException
@@ -41,9 +41,8 @@ public class LdapServiceWrapperTest extends UtilityTest
 	public void testBind(LdapService service) throws UtilityLdapException
 	{
 		serviceWrapper = new LdapServiceWrapper(service);
-		
 		serviceWrapper.bind();
 		
-		Assert.assertFalse(serviceWrapper.isBound(), "Search failed to find admin object.");
+		Assert.assertTrue(serviceWrapper.isBound(), "Failed to bind to LDAP service.");
 	}
 }

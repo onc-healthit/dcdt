@@ -20,6 +20,10 @@ import org.bouncycastle.crypto.util.PrivateKeyFactory;
 @ConfigBean("entries/entry")
 public class Entry extends UtilityBean
 {
+	public final static String RSA_ALG_NAME = "RSA";
+	public final static String PKCS12_KEYSTORE_TYPE = "PKCS12";
+	public final static String X509_CERT_TYPE = "X.509";
+	
 	private final static String CERT_SUFFIX = "_cert";
 	private final static String KEY_SUFFIX = "_key";
 	

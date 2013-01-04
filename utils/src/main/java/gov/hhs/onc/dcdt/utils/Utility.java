@@ -7,6 +7,8 @@ import gov.hhs.onc.dcdt.utils.cli.UtilityCliOption;
 import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import gov.hhs.onc.dcdt.utils.config.UtilityConfigException;
 import java.io.File;
+import java.io.InputStream;
+import java.net.URL;
 import java.security.Security;
 import org.apache.commons.cli2.Group;
 import org.apache.commons.cli2.OptionException;
@@ -38,7 +40,7 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 	
 	protected String name;
 	protected UtilityCli<T> cli;
-	protected UtilityConfig config;
+	protected UtilityConfig<T> config;
 	
 	static
 	{
@@ -53,6 +55,16 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 		this.cli = cli;
 		
 		this.init();
+	}
+	
+	public URL getResource(String resourcePath)
+	{
+		return Thread.currentThread().getContextClassLoader().getResource(resourcePath);
+	}
+	
+	public InputStream getResourceAsStream(String resourcePath)
+	{
+		return Thread.currentThread().getContextClassLoader().getResourceAsStream(resourcePath);
 	}
 	
 	protected static void printHelp(String name, Group optionsGroup, OptionException exception)
@@ -166,7 +178,7 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 	
 	protected void initConfig()
 	{
-		this.config = new UtilityConfig(this);
+		this.config = new UtilityConfig<>(this);
 		
 		try
 		{

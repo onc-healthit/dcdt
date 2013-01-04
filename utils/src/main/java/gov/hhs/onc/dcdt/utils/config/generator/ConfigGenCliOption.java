@@ -29,8 +29,8 @@ public enum ConfigGenCliOption implements CliOption
 	(
 		new DefaultOptionBuilder()
 			.withDescription("Path to the input directory to read certificates/keys from.")
-			.withLongName("in")
 			.withShortName("i")
+			.withLongName("in")
 			.withArgument(new ArgumentBuilder()
 				.withName("path")
 				.withMinimum(1)

@@ -21,7 +21,7 @@
 				</xs:sequence>
 				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.utils.beans.Entry"/>
 				<xs:attribute name="name" type="config:attr"/>
-				<xs:attribute name="path" type="xs:string"/>
+				<xs:attribute name="path" type="xs:token"/>
 				<xs:attribute name="canSign" type="xs:boolean"/>
 				<xs:attribute name="keyBits" type="xs:positiveInteger"/>
 				<xs:attribute name="validDays" type="xs:nonNegativeInteger"/>

@@ -32,10 +32,6 @@ import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 
 public class EntryBuilder
 {
-	private final static String RSA_ALG_NAME = "RSA";
-	private final static String PKCS12_KEYSTORE_TYPE = "PKCS12";
-	private final static String X509_CERT_TYPE = "X.509";
-	
 	private final static int SERIAL_NUM_LENGTH = 64;
 	
 	private final static AlgorithmIdentifier SIG_ALGORITHM = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA1WithRSAEncryption");
@@ -61,7 +57,7 @@ public class EntryBuilder
 	{
 		try
 		{
-			KeyStore keyStore = KeyStore.getInstance(PKCS12_KEYSTORE_TYPE, BouncyCastleProvider.PROVIDER_NAME);
+			KeyStore keyStore = KeyStore.getInstance(Entry.PKCS12_KEYSTORE_TYPE, BouncyCastleProvider.PROVIDER_NAME);
 			keyStore.load(null, null);
 			keyStore.setKeyEntry(entry.getName(), entry.getPrivateKey(), "".toCharArray(), new Certificate[]{ entry.getCert() });
 			
@@ -89,11 +85,6 @@ public class EntryBuilder
 			
 			GeneralNames subjAltNames = entry.getDn().getSubjAltNames();
 			
-			if (subjAltNames != null)
-			{
-				certGen.addExtension(X509Extension.subjectAlternativeName, false, subjAltNames);
-			}
-			
 			if (entry.isLeaf())
 			{
 				certGen.addExtension(X509Extension.authorityKeyIdentifier, false, entry.getAuthKeyId());
@@ -107,10 +98,15 @@ public class EntryBuilder
 				}
 			}
 			
+			if (subjAltNames != null)
+			{
+				certGen.addExtension(X509Extension.subjectAlternativeName, false, subjAltNames);
+			}
+			
 			X509CertificateHolder certHolder = certGen.build(new BcRSAContentSignerBuilder(SIG_ALGORITHM, DIGEST_ALGORITM)
 				.build(entry.getIssuer().getPrivateKeyParam()));
 			
-			entry.setCert((X509Certificate)CertificateFactory.getInstance(X509_CERT_TYPE, BouncyCastleProvider.PROVIDER_NAME)
+			entry.setCert((X509Certificate)CertificateFactory.getInstance(Entry.X509_CERT_TYPE, BouncyCastleProvider.PROVIDER_NAME)
 				.generateCertificate(new ByteArrayInputStream(certHolder.getEncoded())));
 		}
 		catch (CertificateException | IOException | NoSuchProviderException | OperatorCreationException e)
@@ -125,11 +121,11 @@ public class EntryBuilder
 		
 		try
 		{
-			keyPairGen = KeyPairGenerator.getInstance(RSA_ALG_NAME, BouncyCastleProvider.PROVIDER_NAME);
+			keyPairGen = KeyPairGenerator.getInstance(Entry.RSA_ALG_NAME, BouncyCastleProvider.PROVIDER_NAME);
 		}
 		catch (NoSuchAlgorithmException | NoSuchProviderException e)
 		{
-			throw new EntryException("Unable to create key pair generator: algorithm=" + RSA_ALG_NAME + 
+			throw new EntryException("Unable to create key pair generator: algorithm=" + Entry.RSA_ALG_NAME + 
 				", providerName=" + BouncyCastleProvider.PROVIDER_NAME, e);
 		}
 		

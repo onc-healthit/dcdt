@@ -16,9 +16,27 @@ import org.apache.directory.shared.ldap.model.url.LdapUrl;
 @ConfigBean("ldaps/ldap")
 public class LdapService extends UtilityBean
 {
+	private static class LdapServiceConnectionConfig extends LdapConnectionConfig
+	{
+		private long defaultTimeout = super.getDefaultTimeout();
+		
+		@Override
+		public long getDefaultTimeout()
+		{
+			return this.defaultTimeout;
+		}
+
+		public void setDefaultTimeout(long defaultTimeout)
+		{
+			this.defaultTimeout = defaultTimeout;
+		}
+	}
+	
 	private final static String HASH_BIND_PASS_DIGEST_NAME_PREFIX = "{";
 	private final static String HASH_BIND_PASS_DIGEST_NAME_SUFFIX = "}";
 	private final static LdapSecurityConstants HASH_BIND_PASS_DIGEST_DEFAULT = LdapSecurityConstants.HASH_METHOD_SHA;
+	
+	private final static long TIMEOUT_DEFAULT = 5000;
 	
 	private String name;
 	private boolean real;
@@ -50,14 +68,20 @@ public class LdapService extends UtilityBean
 		return url;
 	}
 	
-	public LdapConnectionConfig toConnectionConfig()
+	public LdapServiceConnectionConfig toConnectionConfig()
 	{
-		LdapConnectionConfig connectionConfig = new LdapConnectionConfig();
+		LdapServiceConnectionConfig connectionConfig = new LdapServiceConnectionConfig();
 		connectionConfig.setLdapHost(this.host);
 		connectionConfig.setLdapPort(this.port);
 		connectionConfig.setUseSsl(this.useSsl);
-		connectionConfig.setName(this.getBindDnName());
-		connectionConfig.setCredentials(this.getBindPass());
+		
+		if (!this.anonymousBind)
+		{
+			connectionConfig.setName(this.getBindDnName());
+			connectionConfig.setCredentials(this.getBindPass());
+		}
+		
+		connectionConfig.setDefaultTimeout(TIMEOUT_DEFAULT);
 		
 		return connectionConfig;
 	}
@@ -102,29 +126,38 @@ public class LdapService extends UtilityBean
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("name=");
-		builder.append(this.getName());
+		builder.append(this.name);
 		builder.append(", real=");
-		builder.append(this.getReal());
+		builder.append(this.real);
 		builder.append(", host=");
-		builder.append(this.getHost());
+		builder.append(this.host);
 		builder.append(", port=");
-		builder.append(this.getPort());
+		builder.append(this.port);
 		builder.append(", useSsl=");
-		builder.append(this.getUseSsl());
-		builder.append(", bindDn=");
-		builder.append(this.getBindDn());
+		builder.append(this.useSsl);
 		
-		// Only output bind pass if it will be hashed
-		if (this.hashBindPass)
+		if (this.anonymousBind)
 		{
-			builder.append(", bindPass=");
-			builder.append(this.getBindPass());
+			builder.append(", anonymousBind=");
+			builder.append(this.anonymousBind);
 		}
+		else
+		{
+			builder.append(", bindDn=");
+			builder.append(this.getBindDnName());
 			
-		builder.append(", hashBindPass=");
-		builder.append(this.hashBindPass);
-		builder.append(", hashBindPassDigest=");
-		builder.append(this.getHashBindPassDigestName());
+			// Only output bind pass if it will be hashed
+			if (this.hashBindPass)
+			{
+				builder.append(", bindPass=");
+				builder.append(this.getBindPass());
+			}
+				
+			builder.append(", hashBindPass=");
+			builder.append(this.hashBindPass);
+			builder.append(", hashBindPassDigest=");
+			builder.append(this.getHashBindPassDigestName());
+		}
 		
 		return builder.toString();
 	}

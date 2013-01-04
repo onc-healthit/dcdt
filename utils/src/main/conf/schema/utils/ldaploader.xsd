@@ -16,9 +16,11 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="config:utility">
-				<xs:attribute name="inputDir" type="config:attr" use="optional"/>
+				<xs:attribute name="inputPath" type="config:attr" use="optional"/>
+				<xs:attribute name="inputContainerPath" type="config:attr" use="optional"/>
 				<xs:attribute name="bindDnName" type="config:attr" use="optional"/>
 				<xs:attribute name="bindPass" type="config:attr" use="optional"/>
+				<xs:attribute name="loadDnName" type="config:attr" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

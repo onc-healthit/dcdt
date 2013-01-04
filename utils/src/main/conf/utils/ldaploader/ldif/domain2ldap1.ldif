@@ -1,6 +1,6 @@
 version: 1
 
-dn: cn=dts506_ldap_2,${util:loadDn}
+dn: cn=dts506_ldap_2,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -10,7 +10,7 @@ sn: dts506_ldap_2
 mail: dts506@direct2.${util:domain}
 userCertificate:: 
 
-dn: cn=dts507,${util:loadDn}
+dn: cn=dts507,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -20,7 +20,7 @@ sn: dts507
 mail: dts507@direct3.${util:domain}
 userCertificate:: 
 
-dn: cn=dts515_address_bound,${util:loadDn}
+dn: cn=dts515_address_bound,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -30,7 +30,7 @@ sn: dts515_address_bound
 mail: dts515@direct2.${util:domain}
 userCertificate:: 
 
-dn: cn=dts517,${util:loadDn}
+dn: cn=dts517,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person

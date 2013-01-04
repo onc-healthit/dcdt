@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.ldap.model.filter;
+package gov.hhs.onc.dcdt.utils.ldap.filter;
 
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.directory.shared.ldap.model.entry.StringValue;

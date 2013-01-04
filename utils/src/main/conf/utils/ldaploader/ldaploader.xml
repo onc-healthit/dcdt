@@ -6,7 +6,8 @@
 	
 	displayName="LDAP Loader"
 	
-	inputDir="out/certgen/${util:domain}"
-	
 	bindDnName="uid=admin\,ou=system"
-	bindPass="secret"/>
+	bindPass="secret"
+	inputPath="out/certgen/${util:domain}-certs.zip"
+	inputContainerPath="certs"
+	loadDnName="ou=system"/>

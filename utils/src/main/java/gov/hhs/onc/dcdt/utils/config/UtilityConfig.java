@@ -14,6 +14,7 @@ import gov.hhs.onc.dcdt.utils.beans.dns.MxRecord;
 import gov.hhs.onc.dcdt.utils.beans.dns.NsRecord;
 import gov.hhs.onc.dcdt.utils.beans.dns.SoaRecord;
 import gov.hhs.onc.dcdt.utils.beans.dns.SrvRecord;
+import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -29,10 +30,11 @@ import org.apache.commons.configuration.beanutils.BeanHelper;
 import org.apache.commons.configuration.beanutils.XMLBeanDeclaration;
 import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.xml.sax.SAXParseException;
 
-public class UtilityConfig
+public class UtilityConfig<T extends Enum<T> & CliOption>
 {
 	public final static String XPATH_DELIM = "/";
 	public final static String XPATH_ATTRIB_DELIM = ", ";
@@ -54,13 +56,13 @@ public class UtilityConfig
 		{
 		});
 	
-	private Utility util;
+	private Utility<T> util;
 	private UtilityConfigEntityResolver configEntityResolver;
 	private DefaultConfigurationBuilder configBuilder;
 	private CombinedConfiguration config;
 	private UtilityConfigListener configListener;
 	
-	public UtilityConfig(Utility util)
+	public UtilityConfig(Utility<T> util)
 	{
 		this.util = util;
 	}
@@ -189,6 +191,47 @@ public class UtilityConfig
 		}
 		
 		return beans;
+	}
+	
+	public String getUtilString(T option)
+	{
+		return this.getUtilString(option, null);
+	}
+	
+	public String getUtilString(T option, Object defaultValue)
+	{
+		return ObjectUtils.toString(this.util.getCli().getOptionValue(option), this.getUtilString(XPATH_ATTRIB_KEY_PREFIX + option.getAttribName(), 
+			defaultValue));
+	}
+	
+	public String getUtilString(String key)
+	{
+		return this.getUtilString(key, null);
+	}
+	
+	public String getUtilString(String key, Object defaultValue)
+	{
+		return this.getUtilConfig().getString(key, ObjectUtils.toString(defaultValue, null));
+	}
+	
+	public void setUtilString(T option)
+	{
+		this.setUtilString(option, null);
+	}
+	
+	public void setUtilString(T option, Object defaultValue)
+	{
+		this.setUtilString(XPATH_ATTRIB_KEY_PREFIX + option.getAttribName(), this.getUtilString(option), defaultValue);
+	}
+	
+	public void setUtilString(String key, Object value)
+	{
+		this.setUtilString(key, value, null);
+	}
+	
+	public void setUtilString(String key, Object value, Object defaultValue)
+	{
+		this.getUtilConfig().setProperty(key, ObjectUtils.defaultIfNull(value, defaultValue));
 	}
 	
 	public SubnodeConfiguration getUtilConfig()

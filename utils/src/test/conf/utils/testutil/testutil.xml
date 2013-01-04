@@ -10,4 +10,6 @@
 	domain="localhost"
 	
 	bindDnName="uid=admin\,ou=system"
-	bindPass="secret"/>
+	bindPass="secret"
+	
+	loadDnName="ou=system"/>

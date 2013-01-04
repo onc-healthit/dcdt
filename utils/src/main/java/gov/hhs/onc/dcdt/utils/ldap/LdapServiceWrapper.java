@@ -6,14 +6,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.cursor.EntryCursor;
 import org.apache.directory.shared.ldap.model.entry.Attribute;
 import org.apache.directory.shared.ldap.model.entry.Entry;
+import org.apache.directory.shared.ldap.model.entry.Modification;
 import org.apache.directory.shared.ldap.model.exception.LdapException;
 import org.apache.directory.shared.ldap.model.filter.ExprNode;
+import org.apache.directory.shared.ldap.model.ldif.ChangeType;
+import org.apache.directory.shared.ldap.model.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.shared.ldap.model.message.ResultResponse;
 import org.apache.directory.shared.ldap.model.message.SearchScope;
@@ -22,8 +26,6 @@ import org.apache.log4j.Logger;
 
 public class LdapServiceWrapper
 {
-	private final static long CONNECTION_TIME_OUT = 5000;
-	
 	private final static Logger LOGGER = Logger.getLogger(LdapServiceWrapper.class);
 	
 	private LdapService service;
@@ -32,6 +34,78 @@ public class LdapServiceWrapper
 	public LdapServiceWrapper(LdapService service)
 	{
 		this.service = service;
+	}
+	
+	public static String[] toAttributeNameArray(Iterable<? extends Attribute> attributes)
+	{
+		List<String> attributeNames = new ArrayList<>();
+		
+		for (Attribute attribute : attributes)
+		{
+			attributeNames.add(attribute.getId());
+		}
+		
+		return attributeNames.toArray(new String[attributeNames.size()]);
+	}
+	
+	public void add(Entry ... entries) throws UtilityLdapException
+	{
+		for (Entry entry : entries)
+		{
+			this.add(entry);
+		}
+	}
+	
+	public void add(Entry entry) throws UtilityLdapException
+	{
+		try
+		{
+			this.connection.add(entry);
+		}
+		catch (LdapException e)
+		{
+			throw new UtilityLdapException("Unable to add entry to LDAP service (" + this.service.toUrl() + "): " + entry, e);
+		}
+		
+		LOGGER.debug("Added entry to LDAP service (" + this.service.toUrl() + "): " + entry);
+	}
+	
+	public void modify(LdifEntry ... ldifEntries) throws UtilityLdapException
+	{
+		for (LdifEntry ldifEntry : ldifEntries)
+		{
+			this.modify(ldifEntry);
+		}
+	}
+	
+	public void modify(LdifEntry ldifEntry) throws UtilityLdapException
+	{
+		if (ldifEntry.getChangeType() == ChangeType.Add)
+		{
+			this.add(ldifEntry.getEntry());
+			
+			return;
+		}
+
+		Modification[] modifications = ldifEntry.getModificationArray();
+		
+		if (ArrayUtils.isEmpty(modifications))
+		{
+			LOGGER.trace("Skipped modification of LDIF entry data in LDAP service (" + this.service.toUrl() + "): " + ldifEntry);
+			
+			return;
+		}
+		
+		try
+		{
+			this.connection.modify(ldifEntry.getDn(), modifications);
+		}
+		catch (LdapException e)
+		{
+			throw new UtilityLdapException("Unable to modify LDIF entry data in LDAP service (" + this.service.toUrl() + "): " + ldifEntry, e);
+		}
+		
+		LOGGER.debug("Modified LDIF entry data in LDAP service (" + this.service.toUrl() + "): " + ldifEntry);
 	}
 	
 	public List<Dn> getBaseDns() throws UtilityLdapException
@@ -137,40 +211,75 @@ public class LdapServiceWrapper
 		return entries;
 	}
 	
-	public boolean bind() throws UtilityLdapException
+	public boolean connect() throws UtilityLdapException
 	{
+		if (this.isConnected())
+		{
+			this.disconnect();
+		}
+		
 		this.connection = new LdapNetworkConnection(this.service.toConnectionConfig());
-		this.connection.setTimeOut(CONNECTION_TIME_OUT);
 		
 		try
 		{
-			this.connection.bind();
+			return this.connection.connect();
 		}
 		catch (IOException | LdapException e)
 		{
-			throw new UtilityLdapException("Unable to bind to LDAP service (" + this.service + ").", e);
+			throw new UtilityLdapException("Unable to connect to LDAP service (" + this.service + ").", e);
+		}
+	}
+	
+	public boolean bind() throws UtilityLdapException
+	{
+		if (!this.isConnected())
+		{
+			this.connect();
+		}
+		else if (this.isBound())
+		{
+			this.unBind();
 		}
 		
-		LOGGER.debug("Successfully bound to LDAP service (" + this.service.toUrl() + "): bindDn=" + this.service.getBindDnName() + 
-			(this.service.hashBindPass() ? ", bindPass=" + this.service.getBindPass() : ""));
+		try
+		{
+			if (this.service.isAnonymousBind())
+			{
+				this.connection.anonymousBind();
+			}
+			else
+			{
+				this.connection.bind();
+			}
+		}
+		catch (IOException | LdapException e)
+		{
+			throw new UtilityLdapException("Unable to bind" + (this.service.isAnonymousBind() ? " anonymously" : "") + " to LDAP service (" + 
+				this.service.toUrl() + ")" + (this.service.isAnonymousBind() ? "." : ": bindDn=" + this.service.getBindDnName() + 
+				(this.service.hashBindPass() ? ", bindPass=" + this.service.getBindPass() : "")), e);
+		}
 		
-		return this.connection.isAuthenticated();
+		LOGGER.debug("Successfully bound" + (this.service.isAnonymousBind() ? " anonymously" : "") + " to LDAP service (" + this.service.toUrl() + 
+			")" + (this.service.isAnonymousBind() ? "." : ": bindDn=" + this.service.getBindDnName() + (this.service.hashBindPass() ? ", bindPass=" + 
+			this.service.getBindPass() : "")));
+		
+		return this.isBound();
 	}
 	
 	public boolean unBind() throws UtilityLdapException
 	{
+		if (!this.isBound())
+		{
+			return true;
+		}
+		
 		try
 		{
-			if (!this.isBound())
-			{
-				return true;
-			}
-			
 			this.connection.unBind();
 			
 			LOGGER.debug("Successfully unbound from LDAP service (" + this.service.toUrl() + ").");
 			
-			return !this.connection.isAuthenticated();
+			return !this.isBound();
 		}
 		catch (LdapException e)
 		{
@@ -178,20 +287,24 @@ public class LdapServiceWrapper
 		}
 	}
 	
-	public boolean close() throws UtilityLdapException
+	public boolean disconnect() throws UtilityLdapException
 	{
+		if (!this.isConnected())
+		{
+			return true;
+		}
+		else if (this.isBound())
+		{
+			this.unBind();
+		}
+		
 		try
 		{
-			if (!this.isConnected())
-			{
-				return true;
-			}
-			
 			this.connection.close();
 			
 			LOGGER.debug("Successfully disconnected from LDAP service (" + this.service.toUrl() + ").");
 			
-			return this.isConnected();
+			return !this.isConnected();
 		}
 		catch (IOException e)
 		{
@@ -215,7 +328,7 @@ public class LdapServiceWrapper
 		super.finalize();
 		
 		this.unBind();
-		this.close();
+		this.disconnect();
 	}
 	
 	public LdapConnection getConnection()

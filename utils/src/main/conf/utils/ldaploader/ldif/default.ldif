@@ -1,6 +1,6 @@
 version: 1
 
-dn: cn=dts500_valid_ldap,ou=system
+dn: cn=dts500_valid_ldap,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -10,7 +10,7 @@ sn: dts500_valid_ldap
 mail: dts500@direct1.${util:domain}
 userCertificate:: 
 
-dn: cn=dts501_valid_ldap,ou=system
+dn: cn=dts501_valid_ldap,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -20,7 +20,7 @@ sn: dts501_valid_ldap
 mail: direct1.${util:domain}
 userCertificate:: 
 
-dn: cn=dts501_valid_add_ldap,ou=system
+dn: cn=dts501_valid_add_ldap,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -30,7 +30,7 @@ sn: dts501_valid_add_ldap
 mail: dts501@direct1.${util:domain}
 userCertificate:: 
 
-dn: cn=dts505_mac,${util:loadDn}
+dn: cn=dts505_mac,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -40,7 +40,7 @@ sn: dts505_mac
 mail: dts505@direct2.${util:domain}
 userCertificate:: 
 
-dn: cn=dts506_ldap_1_mac,${util:loadDn}
+dn: cn=dts506_ldap_1_mac,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -50,7 +50,7 @@ sn: dts506_ldap_1_mac
 mail: dts506@direct2.${util:domain}
 userCertificate:: 
 
-dn: cn=dts515_mac,${util:loadDn}
+dn: cn=dts515_mac,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -60,7 +60,7 @@ sn: dts515_mac
 mail: direct2.${util:domain}
 userCertificate:: 
 
-dn: cn=dts515_invalid_ldap_address,${util:loadDn}
+dn: cn=dts515_invalid_ldap_address,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -70,16 +70,16 @@ sn: dts515_invalid_ldap_address
 mail: dts515@direct2.${util:domain}
 userCertificate:: 
 
-dn: cn=dts517,${util:loadDn}
+dn: cn=dts517,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
 objectClass: organizationalPerson
 cn: dts517
 sn: dts517
-mail: dts517@direct3.direct-test.com
+mail: dts517@direct3.${util:domain}
 
-dn: cn=dts520_invalid_address_ldap,${util:loadDn}
+dn: cn=dts520_invalid_address_ldap,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
@@ -89,7 +89,7 @@ sn: dts520_invalid_address_ldap
 mail: dts520@direct5.${util:domain}
 userCertificate:: 
 
-dn: cn=dts520_invalid_domain_ldap,${util:loadDn}
+dn: cn=dts520_invalid_domain_ldap,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
 objectClass: person
