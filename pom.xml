@@ -6,6 +6,13 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	
+	<parent>
+		<groupId>gov.hhs.onc.dcdt</groupId>
+		<artifactId>direct-cert-discovery-tool-parent</artifactId>
+		<version>2.1-SNAPSHOT</version>
+		<relativePath>parent</relativePath>
+	</parent>
+	
 	<groupId>gov.hhs.onc.dcdt</groupId>
 	<artifactId>direct-cert-discovery-tool</artifactId>
 	<version>2.1-SNAPSHOT</version>
@@ -21,66 +28,65 @@
 	<!-- See pom.properties for project properties -->
 	
 	<dependencies>
+		<!-- Compile dependencies (inherited) -->
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
-			<version>1.9</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
 			<artifactId>commons-codec</artifactId>
-			<version>1.7</version>
 		</dependency>
+		<dependency>
+			<groupId>commons-validator</groupId>
+			<artifactId>commons-validator</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>dnsjava</groupId>
+			<artifactId>dnsjava</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.activation</groupId>
+			<artifactId>activation</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.mail</groupId>
+			<artifactId>mail</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>apache-log4j-extras</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>log4j</groupId>
+			<artifactId>log4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-io</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+		</dependency>
+		<!-- Test dependencies (inherited) -->
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<scope>test</scope>
+		</dependency>
+		
+		<!-- Compile dependencies (project) -->
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.6</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-validator</groupId>
-			<artifactId>commons-validator</artifactId>
-			<version>1.4.0</version>
-		</dependency>
-		<dependency>
-			<groupId>dnsjava</groupId>
-			<artifactId>dnsjava</artifactId>
-			<version>2.0.8</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.activation</groupId>
-			<artifactId>activation</artifactId>
-			<version>1.1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.mail</groupId>
-			<artifactId>mail</artifactId>
-			<version>1.4.5</version>
-		</dependency>
-		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
 			<version>2.5</version>
 			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>apache-log4j-extras</artifactId>
-			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>log4j</groupId>
-			<artifactId>log4j</artifactId>
-			<version>1.2.17</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-io</artifactId>
-			<version>1.3.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.struts</groupId>
@@ -114,15 +120,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.0</version>
-				<configuration>
-					<compilerArguments>
-						<Xlint:unchecked/>
-					</compilerArguments>
-					<encoding>${file.encoding}</encoding>
-					<source>${java.version}</source>
-					<target>${java.version}</target>
-				</configuration>
 				<executions>
 					<execution>
 						<phase>compile</phase>
@@ -135,7 +132,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
 				<executions>
 					<execution>
 						<phase>package</phase>
@@ -148,14 +144,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.6</version>
-				<configuration>
-					<delimiters>
-						<delimiter>@{*}</delimiter>
-					</delimiters>
-					<encoding>${file.encoding}</encoding>
-					<useDefaultDelimiters>false</useDefaultDelimiters>
-				</configuration>
 				<executions>
 					<execution>
 						<phase>generate-resources</phase>
@@ -163,25 +151,28 @@
 							<goal>copy-resources</goal>
 						</goals>
 						<configuration>
-							<outputDirectory>${project.build.directory}/webapp-tmp</outputDirectory>
+							<outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
 							<resources>
+								<!-- Webapp classes (filtered) -->
 								<resource>
 									<directory>src/main/webapp/WEB-INF/classes</directory>
 									<filtering>true</filtering>
 									<includes>
-										<include>**.properties</include>
-										<include>**.xml</include>
+										<include>**/*.properties</include>
+										<include>**/*.xml</include>
 									</includes>
 									<targetPath>WEB-INF/classes</targetPath>
 								</resource>
+								<!-- Webapp classes (non-filtered) -->
 								<resource>
 									<directory>src/main/webapp/WEB-INF/classes</directory>
 									<excludes>
-										<exclude>**.properties</exclude>
-										<exclude>**.xml</exclude>
+										<exclude>**/*.properties</exclude>
+										<exclude>**/*.xml</exclude>
 									</excludes>
 									<targetPath>WEB-INF/classes</targetPath>
 								</resource>
+								<!-- Webapp descriptor (filtered) -->
 								<resource>
 									<directory>src/main/webapp/WEB-INF</directory>
 									<filtering>true</filtering>
@@ -198,14 +189,8 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
 				<configuration>
-					<archiveClasses>true</archiveClasses>
-					<webResources>
-						<resource>
-							<directory>${project.build.directory}/webapp-tmp</directory>
-						</resource>
-					</webResources>
+					<warSourceExcludes>WEB-INF/classes/**,WEB-INF/web.xml</warSourceExcludes>
 				</configuration>
 				<executions>
 					<execution>
@@ -234,20 +219,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>properties-maven-plugin</artifactId>
-				<version>1.0-alpha-2</version>
-				<executions>
-					<execution>
-						<phase>initialize</phase>
-						<goals>
-							<goal>read-project-properties</goal>
-						</goals>
-						<configuration>
-							<files>
-								<file>pom.properties</file>
-							</files>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

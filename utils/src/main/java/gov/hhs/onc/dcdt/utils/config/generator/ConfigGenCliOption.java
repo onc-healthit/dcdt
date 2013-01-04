@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.configgen.cli;
+package gov.hhs.onc.dcdt.utils.config.generator;
 
 import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import gov.hhs.onc.dcdt.utils.cli.validation.NotBlankValidator;
@@ -12,7 +12,7 @@ public enum ConfigGenCliOption implements CliOption
 	DOMAIN
 	(
 		new DefaultOptionBuilder()
-			.withDescription("Domain name to generate certificates for.")
+			.withDescription("Domain name of the deployment.")
 			.withShortName("d")
 			.withLongName("domain")
 			.withArgument(new ArgumentBuilder()

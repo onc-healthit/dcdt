@@ -16,19 +16,19 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="config:utility">
-				<xs:attribute name="inputDir" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="outputFile" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="outputFileArchivePath" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="resultMailAddress" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="resultMailPass" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="resultMailHost" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="resultMailPort" type="config:int-positive" use="optional"/>
-				<xs:attribute name="certsDir" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="certsAnchorFile" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="rawMailDir" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="inMailDir" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="outMailDir" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="badMailDir" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="inputDir" type="config:attr" use="optional"/>
+				<xs:attribute name="outputFile" type="config:attr" use="optional"/>
+				<xs:attribute name="outputFileArchivePath" type="config:attr" use="optional"/>
+				<xs:attribute name="resultMailAddress" type="config:attr" use="optional"/>
+				<xs:attribute name="resultMailPass" type="config:attr" use="optional"/>
+				<xs:attribute name="resultMailHost" type="config:attr" use="optional"/>
+				<xs:attribute name="resultMailPort" type="config:portAttr" use="optional"/>
+				<xs:attribute name="certsDir" type="config:attr" use="optional"/>
+				<xs:attribute name="certsAnchorFile" type="config:attr" use="optional"/>
+				<xs:attribute name="rawMailDir" type="config:attr" use="optional"/>
+				<xs:attribute name="inMailDir" type="config:attr" use="optional"/>
+				<xs:attribute name="outMailDir" type="config:attr" use="optional"/>
+				<xs:attribute name="badMailDir" type="config:attr" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -40,5 +40,4 @@
 			</xs:documentation>
 		</xs:annotation>
 	</xs:element>
-	
 </xs:schema>

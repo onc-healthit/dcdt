@@ -1,0 +1,41 @@
+version: 1
+
+dn: cn=dts506_ldap_2,${util:loadDn}
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: dts506_ldap_2
+sn: dts506_ldap_2
+mail: dts506@direct2.${util:domain}
+userCertificate:: 
+
+dn: cn=dts507,${util:loadDn}
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: dts507
+sn: dts507
+mail: dts507@direct3.${util:domain}
+userCertificate:: 
+
+dn: cn=dts515_address_bound,${util:loadDn}
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: dts515_address_bound
+sn: dts515_address_bound
+mail: dts515@direct2.${util:domain}
+userCertificate:: 
+
+dn: cn=dts517,${util:loadDn}
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: dts517
+sn: dts517
+mail: dts517@direct3.${util:domain}
+userCertificate:: 

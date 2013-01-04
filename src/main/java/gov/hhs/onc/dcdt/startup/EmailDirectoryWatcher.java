@@ -1,16 +1,18 @@
 package gov.hhs.onc.dcdt.startup;
 
 import gov.hhs.onc.dcdt.decrypt.DecryptController;
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
-
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import static java.nio.file.StandardWatchEventKinds.ENTRY_CREATE;
+import static java.nio.file.StandardWatchEventKinds.OVERFLOW;
+import java.nio.file.WatchEvent;
+import java.nio.file.WatchKey;
+import java.nio.file.WatchService;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
-
-
-import static java.nio.file.StandardWatchEventKinds.*;
 
 /**
  * Processes email file directory on application

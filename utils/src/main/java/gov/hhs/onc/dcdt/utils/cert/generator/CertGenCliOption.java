@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.certgen.cli;
+package gov.hhs.onc.dcdt.utils.cert.generator;
 
 import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import gov.hhs.onc.dcdt.utils.cli.validation.NotBlankValidator;

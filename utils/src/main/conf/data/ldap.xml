@@ -7,21 +7,27 @@
 	<ldap config-class="gov.hhs.onc.dcdt.utils.beans.LdapService"
 		id="1"
 		name="fake"
+		real="false"
 		host="ldap.${util:domain}"
-		port="389"
-		real="false"/>
+		port="389"/>
 	
 	<ldap config-class="gov.hhs.onc.dcdt.utils.beans.LdapService"
 		id="2"
 		name="default"
+		real="true"
 		host="ldap.${util:domain}"
 		port="10389"
-		real="true"/>
+		useSsl="false"
+		bindDnName="${util:bindDnName}"
+		bindPass="${util:bindPass}"/>
 	
 	<ldap config-class="gov.hhs.onc.dcdt.utils.beans.LdapService"
 		id="3"
 		name="domain2ldap1"
+		real="true"
 		host="ldap.${util:domain}"
 		port="11389"
-		real="true"/>
+		useSsl="false"
+		bindDnName="${util:bindDnName}"
+		bindPass="${util:bindPass}"/>
 </ldaps>

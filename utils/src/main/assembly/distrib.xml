@@ -14,7 +14,7 @@
 	<fileSets>
 		<!-- Binary/executable files -->
 		<fileSet>
-			<directory>${project.build.directory}/bin</directory>
+			<directory>${project.build.directory}/${project.artifactId}/bin</directory>
 			<directoryMode>0775</directoryMode>
 			<fileMode>0775</fileMode>
 			<outputDirectory>/bin</outputDirectory>
@@ -22,17 +22,14 @@
 		
 		<!-- Configuration files -->
 		<fileSet>
-			<directory>${project.build.directory}/conf</directory>
+			<directory>${project.build.directory}/${project.artifactId}/conf</directory>
 			<outputDirectory>/conf</outputDirectory>
 		</fileSet>
-	</fileSets>
-	
-	<dependencySets>
-		<!-- Project dependencies -->
-		<dependencySet>
+		
+		<!-- Library files -->
+		<fileSet>
+			<directory>${project.build.directory}/${project.artifactId}/lib</directory>
 			<outputDirectory>/lib</outputDirectory>
-			<scope>runtime</scope>
-			<useProjectArtifact>true</useProjectArtifact>
-		</dependencySet>
-	</dependencySets>
+		</fileSet>
+	</fileSets>
 </assembly>

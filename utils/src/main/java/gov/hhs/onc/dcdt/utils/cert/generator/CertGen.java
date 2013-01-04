@@ -1,10 +1,9 @@
-package gov.hhs.onc.dcdt.utils.certgen;
+package gov.hhs.onc.dcdt.utils.cert.generator;
 
 import gov.hhs.onc.dcdt.utils.Utility;
-import gov.hhs.onc.dcdt.utils.UtilityData;
+import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import gov.hhs.onc.dcdt.utils.beans.BeanAttrib;
 import gov.hhs.onc.dcdt.utils.beans.Entry;
-import gov.hhs.onc.dcdt.utils.certgen.cli.CertGenCliOption;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
 import gov.hhs.onc.dcdt.utils.entry.EntryBuilder;
 import gov.hhs.onc.dcdt.utils.entry.EntryException;
@@ -58,7 +57,7 @@ public class CertGen extends Utility<CertGenCliOption>
 		super.execute(args);
 		
 		List<Entry> entries = new ArrayList<>();
-		Entry caEntry = this.data.getBeanById(Entry.class, ENTRY_CA_ID);
+		Entry caEntry = this.config.getBeanById(Entry.class, ENTRY_CA_ID);
 		caEntry.setIssuer(caEntry);
 		
 		try
@@ -76,7 +75,7 @@ public class CertGen extends Utility<CertGenCliOption>
 		
 		entries.add(caEntry);
 		
-		for (Entry leafEntry : this.data.getEntries(new BeanAttrib(UtilityData.BEAN_ID_ATTRIB_KEY, ENTRY_CA_ID, true)))
+		for (Entry leafEntry : this.config.getEntries(new BeanAttrib(UtilityConfig.BEAN_ID_ATTRIB_KEY, ENTRY_CA_ID, true)))
 		{
 			leafEntry.setIssuer(caEntry);
 			
@@ -96,8 +95,8 @@ public class CertGen extends Utility<CertGenCliOption>
 			entries.add(leafEntry);
 		}
 		
-		writeOutputFile(new File(this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName())), 
-			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME), entries);
+		writeOutputFile(new File(this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName())), 
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME), entries);
 	}
 
 	@Override
@@ -105,12 +104,12 @@ public class CertGen extends Utility<CertGenCliOption>
 	{
 		super.processCmdLine();
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.DOMAIN.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.DOMAIN.getAttribName(), 
 			this.cli.getOptionValue(CertGenCliOption.DOMAIN));
 		
 		String outputFilePath = this.cli.hasOption(CertGenCliOption.OUTPUT_FILE) ? 
 			this.cli.getOptionValue(CertGenCliOption.OUTPUT_FILE) : 
-			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName());
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName());
 		
 		if (StringUtils.isBlank(outputFilePath))
 		{
@@ -128,7 +127,7 @@ public class CertGen extends Utility<CertGenCliOption>
 			exitError();
 		}
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName(), 
 			outputFile.toString());
 	}
 

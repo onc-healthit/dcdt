@@ -16,8 +16,8 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="config:utility">
-				<xs:attribute name="outputFile" type="config:string-not-blank" use="optional"/>
-				<xs:attribute name="outputFileArchivePath" type="config:string-not-blank" use="optional"/>
+				<xs:attribute name="outputFile" type="config:attr" use="optional"/>
+				<xs:attribute name="outputFileArchivePath" type="config:attr" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>
@@ -29,5 +29,4 @@
 			</xs:documentation>
 		</xs:annotation>
 	</xs:element>
-	
 </xs:schema>

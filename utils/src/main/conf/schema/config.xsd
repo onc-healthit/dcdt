@@ -5,72 +5,126 @@
 	xmlns="http://schema.direct-test.com/utils/config"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	
-	<xs:simpleType name="string-bean-class">
+	<xs:simpleType name="notBlank">
 		<xs:annotation>
 			<xs:documentation>
-				A bean class name or a variable.
+				A non-blank token.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:string">
-			<xs:pattern value="gov\.hhs\.onc\.dcdt\.utils\.beans\.[a-zA-Z0-9\.]+"/>
-			<xs:pattern value="\$\{[a-zA-Z0-9:]+\}"/>
-		</xs:restriction>
-	</xs:simpleType>
-	
-	<xs:simpleType name="string-not-blank">
-		<xs:annotation>
-			<xs:documentation>
-				A non-blank string.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:string">
+		<xs:restriction base="xs:token">
 			<xs:pattern value=".*\S.*"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="string-ip4-address">
-		<xs:annotation>
-			<xs:documentation>
-				A  valid IPv4 address or a variable.
-			</xs:documentation>
-		</xs:annotation>
-		<xs:restriction base="xs:string">
-			<xs:pattern value="(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])"/>
-			<xs:pattern value="\$\{[a-zA-Z0-9:]+\}"/>
-		</xs:restriction>
-	</xs:simpleType>
-	
-	<xs:simpleType name="string-var">
+	<xs:simpleType name="variable">
 		<xs:annotation>
 			<xs:documentation>
 				A variable.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:string">
+		<xs:restriction base="xs:token">
 			<xs:pattern value="\$\{[a-zA-Z0-9:]+\}"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="int-not-negative">
+	<xs:simpleType name="attr">
 		<xs:annotation>
 			<xs:documentation>
-				A non-negative integer.
+				An attribute value.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:int">
-			<xs:minInclusive value="0"/>
+		<xs:union memberTypes="notBlank variable"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="className">
+		<xs:annotation>
+			<xs:documentation>
+				A class name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value="gov\.hhs\.onc\.dcdt\.utils\.[a-zA-Z0-9\.]+"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
-	<xs:simpleType name="int-positive">
+	<xs:simpleType name="beanClassName">
 		<xs:annotation>
 			<xs:documentation>
-				A positive integer.
+				A bean class name.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:restriction base="xs:int">
-			<xs:minExclusive value="0"/>
+		<xs:restriction base="className">
+			<xs:pattern value="gov\.hhs\.onc\.dcdt\.utils\.beans\.[a-zA-Z0-9\.]+"/>
 		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="beanClassNameAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a bean class name or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="beanClassName attr"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="beanFactoryClassName">
+		<xs:annotation>
+			<xs:documentation>
+				A bean factory class name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="className">
+			<xs:pattern value="gov\.hhs\.onc\.dcdt\.utils\.beans\.factory\.[a-zA-Z0-9\.]+"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="beanFactoryClassNameAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a bean factory class name or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="beanFactoryClassName attr"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ip4Address">
+		<xs:annotation>
+			<xs:documentation>
+				An IPv4 address.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value="(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])\.(25[0-5]|2[0-4][0-9]|[0-1]?[0-9]?[0-9])"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="ip4AddressAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing an IPv4 address or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="ip4Address attr"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="port">
+		<xs:annotation>
+			<xs:documentation>
+				A port number.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:positiveInteger">
+			<xs:maxInclusive value="65535"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="portAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a port number or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="port attr"/>
 	</xs:simpleType>
 	
 	<xs:complexType name="bean" abstract="true">
@@ -79,8 +133,9 @@
 				Abstract bean.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="config-class" type="string-bean-class"/>
-		<xs:attribute name="id" type="string-not-blank"/>
+		<xs:attribute name="config-class" type="beanClassNameAttr"/>
+		<xs:attribute name="config-factory" type="beanFactoryClassNameAttr" use="optional"/>
+		<xs:attribute name="id" type="attr"/>
 		<xs:anyAttribute/>
 	</xs:complexType>
 	
@@ -90,8 +145,7 @@
 				Abstract utility.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:attribute name="name" type="string-not-blank"/>
-		<xs:attribute name="displayName" type="string-not-blank"/>
-		<xs:anyAttribute/>
+		<xs:attribute name="name" type="attr"/>
+		<xs:attribute name="displayName" type="attr"/>
 	</xs:complexType>
 </xs:schema>

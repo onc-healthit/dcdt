@@ -1,9 +1,8 @@
-package gov.hhs.onc.dcdt.utils.configgen;
+package gov.hhs.onc.dcdt.utils.config.generator;
 
 import gov.hhs.onc.dcdt.utils.Utility;
-import gov.hhs.onc.dcdt.utils.UtilityData;
+import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
-import gov.hhs.onc.dcdt.utils.configgen.cli.ConfigGenCliOption;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -44,13 +43,12 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 	{
 		super.execute(args);
 		
-		CombinedConfiguration configAdditional = (CombinedConfiguration)this.config.getConfiguration(
-			DefaultConfigurationBuilder.ADDITIONAL_NAME);
+		CombinedConfiguration configAdditional = (CombinedConfiguration)this.config.getConfig().getConfiguration(DefaultConfigurationBuilder.ADDITIONAL_NAME);
 		PropertiesConfiguration baseConfigProps = (PropertiesConfiguration)configAdditional.getConfiguration(BASE_CONFIG_PROPS_NAME), 
 			baseEmailProps = (PropertiesConfiguration)configAdditional.getConfiguration(BASE_EMAIL_PROPS_NAME);
 
-		File outputFile = new File(this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName()));
-		String outputFileArchivePath = this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME);
+		File outputFile = new File(this.getConfig().getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName()));
+		String outputFileArchivePath = this.getConfig().getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME);
 		
 		if (!outputFile.exists())
 		{
@@ -98,12 +96,12 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 	{
 		super.processCmdLine();
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.DOMAIN.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.DOMAIN.getAttribName(), 
 			this.cli.getOptionValue(ConfigGenCliOption.DOMAIN));
 		
 		String inputDirPath = this.cli.hasOption(ConfigGenCliOption.INPUT_DIR) ? 
 			this.cli.getOptionValue(ConfigGenCliOption.INPUT_DIR) : 
-			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.INPUT_DIR.getAttribName());
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.INPUT_DIR.getAttribName());
 		
 		if (StringUtils.isBlank(inputDirPath))
 		{
@@ -127,12 +125,12 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 			exitError();
 		}
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.INPUT_DIR.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.INPUT_DIR.getAttribName(), 
 			inputDir.toString());
 		
 		String outputFilePath = this.cli.hasOption(ConfigGenCliOption.OUTPUT_FILE) ? 
 			this.cli.getOptionValue(ConfigGenCliOption.OUTPUT_FILE) : 
-			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName());
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName());
 		
 		if (StringUtils.isBlank(outputFilePath))
 		{
@@ -150,12 +148,12 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 			exitError();
 		}
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName(), 
 			outputFile.toString());
 		
 		String resultMailAddress = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_ADDRESS) ? 
 			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_ADDRESS) : 
-			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_ADDRESS.getAttribName());
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_ADDRESS.getAttribName());
 		
 		if (StringUtils.isBlank(resultMailAddress))
 		{
@@ -164,12 +162,12 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 			exitError();
 		}
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_ADDRESS.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_ADDRESS.getAttribName(), 
 			resultMailAddress);
 		
 		String resultMailPassword = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_PASSWORD) ? 
 			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_PASSWORD) : 
-			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PASSWORD.getAttribName());
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PASSWORD.getAttribName());
 		
 		if (StringUtils.isBlank(resultMailPassword))
 		{
@@ -178,12 +176,12 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 			exitError();
 		}
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PASSWORD.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PASSWORD.getAttribName(), 
 			resultMailPassword);
 		
 		String resultMailHost = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_HOST) ? 
 			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_HOST) : 
-			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_HOST.getAttribName());
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_HOST.getAttribName());
 		
 		if (StringUtils.isBlank(resultMailHost))
 		{
@@ -192,12 +190,12 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 			exitError();
 		}
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_HOST.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_HOST.getAttribName(), 
 			resultMailHost);
 		
 		String resultMailPort = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_PORT) ? 
 			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_PORT) : 
-			this.getUtilConfig().getString(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PORT.getAttribName());
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PORT.getAttribName());
 		int resultMailPortNum = 0;
 		
 		if (StringUtils.isBlank(resultMailPort))
@@ -225,7 +223,7 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 			}
 		}
 		
-		this.getUtilConfig().setProperty(UtilityData.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PORT.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PORT.getAttribName(), 
 			Integer.toString(resultMailPortNum));
 	}
 }

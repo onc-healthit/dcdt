@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.certgen;
+package gov.hhs.onc.dcdt.utils.cert.generator;
 
 import gov.hhs.onc.dcdt.utils.UtilityException;
 

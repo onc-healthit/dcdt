@@ -4,57 +4,41 @@ import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCliException;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCliOption;
-import gov.hhs.onc.dcdt.utils.config.UtilityConfigEntityResolver;
-import gov.hhs.onc.dcdt.utils.config.UtilityConfigListener;
-import gov.hhs.onc.dcdt.utils.config.UtilityConfigStrLookup;
+import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
+import gov.hhs.onc.dcdt.utils.config.UtilityConfigException;
 import java.io.File;
 import java.security.Security;
 import org.apache.commons.cli2.Group;
 import org.apache.commons.cli2.OptionException;
 import org.apache.commons.cli2.util.HelpFormatter;
-import org.apache.commons.configuration.CombinedConfiguration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.ConfigurationRuntimeException;
-import org.apache.commons.configuration.ConfigurationUtils;
-import org.apache.commons.configuration.DefaultConfigurationBuilder;
-import org.apache.commons.configuration.HierarchicalConfiguration;
-import org.apache.commons.configuration.SubnodeConfiguration;
-import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.apache.log4j.extras.DOMConfigurator;
 import org.apache.log4j.helpers.LogLog;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.xml.sax.SAXParseException;
 
 public abstract class Utility<T extends Enum<T> & CliOption>
 {
 	protected final static int EXIT_SUCCESS = 0;
 	protected final static int EXIT_ERROR = 1;
 	
-	protected final static String TERM_WIDTH_PROP_NAME = "dcdt.utils.term.width";
+	protected final static String LOG_DIR_SYS_PROP_NAME = "dcdt.utils.log.dir";
+	protected final static String LOG_DIR_SYS_PROP_VALUE_DEFAULT = "logs";
+	protected final static String LOG_FILE_NAME_BASE_SYS_PROP_NAME = "dcdt.utils.log.file.name.base";
+	protected final static String LOG_FILE_NAME_BASE_SYS_PROP_VALUE_DEFAULT = "utils";
+	protected final static String TERM_WIDTH_SYS_PROP_NAME = "dcdt.utils.term.width";
 	
 	protected final static String DISPLAY_NAME_ATTRIB_NAME = "displayName";
 	
 	private final static String LOG4J_DEFAULT_INIT_OVERRIDE_PROP_NAME = "log4j.defaultInitOverride";
 	private final static String LOG4J_CONFIG_FILE_PATH = "conf/log4j.xml";
 	private final static long LOG4J_CONFIG_FILE_WATCH_INTERVAL = 5000;
-	private final static String LOGS_DIR_PATH = "logs";
-	
-	private final static String CONFIG_FILE_PATH = "config.xml";
-	private final static String CONFIG_PARSE_ERROR_SOURCE_DELIM = ":";
-	
-	private final static String UTIL_LOOKUP_PREFIX = "util";
 	
 	private static Logger logger;
 	
 	protected String name;
-	protected UtilityConfigEntityResolver configEntityResolver;
-	protected DefaultConfigurationBuilder configBuilder;
-	protected CombinedConfiguration config;
-	protected UtilityConfigListener configListener;
 	protected UtilityCli<T> cli;
-	protected UtilityData data;
+	protected UtilityConfig config;
 	
 	static
 	{
@@ -71,18 +55,13 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 		this.init();
 	}
 	
-	public SubnodeConfiguration getUtilConfig()
-	{
-		return this.config.configurationAt(this.name);
-	}
-	
 	protected static void printHelp(String name, Group optionsGroup, OptionException exception)
 	{
 		int termWidth = HelpFormatter.DEFAULT_FULL_WIDTH;
 		String termWidthPropValue;
 		
-		if (System.getProperties().containsKey(TERM_WIDTH_PROP_NAME) && 
-			StringUtils.isNumeric((termWidthPropValue = System.getProperty(TERM_WIDTH_PROP_NAME))))
+		if (System.getProperties().containsKey(TERM_WIDTH_SYS_PROP_NAME) && 
+			StringUtils.isNumeric((termWidthPropValue = System.getProperty(TERM_WIDTH_SYS_PROP_NAME))))
 		{
 			termWidth = Integer.parseInt(termWidthPropValue);
 		}
@@ -109,21 +88,47 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 	protected static void initLogging()
 	{
 		System.setProperty(LOG4J_DEFAULT_INIT_OVERRIDE_PROP_NAME, Boolean.toString(true));
-
-		File logsDir = new File(LOGS_DIR_PATH);
 		
-		if (logsDir.exists())
+		if (!System.getProperties().containsKey(LOG_DIR_SYS_PROP_NAME))
 		{
-			if (!logsDir.isDirectory())
+			System.setProperty(LOG_DIR_SYS_PROP_NAME, LOG_DIR_SYS_PROP_VALUE_DEFAULT);
+		}
+		
+		String logDirPath = System.getProperty(LOG_DIR_SYS_PROP_NAME);
+		
+		if (StringUtils.isBlank(logDirPath))
+		{
+			LogLog.error("Log directory system property (name=" + LOG_DIR_SYS_PROP_NAME + ") must be specified.");
+			
+			exitError();
+		}
+		
+		File logDir = new File(logDirPath);
+		
+		if (logDir.exists())
+		{
+			if (!logDir.isDirectory())
 			{
-				LogLog.error("Logs directory path is not a directory: " + logsDir);
+				LogLog.error("Log directory path is not a directory: " + logDir);
 				
 				exitError();
 			}
 		}
-		else if (!logsDir.mkdir())
+		else if (!logDir.mkdir())
 		{
-			LogLog.error("Unable to make logs directory: " + logsDir);
+			LogLog.error("Unable to make log directory: " + logDir);
+			
+			exitError();
+		}
+		
+		if (!System.getProperties().containsKey(LOG_FILE_NAME_BASE_SYS_PROP_NAME))
+		{
+			System.setProperty(LOG_FILE_NAME_BASE_SYS_PROP_NAME, LOG_FILE_NAME_BASE_SYS_PROP_VALUE_DEFAULT);
+		}
+		
+		if (StringUtils.isBlank(System.getProperty(LOG_FILE_NAME_BASE_SYS_PROP_NAME)))
+		{
+			LogLog.error("Log file name base system property (name=" + LOG_FILE_NAME_BASE_SYS_PROP_NAME + ") must be specified.");
 			
 			exitError();
 		}
@@ -131,13 +136,6 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 		DOMConfigurator.configureAndWatch(LOG4J_CONFIG_FILE_PATH, LOG4J_CONFIG_FILE_WATCH_INTERVAL);
 		
 		logger = Logger.getLogger(Utility.class);
-	}
-	
-	protected static Throwable getRootConfigurationCause(Throwable throwable)
-	{
-		return (!(throwable instanceof ConfigurationException) && !(throwable instanceof ConfigurationRuntimeException)) || 
-			(throwable.getCause() == null) || (throwable.getCause() == throwable) ? throwable : 
-			getRootConfigurationCause(throwable.getCause());
 	}
 	
 	protected void execute(String ... args)
@@ -168,41 +166,15 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 	
 	protected void initConfig()
 	{
+		this.config = new UtilityConfig(this);
+		
 		try
 		{
-			this.configListener = new UtilityConfigListener(this);
-			
-			this.configEntityResolver = new UtilityConfigEntityResolver();
-			
-			this.configBuilder = new DefaultConfigurationBuilder(CONFIG_FILE_PATH);
-			this.configBuilder.addConfigurationListener(this.configListener);
-			this.configBuilder.addErrorListener(this.configListener);
-			this.configBuilder.setEntityResolver(this.configEntityResolver);
-			ConfigurationUtils.enableRuntimeExceptions(this.configBuilder);
-			
-			ConfigurationInterpolator.registerGlobalLookup(UTIL_LOOKUP_PREFIX, new UtilityConfigStrLookup(this));
-			
-			this.config = this.configBuilder.getConfiguration(true);
-			this.config.addConfigurationListener(this.configListener);
-			this.config.addErrorListener(this.configListener);
-			ConfigurationUtils.enableRuntimeExceptions(this.config);
+			this.config.initConfig();
 		}
-		catch (ConfigurationException | ConfigurationRuntimeException e)
+		catch (UtilityConfigException e)
 		{
-			Throwable rootConfigCause = getRootConfigurationCause(e);
-			
-			if (rootConfigCause instanceof SAXParseException)
-			{
-				SAXParseException parseConfigCause = (SAXParseException)rootConfigCause;
-				
-				logger.error("Invalid configuration: source=" + StringUtils.join(new Object[]{ parseConfigCause.getSystemId(), 
-					parseConfigCause.getLineNumber(), parseConfigCause.getColumnNumber() }, CONFIG_PARSE_ERROR_SOURCE_DELIM) + ", error=" + 
-					parseConfigCause.getMessage());
-			}
-			else
-			{
-				logger.error("Unable to initialize utility (name=" + this.name + ") configuration.", e);
-			}
+			logger.error(e.getMessage());
 			
 			exitError();
 		}
@@ -211,17 +183,20 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 	protected void init()
 	{
 		this.initConfig();
-		
-		this.data = new UtilityData(this);
 	}
 
+	public UtilityCli<T> getCli()
+	{
+		return this.cli;
+	}
+
+	public UtilityConfig getConfig()
+	{
+		return this.config;
+	}
+	
 	public String getName()
 	{
 		return this.name;
-	}
-
-	public HierarchicalConfiguration getConfig()
-	{
-		return this.config;
 	}
 }

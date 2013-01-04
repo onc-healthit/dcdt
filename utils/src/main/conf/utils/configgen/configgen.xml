@@ -4,7 +4,6 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://schema.direct-test.com/utils/utils/configgen http://schema.direct-test.com/utils/utils/configgen"
 	
-	name="configgen"
 	displayName="Configuration Generator"
 	
 	inputDir="out/certgen/${util:domain}"

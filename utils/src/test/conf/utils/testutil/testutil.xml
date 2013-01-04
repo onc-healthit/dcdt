@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testutil
+	xmlns="http://schema.direct-test.com/utils/utils/testutil"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/utils/utils/testutil http://schema.direct-test.com/utils/utils/testutil"
+	
+	name="testutil"
+	displayName="Test Utility"
+	
+	domain="localhost"
+	
+	bindDnName="uid=admin\,ou=system"
+	bindPass="secret"/>

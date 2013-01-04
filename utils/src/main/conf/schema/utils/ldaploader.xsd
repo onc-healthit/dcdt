@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	elementFormDefault="qualified"
+	targetNamespace="http://schema.direct-test.com/utils/utils/ldaploader"
+	xmlns="http://schema.direct-test.com/utils/utils/ldaploader"
+	xmlns:config="http://schema.direct-test.com/utils/config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:import namespace="http://schema.direct-test.com/utils/config" schemaLocation="http://schema.direct-test.com/utils/config"/>
+	
+	<xs:complexType name="ldaploader">
+		<xs:annotation>
+			<xs:documentation>
+				LDAP Loader utility.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="config:utility">
+				<xs:attribute name="inputDir" type="config:attr" use="optional"/>
+				<xs:attribute name="bindDnName" type="config:attr" use="optional"/>
+				<xs:attribute name="bindPass" type="config:attr" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="ldaploader" type="ldaploader">
+		<xs:annotation>
+			<xs:documentation>
+				LDAP Loader utility element.
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

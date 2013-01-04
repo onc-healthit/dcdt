@@ -1,5 +1,6 @@
-package gov.hhs.onc.dcdt.utils;
+package gov.hhs.onc.dcdt.utils.config;
 
+import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
 import gov.hhs.onc.dcdt.utils.beans.BeanAttrib;
 import gov.hhs.onc.dcdt.utils.beans.Domain;
@@ -14,13 +15,24 @@ import gov.hhs.onc.dcdt.utils.beans.dns.NsRecord;
 import gov.hhs.onc.dcdt.utils.beans.dns.SoaRecord;
 import gov.hhs.onc.dcdt.utils.beans.dns.SrvRecord;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.configuration.CombinedConfiguration;
+import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.ConfigurationRuntimeException;
+import org.apache.commons.configuration.ConfigurationUtils;
+import org.apache.commons.configuration.DefaultConfigurationBuilder;
+import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.SubnodeConfiguration;
+import org.apache.commons.configuration.beanutils.BeanFactory;
 import org.apache.commons.configuration.beanutils.BeanHelper;
 import org.apache.commons.configuration.beanutils.XMLBeanDeclaration;
+import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.xml.sax.SAXParseException;
 
-public class UtilityData
+public class UtilityConfig
 {
 	public final static String XPATH_DELIM = "/";
 	public final static String XPATH_ATTRIB_DELIM = ", ";
@@ -33,9 +45,22 @@ public class UtilityData
 	
 	public final static String BEAN_ID_ATTRIB_KEY = "id";
 	
-	private Utility util;
+	private final static String CONFIG_FILE_PATH = "config.xml";
+	private final static String CONFIG_PARSE_ERROR_SOURCE_DELIM = ":";
 	
-	public UtilityData(Utility util)
+	private final static String UTIL_LOOKUP_PREFIX = "util";
+	
+	private final static List<BeanFactory> BEAN_FACTORIES = Arrays.asList(new BeanFactory[]
+		{
+		});
+	
+	private Utility util;
+	private UtilityConfigEntityResolver configEntityResolver;
+	private DefaultConfigurationBuilder configBuilder;
+	private CombinedConfiguration config;
+	private UtilityConfigListener configListener;
+	
+	public UtilityConfig(Utility util)
 	{
 		this.util = util;
 	}
@@ -158,13 +183,64 @@ public class UtilityData
 	{
 		List<T> beans = new ArrayList<>();
 		
-		for (String beanId : this.util.getConfig().getStringArray(getBeanIdXpath(beanClass, attribs)))
+		for (HierarchicalConfiguration beanConfig : this.util.getConfig().getConfig().configurationsAt(getBeanXpath(beanClass, attribs)))
 		{
-			beans.add(beanClass.cast(BeanHelper.createBean(new XMLBeanDeclaration(this.util.getConfig(),
-				getBeanXpath(beanClass, new BeanAttrib(BEAN_ID_ATTRIB_KEY, beanId))))));
+			beans.add(beanClass.cast(BeanHelper.createBean(new XMLBeanDeclaration(beanConfig))));
 		}
 		
 		return beans;
+	}
+	
+	public SubnodeConfiguration getUtilConfig()
+	{
+		return this.config.configurationAt(this.util.getName());
+	}
+	
+	public void initConfig() throws UtilityConfigException
+	{
+		try
+		{
+			for (BeanFactory beanFactory : BEAN_FACTORIES)
+			{
+				BeanHelper.registerBeanFactory(beanFactory.getClass().getName(), beanFactory);
+			}
+			
+			this.configListener = new UtilityConfigListener(this.util);
+			
+			this.configEntityResolver = new UtilityConfigEntityResolver();
+			
+			this.configBuilder = new DefaultConfigurationBuilder(CONFIG_FILE_PATH);
+			this.configBuilder.addConfigurationListener(this.configListener);
+			this.configBuilder.addErrorListener(this.configListener);
+			this.configBuilder.setEntityResolver(this.configEntityResolver);
+			ConfigurationUtils.enableRuntimeExceptions(this.configBuilder);
+			
+			ConfigurationInterpolator.registerGlobalLookup(UTIL_LOOKUP_PREFIX, new UtilityConfigStrLookup(this.util));
+			
+			this.config = this.configBuilder.getConfiguration(true);
+			this.config.addConfigurationListener(this.configListener);
+			this.config.addErrorListener(this.configListener);
+			ConfigurationUtils.enableRuntimeExceptions(this.config);
+		}
+		catch (ConfigurationException | ConfigurationRuntimeException e)
+		{
+			Throwable rootConfigCause = getRootConfigurationCause(e);
+			
+			if (rootConfigCause instanceof SAXParseException)
+			{
+				SAXParseException parseConfigCause = (SAXParseException)rootConfigCause;
+				
+				throw new UtilityConfigException("Invalid configuration: source=" + StringUtils.join(new Object[]{
+					parseConfigCause.getSystemId(),
+					parseConfigCause.getLineNumber(), parseConfigCause.getColumnNumber()
+				}, CONFIG_PARSE_ERROR_SOURCE_DELIM) + ", error=" + 
+					parseConfigCause.getMessage());
+			}
+			else
+			{
+				throw new UtilityConfigException("Unable to initialize utility (name=" + this.util.getName() + ") configuration.", e);
+			}
+		}
 	}
 	
 	private static <T extends UtilityBean> String getBeanXpath(Class<T> beanClass, BeanAttrib ... attribs)
@@ -207,8 +283,30 @@ public class UtilityData
 		return xpathBuilder.toString();
 	}
 	
-	private static <T extends UtilityBean> String getBeanIdXpath(Class<T> beanClass, BeanAttrib ... attribs)
+	private static Throwable getRootConfigurationCause(Throwable throwable)
 	{
-		return getBeanXpath(beanClass, attribs) + XPATH_DELIM + XPATH_ATTRIB_KEY_PREFIX + BEAN_ID_ATTRIB_KEY;
+		return (!(throwable instanceof ConfigurationException) && !(throwable instanceof ConfigurationRuntimeException)) || 
+			(throwable.getCause() == null) || (throwable.getCause() == throwable) ? throwable : 
+			getRootConfigurationCause(throwable.getCause());
+	}
+	
+	public CombinedConfiguration getConfig()
+	{
+		return this.config;
+	}
+
+	public DefaultConfigurationBuilder getConfigBuilder()
+	{
+		return this.configBuilder;
+	}
+
+	public UtilityConfigEntityResolver getConfigEntityResolver()
+	{
+		return this.configEntityResolver;
+	}
+
+	public UtilityConfigListener getConfigListener()
+	{
+		return this.configListener;
 	}
 }

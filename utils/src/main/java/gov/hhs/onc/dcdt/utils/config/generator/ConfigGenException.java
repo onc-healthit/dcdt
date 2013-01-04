@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.configgen;
+package gov.hhs.onc.dcdt.utils.config.generator;
 
 import gov.hhs.onc.dcdt.utils.UtilityException;
 
