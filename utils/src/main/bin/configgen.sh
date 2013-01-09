@@ -1,8 +1,13 @@
 #!/bin/bash
 
-# Determining readlink executable
+# Determining system utility executables
+FIND_EXEC="find"
 READLINK_EXEC="readlink"
-! { { echo "$OSTYPE" | egrep -qs 'darwin'; } && type -a "greadlink" &>"/dev/null"; } || READLINK_EXEC="greadlink"
+
+if (echo "$OSTYPE" | egrep -qs 'darwin'); then
+	! type -a "gfind" &>"/dev/null" || FIND_EXEC="gfind"
+	! type -a "greadlink" &>"/dev/null" || READLINK_EXEC="greadlink"
+fi
 
 utilBinFile="$("$READLINK_EXEC" -f "$BASH_SOURCE")"
 utilBinDir="$(dirname "$utilBinFile")"
@@ -15,7 +20,7 @@ utilMainClass="@{configgen.class.main}"
 
 utilClassPath="$utilConfDirName"
 
-for utilJarFileName in $(find "$utilLibDir" -mindepth 1 -maxdepth 1 -type "f" -name '*.jar' -printf '%f\n'); do
+for utilJarFileName in $("$FIND_EXEC" "$utilLibDir" -mindepth 1 -maxdepth 1 -type "f" -name '*.jar' -printf '%f\n'); do
 	utilClassPath="$utilClassPath:$utilLibDirName/$utilJarFileName"
 done
 
