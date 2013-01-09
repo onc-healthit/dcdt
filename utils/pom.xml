@@ -37,7 +37,7 @@
 	</repositories>
 	
 	<dependencies>
-		<!-- Compile dependencies (inherited) -->
+		<!-- Runtime dependencies (inherited) -->
 		<dependency>
 			<groupId>commons-configuration</groupId>
 			<artifactId>commons-configuration</artifactId>
@@ -85,7 +85,7 @@
 			<scope>test</scope>
 		</dependency>
 		
-		<!-- Compile dependencies (project) -->
+		<!-- Runtime dependencies (project) -->
 		<dependency>
 			<groupId>commons-beanutils</groupId>
 			<artifactId>commons-beanutils</artifactId>
@@ -169,7 +169,7 @@
 					<execution>
 						<phase>package</phase>
 						<goals>
-							<goal>assembly</goal>
+							<goal>single</goal>
 						</goals>
 						<configuration>
 							<descriptors>

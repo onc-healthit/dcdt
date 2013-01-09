@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="direct-cert-discovery-tool-assembly-data" 
+	xmlns:dcdt="antlib:gov.hhs.onc.dcdt">
+	
+	<description>Ant project containing data for the Direct Certificate Discovery Tool (DCDT) assembly.</description>
+	
+	<!-- String properties -->
+	<property name="newline" value="${line.separator}"/>
+	
+	<!-- Direct Project stock assembly build sets & properties -->
+	<property name="direct-project-stock.build.dir" value="${project.build.directory}/direct-project-stock-tmp/direct"/>
+	
+	<!-- Direct Project stock assembly build DNS services sets & properties -->
+	<pathconvert property="direct-project-stock.build.dns.services.dir" pathsep=",">
+		<dirset id="direct-project-stock.build.dns.services.dir.set" dir="${direct-project-stock.build.dir}">
+			<include name="DirectDNSServices"/>
+		</dirset>
+	</pathconvert>
+	<pathconvert property="direct-project-stock.build.dns.services.files" pathsep=",">
+		<fileset id="direct-project-stock.build.dns.services.files.set" dir="${direct-project-stock.build.dns.services.dir}">
+			<include name="**/*"/>
+		</fileset>
+	</pathconvert>
+	
+	<!-- Direct Project stock assembly build Apache James sets & properties -->
+	<pathconvert property="direct-project-stock.build.james.dir" pathsep=",">
+		<dirset id="direct-project-stock.build.james.dir.set" dir="${direct-project-stock.build.dir}">
+			<include name="apache-james-*"/>
+		</dirset>
+	</pathconvert>
+	<pathconvert property="direct-project-stock.build.james.files" pathsep=",">
+		<fileset id="direct-project-stock.build.james.files.set" dir="${direct-project-stock.build.james.dir}">
+			<include name="**/*"/>
+		</fileset>
+	</pathconvert>
+	<pathconvert property="direct-project-stock.build.james.conf.wrapper.file" pathsep=",">
+		<fileset id="direct-project-stock.build.james.conf.wrapper.file.set" dir="${direct-project-stock.build.james.dir}/conf">
+			<include name="wrapper.conf"/>
+		</fileset>
+	</pathconvert>
+	
+	<!-- Direct Project stock assembly build tools sets & properties -->
+	<pathconvert property="direct-project-stock.build.tools.dir" pathsep=",">
+		<dirset id="direct-project-stock.build.tools.dir.set" dir="${direct-project-stock.build.dir}">
+			<include name="tools"/>
+		</dirset>
+	</pathconvert>
+	<pathconvert property="direct-project-stock.build.tools.files" pathsep=",">
+		<fileset id="direct-project-stock.build.tools.files.set" dir="${direct-project-stock.build.tools.dir}">
+			<include name="**/*"/>
+		</fileset>
+	</pathconvert>
+	
+	<!-- Direct Project stock assembly build Apache Tomcat sets & properties -->
+	<pathconvert property="direct-project-stock.build.tomcat.dir" pathsep=",">
+		<dirset id="direct-project-stock.build.tomcat.dir.set" dir="${direct-project-stock.build.dir}">
+			<include name="apache-tomcat-*"/>
+		</dirset>
+	</pathconvert>
+	
+	<!-- Direct Project stock assembly build Apache Tomcat webapps sets & properties -->
+	<property name="direct-project-stock.build.tomcat.webapps.dir" value="${direct-project-stock.build.tomcat.dir}/webapps"/>
+	<pathconvert property="direct-project-stock.build.tomcat.webapps.files" pathsep=",">
+		<fileset id="direct-project-stock.build.tomcat.webapps.files.set" dir="${direct-project-stock.build.tomcat.webapps.dir}">
+			<include name="config-service/**/*"/>
+			<include name="config-ui/**/*"/>
+			<include name="msg-monitor/**/*"/>
+			<include name="xd/**/*"/>
+		</fileset>
+	</pathconvert>
+	<pathconvert property="direct-project-stock.build.tomcat.webapps.war.files" pathsep=",">
+		<fileset id="direct-project-stock.build.tomcat.webapps.war.files.set" dir="${direct-project-stock.build.tomcat.webapps.dir}">
+			<include name="config-service.war"/>
+			<include name="config-ui.war"/>
+			<include name="msg-monitor.war"/>
+			<include name="xd.war"/>
+		</fileset>
+	</pathconvert>
+	<pathconvert property="direct-project-stock.build.tomcat.webapps.log4j.props.files" pathsep=",">
+		<fileset id="direct-project-stock.build.tomcat.webapps.log4j.props.files.set" dir="${direct-project-stock.build.tomcat.webapps.dir}">
+			<include name="*/WEB-INF/**/log4j.properties"/>
+		</fileset>
+	</pathconvert>
+	<pathconvert property="direct-project-stock.build.tomcat.webapp.config-service.beans.file" pathsep=",">
+		<fileset id="direct-project-stock.build.tomcat.webapp.config-service.beans.file.set" dir="${direct-project-stock.build.tomcat.webapps.dir}">
+			<include name="config-service/WEB-INF/beans.xml"/>
+		</fileset>
+	</pathconvert>
+	<pathconvert property="direct-project-stock.build.tomcat.webapp.msg-monitor.props.file" pathsep=",">
+		<fileset id="direct-project-stock.build.tomcat.webapp.msg-monitor.props.file.set" dir="${direct-project-stock.build.tomcat.webapps.dir}">
+			<include name="msg-monitor/WEB-INF/classes/properties/monitor.properties"/>
+		</fileset>
+	</pathconvert>
+	
+	<!-- Package src sets & properties -->
+	<property name="package.src.dir" value="src/main/package"/>
+	<pathconvert property="package.src.files" pathsep=",">
+		<fileset id="package.src.files.set" dir="${package.src.dir}">
+			<include name="**/*"/>
+		</fileset>
+	</pathconvert>
+	
+	<!-- Package build sets & properties -->
+	<property name="package.build.dir" value="${project.build.directory}/package-tmp"/>
+	<property name="package.build.share.dir" value="${package.build.dir}/usr/share/direct"/>
+	<property name="package.build.var.dir" value="${package.build.dir}/var/lib/direct"/>
+	
+	<!-- Package build DNS services sets & properties -->
+	<property name="package.build.dns.services.dir" value="${package.build.share.dir}/${toString:direct-project-stock.build.dns.services.dir.set}"/>
+	
+	<!-- Package build Apache James sets & properties -->
+	<property name="package.build.james.dir" value="${package.build.share.dir}/${toString:direct-project-stock.build.james.dir.set}"/>
+	<property name="package.build.james.conf.wrapper.file" value="${package.build.james.dir}/conf/${toString:direct-project-stock.build.james.conf.wrapper.file.set}"/>
+	
+	<!-- Package build tools sets & properties -->
+	<property name="package.build.tools.dir" value="${package.build.share.dir}/${toString:direct-project-stock.build.tools.dir.set}"/>
+	
+	<!-- Package build Apache Tomcat sets & properties -->
+	<property name="package.build.tomcat.dir" value="${package.build.dir}/var/lib/tomcat7"/>
+	
+	<!-- Package build Apache Tomcat webapps sets & properties -->
+	<property name="package.build.tomcat.webapps.dir" value="${package.build.var.dir}/webapps"/>
+	<property name="package.build.tomcat.webapp.config-service.beans.file" 
+		value="${package.build.tomcat.webapps.dir}/${toString:direct-project-stock.build.tomcat.webapp.config-service.beans.file.set}"/>
+	<property name="package.build.tomcat.webapp.msg-monitor.props.file" 
+		value="${package.build.tomcat.webapps.dir}/${toString:direct-project-stock.build.tomcat.webapp.msg-monitor.props.file.set}"/>
+</project>

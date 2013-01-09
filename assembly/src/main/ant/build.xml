@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="direct-cert-discovery-tool-assembly" 
+	xmlns:dcdt="antlib:gov.hhs.onc.dcdt">
+	
+	<description>Ant project for the Direct Certificate Discovery Tool (DCDT) assembly.</description>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.plugin.classpath.value}"/>
+	<taskdef file="src/main/ant/antlib.xml" classpath="${maven.compile.classpath.value}" uri="antlib:gov.hhs.onc.dcdt"/>
+	
+	<include file="build-data.xml" as="" prefixSeparator=""/>
+	
+	<target name="modify-direct-project-stock-webapps" description="Modifies the Direct Project stock assembly webapps.">
+		<copy todir="${package.build.tomcat.webapps.dir}" includeEmptyDirs="true">
+			<difference>
+				<fileset refid="direct-project-stock.build.tomcat.webapps.files.set"/>
+				<fileset refid="direct-project-stock.build.tomcat.webapps.log4j.props.files.set"/>
+				<fileset refid="direct-project-stock.build.tomcat.webapp.config-service.beans.file.set"/>
+				<fileset refid="direct-project-stock.build.tomcat.webapp.msg-monitor.props.file.set"/>
+			</difference>
+		</copy>
+		
+		<dcdt:info>Prepending Catalina base log directory to log file paths in Direct Project stock assembly webapp Log4j properties files.</dcdt:info>
+		<copy todir="${package.build.tomcat.webapps.dir}" includeEmptyDirs="true">
+			<fileset refid="direct-project-stock.build.tomcat.webapps.log4j.props.files.set"/>
+			<filterchain>
+				<tokenfilter>
+					<replaceregex pattern="^(log4j\.appender\.file\.File=)([^$]+)$" replace="\1${catalina.base}/logs/\2" flags="i"/>
+				</tokenfilter>
+			</filterchain>
+		</copy>
+		
+		<dcdt:info>Prepending Direct variable directory to config-service webapp database path in beans file: ${package.build.tomcat.webapp.config-service.beans.file}</dcdt:info>
+		<copy todir="${package.build.tomcat.webapps.dir}" includeEmptyDirs="true">
+			<fileset refid="direct-project-stock.build.tomcat.webapp.config-service.beans.file.set"/>
+			<filterchain>
+				<tokenfilter>
+					<replaceregex pattern="^(\s*&lt;property\s+name=&quot;url&quot;\s+value=&quot;jdbc:derby:)(nhindconfig;create=true&quot;\s*/&gt;\s*)$" 
+						replace="\1/var/lib/direct/\2"/>
+				</tokenfilter>
+			</filterchain>
+		</copy>
+		
+		<dcdt:info>Prepending Direct variable directory to msg-monitor webapp database path in properties file: ${package.build.tomcat.webapp.msg-monitor.props.file}</dcdt:info>
+		<copy todir="${package.build.tomcat.webapps.dir}" includeEmptyDirs="true">
+			<fileset refid="direct-project-stock.build.tomcat.webapp.msg-monitor.props.file.set"/>
+			<filterchain>
+				<tokenfilter>
+					<replaceregex pattern="^(monitor\.dupStateDAO\.url=jdbc:derby:)target/(msg\-monitor\-service;create=true)$" 
+						replace="\1/var/lib/direct/\2"/>
+				</tokenfilter>
+			</filterchain>
+		</copy>
+	</target>
+	
+	<target name="modify-direct-project-stock-james" description="Modifies the Direct Project stock assembly Apache James files.">
+		<copy todir="${package.build.james.dir}" includeEmptyDirs="true">
+			<difference>
+				<fileset refid="direct-project-stock.build.james.files.set"/>
+				<fileset refid="direct-project-stock.build.james.conf.wrapper.file.set"/>
+			</difference>
+		</copy>
+		
+		<copy file="${com.sun.xml.bind:jaxb-impl:jar}" todir="${package.build.james.dir}/conf/lib"/>
+		
+		<dcdt:info>Appending the Direct Project stock assembly Apache James Java Service Wrapper configuration file: ${package.build.james.conf.wrapper.file}</dcdt:info>
+		<concat destfile="${package.build.james.conf.wrapper.file}" fixlastline="true">
+			<path>
+				<pathelement location="${direct-project-stock.build.james.conf.wrapper.file}"/>
+			</path>
+			<footer trimleading="true">
+				#********************************************************************
+				# Wrapper Direct Certificate Discovery Tool (DCDT) Properties
+				#********************************************************************
+				wrapper.java.additional.15=-Dderby.stream.error.file=../log/derby.log
+				wrapper.java.classpath.120=../conf/lib/*
+				wrapper.java.home=/usr/lib/jvm/java-6-sun
+				wrapper.logfile=../log/wrapper.log
+			</footer>
+		</concat>
+	</target>
+	
+	<target name="modify-direct-project-stock" description="Modifies the Direct Project stock assembly."
+		depends="modify-direct-project-stock-james,modify-direct-project-stock-webapps"/>
+	
+	<target name="unpack-direct-project-stock-webapps" description="Unpacks the Direct Project stock assembly webapp WAR files.">
+		<for list="${direct-project-stock.build.tomcat.webapps.war.files}" param="direct-project-stock.build.tomcat.webapp.war.file">
+			<sequential>
+				<dcdt:warproperties src="@{direct-project-stock.build.tomcat.webapp.war.file}"/>
+				<dcdt:info>Extracting Direct Project stock assembly webapp (name=${direct-project-stock.build.tomcat.webapp.name}) WAR file to: ${direct-project-stock.build.tomcat.webapp.dir}</dcdt:info>
+				<unwar src="@{direct-project-stock.build.tomcat.webapp.war.file}" dest="${direct-project-stock.build.tomcat.webapp.dir}"/>
+			</sequential>
+		</for>
+	</target>
+	
+	<target name="copy-package-src" description="Copies the package source files.">
+		<copy todir="${package.build.dir}" includeEmptyDirs="true">
+			<fileset refid="package.src.files.set"/>
+		</copy>
+	</target>
+	
+	<target name="copy-direct-project-stock-tools" description="Copies the Direct Project stock tools files.">
+		<copy todir="${package.build.tools.dir}" includeEmptyDirs="true">
+			<fileset refid="direct-project-stock.build.tools.files.set"/>
+		</copy>
+	</target>
+	
+	<target name="copy-direct-project-stock-dns-services" description="Copies the Direct Project stock DNS services files.">
+		<copy todir="${package.build.dns.services.dir}" includeEmptyDirs="true">
+			<fileset refid="direct-project-stock.build.dns.services.files.set"/>
+		</copy>
+	</target>
+	
+	<target name="process-direct-project-stock" description="Processes the Direct Project stock assembly." 
+		depends="copy-package-src,copy-direct-project-stock-dns-services,copy-direct-project-stock-tools,unpack-direct-project-stock-webapps,modify-direct-project-stock"
+		unless="${target.process-direct-project-stock.done}">
+		<dcdt:true name="target.process-direct-project-stock.done"/>
+	</target>
+</project>

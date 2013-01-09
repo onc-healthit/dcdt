@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib xmlns:current="ant:current">
+	<!-- Variable preset definitions -->
+	<presetdef name="true">
+		<var value="true"/>
+	</presetdef>
+	<presetdef name="false">
+		<var value="false"/>
+	</presetdef>
+	<presetdef name="unset">
+		<var unset="true"/>
+	</presetdef>
+	
+	<!-- Logging property preset definitions -->
+	<presetdef name="trace">
+		<echo level="trace" taskname="trace"/>
+	</presetdef>
+	<presetdef name="debug">
+		<echo level="debug" taskname="debug"/>
+	</presetdef>
+	<presetdef name="info">
+		<echo level="info" taskname="info"/>
+	</presetdef>
+	<presetdef name="warn">
+		<echo level="warn" taskname="warn"/>
+	</presetdef>
+	<presetdef name="error">
+		<echo level="error" taskname="error"/>
+	</presetdef>
+		
+	<macrodef name="appendproperty" description="Appends the value of a property, optionally using a delimiter.">
+		<attribute name="delimiter" default=""/>
+		<attribute name="property"/>
+		<attribute name="value" default=""/>
+		<text name="text" trim="true" optional="true"/>
+		<sequential>
+			<if>
+				<and>
+					<not><equals arg1="${@{property}}" arg2=""/></not>
+					<not><equals arg1="${@{delimiter}}" arg2=""/></not>
+				</and>
+				<then>
+					<var name="@{property}" value="${@{property}}@{delimiter}"/>
+				</then>
+			</if>
+			<var name="@{property}" value="${@{property}}@{value}@{text}"/>
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="warproperties" description="Sets properties for a given WAR file.">
+		<attribute name="baseProperty" default="direct-project-stock.build.tomcat.webapp.name"/>
+		<attribute name="dirProperty" default="direct-project-stock.build.tomcat.webapp.dir"/>
+		<attribute name="pkgDirProperty" default="package.build.tomcat.webapp.dir"/>
+		<attribute name="src"/>
+		<sequential>
+			<current:unset name="@{baseProperty}"/>
+			<basename property="@{baseProperty}" file="@{src}" suffix=".war"/>
+			<var name="@{dirProperty}" value="${direct-project-stock.build.tomcat.webapps.dir}/${@{baseProperty}}"/>
+			<var name="@{pkgDirProperty}" value="${package.build.tomcat.webapps.dir}/${@{baseProperty}}"/>
+		</sequential>
+	</macrodef>
+</antlib>

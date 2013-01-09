@@ -1,0 +1,10 @@
+Package: direct-cert-discovery-tool
+Version: [[project.version]]
+Architecture: all
+Depends: apacheds (>= 2.0.0), sun-java6-jdk (>= 6), sun-java6-jre (>= 6), tomcat7 (>= 7.0)
+Section: contrib/java
+Priority: optional
+Maintainer: Michal Kotelba <michal.kotelba@esacinc.com>
+Description: Direct Certificate Discovery Tool (DCDT) Debian package.
+Homepage: http://code.google.com/p/direct-certificate-discovery-tool/
+ 
