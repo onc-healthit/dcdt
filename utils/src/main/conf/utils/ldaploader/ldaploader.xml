@@ -6,8 +6,11 @@
 	
 	displayName="LDAP Loader"
 	
-	bindDnName="uid=admin\,ou=system"
+	bindDnName="uid=admin\\\,ou=system"
 	bindPass="secret"
 	inputPath="out/certgen/${util:domain}-certs.zip"
 	inputContainerPath="certs"
-	loadDnName="ou=system"/>
+	inputLdifsPath="utils/${util:name}/ldif"
+	load="true"
+	loadDnName="ou=system"
+	outputLdifsPath="out/${util:name}/ldif"/>

@@ -13,9 +13,9 @@ import org.testng.annotations.Test;
 
 @Listeners({ UtilityTestListener.class })
 @Test(dependsOnGroups = { "utils.ldap" }, groups = { "utils.ldap.ldif" })
-public class LdapLdifBuilderTest extends UtilityTest
+public class LdifBuilderTest extends UtilityTest
 {
-	private static LdapLdifBuilder ldifBuilder;
+	private static LdifBuilder ldifBuilder;
 	private static List<LdifEntry> ldifEntries;
 	
 	@Test(dependsOnMethods = { "testParseEntries" })
@@ -33,7 +33,7 @@ public class LdapLdifBuilderTest extends UtilityTest
 	@Test
 	public void testReadEntries() throws UtilityLdapException
 	{
-		ldifBuilder = new LdapLdifBuilder(util, LdapServiceWrapperTest.serviceWrapper);
+		ldifBuilder = new LdifBuilder(util, LdapServiceWrapperTest.serviceWrapper);
 		
 		ldifEntries = ldifBuilder.readEntries("utils/ldaploader/ldif/default.ldif");
 		

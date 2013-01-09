@@ -50,8 +50,7 @@ public class EntryLoader
 		catch (CertificateException | IOException | KeyStoreException | NoSuchAlgorithmException | NoSuchProviderException | 
 			UnrecoverableKeyException e)
 		{
-			// TODO: finish exception
-			throw new EntryException(e);
+			throw new EntryException("Unable to load entry (" + entry + ") from input path: " + inputPath, e);
 		}
 	}
 	

@@ -224,6 +224,19 @@
 	</build>
 	
 	<profiles>
+		<!-- Set test skipping property, if not defined in user settings -->
+		<profile>
+			<id>default-skipTests</id>
+			<activation>
+				<property>
+					<name>!settings.skipTests</name>
+				</property>
+			</activation>
+			<properties>
+				<skipTests>true</skipTests>
+			</properties>
+		</profile>
+		
 		<!-- Set Tomcat manager URL property, if not defined in user settings -->
 		<profile>
 			<id>default-tomcat.manager.url</id>

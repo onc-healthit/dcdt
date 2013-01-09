@@ -126,22 +126,20 @@ public class Entry extends UtilityBean
 		builder.append(", dn={");
 		builder.append(this.getDn().toString());
 		builder.append("}");
-		builder.append(", issuer={");
 		
 		if (this.hasIssuer())
 		{
 			Entry issuerEntry = this.getIssuer();
 			
-			builder.append("name=");
+			builder.append(", issuer={");
+			builder.append(", issuer={name=");
 			builder.append(issuerEntry.getName());
 			builder.append(", path=");
 			builder.append(issuerEntry.getPath());
 			builder.append(", dn={");
 			builder.append(issuerEntry.getDn().toString());
-			builder.append("}");
+			builder.append("}}");
 		}
-		
-		builder.append("}");
 		
 		return builder.toString();
 	}

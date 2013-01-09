@@ -8,6 +8,7 @@ objectClass: organizationalPerson
 cn: dts500_valid_ldap
 sn: dts500_valid_ldap
 mail: dts500@direct1.${util:domain}
+o: ${util:domain}
 userCertificate:: 
 
 dn: cn=dts501_valid_ldap,${util:loadDnName}
@@ -18,6 +19,7 @@ objectClass: organizationalPerson
 cn: dts501_valid_ldap
 sn: dts501_valid_ldap
 mail: direct1.${util:domain}
+o: ${util:domain}
 userCertificate:: 
 
 dn: cn=dts501_valid_add_ldap,${util:loadDnName}
@@ -28,6 +30,7 @@ objectClass: organizationalPerson
 cn: dts501_valid_add_ldap
 sn: dts501_valid_add_ldap
 mail: dts501@direct1.${util:domain}
+o: ${util:domain}
 userCertificate:: 
 
 dn: cn=dts505_mac,${util:loadDnName}
@@ -38,6 +41,7 @@ objectClass: organizationalPerson
 cn: dts505_mac
 sn: dts505_mac
 mail: dts505@direct2.${util:domain}
+o: ${util:domain}
 userCertificate:: 
 
 dn: cn=dts506_ldap_1_mac,${util:loadDnName}
@@ -48,6 +52,7 @@ objectClass: organizationalPerson
 cn: dts506_ldap_1_mac
 sn: dts506_ldap_1_mac
 mail: dts506@direct2.${util:domain}
+o: ${util:domain}
 userCertificate:: 
 
 dn: cn=dts515_mac,${util:loadDnName}
@@ -58,6 +63,7 @@ objectClass: organizationalPerson
 cn: dts515_mac
 sn: dts515_mac
 mail: direct2.${util:domain}
+o: ${util:domain}
 userCertificate:: 
 
 dn: cn=dts515_invalid_ldap_address,${util:loadDnName}
@@ -68,6 +74,7 @@ objectClass: organizationalPerson
 cn: dts515_invalid_ldap_address
 sn: dts515_invalid_ldap_address
 mail: dts515@direct2.${util:domain}
+o: ${util:domain}
 userCertificate:: 
 
 dn: cn=dts517,${util:loadDnName}
@@ -78,6 +85,7 @@ objectClass: organizationalPerson
 cn: dts517
 sn: dts517
 mail: dts517@direct3.${util:domain}
+o: ${util:domain}
 
 dn: cn=dts520_invalid_address_ldap,${util:loadDnName}
 objectClass: top
@@ -87,6 +95,7 @@ objectClass: organizationalPerson
 cn: dts520_invalid_address_ldap
 sn: dts520_invalid_address_ldap
 mail: dts520@direct5.${util:domain}
+o: ${util:domain}
 userCertificate:: 
 
 dn: cn=dts520_invalid_domain_ldap,${util:loadDnName}
@@ -96,5 +105,6 @@ objectClass: person
 objectClass: organizationalPerson
 cn: dts520_invalid_domain_ldap
 sn: dts520_invalid_domain_ldap
-mail: dts520@direct5.${util:domain}
+mail: direct5.${util:domain}
+o: ${util:domain}
 userCertificate:: 

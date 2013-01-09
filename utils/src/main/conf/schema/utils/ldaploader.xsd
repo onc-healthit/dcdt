@@ -18,9 +18,12 @@
 			<xs:extension base="config:utility">
 				<xs:attribute name="inputPath" type="config:attr" use="optional"/>
 				<xs:attribute name="inputContainerPath" type="config:attr" use="optional"/>
+				<xs:attribute name="inputLdifsPath" type="config:attr" use="optional"/>
 				<xs:attribute name="bindDnName" type="config:attr" use="optional"/>
 				<xs:attribute name="bindPass" type="config:attr" use="optional"/>
+				<xs:attribute name="load" type="xs:boolean" use="optional"/>
 				<xs:attribute name="loadDnName" type="config:attr" use="optional"/>
+				<xs:attribute name="outputLdifsPath" type="config:attr" use="optional"/>
 			</xs:extension>
 		</xs:complexContent>
 	</xs:complexType>

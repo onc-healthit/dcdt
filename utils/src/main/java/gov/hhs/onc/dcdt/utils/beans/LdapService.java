@@ -222,7 +222,7 @@ public class LdapService extends UtilityBean
 		this.hashBindPassDigest = hashBindPassDigest;
 	}
 
-	public boolean getReal()
+	public boolean isReal()
 	{
 		return this.real;
 	}

@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.utils.ldap;
 import gov.hhs.onc.dcdt.utils.beans.LdapService;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -48,16 +49,30 @@ public class LdapServiceWrapper
 		return attributeNames.toArray(new String[attributeNames.size()]);
 	}
 	
-	public void add(Entry ... entries) throws UtilityLdapException
+	public boolean add(Entry ... entries) throws UtilityLdapException
 	{
-		for (Entry entry : entries)
-		{
-			this.add(entry);
-		}
+		return this.add(Arrays.asList(entries));
 	}
 	
-	public void add(Entry entry) throws UtilityLdapException
+	public boolean add(Iterable<Entry> entries) throws UtilityLdapException
 	{
+		boolean modified = false;
+		
+		for (Entry entry : entries)
+		{
+			modified |= this.add(entry);
+		}
+		
+		return modified;
+	}
+	
+	public boolean add(Entry entry) throws UtilityLdapException
+	{
+		if (!this.isBound())
+		{
+			throw new UtilityLdapException("LDAP service wrapper is not bound to LDAP service (" + this.service.toUrl() + ").");
+		}
+		
 		try
 		{
 			this.connection.add(entry);
@@ -68,23 +83,37 @@ public class LdapServiceWrapper
 		}
 		
 		LOGGER.debug("Added entry to LDAP service (" + this.service.toUrl() + "): " + entry);
+		
+		return true;
 	}
 	
-	public void modify(LdifEntry ... ldifEntries) throws UtilityLdapException
+	public boolean modify(LdifEntry ... ldifEntries) throws UtilityLdapException
 	{
+		return this.modify(Arrays.asList(ldifEntries));
+	}
+	
+	public boolean modify(Iterable<LdifEntry> ldifEntries) throws UtilityLdapException
+	{
+		boolean modified = false;
+		
 		for (LdifEntry ldifEntry : ldifEntries)
 		{
-			this.modify(ldifEntry);
+			modified |= this.modify(ldifEntry);
 		}
+		
+		return modified;
 	}
 	
-	public void modify(LdifEntry ldifEntry) throws UtilityLdapException
+	public boolean modify(LdifEntry ldifEntry) throws UtilityLdapException
 	{
+		if (!this.isBound())
+		{
+			throw new UtilityLdapException("LDAP service wrapper is not bound to LDAP service (" + this.service.toUrl() + ").");
+		}
+		
 		if (ldifEntry.getChangeType() == ChangeType.Add)
 		{
-			this.add(ldifEntry.getEntry());
-			
-			return;
+			return this.add(ldifEntry.getEntry());
 		}
 
 		Modification[] modifications = ldifEntry.getModificationArray();
@@ -93,7 +122,7 @@ public class LdapServiceWrapper
 		{
 			LOGGER.trace("Skipped modification of LDIF entry data in LDAP service (" + this.service.toUrl() + "): " + ldifEntry);
 			
-			return;
+			return false;
 		}
 		
 		try
@@ -106,10 +135,17 @@ public class LdapServiceWrapper
 		}
 		
 		LOGGER.debug("Modified LDIF entry data in LDAP service (" + this.service.toUrl() + "): " + ldifEntry);
+		
+		return true;
 	}
 	
 	public List<Dn> getBaseDns() throws UtilityLdapException
 	{
+		if (!this.isBound())
+		{
+			throw new UtilityLdapException("LDAP service wrapper is not bound to LDAP service (" + this.service.toUrl() + ").");
+		}
+		
 		List<Dn> baseDns = new ArrayList<>();
 		Attribute attr = null;
 		Dn baseDn;
@@ -168,6 +204,11 @@ public class LdapServiceWrapper
 	
 	public List<Entry> search(Dn baseDn, ExprNode filterNode, SearchScope scope, String ... attributes) throws UtilityLdapException
 	{
+		if (!this.isBound())
+		{
+			throw new UtilityLdapException("LDAP service wrapper is not bound to LDAP service (" + this.service.toUrl() + ").");
+		}
+		
 		List<Entry> entries = new ArrayList<>();
 		String filter = filterNode.toString();
 		

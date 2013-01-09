@@ -5,6 +5,8 @@ import gov.hhs.onc.dcdt.utils.cli.validation.NotBlankValidator;
 import org.apache.commons.cli2.Option;
 import org.apache.commons.cli2.builder.ArgumentBuilder;
 import org.apache.commons.cli2.builder.DefaultOptionBuilder;
+import org.apache.commons.cli2.builder.SwitchBuilder;
+import org.apache.commons.cli2.option.Switch;
 
 public enum LdapLoaderCliOption implements CliOption
 {
@@ -69,6 +71,15 @@ public enum LdapLoaderCliOption implements CliOption
 			.create(), 
 		"inputPath"
 	), 
+	LOAD
+	(
+		new SwitchBuilder(Switch.DEFAULT_DISABLED_PREFIX, Switch.DEFAULT_ENABLED_PREFIX)
+			.withDescription("Whether to load LDAP entries.")
+			.withName("l")
+			.withName("load")
+			.create(), 
+		"load"
+	), 
 	LOAD_DN_NAME
 	(
 		new DefaultOptionBuilder()
@@ -83,7 +94,22 @@ public enum LdapLoaderCliOption implements CliOption
 				.create())
 			.create(), 
 		"loadDnName"
-	);
+	), 
+	OUTPUT_LDIFS_PATH
+	(
+		new DefaultOptionBuilder()
+			.withDescription("Path to the output directory into which to write parsed LDIF files.")
+			.withLongName("ol")
+			.withLongName("outldifs")
+			.withArgument(new ArgumentBuilder()
+				.withName("path")
+				.withMinimum(1)
+				.withMaximum(1)
+				.withValidator(NotBlankValidator.INSTANCE)
+				.create())
+			.create(), 
+		"outputLdifsPath"
+	), ;
 	
 	private Option option;
 	private String attribName;

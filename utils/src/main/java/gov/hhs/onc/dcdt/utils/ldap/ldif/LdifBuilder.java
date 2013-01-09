@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.utils.ldap.LdapServiceWrapper;
 import gov.hhs.onc.dcdt.utils.ldap.UtilityLdapException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,22 +19,45 @@ import org.apache.directory.shared.ldap.model.filter.EqualityNode;
 import org.apache.directory.shared.ldap.model.ldif.ChangeType;
 import org.apache.directory.shared.ldap.model.ldif.LdifEntry;
 import org.apache.directory.shared.ldap.model.ldif.LdifReader;
+import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
 import org.apache.directory.shared.ldap.model.message.SearchScope;
 import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.directory.shared.ldap.model.name.Rdn;
 import org.apache.log4j.Logger;
 
-public class LdapLdifBuilder
+public class LdifBuilder
 {
-	private final static Logger LOGGER = Logger.getLogger(LdapLdifBuilder.class);
+	public final static String LDIF_FILE_EXT = ".ldif";
+	
+	private final static String LDIF_FILE_HEADER = "version: 1\n\n";
+	
+	private final static Logger LOGGER = Logger.getLogger(LdifBuilder.class);
 	
 	private Utility util;
 	private LdapServiceWrapper serviceWrapper;
 	
-	public LdapLdifBuilder(Utility util, LdapServiceWrapper serviceWrapper)
+	public LdifBuilder(Utility util, LdapServiceWrapper serviceWrapper)
 	{
 		this.util = util;
 		this.serviceWrapper = serviceWrapper;
+	}
+	
+	public static void setAttribute(LdifEntry ldifEntry, String attrId, Object attrValue) throws UtilityLdapException
+	{
+		if (ldifEntry.getEntry().containsAttribute(attrId))
+		{
+			ldifEntry.removeAttribute(attrId);
+		}
+		
+		try
+		{
+			ldifEntry.putAttribute(attrId, attrValue);
+		}
+		catch (LdapException e)
+		{
+			throw new UtilityLdapException("Unable to put attribute (id=" + attrId + ") value (" + attrValue + ") into LDIF entry: " + 
+				ldifEntry, e);
+		}
 	}
 	
 	public void parseEntries(List<LdifEntry> ldifEntries) throws UtilityLdapException
@@ -106,10 +130,33 @@ public class LdapLdifBuilder
 		}
 		catch (IOException | LdapException e)
 		{
-			// TODO: finish exception
-			throw new UtilityLdapException(e);
+			throw new UtilityLdapException("Unable to read LDIF entry from input stream.", e);
 		}
 		
 		return ldifEntries;
+	}
+	
+	public void writeEntries(List<LdifEntry> ldifEntries, OutputStream outStream) throws UtilityLdapException
+	{
+		StringBuilder ldifEntriesBuilder = new StringBuilder();
+		
+		try
+		{
+			for (LdifEntry ldifEntry : ldifEntries)
+			{
+				if (ldifEntriesBuilder.length() != 0)
+				{
+					ldifEntriesBuilder.append("\n");
+				}
+				
+				ldifEntriesBuilder.append(LdifUtils.convertToLdif(ldifEntry));
+			}
+			
+			IOUtils.write(ldifEntriesBuilder.toString(), outStream);
+		}
+		catch (IOException | LdapException e)
+		{
+			throw new UtilityLdapException("Unable to write LDIF entries to output stream.", e);
+		}
 	}
 }

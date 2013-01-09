@@ -3,9 +3,11 @@ package gov.hhs.onc.dcdt.utils.cli;
 import java.util.EnumSet;
 import org.apache.commons.cli2.CommandLine;
 import org.apache.commons.cli2.Group;
+import org.apache.commons.cli2.Option;
 import org.apache.commons.cli2.OptionException;
 import org.apache.commons.cli2.builder.GroupBuilder;
 import org.apache.commons.cli2.commandline.Parser;
+import org.apache.commons.cli2.option.Switch;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -46,24 +48,28 @@ public class UtilityCli<T extends Enum<T> & CliOption>
 		}
 	}
 	
-	public String getOptionValue(T option)
+	public String getOptionValue(T optionWrapper)
 	{
-		return ObjectUtils.toString(this.getOptionValue(Object.class, option), null);
+		return ObjectUtils.toString(this.getOptionValue(Object.class, optionWrapper), null);
 	}
 	
-	public <U> U getOptionValue(Class<U> valueClass, T option)
+	public <U> U getOptionValue(Class<U> valueClass, T optionWrapper)
 	{
-		return this.hasOption(option) ? valueClass.cast(this.getCmdLine().getValue(option.getOption())) : null;
+		Option option = optionWrapper.getOption();
+		
+		return this.hasOption(optionWrapper) ? 
+			valueClass.cast((option instanceof Switch) ? this.cmdLine.getSwitch(option).booleanValue() : this.cmdLine.getValue(option)) : 
+			null;
 	}
 	
-	public boolean hasOption(T option)
+	public boolean hasOption(T optionWrapper)
 	{
-		return this.isParsed() && this.getCmdLine().hasOption(option.getOption());
+		return this.isParsed() && this.cmdLine.hasOption(optionWrapper.getOption());
 	}
 	
 	public boolean hasOptions()
 	{
-		return this.isParsed() && !this.getCmdLine().getOptions().isEmpty();
+		return this.isParsed() && !this.cmdLine.getOptions().isEmpty();
 	}
 	
 	private Group createOptionsGroup()
