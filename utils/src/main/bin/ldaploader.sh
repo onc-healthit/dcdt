@@ -1,6 +1,10 @@
 #!/bin/bash
 
-utilBinFile="$(readlink -f "$BASH_SOURCE")"
+# Determining readlink executable
+READLINK_EXEC="readlink"
+! { { echo "$OSTYPE" | egrep -qs 'darwin'; } && type -a "greadlink" &>"/dev/null"; } || READLINK_EXEC="greadlink"
+
+utilBinFile="$("$READLINK_EXEC" -f "$BASH_SOURCE")"
 utilBinDir="$(dirname "$utilBinFile")"
 utilBaseDir="$(dirname "$utilBinDir")"
 utilConfDirName="conf"
