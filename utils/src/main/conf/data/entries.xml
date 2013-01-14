@@ -247,7 +247,7 @@
 
 		<dn config-class="gov.hhs.onc.dcdt.utils.beans.EntryDn"
 			commonName="dts520_invalid_domain_cert"
-			mail="dts520@direct5.${util:domain}"
+			mail="direct5.${util:domain}"
 			organization="${util:domain}"/>
 	</entry>
 
@@ -273,7 +273,7 @@
 
 		<dn config-class="gov.hhs.onc.dcdt.utils.beans.EntryDn"
 			commonName="dts520_invalid_domain_ldap"
-			mail="dts520@direct5.${util:domain}"
+			mail="direct5.${util:domain}"
 			organization="${util:domain}"/>
 	</entry>
 
@@ -299,7 +299,7 @@
 
 		<dn config-class="gov.hhs.onc.dcdt.utils.beans.EntryDn"
 			commonName="expired_direct6_domain_cert"
-			mail="dts512@direct6.${util:domain}"
+			mail="direct6.${util:domain}"
 			organization="${util:domain}"/>
 	</entry>
 
