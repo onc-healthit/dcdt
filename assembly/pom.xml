@@ -86,9 +86,48 @@
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<descriptors>
+								<descriptor>src/main/assembly/archive.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
 				<executions>
 					<execution>
+						<id>copy-artifacts</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<!-- Package artifacts (project, modules) -->
+								<artifactItem>
+									<groupId>gov.hhs.onc.dcdt</groupId>
+									<artifactId>direct-cert-discovery-tool</artifactId>
+									<version>2.1-SNAPSHOT</version>
+									<type>war</type>
+									<destFileName>dcdt.war</destFileName>
+									<outputDirectory>${project.build.directory}/package-tmp/var/lib/tomcat7/webapps</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+							<silent>true</silent>
+						</configuration>
+					</execution>
+					<execution>
+						<id>unpack-artifacts</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>unpack</goal>
@@ -106,13 +145,6 @@
 								</artifactItem>
 								
 								<!-- Package artifacts (project, modules) -->
-								<artifactItem>
-									<groupId>gov.hhs.onc.dcdt</groupId>
-									<artifactId>direct-cert-discovery-tool</artifactId>
-									<version>2.1-SNAPSHOT</version>
-									<type>war</type>
-									<outputDirectory>${project.build.directory}/package-tmp/var/lib/direct/webapps/dcdt</outputDirectory>
-								</artifactItem>
 								<artifactItem>
 									<groupId>gov.hhs.onc.dcdt</groupId>
 									<artifactId>direct-cert-discovery-tool-utils</artifactId>
@@ -142,6 +174,18 @@
 						<configuration>
 							<controlDir>src/main/deb/control</controlDir>
 							<dataSet>
+								<!-- Package data (templates [empty directories]) -->
+								<data>
+									<type>template</type>
+									<paths>
+										<path>/var/lib/direct/direct-cert-discovery-tool</path>
+										<path>/var/lib/direct/mail/badmsg</path>
+										<path>/var/lib/direct/mail/inmsg</path>
+										<path>/var/lib/direct/mail/outmsg</path>
+										<path>/var/lib/direct/mail/rawmsg</path>
+									</paths>
+								</data>
+								
 								<!-- Package data (files) -->
 								<data>
 									<src>${project.build.directory}/package-tmp/etc</src>
@@ -172,16 +216,16 @@
 									</mapper>
 								</data>
 								<data>
-									<src>${project.build.directory}/package-tmp/var/lib/direct</src>
+									<src>${project.build.directory}/package-tmp/var/lib</src>
 									<type>directory</type>
 									<includes>**/*</includes>
 									<mapper>
 										<type>directory</type>
-										<prefix>/var/lib/direct</prefix>
+										<prefix>/var/lib</prefix>
 									</mapper>
 									<mapper>
 										<type>perm</type>
-										<prefix>/var/lib/direct</prefix>
+										<prefix>/var/lib</prefix>
 										<filemode>644</filemode>
 									</mapper>
 								</data>

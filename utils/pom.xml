@@ -172,12 +172,13 @@
 							<goal>run</goal>
 						</goals>
 						<configuration>
-							<target>
+							<target unless="${target.chmod-bin-scripts.done}">
 								<chmod perm="755">
 									<fileset dir="${project.build.directory}/${project.artifactId}/bin">
 										<include name="*.sh"/>
 									</fileset>
 								</chmod>
+								<property name="target.chmod-bin-scripts.done" value="true"/>
 							</target>
 						</configuration>
 					</execution>

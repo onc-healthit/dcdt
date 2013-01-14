@@ -1,2 +1,16 @@
 #!/bin/sh
 
+SERVICE_EXEC="/usr/sbin/service"
+[ -x "$SERVICE_EXEC" ] || SERVICE_EXEC="/sbin/service"
+
+TOMCAT7_SERVICE="[[tomcat7.service]]"
+
+# Stopping Tomcat 7 service
+"$SERVICE_EXEC" "$TOMCAT7_SERVICE" "stop" || exit
+
+tar \
+	-c \
+	-C "/var/lib" \
+	-f "/var/lib/direct_backup_$(date '+%F_%H%M%S_%Z').tar.gz" \
+	-z \
+	"direct"

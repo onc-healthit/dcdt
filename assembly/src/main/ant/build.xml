@@ -9,6 +9,21 @@
 	
 	<include file="build-data.xml" as="" prefixSeparator=""/>
 	
+	<target name="repack-direct-project-stock-webapps" description="Unpacks the Direct Project stock assembly webapp WAR files.">
+		<for param="package.build.tomcat.webapp.dir">
+			<dirset dir="${package.build.tomcat.webapps.dir}">
+				<include name="*"/>
+				<exclude name="*.war"/>
+			</dirset>
+			<sequential>
+				<dcdt:webappproperties srcContext="package" src="@{package.build.tomcat.webapp.dir}"/>
+				<dcdt:info>Compressing Direct Project stock assembly webapp (name=${package.build.tomcat.webapp.name}) directory (@{package.build.tomcat.webapp.dir}) to WAR file: ${package.build.tomcat.webapp.war.file}</dcdt:info>
+				<war destfile="${package.build.tomcat.webapp.war.file}" basedir="@{package.build.tomcat.webapp.dir}"/>
+				<delete dir="@{package.build.tomcat.webapp.dir}" quiet="true"/>
+			</sequential>
+		</for>
+	</target>
+	
 	<target name="modify-direct-project-stock-webapps" description="Modifies the Direct Project stock assembly webapps.">
 		<copy todir="${package.build.tomcat.webapps.dir}" includeEmptyDirs="true">
 			<difference>
@@ -85,7 +100,7 @@
 	<target name="unpack-direct-project-stock-webapps" description="Unpacks the Direct Project stock assembly webapp WAR files.">
 		<for list="${direct-project-stock.build.tomcat.webapps.war.files}" param="direct-project-stock.build.tomcat.webapp.war.file">
 			<sequential>
-				<dcdt:warproperties src="@{direct-project-stock.build.tomcat.webapp.war.file}"/>
+				<dcdt:webappproperties srcContext="direct-project-stock" src="@{direct-project-stock.build.tomcat.webapp.war.file}"/>
 				<dcdt:info>Extracting Direct Project stock assembly webapp (name=${direct-project-stock.build.tomcat.webapp.name}) WAR file to: ${direct-project-stock.build.tomcat.webapp.dir}</dcdt:info>
 				<unwar src="@{direct-project-stock.build.tomcat.webapp.war.file}" dest="${direct-project-stock.build.tomcat.webapp.dir}"/>
 			</sequential>
@@ -111,7 +126,7 @@
 	</target>
 	
 	<target name="process-direct-project-stock" description="Processes the Direct Project stock assembly." 
-		depends="copy-package-src,copy-direct-project-stock-dns-services,copy-direct-project-stock-tools,unpack-direct-project-stock-webapps,modify-direct-project-stock"
+		depends="copy-package-src,copy-direct-project-stock-dns-services,copy-direct-project-stock-tools,unpack-direct-project-stock-webapps,modify-direct-project-stock,repack-direct-project-stock-webapps"
 		unless="${target.process-direct-project-stock.done}">
 		<dcdt:true name="target.process-direct-project-stock.done"/>
 	</target>

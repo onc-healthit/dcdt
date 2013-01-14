@@ -47,16 +47,27 @@
 		</sequential>
 	</macrodef>
 	
-	<macrodef name="warproperties" description="Sets properties for a given WAR file.">
-		<attribute name="baseProperty" default="direct-project-stock.build.tomcat.webapp.name"/>
-		<attribute name="dirProperty" default="direct-project-stock.build.tomcat.webapp.dir"/>
-		<attribute name="pkgDirProperty" default="package.build.tomcat.webapp.dir"/>
+	<macrodef name="webappproperties" description="Sets properties for a given webapp.">
 		<attribute name="src"/>
+		<attribute name="srcContext"/>
+		<attribute name="baseProperty" default="@{srcContext}.build.tomcat.webapp.name"/>
+		<attribute name="dirProperty" default="@{srcContext}.build.tomcat.webapp.dir"/>
+		<attribute name="pkgDirProperty" default="package.build.tomcat.webapp.dir"/>
+		<attribute name="warFileProperty" default="package.build.tomcat.webapp.war.file"/>
 		<sequential>
 			<current:unset name="@{baseProperty}"/>
 			<basename property="@{baseProperty}" file="@{src}" suffix=".war"/>
-			<var name="@{dirProperty}" value="${direct-project-stock.build.tomcat.webapps.dir}/${@{baseProperty}}"/>
-			<var name="@{pkgDirProperty}" value="${package.build.tomcat.webapps.dir}/${@{baseProperty}}"/>
+			
+			<if>
+				<equals arg1="@{srcContext}" arg2="direct-project-stock"/>
+				<then>
+					<var name="@{dirProperty}" value="${@{srcContext}.build.tomcat.webapps.dir}/${@{baseProperty}}"/>
+					<var name="@{pkgDirProperty}" value="${package.build.tomcat.webapps.dir}/${@{baseProperty}}"/>
+				</then>
+				<else>
+					<var name="@{warFileProperty}" value="${package.build.tomcat.webapps.dir}/${@{baseProperty}}.war"/>
+				</else>
+			</if>
 		</sequential>
 	</macrodef>
 </antlib>

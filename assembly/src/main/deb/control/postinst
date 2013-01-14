@@ -1,2 +1,26 @@
 #!/bin/sh
 
+SERVICE_EXEC="/usr/sbin/service"
+[ -x "$SERVICE_EXEC" ] || SERVICE_EXEC="/sbin/service"
+
+TOMCAT7_SERVICE="[[tomcat7.service]]"
+TOMCAT7_USER="[[tomcat7.user]]"
+TOMCAT7_GROUP="[[tomcat7.group]]"
+
+chmod \
+	"g+w" \
+	"/var/lib/direct" || exit
+
+chgrp \
+	"$TOMCAT7_GROUP" \
+	"/var/lib/direct" || exit
+
+chown \
+	-R \
+	"$TOMCAT7_USER:$TOMCAT7_GROUP" \
+	"/var/lib/direct/direct-cert-discovery-tool" \
+	"/var/lib/direct/mail" \
+	"/var/lib/tomcat7/webapps" || exit
+
+# Starting Tomcat 7 service
+"$SERVICE_EXEC" "$TOMCAT7_SERVICE" "start"	

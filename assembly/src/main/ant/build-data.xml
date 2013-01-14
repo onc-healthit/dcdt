@@ -119,7 +119,7 @@
 	<property name="package.build.tomcat.dir" value="${package.build.dir}/var/lib/tomcat7"/>
 	
 	<!-- Package build Apache Tomcat webapps sets & properties -->
-	<property name="package.build.tomcat.webapps.dir" value="${package.build.var.dir}/webapps"/>
+	<property name="package.build.tomcat.webapps.dir" value="${package.build.tomcat.dir}/webapps"/>
 	<property name="package.build.tomcat.webapp.config-service.beans.file" 
 		value="${package.build.tomcat.webapps.dir}/${toString:direct-project-stock.build.tomcat.webapp.config-service.beans.file.set}"/>
 	<property name="package.build.tomcat.webapp.msg-monitor.props.file" 

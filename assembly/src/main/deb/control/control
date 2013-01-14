@@ -1,7 +1,7 @@
 Package: direct-cert-discovery-tool
-Version: [[project.version]]
+Version: [[version]]
 Architecture: all
-Depends: apacheds (>= 2.0.0), sun-java6-jdk (>= 6.0), sun-java6-jre (>= 6.0), tomcat7 (>= 7.0)
+Depends: apacheds (>= 2.0.0), oracle-jdk7-installer, sun-java6-jdk (>= 6.0), sun-java6-jre (>= 6.0), tomcat7 (>= 7.0)
 Section: contrib/java
 Priority: optional
 Maintainer: Michal Kotelba <michal.kotelba@esacinc.com>
