@@ -25,21 +25,6 @@ public enum ConfigGenCliOption implements CliOption
 			.create(), 
 		"domain"
 	), 
-	INPUT_DIR
-	(
-		new DefaultOptionBuilder()
-			.withDescription("Path to the input directory to read certificates/keys from.")
-			.withShortName("i")
-			.withLongName("in")
-			.withArgument(new ArgumentBuilder()
-				.withName("path")
-				.withMinimum(1)
-				.withMaximum(1)
-				.withValidator(NotBlankValidator.INSTANCE)
-				.create())
-			.create(), 
-		"inputDir"
-	), 
 	OUTPUT_FILE
 	(
 		new DefaultOptionBuilder()

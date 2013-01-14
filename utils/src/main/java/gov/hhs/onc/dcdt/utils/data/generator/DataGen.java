@@ -1,12 +1,12 @@
-package gov.hhs.onc.dcdt.utils.cert.generator;
+package gov.hhs.onc.dcdt.utils.data.generator;
 
 import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import gov.hhs.onc.dcdt.utils.beans.BeanAttrib;
 import gov.hhs.onc.dcdt.utils.beans.Entry;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
-import gov.hhs.onc.dcdt.utils.entry.EntryBuilder;
-import gov.hhs.onc.dcdt.utils.entry.EntryException;
+import gov.hhs.onc.dcdt.utils.data.entry.EntryBuilder;
+import gov.hhs.onc.dcdt.utils.data.entry.EntryException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,29 +26,29 @@ import org.apache.log4j.Logger;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
-public class CertGen extends Utility<CertGenCliOption>
+public class DataGen extends Utility<DataGenCliOption>
 {
-	private final static String UTIL_NAME = "certgen";
+	private final static String UTIL_NAME = "datagen";
 	
-	private final static String OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME = CertGenCliOption.OUTPUT_FILE.getAttribName() + "ArchivePath";
+	private final static String OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME = DataGenCliOption.OUTPUT_FILE.getAttribName() + "ArchivePath";
 	
 	private final static String ENTRY_CA_ID = "ca";
 	
 	private final static String PKCS8_PEM_TYPE = "PRIVATE KEY";
 	private final static String X509_CERT_PEM_TYPE = "CERTIFICATE";
 	
-	private final static Logger LOGGER = Logger.getLogger(CertGen.class);
+	private final static Logger LOGGER = Logger.getLogger(DataGen.class);
 	
 	private EntryBuilder entryBuilder;
 	
-	public CertGen()
+	public DataGen()
 	{
-		super(UTIL_NAME, new UtilityCli<>(CertGenCliOption.class));
+		super(UTIL_NAME, new UtilityCli<>(DataGenCliOption.class));
 	}
 	
 	public static void main(String ... args)
 	{
-		new CertGen().execute(args);
+		new DataGen().execute(args);
 	}
 	
 	@Override
@@ -95,7 +95,7 @@ public class CertGen extends Utility<CertGenCliOption>
 			entries.add(leafEntry);
 		}
 		
-		writeOutputFile(new File(this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName())), 
+		writeOutputFile(new File(this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + DataGenCliOption.OUTPUT_FILE.getAttribName())), 
 			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME), entries);
 	}
 
@@ -104,12 +104,12 @@ public class CertGen extends Utility<CertGenCliOption>
 	{
 		super.processCmdLine();
 		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.DOMAIN.getAttribName(), 
-			this.cli.getOptionValue(CertGenCliOption.DOMAIN));
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + DataGenCliOption.DOMAIN.getAttribName(), 
+			this.cli.getOptionValue(DataGenCliOption.DOMAIN));
 		
-		String outputFilePath = this.cli.hasOption(CertGenCliOption.OUTPUT_FILE) ? 
-			this.cli.getOptionValue(CertGenCliOption.OUTPUT_FILE) : 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName());
+		String outputFilePath = this.cli.hasOption(DataGenCliOption.OUTPUT_FILE) ? 
+			this.cli.getOptionValue(DataGenCliOption.OUTPUT_FILE) : 
+			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + DataGenCliOption.OUTPUT_FILE.getAttribName());
 		
 		if (StringUtils.isBlank(outputFilePath))
 		{
@@ -127,7 +127,7 @@ public class CertGen extends Utility<CertGenCliOption>
 			exitError();
 		}
 		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + CertGenCliOption.OUTPUT_FILE.getAttribName(), 
+		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + DataGenCliOption.OUTPUT_FILE.getAttribName(), 
 			outputFile.toString());
 	}
 

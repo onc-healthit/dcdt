@@ -6,8 +6,6 @@
 	
 	displayName="Configuration Generator"
 	
-	inputDir="out/certgen/${util:domain}"
-	
 	outputFile="out/${util:name}/${util:domain}-config.zip"
 	outputFileArchivePath="config"
 	

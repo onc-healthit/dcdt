@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.entry;
+package gov.hhs.onc.dcdt.utils.data.entry;
 
 import gov.hhs.onc.dcdt.utils.UtilityException;
 

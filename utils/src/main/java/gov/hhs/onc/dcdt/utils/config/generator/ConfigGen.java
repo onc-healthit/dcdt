@@ -99,35 +99,6 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.DOMAIN.getAttribName(), 
 			this.cli.getOptionValue(ConfigGenCliOption.DOMAIN));
 		
-		String inputDirPath = this.cli.hasOption(ConfigGenCliOption.INPUT_DIR) ? 
-			this.cli.getOptionValue(ConfigGenCliOption.INPUT_DIR) : 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.INPUT_DIR.getAttribName());
-		
-		if (StringUtils.isBlank(inputDirPath))
-		{
-			LOGGER.error("Input directory path must be specified.");
-			
-			exitError();
-		}
-		
-		File inputDir = new File(inputDirPath);
-		
-		if (!inputDir.exists())
-		{
-			LOGGER.error("Input directory does not exist: " + inputDir);
-			
-			exitError();
-		}
-		else if (!inputDir.isDirectory())
-		{
-			LOGGER.error("Input directory path is not a directory: " + inputDir);
-			
-			exitError();
-		}
-		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.INPUT_DIR.getAttribName(), 
-			inputDir.toString());
-		
 		String outputFilePath = this.cli.hasOption(ConfigGenCliOption.OUTPUT_FILE) ? 
 			this.cli.getOptionValue(ConfigGenCliOption.OUTPUT_FILE) : 
 			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName());

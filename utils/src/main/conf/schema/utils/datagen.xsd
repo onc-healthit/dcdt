@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
 	elementFormDefault="qualified"
-	targetNamespace="http://schema.direct-test.com/utils/utils/certgen"
-	xmlns="http://schema.direct-test.com/utils/utils/certgen"
+	targetNamespace="http://schema.direct-test.com/utils/utils/datagen"
+	xmlns="http://schema.direct-test.com/utils/utils/datagen"
 	xmlns:config="http://schema.direct-test.com/utils/config"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	
 	<xs:import namespace="http://schema.direct-test.com/utils/config" schemaLocation="http://schema.direct-test.com/utils/config"/>
 	
-	<xs:complexType name="certgen">
+	<xs:complexType name="datagen">
 		<xs:annotation>
 			<xs:documentation>
-				Certificate Generator utility.
+				Data Generator utility.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -22,10 +22,10 @@
 		</xs:complexContent>
 	</xs:complexType>
 	
-	<xs:element name="certgen" type="certgen">
+	<xs:element name="datagen" type="datagen">
 		<xs:annotation>
 			<xs:documentation>
-				Certificate Generator utility element.
+				Data Generator utility element.
 			</xs:documentation>
 		</xs:annotation>
 	</xs:element>

@@ -16,7 +16,6 @@
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:extension base="config:utility">
-				<xs:attribute name="inputDir" type="config:attr" use="optional"/>
 				<xs:attribute name="outputFile" type="config:attr" use="optional"/>
 				<xs:attribute name="outputFileArchivePath" type="config:attr" use="optional"/>
 				<xs:attribute name="resultMailAddress" type="config:attr" use="optional"/>

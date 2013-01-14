@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.cert.generator;
+package gov.hhs.onc.dcdt.utils.data.generator;
 
 import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import gov.hhs.onc.dcdt.utils.cli.validation.NotBlankValidator;
@@ -6,7 +6,7 @@ import org.apache.commons.cli2.Option;
 import org.apache.commons.cli2.builder.ArgumentBuilder;
 import org.apache.commons.cli2.builder.DefaultOptionBuilder;
 
-public enum CertGenCliOption implements CliOption
+public enum DataGenCliOption implements CliOption
 {
 	DOMAIN
 	(
@@ -43,12 +43,12 @@ public enum CertGenCliOption implements CliOption
 	private Option option;
 	private String attribName;
 	
-	CertGenCliOption(Option option)
+	DataGenCliOption(Option option)
 	{
 		this(option, null);
 	}
 	
-	CertGenCliOption(Option option, String attribName)
+	DataGenCliOption(Option option, String attribName)
 	{
 		this.option = option;
 		this.attribName = attribName;

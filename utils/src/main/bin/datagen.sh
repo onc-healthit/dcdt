@@ -16,7 +16,7 @@ utilConfDirName="conf"
 utilConfDir="$utilBaseDir/$utilConfDirName"
 utilLibDirName="lib"
 utilLibDir="$utilBaseDir/$utilLibDirName"
-utilMainClass="@{certgen.class.main}"
+utilMainClass="@{datagen.class.main}"
 
 utilClassPath="$utilConfDirName"
 
@@ -31,7 +31,7 @@ utilTermWidth="$(stty -a | egrep -o 'columns [[:digit:]]+' | cut -d " " -f 2)"
 	\
 	java \
 		-cp "$utilClassPath" \
-		-Ddcdt.utils.log.file.name.base="@{certgen.log.file.name.base}" \
+		-Ddcdt.utils.log.file.name.base="@{datagen.log.file.name.base}" \
 		-Ddcdt.utils.term.width="$utilTermWidth" \
 		"$utilMainClass" \
 		"$@"
