@@ -11,4 +11,19 @@
 
 . "/etc/environment"
 
+# Workaround for the fact that the 32-bit wrapper executable is tried first
+case "$(uname -s | tr '[:upper:]' '[:lower:]' | tr -d '[:blank:]')" in
+	*linux*)
+		case "$(uname -m | tr '[:upper:]' '[:lower:]' | tr -d '[:blank:]')" in
+			amd64|x86_64)
+				chmod -x "$DIRECT_HOME/apache-james-3.0-beta4/bin/wrapper-linux-x86-32"
+				;;
+			
+			*)
+				chmod +x "$DIRECT_HOME/apache-james-3.0-beta4/bin/wrapper-linux-x86-32"
+				;;
+		esac
+		;;
+esac
+
 "$DIRECT_HOME/apache-james-3.0-beta4/bin/james" "$@"

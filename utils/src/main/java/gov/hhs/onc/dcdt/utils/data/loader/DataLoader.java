@@ -57,10 +57,16 @@ public class DataLoader extends LoaderUtility<DataLoaderCliOption>
 				this.loadServiceEntry(entry);
 			}
 			
-			for (Setting setting : this.config.getSettings())
+			LOGGER.info("Loaded " + this.entryMap.size() + " entries into data service (" + this.dataService.getServiceUrl() + ").");
+			
+			List<Setting> settings = this.config.getSettings();
+			
+			for (Setting setting : settings)
 			{
 				this.loadServiceSetting(setting);
 			}
+			
+			LOGGER.info("Loaded " + settings.size() + " setting(s) into data service (" + this.dataService.getServiceUrl() + ").");
 
 			List<DnsRecord> dnsRecords = new ArrayList<>();
 			dnsRecords.addAll(this.config.getARecords());
@@ -74,6 +80,8 @@ public class DataLoader extends LoaderUtility<DataLoaderCliOption>
 			{
 				this.loadServiceDnsRecord(dnsRecord);
 			}
+			
+			LOGGER.info("Loaded " + dnsRecords.size() + " DNS record(s) into data service (" + this.dataService.getServiceUrl() + ").");
 		}
 		catch (DataServiceException e)
 		{

@@ -260,7 +260,7 @@
 									</mapper>
 								</data>
 							</dataSet>
-							<deb>${project.build.directory}/direct-cert-discovery-tool-${project.version}-all.deb</deb>
+							<deb>${project.build.directory}/${project.build.finalName}-all.deb</deb>
 							<submodules>false</submodules>
 							<timestamped>true</timestamped>
 							<verbose>false</verbose>

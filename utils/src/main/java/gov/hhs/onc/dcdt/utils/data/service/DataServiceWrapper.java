@@ -132,11 +132,11 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to update DNS record in web service (" + this.serviceUrl + "): " + 
+				throw new DataServiceException("Unable to update DNS record in data service (" + this.serviceUrl + "): " + 
 					dnsRecordsToString(dnsRecord), e);
 			}
 			
-			LOGGER.debug("Updated DNS record in web service (" + this.serviceUrl + "): " + dnsRecordsToString(dnsRecord));
+			LOGGER.debug("Updated DNS record in data service (" + this.serviceUrl + "): " + dnsRecordsToString(dnsRecord));
 		}
 		else
 		{
@@ -146,11 +146,11 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to add DNS record to web service (" + this.serviceUrl + "): " + 
+				throw new DataServiceException("Unable to add DNS record to data service (" + this.serviceUrl + "): " + 
 					dnsRecordsToString(dnsRecord), e);
 			}
 			
-			LOGGER.debug("Added DNS record to web service (" + this.serviceUrl + "): " + dnsRecordsToString(dnsRecord));
+			LOGGER.debug("Added DNS record to data service (" + this.serviceUrl + "): " + dnsRecordsToString(dnsRecord));
 		}
 		
 		return existingMatchingDnsRecord == null;
@@ -185,12 +185,12 @@ public class DataServiceWrapper
 		
 		if (LOGGER.isTraceEnabled())
 		{
-			LOGGER.trace("Found " + dnsRecords.size() + " DNS record(s) in web service (" + this.serviceUrl + "): " + 
+			LOGGER.trace("Found " + dnsRecords.size() + " DNS record(s) in data service (" + this.serviceUrl + "): " + 
 				dnsRecordsToString(dnsRecords));
 		}
 		else
 		{
-			LOGGER.debug("Found " + dnsRecords.size() + " DNS record(s) in web service (" + this.serviceUrl + ").");
+			LOGGER.debug("Found " + dnsRecords.size() + " DNS record(s) in data service (" + this.serviceUrl + ").");
 		}
 		
 		return dnsRecords;
@@ -214,11 +214,11 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to remove certificate from web service (" + this.serviceUrl + "): " + 
+				throw new DataServiceException("Unable to remove certificate from data service (" + this.serviceUrl + "): " + 
 					certificatesToString(existingCert), e);
 			}
 			
-			LOGGER.debug("Removed certificate from web service (" + this.serviceUrl + "): " + certificatesToString(existingCert));
+			LOGGER.debug("Removed certificate from data service (" + this.serviceUrl + "): " + certificatesToString(existingCert));
 		}
 		
 		try
@@ -227,11 +227,11 @@ public class DataServiceWrapper
 		}
 		catch (RemoteException e)
 		{
-			throw new DataServiceException("Unable to add certificate to web service (" + this.serviceUrl + "): " + 
+			throw new DataServiceException("Unable to add certificate to data service (" + this.serviceUrl + "): " + 
 				certificatesToString(cert), e);
 		}
 		
-		LOGGER.debug("Added certificate to web service (" + this.serviceUrl + "): " + certificatesToString(cert));
+		LOGGER.debug("Added certificate to data service (" + this.serviceUrl + "): " + certificatesToString(cert));
 		
 		return existingCert == null;
 	}
@@ -281,7 +281,7 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to list certificates in web service (" + this.serviceUrl + ").", e);
+				throw new DataServiceException("Unable to list certificates in data service (" + this.serviceUrl + ").", e);
 			}
 			
 			mapCerts(certsMap, certsArr);
@@ -296,7 +296,7 @@ public class DataServiceWrapper
 				}
 				catch (RemoteException e)
 				{
-					throw new DataServiceException("Unable to get certificates for owner in web service (" + this.serviceUrl + "): " + 
+					throw new DataServiceException("Unable to get certificates for owner in data service (" + this.serviceUrl + "): " + 
 						certOwner, e);
 				}
 				
@@ -313,12 +313,12 @@ public class DataServiceWrapper
 				certsSet.addAll(certs);
 			}
 			
-			LOGGER.trace("Found " + certsSet.size() + " certificate(s) in web service (" + this.serviceUrl + "): " + 
+			LOGGER.trace("Found " + certsSet.size() + " certificate(s) in data service (" + this.serviceUrl + "): " + 
 				certificatesToString(certsSet));
 		}
 		else
 		{
-			LOGGER.debug("Found " + certsMap.size() + " certificate(s) in web service (" + this.serviceUrl + ").");
+			LOGGER.debug("Found " + certsMap.size() + " certificate(s) in data service (" + this.serviceUrl + ").");
 		}
 		
 		return certsMap;
@@ -341,11 +341,11 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to update setting in web service (" + this.serviceUrl + "): " + 
+				throw new DataServiceException("Unable to update setting in data service (" + this.serviceUrl + "): " + 
 					settingsToString(setting), e);
 			}
 			
-			LOGGER.debug("Updated setting in web service (" + this.serviceUrl + "): " + settingsToString(setting));
+			LOGGER.debug("Updated setting in data service (" + this.serviceUrl + "): " + settingsToString(setting));
 			
 			return false;
 		}
@@ -357,11 +357,11 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to add setting to web service (" + this.serviceUrl + "): " + 
+				throw new DataServiceException("Unable to add setting to data service (" + this.serviceUrl + "): " + 
 					settingsToString(setting), e);
 			}
 			
-			LOGGER.debug("Added setting to web service (" + this.serviceUrl + "): " + settingsToString(setting));
+			LOGGER.debug("Added setting to data service (" + this.serviceUrl + "): " + settingsToString(setting));
 			
 			return true;
 		}
@@ -427,18 +427,18 @@ public class DataServiceWrapper
 		}
 		catch (RemoteException e)
 		{
-			throw new DataServiceException("Unable to get setting(s) by name(s) from web service (" + this.serviceUrl + 
+			throw new DataServiceException("Unable to get setting(s) by name(s) from data service (" + this.serviceUrl + 
 				"): settingNames=[" + StringUtils.join(settingNames, ", ") + "]", e);
 		}
 		
 		if (LOGGER.isTraceEnabled())
 		{
-			LOGGER.trace("Found " + settingsMap.size() + " setting(s) in web service (" + this.serviceUrl + "): " + 
+			LOGGER.trace("Found " + settingsMap.size() + " setting(s) in data service (" + this.serviceUrl + "): " + 
 				settingsToString(settingsMap.values()));
 		}
 		else
 		{
-			LOGGER.debug("Found " + settingsMap.size() + " setting(s) in web service (" + this.serviceUrl + ").");
+			LOGGER.debug("Found " + settingsMap.size() + " setting(s) in data service (" + this.serviceUrl + ").");
 		}
 		
 		return settingsMap;
@@ -503,11 +503,11 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to remove anchor from web service (" + this.serviceUrl + "): " + 
+				throw new DataServiceException("Unable to remove anchor from data service (" + this.serviceUrl + "): " + 
 					anchorsToString(existingDomainAnchor), e);
 			}
 			
-			LOGGER.debug("Removed anchor from web service (" + this.serviceUrl + "): " + anchorsToString(existingDomainAnchor));
+			LOGGER.debug("Removed anchor from data service (" + this.serviceUrl + "): " + anchorsToString(existingDomainAnchor));
 		}
 		
 		try
@@ -516,11 +516,11 @@ public class DataServiceWrapper
 		}
 		catch (RemoteException e)
 		{
-			throw new DataServiceException("Unable to add anchor to web service (" + this.serviceUrl + "): " + 
+			throw new DataServiceException("Unable to add anchor to data service (" + this.serviceUrl + "): " + 
 				anchorsToString(anchor), e);
 		}
 		
-		LOGGER.debug("Added anchor to web service (" + this.serviceUrl + "): " + anchorsToString(anchor));
+		LOGGER.debug("Added anchor to data service (" + this.serviceUrl + "): " + anchorsToString(anchor));
 		
 		return existingDomainAnchor == null;
 	}
@@ -615,7 +615,7 @@ public class DataServiceWrapper
 		}
 		catch (RemoteException e)
 		{
-			throw new DataServiceException("Unable to get anchor(s) by domain(s) from web service (" + this.serviceUrl + 
+			throw new DataServiceException("Unable to get anchor(s) by domain(s) from data service (" + this.serviceUrl + 
 				"): domains=[" + StringUtils.join(domains, ", ") + "]", e);
 		}
 		
@@ -628,12 +628,12 @@ public class DataServiceWrapper
 				anchorsSet.addAll(anchors);
 			}
 			
-			LOGGER.trace("Found " + anchorsSet.size() + " anchors(s) in web service (" + this.serviceUrl + "): " + 
+			LOGGER.trace("Found " + anchorsSet.size() + " anchors(s) in data service (" + this.serviceUrl + "): " + 
 				anchorsToString(anchorsSet));
 		}
 		else
 		{
-			LOGGER.debug("Found " + anchorsMap.size() + " anchors(s) in web service (" + this.serviceUrl + ").");
+			LOGGER.debug("Found " + anchorsMap.size() + " anchors(s) in data service (" + this.serviceUrl + ").");
 		}
 		
 		return anchorsMap;
@@ -659,11 +659,11 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to set domain in web service (" + this.serviceUrl + "): " + 
+				throw new DataServiceException("Unable to set domain in data service (" + this.serviceUrl + "): " + 
 					domainsToString(domain), e);
 			}
 			
-			LOGGER.debug("Updated domain in web service (" + this.serviceUrl + "): " + domainsToString(domain));
+			LOGGER.debug("Updated domain in data service (" + this.serviceUrl + "): " + domainsToString(domain));
 			
 			return false;
 		}
@@ -675,11 +675,11 @@ public class DataServiceWrapper
 			}
 			catch (RemoteException e)
 			{
-				throw new DataServiceException("Unable to add domain to web service (" + this.serviceUrl + "): " + 
+				throw new DataServiceException("Unable to add domain to data service (" + this.serviceUrl + "): " + 
 					domainsToString(domain), e);
 			}
 			
-			LOGGER.debug("Added domain to web service (" + this.serviceUrl + "): " + domainsToString(domain));
+			LOGGER.debug("Added domain to data service (" + this.serviceUrl + "): " + domainsToString(domain));
 			
 			return true;
 		}
@@ -730,18 +730,18 @@ public class DataServiceWrapper
 		}
 		catch (RemoteException e)
 		{
-			throw new DataServiceException("Unable to get domain(s) by name(s) from web service (" + this.serviceUrl + 
+			throw new DataServiceException("Unable to get domain(s) by name(s) from data service (" + this.serviceUrl + 
 				"): domainNames=[" + StringUtils.join(domainNames, ", ") + "]", e);
 		}
 		
 		if (LOGGER.isTraceEnabled())
 		{
-			LOGGER.trace("Found " + domainsMap.size() + " domain(s) in web service (" + this.serviceUrl + "): " + 
+			LOGGER.trace("Found " + domainsMap.size() + " domain(s) in data service (" + this.serviceUrl + "): " + 
 				domainsToString(domainsMap.values()));
 		}
 		else
 		{
-			LOGGER.debug("Found " + domainsMap.size() + " domain(s) in web service (" + this.serviceUrl + ").");
+			LOGGER.debug("Found " + domainsMap.size() + " domain(s) in data service (" + this.serviceUrl + ").");
 		}
 		
 		return domainsMap;
@@ -755,7 +755,7 @@ public class DataServiceWrapper
 		}
 		catch (MalformedURLException e)
 		{
-			throw new DataServiceException("Malformed web service url: protocol=" + HTTP_PROTOCOL + 
+			throw new DataServiceException("Malformed data service url: protocol=" + HTTP_PROTOCOL + 
 				", host=" + this.serviceHost + ", port=" + this.servicePort + ", path=" + this.servicePath, e);
 		}
 		
@@ -765,10 +765,10 @@ public class DataServiceWrapper
 		}
 		catch (JAXRPCException e)
 		{
-			throw new DataServiceException("Unable to connect to web service (" + this.serviceUrl + ").", e);
+			throw new DataServiceException("Unable to connect to data service (" + this.serviceUrl + ").", e);
 		}
 		
-		LOGGER.info("Connected to web service (" + this.serviceUrl + ").");
+		LOGGER.info("Connected to data service (" + this.serviceUrl + ").");
 	}
 	
 	private static void mapCerts(Map<String, List<Certificate>> certsMap, Certificate[] certsArr)
@@ -1017,5 +1017,10 @@ public class DataServiceWrapper
 		}
 		
 		return builder.toString();
+	}
+
+	public URL getServiceUrl()
+	{
+		return this.serviceUrl;
 	}
 }
