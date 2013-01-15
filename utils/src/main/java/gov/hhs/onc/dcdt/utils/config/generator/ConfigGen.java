@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.utils.config.generator;
 
 import gov.hhs.onc.dcdt.utils.Utility;
-import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
+import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -96,12 +96,11 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 	{
 		super.processCmdLine();
 		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.DOMAIN.getAttribName(), 
-			this.cli.getOptionValue(ConfigGenCliOption.DOMAIN));
+		this.config.setUtilString(ConfigGenCliOption.DOMAIN);
 		
-		String outputFilePath = this.cli.hasOption(ConfigGenCliOption.OUTPUT_FILE) ? 
-			this.cli.getOptionValue(ConfigGenCliOption.OUTPUT_FILE) : 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName());
+		this.config.setUtilString(ConfigGenCliOption.OUTPUT_FILE);
+		
+		String outputFilePath = this.config.getUtilString(ConfigGenCliOption.OUTPUT_FILE);
 		
 		if (StringUtils.isBlank(outputFilePath))
 		{
@@ -119,55 +118,37 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 			exitError();
 		}
 		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName(), 
-			outputFile.toString());
+		this.config.setUtilString(ConfigGenCliOption.RESULT_MAIL_ADDRESS);
 		
-		String resultMailAddress = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_ADDRESS) ? 
-			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_ADDRESS) : 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_ADDRESS.getAttribName());
-		
-		if (StringUtils.isBlank(resultMailAddress))
+		if (StringUtils.isBlank(this.config.getUtilString(ConfigGenCliOption.RESULT_MAIL_ADDRESS)))
 		{
 			LOGGER.error("Result mail address must be specified.");
 			
 			exitError();
 		}
 		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_ADDRESS.getAttribName(), 
-			resultMailAddress);
+		this.config.setUtilString(ConfigGenCliOption.RESULT_MAIL_PASSWORD);
 		
-		String resultMailPassword = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_PASSWORD) ? 
-			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_PASSWORD) : 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PASSWORD.getAttribName());
-		
-		if (StringUtils.isBlank(resultMailPassword))
+		if (StringUtils.isBlank(this.config.getUtilString(ConfigGenCliOption.RESULT_MAIL_PASSWORD)))
 		{
 			LOGGER.error("Result mail password must be specified.");
 			
 			exitError();
 		}
 		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PASSWORD.getAttribName(), 
-			resultMailPassword);
+		this.config.setUtilString(ConfigGenCliOption.RESULT_MAIL_HOST);
 		
-		String resultMailHost = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_HOST) ? 
-			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_HOST) : 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_HOST.getAttribName());
-		
-		if (StringUtils.isBlank(resultMailHost))
+		if (StringUtils.isBlank(this.config.getUtilString(ConfigGenCliOption.RESULT_MAIL_HOST)))
 		{
 			LOGGER.error("Result mail host must be specified.");
 			
 			exitError();
 		}
 		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_HOST.getAttribName(), 
-			resultMailHost);
+		this.config.setUtilString(ConfigGenCliOption.RESULT_MAIL_PORT);
 		
-		String resultMailPort = this.cli.hasOption(ConfigGenCliOption.RESULT_MAIL_PORT) ? 
-			this.cli.getOptionValue(ConfigGenCliOption.RESULT_MAIL_PORT) : 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PORT.getAttribName());
-		int resultMailPortNum = 0;
+		String resultMailPort = this.config.getUtilString(ConfigGenCliOption.RESULT_MAIL_PORT);
+		int resultMailPortNum;
 		
 		if (StringUtils.isBlank(resultMailPort))
 		{
@@ -193,8 +174,5 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 				exitError();
 			}
 		}
-		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.RESULT_MAIL_PORT.getAttribName(), 
-			Integer.toString(resultMailPortNum));
 	}
 }

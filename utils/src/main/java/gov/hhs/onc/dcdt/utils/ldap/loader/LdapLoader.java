@@ -1,12 +1,8 @@
 package gov.hhs.onc.dcdt.utils.ldap.loader;
 
-import gov.hhs.onc.dcdt.utils.Utility;
-import gov.hhs.onc.dcdt.utils.beans.Entry;
+import gov.hhs.onc.dcdt.utils.LoaderUtility;
 import gov.hhs.onc.dcdt.utils.beans.LdapService;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
-import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
-import gov.hhs.onc.dcdt.utils.data.entry.EntryException;
-import gov.hhs.onc.dcdt.utils.data.entry.EntryLoader;
 import gov.hhs.onc.dcdt.utils.ldap.LdapServiceWrapper;
 import gov.hhs.onc.dcdt.utils.ldap.UtilityLdapException;
 import gov.hhs.onc.dcdt.utils.ldap.ldif.LdifBuilder;
@@ -15,9 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
@@ -25,18 +19,15 @@ import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValu
 import org.apache.directory.shared.ldap.model.ldif.LdifEntry;
 import org.apache.log4j.Logger;
 
-public class LdapLoader extends Utility<LdapLoaderCliOption>
+public class LdapLoader extends LoaderUtility<LdapLoaderCliOption>
 {
 	private final static String UTIL_NAME = "ldaploader";
 	
 	private final static String USER_CERT_LDIF_ENTRY_ATTRIB_ID = "userCertificate";
 	
-	private final static String INPUT_CONTAINER_PATH_ATTRIB_NAME = "inputContainerPath";
 	private final static String INPUT_LDIFS_PATH_ATTRIB_NAME = "inputLdifsPath";
 	
 	private final static Logger LOGGER = Logger.getLogger(LdapLoader.class);
-	
-	private Map<String, Entry> entryMap;
 	
 	public LdapLoader()
 	{
@@ -53,9 +44,9 @@ public class LdapLoader extends Utility<LdapLoaderCliOption>
 	{
 		super.execute(args);
 
-		this.loadEntries();
+		this.loadEntries(this.config.getUtilString(LdapLoaderCliOption.INPUT_PATH));
 		
-		String inputLdifsPath = this.config.getUtilString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + INPUT_LDIFS_PATH_ATTRIB_NAME), 
+		String inputLdifsPath = this.config.getUtilString(INPUT_LDIFS_PATH_ATTRIB_NAME), 
 			outputLdifsPath = this.config.getUtilString(LdapLoaderCliOption.OUTPUT_LDIFS_PATH);
 		boolean load = Boolean.parseBoolean(this.config.getUtilString(LdapLoaderCliOption.LOAD));
 		
@@ -124,35 +115,6 @@ public class LdapLoader extends Utility<LdapLoaderCliOption>
 	private static String getLdifPath(String ldifsPath, LdapService ldapService)
 	{
 		return ldifsPath + File.separatorChar + ldapService.getName() + LdifBuilder.LDIF_FILE_EXT;
-	}
-	
-	private void loadEntries()
-	{
-		String inputPath = this.config.getUtilString(LdapLoaderCliOption.INPUT_PATH), 
-			inputContainerPath = this.config.getUtilString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + 
-			INPUT_CONTAINER_PATH_ATTRIB_NAME);
-		
-		EntryLoader entryLoader = new EntryLoader();
-		
-		this.entryMap = new HashMap<>();
-		
-		for (Entry entry : this.config.getEntries())
-		{
-			try
-			{
-				entryLoader.loadEntry(entry, inputPath, inputContainerPath);
-			}
-			catch (EntryException e)
-			{
-				LOGGER.error("Unable to load entry: " + entry, e);
-				
-				exitError();
-			}
-			
-			LOGGER.trace("Loaded entry: " + entry);
-			
-			this.entryMap.put(entry.getName(), entry);
-		}
 	}
 	
 	private boolean loadLdifEntry(LdifBuilder ldifBuilder, LdapServiceWrapper ldapServiceWrapper, LdifEntry ldifEntry)

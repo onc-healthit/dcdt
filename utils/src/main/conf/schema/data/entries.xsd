@@ -8,29 +8,43 @@
 	
 	<xs:import namespace="http://schema.direct-test.com/utils/config" schemaLocation="http://schema.direct-test.com/utils/config"/>
 	
-	<xs:complexType name="entry">
+	<xs:simpleType name="entryDestinationTypeName">
 		<xs:annotation>
 			<xs:documentation>
-				An entry.
+				An entry destination type name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value="^(none|anchor|dns|ldap)$"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="entryDestinationTypeNameAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing an entry destination type name or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="entryDestinationTypeName config:attr"/>
+	</xs:simpleType>
+	
+	<xs:complexType name="entryDestination">
+		<xs:annotation>
+			<xs:documentation>
+				An entry destination.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
 			<xs:restriction base="config:bean">
-				<xs:sequence>
-					<xs:element name="dn" type="entry-dn" minOccurs="1" maxOccurs="1"/>
-				</xs:sequence>
-				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.utils.beans.Entry"/>
-				<xs:attribute name="name" type="config:attr"/>
-				<xs:attribute name="path" type="xs:token"/>
-				<xs:attribute name="canSign" type="xs:boolean"/>
-				<xs:attribute name="keyBits" type="xs:positiveInteger"/>
-				<xs:attribute name="validDays" type="xs:nonNegativeInteger"/>
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.utils.beans.EntryDestination"/>
+				<xs:attribute name="typeName" type="entryDestinationTypeNameAttr"/>
+				<xs:attribute name="ldapServiceName" type="config:attr" use="optional"/>
 			</xs:restriction>
 		</xs:complexContent>
 	</xs:complexType>
 	
 	<!-- TODO: implement attribute types -->
-	<xs:complexType name="entry-dn">
+	<xs:complexType name="entryDn">
 		<xs:annotation>
 			<xs:documentation>
 				An entry distinguished name.
@@ -46,6 +60,28 @@
 				<xs:attribute name="organization" type="config:attr"/>
 				<xs:attribute name="organizationUnit" type="config:attr"/>
 				<xs:attribute name="state" type="config:attr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="entry">
+		<xs:annotation>
+			<xs:documentation>
+				An entry.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="config:bean">
+				<xs:sequence>
+					<xs:element name="destination" type="entryDestination" minOccurs="1" maxOccurs="1"/>
+					<xs:element name="dn" type="entryDn" minOccurs="1" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.utils.beans.Entry"/>
+				<xs:attribute name="name" type="config:attr"/>
+				<xs:attribute name="path" type="xs:token"/>
+				<xs:attribute name="canSign" type="xs:boolean"/>
+				<xs:attribute name="keyBits" type="xs:positiveInteger"/>
+				<xs:attribute name="validDays" type="xs:nonNegativeInteger"/>
 			</xs:restriction>
 		</xs:complexContent>
 	</xs:complexType>

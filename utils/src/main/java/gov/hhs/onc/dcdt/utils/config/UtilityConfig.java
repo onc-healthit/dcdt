@@ -200,7 +200,7 @@ public class UtilityConfig<T extends Enum<T> & CliOption>
 	
 	public String getUtilString(T option, Object defaultValue)
 	{
-		return ObjectUtils.toString(this.util.getCli().getOptionValue(option), this.getUtilString(XPATH_ATTRIB_KEY_PREFIX + option.getAttribName(), 
+		return ObjectUtils.toString(this.util.getCli().getOptionValue(option), this.getUtilString(option.getAttribName(), 
 			defaultValue));
 	}
 	
@@ -211,7 +211,7 @@ public class UtilityConfig<T extends Enum<T> & CliOption>
 	
 	public String getUtilString(String key, Object defaultValue)
 	{
-		return this.getUtilConfig().getString(key, ObjectUtils.toString(defaultValue, null));
+		return this.getUtilConfig().getString(XPATH_ATTRIB_KEY_PREFIX + key, ObjectUtils.toString(defaultValue, null));
 	}
 	
 	public void setUtilString(T option)
@@ -221,7 +221,7 @@ public class UtilityConfig<T extends Enum<T> & CliOption>
 	
 	public void setUtilString(T option, Object defaultValue)
 	{
-		this.setUtilString(XPATH_ATTRIB_KEY_PREFIX + option.getAttribName(), this.getUtilString(option), defaultValue);
+		this.setUtilString(option.getAttribName(), this.getUtilString(option), defaultValue);
 	}
 	
 	public void setUtilString(String key, Object value)
@@ -231,7 +231,7 @@ public class UtilityConfig<T extends Enum<T> & CliOption>
 	
 	public void setUtilString(String key, Object value, Object defaultValue)
 	{
-		this.getUtilConfig().setProperty(key, ObjectUtils.defaultIfNull(value, defaultValue));
+		this.getUtilConfig().setProperty(XPATH_ATTRIB_KEY_PREFIX + key, ObjectUtils.defaultIfNull(value, defaultValue));
 	}
 	
 	public SubnodeConfiguration getUtilConfig()

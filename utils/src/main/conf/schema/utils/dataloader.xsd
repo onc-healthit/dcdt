@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	elementFormDefault="qualified"
+	targetNamespace="http://schema.direct-test.com/utils/utils/dataloader"
+	xmlns="http://schema.direct-test.com/utils/utils/dataloader"
+	xmlns:config="http://schema.direct-test.com/utils/config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:import namespace="http://schema.direct-test.com/utils/config" schemaLocation="http://schema.direct-test.com/utils/config"/>
+	
+	<xs:complexType name="dataloader">
+		<xs:annotation>
+			<xs:documentation>
+				Data Loader utility.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="config:utility">
+				<xs:attribute name="inputPath" type="config:attr" use="optional"/>
+				<xs:attribute name="inputContainerPath" type="config:attr" use="optional"/>
+				<xs:attribute name="rawMailDir" type="config:attr" use="optional"/>
+				<xs:attribute name="inMailDir" type="config:attr" use="optional"/>
+				<xs:attribute name="outMailDir" type="config:attr" use="optional"/>
+				<xs:attribute name="badMailDir" type="config:attr" use="optional"/>
+				<xs:attribute name="wsHost" type="config:attr" use="optional"/>
+				<xs:attribute name="wsPort" type="config:portAttr" use="optional"/>
+				<xs:attribute name="wsPath" type="config:attr" use="optional"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:element name="dataloader" type="dataloader">
+		<xs:annotation>
+			<xs:documentation>
+				Data Loader utility element.
+			</xs:documentation>
+		</xs:annotation>
+	</xs:element>
+</xs:schema>

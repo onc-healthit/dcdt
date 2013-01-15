@@ -17,25 +17,25 @@ public class UtilityTestListener implements ITestListener
 	@Override
 	public void onTestStart(ITestResult result)
 	{
-		LOGGER.trace("Started test (name=" + result.getTestName() + "): " + getTestCall(result, true));
+		LOGGER.trace("Started test: " + getTestCall(result, true));
 	}
 
 	@Override
 	public void onTestSuccess(ITestResult result)
 	{
-		LOGGER.trace("Test succeeded (name=" + result.getTestName() + "): " + getTestCall(result, false));
+		LOGGER.trace("Test succeeded: " + getTestCall(result, false));
 	}
 
 	@Override
 	public void onTestFailure(ITestResult result)
 	{
-		LOGGER.trace("Test failed (name=" + result.getTestName() + "): " + getTestCall(result, false), result.getThrowable());
+		LOGGER.trace("Test failed: " + getTestCall(result, false), result.getThrowable());
 	}
 
 	@Override
 	public void onTestSkipped(ITestResult result)
 	{
-		LOGGER.trace("Test skipped (name=" + result.getTestName() + "): " + getTestCall(result, false));
+		LOGGER.trace("Test skipped: " + getTestCall(result, false));
 	}
 
 	@Override

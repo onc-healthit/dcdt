@@ -1,13 +1,19 @@
 package gov.hhs.onc.dcdt.utils.beans;
 
 import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
@@ -36,6 +42,7 @@ public class Entry extends UtilityBean
 	private int keyBits;
 	private int validDays;
 	private boolean canSign;
+	private EntryDestination destination = new EntryDestination();
 	private EntryDn dn = new EntryDn();
 	private KeyPair keyPair;
 	private X509Certificate cert;
@@ -116,20 +123,31 @@ public class Entry extends UtilityBean
 	{
 		StringBuilder builder = new StringBuilder();
 		builder.append("name=");
-		builder.append(this.getName());
+		builder.append(this.name);
 		builder.append(", path=");
-		builder.append(this.getPath());
+		builder.append(this.path);
 		builder.append(", keyBits=");
-		builder.append(this.getKeyBits());
+		builder.append(this.keyBits);
 		builder.append(", validDays=");
-		builder.append(this.getValidDays());
-		builder.append(", dn={");
-		builder.append(this.getDn().toString());
-		builder.append("}");
+		builder.append(this.validDays);
+		
+		if (this.hasDestination())
+		{
+			builder.append(", destination={");
+			builder.append(this.destination);
+			builder.append("}");
+		}
+		
+		if (this.hasDn())
+		{
+			builder.append(", dn={");
+			builder.append(this.dn);
+			builder.append("}");
+		}
 		
 		if (this.hasIssuer())
 		{
-			Entry issuerEntry = this.getIssuer();
+			Entry issuerEntry = this.issuer;
 			
 			builder.append(", issuer={");
 			builder.append(", issuer={name=");
@@ -137,13 +155,36 @@ public class Entry extends UtilityBean
 			builder.append(", path=");
 			builder.append(issuerEntry.getPath());
 			builder.append(", dn={");
-			builder.append(issuerEntry.getDn().toString());
+			builder.append(issuerEntry.getDn());
 			builder.append("}}");
 		}
 		
 		return builder.toString();
 	}
 
+	public byte[] getCertData() throws CertificateEncodingException
+	{
+		return this.hasCert() ? this.cert.getEncoded() : null;
+	}
+	
+	public byte[] getKeyData()
+	{
+		return this.hasPrivateKey() ? this.getPrivateKey().getEncoded() : null;
+	}
+	
+	public byte[] getKeyStoreData() throws CertificateException, IOException, KeyStoreException, NoSuchAlgorithmException
+	{
+		if (!this.hasKeyStore())
+		{
+			return null;
+		}
+
+		ByteArrayOutputStream keyStoreOutStream = new ByteArrayOutputStream();
+		this.keyStore.store(keyStoreOutStream, ArrayUtils.EMPTY_CHAR_ARRAY);
+		
+		return keyStoreOutStream.toByteArray();
+	}
+	
 	public AuthorityKeyIdentifier getAuthKeyId()
 	{
 		return this.hasIssuer() && this.getIssuer().hasPublicKey() ? 
@@ -184,7 +225,7 @@ public class Entry extends UtilityBean
 	
 	public AsymmetricKeyParameter getPrivateKeyParam() throws IOException
 	{
-		return this.hasPrivateKey() ? PrivateKeyFactory.createKey(this.getPrivateKey().getEncoded()) : null;
+		return this.hasPrivateKey() ? PrivateKeyFactory.createKey(this.getKeyData()) : null;
 	}
 	
 	public boolean hasPrivateKey()
@@ -209,7 +250,7 @@ public class Entry extends UtilityBean
 	
 	public boolean hasCert()
 	{
-		return this.getCert() != null;
+		return this.cert != null;
 	}
 	
 	public X509Certificate getCert()
@@ -222,9 +263,24 @@ public class Entry extends UtilityBean
 		this.cert = cert;
 	}
 
+	public boolean hasDestination()
+	{
+		return this.destination != null;
+	}
+	
+	public EntryDestination getDestination()
+	{
+		return this.destination;
+	}
+
+	public void setDestination(EntryDestination destination)
+	{
+		this.destination = destination;
+	}
+
 	public boolean hasDn()
 	{
-		return this.getDn() != null;
+		return this.dn != null;
 	}
 	
 	public EntryDn getDn()
@@ -239,7 +295,7 @@ public class Entry extends UtilityBean
 
 	public boolean hasIssuer()
 	{
-		return this.getIssuer() != null;
+		return this.issuer != null;
 	}
 	
 	public Entry getIssuer()
@@ -254,7 +310,7 @@ public class Entry extends UtilityBean
 
 	public boolean hasKeyBits()
 	{
-		return (this.getKeyBits() > 0) && (this.getKeyBits() % 2 == 0);
+		return (this.keyBits > 0) && (this.keyBits % 8 == 0);
 	}
 	
 	public int getKeyBits()
@@ -269,7 +325,7 @@ public class Entry extends UtilityBean
 
 	public boolean hasKeyPair()
 	{
-		return this.getKeyPair() != null;
+		return this.keyPair != null;
 	}
 	
 	public KeyPair getKeyPair()
@@ -282,6 +338,11 @@ public class Entry extends UtilityBean
 		this.keyPair = keyPair;
 	}
 
+	public boolean hasKeyStore()
+	{
+		return this.keyStore != null;
+	}
+	
 	public KeyStore getKeyStore()
 	{
 		return this.keyStore;
@@ -294,7 +355,7 @@ public class Entry extends UtilityBean
 
 	public boolean hasName()
 	{
-		return !StringUtils.isBlank(this.getName());
+		return !StringUtils.isBlank(this.name);
 	}
 	
 	public String getName()
@@ -309,7 +370,7 @@ public class Entry extends UtilityBean
 	
 	public boolean hasPath()
 	{
-		return !StringUtils.isBlank(this.getPath());
+		return !StringUtils.isBlank(this.path);
 	}
 
 	public String getPath()
@@ -324,7 +385,7 @@ public class Entry extends UtilityBean
 
 	public boolean hasValidDays()
 	{
-		return this.getValidDays() >= 0;
+		return this.validDays >= 0;
 	}
 	
 	public int getValidDays()

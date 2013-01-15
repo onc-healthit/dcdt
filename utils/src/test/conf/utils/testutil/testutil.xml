@@ -11,5 +11,8 @@
 	
 	bindDnName="uid=admin\,ou=system"
 	bindPass="secret"
+	loadDnName="ou=system"
 	
-	loadDnName="ou=system"/>
+	wsHost="${util:domain}"
+	wsPort="8081"
+	wsPath="/config-service/ConfigurationService"/>

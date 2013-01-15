@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.utils.ldap.ldif;
 
 import gov.hhs.onc.dcdt.utils.ldap.LdapServiceWrapperTest;
 import gov.hhs.onc.dcdt.utils.ldap.UtilityLdapException;
-import gov.hhs.onc.dcdt.utils.test.UtilityTest;
+import gov.hhs.onc.dcdt.utils.test.MockTestUtility;
 import gov.hhs.onc.dcdt.utils.test.UtilityTestListener;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,8 +12,8 @@ import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners({ UtilityTestListener.class })
-@Test(dependsOnGroups = { "utils.ldap" }, groups = { "utils.ldap.ldif" })
-public class LdifBuilderTest extends UtilityTest
+@Test(dependsOnGroups = { "utils.ldap" }, groups = { "utils.ldap", "utils.ldap.ldif" })
+public class LdifBuilderTest
 {
 	private static LdifBuilder ldifBuilder;
 	private static List<LdifEntry> ldifEntries;
@@ -33,7 +33,7 @@ public class LdifBuilderTest extends UtilityTest
 	@Test
 	public void testReadEntries() throws UtilityLdapException
 	{
-		ldifBuilder = new LdifBuilder(util, LdapServiceWrapperTest.serviceWrapper);
+		ldifBuilder = new LdifBuilder(MockTestUtility.getInstance(), LdapServiceWrapperTest.serviceWrapper);
 		
 		ldifEntries = ldifBuilder.readEntries("utils/ldaploader/ldif/default.ldif");
 		

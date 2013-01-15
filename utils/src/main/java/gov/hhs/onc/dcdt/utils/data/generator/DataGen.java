@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.utils.data.generator;
 
 import gov.hhs.onc.dcdt.utils.Utility;
-import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import gov.hhs.onc.dcdt.utils.beans.BeanAttrib;
 import gov.hhs.onc.dcdt.utils.beans.Entry;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
+import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import gov.hhs.onc.dcdt.utils.data.entry.EntryBuilder;
 import gov.hhs.onc.dcdt.utils.data.entry.EntryException;
 import java.io.ByteArrayOutputStream;
@@ -95,8 +95,8 @@ public class DataGen extends Utility<DataGenCliOption>
 			entries.add(leafEntry);
 		}
 		
-		writeOutputFile(new File(this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + DataGenCliOption.OUTPUT_FILE.getAttribName())), 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME), entries);
+		writeOutputFile(new File(this.config.getUtilString(DataGenCliOption.OUTPUT_FILE)), 
+			this.config.getUtilString(OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME), entries);
 	}
 
 	@Override
@@ -104,12 +104,11 @@ public class DataGen extends Utility<DataGenCliOption>
 	{
 		super.processCmdLine();
 		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + DataGenCliOption.DOMAIN.getAttribName(), 
-			this.cli.getOptionValue(DataGenCliOption.DOMAIN));
+		this.config.setUtilString(DataGenCliOption.DOMAIN);
 		
-		String outputFilePath = this.cli.hasOption(DataGenCliOption.OUTPUT_FILE) ? 
-			this.cli.getOptionValue(DataGenCliOption.OUTPUT_FILE) : 
-			this.config.getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + DataGenCliOption.OUTPUT_FILE.getAttribName());
+		this.config.setUtilString(DataGenCliOption.OUTPUT_FILE);
+		
+		String outputFilePath = this.config.getUtilString(DataGenCliOption.OUTPUT_FILE);
 		
 		if (StringUtils.isBlank(outputFilePath))
 		{
@@ -126,9 +125,6 @@ public class DataGen extends Utility<DataGenCliOption>
 			
 			exitError();
 		}
-		
-		this.config.getUtilConfig().setProperty(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + DataGenCliOption.OUTPUT_FILE.getAttribName(), 
-			outputFile.toString());
 	}
 
 	@Override
@@ -175,9 +171,29 @@ public class DataGen extends Utility<DataGenCliOption>
 	
 	private static void writeEntryFiles(ZipOutputStream outputFileStream, String outputFileArchivePath, Entry entry) throws EntryException
 	{
+		byte[] entryKeyData = entry.getKeyData(), entryCertData = null, entryKeyStoreData = null;
+		
 		try
 		{
-			writeEntryData(outputFileStream, outputFileArchivePath, entry.getKeyDerFilePath(), entry.getPrivateKey().getEncoded());
+			entryCertData = entry.getCertData();
+		}
+		catch (CertificateEncodingException e)
+		{
+			throw new EntryException("Unable to get entry certificate data: " + entry.getCert(), e);
+		}
+		
+		try
+		{
+			entryKeyStoreData = entry.getKeyStoreData();
+		}
+		catch (CertificateException | IOException | KeyStoreException | NoSuchAlgorithmException e)
+		{
+			throw new EntryException("Unable to get entry keystore data: " + entry.getKeyStore(), e);
+		}
+		
+		try
+		{
+			writeEntryData(outputFileStream, outputFileArchivePath, entry.getKeyDerFilePath(), entryKeyData);
 		}
 		catch (IOException e)
 		{
@@ -188,7 +204,7 @@ public class DataGen extends Utility<DataGenCliOption>
 		try
 		{
 			writeEntryData(outputFileStream, outputFileArchivePath, entry.getKeyPemFilePath(),
-				getPemData(new PemObject(PKCS8_PEM_TYPE, entry.getPrivateKey().getEncoded())));
+				getPemData(new PemObject(PKCS8_PEM_TYPE, entryKeyData)));
 		}
 		catch (IOException e)
 		{
@@ -198,9 +214,9 @@ public class DataGen extends Utility<DataGenCliOption>
 		
 		try
 		{
-			writeEntryData(outputFileStream, outputFileArchivePath, entry.getCertDerFilePath(), entry.getCert().getEncoded());
+			writeEntryData(outputFileStream, outputFileArchivePath, entry.getCertDerFilePath(), entryCertData);
 		}
-		catch (CertificateEncodingException | IOException e)
+		catch (IOException e)
 		{
 			throw new EntryException("Unable to write DER-encoded certificate to archived file (path=" + entry.getCertDerFilePath() + "): " + 
 				entry.getCert(), e);
@@ -209,9 +225,9 @@ public class DataGen extends Utility<DataGenCliOption>
 		try
 		{
 			writeEntryData(outputFileStream, outputFileArchivePath, entry.getCertPemFilePath(),
-				getPemData(new PemObject(X509_CERT_PEM_TYPE, entry.getCert().getEncoded())));
+				getPemData(new PemObject(X509_CERT_PEM_TYPE, entryCertData)));
 		}
-		catch (CertificateEncodingException | IOException e)
+		catch (IOException e)
 		{
 			throw new EntryException("Unable to write PEM-encoded certificate to archived file (path=" + entry.getCertPemFilePath() + "): " + 
 				entry.getPrivateKey(), e);
@@ -219,12 +235,9 @@ public class DataGen extends Utility<DataGenCliOption>
 
 		try
 		{
-			ByteArrayOutputStream keyStoreDataStream = new ByteArrayOutputStream();
-			
-			entry.getKeyStore().store(keyStoreDataStream, new char[]{ });
-			writeEntryData(outputFileStream, outputFileArchivePath, entry.getKeyStoreFilePath(), keyStoreDataStream.toByteArray());
+			writeEntryData(outputFileStream, outputFileArchivePath, entry.getKeyStoreFilePath(), entryKeyStoreData);
 		}
-		catch (CertificateException | KeyStoreException | IOException | NoSuchAlgorithmException e)
+		catch (IOException e)
 		{
 			throw new EntryException("Unable to write keystore to archived file (path=" + entry.getKeyStoreFilePath() + "): " + 
 				entry.getKeyStore(), e);

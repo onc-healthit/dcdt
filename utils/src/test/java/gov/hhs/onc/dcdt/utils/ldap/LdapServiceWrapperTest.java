@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.utils.ldap;
 
 import gov.hhs.onc.dcdt.utils.beans.LdapService;
 import gov.hhs.onc.dcdt.utils.ldap.filter.StringEqualityNode;
-import gov.hhs.onc.dcdt.utils.test.UtilityTest;
 import gov.hhs.onc.dcdt.utils.test.UtilityTestListener;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
@@ -16,7 +15,7 @@ import org.testng.annotations.Test;
 
 @Listeners({ UtilityTestListener.class })
 @Test(groups = { "utils.ldap" })
-public class LdapServiceWrapperTest extends UtilityTest
+public class LdapServiceWrapperTest
 {
 	public static LdapServiceWrapper serviceWrapper;
 	public static List<Dn> baseDns;

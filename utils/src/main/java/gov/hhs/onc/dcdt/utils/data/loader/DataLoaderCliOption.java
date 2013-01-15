@@ -1,49 +1,18 @@
-package gov.hhs.onc.dcdt.utils.ldap.loader;
+package gov.hhs.onc.dcdt.utils.data.loader;
 
 import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import gov.hhs.onc.dcdt.utils.cli.validation.NotBlankValidator;
+import gov.hhs.onc.dcdt.utils.cli.validation.PositiveIntegerValidator;
 import org.apache.commons.cli2.Option;
 import org.apache.commons.cli2.builder.ArgumentBuilder;
 import org.apache.commons.cli2.builder.DefaultOptionBuilder;
-import org.apache.commons.cli2.builder.SwitchBuilder;
-import org.apache.commons.cli2.option.Switch;
 
-public enum LdapLoaderCliOption implements CliOption
+public enum DataLoaderCliOption implements CliOption
 {
-	BIND_DN_NAME
-	(
-		new DefaultOptionBuilder()
-			.withDescription("Distinguished name to use when binding to a LDAP service.")
-			.withLongName("bdn")
-			.withLongName("binddn")
-			.withArgument(new ArgumentBuilder()
-				.withName("dn")
-				.withMinimum(1)
-				.withMaximum(1)
-				.withValidator(NotBlankValidator.INSTANCE)
-				.create())
-			.create(), 
-		"bindDnName"
-	), 
-	BIND_PASS
-	(
-		new DefaultOptionBuilder()
-			.withDescription("Password to use when binding to a LDAP service.")
-			.withLongName("bps")
-			.withLongName("bindpass")
-			.withArgument(new ArgumentBuilder()
-				.withName("password")
-				.withMinimum(1)
-				.withMaximum(1)
-				.withValidator(NotBlankValidator.INSTANCE)
-				.create())
-			.create(), 
-		"bindPass"
-	), 
 	DOMAIN
 	(
 		new DefaultOptionBuilder()
-			.withDescription("Domain name to load LDAP data for.")
+			.withDescription("Domain name to load data for.")
 			.withShortName("d")
 			.withLongName("domain")
 			.withArgument(new ArgumentBuilder()
@@ -55,6 +24,22 @@ public enum LdapLoaderCliOption implements CliOption
 			.withRequired(true)
 			.create(), 
 		"domain"
+	), 
+	DOMAIN_IP
+	(
+		new DefaultOptionBuilder()
+			.withDescription("Domain IPv4 address to load data for.")
+			.withLongName("dip")
+			.withLongName("domainip")
+			.withArgument(new ArgumentBuilder()
+				.withName("address")
+				.withMinimum(1)
+				.withMaximum(1)
+				.withValidator(NotBlankValidator.INSTANCE)
+				.create())
+			.withRequired(true)
+			.create(), 
+		"domainIp"
 	), 
 	INPUT_PATH
 	(
@@ -70,37 +55,28 @@ public enum LdapLoaderCliOption implements CliOption
 				.create())
 			.create(), 
 		"inputPath"
-	), 
-	LOAD
-	(
-		new SwitchBuilder(Switch.DEFAULT_DISABLED_PREFIX, Switch.DEFAULT_ENABLED_PREFIX)
-			.withDescription("Whether to load LDAP entries.")
-			.withName("l")
-			.withName("load")
-			.create(), 
-		"load"
-	), 
-	LOAD_DN_NAME
+	),
+	WEB_SERVICE_HOST
 	(
 		new DefaultOptionBuilder()
-			.withDescription("Distinguished name to load the LDAP entries into.")
-			.withLongName("dn")
-			.withLongName("loaddn")
+			.withDescription("Web service (config-service) host.")
+			.withLongName("wsh")
+			.withLongName("wshost")
 			.withArgument(new ArgumentBuilder()
-				.withName("dn")
+				.withName("name")
 				.withMinimum(1)
 				.withMaximum(1)
 				.withValidator(NotBlankValidator.INSTANCE)
 				.create())
 			.create(), 
-		"loadDnName"
-	), 
-	OUTPUT_LDIFS_PATH
+		"wsHost"
+	),
+	WEB_SERVICE_PATH
 	(
 		new DefaultOptionBuilder()
-			.withDescription("Path to the output directory into which to write parsed LDIF files.")
-			.withLongName("ol")
-			.withLongName("outldifs")
+			.withDescription("Web service (config-service) path.")
+			.withLongName("wspd")
+			.withLongName("wspath")
 			.withArgument(new ArgumentBuilder()
 				.withName("path")
 				.withMinimum(1)
@@ -108,18 +84,33 @@ public enum LdapLoaderCliOption implements CliOption
 				.withValidator(NotBlankValidator.INSTANCE)
 				.create())
 			.create(), 
-		"outputLdifsPath"
-	), ;
+		"wsPath"
+	),
+	WEB_SERVICE_PORT
+	(
+		new DefaultOptionBuilder()
+			.withDescription("Web service (config-service) port number.")
+			.withLongName("wsp")
+			.withLongName("wsport")
+			.withArgument(new ArgumentBuilder()
+				.withName("num")
+				.withMinimum(1)
+				.withMaximum(1)
+				.withValidator(PositiveIntegerValidator.INSTANCE)
+				.create())
+			.create(), 
+		"wsPort"
+	);
 	
 	private Option option;
 	private String attribName;
 	
-	LdapLoaderCliOption(Option option)
+	DataLoaderCliOption(Option option)
 	{
 		this(option, null);
 	}
 	
-	LdapLoaderCliOption(Option option, String attribName)
+	DataLoaderCliOption(Option option, String attribName)
 	{
 		this.option = option;
 		this.attribName = attribName;
