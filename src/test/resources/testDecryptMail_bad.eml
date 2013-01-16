@@ -1,0 +1,30 @@
+Received: from goon4.epic.com (EHLO goon4.epic.com) ([199.204.56.118])
+          by ip-10-152-157-38 (JAMES SMTP Server ) with ESMTP ID 985735316
+          for <dts500@direct1.direct-test.com>;
+          Wed, 16 Jan 2013 12:14:58 -0500 (EST)
+Received: from EPIC19499 (epic19499.dhcp.epic.com [10.11.41.24])
+	by goon4.epic.com (8.13.8/8.13.8) with ESMTP id r0G5E0bI010033
+	for <dts500@direct1.direct-test.com>; Tue, 15 Jan 2013 23:14:01 -0600
+MIME-Version: 1.0
+Message-ID: <9CEB08C4D8C41A0924BCDD8C097EB89A26AC5F62@EPIC19499>
+Date: Tue, 15 Jan 2013 09:51:00 -0600
+From: hieu@direct.epic.com
+Subject: Hi
+To: dts500@direct1.direct-test.com
+Content-Disposition: attachment; filename="smime.p7m"
+Content-Transfer-Encoding: base64
+Content-Type: application/pkcs7-mime;
+	name="smime.p7m"
+
+MIICQAYJKoZIhvcNAQcDoIICMTCCAi0CAQAxggEZMIIBFQIBADB+MDoxGzAZBgNVBAMMEmRpcmVj
+dC10ZXN0LmNvbV9jYTEbMBkGA1UECgwSZGlyZWN0LXRlc3QuY29tX2NhAkARW2rCPSqAnMbzfHVV
+Myu0GHLEZ0/KiuzB/WUbXhqTGl58ObKEyHRpyOQfZmKeqiT1CPnL02XdRlLZkABKoYwlMA0GCSqG
+SIb3DQEBAQUABIGAEI+eTJ4rknRTCeEgxz0YbHAmZJES4PtOdQ0xYwkfLQELCyzEIfYWgrmNXvMb
+wcTNu0fCNo0Ge7E/YdTisb/BXV2DgxmEUs8z8zQwyWgcQOnbaZ0cPVYFRCfBDZE9KmpqFZu0l5cU
+9OPb9wd6IfQT16RqxyVmqi1+EMszH9dPyiUwggEJBgkqhkiG9w0BBwEwGQYIKoZIhvcNAwIwDQIB
+OgQIXDGznpSx7HyAgeDoHSm/T3wut49lSMtR/R5XuufJxXcdJXFCt2U0rAy8G89rWLFHPpIiPl3n
+GKU/gICDApabOQY9XldZJQDqzGNxWPL4iNn93thZXpKLY5tztse8uaOpIq0LgRlXr8HdxKjNw1kU
+iD+eXYv1USuO0/zBktwiZ2H9Af2Ro2ptu2DcrDtm2IU67vOCnOdQUsiwI+J73WhSbIyZa7oHNnn5
+uX8SjKr0eGQQpQWgMJFHZLF17zUo1bi3fxjN33uWb6JcLhRVc64PNpXMDYZUKG5nvCRXEvQwVxpJ
+hCs+2VaqjktWog==
+
