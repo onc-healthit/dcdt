@@ -12,16 +12,15 @@ import org.testng.annotations.Test;
 @Test(groups = { "mail.", "mail.decrypt" })
 public class MailDecryptorTest
 {
-	private static InputStream mailInStream;
 	private static InputStream badMailInStream;
-	private static InputStream keyInStream;
-	private static InputStream certInStream;
+	private static byte[] keyData;
+	private static byte[] certData;
 	
 	@Test(dependsOnMethods = { "testDecryptMail" }, expectedExceptions = { MailDecryptionException.class })
 	public void testDecryptBadMail() throws MailDecryptionException
 	{
-		MimeMessage msg = MailDecryptor.decryptMail(MailDecryptorTest.badMailInStream, MailDecryptorTest.keyInStream, 
-			MailDecryptorTest.certInStream);
+		MimeMessage msg = MailDecryptor.decryptMail(badMailInStream, new ByteArrayInputStream(keyData), 
+			new ByteArrayInputStream(certData));
 		
 		Assert.assertNull(msg, "Decrypted bad mail.");
 	}
@@ -31,13 +30,12 @@ public class MailDecryptorTest
 		InputStream certInStream)
 		throws IOException, MailDecryptionException, MessagingException
 	{
-		MailDecryptorTest.mailInStream = mailInStream;
 		MailDecryptorTest.badMailInStream = badMailInStream;
-		MailDecryptorTest.keyInStream = new ByteArrayInputStream(IOUtils.toByteArray(keyInStream));
-		MailDecryptorTest.certInStream = new ByteArrayInputStream(IOUtils.toByteArray(certInStream));
+		keyData = IOUtils.toByteArray(keyInStream);
+		certData = IOUtils.toByteArray(certInStream);
 		
-		MimeMessage msg = MailDecryptor.decryptMail(MailDecryptorTest.mailInStream, MailDecryptorTest.keyInStream, 
-			MailDecryptorTest.certInStream);
+		MimeMessage msg = MailDecryptor.decryptMail(mailInStream, new ByteArrayInputStream(keyData), 
+			new ByteArrayInputStream(certData));
 		
 		Assert.assertNotNull(msg, "Failed to decrypt mail.");
 	}

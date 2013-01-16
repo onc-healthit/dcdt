@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.mail.decrypt;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +12,9 @@ import javax.mail.Address;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -23,7 +26,7 @@ import org.bouncycastle.cms.KeyTransRecipientInformation;
 import org.bouncycastle.mail.smime.SMIMEEnveloped;
 
 public abstract class MailDecryptionStringBuilder
-{
+{	
 	@SuppressWarnings("unchecked")
 	public static String envelopedMsgToString(SMIMEEnveloped envelopedMsg)
 	{
@@ -153,7 +156,28 @@ public abstract class MailDecryptionStringBuilder
 		{
 		}
 		
-		// TODO: optionally add message content/body
+		try
+		{
+			Object msgContentObj = msg.getContent();
+			MimeMultipart msgContentPart;
+			
+			if ((msgContentObj instanceof MimeMultipart) && 
+				((msgContentPart = (MimeMultipart)msgContentObj).getCount() > 0))
+			{
+				String msgContent = ObjectUtils.toString(msgContentPart.getBodyPart(0).getContent(), null);
+				
+				if (builder.length() > 0)
+				{
+					builder.append(", ");
+				}
+				
+				builder.append("content=\n");
+				builder.append(msgContent);
+			}
+		}
+		catch (IOException | MessagingException e)
+		{
+		}
 		
 		return builder.toString();
 	}

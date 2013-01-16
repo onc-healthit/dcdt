@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.mail.decrypt;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
@@ -20,6 +21,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
@@ -62,23 +64,42 @@ public abstract class MailDecryptor
 	
 	public static MimeMessage decryptMail(File msgFile, File keyFile, File certFile) throws MailDecryptionException
 	{
+		FileInputStream msgInStream, keyInStream, certInStream;
+		
 		try
 		{
-			return decryptMail(new FileInputStream(msgFile), new FileInputStream(keyFile), new FileInputStream(certFile));
+			msgInStream = new FileInputStream(msgFile);
 		}
-		catch (IOException e)
+		catch (FileNotFoundException e)
 		{
-			throw new MailDecryptionException(e);
+			throw new MailDecryptionException("Mail message file not found: " + msgFile, e);
 		}
+		
+		try
+		{
+			keyInStream = new FileInputStream(keyFile);
+		}
+		catch (FileNotFoundException e)
+		{
+			throw new MailDecryptionException("Mail private key file not found: " + keyFile, e);
+		}
+		
+		try
+		{
+			certInStream = new FileInputStream(certFile);
+		}
+		catch (FileNotFoundException e)
+		{
+			throw new MailDecryptionException("Mail certificate file not found: " + certFile, e);
+		}
+		
+		return decryptMail(msgInStream, keyInStream, certInStream);
 	}
 	
 	public static MimeMessage decryptMail(InputStream msgInStream, InputStream keyInStream, InputStream certInStream)
 		throws MailDecryptionException
 	{
-		PrivateKey key = getKey(keyInStream);
-		X509Certificate cert = getCert(certInStream);
-		
-		return decryptMail(getEnvelopedMsg(msgInStream), key, cert);
+		return decryptMail(getEnvelopedMsg(msgInStream), getKey(keyInStream), getCert(certInStream));
 	}
 	
 	public static MimeMessage decryptMail(SMIMEEnveloped envelopedMsg, PrivateKey key, X509Certificate cert) throws MailDecryptionException
@@ -100,37 +121,65 @@ public abstract class MailDecryptor
 
 			if (ArrayUtils.isEmpty(decryptedContent))
 			{
-				throw new MailDecryptionException("Unable to decrypt enveloped mail content for recipient (" + 
-					MailDecryptionStringBuilder.recipientsToString(recipient) + "): " + 
-					MailDecryptionStringBuilder.envelopedMsgToString(envelopedMsg));
+				throw new MailDecryptionException("Unable to decrypt enveloped message content for mail recipient (" + 
+					MailDecryptionStringBuilder.recipientsToString(recipient) + ") using private key for subject (dn=" + 
+					cert.getSubjectX500Principal() + "): " + MailDecryptionStringBuilder.envelopedMsgToString(envelopedMsg));
 			}
 			
 			MimeMultipart msgMultiPart = (MimeMultipart)SMIMEUtil.toMimeBodyPart(decryptedContent).getContent();
 			
-			LOGGER.debug("Decrypted enveloped message for recipient (" + MailDecryptionStringBuilder.recipientsToString(recipient) + 
-				"): numMsgParts=" + msgMultiPart.getCount());
+			LOGGER.debug("Decrypted enveloped message for mail recipient (" + MailDecryptionStringBuilder.recipientsToString(recipient) + 
+				") using private key for subject (dn="+ cert.getSubjectX500Principal() +"): numMsgParts=" + msgMultiPart.getCount());
 			
-			Object msgPart;
-			MimeMessage msg;
+			MimeMessage msg = findMessagePart(msgMultiPart);
 			
-			for (int a = 0; a < msgMultiPart.getCount(); a++)
+			if (msg != null)
+			{
+				LOGGER.debug("Found message for mail recipient (" + MailDecryptionStringBuilder.recipientsToString(recipient) + 
+					"): " + MailDecryptionStringBuilder.msgToString(msg));
+				
+				return msg;
+			}
+		}
+		catch (CMSException | IOException | MessagingException | SMIMEException e)
+		{
+			throw new MailDecryptionException("Unable to decrypt enveloped message for mail recipient (" + 
+				MailDecryptionStringBuilder.recipientsToString(recipient) + ") using private key for subject (dn=" + 
+				cert.getSubjectX500Principal() + "): " + MailDecryptionStringBuilder.envelopedMsgToString(envelopedMsg), e);
+		}
+		
+		return null;
+	}
+	
+	public static MimeMessage findMessagePart(Multipart msgMultiPart) throws MailDecryptionException
+	{
+		Object msgPart;
+		int numMsgParts;
+		
+		try
+		{
+			numMsgParts = msgMultiPart.getCount();
+		}
+		catch (MessagingException e)
+		{
+			throw new MailDecryptionException("Unable to get the number of message parts.", e);
+		}
+		
+		for (int a = 0; a < numMsgParts; a++)
+		{
+			try
 			{
 				msgPart = msgMultiPart.getBodyPart(a).getContent();
 				
 				if (msgPart instanceof MimeMessage)
 				{
-					msg = (MimeMessage)msgPart;
-					
-					LOGGER.debug("Found message for enveloped mail (" + MailDecryptionStringBuilder.recipientsToString(recipient) + 
-						"): " + MailDecryptionStringBuilder.msgToString(msg));
-					
-					return msg;
+					return (MimeMessage)msgPart;
 				}
 			}
-		}
-		catch (CMSException | IOException | MessagingException | SMIMEException e)
-		{
-			throw new MailDecryptionException(e);
+			catch (IOException | MessagingException e)
+			{
+				throw new MailDecryptionException("Unable to get message part (index=" + a + ") body content.", e);
+			}
 		}
 		
 		return null;
@@ -163,13 +212,11 @@ public abstract class MailDecryptor
 	{
 		try
 		{
-			MimeMessage mimeMsg = new MimeMessage(MAIL_SESSION, msgInStream);
-			
-			return new SMIMEEnveloped(mimeMsg);
+			return new SMIMEEnveloped(new MimeMessage(MAIL_SESSION, msgInStream));
 		}
 		catch (CMSException | MessagingException e)
 		{
-			throw new MailDecryptionException(e);
+			throw new MailDecryptionException("Unable to get enveloped message from input stream.", e);
 		}
 	}
 	
@@ -181,7 +228,7 @@ public abstract class MailDecryptor
 		}
 		catch (CertificateException e)
 		{
-			throw new MailDecryptionException(e);
+			throw new MailDecryptionException("Unable to get X509 certificate from input stream.", e);
 		}
 	}
 	
@@ -193,7 +240,7 @@ public abstract class MailDecryptor
 		}
 		catch (InvalidKeySpecException | IOException e)
 		{
-			throw new MailDecryptionException(e);
+			throw new MailDecryptionException("Unable to get private key from input stream.", e);
 		}
 	}
 	
@@ -207,7 +254,9 @@ public abstract class MailDecryptor
 			}
 			catch (NoSuchAlgorithmException | NoSuchProviderException e)
 			{
-				throw new MailDecryptionException(e);
+				throw new MailDecryptionException("Unable to get RSA (algorithm=" + RSA_ALG_NAME + 
+					") key factory instance from the BouncyCastle (name=" + BouncyCastleProvider.PROVIDER_NAME + 
+					") provider.", e);
 			}
 		}
 		
@@ -224,7 +273,9 @@ public abstract class MailDecryptor
 			}
 			catch (CertificateException | NoSuchProviderException e)
 			{
-				throw new MailDecryptionException(e);
+				throw new MailDecryptionException("Unable to get X509 (type=" + X509_CERT_TYPE + 
+					") certificate factory instance from the BouncyCastle (name=" + BouncyCastleProvider.PROVIDER_NAME + 
+					") provider.", e);
 			}
 		}
 		
