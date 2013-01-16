@@ -5,8 +5,8 @@
 <struts-config>
 	<form-beans>
 		<form-bean name="CertLookUpActionForm" type="gov.hhs.onc.dcdt.cert.lookup.CertLookUpActionForm"/>
-		<form-bean name="EmailSetActionForm" type="gov.hhs.onc.dcdt.email.property.EmailSetActionForm"/>
-		<form-bean name="LookUpDropDownActionForm" type="gov.hhs.onc.dcdt.decrypt.LookUpDropDownActionForm"/>	
+		<form-bean name="EmailSetActionForm" type="gov.hhs.onc.dcdt.mail.property.EmailSetActionForm"/>
+		<form-bean name="LookUpDropDownActionForm" type="gov.hhs.onc.dcdt.mail.decrypt.LookUpDropDownActionForm"/>	
 	</form-beans>
 	
 	<!--
@@ -26,9 +26,9 @@
 			<forward name="success" path="/dns_result.jsp" />
 		</action>
 		
-		<action name="LookUpDropDownActionForm"  path="/Download" scope="session" validate="true" input="/download.jsp" type="gov.hhs.onc.dcdt.decrypt.LookUpDropDownAction"/>
+		<action name="LookUpDropDownActionForm"  path="/Download" scope="session" validate="true" input="/download.jsp" type="gov.hhs.onc.dcdt.mail.decrypt.LookUpDropDownAction"/>
 		
-		<action path="/Email_Set" input="/emailSet.jsp" name="EmailSetActionForm" validate="true" type="gov.hhs.onc.dcdt.email.property.EmailSetAction">
+		<action path="/Email_Set" input="/emailSet.jsp" name="EmailSetActionForm" validate="true" type="gov.hhs.onc.dcdt.mail.property.EmailSetAction">
 			<forward name="samePage" path="/emailSet.jsp" />
 		</action>
 		

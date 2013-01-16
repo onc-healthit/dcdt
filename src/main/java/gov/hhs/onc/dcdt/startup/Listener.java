@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.startup;
 
-import gov.hhs.onc.dcdt.decrypt.LookupTest;
+import gov.hhs.onc.dcdt.mail.decrypt.LookupTest;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;

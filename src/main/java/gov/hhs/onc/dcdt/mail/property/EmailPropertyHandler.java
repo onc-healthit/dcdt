@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.email.property;
+package gov.hhs.onc.dcdt.mail.property;
 
 import gov.hhs.onc.dcdt.startup.ConfigInfo;
 

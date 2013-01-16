@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.email.property;
+package gov.hhs.onc.dcdt.mail.property;
 
 import javax.servlet.http.HttpServletRequest;
 

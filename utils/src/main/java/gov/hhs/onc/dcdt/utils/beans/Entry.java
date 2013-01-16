@@ -149,7 +149,6 @@ public class Entry extends UtilityBean
 		{
 			Entry issuerEntry = this.issuer;
 			
-			builder.append(", issuer={");
 			builder.append(", issuer={name=");
 			builder.append(issuerEntry.getName());
 			builder.append(", path=");

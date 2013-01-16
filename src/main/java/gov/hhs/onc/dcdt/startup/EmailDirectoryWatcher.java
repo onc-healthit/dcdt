@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.startup;
 
-import gov.hhs.onc.dcdt.decrypt.DecryptController;
+import gov.hhs.onc.dcdt.mail.decrypt.DecryptController;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileSystems;

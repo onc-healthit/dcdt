@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.decrypt;
+package gov.hhs.onc.dcdt.mail.decrypt;
 
 import java.io.Serializable;
 

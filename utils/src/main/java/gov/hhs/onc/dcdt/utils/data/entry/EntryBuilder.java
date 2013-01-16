@@ -16,6 +16,8 @@ import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import org.apache.log4j.Logger;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -24,6 +26,7 @@ import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.asn1.x509.X509Extension;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.crypto.prng.VMPCRandomGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
@@ -32,10 +35,11 @@ import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 
 public class EntryBuilder
 {
-	private final static int SERIAL_NUM_LENGTH = 64;
-	
 	private final static AlgorithmIdentifier SIG_ALGORITHM = new DefaultSignatureAlgorithmIdentifierFinder().find("SHA1WithRSAEncryption");
 	private final static AlgorithmIdentifier DIGEST_ALGORITM = new DefaultDigestAlgorithmIdentifierFinder().find(SIG_ALGORITHM);
+	
+	private final static int SERIAL_NUM_SEED_BYTES = 8;
+	private final static Set<BigInteger> USED_SERIAL_NUMS = new HashSet<>();
 	
 	private final static Logger LOGGER = Logger.getLogger(EntryBuilder.class);
 	
@@ -136,9 +140,27 @@ public class EntryBuilder
 	
 	private static BigInteger generateSerialNum()
 	{
-		byte[] serialNumData = new byte[SERIAL_NUM_LENGTH];
-		new SecureRandom().nextBytes(serialNumData);
+		BigInteger serialNum;
+		SecureRandom serialNumRand = new SecureRandom(generateSerialNumSeed());
 		
-		return new BigInteger(serialNumData);
+		do
+		{
+			serialNum = BigInteger.valueOf(serialNumRand.nextLong()).abs();
+		}
+		while (USED_SERIAL_NUMS.contains(serialNum));
+		
+		USED_SERIAL_NUMS.add(serialNum);
+		
+		return serialNum;
+	}
+	
+	private static byte[] generateSerialNumSeed()
+	{
+		byte[] serialNumSeed = new byte[SERIAL_NUM_SEED_BYTES];
+		VMPCRandomGenerator seedRandGen = new VMPCRandomGenerator();
+		seedRandGen.addSeedMaterial(System.currentTimeMillis());
+		seedRandGen.nextBytes(serialNumSeed);
+		
+		return serialNumSeed;
 	}
 }

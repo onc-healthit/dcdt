@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gov.hhs.onc.dcdt.decrypt;
+package gov.hhs.onc.dcdt.mail.decrypt;
 
 import gov.hhs.onc.dcdt.startup.ConfigInfo;
 

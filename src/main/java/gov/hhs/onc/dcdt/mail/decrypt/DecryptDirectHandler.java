@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.decrypt;
+package gov.hhs.onc.dcdt.mail.decrypt;
 
 /**
  * Interface for all decrypt handlers to act on the email message to be

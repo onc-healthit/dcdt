@@ -1,7 +1,7 @@
 /**
  * 
  */
-package gov.hhs.onc.dcdt.decrypt;
+package gov.hhs.onc.dcdt.mail.decrypt;
 
 /**
  * Contains the info for a single path, good or bad, through a cert lookup test case

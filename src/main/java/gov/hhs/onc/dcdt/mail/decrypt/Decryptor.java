@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.decrypt;
+package gov.hhs.onc.dcdt.mail.decrypt;
 
 import gov.hhs.onc.dcdt.startup.ConfigInfo;
 
@@ -94,11 +94,11 @@ public class Decryptor implements DecryptDirectHandler {
 
         String[] decryptCommand = new String[] {
         		"openssl", "smime", "-decrypt", "-in",
-        		EMAIL_PATH + File.separatorChar + File.separatorChar + emailInfo.getFileLocation(),
+        		new File(EMAIL_PATH, emailInfo.getFileLocation()).toString(),
         		"-recip",
-        		CERT_PATH + File.separatorChar + File.separatorChar + PUBLIC_CERT,
+        		new File(CERT_PATH, PUBLIC_CERT).toString(),
         		"-inkey",
-        		CERT_PATH + File.separatorChar + File.separatorChar + PRIVATE_CERT
+        		new File(CERT_PATH, PRIVATE_CERT).toString()
         };
 
         log.info("Decrypt Command Line Statement: " + decryptCommand);

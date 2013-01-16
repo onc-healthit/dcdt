@@ -14,7 +14,12 @@
 	<name>Direct Certificate Discovery Tool Parent</name>
 	<url>http://code.google.com/p/direct-certificate-discovery-tool/</url>
 	
-	<!-- See pom.properties for project properties -->
+	<properties>
+		<!-- File encoding for source, class, and resource files -->
+		<file.encoding>UTF-8</file.encoding>
+		<!-- Java version of the project sources and outputted classes -->
+		<java.version>1.7</java.version>
+	</properties>
 	
 	<dependencyManagement>
 		<dependencies>
@@ -84,6 +89,26 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>3.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcmail-jdk15on</artifactId>
+				<version>1.47</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcpkix-jdk15on</artifactId>
+				<version>1.47</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-jdk15on</artifactId>
+				<version>1.47</version>
+			</dependency>
+			<dependency>
+				<groupId>org.bouncycastle</groupId>
+				<artifactId>bcprov-ext-jdk15on</artifactId>
+				<version>1.47</version>
 			</dependency>
 			<!-- Test dependencies -->
 			<dependency>
