@@ -93,7 +93,7 @@ public class Decryptor implements DecryptDirectHandler {
 				+ "PRIVATE CERT: " + PRIVATE_CERT);
 
         String[] decryptCommand = new String[] {
-        		"openssl", "smime", "-decrypt", "-in",
+        		"openssl", "cms", "-decrypt", "-in",
         		new File(EMAIL_PATH, emailInfo.getFileLocation()).toString(),
         		"-recip",
         		new File(CERT_PATH, PUBLIC_CERT).toString(),
