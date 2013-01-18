@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.mail.decrypt;
 
-public class MailDecryptionException extends Exception
+import gov.hhs.onc.dcdt.mail.MailCryptographyException;
+
+public class MailDecryptionException extends MailCryptographyException
 {
 	public MailDecryptionException()
 	{

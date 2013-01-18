@@ -1,31 +1,22 @@
 package gov.hhs.onc.dcdt.mail.decrypt;
 
+import gov.hhs.onc.dcdt.mail.MailCryptographyException;
+import gov.hhs.onc.dcdt.mail.MailCryptographyUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
-import java.security.KeyFactory;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
-import java.security.Security;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
-import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.log4j.Logger;
 import org.bouncycastle.cms.CMSException;
@@ -34,35 +25,20 @@ import org.bouncycastle.cms.KeyTransRecipientInformation;
 import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientId;
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.mail.smime.SMIMEEnveloped;
 import org.bouncycastle.mail.smime.SMIMEException;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 
 public abstract class MailDecryptor
 {
-	private final static String RSA_ALG_NAME = "RSA";
-	private final static String X509_CERT_TYPE = "X.509";
-	
-	private final static Properties MAIL_SESSION_PROPS = new Properties();
-	private final static Session MAIL_SESSION = Session.getDefaultInstance(MAIL_SESSION_PROPS);
-	
 	private final static Logger LOGGER = Logger.getLogger("emailMessageLogger");
 	
-	private static KeyFactory rsaKeyFactory;
-	private static CertificateFactory x509CertFactory;
-	
-	static
-	{
-		Security.addProvider(new BouncyCastleProvider());
-	}
-	
-	public static MimeMessage decryptMail(String msgFilePath, String keyFilePath, String certFilePath) throws MailDecryptionException
+	public static MimeMessage decryptMail(String msgFilePath, String keyFilePath, String certFilePath) throws MailCryptographyException
 	{
 		return decryptMail(new File(msgFilePath), new File(keyFilePath), new File(certFilePath));
 	}
 	
-	public static MimeMessage decryptMail(File msgFile, File keyFile, File certFile) throws MailDecryptionException
+	public static MimeMessage decryptMail(File msgFile, File keyFile, File certFile) throws MailCryptographyException
 	{
 		FileInputStream msgInStream, keyInStream, certInStream;
 		
@@ -97,9 +73,9 @@ public abstract class MailDecryptor
 	}
 	
 	public static MimeMessage decryptMail(InputStream msgInStream, InputStream keyInStream, InputStream certInStream)
-		throws MailDecryptionException
+		throws MailCryptographyException
 	{
-		return decryptMail(getEnvelopedMsg(msgInStream), getKey(keyInStream), getCert(certInStream));
+		return decryptMail(getEnvelopedMsg(msgInStream), MailCryptographyUtils.getKey(keyInStream), MailCryptographyUtils.getCert(certInStream));
 	}
 	
 	public static MimeMessage decryptMail(SMIMEEnveloped envelopedMsg, PrivateKey key, X509Certificate cert) throws MailDecryptionException
@@ -212,73 +188,11 @@ public abstract class MailDecryptor
 	{
 		try
 		{
-			return new SMIMEEnveloped(new MimeMessage(MAIL_SESSION, msgInStream));
+			return new SMIMEEnveloped(new MimeMessage(MailCryptographyUtils.getMailSession(), msgInStream));
 		}
 		catch (CMSException | MessagingException e)
 		{
 			throw new MailDecryptionException("Unable to get enveloped message from input stream.", e);
 		}
-	}
-	
-	private static X509Certificate getCert(InputStream certInStream) throws MailDecryptionException
-	{
-		try
-		{
-			return (X509Certificate)getX509CertFactory().generateCertificate(certInStream);
-		}
-		catch (CertificateException e)
-		{
-			throw new MailDecryptionException("Unable to get X509 certificate from input stream.", e);
-		}
-	}
-	
-	private static PrivateKey getKey(InputStream keyInStream) throws MailDecryptionException
-	{
-		try
-		{
-			return getRsaKeyFactory().generatePrivate(new PKCS8EncodedKeySpec(IOUtils.toByteArray(keyInStream)));
-		}
-		catch (InvalidKeySpecException | IOException e)
-		{
-			throw new MailDecryptionException("Unable to get private key from input stream.", e);
-		}
-	}
-	
-	private synchronized static KeyFactory getRsaKeyFactory() throws MailDecryptionException
-	{
-		if (rsaKeyFactory == null)
-		{
-			try
-			{
-				rsaKeyFactory = KeyFactory.getInstance(RSA_ALG_NAME, BouncyCastleProvider.PROVIDER_NAME);
-			}
-			catch (NoSuchAlgorithmException | NoSuchProviderException e)
-			{
-				throw new MailDecryptionException("Unable to get RSA (algorithm=" + RSA_ALG_NAME + 
-					") key factory instance from the BouncyCastle (name=" + BouncyCastleProvider.PROVIDER_NAME + 
-					") provider.", e);
-			}
-		}
-		
-		return rsaKeyFactory;
-	}
-	
-	private synchronized static CertificateFactory getX509CertFactory() throws MailDecryptionException
-	{
-		if (x509CertFactory == null)
-		{
-			try
-			{
-				x509CertFactory = CertificateFactory.getInstance(X509_CERT_TYPE, BouncyCastleProvider.PROVIDER_NAME);
-			}
-			catch (CertificateException | NoSuchProviderException e)
-			{
-				throw new MailDecryptionException("Unable to get X509 (type=" + X509_CERT_TYPE + 
-					") certificate factory instance from the BouncyCastle (name=" + BouncyCastleProvider.PROVIDER_NAME + 
-					") provider.", e);
-			}
-		}
-		
-		return x509CertFactory;
 	}
 }
