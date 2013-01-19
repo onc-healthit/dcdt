@@ -12,7 +12,115 @@
 	<packaging>pom</packaging>
 
 	<name>Direct Certificate Discovery Tool Parent</name>
+	<description>Direct Certificate Discovery Tool (DCDT) parent project.</description>
 	<url>http://code.google.com/p/direct-certificate-discovery-tool/</url>
+	<inceptionYear>2012</inceptionYear>
+	
+	<!--
+	<organization>
+		<name>Office of the National Coordinator for Health Information Technology (ONC)</name>
+		<url>http://www.healthit.gov</url>
+	</organization>
+	<organization>
+		<name>National Institute of Standards and Technology (NIST)</name>
+		<url>http://www.nist.gov</url>
+	</organization>
+	-->
+	<organization>
+		<name>ESAC Inc.</name>
+		<url>http://www.esacinc.com</url>
+	</organization>
+	
+	<licenses>
+		<license>
+			<name>Apache 2.0 License</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0</url>
+			<distribution>manual</distribution>
+		</license>
+		<license>
+			<name>Direct RI BSD License</name>
+			<url>http://nhindirect.org/BSDLicense</url>
+			<distribution>manual</distribution>
+		</license>
+		<license>
+			<name>New BSD License</name>
+			<url>http://opensource.org/licenses/BSD-3-Clause</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<developers>
+		<developer>
+			<id>michal.kotelba@esacinc.com</id>
+			<name>Michal Kotelba</name>
+			<email>michal.kotelba@esacinc.com</email>
+			<roles>
+				<role>owner</role>
+			</roles>
+		</developer>
+		<developer>
+			<id>douglas.harley@esacinc.com</id>
+			<name>Douglas Harley</name>
+			<email>douglas.harley@esacinc.com</email>
+			<roles>
+				<role>owner</role>
+			</roles>
+		</developer>
+	</developers>
+	
+	<mailingLists>
+		<mailingList>
+			<name>Direct Certificate Discovery Tool</name>
+			<subscribe>directtesttool+subscribe@googlegroups.com</subscribe>
+			<unsubscribe>directtesttool+unsubscribe@googlegroups.com</unsubscribe>
+			<post>directtesttool@googlegroups.com</post>
+			<archive>https://groups.google.com/d/forum/directtesttool?hl=en-US</archive>
+		</mailingList>
+	</mailingLists>
+	
+	<prerequisites>
+		<maven>2.2.1</maven>
+	</prerequisites>
+	
+	<scm>
+		<url>http://code.google.com/p/direct-certificate-discovery-tool/source/browse/trunk</url>
+		<developerConnection>scm:svn:https://direct-certificate-discovery-tool.googlecode.com/svn/trunk</developerConnection>
+		<connection>scm:svn:http://direct-certificate-discovery-tool.googlecode.com/svn/trunk</connection>
+	</scm>
+	
+	<issueManagement>
+		<system>Google Code</system>
+		<url>http://code.google.com/p/direct-certificate-discovery-tool/issues/list</url>
+	</issueManagement>
+	
+	<distributionManagement>
+		<!-- TODO: add site -->
+		<!--
+		<site>
+			<id></id>
+			<name></name>
+			<url></url>
+		</site>
+		-->
+		<snapshotRepository>
+			<id>sonatype-nexus-snapshots</id>
+			<name>Sonatype Nexus Snapshots</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<uniqueVersion>false</uniqueVersion>
+		</snapshotRepository>
+		<repository>
+			<id>sonatype-nexus-staging</id>
+			<name>Sonatype Nexus Staging</name>
+			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<uniqueVersion>false</uniqueVersion>
+		</repository>
+	</distributionManagement>
 	
 	<properties>
 		<!-- File encoding for source, class, and resource files -->
@@ -24,6 +132,11 @@
 	<dependencyManagement>
 		<dependencies>
 			<!-- Runtime dependencies -->
+			<dependency>
+				<groupId>commons-beanutils</groupId>
+				<artifactId>commons-beanutils</artifactId>
+				<version>1.8.3</version>
+			</dependency>
 			<dependency>
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
@@ -43,6 +156,17 @@
 				<groupId>commons-fileupload</groupId>
 				<artifactId>commons-fileupload</artifactId>
 				<version>1.2.2</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-jxpath</groupId>
+				<artifactId>commons-jxpath</artifactId>
+				<version>1.3</version>
+				<exclusions>
+					<exclusion>
+						<groupId>xerces</groupId>
+						<artifactId>xerces</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-validator</groupId>
@@ -87,6 +211,11 @@
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-jexl</artifactId>
+				<version>2.1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-lang3</artifactId>
 				<version>3.1</version>
 			</dependency>
@@ -121,6 +250,45 @@
 	</dependencyManagement>
 	
 	<build>
+		<resources>
+			<!-- Configuration files (filtered) -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+			<!-- Configuration files (non-filtered) -->
+			<resource>
+				<directory>src/main/resources</directory>
+				<excludes>
+					<exclude>**/*.properties</exclude>
+					<exclude>**/*.xml</exclude>
+				</excludes>
+			</resource>
+		</resources>
+		<testResources>
+			<!-- Test configuration files (filtered) -->
+			<testResource>
+				<directory>src/test/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>**/*.properties</include>
+					<include>**/*.xml</include>
+				</includes>
+			</testResource>
+			<!-- Test configuration files (non-filtered) -->
+			<testResource>
+				<directory>src/test/resources</directory>
+				<excludes>
+					<exclude>**/*.properties</exclude>
+					<exclude>**/*.xml</exclude>
+				</excludes>
+			</testResource>
+		</testResources>
+		
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -184,6 +352,15 @@
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-release-plugin</artifactId>
+					<version>2.4</version>
+					<inherited>true</inherited>
+					<configuration>
+						<tagBase>scm:svn:https://direct-certificate-discovery-tool.googlecode.com/svn/tags</tagBase>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>2.6</version>
 					<inherited>true</inherited>
@@ -194,6 +371,12 @@
 						<encoding>${file.encoding}</encoding>
 						<useDefaultDelimiters>false</useDefaultDelimiters>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>3.2</version>
+					<inherited>true</inherited>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -260,15 +443,30 @@
 						</execution>
 					</executions>
 				</plugin>
-				<plugin>
-					<groupId>org.vafer</groupId>
-					<artifactId>jdeb</artifactId>
-					<version>0.11</version>
-					<inherited>true</inherited>
-				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<version>2.6</version>
+				<inherited>true</inherited>
+				<!--
+				<reportSets>
+					<reportSet>
+						<inherited>true</inherited>
+						<reports>
+							<report>index</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+				-->
+			</plugin>
+		</plugins>
+	</reporting>
 	
 	<profiles>
 		<!-- Set test skipping property, if not defined in user settings -->

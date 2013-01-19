@@ -1,5 +1,5 @@
 =========================================================================
-==   						   NOTICE file   					==
+==   						   NOTICE file   					       ==
 =========================================================================
 
 Direct Certificate Discovery Tool (DCDT) Copyright (c) 2012, Office of the National Coordinator for Health IT
