@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="direct-cert-discovery-tool-utils">
+	<description>Ant project for the Direct Certificate Discovery Tool (DCDT) utilities.</description>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.plugin.classpath.value}"/>
+	
+	<target name="chmod-bin-scripts" description="Changes the permissions of the executable scripts to be executable."
+		unless="target.chmod-bin-scripts.done">
+		<echo level="info" taskname="info">Changing executable script permissions in: ${project.build.directory}/${project.artifactId}/bin</echo>
+		<chmod perm="755">
+			<fileset dir="${project.build.directory}/${project.artifactId}/bin">
+				<include name="*.sh"/>
+			</fileset>
+		</chmod>
+		<property name="target.chmod-bin-scripts.done" value="true"/>
+	</target>
+</project>

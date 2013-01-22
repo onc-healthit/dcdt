@@ -5,7 +5,7 @@
 	<description>Ant project for the Direct Certificate Discovery Tool (DCDT) assembly.</description>
 	
 	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.plugin.classpath.value}"/>
-	<taskdef file="src/main/ant/antlib.xml" classpath="${maven.compile.classpath.value}" uri="antlib:gov.hhs.onc.dcdt"/>
+	<taskdef file="src/main/scripts/ant/antlib.xml" classpath="${maven.compile.classpath.value}" uri="antlib:gov.hhs.onc.dcdt"/>
 	
 	<include file="build-data.xml" as="" prefixSeparator=""/>
 	

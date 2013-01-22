@@ -42,7 +42,11 @@
 	<!--==================================================
 	= LOGGERS: PROJECT
 	===================================================-->
-	<logger name="gov.hhs.onc.dcdt.mail" additivity="false">
+	<logger name="gov.hhs.onc.dcdt.web.mail" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="emailMessageApp"/>
+	</logger>
+	<logger name="gov.hhs.onc.dcdt.web.startup.EmailDirectoryWatcher" additivity="false">
 		<level value="all"/>
 		<appender-ref ref="emailMessageApp"/>
 	</logger>

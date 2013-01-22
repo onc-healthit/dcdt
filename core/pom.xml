@@ -20,7 +20,7 @@
 
 	<name>Direct Certificate Discovery Tool Core</name>
 	<description>Direct Certificate Discovery Tool (DCDT) shared project.</description>
-	<url>http://api.direct-test.com/site/${project.artifactId}/${project.version}/</url>
+	<url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
 	
 	<distributionManagement>
 		<site>

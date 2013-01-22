@@ -20,7 +20,7 @@
 
 	<name>Direct Certificate Discovery Tool Assembly</name>
 	<description>Direct Certificate Discovery Tool (DCDT) assembly project.</description>
-	<url>http://api.direct-test.com/site/${project.artifactId}/${project.version}/</url>
+	<url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
 	
 	<distributionManagement>
 		<site>
@@ -86,7 +86,7 @@
 								<property name="maven.compile.classpath.value" refid="maven.compile.classpath"/>
 								<property name="maven.plugin.classpath.value" refid="maven.plugin.classpath"/>
 								<property name="maven.runtime.classpath.value" refid="maven.runtime.classpath"/>
-								<ant antfile="src/main/ant/build.xml" target="process-direct-project-stock" inheritRefs="true"/>
+								<ant antfile="${project.build.scriptSourceDirectory}/ant/build.xml" target="process-direct-project-stock" inheritRefs="true"/>
 							</target>
 						</configuration>
 					</execution>
@@ -127,11 +127,20 @@
 								<!-- Package artifacts (project, modules) -->
 								<artifactItem>
 									<groupId>gov.hhs.onc.dcdt</groupId>
+									<artifactId>direct-cert-discovery-tool-utils</artifactId>
+									<version>2.1-SNAPSHOT</version>
+									<type>tar.gz</type>
+									<destFileName>dcdt-utils.tar.gz</destFileName>
+									<outputDirectory>${project.build.directory}/dependency-tmp</outputDirectory>
+								</artifactItem>
+								<artifactItem>
+									<groupId>gov.hhs.onc.dcdt</groupId>
 									<artifactId>direct-cert-discovery-tool-web</artifactId>
 									<version>2.1-SNAPSHOT</version>
 									<type>war</type>
 									<destFileName>dcdt.war</destFileName>
-									<outputDirectory>${project.build.directory}/package-tmp/var/lib/tomcat7/webapps</outputDirectory>
+									<outputDirectory>${project.build.directory}/dependency-tmp</outputDirectory>
+									<!--<outputDirectory>${project.build.directory}/package-tmp/var/lib/tomcat7/webapps</outputDirectory>-->
 								</artifactItem>
 							</artifactItems>
 							<silent>true</silent>
@@ -156,13 +165,13 @@
 								</artifactItem>
 								
 								<!-- Package artifacts (project, modules) -->
-								<artifactItem>
+								<!--<artifactItem>
 									<groupId>gov.hhs.onc.dcdt</groupId>
 									<artifactId>direct-cert-discovery-tool-utils</artifactId>
 									<version>2.1-SNAPSHOT</version>
 									<type>tar.gz</type>
 									<outputDirectory>${project.build.directory}/package-tmp/usr/share/direct</outputDirectory>
-								</artifactItem>
+								</artifactItem>-->
 							</artifactItems>
 							<silent>true</silent>
 						</configuration>
@@ -268,6 +277,43 @@
 									<mapper>
 										<type>perm</type>
 										<prefix>/usr/share/direct</prefix>
+										<filemode>755</filemode>
+									</mapper>
+								</data>
+								
+								<!-- Package data (files, dependencies) -->
+								<data>
+									<src>${project.build.directory}/dependency-tmp/dcdt-utils.tar.gz</src>
+									<type>archive</type>
+									<excludes>**/bin/*.sh</excludes>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/direct</prefix>
+										<user>root</user>
+										<group>root</group>
+										<filemode>644</filemode>
+									</mapper>
+								</data>
+								<data>
+									<src>${project.build.directory}/dependency-tmp/dcdt.war</src>
+									<type>file</type>
+									<mapper>
+										<type>perm</type>
+										<prefix>/var/lib/tomcat7/webapps</prefix>
+										<filemode>644</filemode>
+									</mapper>
+								</data>
+								
+								<!-- Package data (executables, dependencies) -->
+								<data>
+									<src>${project.build.directory}/dependency-tmp/dcdt-utils.tar.gz</src>
+									<type>archive</type>
+									<includes>**/bin/*.sh</includes>
+									<mapper>
+										<type>perm</type>
+										<prefix>/usr/share/direct</prefix>
+										<user>root</user>
+										<group>root</group>
 										<filemode>755</filemode>
 									</mapper>
 								</data>
