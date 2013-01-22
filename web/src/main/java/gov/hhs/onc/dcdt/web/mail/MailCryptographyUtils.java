@@ -26,7 +26,7 @@ public abstract class MailCryptographyUtils
 	private final static Properties MAIL_SESSION_PROPS = new Properties();
 	private final static Session MAIL_SESSION = Session.getDefaultInstance(MAIL_SESSION_PROPS);
 	
-	private final static Logger LOGGER = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(MailCryptographyUtils.class);
 	
 	private static KeyFactory rsaKeyFactory;
 	private static CertificateFactory x509CertFactory;

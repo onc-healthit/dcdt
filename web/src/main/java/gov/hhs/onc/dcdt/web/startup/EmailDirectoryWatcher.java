@@ -31,7 +31,7 @@ public class EmailDirectoryWatcher extends Thread {
 	private final String sentDir;
 	private final String failedDir;
 	
-	private final Logger log = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(EmailDirectoryWatcher.class);
 
 	public EmailDirectoryWatcher(String path) throws IOException {
 		super();
@@ -64,9 +64,9 @@ public class EmailDirectoryWatcher extends Thread {
 	public void run() {
 		File[] files = dir.toFile().listFiles();
 		// Run once through the folder
-		log.debug("First time through the folder: " + dir);
+		LOGGER.debug("First time through the folder: " + dir);
 		for (File file : files) {
-			log.debug("Found email file: "
+			LOGGER.debug("Found email file: "
 				+ file.getName());
 			DecryptController dc =
 				new DecryptController(file.getName());
@@ -78,9 +78,8 @@ public class EmailDirectoryWatcher extends Thread {
 					
 					dc.processMessage();
 					moveFile(file, sentDir);
-				} catch (Exception ex) {
-					log.error("Problem with email file: "
-						+ ex.getMessage() + "\n" + ex.getCause());
+				} catch (Exception e) {
+					LOGGER.error("Problem with email file.", e);
 					moveFile(file, failedDir);
 				}
 			}
@@ -98,7 +97,7 @@ public class EmailDirectoryWatcher extends Thread {
     private void processEvents() {
  
     	// Endless loop
-		log.debug("Watching the folder for new files");
+		LOGGER.debug("Watching the folder for new files");
 		
 		// http://www.forward.com.au/javaProgramming/HowToStopAThread.html
 		// TODO: Review this for thread safety and try/catch
@@ -128,13 +127,13 @@ public class EmailDirectoryWatcher extends Thread {
                 WatchEvent<Path> ev = (WatchEvent<Path>) event;
                 Path filename = ev.context();
  
-    			log.debug("Found email file: " + filename);
+    			LOGGER.debug("Found email file: " + filename);
     			DecryptController dc = new DecryptController(filename.toString());
 
     			File nextFile = new File(dir.toString() + File.separatorChar + File.separatorChar
     				+ filename.toString());
 
-    			log.debug("NextFile: " + nextFile.getAbsolutePath());
+    			LOGGER.debug("NextFile: " + nextFile.getAbsolutePath());
 
     			if (!nextFile.isDirectory()) {
     				try {
@@ -143,8 +142,8 @@ public class EmailDirectoryWatcher extends Thread {
 						
     					dc.processMessage();
     					moveFile(nextFile, sentDir);
-    				} catch (Exception ex) {
-    					log.error("Problem with email file: " + ex.getMessage() + "\nCause: " + ex.getCause());
+    				} catch (Exception e) {
+    					LOGGER.error("Problem with email file.", e);
     					moveFile(nextFile, failedDir);
     				}
     			}
@@ -162,9 +161,9 @@ public class EmailDirectoryWatcher extends Thread {
 
     private void moveFile(File file, String moveDir){
     	try {
-    		log.debug("----Moving File---");
-    		log.debug("Current Location: " + file.getAbsolutePath());
-    		log.debug("Moving Location: " + moveDir);
+    		LOGGER.debug("----Moving File---");
+    		LOGGER.debug("Current Location: " + file.getAbsolutePath());
+    		LOGGER.debug("Moving Location: " + moveDir);
 
     		File movedFile = new File(moveDir
     			+ File.separatorChar + file.getName());
@@ -174,16 +173,15 @@ public class EmailDirectoryWatcher extends Thread {
     			FileUtils.forceDelete(file);
     		
     		if (!file.exists() && movedFile.exists()) {
-    			log.debug("File moved to: "
+    			LOGGER.debug("File moved to: "
     				+ movedFile.getAbsolutePath());
     		} else {
-    			log.error("Problem moving file from "
+    			LOGGER.error("Problem moving file from "
     				+ file.getAbsolutePath() + " to "
     				+ movedFile.getAbsolutePath());
     		}
     	} catch (IOException e) {
-			// TODO Auto-generated catch block
-			log.error(e.getMessage() + "\n" + e.getCause());
+			LOGGER.error(e);
 		}
     }
 

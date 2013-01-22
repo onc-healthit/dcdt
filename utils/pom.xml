@@ -20,7 +20,15 @@
 
 	<name>Direct Certificate Discovery Tool Utilities</name>
 	<description>Direct Certificate Discovery Tool (DCDT) utilities project.</description>
-	<url>http://code.google.com/p/direct-certificate-discovery-tool/</url>
+	<url>http://api.direct-test.com/site/${project.artifactId}/${project.version}/</url>
+	
+	<distributionManagement>
+		<site>
+			<id>api.direct-test.com</id>
+			<name>api.direct-test.com</name>
+			<url>sftp://api.direct-test.com/site/${project.artifactId}/${project.version}/</url>
+		</site>
+	</distributionManagement>
 	
 	<!-- See pom.properties for project properties -->
 	

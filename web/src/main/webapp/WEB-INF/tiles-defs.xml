@@ -3,5 +3,6 @@
 	"-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
 	"http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
 <tiles-definitions>
-	
+	<!-- TEMP: placeholder to prevent Struts errors until web frontend can be refactored -->
+	<definition name="template" path="/template.jsp"/>
 </tiles-definitions>

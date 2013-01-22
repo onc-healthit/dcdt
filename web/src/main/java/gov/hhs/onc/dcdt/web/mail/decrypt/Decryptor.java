@@ -21,7 +21,7 @@ import org.apache.log4j.Logger;
  */
 public class Decryptor implements DecryptDirectHandler {
 
-	private final Logger log = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(Decryptor.class);
 
 	/**
 	 * Attempts to decrypt message with openSSL.  On failure, cycles through
@@ -33,7 +33,7 @@ public class Decryptor implements DecryptDirectHandler {
 	 * @throws Exception
 	 */
 	public EmailBean execute(EmailBean emailInfo) throws Exception {
-		log.debug("before decrypt for message.");
+		LOGGER.debug("before decrypt for message.");
 		boolean result = false;
 
 		LookupTestCertInfo goodCertInfo =
@@ -84,11 +84,11 @@ public class Decryptor implements DecryptDirectHandler {
 		final String PUBLIC_CERT = testPathInfo.getCertFilename();
 		final String PRIVATE_CERT = testPathInfo.getPrivateKeyFilename();
 
-		System.out.println("Cert path: " + CERT_PATH);
-		System.out.println("Public cert: " + PUBLIC_CERT);
-		System.out.println("Private cert: " + PRIVATE_CERT);
+		LOGGER.debug("Cert path: " + CERT_PATH);
+		LOGGER.debug("Public cert: " + PUBLIC_CERT);
+		LOGGER.debug("Private cert: " + PRIVATE_CERT);
 
-		log.info("CERT PATH: " + CERT_PATH + "\n"
+		LOGGER.debug("CERT PATH: " + CERT_PATH + "\n"
 				+ "PUBLIC CERT: " + PUBLIC_CERT + "\n"
 				+ "PRIVATE CERT: " + PRIVATE_CERT);
 
@@ -101,7 +101,7 @@ public class Decryptor implements DecryptDirectHandler {
         		new File(CERT_PATH, PRIVATE_CERT).toString()
         };
 
-        log.info("Decrypt Command Line Statement: " + decryptCommand);
+        LOGGER.info("Decrypt Command Line Statement: " + decryptCommand);
 
 		try {
 			StringBuffer errorString = new StringBuffer("");
@@ -116,11 +116,10 @@ public class Decryptor implements DecryptDirectHandler {
 		} catch (Exception e) {
 			// TODO We will probably want to better format this result string
 			resultString.append(e.toString());
-			log.error("SSL Command Exception: " + e.getMessage()
-				+ " ,Caused By " + e.getCause() + "\n" + e.getStackTrace());
+			LOGGER.error("SSL Command Exception.", e);
 		}
 
-		log.info("Decrypt Command Result: " + resultString.toString());
+		LOGGER.info("Decrypt Command Result: " + resultString.toString());
 
 		return result;
 	}
@@ -166,7 +165,7 @@ public class Decryptor implements DecryptDirectHandler {
         	errorString.append("\nError details: "
         		+ errorGobbler.getBufferedOutput().toString());
 
-        	log.error(errorString);
+        	LOGGER.error(errorString);
         	return false;
         }
 	}
@@ -198,12 +197,11 @@ public class Decryptor implements DecryptDirectHandler {
 	            while ((line = br.readLine()) != null) {
 	            	buffer.append(type + ">" + line + "\n");
 	            	if (print) {
-	            		System.out.println(type + ">" + line);
+	            		LOGGER.debug(type + ">" + line);
 	            	}
 	            }
-            }catch (IOException ioe) {
-            	log.error("Error with openSSL stream gobbler <IO Exception> /n"
-            			+ ioe.getStackTrace());
+            }catch (IOException e) {
+            	LOGGER.error("Error with openSSL stream gobbler.", e);
             }finally {
             	closeStream(br);
             	closeStream(isr);
@@ -218,8 +216,8 @@ public class Decryptor implements DecryptDirectHandler {
 	    private void closeStream(Closeable stream){
 	    	try{
 	    		stream.close();
-	    	}catch(IOException ex){
-	    		log.error(ex.getMessage());
+	    	}catch(IOException e){
+	    		LOGGER.error(e);
 	    	}
 	    }
 	}

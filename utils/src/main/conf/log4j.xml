@@ -4,7 +4,10 @@
 	debug="false"
 	threshold="all"
 	xmlns:log4j="http://jakarta.apache.org/log4j/">
-
+	
+	<!--==================================================
+	= APPENDERS: CONSOLE
+	===================================================-->
 	<appender name="consoleApp" class="org.apache.log4j.ConsoleAppender">
 		<param name="encoding" value="UTF-8"/>
 		<param name="immediateFlush" value="true"/>
@@ -16,6 +19,9 @@
 		</layout>
 	</appender>
 	
+	<!--==================================================
+	= APPENDERS: FILE
+	===================================================-->
 	<appender name="fileApp" class="org.apache.log4j.rolling.RollingFileAppender">
 		<param name="append" value="true"/>
 		<param name="bufferedIO" value="false"/>
@@ -36,22 +42,29 @@
 		</layout>
 	</appender>
 	
-	<logger name="console" additivity="false">
-		<level value="all"/>
-		<appender-ref ref="consoleApp"/>
-	</logger>
-	
-	<logger name="file" additivity="false">
-		<level value="all"/>
-		<appender-ref ref="fileApp"/>
-	</logger>
-	
+	<!--==================================================
+	= LOGGERS: DEPENDENCIES
+	===================================================-->
 	<logger name="org.apache" additivity="false">
 		<level value="warn"/>
 		<appender-ref ref="consoleApp"/>
 		<appender-ref ref="fileApp"/>
 	</logger>
 	
+	<!--==================================================
+	= LOGGERS: DEFAULT
+	===================================================-->
+	<!--========== CONSOLE ==========-->
+	<logger name="console" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="consoleApp"/>
+	</logger>
+	<!--========== FILE ==========-->
+	<logger name="file" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="fileApp"/>
+	</logger>
+	<!--========== ROOT ==========-->
 	<root>
 		<level value="all"/>
 		<appender-ref ref="consoleApp"/>

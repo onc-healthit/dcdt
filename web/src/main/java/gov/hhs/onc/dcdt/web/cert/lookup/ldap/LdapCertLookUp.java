@@ -44,7 +44,8 @@ public class LdapCertLookUp implements CertLookUpFactory{
 	private SearchControls sc2;
 	private Boolean success;
 	
-	private Logger log = Logger.getLogger("certDiscoveryLogger");
+	private final static Logger LOGGER = Logger.getLogger(LdapCertLookUp.class);
+	
 	public CertificateInfo execute(CertificateInfo certInfo)
 			throws CertLookUpException {
 		
@@ -74,14 +75,14 @@ public class LdapCertLookUp implements CertLookUpFactory{
 				 
 			    this.success = true;
 				String certResult = getCertResult(userCert);
-				System.out.println("Service Record: " + srvRec.toString());
+				LOGGER.debug("Service Record: " + srvRec.toString());
 				if(certResult == null)
 					certInfo.setCertOutput("Problem Loading Certificate");
 				else certInfo.setCertOutput(certResult);
 				
 				break;
 			}else {
-				 log.debug("Unable to find certificate at LDAP for: " 
+				 LOGGER.debug("Unable to find certificate at LDAP for: " 
 						+ certInfo.getOrigAddr() + "\n"
 						+ srvRec.toString());
 			}
@@ -93,13 +94,13 @@ public class LdapCertLookUp implements CertLookUpFactory{
 					  
 
 				    throw new CertLookUpException("Success: Unable to find Certificate for " + certInfo.getOrigAddr()
-					    	+ " at LDAP.", new Throwable());
+					    	+ " at LDAP.");
 					  
 				  }
 				
 			
 				throw new CertLookUpException("Fail: Unable to find Certificate for " + certInfo.getOrigAddr()
-						+ " at LDAP.", new Throwable());
+						+ " at LDAP.");
 				
 			}
 		
@@ -161,7 +162,7 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			   env.put(DirContext.PROVIDER_URL, "ldap://" + targetDomain + ":" + srvRec.getPort());
 			
 			
-			log.debug("ldap://" + targetDomain + ":" + srvRec.getPort());
+			LOGGER.debug("ldap://" + targetDomain + ":" + srvRec.getPort());
 			
 			DirContext dc = new InitialDirContext(env);
 			NamingEnumeration directoryNE = null;
@@ -169,7 +170,7 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			// Here we set the search for the root directory, searching for any objectClass matches, and the scope is set using the sc1 variable (see above)
 			directoryNE= dc.search("", "objectClass=*", sc1);
 			
-			log.debug("SC1 :" + sc1);
+			LOGGER.debug("SC1 :" + sc1);
 						
 			while (directoryNE.hasMore()){
                 SearchResult result1 = (SearchResult) directoryNE.next();
@@ -181,7 +182,7 @@ public class LdapCertLookUp implements CertLookUpFactory{
 					result1BaseDn = ObjectUtils.toString(result1Attrs.next());
 					
 					// print DN of each directory found.
-					log.debug("result1BaseDn: " + result1BaseDn);
+					LOGGER.debug("result1BaseDn: " + result1BaseDn);
 	
 					Attribute foundMail = findMailAttribute(result1BaseDn); 
 					
@@ -192,7 +193,7 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			}		
 			dc.close();	
 	} catch (NamingException e) {
-		log.debug("No Results for: " + targetDomain, e);
+		LOGGER.debug("No Results for: " + targetDomain, e);
 	} return null;
 
 }
@@ -217,10 +218,8 @@ public class LdapCertLookUp implements CertLookUpFactory{
 				return localX509Certificate.toString();
 			else return null;
 		
-		} catch (NamingException e) {
-			throw new CertLookUpException(e.getMessage(), e.getCause());
-		} catch (CertificateException e) {
-			throw new CertLookUpException(e.getMessage(), e.getCause());
+		} catch (CertificateException | NamingException e) {
+			throw new CertLookUpException(e);
 		}finally{
 			closeStreamQuietly(bais);
 		}
@@ -243,13 +242,13 @@ public class LdapCertLookUp implements CertLookUpFactory{
 		while (e.hasMore()) {
 
             SearchResult nodeResult = (SearchResult) e.next();
-    		log.debug("Search Result: " + nodeResult.toString() + "\n\n");
+    		LOGGER.debug("Search Result: " + nodeResult.toString());
             Attributes localAttributes = ((SearchResult) nodeResult).getAttributes();
           
             localAttribute = (Attribute)ObjectUtils.defaultIfNull(localAttributes.get("userCertificate;binary"), 
 				localAttributes.get("userCertificate"));
 			
-            log.debug("localAttribute: " + localAttribute);
+            LOGGER.debug("localAttribute: " + localAttribute);
    
             if(localAttribute != null)
             	return localAttribute;

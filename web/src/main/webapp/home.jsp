@@ -36,7 +36,7 @@
 			</ul>
 			<p>
 				Both areas contain details on the underlying test cases and how to run them.
-				There is also a <a href="http://direct-certificate-discovery-tool.googlecode.com/files/Direct_Cert_Discovery_Test_Tool_Users_Guide_v1.1.pdf">User's Guide</a>.<br/>
+				There is also a <a href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/User_Guide_2_1">User's Guide</a>.<br/>
 			</p>
 		</div>
 	</body>

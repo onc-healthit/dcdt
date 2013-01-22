@@ -7,10 +7,11 @@ import gov.hhs.onc.dcdt.web.cert.lookup.ldap.LdapRecordSorter;
 
 import java.util.LinkedList;
 import java.util.Queue;
-
+import org.apache.log4j.Logger;
 
 public class CertLookUpController {
-
+	private final static Logger LOGGER = Logger.getLogger(CertLookUpController.class);
+	
 	private CertificateInfo certificateInfo;
 	private Queue<CertLookUpFactory> nodes;
 	
@@ -78,15 +79,7 @@ public class CertLookUpController {
 				certificateInfo.setIsLDAPTest(true);
 				break;
 			default:
-				throw new CertLookUpException("Error:  Incorrect Test Case.", new Throwable());
+				throw new CertLookUpException("Error:  Incorrect Test Case.");
 		}
-	}
-	
-	public static void main(String[] args){
-		CertificateInfo ci = new CertificateInfo(3,"dts588s@onctest.org");
-		CertLookUpController clc = new CertLookUpController(ci);
-		clc.run();
-		System.out.println(ci.getResult());
-		System.out.println(ci.getCertOutput());
 	}
 }

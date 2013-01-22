@@ -15,7 +15,7 @@ public class EmailSetActionForm extends ActionForm {
 	private EmailPropertyHandler eph;
 	private String resultsMessage;
 	
-	private final Logger log = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(EmailSetActionForm.class);
 	
 	
 
@@ -103,8 +103,7 @@ public class EmailSetActionForm extends ActionForm {
 	    	
 	    	 
 	    }catch(Exception e){
-	    	log.error("Email Update Exception Occured\n" + e.getMessage() + "\n" + e.getCause()
-	    			+ "\n" + e.getStackTrace());
+	    	LOGGER.error("Email Update Exception Occured.", e);
 	    	errors.add("required", new ActionMessage("Error with email addresses."));
 	    }
 	    return errors;

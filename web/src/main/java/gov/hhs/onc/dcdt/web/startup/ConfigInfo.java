@@ -15,7 +15,7 @@ public class ConfigInfo {
 	private static PropertiesConfiguration configProperties;
 	private static PropertiesConfiguration emailProperties;
 	private static PropertiesConfiguration versionProperties;
-	private static Logger log = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(ConfigInfo.class);
 
 	/**
 	 * Loads version properties from local file.
@@ -59,7 +59,7 @@ public class ConfigInfo {
 		
 		if (value == null)
 		{
-			log.error("Properties file: " + versionProperties.getFileName() + 
+			LOGGER.error("Properties file: " + versionProperties.getFileName() + 
 				" is missing required property: " + key + ".");
 			
 			return null;
@@ -86,7 +86,7 @@ public class ConfigInfo {
 	public static synchronized String getConfigProperty(String key) {
 		String value = configProperties.getString(key);
 		if (value == null)
-			log.fatal("Properties file: " + configProperties.getFileName() +
+			LOGGER.fatal("Properties file: " + configProperties.getFileName() +
 					" is missing required property: " + key + ".");
 
 		// Currently doesn't shut down, so if missing property at this point,
@@ -109,8 +109,7 @@ public class ConfigInfo {
 		try {
 			emailProperties.save();
 		} catch (ConfigurationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			LOGGER.error(e);
 		}
 	}
 

@@ -26,7 +26,7 @@ public class EmailHeaderExtractor implements DecryptDirectHandler {
 
 	private Message message;
 
-	private Logger log = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(EmailHeaderExtractor.class);
 
 	/**
 	 * Extracts email header info and does a test case look up for valid
@@ -40,19 +40,19 @@ public class EmailHeaderExtractor implements DecryptDirectHandler {
 		emailInfo.setFromAddress(getFrom());
 		emailInfo.setToAddress(getTo());
 
-		log.info("Inbound Email - FROM - " + getFrom()
+		LOGGER.info("Inbound Email - FROM - " + getFrom()
 			+ " - TO - " + getTo());
 
 		LookupTest thisTest = LookupTest.findLookupTest(getTo());
 		if (thisTest == null) {
-			log.error("Inbound Email: To address " + getTo()
+			LOGGER.error("Inbound Email: To address " + getTo()
 					+ " not associated with a test case.");
 			throw new IllegalArgumentException("To address "
 					+ getTo()
 					+ " not associated with a test case.");
 		}
 		emailInfo.setThisTest(thisTest);
-		log.info("Inbound Email: TEST CASE =" +
+		LOGGER.info("Inbound Email: TEST CASE =" +
 			emailInfo.getThisTest());
 
 		return emailInfo;
@@ -80,11 +80,11 @@ public class EmailHeaderExtractor implements DecryptDirectHandler {
 
 		source.close();
 
-		log.info("Email File Path: " + email);
-		log.info("Content type: " + this.message.getContentType());
+		LOGGER.info("Email File Path: " + email);
+		LOGGER.info("Content type: " + this.message.getContentType());
 
 		if (!(this.message.isMimeType("application/pkcs7-mime"))) {
-			log.error("Email Message FROM - " + emailInfo.getFromAddress()
+			LOGGER.error("Email Message FROM - " + emailInfo.getFromAddress()
 					+ " - TO - " + emailInfo.getToAddress() + " - SUBJECT - " + message.getSubject()
 					+ "\n\n Invalid Content-type.  Was " + this.message.getContentType()
 					+ ", expected application/pkcs7-mime");

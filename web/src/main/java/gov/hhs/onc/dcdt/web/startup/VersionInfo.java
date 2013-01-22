@@ -28,7 +28,7 @@ public abstract class VersionInfo
 	private final static DateFormat DISPLAY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 	private final static DateFormat SVN_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 	
-	private final static Logger LOGGER = Logger.getLogger("certDiscoveryLogger");
+	private final static Logger LOGGER = Logger.getLogger(VersionInfo.class);
 	
 	public static String getVersion()
 	{

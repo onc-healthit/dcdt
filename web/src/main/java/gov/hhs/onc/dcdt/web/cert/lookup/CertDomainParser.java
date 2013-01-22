@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.web.cert.lookup;
 
 import java.util.StringTokenizer;
-
 import org.apache.log4j.Logger;
 
 /**
@@ -13,7 +12,8 @@ import org.apache.log4j.Logger;
  */
 public class CertDomainParser implements CertLookUpFactory {
 
-	private Logger log = Logger.getLogger("certDiscoveryLogger");
+	private final static Logger LOGGER = Logger.getLogger(CertDomainParser.class);
+	
 	/**
 	 * Parses domain according to the test case for either
 	 * address or domain or LDAP or SRV.
@@ -24,7 +24,7 @@ public class CertDomainParser implements CertLookUpFactory {
 	 */
 	public CertificateInfo execute(CertificateInfo certInfo)
 			throws CertLookUpException {
-		log.debug("before CertDomainParser execution.");
+		LOGGER.debug("before CertDomainParser execution.");
 
 		String origDomain = certInfo.getDomain();
 		if (certInfo.getIsDomainTest()) {
@@ -36,7 +36,7 @@ public class CertDomainParser implements CertLookUpFactory {
 			certInfo.setDomain(getAddress(origDomain));
 		}
 
-		log.debug("after CertDomainParser execution.  Domain = "
+		LOGGER.debug("after CertDomainParser execution.  Domain = "
 			+ certInfo.getDomain());
 		return certInfo;
 	}

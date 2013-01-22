@@ -31,7 +31,7 @@ import org.bouncycastle.mail.smime.SMIMEUtil;
 
 public abstract class MailDecryptor
 {
-	private final static Logger LOGGER = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(MailDecryptor.class);
 	
 	public static MimeMessage decryptMail(String msgFilePath, String keyFilePath, String certFilePath) throws MailCryptographyException
 	{

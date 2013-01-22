@@ -25,7 +25,7 @@ public class EmailMessageHandler implements DecryptDirectHandler{
 	private static final String SMTP_PORT = ConfigInfo.getConfigProperty("smtpPort");
 	private static final String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 	
-	private Logger log = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(EmailMessageHandler.class);
 	
 	public EmailBean execute(EmailBean emailInfo) throws Exception {
 		
@@ -64,10 +64,9 @@ public class EmailMessageHandler implements DecryptDirectHandler{
 		try {
 			sendSSLMessage(TO_ADDR, FROM_ADDR,
 					SUBJECT, body.toString(), PASSWORD, emailInfo);
-		} catch (Exception ex) {
-			log.error(ex.getMessage() + " caused by: " + ex.getCause()
-					+ ex.getStackTrace());
-			throw ex;
+		} catch (Exception e) {
+			LOGGER.error(e);
+			throw e;
 		}
 		
 		return emailInfo;
@@ -135,12 +134,12 @@ public class EmailMessageHandler implements DecryptDirectHandler{
 	}
 	
 	private void logMailInfo(String to, String from, String subject, String body){
-		log.info("SMTP_HOST_NAME: " + SMTP_HOST_NAME);
-		log.info("SMTP_PORT: "+ SMTP_PORT);
-		log.info("TO:  " + to);
-		log.info("FROM:  " + from);
-		log.info("SUBJECT:  " + subject);
-		log.info("Body:  " + body);
+		LOGGER.debug("SMTP_HOST_NAME: " + SMTP_HOST_NAME);
+		LOGGER.debug("SMTP_PORT: "+ SMTP_PORT);
+		LOGGER.debug("TO:  " + to);
+		LOGGER.debug("FROM:  " + from);
+		LOGGER.debug("SUBJECT:  " + subject);
+		LOGGER.debug("Body:  " + body);
 	}
 	
 	class MailOutputStream extends OutputStream{
@@ -161,7 +160,7 @@ public class EmailMessageHandler implements DecryptDirectHandler{
 		
 		@Override
 		public void flush(){
-			log.info(mem);
+			LOGGER.trace(mem);
 			mem = "";
 		}
 	}

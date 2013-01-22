@@ -16,7 +16,7 @@ public class DownloadAnchorAction extends DownloadAction
 	private final static String ANCHOR_CERT_FILE_NAME_HEADER_VALUE_PREFIX = "attachment;filename=";
 	private final static String ANCHOR_CERT_MIME_TYPE = "application/x-x509-ca-cert";
 	
-	private Logger log = Logger.getLogger("certDiscoveryLogger");
+	private final static Logger LOGGER = Logger.getLogger(DownloadAnchorAction.class);
 	
 	@Override
 	protected StreamInfo getStreamInfo(ActionMapping mapping, ActionForm form, HttpServletRequest request, HttpServletResponse response)
@@ -28,7 +28,7 @@ public class DownloadAnchorAction extends DownloadAction
 		{
 			// TODO: throw an appropriate exception instead of attempting the download anyway
 			
-			log.error("Unable to find anchor certificate file: " + anchorCertFile.getAbsolutePath());
+			LOGGER.error("Unable to find anchor certificate file: " + anchorCertFile.getAbsolutePath());
 		}
 		
 		response.setHeader(ANCHOR_CERT_FILE_NAME_HEADER_KEY, 

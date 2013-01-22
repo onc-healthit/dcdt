@@ -18,6 +18,13 @@ import org.apache.log4j.helpers.LogLog;
  */
 public class Listener implements ServletContextListener
 {
+	private static final String CERT_DISCOVERY_LOGGER_NAME = "certDiscoveryLogger";
+	private static final String EMAIL_MSG_LOGGER_NAME = "emailMessageLogger";
+	
+	private final static Logger CERT_DISCOVERY_LOGGER = Logger.getLogger(CERT_DISCOVERY_LOGGER_NAME);
+	private final static Logger EMAIL_MSG_LOGGER = Logger.getLogger(EMAIL_MSG_LOGGER_NAME);
+	private final static Logger LOGGER = Logger.getLogger(Listener.class);
+	
 	private static final String CONFIG_HOME_NAME = "dcdt.config.dir";
 	private static final String CONFIG_PROP_FILE = "config.properties";
 	private static final String EMAIL_PROP_FILE = "email.properties";
@@ -33,21 +40,17 @@ public class Listener implements ServletContextListener
 	 * @param contextEvent
 	 */
 	public void contextDestroyed(ServletContextEvent contextEvent) {
-
-		Logger logE = Logger.getLogger("emailMessageLogger");
-	    Logger logC = Logger.getLogger("certDiscoveryLogger");
-
 		if (directoryWatcher != null) {
 			directoryWatcher.stopRunning();
-			logE.info("Directory Watcher Stopped.");
+			EMAIL_MSG_LOGGER.info("Directory Watcher Stopped.");
 		}
 		try {
 			ConfigInfo.storeEmailProperties(configHome
 				+ File.separatorChar + EMAIL_PROP_FILE);
-			logE.info("Server SHUT DOWN");
-			logC.info("Server SHUT DOWN");
+			EMAIL_MSG_LOGGER.info("Server SHUT DOWN");
+			CERT_DISCOVERY_LOGGER.info("Server SHUT DOWN");
 		} catch (ConfigurationException e) {
-			logE.error("Error storing email properties file.", e);
+			EMAIL_MSG_LOGGER.error("Error storing email properties file.", e);
 		}
 	}
 
@@ -57,6 +60,8 @@ public class Listener implements ServletContextListener
 	 * @param contextEvent
 	 */
 	public void contextInitialized(ServletContextEvent contextEvent) {
+		setLogging(contextEvent);
+		
 		configHome = System.getProperty(CONFIG_HOME_NAME);
 		
 		if(configHome == null)
@@ -66,17 +71,13 @@ public class Listener implements ServletContextListener
 		
 		if (configHome == null)
 		{
-			LogLog.error("Configuration directory variable not set: " + CONFIG_HOME_NAME);
+			LOGGER.error("Configuration directory variable not set: " + CONFIG_HOME_NAME);
 		}
 		
 		if (!Paths.get(configHome).toFile().exists())
 		{
-			LogLog.error("Configuration directory does not exist: " + configHome);
+			LOGGER.error("Configuration directory does not exist: " + configHome);
 		}
-		
-		setLogging(contextEvent);
-
-		Logger log = Logger.getLogger("emailMessageLogger");
 		
 		try {
 			// Load in config files
@@ -92,11 +93,11 @@ public class Listener implements ServletContextListener
 					new EmailDirectoryWatcher(ConfigInfo.getConfigProperty("EmlLocation"));
 			directoryWatcher.start();
 			
-			log.info("Directory Watcher Started.");
+			LOGGER.info("Directory Watcher Started.");
 		} catch (ConfigurationException e) {
-			log.error("Error Loading Properties files.", e);
+			LOGGER.error("Error Loading Properties files.", e);
 		} catch (IOException e) {
-			log.error("IO Error - Loading config files.", e);
+			LOGGER.error("IO Error - Loading config files.", e);
 		}
 	}
 
@@ -108,13 +109,10 @@ public class Listener implements ServletContextListener
 	private void setLogging(ServletContextEvent contextEvent) {
 		String message = "APPLICATION START - UP";
 
-		Logger logE = Logger.getLogger("emailMessageLogger");
-		Logger logC = Logger.getLogger("certDiscoveryLogger");
+		EMAIL_MSG_LOGGER.info(message);
+		CERT_DISCOVERY_LOGGER.info(message);
 
-		logE.info(message);
-		logC.info(message);
-
-		logE.info("Log4J Logging started for application.");
-		logC.info("Log4J Logging started for application.");
+		EMAIL_MSG_LOGGER.info("Log4J Logging started for application.");
+		CERT_DISCOVERY_LOGGER.info("Log4J Logging started for application.");
 	}
 }

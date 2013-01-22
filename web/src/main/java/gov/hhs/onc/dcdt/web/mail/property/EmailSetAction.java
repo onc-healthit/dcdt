@@ -13,7 +13,7 @@ import org.apache.struts.action.ActionMapping;
 
 public class EmailSetAction extends Action {
 	
-	private final Logger log = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(EmailSetAction.class);
 	
 	public ActionForward execute(ActionMapping mapping,ActionForm form,
 			HttpServletRequest request,HttpServletResponse response) 
@@ -24,7 +24,7 @@ public class EmailSetAction extends Action {
 		EmailPropertyHandler emailPH = esaf.getEph();
 		emailPH.setProperty(esaf.getDirectEmail(), esaf.getResultsEmail());
 
-		log.info("Email Entered: " + esaf.getDirectEmail() + ", " + esaf.getResultsEmail());
+		LOGGER.info("Email Entered: " + esaf.getDirectEmail() + ", " + esaf.getResultsEmail());
 		esaf.setResultsMessage("Success You have entered: " + esaf.getDirectEmail() + ", " + esaf.getResultsEmail());
 		
 		esaf.setDirectEmail(null);

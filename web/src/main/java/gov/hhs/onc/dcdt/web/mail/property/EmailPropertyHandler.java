@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
  */
 public class EmailPropertyHandler {
 
-	private Logger log = Logger.getLogger("emailMessageLogger");
+	private final static Logger LOGGER = Logger.getLogger(EmailPropertyHandler.class);
 	
 	/**
 	 * Sets email property with Direct and non-Direct email in ConfigInfo
@@ -50,7 +50,8 @@ public class EmailPropertyHandler {
 	 * @return
 	 */
 	public Boolean isEmailValid(String domain){
-		log.debug("before email address validity check for: " + domain);
+		LOGGER.debug("before email address validity check for: " + domain);
+		
 		try{
 			Hashtable<String, String> env = new Hashtable<String, String>();
 			env.put("java.naming.factory.initial", "com.sun.jndi.dns.DnsContextFactory");
@@ -63,21 +64,21 @@ public class EmailPropertyHandler {
 			ictx.close();
 			
 			if (attr == null){
-				log.debug("Invalid email domain: " + domain);
+				LOGGER.debug("Invalid email domain: " + domain);
 				return false;
 			}
 			else{
 				if(attr.size() > 0){
-					log.debug("Valid email domain: " + domain);
+					LOGGER.debug("Valid email domain: " + domain);
 					return true;
 				}
 				else {
-					log.debug("Invalid email domain: " + domain);
+					LOGGER.debug("Invalid email domain: " + domain);
 					return false;
 				}
 			}
 		}catch(NamingException e){			
-			log.error("Error in email lookup.  Email: " + domain + " not saved.");
+			LOGGER.error("Error in email lookup.  Email: " + domain + " not saved.", e);
 			return false;
 		}
 	}
@@ -90,7 +91,8 @@ public class EmailPropertyHandler {
 	 * @throws Exception
 	 */
 	public String stripDomain(String emailAddr) throws Exception{
-		log.debug("before domain stripped from email address: " + emailAddr);
+		LOGGER.debug("before domain stripped from email address: " + emailAddr);
+		
 		if(emailAddr.contains("@")){
 			String domainName = null;
 			StringTokenizer tok = new StringTokenizer(emailAddr,"@");
@@ -100,11 +102,11 @@ public class EmailPropertyHandler {
 				domainName = tok.nextToken();
 			}
 			if(domainName != null && domainName != ""){
-				log.debug("domain successfully stripped with domain: " + domainName);
+				LOGGER.debug("domain successfully stripped with domain: " + domainName);
 				return domainName;
 			}
-			else throw new Exception("Domain Name is incorrect.",new Throwable());
-		}else throw new Exception("Email Address doesn't contain @", new Throwable());
+			else throw new Exception("Domain Name is incorrect.");
+		}else throw new Exception("Email Address doesn't contain @");
 	}
 
 }

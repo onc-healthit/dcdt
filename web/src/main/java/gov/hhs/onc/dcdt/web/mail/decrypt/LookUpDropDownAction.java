@@ -18,7 +18,8 @@ import org.apache.struts.action.ActionMapping;
  */
 public class LookUpDropDownAction extends Action {
 
-	private Logger log = Logger.getLogger("certDiscoveryLogger");
+	private final static Logger LOGGER = Logger.getLogger(LookUpDropDownAction.class);
+	
 	public ActionForward execute(ActionMapping mapping,ActionForm form,
 			HttpServletRequest request,HttpServletResponse response) 
         throws Exception {
@@ -52,7 +53,7 @@ public class LookUpDropDownAction extends Action {
 		dts512 = ConfigInfo.getConfigProperty("DTS_512_EMAIL");
 		ludf.setDts512(dts512);
 		
-		log.debug("Completed setting Config Properties");
+		LOGGER.debug("Completed setting Config Properties");
 		
 		return null;
 	}
