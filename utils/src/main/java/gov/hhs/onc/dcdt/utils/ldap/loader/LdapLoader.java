@@ -149,7 +149,7 @@ public class LdapLoader extends LoaderUtility<LdapLoaderCliOption>
 		{
 			LdapServiceWrapper ldapServiceWrapper = new LdapServiceWrapper(ldapService);
 			LdifBuilder ldifBuilder = new LdifBuilder(this, ldapServiceWrapper);
-			List<LdifEntry> ldifEntries = null, modifiedLdifEntries = new ArrayList<>();
+			List<LdifEntry> ldifEntries, modifiedLdifEntries = new ArrayList<>();
 			
 			try
 			{

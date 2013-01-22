@@ -6,6 +6,8 @@ import gov.hhs.onc.dcdt.utils.cli.validation.PositiveIntegerValidator;
 import org.apache.commons.cli2.Option;
 import org.apache.commons.cli2.builder.ArgumentBuilder;
 import org.apache.commons.cli2.builder.DefaultOptionBuilder;
+import org.apache.commons.cli2.builder.SwitchBuilder;
+import org.apache.commons.cli2.option.Switch;
 
 public enum ConfigGenCliOption implements CliOption
 {
@@ -102,6 +104,16 @@ public enum ConfigGenCliOption implements CliOption
 				.create())
 			.create(), 
 		"resultMailPort"
+	), 
+	RESULT_MAIL_USE_SSL
+	(
+		new SwitchBuilder(Switch.DEFAULT_DISABLED_PREFIX, Switch.DEFAULT_ENABLED_PREFIX)
+			.withDescription("Result mail SSL usage.")
+			.withName("rs")
+			.withName("resssl")
+			.withSwitchDefault(true)
+			.create(), 
+		"resultMailUseSsl"
 	);
 	
 	private Option option;

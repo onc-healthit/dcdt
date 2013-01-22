@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt;
 
+import gov.hhs.onc.dcdt.web.mail.decrypt.result.ResultMailMessageHandler;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -39,7 +40,7 @@ public class DecryptController {
 	private void setMessageHandling() {
 		handlers.add(new EmailHeaderExtractor());
 		handlers.add(new Decryptor());
-		handlers.add(new EmailMessageHandler());
+		handlers.add(new ResultMailMessageHandler());
 	}
 
 }

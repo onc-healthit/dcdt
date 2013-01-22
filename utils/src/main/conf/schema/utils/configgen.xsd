@@ -22,6 +22,7 @@
 				<xs:attribute name="resultMailPass" type="config:attr" use="optional"/>
 				<xs:attribute name="resultMailHost" type="config:attr" use="optional"/>
 				<xs:attribute name="resultMailPort" type="config:portAttr" use="optional"/>
+				<xs:attribute name="resultMailUseSsl" type="config:booleanAttr" use="optional"/>
 				<xs:attribute name="certsDir" type="config:attr" use="optional"/>
 				<xs:attribute name="certsAnchorFile" type="config:attr" use="optional"/>
 				<xs:attribute name="rawMailDir" type="config:attr" use="optional"/>

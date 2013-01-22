@@ -36,6 +36,15 @@
 		<xs:union memberTypes="notBlank variable"/>
 	</xs:simpleType>
 	
+	<xs:simpleType name="booleanAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a boolean value or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="xs:boolean attr"/>
+	</xs:simpleType>
+	
 	<xs:simpleType name="className">
 		<xs:annotation>
 			<xs:documentation>

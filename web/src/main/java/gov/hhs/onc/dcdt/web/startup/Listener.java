@@ -8,7 +8,6 @@ import javax.servlet.ServletContextEvent;
 import javax.servlet.ServletContextListener;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.log4j.Logger;
-import org.apache.log4j.helpers.LogLog;
 
 /**
  * Listens on application start-up / shut-down.  Loads/saves configuration
@@ -83,7 +82,7 @@ public class Listener implements ServletContextListener
 			// Load in config files
 			ConfigInfo.loadConfigProperties(configHome + File.separatorChar + CONFIG_PROP_FILE);
 			ConfigInfo.loadEmailProperties(configHome + File.separatorChar + EMAIL_PROP_FILE);
-			ConfigInfo.loadVerionProperties(contextEvent.getServletContext().getRealPath("/" + VERSION_PROP_FILE));
+			ConfigInfo.loadVersionProperties(contextEvent.getServletContext().getRealPath("/" + VERSION_PROP_FILE));
 			
 			// Initialize HashMap with LookupTest-specific info
 			LookupTest.fillMap();

@@ -1,14 +1,13 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt;
 
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
-
 import java.io.BufferedReader;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 
@@ -101,7 +100,7 @@ public class Decryptor implements DecryptDirectHandler {
         		new File(CERT_PATH, PRIVATE_CERT).toString()
         };
 
-        LOGGER.info("Decrypt Command Line Statement: " + decryptCommand);
+        LOGGER.info("Decrypt Command Line Statement: " + StringUtils.join(decryptCommand, " "));
 
 		try {
 			StringBuffer errorString = new StringBuffer("");

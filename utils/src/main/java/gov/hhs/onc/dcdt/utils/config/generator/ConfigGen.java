@@ -174,5 +174,7 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 				exitError();
 			}
 		}
+		
+		this.config.setUtilString(ConfigGenCliOption.RESULT_MAIL_USE_SSL);
 	}
 }

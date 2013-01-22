@@ -10,6 +10,7 @@
 	outputFileArchivePath="config"
 	
 	resultMailPort="465"
+	resultMailUseSsl="true"
 	
 	certsDir="/var/lib/direct/direct-cert-discovery-tool/certs"
 	certsAnchorFile="${util:certsDir}/ca/${util:domain}_ca.der"

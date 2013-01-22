@@ -22,7 +22,7 @@
 				<xs:attribute name="host" type="config:attr"/>
 				<xs:attribute name="port" type="config:portAttr"/>
 				<xs:attribute name="useSsl" type="xs:boolean"/>
-				<xs:attribute name="anonymousBind" type="xs:boolean" use="optional"/>
+				<xs:attribute name="anonymousBind" type="config:booleanAttr" use="optional"/>
 				<xs:attribute name="bindDnName" type="config:attr" use="optional"/>
 				<xs:attribute name="bindPass" type="config:attr" use="optional"/>
 				<xs:attribute name="hashBindPass" type="xs:boolean" use="optional"/>
