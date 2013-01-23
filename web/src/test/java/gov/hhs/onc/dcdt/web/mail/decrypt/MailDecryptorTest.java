@@ -10,7 +10,7 @@ import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = { "mail.", "mail.decrypt" })
+@Test(groups = { "web.mail.decrypt" })
 public class MailDecryptorTest
 {
 	private static InputStream badMailInStream;

@@ -1,34 +1,23 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt;
 
+import gov.hhs.onc.dcdt.discovery.resource.ResourceDiscoveryUtils;
+import gov.hhs.onc.dcdt.test.data.provider.IterableDataProvider;
+import java.util.Iterator;
 import org.testng.annotations.DataProvider;
 
-public abstract class MailDecryptorDataProvider
+public class MailDecryptorDataProvider extends IterableDataProvider
 {
-	private final static ClassLoader CONTEXT_CLASS_LOADER = Thread.currentThread().getContextClassLoader();
-	
-	private static Object[] data;
-	
-	@DataProvider(name = "mailDecryptorDataProvider")
-	public static Object[][] createData()
+	public MailDecryptorDataProvider()
 	{
-		return new Object[][]{ getData() };
+		super(ResourceDiscoveryUtils.getStream("testDecryptMail.eml"), 
+			ResourceDiscoveryUtils.getStream("testDecryptMail_bad.eml"), 
+			ResourceDiscoveryUtils.getStream("testDecryptMail_key.der"), 
+			ResourceDiscoveryUtils.getStream("testDecryptMail_cert.der"));
 	}
-	
-	private static Object[] getData()
+
+	@DataProvider(name = "mailDecryptorDataProvider")
+	public static Iterator<Object[]> createData()
 	{
-		if (data == null)
-		{
-			ClassLoader contextClassLoader = Thread.currentThread().getContextClassLoader();
-			
-			data = new Object[]
-			{
-				contextClassLoader.getResourceAsStream("testDecryptMail.eml"), 
-				contextClassLoader.getResourceAsStream("testDecryptMail_bad.eml"), 
-				contextClassLoader.getResourceAsStream("testDecryptMail_key.der"),
-				contextClassLoader.getResourceAsStream("testDecryptMail_cert.der")
-			};
-		}
-		
-		return data;
+		return new MailDecryptorDataProvider().createNextData();
 	}
 }

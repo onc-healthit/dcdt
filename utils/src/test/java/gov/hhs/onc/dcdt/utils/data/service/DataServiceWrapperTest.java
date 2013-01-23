@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.utils.data.service;
 
+import gov.hhs.onc.dcdt.test.ToolTestListener;
 import gov.hhs.onc.dcdt.utils.test.MockTestUtility;
-import gov.hhs.onc.dcdt.utils.test.UtilityTestListener;
 import java.util.List;
 import java.util.Map;
 import org.nhind.config.Anchor;
@@ -10,8 +10,8 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({ UtilityTestListener.class })
-@Test(groups = { "utils.data", "utils.data.service" })
+@Listeners({ ToolTestListener.class })
+@Test(groups = { "utils.data.service" })
 public class DataServiceWrapperTest
 {
 	private static DataServiceWrapper serviceWrapper;

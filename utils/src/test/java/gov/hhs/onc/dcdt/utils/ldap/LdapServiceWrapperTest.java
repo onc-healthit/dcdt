@@ -1,10 +1,11 @@
 package gov.hhs.onc.dcdt.utils.ldap;
 
+import gov.hhs.onc.dcdt.test.ToolTestListener;
 import gov.hhs.onc.dcdt.utils.beans.LdapService;
 import gov.hhs.onc.dcdt.utils.ldap.filter.StringEqualityNode;
-import gov.hhs.onc.dcdt.utils.test.UtilityTestListener;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.directory.server.core.integ.AbstractLdapTestUnit;
 import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
 import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.shared.ldap.model.message.SearchScope;
@@ -13,9 +14,14 @@ import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({ UtilityTestListener.class })
+//@CreateLdapServer(allowAnonymousAccess = true, transports = { 
+//	@CreateTransport(protocol = "LDAP", port = 10389), 
+//	@CreateTransport(protocol = "LDAP", port = 11389)
+//})
+@Listeners({ ToolTestListener.class })
+//@RunWith(FrameworkRunner.class)
 @Test(groups = { "utils.ldap" })
-public class LdapServiceWrapperTest
+public class LdapServiceWrapperTest extends AbstractLdapTestUnit
 {
 	public static LdapServiceWrapper serviceWrapper;
 	public static List<Dn> baseDns;
