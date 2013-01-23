@@ -1,30 +1,49 @@
 package gov.hhs.onc.dcdt.utils.ldap;
 
 import gov.hhs.onc.dcdt.test.ToolTestListener;
+import gov.hhs.onc.dcdt.test.ldap.AbstractTestNgLdapTest;
 import gov.hhs.onc.dcdt.utils.beans.LdapService;
 import gov.hhs.onc.dcdt.utils.ldap.filter.StringEqualityNode;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.directory.server.core.integ.AbstractLdapTestUnit;
-import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.model.exception.LdapInvalidAttributeValueException;
-import org.apache.directory.shared.ldap.model.message.SearchScope;
-import org.apache.directory.shared.ldap.model.name.Dn;
+import org.apache.directory.api.ldap.model.constants.SchemaConstants;
+import org.apache.directory.api.ldap.model.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.api.ldap.model.message.SearchScope;
+import org.apache.directory.api.ldap.model.name.Dn;
+import org.apache.directory.server.annotations.CreateLdapServer;
+import org.apache.directory.server.annotations.CreateTransport;
+import org.apache.directory.server.core.annotations.CreateDS;
 import org.testng.Assert;
+import org.testng.annotations.AfterGroups;
+import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-//@CreateLdapServer(allowAnonymousAccess = true, transports = { 
-//	@CreateTransport(protocol = "LDAP", port = 10389), 
-//	@CreateTransport(protocol = "LDAP", port = 11389)
-//})
+@CreateDS(name = "dcdt.utils.test.apacheds", allowAnonAccess = true)
+@CreateLdapServer(name = "dcdt.utils.test.apacheds.ldap.server", transports = { 
+	@CreateTransport(protocol = "LDAP", port = 10389), 
+	@CreateTransport(protocol = "LDAP", port = 11389)
+})
 @Listeners({ ToolTestListener.class })
-//@RunWith(FrameworkRunner.class)
 @Test(groups = { "utils.ldap" })
-public class LdapServiceWrapperTest extends AbstractLdapTestUnit
+public class LdapServiceWrapperTest extends AbstractTestNgLdapTest
 {
 	public static LdapServiceWrapper serviceWrapper;
 	public static List<Dn> baseDns;
+	
+	@BeforeGroups({ "utils.ldap" })
+	public void setUpGroup() throws Exception
+	{
+		this.initClassAnnotations();
+		
+		this.startLdapServer();
+	}
+	
+	@AfterGroups({ "utils.ldap" })
+	public void tearDownGroup() throws Exception
+	{
+		this.stopLdapServer();
+	}
 	
 	@Test(dependsOnMethods = { "testGetBaseDns" })
 	public void testSearch() throws LdapInvalidAttributeValueException, UtilityLdapException

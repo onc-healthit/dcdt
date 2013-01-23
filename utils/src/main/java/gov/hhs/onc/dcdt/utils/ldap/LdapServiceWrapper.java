@@ -8,21 +8,21 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.directory.api.ldap.model.constants.SchemaConstants;
+import org.apache.directory.api.ldap.model.cursor.EntryCursor;
+import org.apache.directory.api.ldap.model.entry.Attribute;
+import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.entry.Modification;
+import org.apache.directory.api.ldap.model.exception.LdapException;
+import org.apache.directory.api.ldap.model.filter.ExprNode;
+import org.apache.directory.api.ldap.model.ldif.ChangeType;
+import org.apache.directory.api.ldap.model.ldif.LdifEntry;
+import org.apache.directory.api.ldap.model.message.ResultCodeEnum;
+import org.apache.directory.api.ldap.model.message.ResultResponse;
+import org.apache.directory.api.ldap.model.message.SearchScope;
+import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
-import org.apache.directory.shared.ldap.model.constants.SchemaConstants;
-import org.apache.directory.shared.ldap.model.cursor.EntryCursor;
-import org.apache.directory.shared.ldap.model.entry.Attribute;
-import org.apache.directory.shared.ldap.model.entry.Entry;
-import org.apache.directory.shared.ldap.model.entry.Modification;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.filter.ExprNode;
-import org.apache.directory.shared.ldap.model.ldif.ChangeType;
-import org.apache.directory.shared.ldap.model.ldif.LdifEntry;
-import org.apache.directory.shared.ldap.model.message.ResultCodeEnum;
-import org.apache.directory.shared.ldap.model.message.ResultResponse;
-import org.apache.directory.shared.ldap.model.message.SearchScope;
-import org.apache.directory.shared.ldap.model.name.Dn;
 import org.apache.log4j.Logger;
 
 public class LdapServiceWrapper
@@ -49,7 +49,7 @@ public class LdapServiceWrapper
 		return attributeNames.toArray(new String[attributeNames.size()]);
 	}
 	
-	public boolean add(Entry ... entries) throws UtilityLdapException
+	public boolean add(Entry... entries) throws UtilityLdapException
 	{
 		return this.add(Arrays.asList(entries));
 	}
@@ -87,7 +87,7 @@ public class LdapServiceWrapper
 		return true;
 	}
 	
-	public boolean modify(LdifEntry ... ldifEntries) throws UtilityLdapException
+	public boolean modify(LdifEntry... ldifEntries) throws UtilityLdapException
 	{
 		return this.modify(Arrays.asList(ldifEntries));
 	}

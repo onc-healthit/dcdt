@@ -1,23 +1,20 @@
 package gov.hhs.onc.dcdt.utils.ldap.ldif;
 
 import gov.hhs.onc.dcdt.test.ToolTestListener;
+import gov.hhs.onc.dcdt.test.ldap.AbstractTestNgLdapTest;
 import gov.hhs.onc.dcdt.utils.ldap.LdapServiceWrapperTest;
 import gov.hhs.onc.dcdt.utils.ldap.UtilityLdapException;
 import gov.hhs.onc.dcdt.utils.test.MockTestUtility;
 import java.util.List;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.directory.server.core.integ.AbstractLdapTestUnit;
-import org.apache.directory.server.core.integ.FrameworkRunner;
-import org.apache.directory.shared.ldap.model.ldif.LdifEntry;
-import org.junit.runner.RunWith;
+import org.apache.directory.api.ldap.model.ldif.LdifEntry;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners({ ToolTestListener.class })
-@RunWith(FrameworkRunner.class)
 @Test(dependsOnGroups = { "utils.ldap" }, groups = { "utils.ldap.ldif" })
-public class LdifBuilderTest extends AbstractLdapTestUnit
+public class LdifBuilderTest extends AbstractTestNgLdapTest
 {
 	private static LdifBuilder ldifBuilder;
 	private static List<LdifEntry> ldifEntries;

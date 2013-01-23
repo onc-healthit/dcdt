@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.utils.ldap.ldif;
 
+import gov.hhs.onc.dcdt.discovery.resource.ResourceDiscoveryUtils;
 import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.utils.ldap.LdapServiceWrapper;
 import gov.hhs.onc.dcdt.utils.ldap.UtilityLdapException;
@@ -11,18 +12,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.io.IOUtils;
-import org.apache.directory.shared.ldap.model.entry.Attribute;
-import org.apache.directory.shared.ldap.model.entry.Entry;
-import org.apache.directory.shared.ldap.model.entry.ModificationOperation;
-import org.apache.directory.shared.ldap.model.exception.LdapException;
-import org.apache.directory.shared.ldap.model.filter.EqualityNode;
-import org.apache.directory.shared.ldap.model.ldif.ChangeType;
-import org.apache.directory.shared.ldap.model.ldif.LdifEntry;
-import org.apache.directory.shared.ldap.model.ldif.LdifReader;
-import org.apache.directory.shared.ldap.model.ldif.LdifUtils;
-import org.apache.directory.shared.ldap.model.message.SearchScope;
-import org.apache.directory.shared.ldap.model.name.Dn;
-import org.apache.directory.shared.ldap.model.name.Rdn;
+import org.apache.directory.api.ldap.model.entry.Attribute;
+import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.entry.ModificationOperation;
+import org.apache.directory.api.ldap.model.exception.LdapException;
+import org.apache.directory.api.ldap.model.filter.EqualityNode;
+import org.apache.directory.api.ldap.model.ldif.ChangeType;
+import org.apache.directory.api.ldap.model.ldif.LdifEntry;
+import org.apache.directory.api.ldap.model.ldif.LdifReader;
+import org.apache.directory.api.ldap.model.ldif.LdifUtils;
+import org.apache.directory.api.ldap.model.message.SearchScope;
+import org.apache.directory.api.ldap.model.name.Dn;
+import org.apache.directory.api.ldap.model.name.Rdn;
 import org.apache.log4j.Logger;
 
 public class LdifBuilder
@@ -106,7 +107,7 @@ public class LdifBuilder
 	
 	public List<LdifEntry> readEntries(String resourcePath) throws UtilityLdapException
 	{
-		return this.readEntries(this.util.getResourceAsStream(resourcePath));
+		return this.readEntries(ResourceDiscoveryUtils.getStream(resourcePath));
 	}
 	
 	public List<LdifEntry> readEntries(InputStream inStream) throws UtilityLdapException

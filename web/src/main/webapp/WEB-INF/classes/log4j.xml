@@ -52,6 +52,10 @@
 	<!--==================================================
 	= LOGGERS: DEPENDENCIES
 	===================================================-->
+	<logger name="jdbm" additivity="false">
+		<level value="warn"/>
+		<appender-ref ref="certDiscoveryApp"/>
+	</logger>
 	<logger name="org.apache" additivity="false">
 		<level value="warn"/>
 		<appender-ref ref="certDiscoveryApp"/>
@@ -84,7 +88,7 @@
 	</logger>
 	<!--========== ROOT ==========-->
 	<root>
-		<level value="all"/>
+		<level value="info"/>
 		<appender-ref ref="certDiscoveryApp"/>
 	</root>
 </log4j:configuration>

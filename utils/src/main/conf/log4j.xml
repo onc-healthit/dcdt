@@ -45,8 +45,22 @@
 	<!--==================================================
 	= LOGGERS: DEPENDENCIES
 	===================================================-->
+	<logger name="jdbm" additivity="false">
+		<level value="warn"/>
+		<appender-ref ref="consoleApp"/>
+		<appender-ref ref="fileApp"/>
+	</logger>
 	<logger name="org.apache" additivity="false">
 		<level value="warn"/>
+		<appender-ref ref="consoleApp"/>
+		<appender-ref ref="fileApp"/>
+	</logger>
+	
+	<!--==================================================
+	= LOGGERS: PROJECT
+	===================================================-->
+	<logger name="gov.hhs.onc.dcdt" additivity="false">
+		<level value="all"/>
 		<appender-ref ref="consoleApp"/>
 		<appender-ref ref="fileApp"/>
 	</logger>
@@ -66,7 +80,7 @@
 	</logger>
 	<!--========== ROOT ==========-->
 	<root>
-		<level value="all"/>
+		<level value="info"/>
 		<appender-ref ref="consoleApp"/>
 		<appender-ref ref="fileApp"/>
 	</root>

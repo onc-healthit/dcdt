@@ -108,8 +108,12 @@
 			<artifactId>commons-lang3</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.apache.directory.shared</groupId>
-			<artifactId>shared-ldap-client-all</artifactId>
+			<groupId>org.apache.directory.api</groupId>
+			<artifactId>api-ldap-client-all</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.directory.jdbm</groupId>
+			<artifactId>apacheds-jdbm2</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
@@ -126,6 +130,18 @@
 		<dependency>
 			<groupId>org.bouncycastle</groupId>
 			<artifactId>bcprov-ext-jdk15on</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
 		<!-- Test dependencies (inherited) -->
 		<dependency>
@@ -221,11 +237,6 @@
 					<artifactId>postgresql</artifactId>
 				</exclusion>
 			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-			<version>1.7.2</version>
 		</dependency>
 		<dependency>
 			<groupId>xml-resolver</groupId>

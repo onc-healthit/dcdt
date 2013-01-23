@@ -127,6 +127,12 @@
 				<groupId>commons-beanutils</groupId>
 				<artifactId>commons-beanutils</artifactId>
 				<version>1.8.3</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-codec</groupId>
@@ -142,11 +148,23 @@
 				<groupId>commons-configuration</groupId>
 				<artifactId>commons-configuration</artifactId>
 				<version>1.9</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-discovery</groupId>
 				<artifactId>commons-discovery</artifactId>
 				<version>0.5</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>commons-fileupload</groupId>
@@ -168,6 +186,12 @@
 				<groupId>commons-validator</groupId>
 				<artifactId>commons-validator</artifactId>
 				<version>1.4.0</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>dnsjava</groupId>
@@ -209,6 +233,12 @@
 				<groupId>org.apache.commons</groupId>
 				<artifactId>commons-jexl</artifactId>
 				<version>2.1.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.commons</groupId>
@@ -216,15 +246,24 @@
 				<version>3.1</version>
 			</dependency>
 			<dependency>
-				<groupId>org.apache.directory.shared</groupId>
-				<artifactId>shared-ldap-client-all</artifactId>
-				<version>1.0.0-M13</version>
+				<groupId>org.apache.directory.api</groupId>
+				<artifactId>api-ldap-client-all</artifactId>
+				<version>1.0.0-M14</version>
 				<exclusions>
 					<exclusion>
+						<groupId>log4j</groupId>
+						<artifactId>log4j</artifactId>
+					</exclusion>
+					<exclusion>
 						<groupId>org.slf4j</groupId>
-						<artifactId>slf4j-api</artifactId>
+						<artifactId>slf4j-log4j12</artifactId>
 					</exclusion>
 				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.directory.jdbm</groupId>
+				<artifactId>apacheds-jdbm2</artifactId>
+				<version>2.0.0-M2</version>
 			</dependency>
 			<dependency>
 				<groupId>org.bouncycastle</groupId>
@@ -246,6 +285,21 @@
 				<artifactId>bcprov-ext-jdk15on</artifactId>
 				<version>1.47</version>
 			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-api</artifactId>
+				<version>1.7.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>jcl-over-slf4j</artifactId>
+				<version>1.7.2</version>
+			</dependency>
+			<dependency>
+				<groupId>org.slf4j</groupId>
+				<artifactId>slf4j-log4j12</artifactId>
+				<version>1.7.2</version>
+			</dependency>
 			<!-- Test dependencies -->
 			<dependency>
 				<groupId>junit</groupId>
@@ -259,6 +313,10 @@
 				<version>2.0.0-M9</version>
 				<scope>test</scope>
 				<exclusions>
+					<exclusion>
+						<groupId>org.apache.directory.api</groupId>
+						<artifactId>api-ldap-schema-data</artifactId>
+					</exclusion>
 					<exclusion>
 						<groupId>org.apache.directory.jdbm</groupId>
 						<artifactId>apacheds-jdbm2</artifactId>
@@ -551,6 +609,7 @@
 					</configuration>
 					<executions>
 						<execution>
+							<id>integration-test</id>
 							<phase>integration-test</phase>
 							<goals>
 								<goal>test</goal>
