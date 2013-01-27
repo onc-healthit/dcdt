@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.utils.beans.dns;
 
 import gov.hhs.onc.dcdt.utils.UtilityException;
-import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
+import gov.hhs.onc.dcdt.annotations.ConfigBean;
 import java.io.IOException;
 import org.nhindirect.config.store.DNSRecord;
 import org.xbill.DNS.CNAMERecord;

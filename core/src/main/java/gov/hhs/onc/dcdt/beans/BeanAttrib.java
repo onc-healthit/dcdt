@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.beans;
+package gov.hhs.onc.dcdt.beans;
 
 import java.util.Map.Entry;
 

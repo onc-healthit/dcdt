@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.utils.beans;
 
-import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
+import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.annotations.ConfigBean;
 import gov.hhs.onc.dcdt.utils.ldap.UtilityLdapException;
 import java.util.Arrays;
 import org.apache.commons.codec.binary.Base64;
@@ -14,7 +15,7 @@ import org.apache.directory.api.ldap.model.url.LdapUrl;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
 @ConfigBean("ldaps/ldap")
-public class LdapService extends UtilityBean
+public class LdapService extends ToolBean
 {
 	private static class LdapServiceConnectionConfig extends LdapConnectionConfig
 	{

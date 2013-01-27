@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.utils.beans;
 
-import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
+import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.annotations.ConfigBean;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import org.bouncycastle.crypto.params.AsymmetricKeyParameter;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 
 @ConfigBean("entries/entry")
-public class Entry extends UtilityBean
+public class Entry extends ToolBean
 {
 	public final static String RSA_ALG_NAME = "RSA";
 	public final static String PKCS12_KEYSTORE_TYPE = "PKCS12";

@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.annotations;
+package gov.hhs.onc.dcdt.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;

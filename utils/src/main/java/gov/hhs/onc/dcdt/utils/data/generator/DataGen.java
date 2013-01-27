@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.utils.data.generator;
 
 import gov.hhs.onc.dcdt.utils.Utility;
-import gov.hhs.onc.dcdt.utils.beans.BeanAttrib;
+import gov.hhs.onc.dcdt.beans.BeanAttrib;
 import gov.hhs.onc.dcdt.utils.beans.Entry;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
 import gov.hhs.onc.dcdt.utils.config.UtilityConfig;

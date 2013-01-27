@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.utils.beans;
 
-import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
+import gov.hhs.onc.dcdt.annotations.ConfigBean;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;

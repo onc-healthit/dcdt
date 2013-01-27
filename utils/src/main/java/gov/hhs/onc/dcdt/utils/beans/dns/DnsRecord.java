@@ -1,12 +1,12 @@
 package gov.hhs.onc.dcdt.utils.beans.dns;
 
+import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.utils.UtilityException;
-import gov.hhs.onc.dcdt.utils.beans.UtilityBean;
 import org.apache.commons.lang3.StringUtils;
 import org.nhindirect.config.store.DNSRecord;
 import org.xbill.DNS.Type;
 
-public abstract class DnsRecord extends UtilityBean
+public abstract class DnsRecord extends ToolBean
 {
 	protected final static String DOMAIN_NAME_SEPARATOR = ".";
 	

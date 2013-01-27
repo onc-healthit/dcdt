@@ -9,10 +9,10 @@ public class MailDecryptorDataProvider extends IterableDataProvider
 {
 	public MailDecryptorDataProvider()
 	{
-		super(ResourceDiscoveryUtils.getStream("testDecryptMail.eml"), 
-			ResourceDiscoveryUtils.getStream("testDecryptMail_bad.eml"), 
-			ResourceDiscoveryUtils.getStream("testDecryptMail_key.der"), 
-			ResourceDiscoveryUtils.getStream("testDecryptMail_cert.der"));
+		super(ResourceDiscoveryUtils.findResource(false, false, "testDecryptMail.eml").getResourceAsStream(), 
+			ResourceDiscoveryUtils.findResource(false, false, "testDecryptMail_bad.eml").getResourceAsStream(), 
+			ResourceDiscoveryUtils.findResource(false, false, "testDecryptMail_key.der").getResourceAsStream(), 
+			ResourceDiscoveryUtils.findResource(false, false, "testDecryptMail_cert.der").getResourceAsStream());
 	}
 
 	@DataProvider(name = "mailDecryptorDataProvider")

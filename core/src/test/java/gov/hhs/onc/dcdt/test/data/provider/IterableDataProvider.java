@@ -1,15 +1,16 @@
 package gov.hhs.onc.dcdt.test.data.provider;
 
+import gov.hhs.onc.dcdt.lang.IterableUtils;
 import java.util.Arrays;
 import java.util.Iterator;
 
 public class IterableDataProvider extends ToolDataProvider
 {
-	private Iterable<?> dataIterable;
+	protected Iterable<?> dataIterable;
 	
 	public IterableDataProvider(Object ... data)
 	{
-		this(Arrays.asList(data));	
+		this(IterableUtils.asIterable(data));	
 	}
 	
 	public IterableDataProvider(Iterable<?> dataIterable)

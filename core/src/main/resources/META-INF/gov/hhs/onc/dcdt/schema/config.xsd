@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
 	elementFormDefault="qualified"
-	targetNamespace="http://schema.direct-test.com/utils/config"
-	xmlns="http://schema.direct-test.com/utils/config"
+	targetNamespace="http://schema.direct-test.com/dcdt/config"
+	xmlns="http://schema.direct-test.com/dcdt/config"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	
 	<xs:simpleType name="notBlank">
@@ -52,7 +52,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="xs:token">
-			<xs:pattern value="gov\.hhs\.onc\.dcdt\.utils\.[a-zA-Z0-9\.]+"/>
+			<xs:pattern value="gov\.hhs\.onc\.dcdt\.[a-zA-Z0-9\.]+"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -63,7 +63,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="className">
-			<xs:pattern value="gov\.hhs\.onc\.dcdt\.utils\.beans\.[a-zA-Z0-9\.]+"/>
+			<xs:pattern value="gov\.hhs\.onc\.dcdt\.([^\.]+\.)?beans\.[a-zA-Z0-9\.]+"/>
 		</xs:restriction>
 	</xs:simpleType>
 	
@@ -83,7 +83,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:restriction base="className">
-			<xs:pattern value="gov\.hhs\.onc\.dcdt\.utils\.beans\.factory\.[a-zA-Z0-9\.]+"/>
+			<xs:pattern value="gov\.hhs\.onc\.dcdt\.([^\.]+\.)?beans\.factory\.[a-zA-Z0-9\.]+"/>
 		</xs:restriction>
 	</xs:simpleType>
 	

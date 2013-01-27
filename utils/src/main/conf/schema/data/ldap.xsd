@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema
 	elementFormDefault="qualified"
-	targetNamespace="http://schema.direct-test.com/utils/data/ldap"
-	xmlns="http://schema.direct-test.com/utils/data/ldap"
-	xmlns:config="http://schema.direct-test.com/utils/config"
+	targetNamespace="http://schema.direct-test.com/dcdt/data/ldap"
+	xmlns="http://schema.direct-test.com/dcdt/data/ldap"
+	xmlns:config="http://schema.direct-test.com/dcdt/config"
 	xmlns:xs="http://www.w3.org/2001/XMLSchema">
 	
-	<xs:import namespace="http://schema.direct-test.com/utils/config" schemaLocation="http://schema.direct-test.com/utils/config"/>
+	<xs:import namespace="http://schema.direct-test.com/dcdt/config" schemaLocation="http://schema.direct-test.com/dcdt/config"/>
 	
 	<xs:complexType name="ldap">
 		<xs:annotation>

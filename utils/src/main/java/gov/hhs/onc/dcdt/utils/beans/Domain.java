@@ -1,9 +1,10 @@
 package gov.hhs.onc.dcdt.utils.beans;
 
-import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
+import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.annotations.ConfigBean;
 
 @ConfigBean("domains/domain")
-public class Domain extends UtilityBean
+public class Domain extends ToolBean
 {
 	private String id;
 	private String name;

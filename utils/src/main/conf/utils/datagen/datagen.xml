@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <datagen
-	xmlns="http://schema.direct-test.com/utils/utils/datagen"
+	xmlns="http://schema.direct-test.com/dcdt/utils/datagen"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://schema.direct-test.com/utils/utils/datagen http://schema.direct-test.com/utils/utils/datagen"
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/utils/datagen http://schema.direct-test.com/dcdt/utils/datagen"
 	
 	displayName="Data Generator"
 	

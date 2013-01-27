@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entries
-	xmlns="http://schema.direct-test.com/utils/data/entries"
+	xmlns="http://schema.direct-test.com/dcdt/data/entries"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://schema.direct-test.com/utils/data/entries http://schema.direct-test.com/utils/data/entries">
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/data/entries http://schema.direct-test.com/dcdt/data/entries">
 	
 	<entry config-class="gov.hhs.onc.dcdt.utils.beans.Entry"
 		id="ca"

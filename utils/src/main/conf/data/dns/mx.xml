@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dns
-	xmlns="http://schema.direct-test.com/utils/data/dns"
+	xmlns="http://schema.direct-test.com/dcdt/data/dns"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://schema.direct-test.com/utils/data/dns http://schema.direct-test.com/utils/data/dns">
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/data/dns http://schema.direct-test.com/dcdt/data/dns">
 	
 	<mx config-class="gov.hhs.onc.dcdt.utils.beans.dns.MxRecord"
 		id="1"

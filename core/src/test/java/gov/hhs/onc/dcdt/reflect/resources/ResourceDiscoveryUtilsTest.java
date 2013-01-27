@@ -13,8 +13,7 @@ public class ResourceDiscoveryUtilsTest
 	@Test
 	public void testFindResource()
 	{
-		Resource resource = ResourceDiscoveryUtils.findResource("version.properties", 
-			ResourcePathUtils.packageToPath("gov.hhs.onc.dcdt"));
+		Resource resource = ResourceDiscoveryUtils.findResource(true, true, "version.properties");
 
 		Assert.assertNotNull(resource, "Failed to find resource.");
 	}

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ldaploader
-	xmlns="http://schema.direct-test.com/utils/utils/ldaploader"
+	xmlns="http://schema.direct-test.com/dcdt/utils/ldaploader"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://schema.direct-test.com/utils/utils/ldaploader http://schema.direct-test.com/utils/utils/ldaploader"
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/utils/ldaploader http://schema.direct-test.com/dcdt/utils/ldaploader"
 	
 	displayName="LDAP Loader"
 	

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<header>
+		<entity-resolver config-class="gov.hhs.onc.dcdt.config.ToolConfigEntityResolver"/>
+		<result forceReloadCheck="true">
+			<expressionEngine config-class="org.apache.commons.configuration.tree.xpath.XPathExpressionEngine"/>
+			<nodeCombiner config-class="org.apache.commons.configuration.tree.OverrideCombiner"/>
+		</result>
+	</header>
+	
+	<override>
+		<!-- TODO: add testcases properties -->
+	</override>
+	
+	<additional>
+		<!-- Load dependent module configuration, if available -->
+		<configuration fileName="config-utils.xml" config-optional="true">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</configuration>
+	</additional>
+</configuration>

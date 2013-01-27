@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.utils.beans.dns;
 
 import gov.hhs.onc.dcdt.utils.UtilityException;
-import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
+import gov.hhs.onc.dcdt.annotations.ConfigBean;
 import org.nhindirect.config.store.DNSRecord;
 import org.nhindirect.config.store.util.DNSRecordUtils;
 import org.xbill.DNS.Type;

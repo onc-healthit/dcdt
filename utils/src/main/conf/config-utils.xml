@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 	<header>
+		<entity-resolver config-class="gov.hhs.onc.dcdt.config.ToolConfigEntityResolver"/>
 		<result forceReloadCheck="true">
-			<nodeCombiner config-class="org.apache.commons.configuration.tree.OverrideCombiner"/>
 			<expressionEngine config-class="org.apache.commons.configuration.tree.xpath.XPathExpressionEngine"/>
+			<nodeCombiner config-class="org.apache.commons.configuration.tree.OverrideCombiner"/>
 		</result>
 	</header>
 	

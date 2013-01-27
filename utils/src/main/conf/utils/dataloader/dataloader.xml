@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dataloader
-	xmlns="http://schema.direct-test.com/utils/utils/dataloader"
+	xmlns="http://schema.direct-test.com/dcdt/utils/dataloader"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://schema.direct-test.com/utils/utils/dataloader http://schema.direct-test.com/utils/utils/dataloader"
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/utils/dataloader http://schema.direct-test.com/dcdt/utils/dataloader"
 	
 	displayName="Data Loader"
 	

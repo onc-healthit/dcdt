@@ -1,9 +1,10 @@
 package gov.hhs.onc.dcdt.utils.beans;
 
-import gov.hhs.onc.dcdt.utils.annotations.ConfigBean;
+import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.annotations.ConfigBean;
 
 @ConfigBean("settings/setting")
-public class Setting extends UtilityBean
+public class Setting extends ToolBean
 {
 	private String id;
 	private String name;

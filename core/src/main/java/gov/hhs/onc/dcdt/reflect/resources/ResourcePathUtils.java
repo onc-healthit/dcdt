@@ -13,7 +13,7 @@ public abstract class ResourcePathUtils
 {
 	public final static String RESOURCE_PATH_DELIM = "/";
 	public final static String META_INF_RESOURCE_PATH_PART = "META-INF";
-	public final static String TOOL_RESOURCE_PATH_PART = "dcdt";
+	public final static String TOOL_PKG_RESOURCE_PATH_PART = packageToPath("gov.hhs.onc.dcdt");
 	
 	private final static String RESOURCE_PATH_PART_REMOVE_ENDS_PATTERN = "(^[\\s" + RESOURCE_PATH_DELIM + 
 		"]+|[\\s" + RESOURCE_PATH_DELIM + "]+$)";
@@ -32,11 +32,11 @@ public abstract class ResourcePathUtils
 		if (inMetaInf)
 		{
 			resourcePathPartsList.add(META_INF_RESOURCE_PATH_PART);
-		}
-		
-		if (isToolResource)
-		{
-			resourcePathPartsList.add(TOOL_RESOURCE_PATH_PART);
+			
+			if (isToolResource)
+			{
+				resourcePathPartsList.add(TOOL_PKG_RESOURCE_PATH_PART);
+			}
 		}
 		
 		resourcePathPartsList.addAll(IterableUtils.toList(resourcePathParts));

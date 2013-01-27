@@ -3,91 +3,42 @@ package gov.hhs.onc.dcdt.reflect.resources;
 import gov.hhs.onc.dcdt.lang.IterableUtils;
 import gov.hhs.onc.dcdt.reflect.ClassLoaderList;
 import gov.hhs.onc.dcdt.reflect.ClassLoaderUtils;
-import java.io.File;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Arrays;
-import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.TreeSet;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.discovery.Resource;
 import org.apache.commons.discovery.resource.ClassLoaders;
 import org.apache.commons.discovery.resource.DiscoverResources;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 public abstract class ResourceDiscoveryUtils
 {
 	private final static Logger LOGGER = Logger.getLogger(ResourceDiscoveryUtils.class);
 	
-	public static InputStream getStream(String resourceName, ClassLoader ... classLoaders)
+	public static boolean hasResource(boolean inMetaInf, boolean isToolResource, Object ... resourcePathParts)
 	{
-		Resource resource = findResource(resourceName, classLoaders);
-		
-		return (resource != null) ? resource.getResourceAsStream() : null;
+		return hasResource(inMetaInf, isToolResource, IterableUtils.asIterable(resourcePathParts));
 	}
 	
-	public static boolean hasFile(String resourceName, ClassLoader ... classLoaders)
+	public static boolean hasResource(boolean inMetaInf, boolean isToolResource, Iterable<Object> resourcePathParts)
 	{
-		return getFile(resourceName, classLoaders) != null;
+		return findResource(inMetaInf, isToolResource, resourcePathParts) != null;
 	}
 	
-	public static File getFile(String resourceName, ClassLoader ... classLoaders)
+	public static Resource findResource(boolean inMetaInf, boolean isToolResource, Object ... resourcePathParts)
 	{
-		String resourceFilePath = getFilePath(resourceName, classLoaders);
-		
-		return !StringUtils.isBlank(resourceFilePath) ? new File(resourceFilePath) : null;
+		return findResource(inMetaInf, isToolResource, IterableUtils.asIterable(resourcePathParts));
 	}
 	
-	public static boolean hasFilePath(String resourceName, ClassLoader ... classLoaders)
+	public static Resource findResource(boolean inMetaInf, boolean isToolResource, Iterable<Object> resourcePathParts)
 	{
-		return !StringUtils.isBlank(getFilePath(resourceName, classLoaders));
-	}
-	
-	public static String getFilePath(String resourceName, ClassLoader ... classLoaders)
-	{
-		URL resourceUrl = getUrl(resourceName, classLoaders);
-		
-		return (resourceUrl != null) ? resourceUrl.getFile() : null;
-	}
-	
-	public static boolean hasUrl(String resourceName, ClassLoader ... classLoaders)
-	{
-		return getUrl(resourceName, classLoaders) != null;
-	}
-	
-	public static URL getUrl(String resourceName, ClassLoader ... classLoaders)
-	{
-		Resource resource = findResource(resourceName, classLoaders);
-		
-		return (resource != null) ? resource.getResource() : null;
-	}
-	
-	public static boolean hasResource(String resourceName, ClassLoader ... classLoaders)
-	{
-		return findResource(resourceName, classLoaders) != null;
-	}
-	
-	public static Resource findResource(String resourceName, ClassLoader ... classLoaders)
-	{
-		return findResource(resourceName, null, classLoaders);
-	}
-	
-	public static Resource findResource(String resourceName, String resourcePath, ClassLoader ... classLoaders)
-	{
-		return findResource(resourceName, resourcePath, (resourcePath != null), classLoaders);
-	}
-	
-	public static Resource findResource(String resourceName, String resourcePath, boolean inMetaInf, ClassLoader ... classLoaders)
-	{
-		Set<Resource> resources = findResources(resourceName, resourcePath, inMetaInf, classLoaders);
+		Set<Resource> resources = findResources(inMetaInf, isToolResource, resourcePathParts);
 		
 		return IterableUtils.getFirst(resources);
 	}
 	
+	// TODO: refactor to match new method arguments
+	/*
 	public static Map<String, Set<Resource>> findAllResources(String ... resourceNames)
 	{
 		Map<String, Set<Resource>> resourcesMap = new TreeMap<>();
@@ -112,21 +63,22 @@ public abstract class ResourceDiscoveryUtils
 		
 		return resourcesMap;
 	}
+	*/
 	
-	public static Set<Resource> findResources(String resourceName, String resourcePath, ClassLoader ... classLoaders)
+	public static Set<Resource> findResources(boolean inMetaInf, boolean isToolResource, Object ... resourcePathParts)
 	{
-		return findResources(resourceName, resourcePath, (resourcePath != null), classLoaders);
+		return findResources(inMetaInf, isToolResource, IterableUtils.asIterable(resourcePathParts));
 	}
 	
-	public static Set<Resource> findResources(String resourceName, String resourcePath, boolean inMetaInf, ClassLoader ... classLoaders)
+	public static Set<Resource> findResources(boolean inMetaInf, boolean isToolResource, Iterable<Object> resourcePathParts)
 	{
-		return findResources(ResourcePathUtils.buildPath(inMetaInf, false, ArrayUtils.toArray(resourcePath, resourceName)), classLoaders);
+		return findResources(ResourcePathUtils.buildPath(inMetaInf, isToolResource, resourcePathParts));
 	}
 	
-	public static Set<Resource> findResources(String resourcePath, ClassLoader ... classLoaders)
+	public static Set<Resource> findResources(String resourcePath)
 	{
 		Set<Resource> resources = new TreeSet<>(new ResourceComparatorBuilder());
-		ClassLoaderList classLoadersList = ClassLoaderUtils.getLoaders(classLoaders);
+		ClassLoaderList classLoadersList = ClassLoaderUtils.getLoaders();
 		resources.addAll(Arrays.asList(Resource.toArray(getDiscoverResources(classLoadersList).findResources(resourcePath))));
 		
 		LOGGER.debug("Found " + resources.size() + " resource(s) for path (" + resourcePath + "): numClassLoader(s)=" + 

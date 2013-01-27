@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.utils;
 
-public class UtilityException extends Exception
+import gov.hhs.onc.dcdt.ToolException;
+
+public class UtilityException extends ToolException
 {
 	public UtilityException()
 	{

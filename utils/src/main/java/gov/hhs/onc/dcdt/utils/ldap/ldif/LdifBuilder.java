@@ -107,7 +107,8 @@ public class LdifBuilder
 	
 	public List<LdifEntry> readEntries(String resourcePath) throws UtilityLdapException
 	{
-		return this.readEntries(ResourceDiscoveryUtils.getStream(resourcePath));
+		return this.readEntries(ResourceDiscoveryUtils.findResource(false, false, resourcePath)
+			.getResourceAsStream());
 	}
 	
 	public List<LdifEntry> readEntries(InputStream inStream) throws UtilityLdapException

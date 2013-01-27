@@ -1,8 +1,8 @@
-package gov.hhs.onc.dcdt.utils.beans;
+package gov.hhs.onc.dcdt.beans;
 
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class UtilityBean
+public abstract class ToolBean
 {
 	private String id;
 

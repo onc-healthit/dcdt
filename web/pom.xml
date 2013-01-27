@@ -126,6 +126,10 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>
 		</dependency>
+		<dependency>
+			<groupId>xml-resolver</groupId>
+			<artifactId>xml-resolver</artifactId>
+		</dependency>
 		<!-- Test dependencies (inherited) -->
 		<dependency>
 			<groupId>junit</groupId>

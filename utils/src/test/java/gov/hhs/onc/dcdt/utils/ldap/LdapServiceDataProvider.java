@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.utils.ldap;
 
 import gov.hhs.onc.dcdt.test.data.provider.IterableDataProvider;
-import gov.hhs.onc.dcdt.utils.beans.BeanAttrib;
+import gov.hhs.onc.dcdt.beans.BeanAttrib;
 import gov.hhs.onc.dcdt.utils.test.MockTestUtility;
 import java.util.Iterator;
 import org.testng.annotations.DataProvider;

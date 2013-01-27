@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ldaps
-	xmlns="http://schema.direct-test.com/utils/data/ldap"
+	xmlns="http://schema.direct-test.com/dcdt/data/ldap"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://schema.direct-test.com/utils/data/ldap http://schema.direct-test.com/utils/data/ldap">
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/data/ldap http://schema.direct-test.com/dcdt/data/ldap">
 	
 	<ldap config-class="gov.hhs.onc.dcdt.utils.beans.LdapService"
 		id="1"

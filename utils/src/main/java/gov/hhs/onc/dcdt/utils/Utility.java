@@ -1,11 +1,11 @@
 package gov.hhs.onc.dcdt.utils;
 
+import gov.hhs.onc.dcdt.config.ToolConfigException;
 import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCliException;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCliOption;
 import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
-import gov.hhs.onc.dcdt.utils.config.UtilityConfigException;
 import java.io.File;
 import java.security.Security;
 import org.apache.commons.cli2.Group;
@@ -172,7 +172,7 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 		{
 			this.config.initConfig();
 		}
-		catch (UtilityConfigException e)
+		catch (ToolConfigException e)
 		{
 			logger.error(e.getMessage());
 			

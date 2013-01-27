@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.utils.cli.validation;
 import java.util.List;
 import org.apache.commons.cli2.validation.InvalidArgumentException;
 import org.apache.commons.cli2.validation.Validator;
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class NotBlankValidator implements Validator
