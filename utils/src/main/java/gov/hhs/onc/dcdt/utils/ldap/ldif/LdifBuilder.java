@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.utils.ldap.ldif;
 
-import gov.hhs.onc.dcdt.discovery.resource.ResourceDiscoveryUtils;
+import gov.hhs.onc.dcdt.reflect.resources.ResourceDiscoveryUtils;
 import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.utils.ldap.LdapServiceWrapper;
 import gov.hhs.onc.dcdt.utils.ldap.UtilityLdapException;

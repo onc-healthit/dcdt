@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt;
 
-import gov.hhs.onc.dcdt.discovery.resource.ResourceDiscoveryUtils;
+import gov.hhs.onc.dcdt.reflect.resources.ResourceDiscoveryUtils;
 import gov.hhs.onc.dcdt.test.data.provider.IterableDataProvider;
 import java.util.Iterator;
 import org.testng.annotations.DataProvider;

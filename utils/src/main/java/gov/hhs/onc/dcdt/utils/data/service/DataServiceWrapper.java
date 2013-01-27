@@ -160,7 +160,7 @@ public class DataServiceWrapper
 	{
 		List<DnsRecord> dnsRecords = this.getDnsRecords(type, name);
 		
-		return !dnsRecords.isEmpty() ? dnsRecords.get(0) : null;
+		return !CollectionUtils.isEmpty(dnsRecords) ? dnsRecords.get(0) : null;
 	}
 	
 	public List<DnsRecord> getDnsRecords(int type, String name) throws DataServiceException
@@ -255,7 +255,7 @@ public class DataServiceWrapper
 	{
 		List<Certificate> certs = this.getCertificates(certOwner);
 		
-		return !certs.isEmpty() ? certs.get(0) : null;
+		return !CollectionUtils.isEmpty(certs) ? certs.get(0) : null;
 	}
 	
 	public List<Certificate> getCertificates(String certOwner) throws DataServiceException
@@ -544,7 +544,7 @@ public class DataServiceWrapper
 	{
 		List<Anchor> anchors = this.getAnchors(domain);
 		
-		return !anchors.isEmpty() ? anchors.get(0) : null;
+		return !CollectionUtils.isEmpty(anchors) ? anchors.get(0) : null;
 	}
 	
 	public List<Anchor> getAnchors(Domain domain) throws DataServiceException
