@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings
+	xmlns="http://schema.direct-test.com/dcdt/data/settings"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/data/settings http://schema.direct-test.com/dcdt/data/settings">
+	
+	<setting config-class="gov.hhs.onc.dcdt.beans.Setting"
+		id="1"
+		name="MDNAutoResponse"
+		value="true"/>
+	
+	<setting config-class="gov.hhs.onc.dcdt.beans.Setting"
+		id="2"
+		name="RawMessageSaveFolder"
+		value="${util:rawMailDir}"/>
+	
+	<setting config-class="gov.hhs.onc.dcdt.beans.Setting"
+		id="3"
+		name="IncomingMessageSaveFolder"
+		value="${util:inMailDir}"/>
+	
+	<setting config-class="gov.hhs.onc.dcdt.beans.Setting"
+		id="4"
+		name="OutgoingMessageSaveFolder"
+		value="${util:outMailDir}"/>
+	
+	<setting config-class="gov.hhs.onc.dcdt.beans.Setting"
+		id="5"
+		name="BadMessageSaveFolder"
+		value="${util:badMailDir}"/>
+</settings>

@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.utils;
 
-import gov.hhs.onc.dcdt.utils.beans.Entry;
+import gov.hhs.onc.dcdt.beans.entry.Entry;
+import gov.hhs.onc.dcdt.data.entry.EntryException;
+import gov.hhs.onc.dcdt.data.entry.EntryLoader;
 import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
-import gov.hhs.onc.dcdt.utils.data.entry.EntryException;
-import gov.hhs.onc.dcdt.utils.data.entry.EntryLoader;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;

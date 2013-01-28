@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema
+	elementFormDefault="qualified"
+	targetNamespace="http://schema.direct-test.com/dcdt/data/dns"
+	xmlns="http://schema.direct-test.com/dcdt/data/dns"
+	xmlns:config="http://schema.direct-test.com/dcdt/config"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema">
+	
+	<xs:import namespace="http://schema.direct-test.com/dcdt/config" schemaLocation="http://schema.direct-test.com/dcdt/config"/>
+	
+	<!-- TODO: also allow duration-style values (ex: 2h) -->
+	<xs:simpleType name="dnsTime">
+		<xs:annotation>
+			<xs:documentation>
+				A DNS time value.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="dnsTimeAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a DNS time value or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="dnsTime config:attr"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="dnsPriority">
+		<xs:annotation>
+			<xs:documentation>
+				A DNS priority value.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="dnsPriorityAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a DNS priority value or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="dnsPriority config:attr"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="dnsWeight">
+		<xs:annotation>
+			<xs:documentation>
+				A DNS weight.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:nonNegativeInteger"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="dnsWeightAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a DNS weight value or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="dnsWeight config:attr"/>
+	</xs:simpleType>
+	
+	<xs:complexType name="dnsRecord" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				Abstract DNS record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="config:bean">
+				<xs:attribute name="name" type="config:attr"/>
+				<xs:attribute name="ttl" type="dnsTimeAttr"/>
+				<xs:anyAttribute/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="aRecord">
+		<xs:annotation>
+			<xs:documentation>
+				DNS A record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dnsRecord">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.dns.ARecord"/>
+				<xs:attribute name="value" type="config:ip4AddressAttr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="cnameRecord">
+		<xs:annotation>
+			<xs:documentation>
+				DNS CNAME record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dnsRecord">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.dns.CnameRecord"/>
+				<xs:attribute name="value" type="config:attr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="mxRecord">
+		<xs:annotation>
+			<xs:documentation>
+				DNS MX record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dnsRecord">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.dns.MxRecord"/>
+				<xs:attribute name="priority" type="dnsPriorityAttr"/>
+				<xs:attribute name="value" type="config:attr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="nsRecord">
+		<xs:annotation>
+			<xs:documentation>
+				DNS NS record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dnsRecord">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.dns.NsRecord"/>
+				<xs:attribute name="value" type="config:attr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="soaRecord">
+		<xs:annotation>
+			<xs:documentation>
+				DNS SOA record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dnsRecord">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.dns.SoaRecord"/>
+				<xs:attribute name="nameServer" type="config:attr"/>
+				<xs:attribute name="hostMaster" type="config:attr"/>
+				<xs:attribute name="expire" type="dnsTimeAttr"/>
+				<xs:attribute name="minimum" type="dnsTimeAttr"/>
+				<xs:attribute name="refresh" type="dnsTimeAttr"/>
+				<xs:attribute name="serial" type="dnsTimeAttr"/>
+				<xs:attribute name="retry" type="dnsTimeAttr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="srvRecord">
+		<xs:annotation>
+			<xs:documentation>
+				DNS SRV record.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="dnsRecord">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.dns.SrvRecord"/>
+				<xs:attribute name="service" type="config:attr"/>
+				<xs:attribute name="protocol" type="config:attr"/>
+				<xs:attribute name="priority" type="dnsPriorityAttr"/>
+				<xs:attribute name="weight" type="dnsWeightAttr"/>
+				<xs:attribute name="port" type="config:portAttr"/>
+				<xs:attribute name="target" type="config:attr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="dns">
+		<xs:annotation>
+			<xs:documentation>
+				DNS records parent.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="a" type="aRecord"/>
+			<xs:element name="cname" type="cnameRecord"/>
+			<xs:element name="mx" type="mxRecord"/>
+			<xs:element name="ns" type="nsRecord"/>
+			<xs:element name="soa" type="soaRecord"/>
+			<xs:element name="srv" type="srvRecord"/>
+		</xs:choice>
+	</xs:complexType>
+	
+	<xs:element name="dns" type="dns">
+		<xs:annotation>
+			<xs:documentation>
+				DNS records parent element.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:unique name="dnsRecordId">
+			<xs:selector xpath="dns/a|dns/cname|dns/mx|dns/ns|dns/soa|dns/srv"/>
+			<xs:field xpath="@id"/>
+		</xs:unique>
+	</xs:element>
+	
+</xs:schema>

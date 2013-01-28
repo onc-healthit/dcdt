@@ -1,0 +1,333 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testcases
+	xmlns="http://schema.direct-test.com/dcdt/data/testcases"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/data/testcases http://schema.direct-test.com/dcdt/data/testcases">
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 500
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_500"
+		name="DTS 500"
+		mailProperty="DTS_500_EMAIL">
+		
+		<!--========== RESULTS: PASS ==========-->
+		<resultsPass>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_1"
+				statusName="pass"
+				msg="Passed."/>
+		</resultsPass>
+		
+		<!--========== RESULTS: FAIL ==========-->
+		<resultsFail>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_2"
+				statusName="fail"
+				msg="Your system chose an address-bound DNS certificate for a different Direct address. It MUST have chosen the certificate for the correct address."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_3"
+				statusName="fail"
+				msg="Your System chose a valid domain-bound DNS Certificate. It MUST have chosen the valid address-bound DNS certificate first."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_4"
+				statusName="fail"
+				msg="Your System chose a valid domain-bound DNS certificate for the wrong domain. It MUST have chosen the valid address-bound DNS certificate first."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_5"
+				statusName="fail"
+				msg="Your System chose a valid address-bound LDAP certificate. It MUST have chosen the DNS address-bound certificate first."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_6"
+				statusName="fail"
+				msg="Your System chose a valid domain-bound LDAP certificate. It MUST have chosen the DNS CERT address-bound certificate first."/>
+		</resultsFail>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 501
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_501"
+		name="DTS 501"
+		mailProperty="DTS_501_EMAIL">
+		
+		<!--========== RESULTS: PASS ==========-->
+		<resultsPass>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_3"
+				statusName="pass"
+				msg="Passed."/>
+		</resultsPass>
+		
+		<!--========== RESULTS: FAIL ==========-->
+		<resultsFail>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_7"
+				statusName="fail"
+				msg="Your System used an expired certificate address-bound DNS certificate. It MUST NOT have used the expired certificate and MUST have used the valid domain-bound DNS certificate."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_4"
+				statusName="fail"
+				msg="Your System chose a valid domain-bound DNS certificate for the wrong domain. It MUST have chosen the valid domain-bound DNS certificate first."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_37"
+				statusName="fail"
+				msg="Your System chose an address-bound certificate from the LDAP server. It MUST have chosen the DNS CERT domain-bound certificate first."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_6"
+				statusName="fail"
+				msg="Your System chose a valid domain-bound LDAP certificate. It MUST have chosen the DNS CERT domain-bound certificate first."/>
+		</resultsFail>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 502
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_502"
+		name="DTS 502"
+		mailProperty="DTS_502_EMAIL">
+		
+		<!--========== RESULTS: PASS ==========-->
+		<resultsPass>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_11"
+				statusName="pass"
+				msg="Passed."/>
+		</resultsPass>
+		
+		<!--========== RESULTS: FAIL ==========-->
+		<resultsFail>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_3"
+				statusName="fail"
+				msg="Your System used a valid domain-bound DNS certificate instead of the valid address-bound DNS certificate. Your System MUST have chosen the address bound first."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_4"
+				statusName="fail"
+				msg="Your System chose a valid domain-bound DNS certificate for the wrong domain. It MUST have chosen the valid address-bound DNS certificate first."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_6"
+				statusName="fail"
+				msg="Your System chose a valid domain-bound certificate stored in an LDAP instance. It MUST have chosen the address-bound certificate in the DNS first."/>
+		</resultsFail>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 505
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_505"
+		name="DTS 505"
+		mailProperty="DTS_505_EMAIL">
+		
+		<!--========== RESULTS: PASS ==========-->
+		<resultsPass>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_14"
+				statusName="pass"
+				msg="Passed."/>
+		</resultsPass>
+		
+		<!--========== RESULTS: FAIL ==========-->
+		<resultsFail>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_13"
+				statusName="fail"
+				msg="Your System used an expired address-bound DNS certificate. It MUST NOT use this certificate because it is expired. It MUST have used the address-bound LDAP certificate."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_38"
+				statusName="fail"
+				msg="Your System chose an expired DNS domain-bound certificate. It MUST NOT use this certificate because it is expired. It MUST have used the address-bound LDAP certificate."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_16"
+				statusName="fail"
+				msg="Your system chose a valid domain-bound certificate in an LDAP server, but it MUST have used the valid address-bound certificate in the LDAP server before using the valid domain-bound certificate."/>
+		</resultsFail>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 506
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_506"
+		name="DTS 506"
+		mailProperty="DTS_506_EMAIL">
+		
+		<!--========== RESULTS: PASS ==========-->
+		<resultsPass>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_18"
+				statusName="pass"
+				msg="Passed."/>
+		</resultsPass>
+		
+		<!--========== RESULTS: FAIL ==========-->
+		<resultsFail>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_16"
+				statusName="fail"
+				msg="Your System chose a valid domain-bound LDAP certificate instead of the valid address-bound certificate stored in the LDAP instance. It MUST have chosen the valid address-bound certificate before using the valid domain-bound certificate."/>
+		</resultsFail>
+		
+		<!--========== RESULTS: OPTIONAL ==========-->
+		<resultsOptional>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_19"
+				statusName="opt"
+				msg="Your System chose a valid certificate from a lower priority SRV Record. It SHOULD have chosen the valid address-bound certificate in the higher priority SRV Record LDAP instance. This is recommended practice, but not required."/>
+		</resultsOptional>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 507
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_507"
+		name="DTS 507"
+		mailProperty="DTS_507_EMAIL">
+		
+		<!--========== RESULTS: PASS ==========-->
+		<resultsPass>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_20"
+				statusName="pass"
+				msg="Passed."/>
+		</resultsPass>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 511
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_511"
+		name="DTS 511"
+		mailProperty="DTS_511_EMAIL"/>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 512
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_512"
+		name="DTS 512"
+		mailProperty="DTS_512_EMAIL">
+		
+		<!--========== RESULTS: FAIL ==========-->
+		<resultsFail>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_28"
+				statusName="fail"
+				msg="Your System used an expired address-bound DNS certificate. It MUST NOT use this because it's expired."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_29"
+				statusName="fail"
+				msg="Your System used an expired domain-bound DNS certificate. It MUST NOT use this because it's expired."/>
+		</resultsFail>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 515
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_515"
+		name="DTS 515"
+		mailProperty="DTS_515_EMAIL">
+		
+		<!--========== RESULTS: PASS ==========-->
+		<resultsPass>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_16"
+				statusName="pass"
+				msg="Passed."/>
+		</resultsPass>
+		
+		<!--========== RESULTS: FAIL ==========-->
+		<resultsFail>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_39"
+				statusName="fail"
+				msg="Your System used an expired address-bound DNS certificate. It MUST not use this certificate because it is expired. It SHOULD have used the valid domain-bound LDAP certificate."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_38"
+				statusName="fail"
+				msg="Your System chose an expired domain-bound DNS certificate. It MUST not use this certificate because it is expired. It SHOULD have used the valid domain-bound certificate in the Testing Tool's LDAP server."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_41"
+				statusName="fail"
+				msg="Your System chose an expired address-bound certificate from the LDAP server. It MUST not use this certificate because it is expired. It SHOULD have used the valid domain-bound certificate in the Testing Tool's LDAP server."/>
+		</resultsFail>
+		
+		<!--========== RESULTS: OPTIONAL ==========-->
+		<resultsOptional>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_17"
+				statusName="opt"
+				msg="Your system chose an address-bound certificate that was stored in a higher priority SRV record LDAP server. It SHOULD have chosen the domain-bound certificate in the lower priority SRV record first, though this is only recommended and not required."/>
+		</resultsOptional>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 517
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_517"
+		name="DTS 517"
+		mailProperty="DTS_517_EMAIL">
+		
+		<!--========== RESULTS: PASS ==========-->
+		<resultsPass>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_21"
+				statusName="pass"
+				msg="Passed."/>
+		</resultsPass>
+	</discoveryTestcase>
+	
+	<!--====================================================================================================
+	= DISCOVERY TESTCASE: DTS 520
+	=====================================================================================================-->
+	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
+		id="DTS_520"
+		name="DTS 520"
+		mailProperty="DTS_520_EMAIL">
+		
+		<!--========== RESULTS: FAIL ==========-->
+		<resultsFail>
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_24"
+				statusName="fail"
+				msg="Your System used an expired address-bound DNS certificate. It MUST NOT use this because it's expired."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_25"
+				statusName="fail"
+				msg="Your System used an expired domain-bound DNS certificate. It MUST NOT use this because it's expired."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_26"
+				statusName="fail"
+				msg="Your System used an expired address-bound LDAP certificate. It MUST NOT use this because it's expired."/>
+			
+			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
+				entryProperty="CERT_27"
+				statusName="fail"
+				msg="Your System used an expired domain-bound LDAP certificate. It MUST NOT use this because it's expired."/>
+		</resultsFail>
+	</discoveryTestcase>
+</testcases>

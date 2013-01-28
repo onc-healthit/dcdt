@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.web.startup;
 
-import gov.hhs.onc.dcdt.web.mail.decrypt.LookupTest;
+import gov.hhs.onc.dcdt.config.ToolConfigException;
+import gov.hhs.onc.dcdt.web.testcases.discovery.DiscoveryTestcasesContainer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -79,13 +80,16 @@ public class Listener implements ServletContextListener
 		}
 		
 		try {
-			// Load in config files
+			// Load configuration
+			ConfigInfo.loadConfig();
+			
+			// Load configuration properties
 			ConfigInfo.loadConfigProperties(configHome + File.separatorChar + CONFIG_PROP_FILE);
 			ConfigInfo.loadEmailProperties(configHome + File.separatorChar + EMAIL_PROP_FILE);
 			ConfigInfo.loadVersionProperties(contextEvent.getServletContext().getRealPath("/" + VERSION_PROP_FILE));
 			
-			// Initialize HashMap with LookupTest-specific info
-			LookupTest.fillMap();
+			// Initialize Discovery testcases
+			DiscoveryTestcasesContainer.initTestcases();
 			
 			// Kick off the thread to watch the directory where emails will arrive
 			directoryWatcher =
@@ -93,7 +97,7 @@ public class Listener implements ServletContextListener
 			directoryWatcher.start();
 			
 			LOGGER.info("Directory Watcher Started.");
-		} catch (ConfigurationException e) {
+		} catch (ConfigurationException | ToolConfigException e) {
 			LOGGER.error("Error Loading Properties files.", e);
 		} catch (IOException e) {
 			LOGGER.error("IO Error - Loading config files.", e);

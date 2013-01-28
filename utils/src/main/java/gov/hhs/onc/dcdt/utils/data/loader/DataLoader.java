@@ -1,11 +1,11 @@
 package gov.hhs.onc.dcdt.utils.data.loader;
 
+import gov.hhs.onc.dcdt.beans.Domain;
+import gov.hhs.onc.dcdt.beans.Setting;
+import gov.hhs.onc.dcdt.beans.dns.DnsRecord;
+import gov.hhs.onc.dcdt.beans.entry.Entry;
+import gov.hhs.onc.dcdt.data.DataException;
 import gov.hhs.onc.dcdt.utils.LoaderUtility;
-import gov.hhs.onc.dcdt.utils.UtilityException;
-import gov.hhs.onc.dcdt.utils.beans.Domain;
-import gov.hhs.onc.dcdt.utils.beans.Entry;
-import gov.hhs.onc.dcdt.utils.beans.Setting;
-import gov.hhs.onc.dcdt.utils.beans.dns.DnsRecord;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
 import gov.hhs.onc.dcdt.utils.data.service.DataServiceException;
 import gov.hhs.onc.dcdt.utils.data.service.DataServiceWrapper;
@@ -120,7 +120,7 @@ public class DataLoader extends LoaderUtility<DataLoaderCliOption>
 		{
 			this.dataService.setDnsRecord(dnsRecord.toDataRecord());
 		}
-		catch (UtilityException e)
+		catch (DataException e)
 		{
 			throw new DataServiceException(e);
 		}

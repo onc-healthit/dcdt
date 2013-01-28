@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dns
+	xmlns="http://schema.direct-test.com/dcdt/data/dns"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/data/dns http://schema.direct-test.com/dcdt/data/dns">
+	
+	<srv config-class="gov.hhs.onc.dcdt.beans.dns.SrvRecord"
+		id="1"
+		name="direct1.${util:domain}"
+		service="ldap"
+		protocol="tcp"
+		ttl="86400"
+		priority="0"
+		weight="0"
+		port="10389"
+		target="ldap.${util:domain}"/>
+	
+	<srv config-class="gov.hhs.onc.dcdt.beans.dns.SrvRecord"
+		id="2"
+		name="direct2.${util:domain}"
+		service="ldap"
+		protocol="tcp"
+		ttl="86400"
+		priority="0"
+		weight="0"
+		port="10389"
+		target="ldap.${util:domain}"/>
+	
+	<srv config-class="gov.hhs.onc.dcdt.beans.dns.SrvRecord"
+		id="3"
+		name="direct2.${util:domain}"
+		service="ldap"
+		protocol="tcp"
+		ttl="86400"
+		priority="1"
+		weight="0"
+		port="11389"
+		target="ldap.${util:domain}"/>
+	
+	<srv config-class="gov.hhs.onc.dcdt.beans.dns.SrvRecord"
+		id="4"
+		name="direct3.${util:domain}"
+		service="ldap"
+		protocol="tcp"
+		ttl="86400"
+		priority="0"
+		weight="0"
+		port="389"
+		target="ldap.${util:domain}"/>
+	
+	<srv config-class="gov.hhs.onc.dcdt.beans.dns.SrvRecord"
+		id="5"
+		name="direct3.${util:domain}"
+		service="ldap"
+		protocol="tcp"
+		ttl="86400"
+		priority="1"
+		weight="0"
+		port="10389"
+		target="ldap.${util:domain}"/>
+	
+	<srv config-class="gov.hhs.onc.dcdt.beans.dns.SrvRecord"
+		id="6"
+		name="direct3.${util:domain}"
+		service="ldap"
+		protocol="tcp"
+		ttl="86400"
+		priority="2"
+		weight="0"
+		port="11389"
+		target="ldap.${util:domain}"/>
+	
+	<srv config-class="gov.hhs.onc.dcdt.beans.dns.SrvRecord"
+		id="7"
+		name="direct5.${util:domain}"
+		service="ldap"
+		protocol="tcp"
+		ttl="86400"
+		priority="0"
+		weight="0"
+		port="10389"
+		target="ldap.${util:domain}"/>
+</dns>

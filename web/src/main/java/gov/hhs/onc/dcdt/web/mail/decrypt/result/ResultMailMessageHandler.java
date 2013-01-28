@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt.result;
 
+import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
+import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.web.mail.decrypt.DecryptDirectHandler;
 import gov.hhs.onc.dcdt.web.mail.decrypt.EmailBean;
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
@@ -93,29 +95,23 @@ public class ResultMailMessageHandler implements DecryptDirectHandler
 			throw new IllegalArgumentException("No matching result mail address found for sender mail address: " + 
 				senderAddr);
 		}
+
+		DiscoveryTestcase testcase = emailInfo.getTestcase();
+		String testcaseName = testcase.getName();
+		TestcaseResultStatus resultStatus = emailInfo.getStatus();
 		
 		Map<String, Object> headerMap = new HashMap<>();
-		StringBuilder bodyBuilder = new StringBuilder("Test case ");
-		bodyBuilder.append(emailInfo.getThisTest().getTestCaseName());
+		StringBuilder bodyBuilder = new StringBuilder("Testcase ");
+		bodyBuilder.append(testcaseName);
 		bodyBuilder.append(" results:");
 
 		// add test case name header information
-		headerMap.put(RESULT_MAIL_HEADER_TESTCASE_NAME, emailInfo.getThisTest().getTestCaseName());
+		headerMap.put(RESULT_MAIL_HEADER_TESTCASE_NAME, testcaseName);
 		
-		if (emailInfo.getPasses())
-		{
-			// add pass header information
-			headerMap.put(RESULT_MAIL_HEADER_TESTCASE_RESULT, "passes");
-			
-			bodyBuilder.append(" passes.\nCongratulations!");
-		}
-		else
-		{
-			// add fail header information
-			headerMap.put(RESULT_MAIL_HEADER_TESTCASE_RESULT, "fails");
-			
-			bodyBuilder.append(" fails.\nTry Again.");
-		}
+		headerMap.put(RESULT_MAIL_HEADER_TESTCASE_RESULT, resultStatus.getName());
+		bodyBuilder.append(" ");
+		bodyBuilder.append(resultStatus.getNameDisplay());
+		bodyBuilder.append(".");
 		
 		// add details header information
 		headerMap.put(RESULT_MAIL_HEADER_TESTCASE_RESULT_DETAILS, emailInfo.getResults());

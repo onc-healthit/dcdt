@@ -1,12 +1,12 @@
 package gov.hhs.onc.dcdt.utils.data.generator;
 
-import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.beans.BeanAttrib;
-import gov.hhs.onc.dcdt.utils.beans.Entry;
+import gov.hhs.onc.dcdt.beans.entry.Entry;
+import gov.hhs.onc.dcdt.data.entry.EntryBuilder;
+import gov.hhs.onc.dcdt.data.entry.EntryException;
+import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
 import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
-import gov.hhs.onc.dcdt.utils.data.entry.EntryBuilder;
-import gov.hhs.onc.dcdt.utils.data.entry.EntryException;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;

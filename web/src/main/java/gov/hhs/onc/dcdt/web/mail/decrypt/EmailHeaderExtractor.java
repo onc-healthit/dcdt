@@ -1,7 +1,9 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt;
 
+import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
 
+import gov.hhs.onc.dcdt.web.testcases.discovery.DiscoveryTestcasesContainer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -43,17 +45,18 @@ public class EmailHeaderExtractor implements DecryptDirectHandler {
 		LOGGER.info("Inbound Email - FROM - " + getFrom()
 			+ " - TO - " + getTo());
 
-		LookupTest thisTest = LookupTest.findLookupTest(getTo());
-		if (thisTest == null) {
+		DiscoveryTestcase testcase = DiscoveryTestcasesContainer.getTestcases().get(this.getTo());
+		if (testcase == null) {
 			LOGGER.error("Inbound Email: To address " + getTo()
-					+ " not associated with a test case.");
+					+ " not associated with a testcase.");
 			throw new IllegalArgumentException("To address "
 					+ getTo()
-					+ " not associated with a test case.");
+					+ " not associated with a testcase.");
 		}
-		emailInfo.setThisTest(thisTest);
+		
+		emailInfo.setTestcase(testcase);
 		LOGGER.info("Inbound Email: TEST CASE =" +
-			emailInfo.getThisTest());
+			testcase.getName());
 
 		return emailInfo;
 	}
@@ -103,7 +106,7 @@ public class EmailHeaderExtractor implements DecryptDirectHandler {
 		// Only handles a single recipient
 		InternetAddress[] toAddrList =
 				(InternetAddress[]) message.getAllRecipients();
-		return toAddrList[0].getAddress().toString();
+		return toAddrList[0].getAddress();
 	}
 
 	/**
@@ -115,7 +118,7 @@ public class EmailHeaderExtractor implements DecryptDirectHandler {
 
 		InternetAddress[] fromAddrList =
 			(InternetAddress[]) message.getFrom();
-		return fromAddrList[0].getAddress().toString();
+		return fromAddrList[0].getAddress();
 	}
 
 	/**

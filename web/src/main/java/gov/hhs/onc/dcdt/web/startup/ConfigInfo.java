@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.web.startup;
 
+import gov.hhs.onc.dcdt.config.ToolConfigException;
+import gov.hhs.onc.dcdt.web.config.WebConfig;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
@@ -15,10 +17,22 @@ public class ConfigInfo
 {
 	private final static Logger LOGGER = Logger.getLogger(ConfigInfo.class);
 	
+	private static WebConfig config;
 	private static PropertiesConfiguration configProperties;
 	private static PropertiesConfiguration emailProperties;
 	private static PropertiesConfiguration versionProperties;
 
+	public static WebConfig getConfig()
+	{
+		return config;
+	}
+	
+	public static void loadConfig() throws ToolConfigException
+	{
+		config = new WebConfig();
+		config.initConfig();
+	}
+	
 	/**
 	 * Loads version properties from local file.
 	 */

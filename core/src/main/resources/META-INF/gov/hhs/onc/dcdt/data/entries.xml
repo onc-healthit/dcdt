@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entries
+	xmlns="http://schema.direct-test.com/dcdt/data/entries"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://schema.direct-test.com/dcdt/data/entries http://schema.direct-test.com/dcdt/data/entries">
+	
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="ca"
+		name="${util:domain}_ca"
+		path="ca"
+		canSign="true"
+		keyBits="1024"
+		validDays="365">
+		
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="anchor"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="${util:domain}_ca"
+			organization="${util:domain}_ca"/>
+	</entry>
+	
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="1"
+		name="dts500_valid_cert_record"
+		path=""
+		keyBits="1024"
+		validDays="365">
+		
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts500_valid_cert_record"
+			mail="dts500@direct1.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+	
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="2"
+		name="othercert"
+		path=""
+		keyBits="1024"
+		validDays="365">
+		
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="othercert"
+			mail="othercert@direct1.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="3"
+		name="dts501_valid"
+		path=""
+		keyBits="1024"
+		validDays="365">
+		
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts501_valid"
+			mail="direct1.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="4"
+		name="direct9.${util:domain}"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="direct9.${util:domain}"
+			mail="direct9.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="5"
+		name="dts500_valid_ldap"
+		path=""
+		keyBits="1024"
+		validDays="365">
+		
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts500_valid_ldap"
+			mail="dts500@direct1.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="6"
+		name="dts501_valid_ldap"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts501_valid_ldap"
+			mail="direct1.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="7"
+		name="dts501_expired"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts501_expired"
+			mail="dts501@direct1.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="11"
+		name="dts502"
+		path=""
+		keyBits="4096"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts502"
+			mail="dts502@direct1.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="13"
+		name="dts505_expired_cert_record"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts505_expired_cert_record"
+			mail="dts505@direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="14"
+		name="dts505_mac"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts505_mac"
+			mail="dts505@direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="16"
+		name="dts515_mac"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts515_mac"
+			mail="direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="17"
+		name="dts515_address_bound"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="domain2ldap1"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts515_address_bound"
+			mail="dts515@direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="18"
+		name="dts506_ldap_1_mac"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts506_ldap_1_mac"
+			mail="dts506@direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="19"
+		name="dts506_ldap_2"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="domain2ldap1"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts506_ldap_2"
+			mail="dts506@direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="20"
+		name="dts507"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="domain2ldap1"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts507"
+			mail="dts507@direct3.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="21"
+		name="dts517"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="domain2ldap1"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts517"
+			mail="dts517@direct3.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="24"
+		name="dts520_invalid_address_cert"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts520_invalid_address_cert"
+			mail="dts520@direct5.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="25"
+		name="dts520_invalid_domain_cert"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts520_invalid_domain_cert"
+			mail="direct5.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="26"
+		name="dts520_invalid_address_ldap"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts520_invalid_address_ldap"
+			mail="dts520@direct5.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="27"
+		name="dts520_invalid_domain_ldap"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts520_invalid_domain_ldap"
+			mail="direct5.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="28"
+		name="dts512_expired_address_cert"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts512_expired_address_cert"
+			mail="dts512@direct6.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="29"
+		name="expired_direct6_domain_cert"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="expired_direct6_domain_cert"
+			mail="direct6.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="37"
+		name="dts501_valid_add_ldap"
+		path=""
+		keyBits="1024"
+		validDays="365">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts501_valid_add_ldap"
+			mail="dts501@direct1.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="38"
+		name="direct2.${util:domain}_invalid_dns"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="direct2.${util:domain}_invalid_dns"
+			mail="direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="39"
+		name="dts515_invalid_dns_address"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="dns"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts515_invalid_dns_address"
+			mail="dts515@direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+
+	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
+		id="41"
+		name="dts515_invalid_ldap_address"
+		path=""
+		keyBits="1024"
+		validDays="0">
+
+		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
+			typeName="ldap"
+			ldapServiceName="default"/>
+		
+		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
+			commonName="dts515_invalid_ldap_address"
+			mail="dts515@direct2.${util:domain}"
+			organization="${util:domain}"/>
+	</entry>
+</entries>

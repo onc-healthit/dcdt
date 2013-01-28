@@ -2,7 +2,18 @@ package gov.hhs.onc.dcdt.config;
 
 import gov.hhs.onc.dcdt.annotations.ConfigBean;
 import gov.hhs.onc.dcdt.beans.BeanAttrib;
+import gov.hhs.onc.dcdt.beans.Domain;
+import gov.hhs.onc.dcdt.beans.LdapService;
+import gov.hhs.onc.dcdt.beans.Setting;
 import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.beans.dns.ARecord;
+import gov.hhs.onc.dcdt.beans.dns.CnameRecord;
+import gov.hhs.onc.dcdt.beans.dns.MxRecord;
+import gov.hhs.onc.dcdt.beans.dns.NsRecord;
+import gov.hhs.onc.dcdt.beans.dns.SoaRecord;
+import gov.hhs.onc.dcdt.beans.dns.SrvRecord;
+import gov.hhs.onc.dcdt.beans.entry.Entry;
+import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.reflect.resources.ResourcePathUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,10 +54,133 @@ public class ToolConfig
 		{
 		});
 	
+	protected String moduleName;
 	protected ToolConfigEntityResolver configEntityResolver;
 	protected DefaultConfigurationBuilder configBuilder;
 	protected CombinedConfiguration config;
 	protected ToolConfigListener configListener;
+	
+	public ToolConfig()
+	{
+		this(StringUtils.EMPTY);
+	}
+	
+	public ToolConfig(String moduleName)
+	{
+		this.moduleName = moduleName;
+	}
+	
+	//<editor-fold desc="typed bean getters">
+	public List<Domain> getDomains(BeanAttrib... attribs)
+	{
+		return this.getBeans(Domain.class, attribs);
+	}
+	
+	public Domain getDomain(BeanAttrib ... attribs)
+	{
+		return this.getBean(Domain.class, attribs);
+	}
+	
+	public List<Entry> getEntries(BeanAttrib ... attribs)
+	{
+		return this.getBeans(Entry.class, attribs);
+	}
+	
+	public Entry getEntry(BeanAttrib ... attribs)
+	{
+		return this.getBean(Entry.class, attribs);
+	}
+	
+	public List<LdapService> getLdapServices(BeanAttrib ... attribs)
+	{
+		return this.getBeans(LdapService.class, attribs);
+	}
+	
+	public LdapService getLdapService(BeanAttrib ... attribs)
+	{
+		return this.getBean(LdapService.class, attribs);
+	}
+	
+	public List<Setting> getSettings(BeanAttrib ... attribs)
+	{
+		return this.getBeans(Setting.class, attribs);
+	}
+	
+	public Setting getSetting(BeanAttrib ... attribs)
+	{
+		return this.getBean(Setting.class, attribs);
+	}
+	
+	public List<ARecord> getARecords(BeanAttrib ... attribs)
+	{
+		return this.getBeans(ARecord.class, attribs);
+	}
+	
+	public ARecord getARecord(BeanAttrib ... attribs)
+	{
+		return this.getBean(ARecord.class, attribs);
+	}
+	
+	public List<CnameRecord> getCnameRecords(BeanAttrib ... attribs)
+	{
+		return this.getBeans(CnameRecord.class, attribs);
+	}
+	
+	public CnameRecord getCnameRecord(BeanAttrib ... attribs)
+	{
+		return this.getBean(CnameRecord.class, attribs);
+	}
+	
+	public List<MxRecord> getMxRecords(BeanAttrib ... attribs)
+	{
+		return this.getBeans(MxRecord.class, attribs);
+	}
+	
+	public MxRecord getMxRecord(BeanAttrib ... attribs)
+	{
+		return this.getBean(MxRecord.class, attribs);
+	}
+	
+	public List<NsRecord> getNsRecords(BeanAttrib ... attribs)
+	{
+		return this.getBeans(NsRecord.class, attribs);
+	}
+	
+	public NsRecord getNsRecord(BeanAttrib ... attribs)
+	{
+		return this.getBean(NsRecord.class, attribs);
+	}
+	
+	public List<SoaRecord> getSoaRecords(BeanAttrib ... attribs)
+	{
+		return this.getBeans(SoaRecord.class, attribs);
+	}
+	
+	public SoaRecord getSoaRecord(BeanAttrib ... attribs)
+	{
+		return this.getBean(SoaRecord.class, attribs);
+	}
+	
+	public List<SrvRecord> getSrvRecords(BeanAttrib ... attribs)
+	{
+		return this.getBeans(SrvRecord.class, attribs);
+	}
+	
+	public SrvRecord getSrvRecord(BeanAttrib ... attribs)
+	{
+		return this.getBean(SrvRecord.class, attribs);
+	}
+	
+	public List<DiscoveryTestcase> getDiscoveryTestcases(BeanAttrib ... attribs)
+	{
+		return this.getBeans(DiscoveryTestcase.class, attribs);
+	}
+	
+	public DiscoveryTestcase getDiscoveryTestcase(BeanAttrib ... attribs)
+	{
+		return this.getBean(DiscoveryTestcase.class, attribs);
+	}
+	//</editor-fold>
 	
 	public <T extends ToolBean> T getBeanById(Class<T> beanClass, String id)
 	{
@@ -183,5 +317,10 @@ public class ToolConfig
 	public ToolConfigListener getConfigListener()
 	{
 		return this.configListener;
+	}
+
+	public String getModuleName()
+	{
+		return this.moduleName;
 	}
 }

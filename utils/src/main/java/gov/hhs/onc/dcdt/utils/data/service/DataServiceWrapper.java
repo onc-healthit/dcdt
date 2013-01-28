@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.utils.data.service;
 
-import gov.hhs.onc.dcdt.utils.beans.Entry;
+import gov.hhs.onc.dcdt.beans.entry.Entry;
 import java.io.ByteArrayInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;

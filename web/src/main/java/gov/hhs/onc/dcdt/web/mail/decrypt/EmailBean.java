@@ -1,12 +1,15 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt;
 
+import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
+import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
 import java.io.Serializable;
 
 /**
  * Bean for email information including to/from addresses, file location of
  * email, the test case value, and the results of the email decryption.
+ * 
  * @author jasonsmith
- *
+ * @author michal.kotelba@esacinc.com
  */
 public class EmailBean implements Serializable {
 
@@ -15,65 +18,77 @@ public class EmailBean implements Serializable {
 	private String fileLocation;
 	private String toAddress;
 	private String fromAddress;
-	private LookupTest thisTest;
-	private Boolean passes;
+	private DiscoveryTestcase testcase;
+	private TestcaseResultStatus status;
 	private String results;
 
-	public EmailBean() {
-		super();
+	public EmailBean()
+	{
+		this(null);
+	}
+	
+	public EmailBean(String fileLocation)
+	{
+		this.fileLocation = fileLocation;
+	}
+	
+	public String getFileLocation()
+	{
+		return this.fileLocation;
 	}
 
-	public EmailBean(String fileLocation) {
-		super();
+	public void setFileLocation(String fileLocation)
+	{
 		this.fileLocation = fileLocation;
 	}
 
-	public String getFileLocation() {
-		return fileLocation;
+	public String getFromAddress()
+	{
+		return this.fromAddress;
 	}
 
-	public void setFileLocation(String fileLocation) {
-		this.fileLocation = fileLocation;
-	}
-
-	public String getToAddress() {
-		return toAddress;
-	}
-
-	public void setToAddress(String toAddress) {
-		this.toAddress = toAddress;
-	}
-
-	public String getFromAddress() {
-		return fromAddress;
-	}
-
-	public void setFromAddress(String fromAddress) {
+	public void setFromAddress(String fromAddress)
+	{
 		this.fromAddress = fromAddress;
 	}
 
-	public LookupTest getThisTest() {
-		return thisTest;
+	public String getResults()
+	{
+		return this.results;
 	}
 
-	public void setThisTest(LookupTest thisTest) {
-		this.thisTest = thisTest;
-	}
-
-	public Boolean getPasses() {
-		return passes;
-	}
-
-	public void setPasses(Boolean passes) {
-		this.passes = passes;
-	}
-
-	public String getResults() {
-		return results;
-	}
-
-	public void setResults(String results) {
+	public void setResults(String results)
+	{
 		this.results = results;
 	}
 
+	public TestcaseResultStatus getStatus()
+	{
+		return this.status;
+	}
+
+	public void setStatus(TestcaseResultStatus status)
+	{
+		this.status = status;
+	}
+
+	public DiscoveryTestcase getTestcase()
+	{
+		return this.testcase;
+	}
+
+	public void setTestcase(DiscoveryTestcase testcase)
+	{
+		this.testcase = testcase;
+	}
+
+	public String getToAddress()
+	{
+		return this.toAddress;
+	}
+
+	public void setToAddress(String toAddress)
+	{
+		this.toAddress = toAddress;
+	}
 }

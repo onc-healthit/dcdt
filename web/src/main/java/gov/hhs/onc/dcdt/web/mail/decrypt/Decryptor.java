@@ -1,5 +1,9 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt;
 
+import gov.hhs.onc.dcdt.beans.entry.Entry;
+import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
+import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
 import java.io.BufferedReader;
 import java.io.Closeable;
@@ -7,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.EnumSet;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
@@ -31,94 +36,85 @@ public class Decryptor implements DecryptDirectHandler {
 	 * @return EmailBean
 	 * @throws Exception
 	 */
-	public EmailBean execute(EmailBean emailInfo) throws Exception {
-		LOGGER.debug("before decrypt for message.");
-		boolean result = false;
-
-		LookupTestCertInfo goodCertInfo =
-				emailInfo.getThisTest().getGoodCertInfo();
-		StringBuffer resultFromGoodCertString = new StringBuffer("");
-		if (goodCertInfo != null) {
-			result =
-				decryptEmail(emailInfo, goodCertInfo, resultFromGoodCertString);
-
-			if (result) {
-				emailInfo.setPasses(true);
-				emailInfo.setResults(resultFromGoodCertString.toString());
-				return emailInfo;
+	public EmailBean execute(EmailBean emailInfo) throws Exception
+	{
+		DiscoveryTestcase testcase = emailInfo.getTestcase();
+		StringBuilder msgBuilder = new StringBuilder();
+		
+		for (TestcaseResultStatus status : EnumSet.allOf(TestcaseResultStatus.class))
+		{
+			if (testcase.hasResults(status))
+			{
+				for (DiscoveryTestcaseResult result : testcase.getResults(status))
+				{
+					msgBuilder.setLength(0);
+					
+					if (this.decryptEmail(emailInfo, result, msgBuilder))
+					{
+						emailInfo.setStatus(status);
+						emailInfo.setResults(result.getMsg());
+						
+						return emailInfo;
+					}
+				}
 			}
 		}
-
-		for (LookupTestCertInfo badPathInfo
-			: emailInfo.getThisTest().getBadCertInfoList()) {
-
-			StringBuffer resultString = new StringBuffer("");
-			result = decryptEmail(emailInfo, badPathInfo, resultString);
-
-			if (result) {
-				emailInfo.setPasses(false);
-				emailInfo.setResults(resultString.toString());
-				return emailInfo;
-			}
-		}
-
-		emailInfo.setPasses(false);
-		emailInfo.setResults(resultFromGoodCertString.toString());
+		
+		emailInfo.setStatus(TestcaseResultStatus.PASS);
+		
 		return emailInfo;
 	}
 
 	/**
 	 * Decpypts email using openSSL command line tool.
 	 * @param emailInfo
-	 * @param testPathInfo
-	 * @param resultString
+	 * @param testcaseResult
+	 * @param msgBuilder
 	 * @return boolean
 	 */
-	private boolean decryptEmail(EmailBean emailInfo,
-		LookupTestCertInfo testPathInfo, StringBuffer resultString) {
+	private boolean decryptEmail(EmailBean emailInfo, DiscoveryTestcaseResult testcaseResult, StringBuilder msgBuilder) {
 
 		boolean result = false;
-		final String CERT_PATH = ConfigInfo.getConfigProperty("CertLocation");
-		final String EMAIL_PATH = ConfigInfo.getConfigProperty("EmlLocation");
-		final String PUBLIC_CERT = testPathInfo.getCertFilename();
-		final String PRIVATE_CERT = testPathInfo.getPrivateKeyFilename();
+		
+		String mailFilePath = new File(ConfigInfo.getConfigProperty("EmlLocation"), 
+			emailInfo.getFileLocation()).toString();
+		
+		String certsDirPath = ConfigInfo.getConfigProperty("CertLocation");
+		String entryProp = testcaseResult.getEntryProperty();
+		String certFilePath = Entry.getCertPemFilePath(ConfigInfo.getConfigProperty(entryProp), certsDirPath);
+		String keyFilePath = Entry.getKeyPemFilePath(ConfigInfo.getConfigProperty(entryProp), certsDirPath);
 
-		LOGGER.debug("Cert path: " + CERT_PATH);
-		LOGGER.debug("Public cert: " + PUBLIC_CERT);
-		LOGGER.debug("Private cert: " + PRIVATE_CERT);
-
-		LOGGER.debug("CERT PATH: " + CERT_PATH + "\n"
-				+ "PUBLIC CERT: " + PUBLIC_CERT + "\n"
-				+ "PRIVATE CERT: " + PRIVATE_CERT);
+		LOGGER.debug("Decrypting mail file (path=" + mailFilePath + "): cert=" + certFilePath + 
+			", privateKey=" + keyFilePath);
 
         String[] decryptCommand = new String[] {
         		"openssl", "cms", "-decrypt", "-in",
-        		new File(EMAIL_PATH, emailInfo.getFileLocation()).toString(),
+        		mailFilePath,
         		"-recip",
-        		new File(CERT_PATH, PUBLIC_CERT).toString(),
+        		certFilePath,
         		"-inkey",
-        		new File(CERT_PATH, PRIVATE_CERT).toString()
+        		keyFilePath
         };
 
-        LOGGER.info("Decrypt Command Line Statement: " + StringUtils.join(decryptCommand, " "));
+        LOGGER.info("Decrypt command line: " + StringUtils.join(decryptCommand, " "));
 
 		try {
 			StringBuffer errorString = new StringBuffer("");
 			result = runCommand(decryptCommand, errorString);
 
 			if (result) {
-				resultString.append(testPathInfo.getResultStringIfThisDecrypts());
+				msgBuilder.append(testcaseResult.getMsg());
 			} else {
-				resultString.append(errorString.toString());
+				msgBuilder.append(errorString);
 			}
 
 		} catch (Exception e) {
 			// TODO We will probably want to better format this result string
-			resultString.append(e.toString());
+			msgBuilder.append(e);
 			LOGGER.error("SSL Command Exception.", e);
 		}
 
-		LOGGER.info("Decrypt Command Result: " + resultString.toString());
+		LOGGER.info("Decrypt Command Result: " + msgBuilder);
 
 		return result;
 	}
