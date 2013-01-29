@@ -9,30 +9,45 @@
 		<form-bean name="LookUpDropDownActionForm" type="gov.hhs.onc.dcdt.web.mail.decrypt.LookUpDropDownActionForm"/>	
 	</form-beans>
 	
-	<!--
 	<global-exceptions>
-	
+		<exception key="error.global" type="java.lang.Exception" path="/error.jsp"/>
 	</global-exceptions>
-	-->
-	
-	<!--
-	<global-forwards>
-		<forward name="welcome"  path="/Welcome.do"/>
-	</global-forwards>
-	-->
 	
 	<action-mappings>
-		<action input="/dns.jsp" path="/DNS_TEST" name="CertLookUpActionForm" scope="session" validate="true" type="gov.hhs.onc.dcdt.web.cert.lookup.CertLookUpAction">
-			<forward name="success" path="/dns_result.jsp" />
+		<action path="/" forward="/home.jsp"/>
+		
+		<action path="/hosting" 
+			input="/dns.jsp" 
+			name="CertLookUpActionForm" 
+			scope="request" 
+			validate="true" 
+			type="gov.hhs.onc.dcdt.web.cert.lookup.CertLookUpAction">
+			<forward name="success" path="/dns_result.jsp"/>
+		</action>
+		<action path="/hosting/result" 
+			input="/dns_result.jsp" 
+			name="CertLookUpActionForm" 
+			scope="request" 
+			validate="true" 
+			type="gov.hhs.onc.dcdt.web.cert.lookup.CertLookUpAction"/>
+		
+		<action path="/discovery" 
+			input="/download.jsp" 
+			name="LookUpDropDownActionForm" 
+			scope="request" 
+			validate="true" 
+			type="gov.hhs.onc.dcdt.web.mail.decrypt.LookUpDropDownAction"/>
+		
+		<action path="/discovery/email" 
+			input="/emailSet.jsp" 
+			name="EmailSetActionForm" 
+			scope="request" 
+			validate="true" 
+			type="gov.hhs.onc.dcdt.web.mail.property.EmailSetAction">
+			<forward name="samePage" path="/emailSet.jsp"/>
 		</action>
 		
-		<action name="LookUpDropDownActionForm"  path="/Download" scope="session" validate="true" input="/download.jsp" type="gov.hhs.onc.dcdt.web.mail.decrypt.LookUpDropDownAction"/>
-		
-		<action path="/Email_Set" input="/emailSet.jsp" name="EmailSetActionForm" validate="true" type="gov.hhs.onc.dcdt.web.mail.property.EmailSetAction">
-			<forward name="samePage" path="/emailSet.jsp" />
-		</action>
-		
-		<action path="/Download-Anchor" type="gov.hhs.onc.dcdt.web.cert.DownloadAnchorAction"/>
+		<action path="/download/anchor" type="gov.hhs.onc.dcdt.web.download.DownloadAnchorAction"/>
 	</action-mappings>
 	
 	<controller processorClass="org.apache.struts.tiles.TilesRequestProcessor"/>
@@ -41,7 +56,7 @@
 	
 	<plug-in className="org.apache.struts.tiles.TilesPlugin">
 		<set-property property="definitions-config" value="/WEB-INF/tiles-defs.xml"/>
-		<set-property property="moduleAware" value="true" />
+		<set-property property="moduleAware" value="true"/>
 	</plug-in>
 	
 	<plug-in className="org.apache.struts.validator.ValidatorPlugIn">

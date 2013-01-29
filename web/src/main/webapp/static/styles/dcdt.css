@@ -1,0 +1,44 @@
+.medFont
+{
+	font-size: .7em
+}
+
+.textTop
+{
+	font-size: .9em;
+	line-height: .1em;
+}
+
+.textEmail
+{
+	font-size: 1.2em;
+    font-family: "Times New Roman", serif;
+	margin: 0 0 0 170px;
+}
+	
+.blue
+{
+	background: #049cdb;
+}
+
+.warning
+{
+	line-height: 1.1em;
+	font-size: 75%; 
+	padding: 4px
+}
+
+a.mail:link
+{
+	color: #0000ff;
+	background-color: transparent;
+	text-decoration: none;
+	font-weight: 600
+}
+
+div#version
+{
+	text-align: center;
+	color: rgb(150, 150, 150);
+	font-size: 90%;
+}

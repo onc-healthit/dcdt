@@ -6,6 +6,7 @@ import gov.hhs.onc.dcdt.dns.LookupResult;
 import gov.hhs.onc.dcdt.dns.LookupResultType;
 import gov.hhs.onc.dcdt.dns.RecordType;
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
+import java.io.Serializable;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.StringTokenizer;
@@ -20,7 +21,7 @@ import org.xbill.DNS.Name;
  * @author jasonsmith
  * @author michal.kotelba@esacinc.com
  */
-public class EmailPropertyHandler
+public class EmailPropertyHandler implements Serializable
 {
 	private transient final static Logger LOGGER = Logger.getLogger(EmailPropertyHandler.class);
 

@@ -38,10 +38,11 @@ public class Listener implements ServletContextListener
 	 * @param contextEvent
 	 */
 	public void contextDestroyed(ServletContextEvent contextEvent) {
-		if (directoryWatcher != null) {
+		if (directoryWatcher != null)
+		{
 			directoryWatcher.stopRunning();
-			EMAIL_MSG_LOGGER.info("Directory Watcher Stopped.");
 		}
+		
 		try {
 			ConfigInfo.storeEmailProperties();
 			EMAIL_MSG_LOGGER.info("Server SHUT DOWN");

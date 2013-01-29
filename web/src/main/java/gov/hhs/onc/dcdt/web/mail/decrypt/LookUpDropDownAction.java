@@ -55,6 +55,6 @@ public class LookUpDropDownAction extends Action {
 		
 		LOGGER.debug("Completed setting Config Properties");
 		
-		return null;
+		return mapping.getInputForward();
 	}
 }

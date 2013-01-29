@@ -23,7 +23,7 @@ import org.apache.log4j.Logger;
  * @author joelamy
  *
  */
-public class EmailDirectoryWatcher extends Thread {
+public class EmailDirectoryWatcher implements Runnable {
 
     private volatile Thread blinker;
 	private final Path dir;
@@ -46,12 +46,22 @@ public class EmailDirectoryWatcher extends Thread {
 	// http://docs.oracle.com/javase/1.5.0/docs/guide/misc/threadPrimitiveDeprecation.html
 	public void start() {
         blinker = new Thread(this);
+		blinker.setDaemon(true);
         blinker.start();
 		
 		LOGGER.debug("Directory watcher started.");
     }
 
     public void stopRunning() {
+		try
+		{
+			this.watcher.close();
+		}
+		catch (IOException e)
+		{
+			LOGGER.error(e);
+		}
+		
         Thread tmpBlinker = blinker;
 
         // Setting to null will stop the thread if it's running freely
@@ -60,7 +70,18 @@ public class EmailDirectoryWatcher extends Thread {
         // If not, interrupt
         if (tmpBlinker != null) {
             tmpBlinker.interrupt();
+			
+			try
+			{
+				tmpBlinker.join();
+			}
+			catch (InterruptedException e)
+			{
+				LOGGER.error(e);
+			}
         }
+		
+		LOGGER.debug("Directory watcher stopped.");
     }
 
 	public void run() {
