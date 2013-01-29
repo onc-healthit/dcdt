@@ -1,32 +1,19 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" session="true"%>
-<%@include file="include/headerbootstrap.jsp" %>
-<script type="text/javascript">
-$(document).ready(function ()
-{
-	$("#home").removeClass("active");
-});
-
-$(document).ready(function ()
-{
-	$("#hosting").removeClass("active");
-});
-
-
-$(document).ready(function ()
-{
-	$("#discovery").addClass("active");
-});
-</script>
+<%@page session="true"%>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
+<%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <div class="container">
 	<h2>Please enter your Direct Email and Results Email</h2>
-
 	<div id="content">
-		<html:form action="discovery/email">
-			<div style="color:red">
+		<html:form action="discovery/email" method="post">
+			<c:if test="${pageContext.request.method eq 'POST'}">
 				<html:errors/>
-			</div>
+			</c:if>
 			<div style="padding:16px">
-				Direct Email (i.e. the address where the messages will come from): <br/><html:text name="EmailSetActionForm" property="directEmail"/><br/><br/>
+				Direct Email (i.e. the address where the messages will come from):<br/>
+				<html:text name="EmailSetActionForm" property="directEmail"/><br/><br/>
 				Results Email (NOT a Direct address, but where you can receive regular email): <br/>
 				<html:text name="EmailSetActionForm" property="resultsEmail"/>
 			</div>
@@ -45,6 +32,3 @@ $(document).ready(function ()
 	</div>
 	<html:link action="/discovery">Back to Discovery</html:link>
 </div>
-</body>
-<%@include file="include/footer.jsp" %>
-</html>

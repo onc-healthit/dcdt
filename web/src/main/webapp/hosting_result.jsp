@@ -1,24 +1,11 @@
-<%@include file="include/headerbootstrap.jsp" %>
-<script type="text/javascript">
-$(document).ready(function ()
-{
-	$("#home").removeClass("active");
-});
-
-$(document).ready(function ()
-{
-	$("#discovery").removeClass("active");
-});
-
-
-$(document).ready(function ()
-{
-	$("#hosting").addClass("active");
-});
-</script>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
+<%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <div class="container">
 	<h2>
-		${param.seldropDown} </br>
+		${param.seldropDown}
 	</h2>
 </div>
 <bean:define id="resultVal" name="CertLookUpActionForm" property="result" type="java.lang.String"/>
@@ -87,11 +74,6 @@ $(document).ready(function ()
 	</div>
 </logic:notEmpty>
 <br/>
-
 <div class="container">
 	<html:link action="/hosting">Back to Hosting</html:link>
 </div>
-</body>
-<%@include file="include/footer.jsp" %>
-</html>
-

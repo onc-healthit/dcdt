@@ -36,6 +36,11 @@ a.mail:link
 	font-weight: 600
 }
 
+.error
+{
+	color: rgb(200, 0, 0);
+}
+
 div#version
 {
 	text-align: center;

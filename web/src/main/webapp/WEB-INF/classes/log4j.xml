@@ -64,6 +64,10 @@
 	<!--==================================================
 	= LOGGERS: PROJECT
 	===================================================-->
+	<logger name="gov.hhs.onc.dcdt" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="certDiscoveryApp"/>
+	</logger>
 	<logger name="gov.hhs.onc.dcdt.web.mail" additivity="false">
 		<level value="all"/>
 		<appender-ref ref="emailMessageApp"/>

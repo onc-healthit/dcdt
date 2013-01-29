@@ -30,11 +30,6 @@
 		<servlet-name>default</servlet-name>
 		<url-pattern>*.png</url-pattern>
 	</servlet-mapping>
-	<!--========== SERVLET MAPPING: JSP ==========-->
-	<servlet-mapping>
-		<servlet-name>default</servlet-name>
-		<url-pattern>/error.jsp</url-pattern>
-	</servlet-mapping>
 	
 	<!--====================================================================================================
 	= SERVLET: ACTION

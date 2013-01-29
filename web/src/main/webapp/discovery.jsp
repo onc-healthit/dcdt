@@ -1,63 +1,9 @@
 <%@ page session="true"%>
-<%@include file="include/headerbootstrap.jsp" %>
-<script type="text/javascript" src="static/scripts/downloadPage.js"></script>
-<script type="text/javascript">
-$(document).ready(function ()
-{
-	$("#home").removeClass("active");
-});
-
-$(document).ready(function ()
-{
-	$("#hosting").removeClass("active");
-});
-
-
-$(document).ready(function ()
-{
-	$("#discovery").addClass("active");
-});
-
-function setTextEmail(select_ele)
-{
-	document.getElementById("email").innerHTML = select_ele.options[select_ele.selectedIndex].value;
-	val = select_ele.options[select_ele.selectedIndex].value;
-	
-	if (val == 500) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts500"/>';
-	}
-	if (val == 501) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts501"/>';
-	   }
-	if (val == 502) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts502"/>';
-	   }
-	if (val == 505) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts505"/>';
-	   }
-	if (val == 506) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts506"/>';
-	   }
-	if (val == 507) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts507"/>';
-	}
-	if (val == 515) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts515"/>';
-	   }
-	if (val == 517) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts517"/>';
-	   }
-	if (val == 520) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts520"/>';
-	   }
-	if (val == 511) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts511"/>';
-	   }
-	if (val == 512) {			
-		  document.getElementById("email").innerHTML = '<bean:write name="LookUpDropDownActionForm" property="dts512"/>';
-	   }
-}
-</script>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
+<%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <div class="container">
 	<h2>Discover Testing Tool's Certificate</h2>
 	<br/>
@@ -110,6 +56,3 @@ function setTextEmail(select_ele)
 	<!--  You will receive a response to the results email telling you if you have passed the test or not. You should run all of the tests in order to verify that your system can correctly discover certificates in either DNS CERT records or LDAP servers. (Note: your system MUST NOT 
 		already contain a certificate for the address selected or the test case will not be valid).--><br/>
 </div>
-</body>
-<%@include file="include/footer.jsp" %>
-</html>

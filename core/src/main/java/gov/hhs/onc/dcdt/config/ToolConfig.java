@@ -33,6 +33,7 @@ import org.apache.commons.configuration.beanutils.XMLBeanDeclaration;
 import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.xml.sax.SAXParseException;
 
 public class ToolConfig
@@ -47,6 +48,8 @@ public class ToolConfig
 	protected final static List<BeanFactory> BEAN_FACTORIES = Arrays.asList(new BeanFactory[]
 		{
 		});
+	
+	private final static Logger LOGGER = Logger.getLogger(ToolConfig.class);
 	
 	protected String moduleName;
 	protected ToolConfigEntityResolver configEntityResolver;
@@ -303,7 +306,11 @@ public class ToolConfig
 		
 		xpathBuilder.appendAttribs(attribs);
 		
-		return xpathBuilder.toString();
+		String xpath = xpathBuilder.toString();
+		
+		LOGGER.trace("Bean (class=" + beanClass.getName() + ") XPath: " + xpath);
+		
+		return xpath;
 	}
 	
 	protected static Throwable getRootConfigurationCause(Throwable throwable)

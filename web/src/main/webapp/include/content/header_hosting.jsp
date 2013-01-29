@@ -1,0 +1,1 @@
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/scripts/hosting.js"></script>

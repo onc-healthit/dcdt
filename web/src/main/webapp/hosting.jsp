@@ -1,22 +1,8 @@
-<%@include file="include/headerbootstrap.jsp"%>
-<script type="text/javascript" src="${pageContext.request.contextPath}/static/scripts/dnsPage.js"></script>
-<script type="text/javascript">
-$(document).ready(function ()
-{
-	$("#home").removeClass("active");
-});
-
-$(document).ready(function ()
-{
-	$("#discovery").removeClass("active");
-});
-
-
-$(document).ready(function ()
-{
-	$("#hosting").addClass("active");
-});
-</script>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
+<%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <div class="container">
 	<h2>Hosting - Verify your certificate can be discovered</h2>
 	<p>
@@ -49,10 +35,10 @@ $(document).ready(function ()
 		</tbody>
 	</table>
 	<div id="content">
-		<div style="color:red">
+		<c:if test="${pageContext.request.method eq 'POST'}">
 			<html:errors/>
-		</div>
-		<html:form action="/hosting">
+		</c:if>
+		<html:form action="/hosting" method="post">
 		<div style="padding:20px">
 			<strong><bean:message key="label.common.html.select.testchoose"/> :</strong><br/>
 			<html:select property="testcase" styleId="testcase" onchange="setText(this)">
@@ -87,6 +73,3 @@ $(document).ready(function ()
 		</div>
 	</div>
 </div>
-</body>
-<%@include file="include/footer.jsp" %>
-</html>

@@ -3,6 +3,45 @@
 	"-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN"
 	"http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
 <tiles-definitions>
-	<!-- TEMP: placeholder to prevent Struts errors until web frontend can be refactored -->
-	<definition name="template" path="/template.jsp"/>
+	<definition name="layout" path="/layout.jsp">
+		<put name="header" type="page" value="/include/header.jsp"/>
+		<put name="header_content" value=""/>
+		<put name="title" value=""/>
+		<put name="nav" type="page" value="/include/nav.jsp"/>
+		<put name="nav_active" value=""/>
+		<put name="nav_content" value=""/>
+		<put name="content" value=""/>
+		<put name="footer" type="page" value="/include/footer.jsp"/>
+		<put name="footer_content" value=""/>
+	</definition>
+	
+	<definition name="home" extends="layout">
+		<put name="title" type="string" value="Direct Certificate Discovery Tool - Home"/>
+		<put name="nav_active" type="string" value="home"/>
+		<put name="content" type="page" value="/home.jsp"/>
+	</definition>
+	
+	<definition name="discovery" extends="layout">
+		<put name="header_content" type="page" value="/include/content/header_discovery.jsp"/>
+		<put name="title" type="string" value="Direct Certificate Discovery Tool - Discovery"/>
+		<put name="nav_active" type="string" value="discovery"/>
+		<put name="content" type="page" value="/discovery.jsp"/>
+	</definition>
+	<definition name="discovery_email" extends="layout">
+		<put name="title" type="string" value="Direct Certificate Discovery Tool - Discovery Email"/>
+		<put name="nav_active" type="string" value="discovery"/>
+		<put name="content" type="page" value="/discovery_email.jsp"/>
+	</definition>
+	
+	<definition name="hosting" extends="layout">
+		<put name="header_content" type="page" value="/include/content/header_hosting.jsp"/>
+		<put name="title" type="string" value="Direct Certificate Discovery Tool - Hosting"/>
+		<put name="nav_active" type="string" value="hosting"/>
+		<put name="content" type="page" value="/hosting.jsp"/>
+	</definition>
+	<definition name="hosting_result" extends="layout">
+		<put name="title" type="string" value="Direct Certificate Discovery Tool - Hosting Result"/>
+		<put name="nav_active" type="string" value="hosting"/>
+		<put name="content" type="page" value="/hosting_result.jsp"/>
+	</definition>
 </tiles-definitions>
