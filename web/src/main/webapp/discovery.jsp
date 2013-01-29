@@ -31,19 +31,13 @@
 		<br/><br/>
 	</div>
 	Choose a Direct Address:
-	<select name="selectEmail" id="selectEmail" size="1" onchange="setText(this);setTextEmail(this)">
+	<select name="selectEmail" id="selectEmail" size="1" onchange="setText(this); setTextEmail(this)">
 		<option value="">-- No Test Case Selected --</option>
-		<option value="500">DTS 500 - Address-bound DNS certificate discovery</option>
-		<option value="501">DTS 501 - Domain-bound DNS discovery</option>
-		<option value="502">DTS 502 - Discover DNS Certificate over 512 bytes</option>
-		<option value="505">DTS 505 - Address-bound LDAP certificate discovery</option>
-		<option value="506">DTS 506 - Discover LDAP certificate based on SRV record priority value</option>
-		<option value="507">DTS 507 - Discover LDAP certificate - one instance unavailable</option>
-		<option value="515">DTS 515 - Domain-bound LDAP certificate discovery</option>
-		<option value="517">DTS 517 - Discover LDAP certificate - one instance returns invalid certificate</option>
-		<option value="520">DTS 520 - No valid Certificate found in DNS CERT or LDAP instance</option>
-		<option value="511">DTS 511 - No certificate found in DNS CERT or LDAP instance</option>
-		<option value="512">DTS 512 - No certificate found in DNS CERT and no SRV records</option>
+		<c:forEach var="discoveryTestcaseMail" varStatus="discoveryTestcasesStatus" items="${sessionScope.DISCOVERY_TESTCASES.keySet()}">
+			<c:set var="discoveryTestcase" value="${sessionScope.DISCOVERY_TESTCASES[discoveryTestcaseMail]}"/>
+			
+			<option value="${discoveryTestcase.id}">${discoveryTestcase.name} - ${discoveryTestcase.comments.shortDescription}</option>
+		</c:forEach>
 	</select>
 	<!--  <input type="button"  id="copyAddress" value="Copy Address" class="btn-primary" onclick="copyAddress()" /> -->
 	</p>

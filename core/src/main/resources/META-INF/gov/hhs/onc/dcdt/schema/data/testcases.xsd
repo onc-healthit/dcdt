@@ -31,7 +31,7 @@
 	<xs:complexType name="discoveryTestcaseResult">
 		<xs:annotation>
 			<xs:documentation>
-				A testcase result.
+				A Discovery testcase result.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
@@ -47,12 +47,32 @@
 	<xs:complexType name="discoveryTestcaseResults">
 		<xs:annotation>
 			<xs:documentation>
-				A list of testcase results.
+				A list of Discovery testcase results.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="result" type="discoveryTestcaseResult" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="discoveryTestcaseComments">
+		<xs:annotation>
+			<xs:documentation>
+				A set of Discovery testcase comments.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="config:bean">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseComments"/>
+				<xs:attribute name="shortDescription" type="config:attr"/>
+				<xs:attribute name="description" type="config:attr"/>
+				<xs:attribute name="additionalInfo" type="config:attr" use="optional"/>
+				<xs:attribute name="targetCert" type="config:attr"/>
+				<xs:attribute name="backgroundCerts" type="config:attr"/>
+				<xs:attribute name="rtm" type="config:attr"/>
+				<xs:attribute name="specifications" type="config:attr"/>
+			</xs:restriction>
+		</xs:complexContent>
 	</xs:complexType>
 	
 	<xs:complexType name="discoveryTestcase">
@@ -64,6 +84,7 @@
 		<xs:complexContent>
 			<xs:restriction base="config:bean">
 				<xs:sequence>
+					<xs:element name="comments" type="discoveryTestcaseComments" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="resultsPass" type="discoveryTestcaseResults" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="resultsFail" type="discoveryTestcaseResults" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="resultsOptional" type="discoveryTestcaseResults" minOccurs="0" maxOccurs="1"/>

@@ -3,13 +3,13 @@ package gov.hhs.onc.dcdt.web.testcases.discovery;
 import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.config.ToolConfigException;
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class DiscoveryTestcasesContainer
 {
-	private final static Map<String, DiscoveryTestcase> TESTCASES = new HashMap<>();
+	private final static Map<String, DiscoveryTestcase> TESTCASES = new TreeMap<>();
 	
 	public static void initTestcases() throws ToolConfigException
 	{

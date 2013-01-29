@@ -15,6 +15,7 @@ public class DiscoveryTestcase extends ToolBean
 {
 	private String name;
 	private String mailProperty;
+	private DiscoveryTestcaseComments comments = new DiscoveryTestcaseComments();
 	private Map<TestcaseResultStatus, ArrayList<DiscoveryTestcaseResult>> results = new HashMap<>();
 	
 	public void setResultsPass(ArrayList<DiscoveryTestcaseResult> results)
@@ -123,7 +124,17 @@ public class DiscoveryTestcase extends ToolBean
 		return (this.results = (this.hasResults() ? this.results : 
 			new HashMap<TestcaseResultStatus, ArrayList<DiscoveryTestcaseResult>>()));
 	}
-	
+
+	public DiscoveryTestcaseComments getComments()
+	{
+		return this.comments;
+	}
+
+	public void setComments(DiscoveryTestcaseComments comments)
+	{
+		this.comments = comments;
+	}
+
 	public boolean hasMailProperty()
 	{
 		return !StringUtils.isBlank(this.mailProperty);

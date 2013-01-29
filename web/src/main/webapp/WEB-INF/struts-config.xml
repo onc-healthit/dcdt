@@ -6,7 +6,6 @@
 	<form-beans>
 		<form-bean name="CertLookUpActionForm" type="gov.hhs.onc.dcdt.web.cert.lookup.CertLookUpActionForm"/>
 		<form-bean name="EmailSetActionForm" type="gov.hhs.onc.dcdt.web.mail.property.EmailSetActionForm"/>
-		<form-bean name="LookUpDropDownActionForm" type="gov.hhs.onc.dcdt.web.mail.decrypt.LookUpDropDownActionForm"/>	
 	</form-beans>
 	
 	<global-exceptions>
@@ -34,12 +33,7 @@
 			validate="true" 
 			type="gov.hhs.onc.dcdt.web.cert.lookup.CertLookUpAction"/>
 		
-		<action path="/discovery" 
-			input="discovery" 
-			name="LookUpDropDownActionForm" 
-			scope="request" 
-			validate="true" 
-			type="gov.hhs.onc.dcdt.web.mail.decrypt.LookUpDropDownAction"/>
+		<action path="/discovery" forward="discovery"/>
 		
 		<action path="/discovery/email" 
 			input="discovery_email" 
