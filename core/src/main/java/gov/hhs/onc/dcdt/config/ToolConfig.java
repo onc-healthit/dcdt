@@ -19,11 +19,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.apache.commons.configuration.CombinedConfiguration;
+import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.ConfigurationRuntimeException;
 import org.apache.commons.configuration.ConfigurationUtils;
 import org.apache.commons.configuration.DefaultConfigurationBuilder;
 import org.apache.commons.configuration.HierarchicalConfiguration;
+import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.configuration.XMLConfiguration;
 import org.apache.commons.configuration.beanutils.BeanFactory;
 import org.apache.commons.configuration.beanutils.BeanHelper;
 import org.apache.commons.configuration.beanutils.XMLBeanDeclaration;
@@ -34,15 +37,6 @@ import org.xml.sax.SAXParseException;
 
 public class ToolConfig
 {
-	public final static String XPATH_DELIM = "/";
-	public final static String XPATH_ATTRIB_DELIM = ", ";
-	public final static String XPATH_ATTRIB_EQUALS = "=";
-	public final static String XPATH_ATTRIB_NOT_EQUALS = "!=";
-	public final static String XPATH_ATTRIB_KEY_PREFIX = "@";
-	public final static String XPATH_ATTRIB_VALUE_QUOTE = "\"";
-	public final static String XPATH_SEARCH_PREFIX = "[";
-	public final static String XPATH_SEARCH_SUFFIX = "]";
-	
 	public final static String BEAN_ID_ATTRIB_KEY = "id";
 	
 	protected final static String CONFIG_FILE_RESOURCE_NAME = "config.xml";
@@ -68,6 +62,31 @@ public class ToolConfig
 	public ToolConfig(String moduleName)
 	{
 		this.moduleName = moduleName;
+	}
+	
+	public static CombinedConfiguration getChildConfig(CombinedConfiguration configSection, String childConfigName)
+	{
+		return getChildConfig(CombinedConfiguration.class, configSection, childConfigName);
+	}
+	
+	public static PropertiesConfiguration getChildPropsConfig(CombinedConfiguration configSection, String childConfigName)
+	{
+		return getChildConfig(PropertiesConfiguration.class, configSection, childConfigName);
+	}
+	
+	public static XMLConfiguration getChildXmlConfig(CombinedConfiguration configSection, String childConfigName)
+	{
+		return getChildConfig(XMLConfiguration.class, configSection, childConfigName);
+	}
+	
+	public static CombinedConfiguration getAdditionalConfigSection(CombinedConfiguration config)
+	{
+		return getConfigSection(config, DefaultConfigurationBuilder.ADDITIONAL_NAME);
+	}
+	
+	public static CombinedConfiguration getOverrideConfigSection(CombinedConfiguration config)
+	{
+		return config;
 	}
 	
 	//<editor-fold desc="typed bean getters">
@@ -206,6 +225,26 @@ public class ToolConfig
 		return beans;
 	}
 	
+	public PropertiesConfiguration getChildPropsConfig(String childConfigName)
+	{
+		return getChildPropsConfig(getOverrideConfigSection(this.config), childConfigName);
+	}
+	
+	public XMLConfiguration getChildXmlConfig(String childConfigName)
+	{
+		return getChildXmlConfig(getOverrideConfigSection(this.config), childConfigName);
+	}
+	
+	public CombinedConfiguration getAdditionalConfigSection()
+	{
+		return getAdditionalConfigSection(this.config);
+	}
+	
+	public CombinedConfiguration getOverrideConfigSection()
+	{
+		return getOverrideConfigSection(this.config);
+	}
+	
 	public void initConfig() throws ToolConfigException
 	{
 		try
@@ -254,40 +293,15 @@ public class ToolConfig
 	
 	protected static <T extends ToolBean> String getBeanXpath(Class<T> beanClass, BeanAttrib ... attribs)
 	{
-		StringBuilder xpathBuilder = new StringBuilder();
+		XpathBuilder xpathBuilder = new XpathBuilder();
 		ConfigBean configBeanAnno = (ConfigBean)beanClass.getAnnotation(ConfigBean.class);
-		String configBeanValue;
 		
-		if ((configBeanAnno != null) && !StringUtils.isBlank(configBeanValue = configBeanAnno.value()))
+		if (configBeanAnno != null)
 		{
-			xpathBuilder.append(configBeanValue);
+			xpathBuilder.appendNodes(configBeanAnno.value());
 		}
 		
-		if (!ArrayUtils.isEmpty(attribs))
-		{
-			xpathBuilder.append(XPATH_SEARCH_PREFIX);
-			
-			BeanAttrib attrib;
-			
-			for (int a = 0; a < attribs.length; a++)
-			{
-				if (a > 0)
-				{
-					xpathBuilder.append(XPATH_ATTRIB_DELIM);
-				}
-				
-				attrib = attribs[a];
-				
-				xpathBuilder.append(XPATH_ATTRIB_KEY_PREFIX);
-				xpathBuilder.append(attrib.getKey());
-				xpathBuilder.append(attrib.isInverse() ? XPATH_ATTRIB_NOT_EQUALS : XPATH_ATTRIB_EQUALS);
-				xpathBuilder.append(XPATH_ATTRIB_VALUE_QUOTE);
-				xpathBuilder.append(attrib.getValue());
-				xpathBuilder.append(XPATH_ATTRIB_VALUE_QUOTE);
-			}
-			
-			xpathBuilder.append(XPATH_SEARCH_SUFFIX);
-		}
+		xpathBuilder.appendAttribs(attribs);
 		
 		return xpathBuilder.toString();
 	}
@@ -297,6 +311,16 @@ public class ToolConfig
 		return (!(throwable instanceof ConfigurationException) && !(throwable instanceof ConfigurationRuntimeException)) || 
 			(throwable.getCause() == null) || (throwable.getCause() == throwable) ? throwable : 
 			getRootConfigurationCause(throwable.getCause());
+	}
+	
+	protected static CombinedConfiguration getConfigSection(CombinedConfiguration config, String sectionName)
+	{
+		return (CombinedConfiguration)config.getConfiguration(sectionName);
+	}
+	
+	protected static <T extends Configuration> T getChildConfig(Class<T> childConfigClass, CombinedConfiguration configSection, String childConfigName)
+	{
+		return childConfigClass.cast(configSection.getConfiguration(childConfigName));
 	}
 	
 	public CombinedConfiguration getConfig()

@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.utils.config.generator;
 
+import gov.hhs.onc.dcdt.config.ToolConfig;
 import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
-import gov.hhs.onc.dcdt.utils.config.UtilityConfig;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -11,7 +11,6 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.commons.configuration.CombinedConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.DefaultConfigurationBuilder;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -43,12 +42,12 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 	{
 		super.execute(args);
 		
-		CombinedConfiguration configAdditional = (CombinedConfiguration)this.config.getConfig().getConfiguration(DefaultConfigurationBuilder.ADDITIONAL_NAME);
-		PropertiesConfiguration baseConfigProps = (PropertiesConfiguration)configAdditional.getConfiguration(BASE_CONFIG_PROPS_NAME), 
-			baseEmailProps = (PropertiesConfiguration)configAdditional.getConfiguration(BASE_EMAIL_PROPS_NAME);
+		CombinedConfiguration configAdditional = this.config.getAdditionalConfigSection();
+		PropertiesConfiguration baseConfigProps = ToolConfig.getChildPropsConfig(configAdditional, BASE_CONFIG_PROPS_NAME), 
+			baseEmailProps = ToolConfig.getChildPropsConfig(configAdditional, BASE_EMAIL_PROPS_NAME);
 
-		File outputFile = new File(this.getConfig().getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + ConfigGenCliOption.OUTPUT_FILE.getAttribName()));
-		String outputFileArchivePath = this.getConfig().getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME);
+		File outputFile = new File(this.getConfig().getUtilString(ConfigGenCliOption.OUTPUT_FILE));
+		String outputFileArchivePath = this.getConfig().getUtilString(OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME);
 		
 		if (!outputFile.exists())
 		{

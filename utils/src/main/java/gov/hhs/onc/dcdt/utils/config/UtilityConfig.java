@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.utils.config;
 
 import gov.hhs.onc.dcdt.config.ToolConfig;
 import gov.hhs.onc.dcdt.config.ToolConfigException;
+import gov.hhs.onc.dcdt.config.XpathBuilder;
 import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.utils.cli.CliOption;
 import org.apache.commons.configuration.SubnodeConfiguration;
@@ -40,7 +41,7 @@ public class UtilityConfig<T extends Enum<T> & CliOption> extends ToolConfig
 	
 	public String getUtilString(String key, Object defaultValue)
 	{
-		return this.getUtilConfig().getString(XPATH_ATTRIB_KEY_PREFIX + key, ObjectUtils.toString(defaultValue, null));
+		return this.getUtilConfig().getString(XpathBuilder.buildAttribNames(key), ObjectUtils.toString(defaultValue, null));
 	}
 	
 	public void setUtilString(T option)
@@ -60,7 +61,7 @@ public class UtilityConfig<T extends Enum<T> & CliOption> extends ToolConfig
 	
 	public void setUtilString(String key, Object value, Object defaultValue)
 	{
-		this.getUtilConfig().setProperty(XPATH_ATTRIB_KEY_PREFIX + key, ObjectUtils.defaultIfNull(value, defaultValue));
+		this.getUtilConfig().setProperty(XpathBuilder.buildAttribNames(key), ObjectUtils.defaultIfNull(value, defaultValue));
 	}
 	
 	public SubnodeConfiguration getUtilConfig()

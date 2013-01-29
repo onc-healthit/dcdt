@@ -47,6 +47,8 @@ public class EmailDirectoryWatcher extends Thread {
 	public void start() {
         blinker = new Thread(this);
         blinker.start();
+		
+		LOGGER.debug("Directory watcher started.");
     }
 
     public void stopRunning() {

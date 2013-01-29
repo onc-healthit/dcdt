@@ -727,6 +727,7 @@
 							<inherited>true</inherited>
 							<configuration>
 								<files>
+									<file>${project.parent.basedir}/../pom.properties</file>
 									<file>pom.properties</file>
 								</files>
 							</configuration>

@@ -10,6 +10,11 @@ public class BeanAttrib implements Entry<String, Object>
 	
 	public BeanAttrib()
 	{
+		this(null);
+	}
+	
+	public BeanAttrib(String key)
+	{
 		this(null, null);
 	}
 	

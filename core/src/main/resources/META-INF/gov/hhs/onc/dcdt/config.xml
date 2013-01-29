@@ -9,6 +9,14 @@
 	</header>
 	
 	<override>
+		<!-- System configuration -->
+		<system/>
+		
+		<!-- Version configuration -->
+		<properties fileName="META-INF/gov/hhs/onc/dcdt/version.properties" throwExceptionOnMissing="true" config-name="version">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</properties>
+		
 		<!-- Data configuration -->
 		<xml fileName="META-INF/gov/hhs/onc/dcdt/data/domains.xml" throwExceptionOnMissing="true" config-name="domains" config-at="domains" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>

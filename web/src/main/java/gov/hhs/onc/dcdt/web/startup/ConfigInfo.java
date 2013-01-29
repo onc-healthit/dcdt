@@ -1,8 +1,11 @@
 package gov.hhs.onc.dcdt.web.startup;
 
+import gov.hhs.onc.dcdt.config.ToolConfig;
 import gov.hhs.onc.dcdt.config.ToolConfigException;
 import gov.hhs.onc.dcdt.web.config.WebConfig;
+import org.apache.commons.configuration.CombinedConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.configuration.ConfigurationRuntimeException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.log4j.Logger;
 
@@ -15,59 +18,34 @@ import org.apache.log4j.Logger;
  */
 public class ConfigInfo
 {
+	private final static String CONFIG_WEB_NAME = "config-web";
+	private final static String CONFIG_NAME = "config";
+	private final static String EMAIL_CONFIG_NAME = "email";
+	private final static String VERSION_CONFIG_NAME = "version";
+	
 	private final static Logger LOGGER = Logger.getLogger(ConfigInfo.class);
 	
 	private static WebConfig config;
-	private static PropertiesConfiguration configProperties;
-	private static PropertiesConfiguration emailProperties;
-	private static PropertiesConfiguration versionProperties;
 
-	public static WebConfig getConfig()
+	public synchronized static WebConfig getConfig()
 	{
 		return config;
 	}
 	
-	public static void loadConfig() throws ToolConfigException
+	public synchronized static void loadConfig() throws ToolConfigException
 	{
 		config = new WebConfig();
 		config.initConfig();
 	}
-	
-	/**
-	 * Loads version properties from local file.
-	 */
-	public static void loadVersionProperties(String fileLocation)
-		throws ConfigurationException
-	{
-		versionProperties = new PropertiesConfiguration(fileLocation);
-	}
-
-	/**
-	 * Loads email properties from local file.
-	 */
-	public static void loadEmailProperties(String fileLocation)
-		throws ConfigurationException
-	{
-		emailProperties = new PropertiesConfiguration(fileLocation);
-	}
-
-	/**
-	 * Loads application properties from local file.
-	 */
-	public static void loadConfigProperties(String fileLocation)
-		throws ConfigurationException
-	{
-		configProperties = new PropertiesConfiguration(fileLocation);
-	}
 
 	/**
 	 * Returns a version property for the given key value.
 	 *
 	 * @return version property value
 	 */
-	public static synchronized String getVersionProperty(String key)
+	public synchronized static String getVersionProperty(String propKey)
 	{
-		return getVersionProperty(key, false);
+		return getVersionProperty(propKey, false);
 	}
 	
 	/**
@@ -76,9 +54,9 @@ public class ConfigInfo
 	 * 
 	 * @return version property value
 	 */
-	public static synchronized String getVersionProperty(String key, boolean allowMissing)
+	public synchronized static String getVersionProperty(String propKey, boolean allowMissing)
 	{
-		return getProperty(versionProperties, key, allowMissing);
+		return getProperty(getVersionProperties(), propKey, allowMissing);
 	}
 
 	/**
@@ -86,9 +64,9 @@ public class ConfigInfo
 	 *
 	 * @return non-Direct email address
 	 */
-	public static synchronized String getEmailProperty(String key)
+	public synchronized static String getEmailProperty(String propKey)
 	{
-		return getEmailProperty(key, false);
+		return getEmailProperty(propKey, false);
 	}
 	
 	/**
@@ -97,9 +75,9 @@ public class ConfigInfo
 	 * 
 	 * @return non-Direct email address
 	 */
-	public static synchronized String getEmailProperty(String key, boolean allowMissing)
+	public synchronized static String getEmailProperty(String propKey, boolean allowMissing)
 	{
-		return getProperty(emailProperties, key, allowMissing);
+		return getProperty(getEmailProperties(), propKey, allowMissing);
 	}
 
 	/**
@@ -107,9 +85,9 @@ public class ConfigInfo
 	 * 
 	 * @return application property value
 	 */
-	public static synchronized String getConfigProperty(String key)
+	public synchronized static String getConfigProperty(String propKey)
 	{
-		return getConfigProperty(key, false);
+		return getConfigProperty(propKey, false);
 	}
 	
 	/**
@@ -118,28 +96,30 @@ public class ConfigInfo
 	 * 
 	 * @return application property value
 	 */
-	public static synchronized String getConfigProperty(String key, boolean allowMissing)
+	public synchronized static String getConfigProperty(String propKey, boolean allowMissing)
 	{
-		return getProperty(configProperties, key, allowMissing);
+		return getProperty(getConfigProperties(), propKey, allowMissing);
 	}
 
 	/**
 	 * Adds or updates an email property value with the Direct
 	 * and non-Direct email addresses.  Saves the property file.
 	 */
-	public static synchronized void setEmailProperty(String key, String value)
+	public synchronized static void setEmailProperty(String propKey, String propValue)
 	{
-		if (emailProperties.getProperty(key) == null)
+		PropertiesConfiguration emailProps = getEmailProperties();
+		
+		if (emailProps.getProperty(propKey) == null)
 		{
-			emailProperties.addProperty(key, value);
+			emailProps.addProperty(propKey, propValue);
 		}
 		else
 		{
-			emailProperties.setProperty(key, value);
+			emailProps.setProperty(propKey, propValue);
 		}
 		try
 		{
-			emailProperties.save();
+			emailProps.save();
 		}
 		catch (ConfigurationException e)
 		{
@@ -150,22 +130,21 @@ public class ConfigInfo
 	/**
 	 * Stores the email properties file.
 	 */
-	public static void storeEmailProperties(String fileLocation)
-		throws ConfigurationException
+	public static void storeEmailProperties() throws ConfigurationException
 	{
-		emailProperties.save();
+		getEmailProperties().save();
 	}
 	
 	/**
 	 * Gets the property value for a given properties configuration and key.
 	 *
 	 * @param props properties configuration to search in
-	 * @param key key to get value for
+	 * @param propKey key to get value for
 	 * @return property value
 	 */
-	private static synchronized String getProperty(PropertiesConfiguration props, String key)
+	private synchronized static String getProperty(PropertiesConfiguration props, String propKey)
 	{
-		return getProperty(props, key, false);
+		return getProperty(props, propKey, false);
 	}
 	
 	/**
@@ -173,22 +152,55 @@ public class ConfigInfo
 	 * Optionally allows for non-existent properties.
 	 *
 	 * @param props properties configuration to search in
-	 * @param key key to get value for
+	 * @param propKey key to get value for
 	 * @param allowMissing whether to allow for non-existent properties
 	 * @return property value
 	 */
-	private static synchronized String getProperty(PropertiesConfiguration props, String key, boolean allowMissing)
+	private synchronized static String getProperty(PropertiesConfiguration props, String propKey, boolean allowMissing)
 	{
-		String value = props.getString(key);
+		String value = null;
 		
-		if (!allowMissing && (value == null))
+		try
 		{
-			LOGGER.fatal("Properties file (" + props.getFileName() + ") is missing required property: " + 
-				key + ".");
+			value = props.getString(propKey);
 		}
-
-		// Currently doesn't shut down, so if missing property at this point,
-		// there may be side effect errors.
+		catch (ConfigurationRuntimeException e)
+		{
+			if (!allowMissing)
+			{
+				LOGGER.fatal("Property (key=" + propKey + ") is required in file: " + props.getPath(), e);
+			}
+			else
+			{
+				LOGGER.trace("Property (key=" + propKey + ") is missing in file: " + props.getPath());
+			}
+		}
+		
 		return value;
+	}
+	
+	private synchronized static PropertiesConfiguration getConfigProperties()
+	{
+		return getProperties(ToolConfig.getAdditionalConfigSection(getWebConfig()), CONFIG_NAME);
+	}
+	
+	private synchronized static PropertiesConfiguration getEmailProperties()
+	{
+		return getProperties(ToolConfig.getAdditionalConfigSection(getWebConfig()), EMAIL_CONFIG_NAME);
+	}
+	
+	private synchronized static PropertiesConfiguration getVersionProperties()
+	{
+		return getProperties(config.getOverrideConfigSection(), VERSION_CONFIG_NAME);
+	}
+	
+	private synchronized static PropertiesConfiguration getProperties(CombinedConfiguration configSection, String propsName)
+	{
+		return ToolConfig.getChildPropsConfig(configSection, propsName);
+	}
+	
+	private synchronized static CombinedConfiguration getWebConfig()
+	{
+		return ToolConfig.getChildConfig(config.getAdditionalConfigSection(), CONFIG_WEB_NAME);
 	}
 }

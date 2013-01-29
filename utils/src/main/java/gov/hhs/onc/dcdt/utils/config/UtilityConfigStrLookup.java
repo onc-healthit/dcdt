@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.utils.config;
 
+import gov.hhs.onc.dcdt.config.XpathBuilder;
 import gov.hhs.onc.dcdt.utils.Utility;
 import org.apache.commons.lang.text.StrLookup;
 
@@ -18,7 +19,7 @@ public class UtilityConfigStrLookup extends StrLookup
 	public String lookup(String key)
 	{
 		return !key.equals(NAME_ATTRIB_KEY) ? 
-			this.util.getConfig().getUtilConfig().getString(UtilityConfig.XPATH_ATTRIB_KEY_PREFIX + key) : 
+			this.util.getConfig().getUtilConfig().getString(XpathBuilder.buildAttribNames(key)) : 
 			this.util.getName();
 	}
 }

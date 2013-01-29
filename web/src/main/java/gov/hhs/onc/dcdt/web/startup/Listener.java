@@ -25,10 +25,8 @@ public class Listener implements ServletContextListener
 	private final static Logger EMAIL_MSG_LOGGER = Logger.getLogger(EMAIL_MSG_LOGGER_NAME);
 	private final static Logger LOGGER = Logger.getLogger(Listener.class);
 	
-	private static final String CONFIG_HOME_NAME = "dcdt.config.dir";
-	private static final String CONFIG_PROP_FILE = "config.properties";
-	private static final String EMAIL_PROP_FILE = "email.properties";
-	private static final String VERSION_PROP_FILE = "META-INF/gov/hhs/onc/dcdt/web/version.properties";
+	private static final String CONFIG_DIR_KEY = "dcdt.config.dir";
+	private static final String CONTEXT_DIR_KEY = "dcdt.context.dir";
 	
 	private static String configHome;
 	
@@ -45,8 +43,7 @@ public class Listener implements ServletContextListener
 			EMAIL_MSG_LOGGER.info("Directory Watcher Stopped.");
 		}
 		try {
-			ConfigInfo.storeEmailProperties(configHome
-				+ File.separatorChar + EMAIL_PROP_FILE);
+			ConfigInfo.storeEmailProperties();
 			EMAIL_MSG_LOGGER.info("Server SHUT DOWN");
 			CERT_DISCOVERY_LOGGER.info("Server SHUT DOWN");
 		} catch (ConfigurationException e) {
@@ -62,45 +59,55 @@ public class Listener implements ServletContextListener
 	public void contextInitialized(ServletContextEvent contextEvent) {
 		setLogging(contextEvent);
 		
-		configHome = System.getProperty(CONFIG_HOME_NAME);
+		configHome = System.getProperty(CONFIG_DIR_KEY);
 		
 		if(configHome == null)
 		{
-			System.getenv(CONFIG_HOME_NAME);
+			configHome = System.getenv(CONFIG_DIR_KEY);
 		}
 		
-		if (configHome == null)
+		try
 		{
-			LOGGER.error("Configuration directory variable not set: " + CONFIG_HOME_NAME);
-		}
-		
-		if (!Paths.get(configHome).toFile().exists())
-		{
-			LOGGER.error("Configuration directory does not exist: " + configHome);
-		}
-		
-		try {
+			if (configHome == null)
+			{
+				throw new ToolConfigException("Configuration directory variable not set: " + CONFIG_DIR_KEY);
+			}
+			
+			File configHomeDir = Paths.get(configHome).toFile();
+			
+			if (!configHomeDir.exists())
+			{
+				throw new ToolConfigException("Configuration directory does not exist: " + configHomeDir);
+			}
+			
+			if (!configHomeDir.isDirectory())
+			{
+				throw new ToolConfigException("Configuration directory path is not a directory: " + configHomeDir);
+			}
+			
+			System.setProperty(CONFIG_DIR_KEY, configHome);
+			System.setProperty(CONTEXT_DIR_KEY, contextEvent.getServletContext().getRealPath("/"));
+			
 			// Load configuration
 			ConfigInfo.loadConfig();
 			
-			// Load configuration properties
-			ConfigInfo.loadConfigProperties(configHome + File.separatorChar + CONFIG_PROP_FILE);
-			ConfigInfo.loadEmailProperties(configHome + File.separatorChar + EMAIL_PROP_FILE);
-			ConfigInfo.loadVersionProperties(contextEvent.getServletContext().getRealPath("/" + VERSION_PROP_FILE));
-			
 			// Initialize Discovery testcases
 			DiscoveryTestcasesContainer.initTestcases();
-			
+		}
+		catch (ToolConfigException e)
+		{
+			LOGGER.error("Unable to load configuration.", e);
+		}
+		
+		try
+		{
 			// Kick off the thread to watch the directory where emails will arrive
-			directoryWatcher =
-					new EmailDirectoryWatcher(ConfigInfo.getConfigProperty("EmlLocation"));
+			directoryWatcher = new EmailDirectoryWatcher(ConfigInfo.getConfigProperty("EmlLocation"));
 			directoryWatcher.start();
-			
-			LOGGER.info("Directory Watcher Started.");
-		} catch (ConfigurationException | ToolConfigException e) {
-			LOGGER.error("Error Loading Properties files.", e);
-		} catch (IOException e) {
-			LOGGER.error("IO Error - Loading config files.", e);
+		}
+		catch (IOException e)
+		{
+			LOGGER.error("Unable to start mail directory watcher.", e);
 		}
 	}
 

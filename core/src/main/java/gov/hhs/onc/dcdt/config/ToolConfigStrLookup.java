@@ -17,6 +17,6 @@ public class ToolConfigStrLookup extends StrLookup
 	public String lookup(String key)
 	{
 		return key.equals(MODULE_NAME_KEY) ? toolConfig.getModuleName() : 
-			this.toolConfig.getConfig().getString(ToolConfig.XPATH_ATTRIB_KEY_PREFIX + key);
+			this.toolConfig.getConfig().getString(XpathBuilder.buildAttribNames(key));
 	}
 }

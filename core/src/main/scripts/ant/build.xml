@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="direct-cert-discovery-tool-core">
+	<description>Ant project for the Direct Certificate Discovery Tool (DCDT) core.</description>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.plugin.classpath.value}"/>
+	
+	<target name="get-project-all-version" description="Gets the aggregator project version."
+		unless="target.get-project-all-version.done">
+		<xmlproperty file="../pom.xml" keepRoot="false" prefix="project.all"/>
+		<if>
+			<not><available file="target/properties-tmp"/></not>
+			<then>
+				<mkdir dir="target/properties-tmp"/>
+			</then>
+		</if>
+		<echoproperties destfile="target/properties-tmp/pom-all.properties">
+			<propertyset>
+				<propertyref prefix="project.all."/>
+			</propertyset>
+		</echoproperties>
+		<property name="target.get-project-all-version.done" value="true"/>
+	</target>
+</project>
