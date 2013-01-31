@@ -43,13 +43,11 @@
 			<strong><bean:message key="label.common.html.select.testchoose"/> :</strong><br/>
 			<html:select property="testcase" styleId="testcase" onchange="setText(this)">
 				<html:option value="">-- No Test Case Selected --</html:option>
-				<html:option value="1">DTS 550 - DNS Address-bound Certificate Search</html:option>
-				<html:option value="2">DTS 551 - DNS Domain-bound Certificate Search</html:option>
-				<!-- <html:option value="3">DTS 573 - DNS Address-bound Certificate Search - Case Mismatch </html:option> -->
-				<html:option value="4">DTS 556 - LDAP Address-bound Certificate Search</html:option>
-				<!-- <html:option value="5">DTS 557 - LDAP Address-bound Certificate Search - Case Mismatch</html:option> -->
-				<html:option value="6">DTS 570 - LDAP Domain-bound Certificate Search</html:option>
-				<html:option value="7">DTS 577 - LDAP - No Results Test </html:option>
+				<c:forEach var="hostingTestcaseId" varStatus="hostingTestcasesStatus" items="${sessionScope.HOSTING_TESTCASES.keySet()}">
+					<c:set var="hostingTestcase" value="${sessionScope.HOSTING_TESTCASES[hostingTestcaseId]}"/>
+					
+					<html:option value="${hostingTestcaseId}">${hostingTestcase.name} - ${hostingTestcase.comments.shortDescription}</html:option>
+				</c:forEach>
 			</html:select>
 			<br/><br/>
 

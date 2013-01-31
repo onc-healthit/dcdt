@@ -52,7 +52,10 @@
 		</xml>
 		
 		<!--Testcases data configuration -->
-		<xml fileName="META-INF/gov/hhs/onc/dcdt/data/testcases/discovery.xml" throwExceptionOnMissing="true" config-name="testcases-discovery" config-at="testcases" schemaValidation="true">
+		<xml fileName="META-INF/gov/hhs/onc/dcdt/data/testcases/hosting.xml" delimiterParsingDisabled="true" throwExceptionOnMissing="true" config-name="testcases-hosting" config-at="testcases" schemaValidation="true">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+		<xml fileName="META-INF/gov/hhs/onc/dcdt/data/testcases/discovery.xml" delimiterParsingDisabled="true" throwExceptionOnMissing="true" config-name="testcases-discovery" config-at="testcases" schemaValidation="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</xml>
 	</override>

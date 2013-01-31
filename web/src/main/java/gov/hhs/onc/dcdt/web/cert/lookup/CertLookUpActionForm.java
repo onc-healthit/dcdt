@@ -15,6 +15,7 @@ public class CertLookUpActionForm extends ActionForm{
 	private String domainAddr;
 	private String certResult;
 	private String result;
+	private String resultMsg;
 	
 	public String getTestcase() {
 		return testcase;
@@ -44,7 +45,17 @@ public class CertLookUpActionForm extends ActionForm{
 	public void setResult(String result) {
 		this.result = result;
 	}
-	
+
+	public String getResultMsg()
+	{
+		return this.resultMsg;
+	}
+
+	public void setResultMsg(String resultMsg)
+	{
+		this.resultMsg = resultMsg;
+	}
+
 	@Override
 	public ActionErrors validate(ActionMapping mapping,
 	  HttpServletRequest request) {

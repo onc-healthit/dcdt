@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.web.cert.lookup;
 
+import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Vector;
@@ -14,9 +15,10 @@ import org.xbill.DNS.SRVRecord;
 public class CertificateInfo implements Serializable{
 
 	private String origAddr;
-	private int testCase;
+	private String testCase;
 	private String domLdap;
 	private String domain;
+	private TestcaseResultStatus status;
 	private String result;
 	private String certOutput;
 	private Boolean isDomainTest;
@@ -28,21 +30,10 @@ public class CertificateInfo implements Serializable{
 	
 	public CertificateInfo() {
 		super();
-		domLdap = null;
-		testCase = -1;
-		domain = null;
-		result = null;
-		certOutput = null;
-		isDomainTest = null;
-		isLDAPTest = null;
-		dnsRecord = null;
-		ldapRecord = null;
-		sortedSRVs = null;
-		origAddr = null;
 	}
 	
 	
-	public CertificateInfo(int testCase, String domain) {
+	public CertificateInfo(String testCase, String domain) {
 		super();
 		this.origAddr = domain;
 		this.testCase = testCase;
@@ -74,10 +65,10 @@ public class CertificateInfo implements Serializable{
 		this.sortedSRVs = sortedSRVs;
 	}
 
-	public int getTestCase() {
+	public String getTestCase() {
 		return testCase;
 	}
-	public void setTestCase(int testCase) {
+	public void setTestCase(String testCase) {
 		this.testCase = testCase;
 	}
 	public String getDomain() {
@@ -86,6 +77,17 @@ public class CertificateInfo implements Serializable{
 	public void setDomain(String domain) {
 		this.domain = domain;
 	}
+
+	public TestcaseResultStatus getStatus()
+	{
+		return this.status;
+	}
+
+	public void setStatus(TestcaseResultStatus status)
+	{
+		this.status = status;
+	}
+
 	public String getResult() {
 		return result;
 	}

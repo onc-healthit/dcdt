@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.web.startup;
 
 import gov.hhs.onc.dcdt.config.ToolConfigException;
-import gov.hhs.onc.dcdt.web.testcases.discovery.DiscoveryTestcasesContainer;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -93,7 +92,7 @@ public class Listener implements ServletContextListener
 			ConfigInfo.loadConfig();
 			
 			// Initialize Discovery testcases
-			DiscoveryTestcasesContainer.initTestcases();
+			ConfigInfo.initTestcases();
 		}
 		catch (ToolConfigException e)
 		{

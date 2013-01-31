@@ -268,6 +268,7 @@
 	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
 		id="DTS_511"
 		name="DTS 511"
+		negative="true"
 		mailProperty="DTS_511_EMAIL">
 		
 		<!--========== COMMENTS ==========-->
@@ -286,6 +287,7 @@
 	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
 		id="DTS_512"
 		name="DTS 512"
+		negative="true"
 		mailProperty="DTS_512_EMAIL">
 		
 		<!--========== COMMENTS ==========-->
@@ -394,6 +396,7 @@
 	<discoveryTestcase config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"
 		id="DTS_520"
 		name="DTS 520"
+		negative="true"
 		mailProperty="DTS_520_EMAIL">
 		
 		<!--========== COMMENTS ==========-->

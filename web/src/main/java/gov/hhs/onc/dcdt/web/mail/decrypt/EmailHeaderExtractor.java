@@ -2,19 +2,15 @@ package gov.hhs.onc.dcdt.web.mail.decrypt;
 
 import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
-
-import gov.hhs.onc.dcdt.web.testcases.discovery.DiscoveryTestcasesContainer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Properties;
-
 import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.Session;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-
 import org.apache.log4j.Logger;
 
 
@@ -45,7 +41,7 @@ public class EmailHeaderExtractor implements DecryptDirectHandler {
 		LOGGER.info("Inbound Email - FROM - " + getFrom()
 			+ " - TO - " + getTo());
 
-		DiscoveryTestcase testcase = DiscoveryTestcasesContainer.getTestcases().get(this.getTo());
+		DiscoveryTestcase testcase = ConfigInfo.getDiscoveryTestcases().get(this.getTo());
 		if (testcase == null) {
 			LOGGER.error("Inbound Email: To address " + getTo()
 					+ " not associated with a testcase.");

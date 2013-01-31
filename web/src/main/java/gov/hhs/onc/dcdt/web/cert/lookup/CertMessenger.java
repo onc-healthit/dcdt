@@ -1,8 +1,6 @@
 package gov.hhs.onc.dcdt.web.cert.lookup;
 
 import java.io.IOException;
-import java.net.UnknownHostException;
-
 import org.xbill.DNS.DClass;
 import org.xbill.DNS.Message;
 import org.xbill.DNS.Name;
@@ -50,7 +48,7 @@ public class CertMessenger implements CertLookUpFactory{
 				certInfo.setDnsRecord(sendMessage(outbound));
 			}
 		} catch (TextParseException e) {
-			throw new CertLookUpException(e.getMessage(), e.getCause());
+			throw new CertLookUpException(e);
 		}
 		
 		return certInfo;
@@ -67,10 +65,8 @@ public class CertMessenger implements CertLookUpFactory{
 				return answers;
 			else throw new CertLookUpException("Fail no answer.", new Throwable());
 		
-		} catch (UnknownHostException e) {
-			throw new CertLookUpException(e.getMessage(),e.getCause());
 		} catch (IOException e) {
-			throw new CertLookUpException(e.getMessage(),e.getCause());
+			throw new CertLookUpException(e);
 		}
 			
 	}
@@ -85,10 +81,9 @@ public class CertMessenger implements CertLookUpFactory{
 			Record[] answers = dnsInterface.queryForSrvViaLookup(query); 
 			if(answers != null){
 				return answers;
-			}else throw new CertLookUpException("Fail: null answer.", new Throwable());
+			}else throw new CertLookUpException("Fail: null answer.");
         }catch (TextParseException e) {
-				// TODO Auto-generated catch block
-				throw new CertLookUpException(e.getMessage(),e.getCause());
+				throw new CertLookUpException(e);
 		}
 	}
 

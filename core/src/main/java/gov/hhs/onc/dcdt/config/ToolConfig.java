@@ -14,6 +14,7 @@ import gov.hhs.onc.dcdt.beans.dns.SoaRecord;
 import gov.hhs.onc.dcdt.beans.dns.SrvRecord;
 import gov.hhs.onc.dcdt.beans.entry.Entry;
 import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.beans.testcases.hosting.HostingTestcase;
 import gov.hhs.onc.dcdt.reflect.resources.ResourcePathUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -191,6 +192,16 @@ public class ToolConfig
 	public SrvRecord getSrvRecord(BeanAttrib ... attribs)
 	{
 		return this.getBean(SrvRecord.class, attribs);
+	}
+	
+	public List<HostingTestcase> getHostingTestcases(BeanAttrib ... attribs)
+	{
+		return this.getBeans(HostingTestcase.class, attribs);
+	}
+	
+	public HostingTestcase getHostingTestcase(BeanAttrib ... attribs)
+	{
+		return this.getBean(HostingTestcase.class, attribs);
 	}
 	
 	public List<DiscoveryTestcase> getDiscoveryTestcases(BeanAttrib ... attribs)

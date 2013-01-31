@@ -30,6 +30,11 @@ public enum TestcaseResultStatus
 		return null;
 	}
 
+	public boolean isPass()
+	{
+		return this.isPass(false);
+	}
+	
 	public boolean isPass(boolean includeOpt)
 	{
 		return (this == PASS) || (includeOpt && this.isOptional());

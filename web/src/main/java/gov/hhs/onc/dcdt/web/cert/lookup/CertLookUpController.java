@@ -18,7 +18,7 @@ public class CertLookUpController {
 	public CertLookUpController(CertificateInfo certificateInfo){
 		super();
 		this.certificateInfo = certificateInfo;
-		nodes = new LinkedList<CertLookUpFactory>();
+		nodes = new LinkedList<>();
 	}
 	
 	public void delegate(){
@@ -50,31 +50,23 @@ public class CertLookUpController {
 	
 	private void setTestTypes() throws CertLookUpException{
 		switch(certificateInfo.getTestCase()){
-			case(1):
+			case("DTS_550"):
 				certificateInfo.setIsDomainTest(false);
 				certificateInfo.setIsLDAPTest(false);
 				break;
-			case(2):
+			case("DTS_551"):
 				certificateInfo.setIsDomainTest(true);
 				certificateInfo.setIsLDAPTest(false);
 				break;
-			case(3):
-				certificateInfo.setIsDomainTest(false);
-				certificateInfo.setIsLDAPTest(false);
-				break;
-			case(4):
+			case("DTS_556"):
 				certificateInfo.setIsDomainTest(false);
 				certificateInfo.setIsLDAPTest(true);
 				break;
-			case(5):
-				certificateInfo.setIsDomainTest(false);
-				certificateInfo.setIsLDAPTest(true);
-				break;
-			case(6):
+			case("DTS_570"):
 				certificateInfo.setIsDomainTest(true);
 				certificateInfo.setIsLDAPTest(true);
 				break;
-			case(7):
+			case("DTS_577"):
 				certificateInfo.setIsDomainTest(false);
 				certificateInfo.setIsLDAPTest(true);
 				break;

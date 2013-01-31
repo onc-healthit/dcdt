@@ -1,7 +1,7 @@
-package gov.hhs.onc.dcdt.web.mail.decrypt;
+package gov.hhs.onc.dcdt.mail.decrypt;
 
-import gov.hhs.onc.dcdt.web.mail.MailCryptographyException;
-import gov.hhs.onc.dcdt.web.mail.MailCryptographyUtils;
+import gov.hhs.onc.dcdt.mail.MailCryptographyException;
+import gov.hhs.onc.dcdt.mail.MailCryptographyUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;

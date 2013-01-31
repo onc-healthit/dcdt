@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.web.cert.lookup.ldap;
 
+import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
 import gov.hhs.onc.dcdt.web.cert.lookup.CertLookUpException;
 import gov.hhs.onc.dcdt.web.cert.lookup.CertLookUpFactory;
 import gov.hhs.onc.dcdt.web.cert.lookup.CertificateInfo;
@@ -64,21 +65,28 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			
 			if(userCert != null){
 				
-				 if (certInfo.getTestCase() == 7) {
-					 
+				 if (certInfo.getTestCase().equals("DTS_577")) {
+					 certInfo.setStatus(TestcaseResultStatus.FAIL);
 					 certInfo.setResult("Fail: Certificate found at LDAP for " + certInfo.getOrigAddr());
 					 
 				 }else {
-					 
+					 certInfo.setStatus(TestcaseResultStatus.PASS);
 			         certInfo.setResult("Success: Certificate found at LDAP for " + certInfo.getOrigAddr());
 				 }
 				 
 			    this.success = true;
 				String certResult = getCertResult(userCert);
-				LOGGER.debug("Service Record: " + srvRec.toString());
+				
+				LOGGER.debug("Service Record: " + srvRec);
+				
 				if(certResult == null)
+				{
 					certInfo.setCertOutput("Problem Loading Certificate");
-				else certInfo.setCertOutput(certResult);
+				}
+				else
+				{
+					certInfo.setCertOutput(certResult);
+				}
 				
 				break;
 			}else {
@@ -88,21 +96,22 @@ public class LdapCertLookUp implements CertLookUpFactory{
 			}
 		}
 		
-		if(success == false) {
-			
-			  if (certInfo.getTestCase() == 7) {
-					  
-
-				    throw new CertLookUpException("Success: Unable to find Certificate for " + certInfo.getOrigAddr()
-					    	+ " at LDAP.");
-					  
-				  }
+		if(!success)
+		{
+			if (certInfo.getTestCase().equals("DTS_577")) {
+				certInfo.setStatus(TestcaseResultStatus.PASS);
 				
-			
-				throw new CertLookUpException("Fail: Unable to find Certificate for " + certInfo.getOrigAddr()
-						+ " at LDAP.");
-				
+				throw new CertLookUpException("Success: Unable to find Certificate for " + certInfo.getOrigAddr()
+					+ " at LDAP.");
 			}
+			else
+			{
+				certInfo.setStatus(TestcaseResultStatus.FAIL);
+				
+				throw new CertLookUpException("Fail: Unable to find Certificate for " + certInfo.getOrigAddr()
+					+ " at LDAP.");
+			}
+		}
 		
 		
 		return certInfo;

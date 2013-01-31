@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.web.mail;
+package gov.hhs.onc.dcdt.mail;
 
 import java.io.IOException;
 import java.io.InputStream;

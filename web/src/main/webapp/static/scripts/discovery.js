@@ -23,11 +23,6 @@ function setDropText(select_ele)
 
 }
 
-function getDiscoveryTestcaseHtml(label, value)
-{
-	return value ? '<span style="font-weight: bold">' + label + '</span>:<br/>' + value + '<br/>' : "";
-}
-
 function setText(select_ele)
 {
 	document.getElementById("comments").innerHTML = select_ele.options[select_ele.selectedIndex].value;
@@ -40,11 +35,11 @@ function setText(select_ele)
 		var discoveryTestcaseComments = discoveryTestcase.comments;
 		
 		document.getElementById("comments").innerHTML = 
-			getDiscoveryTestcaseHtml("Purpose/Description", discoveryTestcaseComments.description) + 
-			getDiscoveryTestcaseHtml("Additional Info", discoveryTestcaseComments.additionalInfo) + 
-			getDiscoveryTestcaseHtml("Target Certificate", discoveryTestcaseComments.targetCert) + 
-			getDiscoveryTestcaseHtml("Background Certificates", discoveryTestcaseComments.backgroundCerts) + 
-			getDiscoveryTestcaseHtml("RTM", discoveryTestcaseComments.rtm) + 
-			getDiscoveryTestcaseHtml("Underlying Specification Reference", discoveryTestcaseComments.specifications);
+			getTestcaseCommentsEntryHtml("Purpose/Description", discoveryTestcaseComments.description) + 
+			getTestcaseCommentsEntryHtml("Additional Info", discoveryTestcaseComments.additionalInfo) + 
+			getTestcaseCommentsEntryHtml("Target Certificate", discoveryTestcaseComments.targetCert) + 
+			getTestcaseCommentsEntryHtml("Background Certificates", discoveryTestcaseComments.backgroundCerts) + 
+			getTestcaseCommentsEntryHtml("RTM", discoveryTestcaseComments.rtm) + 
+			getTestcaseCommentsEntryHtml("Underlying Specification Reference", discoveryTestcaseComments.specifications);
 	}
 }

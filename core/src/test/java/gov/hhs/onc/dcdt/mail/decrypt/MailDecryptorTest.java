@@ -1,6 +1,6 @@
-package gov.hhs.onc.dcdt.web.mail.decrypt;
+package gov.hhs.onc.dcdt.mail.decrypt;
 
-import gov.hhs.onc.dcdt.web.mail.MailCryptographyException;
+import gov.hhs.onc.dcdt.mail.MailCryptographyException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +20,7 @@ public class MailDecryptorTest
 	@Test(dependsOnMethods = { "testDecryptMail" }, expectedExceptions = { MailCryptographyException.class })
 	public void testDecryptBadMail() throws MailCryptographyException
 	{
-		MimeMessage msg = MailDecryptor.decryptMail(badMailInStream, new ByteArrayInputStream(keyData), 
+		MimeMessage msg = MailDecryptor.decryptMail(badMailInStream, new ByteArrayInputStream(keyData),
 			new ByteArrayInputStream(certData));
 		
 		Assert.assertNull(msg, "Decrypted bad mail.");

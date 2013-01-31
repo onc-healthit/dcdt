@@ -1,6 +1,6 @@
-package gov.hhs.onc.dcdt.web.mail.encrypt;
+package gov.hhs.onc.dcdt.mail.encrypt;
 
-import gov.hhs.onc.dcdt.web.mail.MailCryptographyException;
+import gov.hhs.onc.dcdt.mail.MailCryptographyException;
 
 public class MailEncryptionException extends MailCryptographyException
 {

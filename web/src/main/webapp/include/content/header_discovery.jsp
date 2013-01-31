@@ -1,5 +1,5 @@
-<%@page import="gov.hhs.onc.dcdt.web.testcases.discovery.DiscoveryTestcasesContainer"%>
 <%@page import="org.apache.commons.collections.EnumerationUtils"%>
+<%@ page import="gov.hhs.onc.dcdt.web.startup.ConfigInfo" %>
 <%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
 <%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
@@ -8,9 +8,10 @@
 <%
 	if (!EnumerationUtils.toList(session.getAttributeNames()).contains("DISCOVERY_TESTCASES"))
 	{
-		session.setAttribute("DISCOVERY_TESTCASES", DiscoveryTestcasesContainer.getTestcases());
+		session.setAttribute("DISCOVERY_TESTCASES", ConfigInfo.getDiscoveryTestcases());
 	}
 %>
+<script type="text/javascript" src="${pageContext.request.contextPath}/static/scripts/testcases.js"></script>
 <script type="text/javascript" src="${pageContext.request.contextPath}/static/scripts/discovery.js"></script>
 <script type="text/javascript">
 $(document).ready(function () {

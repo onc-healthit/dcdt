@@ -28,6 +28,74 @@
 		<xs:union memberTypes="testcaseResultStatusName config:attr"/>
 	</xs:simpleType>
 	
+	<xs:complexType name="testcaseResult" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				A testcase result.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="config:bean">
+				<xs:attribute name="statusName" type="testcaseResultStatusNameAttr"/>
+				<xs:attribute name="msg" type="config:attr"/>
+				<xs:anyAttribute/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:simpleType name="hostingTestcaseLocationName">
+		<xs:annotation>
+			<xs:documentation>
+				A Hosting testcase location name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value="^(dns|ldap)$"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="hostingTestcaseLocationNameAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a Hosting testcase location name or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="hostingTestcaseLocationName config:attr"/>
+	</xs:simpleType>
+	
+	<xs:simpleType name="hostingTestcaseBindingName">
+		<xs:annotation>
+			<xs:documentation>
+				A Hosting testcase binding name.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:restriction base="xs:token">
+			<xs:pattern value="^(address|domain|both)$"/>
+		</xs:restriction>
+	</xs:simpleType>
+	
+	<xs:simpleType name="hostingTestcaseBindingNameAttr">
+		<xs:annotation>
+			<xs:documentation>
+				An attribute value containing a Hosting testcase binding name or a variable.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:union memberTypes="hostingTestcaseBindingName config:attr"/>
+	</xs:simpleType>
+	
+	<xs:complexType name="hostingTestcaseResult">
+		<xs:annotation>
+			<xs:documentation>
+				A Hosting testcase result.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="testcaseResult">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.testcases.hosting.HostingTestcaseResult"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
 	<xs:complexType name="discoveryTestcaseResult">
 		<xs:annotation>
 			<xs:documentation>
@@ -35,13 +103,22 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:restriction base="config:bean">
+			<xs:restriction base="testcaseResult">
 				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"/>
 				<xs:attribute name="entryProperty" type="config:attr"/>
-				<xs:attribute name="statusName" type="testcaseResultStatusNameAttr"/>
-				<xs:attribute name="msg" type="config:attr"/>
 			</xs:restriction>
 		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="hostingTestcaseResults">
+		<xs:annotation>
+			<xs:documentation>
+				A list of Hosting testcase results.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="result" type="hostingTestcaseResult" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
 	</xs:complexType>
 	
 	<xs:complexType name="discoveryTestcaseResults">
@@ -55,6 +132,37 @@
 		</xs:sequence>
 	</xs:complexType>
 	
+	<xs:complexType name="testcaseComments" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				A set of testcase comments.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="config:bean">
+				<xs:attribute name="shortDescription" type="config:attr"/>
+				<xs:attribute name="description" type="config:attr"/>
+				<xs:attribute name="rtm" type="config:attr"/>
+				<xs:attribute name="specifications" type="config:attr"/>
+				<xs:anyAttribute/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="hostingTestcaseComments">
+		<xs:annotation>
+			<xs:documentation>
+				A set of Hosting testcase comments.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="testcaseComments">
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.testcases.hosting.HostingTestcaseComments"/>
+				<xs:attribute name="instructions" type="config:attr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
 	<xs:complexType name="discoveryTestcaseComments">
 		<xs:annotation>
 			<xs:documentation>
@@ -62,15 +170,46 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:restriction base="config:bean">
+			<xs:restriction base="testcaseComments">
 				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseComments"/>
-				<xs:attribute name="shortDescription" type="config:attr"/>
-				<xs:attribute name="description" type="config:attr"/>
 				<xs:attribute name="additionalInfo" type="config:attr" use="optional"/>
 				<xs:attribute name="targetCert" type="config:attr"/>
 				<xs:attribute name="backgroundCerts" type="config:attr"/>
-				<xs:attribute name="rtm" type="config:attr"/>
-				<xs:attribute name="specifications" type="config:attr"/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="testcase" abstract="true">
+		<xs:annotation>
+			<xs:documentation>
+				A testcase.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="config:bean">
+				<xs:attribute name="name" type="config:attr"/>
+				<xs:attribute name="negative" type="config:booleanAttr" use="optional"/>
+				<xs:anyAttribute/>
+			</xs:restriction>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="hostingTestcase">
+		<xs:annotation>
+			<xs:documentation>
+				A Hosting testcase.
+			</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:restriction base="testcase">
+				<xs:sequence>
+					<xs:element name="comments" type="hostingTestcaseComments" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="resultsPass" type="hostingTestcaseResults" minOccurs="0" maxOccurs="1"/>
+					<xs:element name="resultsFail" type="hostingTestcaseResults" minOccurs="0" maxOccurs="1"/>
+				</xs:sequence>
+				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.testcases.hosting.HostingTestcase"/>
+				<xs:attribute name="locationName" type="hostingTestcaseLocationNameAttr"/>
+				<xs:attribute name="bindingName" type="hostingTestcaseBindingNameAttr"/>
 			</xs:restriction>
 		</xs:complexContent>
 	</xs:complexType>
@@ -82,7 +221,7 @@
 			</xs:documentation>
 		</xs:annotation>
 		<xs:complexContent>
-			<xs:restriction base="config:bean">
+			<xs:restriction base="testcase">
 				<xs:sequence>
 					<xs:element name="comments" type="discoveryTestcaseComments" minOccurs="0" maxOccurs="1"/>
 					<xs:element name="resultsPass" type="discoveryTestcaseResults" minOccurs="0" maxOccurs="1"/>
@@ -90,7 +229,6 @@
 					<xs:element name="resultsOptional" type="discoveryTestcaseResults" minOccurs="0" maxOccurs="1"/>
 				</xs:sequence>
 				<xs:attribute name="config-class" type="config:beanClassNameAttr" fixed="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase"/>
-				<xs:attribute name="name" type="config:attr"/>
 				<xs:attribute name="mailProperty" type="config:attr"/>
 			</xs:restriction>
 		</xs:complexContent>
@@ -99,11 +237,12 @@
 	<xs:complexType name="testcases">
 		<xs:annotation>
 			<xs:documentation>
-				Entries parent.
+				Testcases parent.
 			</xs:documentation>
 		</xs:annotation>
 		<xs:sequence>
 			<xs:element name="discoveryTestcase" type="discoveryTestcase" minOccurs="0" maxOccurs="unbounded"/>
+			<xs:element name="hostingTestcase" type="hostingTestcase" minOccurs="0" maxOccurs="unbounded"/>
 		</xs:sequence>
 	</xs:complexType>
 	
@@ -113,8 +252,12 @@
 				Testcases parent element.
 			</xs:documentation>
 		</xs:annotation>
-		<xs:unique name="testcaseId">
-			<xs:selector xpath="testcases/testcase"/>
+		<xs:unique name="hostingTestcaseId">
+			<xs:selector xpath="testcases/hostingTestcase"/>
+			<xs:field xpath="@id"/>
+		</xs:unique>
+		<xs:unique name="discoveryTestcaseId">
+			<xs:selector xpath="testcases/discoveryTestcase"/>
 			<xs:field xpath="@id"/>
 		</xs:unique>
 	</xs:element>

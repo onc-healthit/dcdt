@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.web.mail.decrypt;
+package gov.hhs.onc.dcdt.mail.decrypt;
 
 import java.io.IOException;
 import java.math.BigInteger;

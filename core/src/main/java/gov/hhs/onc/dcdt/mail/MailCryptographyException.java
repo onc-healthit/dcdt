@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.web.mail;
+package gov.hhs.onc.dcdt.mail;
 
 public class MailCryptographyException extends Exception
 {

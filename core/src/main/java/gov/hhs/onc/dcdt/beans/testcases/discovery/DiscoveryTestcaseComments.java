@@ -1,18 +1,14 @@
 package gov.hhs.onc.dcdt.beans.testcases.discovery;
 
 import gov.hhs.onc.dcdt.annotations.ConfigBean;
-import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.beans.testcases.TestcaseComments;
 
 @ConfigBean("testcases/discoveryTestcase/comments")
-public class DiscoveryTestcaseComments extends ToolBean
+public class DiscoveryTestcaseComments extends TestcaseComments
 {
-	private String shortDescription;
-	private String description;
 	private String additionalInfo;
 	private String targetCert;
 	private String backgroundCerts;
-	private String rtm;
-	private String specifications;
 
 	public String getAdditionalInfo()
 	{
@@ -32,46 +28,6 @@ public class DiscoveryTestcaseComments extends ToolBean
 	public void setBackgroundCerts(String backgroundCerts)
 	{
 		this.backgroundCerts = backgroundCerts;
-	}
-
-	public String getDescription()
-	{
-		return this.description;
-	}
-
-	public void setDescription(String description)
-	{
-		this.description = description;
-	}
-
-	public String getRtm()
-	{
-		return this.rtm;
-	}
-
-	public void setRtm(String rtm)
-	{
-		this.rtm = rtm;
-	}
-
-	public String getShortDescription()
-	{
-		return this.shortDescription;
-	}
-
-	public void setShortDescription(String shortDescription)
-	{
-		this.shortDescription = shortDescription;
-	}
-
-	public String getSpecifications()
-	{
-		return this.specifications;
-	}
-
-	public void setSpecifications(String specifications)
-	{
-		this.specifications = specifications;
 	}
 
 	public String getTargetCert()
