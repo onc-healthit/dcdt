@@ -38,14 +38,6 @@ public class CertificateInfo implements Serializable{
 		this.origAddr = domain;
 		this.testCase = testCase;
 		this.domain = domain;
-		this.isDomainTest = null;
-		this.isLDAPTest = null;
-		result = null;
-		certOutput = null;
-		dnsRecord = null;
-		ldapRecord = null;
-		domLdap = null;
-		sortedSRVs = null;
 	}
 
 	

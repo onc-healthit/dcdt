@@ -62,8 +62,13 @@ public class CertMessenger implements CertLookUpFactory{
 			Message response = dnsInterface.sendQueryViaResolver(query);
 			Record[] answers = response.getSectionArray(Section.ANSWER);
 			if(answers.length > 0)
+			{
 				return answers;
-			else throw new CertLookUpException("Fail no answer.", new Throwable());
+			}
+			else
+			{
+				throw new CertLookUpException("Fail no answer.", new Throwable());
+			}
 		
 		} catch (IOException e) {
 			throw new CertLookUpException(e);

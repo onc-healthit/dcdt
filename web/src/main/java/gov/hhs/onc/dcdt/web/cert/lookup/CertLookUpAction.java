@@ -1,11 +1,11 @@
 package gov.hhs.onc.dcdt.web.cert.lookup;
 
+import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
 import gov.hhs.onc.dcdt.beans.testcases.hosting.HostingTestcase;
 import gov.hhs.onc.dcdt.beans.testcases.hosting.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -25,6 +25,7 @@ public class CertLookUpAction extends Action
 			testcase.getResultsPass().get(0) : null;
 
 		CertificateInfo certificateInfo = new CertificateInfo(testcaseId, domainName);
+		TestcaseResultStatus testcaseResultStatus = certificateInfo.getStatus();
 
 		CertLookUpController cluController = new CertLookUpController(certificateInfo);
 
@@ -33,7 +34,7 @@ public class CertLookUpAction extends Action
 		clActionForm.setResult(certificateInfo.getResult());
 		clActionForm.setCertResult(certificateInfo.getCertOutput());
 
-		if (certificateInfo.getStatus().isPass() && (testcaseResultPass != null))
+		if ((testcaseResultStatus != null) && testcaseResultStatus.isPass() && (testcaseResultPass != null))
 		{
 			clActionForm.setResultMsg(testcaseResultPass.getMsg());
 		}

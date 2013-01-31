@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.web.cert.lookup;
 
+import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
 import gov.hhs.onc.dcdt.web.cert.lookup.dns.CertDecrypt;
 import gov.hhs.onc.dcdt.web.cert.lookup.dns.CertDnsValidator;
 import gov.hhs.onc.dcdt.web.cert.lookup.ldap.LdapCertLookUp;
 import gov.hhs.onc.dcdt.web.cert.lookup.ldap.LdapRecordSorter;
-
 import java.util.LinkedList;
 import java.util.Queue;
 import org.apache.log4j.Logger;
@@ -44,6 +44,11 @@ public class CertLookUpController {
 		} catch (CertLookUpException e) {
 			this.certificateInfo.setResult(e.getMessage());
 			this.certificateInfo.setCertOutput("");
+			
+			if (this.certificateInfo.getStatus() == null)
+			{
+				this.certificateInfo.setStatus(TestcaseResultStatus.FAIL);
+			}
 		}
 		return this.certificateInfo;
 	}

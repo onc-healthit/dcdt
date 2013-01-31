@@ -391,6 +391,10 @@
 				<scope>test</scope>
 				<exclusions>
 					<exclusion>
+						<groupId>bouncycastle</groupId>
+						<artifactId>bcprov-jdk15</artifactId>
+					</exclusion>
+					<exclusion>
 						<groupId>org.apache.directory.api</groupId>
 						<artifactId>api-ldap-schema-data</artifactId>
 					</exclusion>
