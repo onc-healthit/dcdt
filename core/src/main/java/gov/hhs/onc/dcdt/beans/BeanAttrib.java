@@ -15,7 +15,7 @@ public class BeanAttrib implements Entry<String, Object>
 	
 	public BeanAttrib(String key)
 	{
-		this(null, null);
+		this(key, null);
 	}
 	
 	public BeanAttrib(String key, Object value)
