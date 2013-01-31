@@ -31,11 +31,6 @@
 							</a>
 						</li>
 						<li>
-							<a tabindex="-1" target="_blank" href="http://www.youtube.com/watch?v=ceDlKvpvdnE&feature=youtu.be">
-								Video Demo
-							</a>
-						</li>
-						<li>
 							<a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/Frequently_Asked_Questions">
 								FAQ
 							</a>
