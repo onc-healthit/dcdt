@@ -18,7 +18,9 @@ import gov.hhs.onc.dcdt.beans.testcases.hosting.HostingTestcase;
 import gov.hhs.onc.dcdt.reflect.resources.ResourcePathUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.configuration.CombinedConfiguration;
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
@@ -39,6 +41,10 @@ import org.xml.sax.SAXParseException;
 
 public class ToolConfig
 {
+	public final static String PARENT_MODULE_NAME = "parent";
+	public final static String ALL_MODULE_NAME = "all";
+	public final static String CORE_MODULE_NAME = "core";
+	
 	public final static String BEAN_ID_ATTRIB_KEY = "id";
 	
 	protected final static String CONFIG_FILE_RESOURCE_NAME = "config.xml";
@@ -57,6 +63,7 @@ public class ToolConfig
 	protected DefaultConfigurationBuilder configBuilder;
 	protected CombinedConfiguration config;
 	protected ToolConfigListener configListener;
+	protected Map<String, ToolVersion> moduleVersions = new LinkedHashMap<>();
 	
 	public ToolConfig()
 	{
@@ -259,6 +266,11 @@ public class ToolConfig
 		return getOverrideConfigSection(this.config);
 	}
 	
+	public ToolVersion getModuleVersion()
+	{
+		return this.moduleVersions.get(this.moduleName);
+	}
+	
 	public void initConfig() throws ToolConfigException
 	{
 		try
@@ -283,6 +295,8 @@ public class ToolConfig
 			this.config.addConfigurationListener(this.configListener);
 			this.config.addErrorListener(this.configListener);
 			ConfigurationUtils.enableRuntimeExceptions(this.config);
+			
+			this.initModuleVersions();
 		}
 		catch (ConfigurationException | ConfigurationRuntimeException e)
 		{
@@ -305,10 +319,22 @@ public class ToolConfig
 		}
 	}
 	
+	protected void initModuleVersions()
+	{
+		this.moduleVersions.put(PARENT_MODULE_NAME, new ToolVersion(this, PARENT_MODULE_NAME));
+		this.moduleVersions.put(ALL_MODULE_NAME, new ToolVersion(this, ALL_MODULE_NAME));
+		this.moduleVersions.put(CORE_MODULE_NAME, new ToolVersion(this, CORE_MODULE_NAME));
+		
+		if (!StringUtils.isBlank(this.moduleName))
+		{
+			this.moduleVersions.put(this.moduleName, new ToolVersion(this, this.moduleName));
+		}
+	}
+	
 	protected static <T extends ToolBean> String getBeanXpath(Class<T> beanClass, BeanAttrib ... attribs)
 	{
 		XpathBuilder xpathBuilder = new XpathBuilder();
-		ConfigBean configBeanAnno = (ConfigBean)beanClass.getAnnotation(ConfigBean.class);
+		ConfigBean configBeanAnno = beanClass.getAnnotation(ConfigBean.class);
 		
 		if (configBeanAnno != null)
 		{
@@ -361,8 +387,18 @@ public class ToolConfig
 		return this.configListener;
 	}
 
+	public boolean hasModuleName()
+	{
+		return !StringUtils.isBlank(this.moduleName);
+	}
+	
 	public String getModuleName()
 	{
 		return this.moduleName;
+	}
+
+	public Map<String, ToolVersion> getModuleVersions()
+	{
+		return this.moduleVersions;
 	}
 }

@@ -45,6 +45,8 @@
 		</action>
 		
 		<action path="/download/anchor" type="gov.hhs.onc.dcdt.web.download.DownloadAnchorAction"/>
+		
+		<action path="/version" forward="version"/>
 	</action-mappings>
 	
 	<controller processorClass="org.apache.struts.tiles.TilesRequestProcessor"/>

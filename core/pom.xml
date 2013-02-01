@@ -176,7 +176,7 @@
 								<property name="maven.compile.classpath.value" refid="maven.compile.classpath"/>
 								<property name="maven.plugin.classpath.value" refid="maven.plugin.classpath"/>
 								<property name="maven.runtime.classpath.value" refid="maven.runtime.classpath"/>
-								<ant antfile="${project.build.scriptSourceDirectory}/ant/build.xml" target="get-project-all-version" inheritRefs="true"/>
+								<ant antfile="${project.build.scriptSourceDirectory}/ant/build.xml" target="get-project-all-properties" inheritRefs="true"/>
 							</target>
 						</configuration>
 					</execution>

@@ -44,4 +44,9 @@
 		<put name="nav_active" type="string" value="hosting"/>
 		<put name="content" type="page" value="/hosting_result.jsp"/>
 	</definition>
+	
+	<definition name="version" extends="layout">
+		<put name="title" type="string" value="Direct Certificate Discovery Tool - Version"/>
+		<put name="content" type="page" value="/version.jsp"/>
+	</definition>
 </tiles-definitions>

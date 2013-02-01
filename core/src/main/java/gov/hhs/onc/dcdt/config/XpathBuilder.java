@@ -19,6 +19,11 @@ public class XpathBuilder implements Builder<String>
 	
 	private StrBuilder builder = new StrBuilder();
 	
+	public static String buildNodeNames(String ... nodeNames)
+	{
+		return new XpathBuilder().appendNodes(nodeNames).build();
+	}
+	
 	public static String buildAttribNames(String ... attribNames)
 	{
 		BeanAttrib[] attribs = new BeanAttrib[attribNames.length];

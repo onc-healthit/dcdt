@@ -4,20 +4,31 @@
 	
 	<taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.plugin.classpath.value}"/>
 	
-	<target name="get-project-all-version" description="Gets the aggregator project version."
-		unless="target.get-project-all-version.done">
+	<propertyset id="project.all.properties">
+		<propertyref name="project.all.groupId"/>
+		<propertyref name="project.all.artifactId"/>
+		<propertyref name="project.all.version"/>
+		<propertyref name="project.all.name"/>
+		<propertyref name="project.all.description"/>
+	</propertyset>
+	
+	<target name="get-project-all-properties" description="Gets aggregator project properties."
+		unless="target.get-project-all-properties.done">
 		<xmlproperty file="../pom.xml" keepRoot="false" prefix="project.all"/>
+		<property name="project.build.propertiesOutputDirectory" value="${project.build.directory}/properties-tmp"/>
+		<property name="project.build.propertiesOutputFile" value="${project.build.propertiesOutputDirectory}/pom-all.properties"/>
+		
 		<if>
-			<not><available file="target/properties-tmp"/></not>
+			<not><available file="${project.build.propertiesOutputDirectory}"/></not>
 			<then>
-				<mkdir dir="target/properties-tmp"/>
+				<mkdir dir="${project.build.propertiesOutputDirectory}"/>
 			</then>
 		</if>
-		<echoproperties destfile="target/properties-tmp/pom-all.properties">
-			<propertyset>
-				<propertyref prefix="project.all."/>
-			</propertyset>
+		
+		<echoproperties destfile="${project.build.propertiesOutputFile}">
+			<propertyset refid="project.all.properties"/>
 		</echoproperties>
-		<property name="target.get-project-all-version.done" value="true"/>
+		
+		<property name="target.get-project-all-properties.done" value="true"/>
 	</target>
 </project>

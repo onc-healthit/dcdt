@@ -5,13 +5,13 @@ import gov.hhs.onc.dcdt.config.ToolConfigException;
 
 public class ToolTestConfig extends ToolConfig
 {
-	protected final static String MODULE_NAME = "test";
+	public final static String TEST_MODULE_NAME = "test";
 	
 	protected static ToolTestConfig instance;
 	
 	protected ToolTestConfig()
 	{
-		super(MODULE_NAME);
+		super(TEST_MODULE_NAME);
 	}
 	
 	public static ToolTestConfig getInstance() throws ToolConfigException

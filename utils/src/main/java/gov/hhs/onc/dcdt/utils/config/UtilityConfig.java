@@ -11,14 +11,15 @@ import org.apache.commons.lang3.ObjectUtils;
 
 public class UtilityConfig<T extends Enum<T> & CliOption> extends ToolConfig
 {
-	private final static String MODULE_NAME = "utils";
+	public final static String UTILS_MODULE_NAME = "utils";
+	
 	private final static String UTIL_LOOKUP_PREFIX = "util";
 	
 	private Utility<T> util;
 	
 	public UtilityConfig(Utility<T> util)
 	{
-		super(MODULE_NAME);
+		super(UTILS_MODULE_NAME);
 		
 		this.util = util;
 	}
@@ -67,12 +68,6 @@ public class UtilityConfig<T extends Enum<T> & CliOption> extends ToolConfig
 	public SubnodeConfiguration getUtilConfig()
 	{
 		return this.config.configurationAt(this.util.getName());
-	}
-
-	@Override
-	public String getModuleName()
-	{
-		return MODULE_NAME;
 	}
 
 	@Override

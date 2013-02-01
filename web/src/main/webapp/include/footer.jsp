@@ -1,4 +1,9 @@
-<%@ page import="gov.hhs.onc.dcdt.web.startup.VersionInfo"%>
+<%@ page import="gov.hhs.onc.dcdt.web.startup.ConfigInfo" %>
+<%@taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@taglib uri="http://struts.apache.org/tags-bean" prefix="bean"%>
+<%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
+<%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
+<%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
 <hr/>
 <div class="container">
 	<strong>
@@ -8,8 +13,12 @@
 	<br/><br/>
 
 	<div id="version">
-		Version: <%= VersionInfo.getVersion() %>
-		(SVN: <%= VersionInfo.getSvnHeadUrl() %>, rev=<%= VersionInfo.getSvnRevision() %>, date=<%= VersionInfo.getSvnDate() %>)
+		<%
+			pageContext.setAttribute("webModuleVersion", ConfigInfo.getConfig().getModuleVersion());
+		%>
+		<html:link action="/version"><span id="versionLink">Version</span></html:link>: ${webModuleVersion.version}
+		(<span class="versionPartLabel">SVN</span>: url=${webModuleVersion.svnHeadUrl}, rev=${webModuleVersion.svnRevision} date=${webModuleVersion.svnDate})
+		(<span class="versionPartLabel">Build</span>: date=${webModuleVersion.buildTimestamp})
 	</div>
 </div>
 <br/>

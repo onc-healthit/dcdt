@@ -190,7 +190,7 @@ public abstract class Utility<T extends Enum<T> & CliOption>
 		return this.cli;
 	}
 
-	public UtilityConfig getConfig()
+	public UtilityConfig<T> getConfig()
 	{
 		return this.config;
 	}

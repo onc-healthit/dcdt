@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.mail.decrypt;
 
 import gov.hhs.onc.dcdt.mail.MailCryptographyException;
+import gov.hhs.onc.dcdt.test.ToolTestListener;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,8 +9,10 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.io.IOUtils;
 import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+@Listeners({ ToolTestListener.class })
 @Test(groups = { "web.mail.decrypt" })
 public class MailDecryptorTest
 {

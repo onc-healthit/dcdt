@@ -47,3 +47,19 @@ div#version
 	color: rgb(150, 150, 150);
 	font-size: 90%;
 }
+
+span#versionLink
+{
+	font-size: 110%;
+	font-weight: bold;
+}
+
+span.versionPartLabel
+{
+	font-weight: bold;
+}
+
+span.versionPartUnknown
+{
+	font-style: italic;
+}

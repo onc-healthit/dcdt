@@ -116,6 +116,10 @@
 		<file.encoding>UTF-8</file.encoding>
 		<!-- Java version of the project sources and outputted classes -->
 		<java.version>1.7</java.version>
+		<!-- Project build timestamp -->
+		<project.build.timestamp>${maven.build.timestamp}</project.build.timestamp>
+		<!-- Project build timestamp format -->
+		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss Z</maven.build.timestamp.format>
 		<!-- Project build test script source directory (test-specific version of ${project.build.scriptSourceDirectory}) -->
 		<project.build.testScriptSourceDirectory>src/test/scripts</project.build.testScriptSourceDirectory>
 	</properties>

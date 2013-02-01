@@ -81,7 +81,7 @@ public abstract class ResourceDiscoveryUtils
 		ClassLoaderList classLoadersList = ClassLoaderUtils.getLoaders();
 		resources.addAll(Arrays.asList(Resource.toArray(getDiscoverResources(classLoadersList).findResources(resourcePath))));
 		
-		LOGGER.debug("Found " + resources.size() + " resource(s) for path (" + resourcePath + "): numClassLoader(s)=" + 
+		LOGGER.trace("Found " + resources.size() + " resource(s) for path (" + resourcePath + "): numClassLoader(s)=" + 
 			classLoadersList.size());
 		
 		return resources;
