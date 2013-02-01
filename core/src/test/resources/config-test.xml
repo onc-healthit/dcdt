@@ -7,4 +7,16 @@
 			<nodeCombiner config-class="org.apache.commons.configuration.tree.OverrideCombiner"/>
 		</result>
 	</header>
+	
+	<override>
+	</override>
+	
+	<additional>
+		<properties fileName="META-INF/gov/hhs/onc/dcdt/${dcdt:module}/data/${dcdt:module}.properties" throwExceptionOnMissing="true" config-name="${dcdt:module}-props" config-at="${dcdt:module}Props">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</properties>
+		<xml fileName="META-INF/gov/hhs/onc/dcdt/${dcdt:module}/data/${dcdt:module}.xml" throwExceptionOnMissing="true" config-name="${dcdt:module}-xml" config-at="${dcdt:module}Xml">
+			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
+		</xml>
+	</additional>
 </configuration>

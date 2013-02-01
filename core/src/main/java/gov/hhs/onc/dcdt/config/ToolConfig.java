@@ -36,6 +36,7 @@ import org.apache.commons.configuration.beanutils.XMLBeanDeclaration;
 import org.apache.commons.configuration.interpol.ConfigurationInterpolator;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.log4j.Logger;
 import org.xml.sax.SAXParseException;
 
@@ -77,29 +78,36 @@ public class ToolConfig
 		this.moduleName = moduleName;
 	}
 	
-	public static CombinedConfiguration getChildConfig(CombinedConfiguration configSection, String childConfigName)
+	public static PropertiesConfiguration getChildPropsConfig(CombinedConfiguration parentConfig, String childConfigName)
 	{
-		return getChildConfig(CombinedConfiguration.class, configSection, childConfigName);
+		return getChildConfig(parentConfig, childConfigName, PropertiesConfiguration.class);
 	}
 	
-	public static PropertiesConfiguration getChildPropsConfig(CombinedConfiguration configSection, String childConfigName)
+	public static XMLConfiguration getChildXmlConfig(CombinedConfiguration parentConfig, String childConfigName)
 	{
-		return getChildConfig(PropertiesConfiguration.class, configSection, childConfigName);
+		return getChildConfig(parentConfig, childConfigName, XMLConfiguration.class);
 	}
 	
-	public static XMLConfiguration getChildXmlConfig(CombinedConfiguration configSection, String childConfigName)
+	public static <T extends Configuration> T getChildConfig(CombinedConfiguration parentConfig, String childConfigName, 
+		Class<T> childConfigClass)
 	{
-		return getChildConfig(XMLConfiguration.class, configSection, childConfigName);
+		return getChildConfig(parentConfig, childConfigName, childConfigClass, -1);
 	}
 	
-	public static CombinedConfiguration getAdditionalConfigSection(CombinedConfiguration config)
+	public static <T extends Configuration> T getChildConfig(CombinedConfiguration parentConfig, String childConfigName, 
+		Class<T> childConfigClass, int maxDepth)
 	{
-		return getConfigSection(config, DefaultConfigurationBuilder.ADDITIONAL_NAME);
+		return getChildConfig(parentConfig, childConfigName, childConfigClass, maxDepth, 0);
 	}
 	
-	public static CombinedConfiguration getOverrideConfigSection(CombinedConfiguration config)
+	public static boolean hasAdditionalConfig(CombinedConfiguration parentConfig)
 	{
-		return config;
+		return parentConfig.getConfigurationNames().contains(DefaultConfigurationBuilder.ADDITIONAL_NAME);
+	}
+	
+	public static CombinedConfiguration getAdditionalConfig(CombinedConfiguration parentConfig)
+	{
+		return (CombinedConfiguration)parentConfig.getConfiguration(DefaultConfigurationBuilder.ADDITIONAL_NAME);
 	}
 	
 	//<editor-fold desc="typed bean getters">
@@ -247,30 +255,40 @@ public class ToolConfig
 		
 		return beans;
 	}
-	
-	public CombinedConfiguration getModuleConfig()
+
+	public CombinedConfiguration getModuleParentConfig()
 	{
-		return ToolConfig.getChildConfig(this.getAdditionalConfigSection(), MODULE_CONFIG_NAME_PREFIX + this.moduleName);
+		return this.getChildConfig(MODULE_CONFIG_NAME_PREFIX + this.moduleName, CombinedConfiguration.class);
 	}
 	
 	public PropertiesConfiguration getChildPropsConfig(String childConfigName)
 	{
-		return getChildPropsConfig(getOverrideConfigSection(this.config), childConfigName);
+		return this.getChildConfig(childConfigName, PropertiesConfiguration.class);
 	}
 	
 	public XMLConfiguration getChildXmlConfig(String childConfigName)
 	{
-		return getChildXmlConfig(getOverrideConfigSection(this.config), childConfigName);
+		return this.getChildConfig(childConfigName, XMLConfiguration.class);
 	}
 	
-	public CombinedConfiguration getAdditionalConfigSection()
+	public <T extends Configuration> T getChildConfig(String childConfigName, Class<T> childConfigClass)
 	{
-		return getAdditionalConfigSection(this.config);
+		return this.getChildConfig(childConfigName, childConfigClass, -1);
 	}
 	
-	public CombinedConfiguration getOverrideConfigSection()
+	public <T extends Configuration> T getChildConfig(String childConfigName, Class<T> childConfigClass, int maxDepth)
 	{
-		return getOverrideConfigSection(this.config);
+		return getChildConfig(this.config, childConfigName, childConfigClass, maxDepth);
+	}
+	
+	public boolean hasAdditionalConfig()
+	{
+		return hasAdditionalConfig(this.config);
+	}
+	
+	public CombinedConfiguration getAdditionalConfig()
+	{
+		return getAdditionalConfig(this.config);
 	}
 	
 	public ToolVersion getModuleVersion()
@@ -307,23 +325,55 @@ public class ToolConfig
 		}
 		catch (ConfigurationException | ConfigurationRuntimeException e)
 		{
-			Throwable rootConfigCause = getRootConfigurationCause(e);
+			int parseCauseIndex = ExceptionUtils.indexOfType(e, SAXParseException.class);
 			
-			if (rootConfigCause instanceof SAXParseException)
-			{
-				SAXParseException parseConfigCause = (SAXParseException)rootConfigCause;
-				
-				throw new ToolConfigException("Invalid configuration: source=" + StringUtils.join(new Object[]{
-					parseConfigCause.getSystemId(),
-					parseConfigCause.getLineNumber(), parseConfigCause.getColumnNumber()
-				}, CONFIG_PARSE_ERROR_SOURCE_DELIM) + ", error=" + 
-					parseConfigCause.getMessage());
-			}
-			else
+			if (parseCauseIndex == -1)
 			{
 				throw new ToolConfigException("Unable to initialize configuration.", e);
 			}
+			else
+			{
+				SAXParseException parseCause = (SAXParseException)ExceptionUtils.getThrowables(e)[parseCauseIndex];
+				
+				throw new ToolConfigException("Invalid configuration: source=" + StringUtils.join(new Object[]{ 
+					parseCause.getSystemId(), parseCause.getLineNumber(), parseCause.getColumnNumber() }, 
+					CONFIG_PARSE_ERROR_SOURCE_DELIM)  + ", error=" + parseCause.getMessage());
+			}
 		}
+	}
+	
+	protected static <T extends Configuration> T getChildConfig(CombinedConfiguration parentConfig, String childConfigName, 
+		Class<T> childConfigClass, int maxDepth, int depth)
+	{
+		if ((parentConfig == null) || ((maxDepth >= 0) && (++depth >= maxDepth)))
+		{
+			return null;
+		}
+		
+		Configuration config;
+		Class<? extends Configuration> configClass;
+		T childConfig;
+		
+		for (String configName : parentConfig.getConfigurationNames())
+		{
+			config = parentConfig.getConfiguration(configName);
+			configClass = config.getClass();
+			
+			if (configName.equals(childConfigName) && childConfigClass.isAssignableFrom(configClass))
+			{
+				return childConfigClass.cast(config);
+			}
+			else if (CombinedConfiguration.class.isAssignableFrom(configClass) && 
+				!configName.equals(DefaultConfigurationBuilder.ADDITIONAL_NAME))
+			{
+				if ((childConfig = getChildConfig((CombinedConfiguration)config, childConfigName, childConfigClass, maxDepth, depth)) != null)
+				{
+					return childConfig;
+				}
+			}
+		}
+		
+		return getChildConfig(getAdditionalConfig(parentConfig), childConfigName, childConfigClass, maxDepth, depth);
 	}
 	
 	protected void initModuleVersions()
@@ -355,23 +405,6 @@ public class ToolConfig
 		LOGGER.trace("Bean (class=" + beanClass.getName() + ") XPath: " + xpath);
 		
 		return xpath;
-	}
-	
-	protected static Throwable getRootConfigurationCause(Throwable throwable)
-	{
-		return (!(throwable instanceof ConfigurationException) && !(throwable instanceof ConfigurationRuntimeException)) || 
-			(throwable.getCause() == null) || (throwable.getCause() == throwable) ? throwable : 
-			getRootConfigurationCause(throwable.getCause());
-	}
-	
-	protected static CombinedConfiguration getConfigSection(CombinedConfiguration config, String sectionName)
-	{
-		return (CombinedConfiguration)config.getConfiguration(sectionName);
-	}
-	
-	protected static <T extends Configuration> T getChildConfig(Class<T> childConfigClass, CombinedConfiguration configSection, String childConfigName)
-	{
-		return childConfigClass.cast(configSection.getConfiguration(childConfigName));
 	}
 	
 	public CombinedConfiguration getConfig()

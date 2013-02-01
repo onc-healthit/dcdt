@@ -62,7 +62,7 @@
 	
 	<additional>
 		<!-- Load dependent module configuration, if available -->
-		<configuration fileName="config-${dcdt:module}.xml" config-name="config-${dcdt:module}" config-optional="true">
+		<configuration fileName="config-${dcdt:module}.xml" config-name="config-${dcdt:module}" config-forceCreate="true" config-optional="true">
 			<reloadingStrategy refreshDelay="1000" config-class="org.apache.commons.configuration.reloading.FileChangedReloadingStrategy"/>
 		</configuration>
 	</additional>

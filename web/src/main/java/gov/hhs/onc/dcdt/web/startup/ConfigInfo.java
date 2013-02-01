@@ -2,13 +2,11 @@ package gov.hhs.onc.dcdt.web.startup;
 
 import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.beans.testcases.hosting.HostingTestcase;
-import gov.hhs.onc.dcdt.config.ToolConfig;
 import gov.hhs.onc.dcdt.config.ToolConfigException;
 import gov.hhs.onc.dcdt.web.config.WebConfig;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.TreeMap;
-import org.apache.commons.configuration.CombinedConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang3.StringUtils;
@@ -23,10 +21,8 @@ import org.apache.log4j.Logger;
  */
 public class ConfigInfo
 {
-	private final static String CONFIG_WEB_NAME = "config-web";
 	private final static String CONFIG_NAME = "config";
 	private final static String EMAIL_CONFIG_NAME = "email";
-	private final static String VERSION_CONFIG_NAME = "version";
 	
 	private final static Map<String, HostingTestcase> HOSTING_TESTCASES = new TreeMap<>();
 	private final static Map<String, DiscoveryTestcase> DISCOVERY_TESTCASES = new TreeMap<>();
@@ -70,27 +66,6 @@ public class ConfigInfo
 	{
 		config = new WebConfig();
 		config.initConfig();
-	}
-
-	/**
-	 * Returns a version property for the given key value.
-	 *
-	 * @return version property value
-	 */
-	public synchronized static String getVersionProperty(String propKey)
-	{
-		return getVersionProperty(propKey, false);
-	}
-	
-	/**
-	 * Returns a version property for the given key value.
-	 * Optionally allows for non-existent properties.
-	 * 
-	 * @return version property value
-	 */
-	public synchronized static String getVersionProperty(String propKey, boolean allowMissing)
-	{
-		return getProperty(getVersionProperties(), propKey, allowMissing);
 	}
 
 	/**
@@ -215,27 +190,12 @@ public class ConfigInfo
 	
 	private synchronized static PropertiesConfiguration getConfigProperties()
 	{
-		return getProperties(ToolConfig.getAdditionalConfigSection(getWebConfig()), CONFIG_NAME);
+		return config.getChildPropsConfig(CONFIG_NAME);
 	}
 	
 	private synchronized static PropertiesConfiguration getEmailProperties()
 	{
-		return getProperties(ToolConfig.getAdditionalConfigSection(getWebConfig()), EMAIL_CONFIG_NAME);
-	}
-	
-	private synchronized static PropertiesConfiguration getVersionProperties()
-	{
-		return getProperties(config.getOverrideConfigSection(), VERSION_CONFIG_NAME);
-	}
-	
-	private synchronized static PropertiesConfiguration getProperties(CombinedConfiguration configSection, String propsName)
-	{
-		return ToolConfig.getChildPropsConfig(configSection, propsName);
-	}
-	
-	private synchronized static CombinedConfiguration getWebConfig()
-	{
-		return ToolConfig.getChildConfig(config.getAdditionalConfigSection(), CONFIG_WEB_NAME);
+		return config.getChildPropsConfig(EMAIL_CONFIG_NAME);
 	}
 
 	public static Map<String, DiscoveryTestcase> getDiscoveryTestcases()

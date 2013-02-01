@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils.config.generator;
 
-import gov.hhs.onc.dcdt.config.ToolConfig;
 import gov.hhs.onc.dcdt.utils.Utility;
 import gov.hhs.onc.dcdt.utils.cli.UtilityCli;
 import java.io.ByteArrayOutputStream;
@@ -9,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-import org.apache.commons.configuration.CombinedConfiguration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.io.FileUtils;
@@ -42,9 +40,8 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 	{
 		super.execute(args);
 		
-		CombinedConfiguration utilConfigAdditional = ToolConfig.getAdditionalConfigSection(this.config.getModuleConfig());
-		PropertiesConfiguration baseConfigProps = ToolConfig.getChildPropsConfig(utilConfigAdditional, BASE_CONFIG_PROPS_NAME), 
-			baseEmailProps = ToolConfig.getChildPropsConfig(utilConfigAdditional, BASE_EMAIL_PROPS_NAME);
+		PropertiesConfiguration baseConfigProps = this.config.getChildPropsConfig(BASE_CONFIG_PROPS_NAME), 
+			baseEmailProps = this.config.getChildPropsConfig(BASE_EMAIL_PROPS_NAME);
 
 		File outputFile = new File(this.getConfig().getUtilString(ConfigGenCliOption.OUTPUT_FILE));
 		String outputFileArchivePath = this.getConfig().getUtilString(OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME);

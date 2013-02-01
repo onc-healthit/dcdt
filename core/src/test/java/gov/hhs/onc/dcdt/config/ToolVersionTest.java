@@ -1,24 +1,15 @@
 package gov.hhs.onc.dcdt.config;
 
 import gov.hhs.onc.dcdt.test.ToolTestListener;
-import gov.hhs.onc.dcdt.test.config.ToolTestConfig;
 import org.testng.Assert;
-import org.testng.annotations.BeforeGroups;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
 @Listeners({ ToolTestListener.class })
-@Test(groups = { "dcdt.config.version" })
+@Test(dependsOnGroups = { "dcdt.config" }, groups = { "dcdt.config.version" })
 public class ToolVersionTest
 {
-	private static ToolConfig config;
 	private static ToolVersion coreVersion;
-	
-	@BeforeGroups({ "dcdt.config.version" })
-	public static void setUp() throws ToolConfigException
-	{
-		config = ToolTestConfig.getInstance();
-	}
 	
 	@Test(dependsOnMethods = { "testGetProjectValues" })
 	public void testGetSvnValues()
@@ -38,7 +29,7 @@ public class ToolVersionTest
 	@Test
 	public void testGetProjectValues()
 	{
-		coreVersion = config.getModuleVersions().get(ToolConfig.CORE_MODULE_NAME);
+		coreVersion = ToolConfigTest.config.getModuleVersions().get(ToolConfig.CORE_MODULE_NAME);
 		
 		Assert.assertNotNull(coreVersion.getGroupId(), "Failed to get core module group ID.");
 		Assert.assertNotNull(coreVersion.getArtifactId(), "Failed to get core module artifact ID.");
