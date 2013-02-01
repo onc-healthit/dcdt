@@ -3,6 +3,7 @@
 <%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
 <%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
+<%@taglib uri="/META-INF/gov/hhs/onc/dcdt/web/tags/dcdt.tld" prefix="dcdt"%>
 <tiles:importAttribute name="nav_active" scope="request"/>
 <logic:notEmpty name="nav_active">
 	<script type="text/javascript">
@@ -15,7 +16,7 @@
 <div class="navbar navbar-inverse navbar-fixed-top">
 	<div class="navbar-inner">
 		<div class="container">
-			<html:link action="/"><img src="${pageContext.request.contextPath}/static/images/dcdt_logo.png" class="brand" alt="DCDT Logo"/></html:link>
+			<html:link action="/"><img src="${dcdt:imagesPath(pageContext, 'dcdt_logo.png')}" class="brand" alt="DCDT Logo"/></html:link>
 			<ul class="nav">
 				<li id="home"><html:link action="/"><i class="icon-home icon-white"></i> Home</html:link></li>
 				<li id="hosting"><html:link action="/hosting">Hosting</html:link></li>
@@ -26,7 +27,7 @@
 					<a class="dropdown-toggle" data-toggle="dropdown">About <b class="caret"></b></a>
 					<ul class="dropdown-menu">
 						<li>
-							<a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/User_Guide">
+							<a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/wiki/User_Guide_2_1">
 								User's Guide
 							</a>
 						</li>
@@ -38,7 +39,7 @@
 						<li class="divider"></li>
 						<li>
 							<a tabindex="-1" target="_blank" href="http://code.google.com/p/direct-certificate-discovery-tool/">
-								Code Repository
+								Project Site
 							</a>
 						</li>
 					</ul>

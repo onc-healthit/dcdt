@@ -67,7 +67,7 @@ public class CertMessenger implements CertLookUpFactory{
 			}
 			else
 			{
-				throw new CertLookUpException("Fail no answer.", new Throwable());
+				throw new CertLookUpException("Fail no answer.");
 			}
 		
 		} catch (IOException e) {

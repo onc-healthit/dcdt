@@ -203,4 +203,9 @@ public class ToolVersion
 	{
 		return XpathBuilder.buildNodeNames(ArrayUtils.add(propKeyNodes, 1, this.moduleName));
 	}
+
+	public String getModuleName()
+	{
+		return this.moduleName;
+	}
 }

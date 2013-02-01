@@ -4,6 +4,7 @@
 <%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
 <%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
+<%@taglib uri="/META-INF/gov/hhs/onc/dcdt/web/tags/dcdt.tld" prefix="dcdt"%>
 <div class="container">
 	<h2>Discover Testing Tool's Certificate</h2>
 	<br/>
@@ -33,13 +34,10 @@
 	Choose a Direct Address:
 	<select name="selectEmail" id="selectEmail" size="1" onchange="setText(this); setTextEmail(this)">
 		<option value="">-- No Test Case Selected --</option>
-		<c:forEach var="discoveryTestcaseMail" varStatus="discoveryTestcasesStatus" items="${sessionScope.DISCOVERY_TESTCASES.keySet()}">
-			<c:set var="discoveryTestcase" value="${sessionScope.DISCOVERY_TESTCASES[discoveryTestcaseMail]}"/>
-			
-			<option value="${discoveryTestcase.id}">${discoveryTestcase.name} - ${discoveryTestcase.comments.shortDescription}</option>
+		<c:forEach var="discoveryTestcaseEntry" varStatus="discoveryTestcasesStatus" items="${dcdt:discoveryTestcases()}">
+			<option value="${discoveryTestcaseEntry.value.id}">${discoveryTestcaseEntry.value.name} - ${discoveryTestcaseEntry.value.comments.shortDescription}</option>
 		</c:forEach>
 	</select>
-	<!--  <input type="button"  id="copyAddress" value="Copy Address" class="btn-primary" onclick="copyAddress()" /> -->
 	</p>
 	<div class="textEmail" id="email"></div>
 	<div class="textFont" id="comments"></div>
@@ -47,6 +45,5 @@
 	<strong>Step 5: </strong> Attempt to send a message to the Direct address that you've just copied.
 	Please only send to one address at a time. The test case results message will indicate the test case results. If you do not receive
 	a result message for test case then you should assume that the test case failed (this is not true for DTS 520, 511, and 512 - see their specific instructions in the test case details).
-	<!--  You will receive a response to the results email telling you if you have passed the test or not. You should run all of the tests in order to verify that your system can correctly discover certificates in either DNS CERT records or LDAP servers. (Note: your system MUST NOT 
-		already contain a certificate for the address selected or the test case will not be valid).--><br/>
+	<br/>
 </div>

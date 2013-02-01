@@ -4,11 +4,12 @@
 <%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
 <%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
+<%@taglib uri="/META-INF/gov/hhs/onc/dcdt/web/tags/dcdt.tld" prefix="dcdt"%>
 <div class="container">
 	<h2>Please enter your Direct Email and Results Email</h2>
 	<div id="content">
 		<html:form action="discovery/email" method="post">
-			<c:if test="${pageContext.request.method eq 'POST'}">
+			<c:if test="${dcdt:isRequestPost(pageContext)}">
 				<html:errors/>
 			</c:if>
 			<div style="padding:16px">

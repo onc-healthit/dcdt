@@ -1,0 +1,64 @@
+<taglib
+	version="2.0"
+	xmlns="http://java.sun.com/xml/ns/j2ee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd">
+	
+	<tlib-version>2.1</tlib-version>
+	<short-name>dcdt</short-name>
+	<uri>http://tags.direct-test.com/dcdt</uri>
+	
+	<function>
+		<name>isRequestPost</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>boolean isRequestPost(javax.servlet.jsp.PageContext)</function-signature>
+	</function>
+	
+	<function>
+		<name>exceptionContent</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>java.lang.String getExceptionContent(javax.servlet.jsp.PageContext)</function-signature>
+	</function>
+	
+	<function>
+		<name>hostingTestcases</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>java.util.Map getHostingTestcases()</function-signature>
+	</function>
+	<function>
+		<name>discoveryTestcases</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>java.util.Map getDiscoveryTestcases()</function-signature>
+	</function>
+	<function>
+		<name>moduleVersion</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>gov.hhs.onc.dcdt.config.ToolVersion getModuleVersion(java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>moduleVersions</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>java.util.Map getModuleVersions()</function-signature>
+	</function>
+	<function>
+		<name>config</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>gov.hhs.onc.dcdt.web.config.WebConfig getConfig()</function-signature>
+	</function>
+	
+	<function>
+		<name>imagesPath</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>java.lang.String getStaticImagesPath(javax.servlet.jsp.PageContext,java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>scriptsPath</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>java.lang.String getStaticScriptsPath(javax.servlet.jsp.PageContext,java.lang.String)</function-signature>
+	</function>
+	<function>
+		<name>stylesPath</name>
+		<function-class>gov.hhs.onc.dcdt.web.tags.ToolElFunctions</function-class>
+		<function-signature>java.lang.String getStaticStylesPath(javax.servlet.jsp.PageContext,java.lang.String)</function-signature>
+	</function>
+</taglib>

@@ -3,6 +3,7 @@
 <%@taglib uri="http://struts.apache.org/tags-html" prefix="html"%>
 <%@taglib uri="http://struts.apache.org/tags-logic" prefix="logic"%>
 <%@taglib uri="http://struts.apache.org/tags-tiles" prefix="tiles"%>
+<%@taglib uri="/META-INF/gov/hhs/onc/dcdt/web/tags/dcdt.tld" prefix="dcdt"%>
 <div class="container">
 	<h2>Hosting - Verify your certificate can be discovered</h2>
 	<p>
@@ -35,7 +36,7 @@
 		</tbody>
 	</table>
 	<div id="content">
-		<c:if test="${pageContext.request.method eq 'POST'}">
+		<c:if test="${dcdt:isRequestPost(pageContext)}">
 			<html:errors/>
 		</c:if>
 		<html:form action="/hosting" method="post">
@@ -43,10 +44,8 @@
 			<strong><bean:message key="label.common.html.select.testchoose"/> :</strong><br/>
 			<html:select property="testcase" styleId="testcase" onchange="setText(this)">
 				<html:option value="">-- No Test Case Selected --</html:option>
-				<c:forEach var="hostingTestcaseId" varStatus="hostingTestcasesStatus" items="${sessionScope.HOSTING_TESTCASES.keySet()}">
-					<c:set var="hostingTestcase" value="${sessionScope.HOSTING_TESTCASES[hostingTestcaseId]}"/>
-					
-					<html:option value="${hostingTestcaseId}">${hostingTestcase.name} - ${hostingTestcase.comments.shortDescription}</html:option>
+				<c:forEach var="hostingTestcaseEntry" varStatus="hostingTestcasesStatus" items="${dcdt:hostingTestcases()}">
+					<html:option value="${hostingTestcaseEntry.key}">${hostingTestcaseEntry.value.name} - ${hostingTestcaseEntry.value.comments.shortDescription}</html:option>
 				</c:forEach>
 			</html:select>
 			<br/><br/>

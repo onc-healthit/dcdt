@@ -25,15 +25,15 @@ public class CertLookUpAction extends Action
 			testcase.getResultsPass().get(0) : null;
 
 		CertificateInfo certificateInfo = new CertificateInfo(testcaseId, domainName);
-		TestcaseResultStatus testcaseResultStatus = certificateInfo.getStatus();
-
 		CertLookUpController cluController = new CertLookUpController(certificateInfo);
-
+		
 		cluController.run();
 
 		clActionForm.setResult(certificateInfo.getResult());
 		clActionForm.setCertResult(certificateInfo.getCertOutput());
 
+		TestcaseResultStatus testcaseResultStatus = certificateInfo.getStatus();
+		
 		if ((testcaseResultStatus != null) && testcaseResultStatus.isPass() && (testcaseResultPass != null))
 		{
 			clActionForm.setResultMsg(testcaseResultPass.getMsg());
