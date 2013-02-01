@@ -47,6 +47,8 @@ public class ToolConfig
 	
 	public final static String BEAN_ID_ATTRIB_KEY = "id";
 	
+	protected final static String MODULE_CONFIG_NAME_PREFIX = "config-";
+	
 	protected final static String CONFIG_FILE_RESOURCE_NAME = "config.xml";
 	protected final static String CONFIG_PARSE_ERROR_SOURCE_DELIM = ":";
 	
@@ -244,6 +246,11 @@ public class ToolConfig
 		}
 		
 		return beans;
+	}
+	
+	public CombinedConfiguration getModuleConfig()
+	{
+		return ToolConfig.getChildConfig(this.getAdditionalConfigSection(), MODULE_CONFIG_NAME_PREFIX + this.moduleName);
 	}
 	
 	public PropertiesConfiguration getChildPropsConfig(String childConfigName)

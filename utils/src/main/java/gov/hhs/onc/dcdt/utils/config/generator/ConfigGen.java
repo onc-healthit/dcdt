@@ -42,9 +42,9 @@ public class ConfigGen extends Utility<ConfigGenCliOption>
 	{
 		super.execute(args);
 		
-		CombinedConfiguration configAdditional = this.config.getAdditionalConfigSection();
-		PropertiesConfiguration baseConfigProps = ToolConfig.getChildPropsConfig(configAdditional, BASE_CONFIG_PROPS_NAME), 
-			baseEmailProps = ToolConfig.getChildPropsConfig(configAdditional, BASE_EMAIL_PROPS_NAME);
+		CombinedConfiguration utilConfigAdditional = ToolConfig.getAdditionalConfigSection(this.config.getModuleConfig());
+		PropertiesConfiguration baseConfigProps = ToolConfig.getChildPropsConfig(utilConfigAdditional, BASE_CONFIG_PROPS_NAME), 
+			baseEmailProps = ToolConfig.getChildPropsConfig(utilConfigAdditional, BASE_EMAIL_PROPS_NAME);
 
 		File outputFile = new File(this.getConfig().getUtilString(ConfigGenCliOption.OUTPUT_FILE));
 		String outputFileArchivePath = this.getConfig().getUtilString(OUTPUT_FILE_ARCHIVE_PATH_ATTRIB_NAME);
