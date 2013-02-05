@@ -1,19 +1,38 @@
 package gov.hhs.onc.dcdt.test;
 
 import org.apache.commons.lang3.ClassUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.log4j.Logger;
+import org.testng.ISuite;
+import org.testng.ISuiteListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestNGMethod;
 import org.testng.ITestResult;
 
-public class ToolTestListener implements ITestListener
+public class ToolTestListener implements ISuiteListener, ITestListener
 {
 	private final static String METHOD_ARGS_PREFIX = "(";
 	private final static String METHOD_ARGS_SUFFIX = ")";
 	
 	private final static Logger LOGGER = Logger.getLogger(ToolTestListener.class);
+
+	//<editor-fold desc="Implemented ISuiteListener methods">
+	@Override
+	public void onStart(ISuite suite)
+	{
+		LOGGER.debug("Test suite started: " + testSuiteToString(suite));
+	}
 	
+	@Override
+	public void onFinish(ISuite suite)
+	{
+		LOGGER.debug("Test suite finished: " + testSuiteToString(suite));
+	}
+	//</editor-fold>
+
+	//<editor-fold desc="Implemented ITestListener methods">
 	@Override
 	public void onTestStart(ITestResult result)
 	{
@@ -46,53 +65,68 @@ public class ToolTestListener implements ITestListener
 	@Override
 	public void onStart(ITestContext context)
 	{
-		LOGGER.trace("Test context started: " + testContextToString(context));
+		LOGGER.debug("Test context started: " + testContextToString(context));
 	}
 	
 	@Override
 	public void onFinish(ITestContext context)
 	{
-		LOGGER.trace("Test context finished: " + testContextToString(context));
+		LOGGER.debug("Test context finished: " + testContextToString(context));
+	}
+	//</editor-fold>
+	
+	private static String testSuiteToString(ISuite testSuite)
+	{
+		return new StrBuilder()
+			.append("name=")
+			.append(testSuite.getName())
+			.toString();
+		
+		// TODO: add remaining test suite data
 	}
 	
 	private static String testContextToString(ITestContext testContext)
 	{
-		StringBuilder builder = new StringBuilder();
-		builder.append("name=");
-		builder.append(testContext.getName());
+		return new StrBuilder()
+			.append("name=")
+			.append(testContext.getName())
+			.toString();
 		
 		// TODO: add remaining test context data
-		
-		return builder.toString();
 	}
 	
 	private static String testResultToString(ITestResult testResult, boolean includeParams)
 	{
-		StringBuilder builder = new StringBuilder();
+		StrBuilder builder = new StrBuilder();
+		String testName = testResult.getTestName();
+		
+		if (!StringUtils.isBlank(testName))
+		{
+			builder = builder.append("name=")
+				.append(testName);
+		}
+		
 		ITestNGMethod testMethod = testResult.getMethod();
 		
-		builder.append(testMethod.getTestClass().getName());
-		builder.append(ClassUtils.PACKAGE_SEPARATOR_CHAR);
-		builder.append(testMethod.getMethodName());
-		builder.append(METHOD_ARGS_PREFIX);
+		builder = builder.appendSeparator(", ")
+			.append(testMethod.getTestClass().getName())
+			.append(ClassUtils.PACKAGE_SEPARATOR_CHAR)
+			.append(testMethod.getMethodName())
+			.append(METHOD_ARGS_PREFIX);
 		
 		if (includeParams)
 		{
-			Object[] params = testResult.getParameters();
+			StrBuilder paramsBuilder = new StrBuilder();
 			
-			for (int a = 0; a < params.length; a++)
+			for (Object param : testResult.getParameters())
 			{
-				if (a > 0)
-				{
-					builder.append(", ");
-				}
-				
-				builder.append(ClassUtils.getShortClassName(params[a], null));
+				paramsBuilder = paramsBuilder.appendSeparator(", ")
+					.append(ClassUtils.getShortClassName(param, null));
 			}
+			
+			builder = builder.append(paramsBuilder);
 		}
 		
-		builder.append(METHOD_ARGS_SUFFIX);
-		
-		return builder.toString();
+		return builder.append(METHOD_ARGS_SUFFIX).toString();
 	}
 }

@@ -1,13 +1,10 @@
 package gov.hhs.onc.dcdt.reflect.resources;
 
-import gov.hhs.onc.dcdt.test.ToolTestListener;
 import org.apache.commons.discovery.Resource;
 import org.testng.Assert;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({ ToolTestListener.class })
-@Test(dependsOnGroups = { "dcdt.reflect.classloaders" }, groups = { "dcdt.reflect", "dcdt.reflect.resources" })
+@Test(dependsOnGroups = { "dcdt.reflect.classLoaders" }, groups = { "dcdt.all", "dcdt.reflect.all", "dcdt.reflect.resources" })
 public class ResourceDiscoveryUtilsTest
 {
 	@Test

@@ -1,14 +1,11 @@
 package gov.hhs.onc.dcdt.reflect;
 
-import gov.hhs.onc.dcdt.test.ToolTestListener;
 import java.util.Map;
 import java.util.Set;
 import org.testng.Assert;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({ ToolTestListener.class })
-@Test(groups = { "dcdt.reflect", "dcdt.reflect.classloaders" })
+@Test(groups = { "dcdt.all", "dcdt.reflect.all", "dcdt.reflect.classLoaders" })
 public class ClassLoaderUtilsTest
 {
 	@Test(dependsOnMethods = { "testGetPackages" })

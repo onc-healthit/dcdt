@@ -285,14 +285,15 @@
 				<version>1.47</version>
 			</dependency>
 			<dependency>
-				<groupId>org.bouncycastle</groupId>
-				<artifactId>bcprov-ext-jdk15on</artifactId>
-				<version>1.47</version>
-			</dependency>
-			<dependency>
 				<groupId>org.nhind</groupId>
 				<artifactId>config-service-client</artifactId>
 				<version>1.1</version>
+				<exclusions>
+					<exclusion>
+						<groupId>commons-logging</groupId>
+						<artifactId>commons-logging</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 			<dependency>
 				<groupId>org.nhind</groupId>
@@ -701,7 +702,22 @@
 							</goals>
 							<inherited>true</inherited>
 							<configuration>
-								<skip>${skipTests}</skip>
+								<properties>
+									<property>
+										<name>listener</name>
+										<value>gov.hhs.onc.dcdt.test.ToolTestListener</value>
+									</property>
+									<property>
+										<name>suitename</name>
+										<value>${project.name} Suite</value>
+									</property>
+									<property>
+										<name>testname</name>
+										<value>${project.name} Test</value>
+									</property>
+								</properties>
+								<skip>false</skip>
+								<skipTests>${skipTests}</skipTests>
 							</configuration>
 						</execution>
 					</executions>

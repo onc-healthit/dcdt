@@ -1,12 +1,9 @@
 package gov.hhs.onc.dcdt.config;
 
-import gov.hhs.onc.dcdt.test.ToolTestListener;
 import org.testng.Assert;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({ ToolTestListener.class })
-@Test(dependsOnGroups = { "dcdt.config" }, groups = { "dcdt.config.version" })
+@Test(dependsOnGroups = { "dcdt.config" }, groups = { "dcdt.all", "dcdt.config.all", "dcdt.config.version" })
 public class ToolVersionTest
 {
 	private static ToolVersion coreVersion;

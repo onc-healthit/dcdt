@@ -62,12 +62,6 @@
 			<artifactId>jaxb-impl</artifactId>
 			<version>2.1.13</version>
 		</dependency>
-		<dependency>
-			<groupId>org.nhind</groupId>
-			<artifactId>direct-project-stock</artifactId>
-			<version>2.0.1</version>
-			<type>tar.gz</type>
-		</dependency>
 	</dependencies>
 	
 	<build>
@@ -140,7 +134,6 @@
 									<type>war</type>
 									<destFileName>dcdt.war</destFileName>
 									<outputDirectory>${project.build.directory}/dependency-tmp</outputDirectory>
-									<!--<outputDirectory>${project.build.directory}/package-tmp/var/lib/tomcat7/webapps</outputDirectory>-->
 								</artifactItem>
 							</artifactItems>
 							<silent>true</silent>
@@ -163,15 +156,6 @@
 									<excludes>direct/james-*</excludes>
 									<outputDirectory>${project.build.directory}/direct-project-stock-tmp</outputDirectory>
 								</artifactItem>
-								
-								<!-- Package artifacts (project, modules) -->
-								<!--<artifactItem>
-									<groupId>gov.hhs.onc.dcdt</groupId>
-									<artifactId>direct-cert-discovery-tool-utils</artifactId>
-									<version>2.1-SNAPSHOT</version>
-									<type>tar.gz</type>
-									<outputDirectory>${project.build.directory}/package-tmp/usr/share/direct</outputDirectory>
-								</artifactItem>-->
 							</artifactItems>
 							<silent>true</silent>
 						</configuration>

@@ -1,14 +1,11 @@
 package gov.hhs.onc.dcdt.config;
 
-import gov.hhs.onc.dcdt.test.ToolTestListener;
 import gov.hhs.onc.dcdt.test.config.ToolTestConfig;
 import org.testng.Assert;
 import org.testng.annotations.BeforeGroups;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({ ToolTestListener.class })
-@Test(groups = { "dcdt.config" })
+@Test(dependsOnGroups = { "dcdt.reflect.resources" }, groups = { "dcdt.all", "dcdt.config", "dcdt.config.all" })
 public class ToolConfigTest
 {
 	/*private*/ static ToolConfig config;

@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils.ldap;
+package gov.hhs.onc.dcdt.ldap;
 
 import gov.hhs.onc.dcdt.beans.BeanAttrib;
 import gov.hhs.onc.dcdt.config.ToolConfigException;

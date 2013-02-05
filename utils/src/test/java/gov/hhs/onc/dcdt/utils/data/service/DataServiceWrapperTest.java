@@ -1,17 +1,14 @@
 package gov.hhs.onc.dcdt.utils.data.service;
 
-import gov.hhs.onc.dcdt.test.ToolTestListener;
 import gov.hhs.onc.dcdt.utils.test.MockTestUtility;
 import java.util.List;
 import java.util.Map;
 import org.nhind.config.Anchor;
 import org.nhind.config.Domain;
 import org.testng.Assert;
-import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
-@Listeners({ ToolTestListener.class })
-@Test(groups = { "utils.data.service" })
+@Test(enabled = false, groups = { "dcdt.all", "dcdt.utils.all", "dcdt.utils.data.all", "dcdt.utils.data.service" })
 public class DataServiceWrapperTest
 {
 	private static DataServiceWrapper serviceWrapper;

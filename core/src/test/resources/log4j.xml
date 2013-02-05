@@ -59,6 +59,11 @@
 	<!--==================================================
 	= LOGGERS: PROJECT
 	===================================================-->
+	<logger name="gov.hhs.onc.dcdt.test.ToolTestListener" additivity="false">
+		<level value="debug"/>
+		<appender-ref ref="consoleApp"/>
+		<appender-ref ref="fileApp"/>
+	</logger>
 	<logger name="gov.hhs.onc.dcdt" additivity="false">
 		<level value="all"/>
 		<appender-ref ref="consoleApp"/>
