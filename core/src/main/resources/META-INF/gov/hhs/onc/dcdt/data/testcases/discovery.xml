@@ -243,7 +243,7 @@
 		<comments config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseComments"
 			shortDescription="Discover LDAP certificate - one instance unavailable"
 			description="Query for Direct address from LDAP servers based on priority value - One LDAP instance unavailable."
-			targetCert="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV has Priority = 2 and Weight = 0"
+			targetCert="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV has Priority = 1 and Weight = 0"
 			backgroundCerts="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV Record points to an LDAP instance that is offline and not available. Its Priority = 0 and Weight = 0"
 			rtm="15\, 18"
 			specifications="RFC 2782: Page 3\, Priority Section"/>
@@ -370,9 +370,9 @@
 		<!--========== COMMENTS ==========-->
 		<comments config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseComments"
 			shortDescription="Discover LDAP certificate - one instance returns invalid certificate"
-			description="Query for Direct address from LDAP servers based on priority value - one LDAP Instance does not return a valid certificate."
-			targetCert="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV Record has its Priority = 2 and Weight = 0"
-			backgroundCerts="An LDAP Entry with the appropriate mail attribute in the InetOrgPerson Schema\, but no userCertificate attribute. The associated SRV Record has its Priority = 0 and Weight = 0"
+			description="Query for Direct address from LDAP servers based on priority value - one LDAP instance contains a matching entry with no userCertificate attribute."
+			targetCert="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV Record has its Priority = 1 and Weight = 0"
+			backgroundCerts="An LDAP Entry with the appropriate mail attribute in the InetOrgPerson Schema\, but no userCertificate attribute. The associated SRV Record has its Priority = 1 and Weight = 0"
 			rtm="15\, 18"
 			specifications="RFC 2782: Page 3\, Priority Section- Applicability Statement for Secure Health Transport: Section 4"/>
 		

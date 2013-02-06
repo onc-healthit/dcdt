@@ -244,7 +244,7 @@
 
 		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
 			typeName="ldap"
-			ldapServiceName="domain2ldap1"/>
+			ldapServiceName="default"/>
 		
 		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
 			commonName="dts507"
@@ -261,7 +261,7 @@
 
 		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
 			typeName="ldap"
-			ldapServiceName="domain2ldap1"/>
+			ldapServiceName="default"/>
 		
 		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
 			commonName="dts517"

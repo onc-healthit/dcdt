@@ -55,6 +55,17 @@ mail: dts506@direct2.${util:domain}
 o: ${util:domain}
 userCertificate:: 
 
+dn: cn=dts507,${util:loadDnName}
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: dts507
+sn: dts507
+mail: dts507@direct3.${util:domain}
+o: ${util:domain}
+userCertificate:: 
+
 dn: cn=dts515_mac,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
@@ -77,6 +88,16 @@ mail: dts515@direct2.${util:domain}
 o: ${util:domain}
 userCertificate:: 
 
+dn: cn=dts517_no_cert,${util:loadDnName}
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: dts517_no_cert
+sn: dts517_no_cert
+mail: dts517@direct3.${util:domain}
+o: ${util:domain}
+
 dn: cn=dts517,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson
@@ -86,6 +107,7 @@ cn: dts517
 sn: dts517
 mail: dts517@direct3.${util:domain}
 o: ${util:domain}
+userCertificate:: 
 
 dn: cn=dts520_invalid_address_ldap,${util:loadDnName}
 objectClass: top
