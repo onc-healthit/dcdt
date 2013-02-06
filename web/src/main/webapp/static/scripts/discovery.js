@@ -25,7 +25,9 @@ function setDropText(select_ele)
 
 function setText(select_ele)
 {
-	document.getElementById("comments").innerHTML = select_ele.options[select_ele.selectedIndex].value;
+	var commentsElement = $("#comments");
+	commentsElement.empty();
+	
 	var discoveryTestcaseId = select_ele.options[select_ele.selectedIndex].value;
 	var discoveryTestcase = window.DISCOVERY_TESTCASES.hasOwnProperty(discoveryTestcaseId) ? 
 		window.DISCOVERY_TESTCASES[discoveryTestcaseId] : null;
@@ -34,12 +36,11 @@ function setText(select_ele)
 	{
 		var discoveryTestcaseComments = discoveryTestcase.comments;
 		
-		document.getElementById("comments").innerHTML = 
-			getTestcaseCommentsEntryHtml("Purpose/Description", discoveryTestcaseComments.description) + 
-			getTestcaseCommentsEntryHtml("Additional Info", discoveryTestcaseComments.additionalInfo) + 
-			getTestcaseCommentsEntryHtml("Target Certificate", discoveryTestcaseComments.targetCert) + 
-			getTestcaseCommentsEntryHtml("Background Certificates", discoveryTestcaseComments.backgroundCerts) + 
-			getTestcaseCommentsEntryHtml("RTM", discoveryTestcaseComments.rtm) + 
-			getTestcaseCommentsEntryHtml("Underlying Specification Reference", discoveryTestcaseComments.specifications);
+		appendTestcaseCommentsSection(commentsElement, "Purpose/Description", discoveryTestcaseComments.description, false);
+		appendTestcaseCommentsSection(commentsElement, "Additional Info", discoveryTestcaseComments.additionalInfo, false);
+		appendTestcaseCommentsSection(commentsElement, "Target Certificate", discoveryTestcaseComments.targetCert, false);
+		appendTestcaseCommentsSection(commentsElement, "Background Certificates", discoveryTestcaseComments.backgroundCerts, true);
+		appendTestcaseCommentsSection(commentsElement, "RTM", discoveryTestcaseComments.rtm, false);
+		appendTestcaseCommentsSection(commentsElement, "Underlying Specification Reference", discoveryTestcaseComments.specifications, true);
 	}
 }

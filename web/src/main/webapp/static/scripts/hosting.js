@@ -21,7 +21,9 @@ $(document).ready(function ()
 // Function to set the drop down values
 function setText(select_ele)
 {
-	document.getElementById("comments").innerHTML = select_ele.options[select_ele.selectedIndex].value;
+	var commentsElement = $("#comments");
+	commentsElement.empty();
+	
 	var hostingTestcaseId = select_ele.options[select_ele.selectedIndex].value;
 	var hostingTestcase = window.HOSTING_TESTCASES.hasOwnProperty(hostingTestcaseId) ? 
 		window.HOSTING_TESTCASES[hostingTestcaseId] : null;
@@ -30,10 +32,9 @@ function setText(select_ele)
 	{
 		var hostingTestcaseComments = hostingTestcase.comments;
 		
-		document.getElementById("comments").innerHTML = 
-			getTestcaseCommentsEntryHtml("Purpose/Description", hostingTestcaseComments.description) + 
-			getTestcaseCommentsEntryHtml("Instructions", hostingTestcaseComments.instructions) + 
-			getTestcaseCommentsEntryHtml("RTM", hostingTestcaseComments.rtm) + 
-			getTestcaseCommentsEntryHtml("Underlying Specification Reference", hostingTestcaseComments.specifications);
+		appendTestcaseCommentsSection(commentsElement, "Purpose/Description", hostingTestcaseComments.description, false);
+		appendTestcaseCommentsSection(commentsElement, "Instructions", hostingTestcaseComments.instructions, false);
+		appendTestcaseCommentsSection(commentsElement, "RTM", hostingTestcaseComments.rtm, false);
+		appendTestcaseCommentsSection(commentsElement, "Underlying Specification Reference", hostingTestcaseComments.specifications, true);
 	}
 }

@@ -1,4 +1,20 @@
-function getTestcaseCommentsEntryHtml(label, value)
+function appendTestcaseCommentsSection(commentsElement, label, value, asList)
 {
-	return value ? '<span style="font-weight: bold">' + label + '</span>:<br/>' + value + '<br/>' : "";
+	if (!value)
+	{
+		return;
+	}
+	
+	commentsElement.append($('<span/>', { "class": "testcaseCommentsLabel" }).append(label), ":", $('<br/>'));
+	
+	var valueParts = asList ? value.split("|") : [ value ];
+	
+	var valueListElement = $('<ul/>');
+	
+	for (var a = 0; a < valueParts.length; a++)
+	{
+		valueListElement.append($('<li/>').append(valueParts[a]));
+	}
+	
+	commentsElement.append(valueListElement);
 }
