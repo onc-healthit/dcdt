@@ -119,22 +119,6 @@
 	</entry>
 
 	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
-		id="7"
-		name="dts501_expired"
-		path=""
-		keyBits="1024"
-		validDays="0">
-
-		<destination config-class="gov.hhs.onc.dcdt.beans.entry.EntryDestination"
-			typeName="dns"/>
-		
-		<dn config-class="gov.hhs.onc.dcdt.beans.entry.EntryDn"
-			commonName="dts501_expired"
-			mail="dts501@direct1.${util:domain}"
-			organization="${util:domain}"/>
-	</entry>
-
-	<entry config-class="gov.hhs.onc.dcdt.beans.entry.Entry"
 		id="11"
 		name="dts502"
 		path=""

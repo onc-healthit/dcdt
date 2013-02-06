@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.web.mail.decrypt;
 
 import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
 import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult;
 import java.io.Serializable;
 
 /**
@@ -19,8 +20,9 @@ public class EmailBean implements Serializable {
 	private String toAddress;
 	private String fromAddress;
 	private DiscoveryTestcase testcase;
-	private TestcaseResultStatus status;
-	private String results;
+	private DiscoveryTestcaseResult result;
+	private TestcaseResultStatus resultStatus;
+	private String resultMsg;
 
 	public EmailBean()
 	{
@@ -52,24 +54,34 @@ public class EmailBean implements Serializable {
 		this.fromAddress = fromAddress;
 	}
 
-	public String getResults()
+	public DiscoveryTestcaseResult getResult()
 	{
-		return this.results;
+		return this.result;
 	}
 
-	public void setResults(String results)
+	public void setResult(DiscoveryTestcaseResult result)
 	{
-		this.results = results;
+		this.result = result;
 	}
 
-	public TestcaseResultStatus getStatus()
+	public String getResultMsg()
 	{
-		return this.status;
+		return this.resultMsg;
 	}
 
-	public void setStatus(TestcaseResultStatus status)
+	public void setResultMsg(String resultMsg)
 	{
-		this.status = status;
+		this.resultMsg = resultMsg;
+	}
+
+	public TestcaseResultStatus getResultStatus()
+	{
+		return this.resultStatus;
+	}
+
+	public void setResultStatus(TestcaseResultStatus resultStatus)
+	{
+		this.resultStatus = resultStatus;
 	}
 
 	public DiscoveryTestcase getTestcase()

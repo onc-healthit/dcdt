@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.web.mail.decrypt.result;
 
 import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
 import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.web.mail.decrypt.DecryptDirectHandler;
 import gov.hhs.onc.dcdt.web.mail.decrypt.EmailBean;
 import gov.hhs.onc.dcdt.web.startup.ConfigInfo;
@@ -81,6 +82,8 @@ public class ResultMailMessageHandler implements DecryptDirectHandler
 	private final static String RESULT_MAIL_HEADER_TESTCASE_RESULT = "X-DCDT-Testcase-Result";
 	private final static String RESULT_MAIL_HEADER_TESTCASE_RESULT_DETAILS = "X-DCDT-Testcase-Result-Details";
 	
+	private final static String RESULT_MAIL_ENTRY_INFO_DEFAULT_NONE = "none";
+	
 	private final static String SSL_FACTORY = "javax.net.ssl.SSLSocketFactory";
 	
 	private final static Logger LOGGER = Logger.getLogger(ResultMailMessageHandler.class);
@@ -98,26 +101,35 @@ public class ResultMailMessageHandler implements DecryptDirectHandler
 
 		DiscoveryTestcase testcase = emailInfo.getTestcase();
 		String testcaseName = testcase.getName();
-		TestcaseResultStatus resultStatus = emailInfo.getStatus();
+		DiscoveryTestcaseResult result = emailInfo.getResult();
+		String resultMsg = emailInfo.getResultMsg();
+		TestcaseResultStatus resultStatus = emailInfo.getResultStatus();
 		
 		Map<String, Object> headerMap = new HashMap<>();
+		
 		StringBuilder bodyBuilder = new StringBuilder("Testcase ");
 		bodyBuilder.append(testcaseName);
 		bodyBuilder.append(" results:");
 
 		// add test case name header information
 		headerMap.put(RESULT_MAIL_HEADER_TESTCASE_NAME, testcaseName);
-		
 		headerMap.put(RESULT_MAIL_HEADER_TESTCASE_RESULT, resultStatus.getName());
+		
 		bodyBuilder.append(" ");
 		bodyBuilder.append(resultStatus.getNameDisplay());
 		bodyBuilder.append(".");
 		
 		// add details header information
-		headerMap.put(RESULT_MAIL_HEADER_TESTCASE_RESULT_DETAILS, emailInfo.getResults());
+		headerMap.put(RESULT_MAIL_HEADER_TESTCASE_RESULT_DETAILS, resultMsg);
 		
 		bodyBuilder.append("\nDetails: ");
-		bodyBuilder.append(emailInfo.getResults());
+		bodyBuilder.append(resultMsg);
+		
+		bodyBuilder.append("\n  - Expected Certificate: ");
+		appendEntryInfo(bodyBuilder, (testcase.hasResultsPass() ? testcase.getResultsPass().get(0).getEntryProperty() : null));
+		
+		bodyBuilder.append("\n  - Discovered Certificate: ");
+		appendEntryInfo(bodyBuilder, ((result != null) ? result.getEntryProperty() : null));
 		
 		try
 		{
@@ -131,6 +143,21 @@ public class ResultMailMessageHandler implements DecryptDirectHandler
 		}
 		
 		return emailInfo;
+	}
+	
+	private static void appendEntryInfo(StringBuilder bodyBuilder, String entryProp)
+	{
+		if (entryProp == null)
+		{
+			bodyBuilder.append(RESULT_MAIL_ENTRY_INFO_DEFAULT_NONE);
+		}
+		else
+		{
+			bodyBuilder.append(ConfigInfo.getConfigProperty(entryProp));
+			bodyBuilder.append(" (");
+			bodyBuilder.append(entryProp);
+			bodyBuilder.append(")");
+		}
 	}
 	
 	private static void sendMessage(Map<String, Object> headerMap, String resultAddr, String body) throws MessagingException

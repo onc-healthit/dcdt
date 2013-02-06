@@ -51,8 +51,9 @@ public class Decryptor implements DecryptDirectHandler {
 					
 					if (this.decryptEmail(emailInfo, result, msgBuilder))
 					{
-						emailInfo.setStatus(status);
-						emailInfo.setResults(result.getMsg());
+						emailInfo.setResult(result);
+						emailInfo.setResultMsg(result.getMsg());
+						emailInfo.setResultStatus(result.getStatus());
 						
 						return emailInfo;
 					}
@@ -60,7 +61,7 @@ public class Decryptor implements DecryptDirectHandler {
 			}
 		}
 		
-		emailInfo.setStatus(TestcaseResultStatus.PASS);
+		emailInfo.setResultStatus(TestcaseResultStatus.PASS);
 		
 		return emailInfo;
 	}
