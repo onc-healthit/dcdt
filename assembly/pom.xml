@@ -36,33 +36,19 @@
 	
 	<!-- See pom.properties for project properties -->
 	
-	<dependencies>
-		<!-- Compile dependencies (project) -->
-		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId>
-			<version>1.7.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>ant-contrib</groupId>
-			<artifactId>ant-contrib</artifactId>
-			<version>1.0b3</version>
-			<scope>compile</scope>
-			<exclusions>
-				<exclusion>
-					<groupId>ant</groupId>
-					<artifactId>ant</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<!-- Runtime dependencies (project) -->
-		<dependency>
-			<groupId>com.sun.xml.bind</groupId>
-			<artifactId>jaxb-impl</artifactId>
-			<version>2.1.13</version>
-		</dependency>
-	</dependencies>
+	<repositories>
+		<repository>
+			<id>sonatype-snapshot</id>
+			<name>Sonatype OSS Maven SNAPSHOT Repository</name>
+			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+		</repository>
+	</repositories>
 	
 	<build>
 		<plugins>
@@ -151,9 +137,10 @@
 								<artifactItem>
 									<groupId>org.nhind</groupId>
 									<artifactId>direct-project-stock</artifactId>
-									<version>2.0.1</version>
+									<version>2.1-SNAPSHOT</version>
 									<type>tar.gz</type>
-									<excludes>direct/james-*</excludes>
+									<includes>direct/apache-james-3.0-*/**,direct/apache-tomcat-*/webapps/*.war,direct/DirectDNSServices/**,direct/tools/**</includes>
+									<!--<excludes>direct/apache-tomcat-*/bin,direct/apache-tomcat-*/conf,direct/apache-tomcat-*/lib,direct/apache-tomcat-*/logs,direct/apache-tomcat-*/temp,direct/apache-tomcat-*/*,direct/james-*</excludes>-->
 									<outputDirectory>${project.build.directory}/direct-project-stock-tmp</outputDirectory>
 								</artifactItem>
 							</artifactItems>

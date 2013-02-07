@@ -75,9 +75,30 @@
 			</difference>
 		</copy>
 		
-		<copy file="${com.sun.xml.bind:jaxb-impl:jar}" todir="${package.build.james.dir}/conf/lib"/>
+		<dcdt:info>Appending the Direct Project stock assembly Apache James Log4j configuration file: ${package.build.james.conf.log4j.file}</dcdt:info>
+		<concat destfile="${package.build.james.conf.log4j.file}" fixlastline="true">
+			<path>
+				<pathelement location="${direct-project-stock.build.james.conf.log4j.file}"/>
+			</path>
+			<footer trimleading="true">
+				#********************************************************************
+				# Direct Certificate Discovery Tool (DCDT) Logging
+				#********************************************************************
+				log4j.appender.CONS-NHINDIRECT=org.apache.log4j.ConsoleAppender
+				log4j.appender.CONS-NHINDIRECT.layout=org.apache.log4j.EnhancedPatternLayout
+				log4j.appender.CONS-NHINDIRECT.layout.ConversionPattern=%-5p %d{HH:mm:ss,SSS} | %c | %m%n%throwable{5}
+				
+				log4j.appender.MAILETCONTAINER-NHINDIRECT=org.apache.log4j.DailyRollingFileAppender
+				log4j.appender.MAILETCONTAINER-NHINDIRECT.File=../log/mailetcontainer-nhindirect.log
+				log4j.appender.MAILETCONTAINER-NHINDIRECT.DatePattern='.'yyyy-MM-dd
+				log4j.appender.MAILETCONTAINER-NHINDIRECT.layout=org.apache.log4j.EnhancedPatternLayout
+				log4j.appender.MAILETCONTAINER-NHINDIRECT.layout.ConversionPattern=%-5p %d{HH:mm:ss,SSS} | %c | %m%n
+				
+				log4j.logger.org.nhindirect=INFO, CONS-NHINDIRECT, FILE, MAILETCONTAINER-NHINDIRECT
+			</footer>
+		</concat
 		
-		<dcdt:info>Appending the Direct Project stock assembly Apache James Java Service Wrapper configuration file: ${package.build.james.conf.wrapper.file}</dcdt:info>
+		><dcdt:info>Appending the Direct Project stock assembly Apache James Java Service Wrapper configuration file: ${package.build.james.conf.wrapper.file}</dcdt:info>
 		<concat destfile="${package.build.james.conf.wrapper.file}" fixlastline="true">
 			<path>
 				<pathelement location="${direct-project-stock.build.james.conf.wrapper.file}"/>
@@ -86,10 +107,7 @@
 				#********************************************************************
 				# Wrapper Direct Certificate Discovery Tool (DCDT) Properties
 				#********************************************************************
-				wrapper.java.additional.15=-Dderby.stream.error.file=../log/derby.log
-				wrapper.java.classpath.120=../conf/lib/*
 				wrapper.java.home=/usr/lib/jvm/java-6-sun
-				wrapper.logfile=../log/wrapper.log
 			</footer>
 		</concat>
 	</target>

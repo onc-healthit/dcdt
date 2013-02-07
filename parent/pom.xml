@@ -483,6 +483,11 @@
 								</exclusion>
 							</exclusions>
 						</dependency>
+						<dependency>
+							<groupId>org.apache.ant</groupId>
+							<artifactId>ant</artifactId>
+							<version>1.8.4</version>
+						</dependency>
 					</dependencies>
 					<configuration>
 						<exportAntProperties>true</exportAntProperties>
@@ -509,6 +514,9 @@
 							<Xlint:unchecked/>
 						</compilerArguments>
 						<encoding>${file.encoding}</encoding>
+						<optimize>true</optimize>
+						<showDeprecation>true</showDeprecation>
+						<showWarnings>true</showWarnings>
 						<source>${java.version}</source>
 						<target>${java.version}</target>
 					</configuration>
@@ -627,6 +635,21 @@
 								<version>2.6</version>
 							</plugin>
 							<plugin>
+								<groupId>com.atlassian.maven.plugins</groupId>
+								<artifactId>maven-clover2-plugin</artifactId>
+							</plugin>
+							<plugin>
+								<groupId>org.codehaus.mojo</groupId>
+								<artifactId>findbugs-maven-plugin</artifactId>
+								<version>2.5.2</version>
+								<configuration>
+									<effort>Max</effort>
+									<encoding>${file.encoding}</encoding>
+									<includeTests>true</includeTests>
+									<sourceEncoding>${file.encoding}</sourceEncoding>
+								</configuration>
+							</plugin>
+							<plugin>
 								<groupId>org.codehaus.mojo</groupId>
 								<artifactId>taglist-maven-plugin</artifactId>
 								<version>2.4</version>
@@ -736,6 +759,24 @@
 					<configuration>
 						<archiveClasses>true</archiveClasses>
 					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>com.atlassian.maven.plugins</groupId>
+					<artifactId>maven-clover2-plugin</artifactId>
+					<version>3.1.10.1</version>
+					<inherited>true</inherited>
+					<configuration>
+						<jdk>${java.version}</jdk>
+					</configuration>
+					<executions>
+						<execution>
+							<phase>pre-site</phase>
+							<goals>
+								<goal>instrument</goal>
+							</goals>
+							<inherited>true</inherited>
+						</execution>
+					</executions>
 				</plugin>
 				<plugin>
 					<groupId>org.codehaus.mojo</groupId>

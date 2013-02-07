@@ -309,7 +309,7 @@ public class ToolConfig
 			this.configEntityResolver = new ToolConfigEntityResolver();
 			
 			this.configBuilder = new DefaultConfigurationBuilder(ResourcePathUtils.buildPath(
-				true, true, ArrayUtils.toArray(CONFIG_FILE_RESOURCE_NAME)));
+				true, true, ArrayUtils.toArray((Object)CONFIG_FILE_RESOURCE_NAME)));
 			this.configBuilder.addConfigurationListener(this.configListener);
 			this.configBuilder.addErrorListener(this.configListener);
 			ConfigurationUtils.enableRuntimeExceptions(this.configBuilder);

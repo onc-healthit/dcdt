@@ -77,17 +77,6 @@ mail: direct2.${util:domain}
 o: ${util:domain}
 userCertificate:: 
 
-dn: cn=dts515_invalid_ldap_address,${util:loadDnName}
-objectClass: top
-objectClass: inetOrgPerson
-objectClass: person
-objectClass: organizationalPerson
-cn: dts515_invalid_ldap_address
-sn: dts515_invalid_ldap_address
-mail: dts515@direct2.${util:domain}
-o: ${util:domain}
-userCertificate:: 
-
 dn: cn=dts517_no_cert,${util:loadDnName}
 objectClass: top
 objectClass: inetOrgPerson

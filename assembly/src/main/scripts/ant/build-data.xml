@@ -33,6 +33,11 @@
 			<include name="**/*"/>
 		</fileset>
 	</pathconvert>
+	<pathconvert property="direct-project-stock.build.james.conf.log4j.file" pathsep=",">
+		<fileset id="direct-project-stock.build.james.conf.log4j.file.set" dir="${direct-project-stock.build.james.dir}/conf">
+			<include name="log4j.properties"/>
+		</fileset>
+	</pathconvert>
 	<pathconvert property="direct-project-stock.build.james.conf.wrapper.file" pathsep=",">
 		<fileset id="direct-project-stock.build.james.conf.wrapper.file.set" dir="${direct-project-stock.build.james.dir}/conf">
 			<include name="wrapper.conf"/>
@@ -110,6 +115,7 @@
 	
 	<!-- Package build Apache James sets & properties -->
 	<property name="package.build.james.dir" value="${package.build.share.dir}/${toString:direct-project-stock.build.james.dir.set}"/>
+	<property name="package.build.james.conf.log4j.file" value="${package.build.james.dir}/conf/${toString:direct-project-stock.build.james.conf.log4j.file.set}"/>
 	<property name="package.build.james.conf.wrapper.file" value="${package.build.james.dir}/conf/${toString:direct-project-stock.build.james.conf.wrapper.file.set}"/>
 	
 	<!-- Package build tools sets & properties -->
