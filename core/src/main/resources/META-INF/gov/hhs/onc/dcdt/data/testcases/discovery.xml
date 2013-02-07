@@ -159,7 +159,7 @@
 			shortDescription="Address-bound LDAP certificate discovery"
 			description="Query DNS for LDAP SRV Resource Record and query LDAP for X.509 Cert that is bound to the rfc822name in the certificate."
 			targetCert="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. An SRV Record points to the LDAP instance."
-			backgroundCerts="Expired certificates in DNS CERT address-bound and domain-bound resource records for the Direct address.|A valid domain-bound certificate in an LDAP server with associated SRV Record."
+			backgroundCerts="A valid domain-bound certificate in an LDAP server with associated SRV Record."
 			rtm="2\, 3\, 5\, 7\, 8\, 9\, 10\, 11\, 12\, 13\, 14\, 15\, 16\, 17\, 19\, 20\, 21\, 22"/>
 		
 		<!--========== RESULTS: PASS ==========-->
@@ -172,16 +172,6 @@
 		
 		<!--========== RESULTS: FAIL ==========-->
 		<resultsFail>
-			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
-				entryProperty="CERT_13"
-				statusName="fail"
-				msg="Your System used an expired address-bound DNS certificate. It MUST NOT use this certificate because it is expired. It MUST have used the address-bound LDAP certificate."/>
-			
-			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
-				entryProperty="CERT_38"
-				statusName="fail"
-				msg="Your System chose an expired DNS domain-bound certificate. It MUST NOT use this certificate because it is expired. It MUST have used the address-bound LDAP certificate."/>
-			
 			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
 				entryProperty="CERT_16"
 				statusName="fail"
@@ -202,7 +192,7 @@
 			shortDescription="Discover LDAP certificate based on SRV record priority value"
 			description="Query for Direct address from LDAP servers based on priority value."
 			targetCert="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV record has Priority = 0 and Weight = 0"
-			backgroundCerts="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV has Priority = 1 and Weight = 0"
+			backgroundCerts="A valid domain-bound certificate in an LDAP server with associated SRV Record.|A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV has Priority = 1 and Weight = 0"
 			rtm="15\, 18"
 			specifications="RFC 2782: Page 3\, Priority Section"/>
 		
@@ -321,7 +311,7 @@
 			shortDescription="Domain-bound LDAP certificate discovery"
 			description="Query LDAP server for domain-bound certificate."
 			targetCert="A valid domain-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. An SRV Record points to the LDAP instance."
-			backgroundCerts="Expired certificates in DNS CERT address-bound and domain-bound resource records for the Direct address."
+			backgroundCerts="A valid address-bound certificate in an LDAP server with the appropriate mail attribute and InetOrgPerson Schema. The associated SRV has Priority = 1 and Weight = 0"
 			rtm="22"/>
 		
 		<!--========== RESULTS: PASS ==========-->
@@ -331,19 +321,6 @@
 				statusName="pass"
 				msg="Passed."/>
 		</resultsPass>
-		
-		<!--========== RESULTS: FAIL ==========-->
-		<resultsFail>
-			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
-				entryProperty="CERT_39"
-				statusName="fail"
-				msg="Your System used an expired address-bound DNS certificate. It MUST not use this certificate because it is expired. It SHOULD have used the valid domain-bound LDAP certificate."/>
-			
-			<result config-class="gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult"
-				entryProperty="CERT_38"
-				statusName="fail"
-				msg="Your System chose an expired domain-bound DNS certificate. It MUST not use this certificate because it is expired. It SHOULD have used the valid domain-bound certificate in the Testing Tool's LDAP server."/>
-		</resultsFail>
 		
 		<!--========== RESULTS: OPTIONAL ==========-->
 		<resultsOptional>
