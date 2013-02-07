@@ -1,6 +1,9 @@
 package gov.hhs.onc.dcdt.web.mail.decrypt;
 
 import gov.hhs.onc.dcdt.web.mail.decrypt.result.ResultMailMessageHandler;
+import gov.hhs.onc.dcdt.web.mail.decrypt.result.session.ResultSessionMessageHandler;
+import java.io.File;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -18,29 +21,36 @@ public class DecryptController {
 	/**
 	 * Constructor - initializes decrypt handler queue and pushes
 	 * the handlers to the queue.
-	 * @param fileName Location of email file
+	 * @param file email file
 	 */
-	public DecryptController(String fileName) {
-		messageInfo = new EmailBean(fileName);
-		handlers = new LinkedList<DecryptDirectHandler>();
-		setMessageHandling();
+	public DecryptController(File file) {
+		this.messageInfo = new EmailBean(file);
+		this.handlers = new LinkedList<>();
+		this.setMessageHandling();
 	}
 
 	/**
 	 * Processes one message with the decrypter handlers.
 	 * @throws Exception
 	 */
-	public void processMessage() throws Exception {
-
-		for (DecryptDirectHandler handler : handlers) {
+	public void processMessage() throws Exception
+	{
+		this.messageInfo.setReceived(new Date());
+		
+		for (DecryptDirectHandler handler : this.handlers) {
 			handler.execute(this.messageInfo);
 		}
 	}
 
 	private void setMessageHandling() {
-		handlers.add(new EmailHeaderExtractor());
-		handlers.add(new Decryptor());
-		handlers.add(new ResultMailMessageHandler());
+		this.handlers.add(new EmailHeaderExtractor());
+		this.handlers.add(new Decryptor());
+		this.handlers.add(new ResultMailMessageHandler());
+		this.handlers.add(new ResultSessionMessageHandler());
 	}
 
+	public EmailBean getMessageInfo()
+	{
+		return this.messageInfo;
+	}
 }

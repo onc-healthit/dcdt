@@ -67,3 +67,13 @@ span.testcaseCommentsLabel
 {
 	font-weight: bold;
 }
+
+div#resultsNone
+{
+	font-style: italic;
+}
+
+span.resultItemLabel
+{
+	font-weight: bold;
+}

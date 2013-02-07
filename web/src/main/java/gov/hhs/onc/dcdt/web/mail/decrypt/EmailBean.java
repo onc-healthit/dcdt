@@ -3,7 +3,9 @@ package gov.hhs.onc.dcdt.web.mail.decrypt;
 import gov.hhs.onc.dcdt.beans.testcases.TestcaseResultStatus;
 import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.beans.testcases.discovery.DiscoveryTestcaseResult;
+import java.io.File;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Bean for email information including to/from addresses, file location of
@@ -16,7 +18,8 @@ public class EmailBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
-	private String fileLocation;
+	private File file;
+	private Date received;
 	private String toAddress;
 	private String fromAddress;
 	private DiscoveryTestcase testcase;
@@ -29,19 +32,19 @@ public class EmailBean implements Serializable {
 		this(null);
 	}
 	
-	public EmailBean(String fileLocation)
+	public EmailBean(File file)
 	{
-		this.fileLocation = fileLocation;
-	}
-	
-	public String getFileLocation()
-	{
-		return this.fileLocation;
+		this.file = file;
 	}
 
-	public void setFileLocation(String fileLocation)
+	public File getFile()
 	{
-		this.fileLocation = fileLocation;
+		return this.file;
+	}
+
+	public void setFile(File file)
+	{
+		this.file = file;
 	}
 
 	public String getFromAddress()
@@ -52,6 +55,16 @@ public class EmailBean implements Serializable {
 	public void setFromAddress(String fromAddress)
 	{
 		this.fromAddress = fromAddress;
+	}
+
+	public Date getReceived()
+	{
+		return this.received;
+	}
+
+	public void setReceived(Date received)
+	{
+		this.received = received;
 	}
 
 	public DiscoveryTestcaseResult getResult()

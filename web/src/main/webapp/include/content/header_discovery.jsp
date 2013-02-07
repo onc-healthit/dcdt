@@ -7,7 +7,8 @@
 <script type="text/javascript" src="${dcdt:scriptsPath(pageContext, 'testcases.js')}"></script>
 <script type="text/javascript" src="${dcdt:scriptsPath(pageContext, 'discovery.js')}"></script>
 <script type="text/javascript">
-$(document).ready(function () {
+$(document).ready(function ()
+{
 	window.DISCOVERY_TESTCASES = {};
 	
 	<c:forEach var="discoveryTestcaseEntry" varStatus="discoveryTestcasesStatus" items="${dcdt:discoveryTestcases()}">

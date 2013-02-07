@@ -76,21 +76,19 @@ public class Decryptor implements DecryptDirectHandler {
 	private boolean decryptEmail(EmailBean emailInfo, DiscoveryTestcaseResult testcaseResult, StringBuilder msgBuilder) {
 
 		boolean result = false;
-		
-		String mailFilePath = new File(ConfigInfo.getConfigProperty("EmlLocation"), 
-			emailInfo.getFileLocation()).toString();
+		File mailFile = emailInfo.getFile();
 		
 		String certsDirPath = ConfigInfo.getConfigProperty("CertLocation");
 		String entryProp = testcaseResult.getEntryProperty();
 		String certFilePath = Entry.getCertPemFilePath(ConfigInfo.getConfigProperty(entryProp), certsDirPath);
 		String keyFilePath = Entry.getKeyPemFilePath(ConfigInfo.getConfigProperty(entryProp), certsDirPath);
 
-		LOGGER.debug("Decrypting mail file (path=" + mailFilePath + "): cert=" + certFilePath + 
+		LOGGER.debug("Decrypting mail file (path=" + mailFile + "): cert=" + certFilePath + 
 			", privateKey=" + keyFilePath);
 
         String[] decryptCommand = new String[] {
         		"openssl", "cms", "-decrypt", "-in",
-        		mailFilePath,
+        		mailFile.getAbsolutePath(),
         		"-recip",
         		certFilePath,
         		"-inkey",

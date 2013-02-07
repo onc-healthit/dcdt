@@ -32,6 +32,12 @@
 		<put name="nav_active" type="string" value="discovery"/>
 		<put name="content" type="page" value="/discovery_email.jsp"/>
 	</definition>
+	<definition name="discovery_results" extends="layout">
+		<put name="header_content" type="page" value="/include/content/header_discovery_results.jsp"/>
+		<put name="title" type="string" value="Direct Certificate Discovery Tool - Discovery Results"/>
+		<put name="nav_active" type="string" value="discovery"/>
+		<put name="content" type="page" value="/discovery_results.jsp"/>
+	</definition>
 	
 	<definition name="hosting" extends="layout">
 		<put name="header_content" type="page" value="/include/content/header_hosting.jsp"/>

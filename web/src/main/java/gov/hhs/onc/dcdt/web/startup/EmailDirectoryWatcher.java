@@ -90,9 +90,9 @@ public class EmailDirectoryWatcher implements Runnable {
 		LOGGER.debug("First time through the folder: " + dir);
 		for (File file : files) {
 			LOGGER.debug("Found email file: "
-				+ file.getName());
+				+ file.getAbsolutePath());
 			DecryptController dc =
-				new DecryptController(file.getName());
+				new DecryptController(file);
 
 			if (!file.isDirectory()) {
 				try {
@@ -149,25 +149,21 @@ public class EmailDirectoryWatcher implements Runnable {
                 //The filename is the context of the event.
                 WatchEvent<Path> ev = (WatchEvent<Path>) event;
                 Path filename = ev.context();
+				File file = new File(this.dir.toAbsolutePath().toFile(), filename.toString());
  
-    			LOGGER.debug("Found email file: " + filename);
-    			DecryptController dc = new DecryptController(filename.toString());
+    			LOGGER.debug("Found email file: " + file.getAbsolutePath());
+    			DecryptController dc = new DecryptController(file);
 
-    			File nextFile = new File(dir.toString() + File.separatorChar + File.separatorChar
-    				+ filename.toString());
-
-    			LOGGER.debug("NextFile: " + nextFile.getAbsolutePath());
-
-    			if (!nextFile.isDirectory()) {
+    			if (!file.isDirectory()) {
     				try {
 						// TODO: replace with long-term solution
 						Thread.sleep(5000);
 						
     					dc.processMessage();
-    					moveFile(nextFile, sentDir);
+    					moveFile(file, sentDir);
     				} catch (Exception e) {
     					LOGGER.error("Problem with email file.", e);
-    					moveFile(nextFile, failedDir);
+    					moveFile(file, failedDir);
     				}
     			}
             }

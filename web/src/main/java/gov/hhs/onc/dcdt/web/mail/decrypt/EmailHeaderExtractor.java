@@ -70,16 +70,14 @@ public class EmailHeaderExtractor implements DecryptDirectHandler {
 		Properties props = new Properties();
 		props.put("mail.transport.protocol", "smtp");
 		Session mailSession = Session.getDefaultInstance(props, null);
-		String emailPath = ConfigInfo.getConfigProperty("EmlLocation");
-		String email = emailPath + File.separatorChar
-			+ emailInfo.getFileLocation();
+		File mailFile = emailInfo.getFile();
 
-		InputStream source = new FileInputStream(email);
+		InputStream source = new FileInputStream(mailFile);
 		this.message = new MimeMessage(mailSession, source);
 
 		source.close();
 
-		LOGGER.info("Email File Path: " + email);
+		LOGGER.info("Email File: " + mailFile.getAbsolutePath());
 		LOGGER.info("Content type: " + this.message.getContentType());
 
 		if (!(this.message.isMimeType("application/pkcs7-mime"))) {

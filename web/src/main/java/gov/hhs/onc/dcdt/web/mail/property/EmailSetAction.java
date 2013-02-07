@@ -1,9 +1,8 @@
 package gov.hhs.onc.dcdt.web.mail.property;
 
+import gov.hhs.onc.dcdt.web.mail.decrypt.result.session.ResultMailCookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-
 import org.apache.log4j.Logger;
 import org.apache.struts.action.Action;
 import org.apache.struts.action.ActionForm;
@@ -26,6 +25,8 @@ public class EmailSetAction extends Action {
 
 		LOGGER.info("Email Entered: " + esaf.getDirectEmail() + ", " + esaf.getResultsEmail());
 		esaf.setResultsMessage("Success You have entered: " + esaf.getDirectEmail() + ", " + esaf.getResultsEmail());
+
+		ResultMailCookie.setCookie(request, response, esaf.getDirectEmail());
 		
 		esaf.setDirectEmail(null);
 		esaf.setResultsEmail(null);
