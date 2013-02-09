@@ -55,6 +55,16 @@
 		<appender-ref ref="consoleApp"/>
 		<appender-ref ref="fileApp"/>
 	</logger>
+	<logger name="org.nhind" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="consoleApp"/>
+		<appender-ref ref="fileApp"/>
+	</logger>
+	<logger name="org.nhindirect" additivity="false">
+		<level value="all"/>
+		<appender-ref ref="consoleApp"/>
+		<appender-ref ref="fileApp"/>
+	</logger>
 	
 	<!--==================================================
 	= LOGGERS: PROJECT
