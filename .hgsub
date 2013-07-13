@@ -1,1 +1,3 @@
 dcdt-core = https://code.google.com/p/direct-certificate-discovery-tool.core/
+dcdt-parent = https://code.google.com/p/direct-certificate-discovery-tool.parent/
+dcdt-web = https://code.google.com/p/direct-certificate-discovery-tool.web/
