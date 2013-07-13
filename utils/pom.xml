@@ -178,13 +178,13 @@
 		<dependency>
 			<groupId>gov.hhs.onc.dcdt</groupId>
 			<artifactId>direct-cert-discovery-tool-core</artifactId>
-			<version>2.1-SNAPSHOT</version>
+			<version>2.2-SNAPSHOT</version>
 		</dependency>
 		<!-- Test dependencies (project, internal) -->
 		<dependency>
 			<groupId>gov.hhs.onc.dcdt</groupId>
 			<artifactId>direct-cert-discovery-tool-core</artifactId>
-			<version>2.1-SNAPSHOT</version>
+			<version>2.2-SNAPSHOT</version>
 			<type>test-jar</type>
 			<classifier>tests</classifier>
 			<scope>test</scope>

@@ -9,12 +9,12 @@ public class ToolVersionTest
 	private static ToolVersion coreVersion;
 	
 	@Test(dependsOnMethods = { "testGetProjectValues" })
-	public void testGetSvnValues()
+	public void testGetHgValues()
 	{
-		Assert.assertNotNull(coreVersion.getSvnAuthor(), "Failed to get core module SVN author.");
-		Assert.assertNotNull(coreVersion.getSvnDate(), "Failed to get core module SVN date.");
-		Assert.assertNotNull(coreVersion.getSvnHeadUrl(), "Failed to get core module SVN head URL.");
-		Assert.assertNotNull(coreVersion.getSvnRevision(), "Failed to get core module SVN revision.");
+		Assert.assertNotNull(coreVersion.getHgAuthor(), "Failed to get core module Mercurial author.");
+		Assert.assertNotNull(coreVersion.getHgDate(), "Failed to get core module Mercurial date.");
+		Assert.assertNotNull(coreVersion.getHgBranch(), "Failed to get core module Mercurial branch.");
+		Assert.assertNotNull(coreVersion.getHgRevision(), "Failed to get core module Mercurial revision.");
 	}
 	
 	@Test(dependsOnMethods = { "testGetProjectValues" })

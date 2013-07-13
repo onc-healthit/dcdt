@@ -16,8 +16,9 @@
 		<c:set var="webModuleVersion" value="${dcdt:moduleVersion('web')}"/>
 		<html:link action="/version"><span id="versionLink">Version</span></html:link>:
 		${webModuleVersion.version}
-		(<span class="versionPartLabel">SVN</span>:
-		url=${webModuleVersion.svnHeadUrl}, rev=${webModuleVersion.svnRevision} date=${webModuleVersion.svnDate})
+		(<span class="versionPartLabel">Mercurial</span>:
+		branch/tag=<c:choose><c:when test="${not empty webModuleVersion.hgTag}">${webModuleVersion.hgTag}</c:when><c:otherwise>${webModuleVersion.hgBranch}</c:otherwise></c:choose>, 
+        rev=${webModuleVersion.hgRevision} date=${webModuleVersion.hgDate})
 		(<span class="versionPartLabel">Build</span>:
 		date=${webModuleVersion.buildTimestamp})
 	</div>

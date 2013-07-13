@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.text.StrBuilder;
 import org.apache.log4j.Logger;
 
 public class ToolVersion
@@ -22,13 +22,14 @@ public class ToolVersion
 	private final static String[] BUILD_TIMESTAMP_PROP_KEY_NODES = ArrayUtils.addAll(PROP_KEY_NODES_PREFIX, "build", "timestamp");
 	private final static String[] BUILD_TIMESTAMP_FORMAT_PROP_KEY_NODES = ArrayUtils.add(BUILD_TIMESTAMP_PROP_KEY_NODES, "format");
 	
-	private final static String[] VERSION_SVN_PROP_KEY_NODES_PREFIX = ArrayUtils.add(VERSION_PROP_KEY_NODES, "svn");
-	private final static String[] VERSION_SVN_AUTHOR_PROP_KEY_NODES = ArrayUtils.add(VERSION_SVN_PROP_KEY_NODES_PREFIX, "author");
-	private final static String[] VERSION_SVN_DATE_PROP_KEY_NODES = ArrayUtils.add(VERSION_SVN_PROP_KEY_NODES_PREFIX, "date");
-	private final static String[] VERSION_SVN_DATE_FORMAT_PROP_KEY_NODES = ArrayUtils.add(VERSION_SVN_DATE_PROP_KEY_NODES, "format");
-	private final static String[] VERSION_SVN_HEAD_URL_PROP_KEY_NODES = ArrayUtils.addAll(VERSION_SVN_PROP_KEY_NODES_PREFIX, "head", "url");
-	private final static String[] VERSION_SVN_REVISION_PROP_KEY_NODES = ArrayUtils.add(VERSION_SVN_PROP_KEY_NODES_PREFIX, "revision");
-	
+	private final static String[] VERSION_HG_PROP_KEY_NODES_PREFIX = ArrayUtils.add(VERSION_PROP_KEY_NODES, "hg");
+	private final static String[] VERSION_HG_AUTHOR_PROP_KEY_NODES = ArrayUtils.add(VERSION_HG_PROP_KEY_NODES_PREFIX, "author");
+	private final static String[] VERSION_HG_BRANCH_PROP_KEY_NODES = ArrayUtils.add(VERSION_HG_PROP_KEY_NODES_PREFIX, "branch");
+	private final static String[] VERSION_HG_DATE_PROP_KEY_NODES = ArrayUtils.add(VERSION_HG_PROP_KEY_NODES_PREFIX, "date");
+	private final static String[] VERSION_HG_DATE_FORMAT_PROP_KEY_NODES = ArrayUtils.add(VERSION_HG_PROP_KEY_NODES_PREFIX, "format");
+	private final static String[] VERSION_HG_REVISION_PROP_KEY_NODES = ArrayUtils.add(VERSION_HG_PROP_KEY_NODES_PREFIX, "revision");
+	private final static String[] VERSION_HG_TAG_PROP_KEY_NODES = ArrayUtils.add(VERSION_HG_PROP_KEY_NODES_PREFIX, "tag");
+    
 	private final static Pattern GROUP_ID_PATTERN = Pattern.compile("^\\s*(.+)\\s*$");
 	private final static Pattern ARTIFACT_ID_PATTERN = Pattern.compile("^\\s*(.+)\\s*$");
 	private final static Pattern VERSION_PATTERN = Pattern.compile("^\\s*(.+)\\s*$");
@@ -37,20 +38,20 @@ public class ToolVersion
 	
 	private final static Pattern BUILD_TIMESTAMP_PATTERN = Pattern.compile("^\\s*(.+)\\s*$");
 	
-	private final static Pattern VERSION_SVN_AUTHOR_PATTERN = 
+	private final static Pattern VERSION_HG_AUTHOR_PATTERN = 
 		Pattern.compile("^\\s*\\$Author:\\s+(.+)\\s+\\$\\s*$");
-	private final static Pattern VERSION_SVN_DATE_PATTERN = 
-		Pattern.compile("^\\s*\\$Date:\\s+(\\d{4}\\-\\d{2}\\-\\d{2}\\s+\\d{2}:\\d{2}:\\d{2}\\s+\\-?\\d{4}).+$");
-	private final static Pattern VERSION_SVN_HEAD_URL_PATTERN = 
-		Pattern.compile("^\\s*\\$HeadURL:\\s+.+/svn/(.+)/pom\\.properties\\s+\\$\\s*$");
-	private final static Pattern VERSION_SVN_REVISION_PATTERN = 
-		Pattern.compile("^\\s*\\$Revision:\\s+(\\d+)\\s+\\$\\s*$");
+    private final static Pattern VERSION_HG_BRANCH_PATTERN = 
+		Pattern.compile("^\\s*\\$Branch:\\s+(.+)\\s+\\$\\s*$");
+	private final static Pattern VERSION_HG_DATE_PATTERN = 
+		Pattern.compile("^\\s*\\$Date:\\s+(\\d{4}\\-\\d{2}\\-\\d{2})T(\\d{2}:\\d{2}:\\d{2})(\\-?\\d{2}:\\d{2}).+$");
+	private final static Pattern VERSION_HG_REVISION_PATTERN = 
+		Pattern.compile("^\\s*\\$Revision:\\s+([\\da-f]+)\\s+\\$\\s*$");
+    private final static Pattern VERSION_HG_TAG_PATTERN = 
+		Pattern.compile("^\\s*\\$Tag:\\s+(.+)\\s+\\$\\s*$");
 	
 	private final static SimpleDateFormat BUILD_TIMESTAMP_FORMAT_DEFAULT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-	private final static SimpleDateFormat SVN_DATE_FORMAT_DEFAULT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+	private final static SimpleDateFormat HG_DATE_FORMAT_DEFAULT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss XXX");
 	private final static SimpleDateFormat DISPLAY_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-	
-	private final static String SVN_URL_DELIMITER = "/";
 	
 	private final static Logger LOGGER = Logger.getLogger(ToolVersion.class);
 	
@@ -94,26 +95,30 @@ public class ToolVersion
 			BUILD_TIMESTAMP_FORMAT_DEFAULT), BUILD_TIMESTAMP_PROP_KEY_NODES, BUILD_TIMESTAMP_PATTERN);
 	}
 	
-	public String getSvnAuthor()
+	public String getHgAuthor()
 	{
-		return this.getPropValue(VERSION_SVN_AUTHOR_PROP_KEY_NODES, VERSION_SVN_AUTHOR_PATTERN);
+		return this.getPropValue(VERSION_HG_AUTHOR_PROP_KEY_NODES, VERSION_HG_AUTHOR_PATTERN);
+	}
+    
+    public String getHgBranch()
+	{
+		return this.getPropValue(VERSION_HG_BRANCH_PROP_KEY_NODES, VERSION_HG_BRANCH_PATTERN);
 	}
 	
-	public String getSvnDate()
+	public String getHgDate()
 	{
-		return this.getDateDisplayValue(this.getDateFormatPropValue(VERSION_SVN_DATE_FORMAT_PROP_KEY_NODES, 
-			SVN_DATE_FORMAT_DEFAULT), VERSION_SVN_DATE_PROP_KEY_NODES, VERSION_SVN_DATE_PATTERN);
+		return this.getDateDisplayValue(this.getDateFormatPropValue(VERSION_HG_DATE_FORMAT_PROP_KEY_NODES, 
+			HG_DATE_FORMAT_DEFAULT), VERSION_HG_DATE_PROP_KEY_NODES, VERSION_HG_DATE_PATTERN);
 	}
 	
-	public String getSvnHeadUrl()
+	public String getHgRevision()
 	{
-		return StringUtils.removeEnd(this.getPropValue(VERSION_SVN_HEAD_URL_PROP_KEY_NODES, VERSION_SVN_HEAD_URL_PATTERN), 
-			SVN_URL_DELIMITER + this.moduleName);
+		return this.getPropValue(VERSION_HG_REVISION_PROP_KEY_NODES, VERSION_HG_REVISION_PATTERN);
 	}
-	
-	public String getSvnRevision()
+    
+    public String getHgTag()
 	{
-		return this.getPropValue(VERSION_SVN_REVISION_PROP_KEY_NODES, VERSION_SVN_REVISION_PATTERN);
+		return this.getPropValue(VERSION_HG_TAG_PROP_KEY_NODES, VERSION_HG_TAG_PATTERN);
 	}
 	
 	private String getDateDisplayValue(SimpleDateFormat dateFormat, String[] datePropKeyNodes, Pattern datePropValuePattern)
@@ -190,13 +195,27 @@ public class ToolVersion
 		
 		if (propValuePattern == null)
 		{
-			return propValue;
+			return null;
 		}
 		
 		Matcher matcher;
 		
-		return (propValue != null) && (matcher = propValuePattern.matcher(propValue)).matches() ? 
-			matcher.group(1) : propValue;
+        if ((propValue != null) && (matcher = propValuePattern.matcher(propValue)).matches())
+        {
+            StrBuilder propValueBuilder = new StrBuilder();
+            
+            for (int a = 1; a <= matcher.groupCount(); a++)
+            {
+                propValueBuilder.appendSeparator(" ");
+                propValueBuilder.append(matcher.group(a));
+            }
+            
+            return propValueBuilder.toString();
+        }
+        else
+        {
+            return null;
+        }
 	}
 	
 	private String buildPropKey(String[] propKeyNodes)

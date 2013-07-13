@@ -90,8 +90,8 @@
 			<li>
 				<span class="versionPartLabel">author</span>:
 				<c:choose>
-					<c:when test="${not empty moduleVersionEntry.value.svnAuthor}">
-						${moduleVersionEntry.value.svnAuthor}
+					<c:when test="${not empty moduleVersionEntry.value.hgAuthor}">
+						${moduleVersionEntry.value.hgAuthor}
 					</c:when>
 					<c:otherwise>
 						<span class="versionPartUnknown">unknown</span>
@@ -101,8 +101,8 @@
 			<li>
 				<span class="versionPartLabel">date</span>:
 				<c:choose>
-					<c:when test="${not empty moduleVersionEntry.value.svnDate}">
-						${moduleVersionEntry.value.svnDate}
+					<c:when test="${not empty moduleVersionEntry.value.hgDate}">
+						${moduleVersionEntry.value.hgDate}
 					</c:when>
 					<c:otherwise>
 						<span class="versionPartUnknown">unknown</span>
@@ -110,10 +110,13 @@
 				</c:choose>
 			</li>
 			<li>
-				<span class="versionPartLabel">url</span>:
+				<span class="versionPartLabel">branch/tag</span>:
 				<c:choose>
-					<c:when test="${not empty moduleVersionEntry.value.svnHeadUrl}">
-						${moduleVersionEntry.value.svnHeadUrl}
+					<c:when test="${not empty moduleVersionEntry.value.hgTag}">
+						${moduleVersionEntry.value.hgTag}
+					</c:when>
+                    <c:when test="${not empty moduleVersionEntry.value.hgBranch}">
+						${moduleVersionEntry.value.hgBranch}
 					</c:when>
 					<c:otherwise>
 						<span class="versionPartUnknown">unknown</span>
@@ -123,8 +126,8 @@
 			<li>
 				<span class="versionPartLabel">revision</span>:
 				<c:choose>
-					<c:when test="${not empty moduleVersionEntry.value.svnRevision}">
-						${moduleVersionEntry.value.svnRevision}
+					<c:when test="${not empty moduleVersionEntry.value.hgRevision}">
+						${moduleVersionEntry.value.hgRevision}
 					</c:when>
 					<c:otherwise>
 						<span class="versionPartUnknown">unknown</span>
