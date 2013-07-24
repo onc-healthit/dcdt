@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current">
+    
+    <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.classpath}"/>
+    
+    <macrodef name="readfile" description="Reads a file's content into a variable.">
+        <attribute name="file"/>
+        <attribute name="property"/>
+        <sequential>
+            <current:unset name="@{property}"/>
+            <loadfile srcFile="@{file}" property="@{property}"/>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="filename" description="Sets a variable to the base name of a file.">
+        <attribute name="file"/>
+        <attribute name="property"/>
+        <sequential>
+            <current:unset name="@{property}"/>
+            <basename file="@{file}" property="@{property}"/>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="unset" description="Unsets a variable.">
+        <attribute name="name"/>
+        <sequential>
+            <var name="@{name}" unset="true"/>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="debug" description="Logs a debug level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="debug">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="verbose" description="Logs a verbose level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="verbose">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="info" description="Logs an info level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="info">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="warn" description="Logs a warn level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="warn">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="error" description="Logs an error level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="error">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="message" description="Logs a message.">
+        <attribute name="level" default="info"/>
+        <text name="text" optional="true"/>
+        <sequential>
+            <echo message="@{text}" taskname="@{level}"/>
+        </sequential>
+    </macrodef>
+</antlib>

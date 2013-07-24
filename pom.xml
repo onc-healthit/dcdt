@@ -22,6 +22,8 @@
     <modules>
         <module>dcdt-parent</module>
         <module>dcdt-core</module>
+        <module>dcdt-standalone-parent</module>
+        <module>dcdt-standalone</module>
         <module>dcdt-dns</module>
         <module>dcdt-ldap</module>
         <module>dcdt-mail</module>

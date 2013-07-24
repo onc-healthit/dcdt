@@ -12,12 +12,12 @@
         <relativePath>../dcdt-standalone-parent</relativePath>
     </parent>
     
-    <artifactId>dcdt-utils</artifactId>
+    <artifactId>dcdt-standalone</artifactId>
     <packaging>jar</packaging>
     
-    <name>dcdt-utils</name>
-    <description>Direct Certificate Discovery Tool (DCDT) utilities.</description>
-    <url>http://api.direct-test.com/utils/${project.version}/</url>
+    <name>dcdt-standalone</name>
+    <description>Direct Certificate Discovery Tool (DCDT) standalone common components.</description>
+    <url>http://api.direct-test.com/standalone/${project.version}/</url>
     
     <dependencies>
         <!-- Runtime dependencies (project) -->
@@ -26,16 +26,7 @@
             <artifactId>dcdt-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-standalone</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <!-- Runtime dependencies (inherited) -->
-        <dependency>
-            <groupId>dnsjava</groupId>
-            <artifactId>dnsjava</artifactId>
-        </dependency>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>apache-log4j-extras</artifactId>
@@ -91,33 +82,6 @@
     
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>run-standalone</id>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>assembly-standalone</id>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>copy-dependencies-standalone</id>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.kuali.maven.plugins</groupId>
                 <artifactId>properties-maven-plugin</artifactId>

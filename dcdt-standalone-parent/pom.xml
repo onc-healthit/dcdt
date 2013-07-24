@@ -1,0 +1,127 @@
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    
+    <modelVersion>4.0.0</modelVersion>
+    
+    <parent>
+        <groupId>gov.hhs.onc.dcdt</groupId>
+        <artifactId>dcdt-parent</artifactId>
+        <version>3.0-SNAPSHOT</version>
+        <relativePath>../dcdt-parent</relativePath>
+    </parent>
+    
+    <artifactId>dcdt-standalone-parent</artifactId>
+    <packaging>pom</packaging>
+    
+    <name>dcdt-standalone-parent</name>
+    <description>Direct Certificate Discovery Tool (DCDT) standalone parent project.</description>
+    <url>http://api.direct-test.com/standalone-parent/${project.version}/</url>
+    
+    <properties>
+        <!-- Project standalone module properties -->
+        <project.module.standalone.basedir>${project.basedir}/../dcdt-standalone</project.module.standalone.basedir>
+        <!-- Project standalone module build properties -->
+        <project.module.standalone.build.assemblyDirectory>${project.module.standalone.basedir}/src/assembly</project.module.standalone.build.assemblyDirectory>
+        <project.module.standalone.build.resourcesDirectory>${project.module.standalone.basedir}/src/main/resources</project.module.standalone.build.resourcesDirectory>
+        <project.module.standalone.build.scriptSourceDirectory>${project.module.standalone.basedir}/src/main/scripts</project.module.standalone.build.scriptSourceDirectory>
+        <project.module.standalone.build.testResourcesDirectory>${project.module.standalone.basedir}/src/test/resources</project.module.standalone.build.testResourcesDirectory>
+        <project.module.standalone.build.testScriptSourceDirectory>${project.module.standalone.basedir}/src/test/scripts</project.module.standalone.build.testScriptSourceDirectory>
+    </properties>
+    
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-antrun-plugin</artifactId>
+                    <inherited>true</inherited>
+                    <executions>
+                        <!-- Generating standalone assembly file(s) -->
+                        <execution>
+                            <id>run-standalone</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>run</goal>
+                            </goals>
+                            <configuration>
+                                <target>
+                                    <path id="maven.classpath">
+                                        <path refid="maven.compile.classpath"/>
+                                        <path refid="maven.plugin.classpath"/>
+                                        <path refid="maven.runtime.classpath"/>
+                                        <path refid="maven.test.classpath"/>
+                                    </path>
+                                    <ant antfile="${project.module.standalone.build.scriptSourceDirectory}/standalone.xml" target="standalone" inheritRefs="true"/>
+                                </target>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <inherited>true</inherited>
+                    <executions>
+                        <!-- Building standalone assembly -->
+                        <execution>
+                            <id>assembly-standalone</id>
+                            <goals>
+                                <goal>single</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <descriptors>
+                                    <descriptor>${project.module.standalone.build.assemblyDirectory}/standalone.xml</descriptor>
+                                </descriptors>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-dependency-plugin</artifactId>
+                    <inherited>true</inherited>
+                    <executions>
+                        <!-- Copying standalone dependencies -->
+                        <execution>
+                            <id>copy-dependencies-standalone</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>copy-dependencies</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <includeScope>runtime</includeScope>
+                                <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
+                                <silent>true</silent>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.kuali.maven.plugins</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <inherited>true</inherited>
+                    <executions>
+                        <!-- Reading standalone Maven POM properties files -->
+                        <execution>
+                            <id>read-standalone-pom-properties</id>
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>read-project-properties</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <locations>
+                                    <location>${project.basedir}/../dcdt-parent/pom.properties</location>
+                                </locations>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

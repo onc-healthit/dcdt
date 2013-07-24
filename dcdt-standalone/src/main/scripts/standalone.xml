@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="standalone"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt"
+    xmlns:dcdt-standalone="antlib:gov.hhs.onc.dcdt.standalone">
+    
+    <description>Ant project for Direct Certificate Discovery Tool (DCDT) standalones.</description>
+    
+    <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.classpath}"/>
+    <taskdef file="${project.module.core.build.scriptSourceDirectory}/antlib.xml" uri="antlib:gov.hhs.onc.dcdt"/>
+    <taskdef file="${project.module.standalone.build.scriptSourceDirectory}/antlib-standalone.xml" uri="antlib:gov.hhs.onc.dcdt.standalone"/>
+    
+    <target name="standalone-parse-exec-files" description="Generates standalone executable file(s).">
+        <for param="file">
+            <fileset dir="${project.build.standaloneBinSourceDirectory}">
+                <include name="*.sh"/>
+            </fileset>
+            <sequential>
+                <dcdt-standalone:parse-exec-file file="@{file}"/>
+            </sequential>
+        </for>
+    </target>
+    
+    <target name="standalone-init" description="Initializes standalone variable(s).">
+        <!-- Project build standalone directory variable(s) -->
+        <var name="project.build.standaloneAssemblyDirectory" value="${project.build.directory}/${project.artifactId}"/>
+        <var name="project.build.standaloneBinSourceDirectory" value="${project.basedir}/src/bin"/>
+        <var name="project.build.standaloneBinDirectory" value="${project.build.standaloneAssemblyDirectory}/bin"/>
+        
+        <!-- Project standalone module build standalone directory variable(s) -->
+        <var name="project.module.standalone.build.standaloneBinSourceDirectory" value="${project.module.standalone.basedir}/src/bin"/>
+        
+        <!-- Project standalone module build standalone file variable(s) -->
+        <var name="project.module.standalone.build.standaloneBinSourceFile"
+            value="${project.module.standalone.build.standaloneBinSourceDirectory}/dcdt-standalone.sh"/>
+    </target>
+    
+    <target name="standalone" description="Generates standalone assembly file(s)." depends="standalone-init,standalone-parse-exec-files"/>
+</project>
