@@ -29,22 +29,26 @@
         <project.build.resourcesDirectory>${project.basedir}/src/main/resources</project.build.resourcesDirectory>
         <project.build.testResourcesDirectory>${project.basedir}/src/test/resources</project.build.testResourcesDirectory>
         <project.build.testScriptSourceDirectory>${project.basedir}/src/test/scripts</project.build.testScriptSourceDirectory>
-        <!-- Project parent properties -->
-        <project.parent.basedir>${project.basedir}/${project.parent.relativePath}</project.parent.basedir>
-        <!-- Project parent build properties -->
-        <project.parent.build.assemblyDirectory>${project.parent.basedir}/src/assembly</project.parent.build.assemblyDirectory>
-        <project.parent.build.resourcesDirectory>${project.parent.basedir}/src/main/resources</project.parent.build.resourcesDirectory>
-        <project.parent.build.scriptSourceDirectory>${project.parent.basedir}/src/main/scripts</project.parent.build.scriptSourceDirectory>
-        <project.parent.build.testResourcesDirectory>${project.parent.basedir}/src/test/resources</project.parent.build.testResourcesDirectory>
-        <project.parent.build.testScriptSourceDirectory>${project.parent.basedir}/src/test/scripts</project.parent.build.testScriptSourceDirectory>
         <!-- Project core module properties -->
         <project.module.core.basedir>${project.basedir}/../dcdt-core</project.module.core.basedir>
         <!-- Project core module build properties -->
         <project.module.core.build.assemblyDirectory>${project.module.core.basedir}/src/assembly</project.module.core.build.assemblyDirectory>
+        <project.module.core.build.directory>${project.module.core.basedir}/target</project.module.core.build.directory>
         <project.module.core.build.resourcesDirectory>${project.module.core.basedir}/src/main/resources</project.module.core.build.resourcesDirectory>
         <project.module.core.build.scriptSourceDirectory>${project.module.core.basedir}/src/main/scripts</project.module.core.build.scriptSourceDirectory>
         <project.module.core.build.testResourcesDirectory>${project.module.core.basedir}/src/test/resources</project.module.core.build.testResourcesDirectory>
         <project.module.core.build.testScriptSourceDirectory>${project.module.core.basedir}/src/test/scripts</project.module.core.build.testScriptSourceDirectory>
+        <!-- Project parent module properties -->
+        <project.module.parent.basedir>${project.basedir}/../dcdt-parent</project.module.parent.basedir>
+        <!-- Project parent properties -->
+        <project.parent.basedir>${project.basedir}/${project.parent.relativePath}</project.parent.basedir>
+        <!-- Project parent build properties -->
+        <project.parent.build.assemblyDirectory>${project.parent.basedir}/src/assembly</project.parent.build.assemblyDirectory>
+        <project.parent.build.directory>${project.parent.basedir}/target</project.parent.build.directory>
+        <project.parent.build.resourcesDirectory>${project.parent.basedir}/src/main/resources</project.parent.build.resourcesDirectory>
+        <project.parent.build.scriptSourceDirectory>${project.parent.basedir}/src/main/scripts</project.parent.build.scriptSourceDirectory>
+        <project.parent.build.testResourcesDirectory>${project.parent.basedir}/src/test/resources</project.parent.build.testResourcesDirectory>
+        <project.parent.build.testScriptSourceDirectory>${project.parent.basedir}/src/test/scripts</project.parent.build.testScriptSourceDirectory>
         <!-- Project reporting properties -->
         <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
     </properties>
@@ -52,6 +56,11 @@
     <dependencyManagement>
         <dependencies>
             <!-- Runtime dependencies -->
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>3.2.1</version>
+            </dependency>
             <dependency>
                 <groupId>dnsjava</groupId>
                 <artifactId>dnsjava</artifactId>
@@ -89,6 +98,11 @@
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>1.2.17</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -351,6 +365,15 @@
                     </configuration>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>appassembler-maven-plugin</artifactId>
+                    <version>1.4</version>
+                    <inherited>true</inherited>
+                    <configuration combine.children="merge">
+                        <repositoryLayout>flat</repositoryLayout>
+                    </configuration>
+                </plugin>
+                <plugin>
                     <groupId>org.kuali.maven.plugins</groupId>
                     <artifactId>properties-maven-plugin</artifactId>
                     <version>2.0.1</version>
@@ -364,7 +387,7 @@
                                 <goal>read-project-properties</goal>
                             </goals>
                             <inherited>true</inherited>
-                            <configuration>
+                            <configuration combine.children="merge">
                                 <locations>
                                     <location>${project.parent.basedir}/pom.properties</location>
                                     <location>${project.basedir}/pom.properties</location>

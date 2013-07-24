@@ -9,13 +9,27 @@
     <taskdef file="${project.module.core.build.scriptSourceDirectory}/antlib.xml" uri="antlib:gov.hhs.onc.dcdt"/>
     <taskdef file="${project.module.standalone.build.scriptSourceDirectory}/antlib-standalone.xml" uri="antlib:gov.hhs.onc.dcdt.standalone"/>
     
-    <target name="standalone-parse-exec-files" description="Generates standalone executable file(s).">
-        <for param="file">
-            <fileset dir="${project.build.standaloneBinSourceDirectory}">
-                <include name="*.sh"/>
+    <target name="standalone-process-exec-files" description="Processes standalone executable file(s).">
+        <!-- Making standalone build directories, if they do not exist -->
+        <mkdir dir="${project.build.standaloneBinDirectory}"/>
+        <mkdir dir="${project.build.standaloneLogDirectory}"/>
+        <mkdir dir="${project.build.standaloneVarDirectory}"/>
+        <for param="binFile">
+            <fileset dir="${project.build.standaloneBinDirectory}">
+                <include name="**/wrapper-*"/>
             </fileset>
             <sequential>
-                <dcdt-standalone:parse-exec-file file="@{file}"/>
+                <dcdt-standalone:process-exec-file file="@{binFile}" binary="true"/>
+            </sequential>
+        </for>
+        <for param="execFile">
+            <fileset dir="${project.build.standaloneBinDirectory}">
+                <include name="**/*.bat"/>
+                <include name="**/*.sh"/>
+                <include name="**/${project.artifactId}"/>
+            </fileset>
+            <sequential>
+                <dcdt-standalone:process-exec-file file="@{execFile}"/>
             </sequential>
         </for>
     </target>
@@ -23,8 +37,9 @@
     <target name="standalone-init" description="Initializes standalone variable(s).">
         <!-- Project build standalone directory variable(s) -->
         <var name="project.build.standaloneAssemblyDirectory" value="${project.build.directory}/${project.artifactId}"/>
-        <var name="project.build.standaloneBinSourceDirectory" value="${project.basedir}/src/bin"/>
         <var name="project.build.standaloneBinDirectory" value="${project.build.standaloneAssemblyDirectory}/bin"/>
+        <var name="project.build.standaloneLogDirectory" value="${project.build.standaloneAssemblyDirectory}/log"/>
+        <var name="project.build.standaloneVarDirectory" value="${project.build.standaloneAssemblyDirectory}/var"/>
         
         <!-- Project standalone module build standalone directory variable(s) -->
         <var name="project.module.standalone.build.standaloneBinSourceDirectory" value="${project.module.standalone.basedir}/src/bin"/>
@@ -34,5 +49,5 @@
             value="${project.module.standalone.build.standaloneBinSourceDirectory}/dcdt-standalone.sh"/>
     </target>
     
-    <target name="standalone" description="Generates standalone assembly file(s)." depends="standalone-init,standalone-parse-exec-files"/>
+    <target name="standalone" description="Generates standalone assembly file(s)." depends="standalone-init,standalone-process-exec-files"/>
 </project>

@@ -24,11 +24,23 @@
         <project.module.standalone.basedir>${project.basedir}/../dcdt-standalone</project.module.standalone.basedir>
         <!-- Project standalone module build properties -->
         <project.module.standalone.build.assemblyDirectory>${project.module.standalone.basedir}/src/assembly</project.module.standalone.build.assemblyDirectory>
+        <project.module.standalone.build.directory>${project.module.standalone.basedir}/target</project.module.standalone.build.directory>
         <project.module.standalone.build.resourcesDirectory>${project.module.standalone.basedir}/src/main/resources</project.module.standalone.build.resourcesDirectory>
         <project.module.standalone.build.scriptSourceDirectory>${project.module.standalone.basedir}/src/main/scripts</project.module.standalone.build.scriptSourceDirectory>
         <project.module.standalone.build.testResourcesDirectory>${project.module.standalone.basedir}/src/test/resources</project.module.standalone.build.testResourcesDirectory>
         <project.module.standalone.build.testScriptSourceDirectory>${project.module.standalone.basedir}/src/test/scripts</project.module.standalone.build.testScriptSourceDirectory>
     </properties>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>tanukisoft</groupId>
+                <artifactId>wrapper</artifactId>
+                <version>3.2.3</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
     
     <build>
         <pluginManagement>
@@ -41,7 +53,7 @@
                         <!-- Generating standalone assembly file(s) -->
                         <execution>
                             <id>run-standalone</id>
-                            <phase>generate-resources</phase>
+                            <phase>prepare-package</phase>
                             <goals>
                                 <goal>run</goal>
                             </goals>
@@ -67,6 +79,7 @@
                         <!-- Building standalone assembly -->
                         <execution>
                             <id>assembly-standalone</id>
+                            <phase>package</phase>
                             <goals>
                                 <goal>single</goal>
                             </goals>
@@ -87,7 +100,7 @@
                         <!-- Copying standalone dependencies -->
                         <execution>
                             <id>copy-dependencies-standalone</id>
-                            <phase>generate-resources</phase>
+                            <phase>prepare-package</phase>
                             <goals>
                                 <goal>copy-dependencies</goal>
                             </goals>
@@ -101,21 +114,326 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <inherited>true</inherited>
+                    <executions>
+                        <!-- Building standalone JAR file -->
+                        <execution>
+                            <id>jar-standalone</id>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>jar</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <inherited>true</inherited>
+                    <executions>
+                        <!-- Copying standalone resources -->
+                        <execution>
+                            <id>copy-resources-standalone</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
+                                <resources>
+                                    <!-- Executable file(s) (daemons) -->
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/bin</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.bat</include>
+                                            <include>**/*.sh</include>
+                                            <include>**/${project.artifactId}</include>
+                                        </includes>
+                                        <targetPath>bin</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/bin</directory>
+                                        <excludes>
+                                            <exclude>**/*.bat</exclude>
+                                            <exclude>**/*.sh</exclude>
+                                            <exclude>**/${project.artifactId}</exclude>
+                                        </excludes>
+                                        <targetPath>bin</targetPath>
+                                    </resource>
+                                    <!-- Executable file(s) (project) -->
+                                    <resource>
+                                        <directory>${project.basedir}/src/bin</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.bat</include>
+                                            <include>**/*.sh</include>
+                                        </includes>
+                                        <targetPath>bin</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.basedir}/src/bin</directory>
+                                        <excludes>
+                                            <exclude>**/*.bat</exclude>
+                                            <exclude>**/*.sh</exclude>
+                                        </excludes>
+                                        <targetPath>bin</targetPath>
+                                    </resource>
+                                    <!-- Configuration file(s) (dependencies) -->
+                                    <resource>
+                                        <directory>${project.module.core.basedir}/src/conf</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.module.core.basedir}/src/conf</directory>
+                                        <excludes>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.module.standalone.basedir}/src/conf</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.module.standalone.basedir}/src/conf</directory>
+                                        <excludes>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <!-- Configuration file(s) (daemons) -->
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/conf</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/conf</directory>
+                                        <excludes>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <!-- Configuration file(s) (project) -->
+                                    <resource>
+                                        <directory>${project.basedir}/src/conf</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.basedir}/src/conf</directory>
+                                        <excludes>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <!-- Library file(s) (daemons) -->
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/lib</directory>
+                                        <targetPath>lib</targetPath>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>appassembler-maven-plugin</artifactId>
+                    <inherited>true</inherited>
+                    <executions>
+                        <!-- Building standalone daemons -->
+                        <execution>
+                            <id>daemons-standalone</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>generate-daemons</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration combine.children="merge">
+                                <daemons>
+                                    <daemon>
+                                        <id>${project.artifactId}</id>
+                                        <mainClass>${project.standalone.java.class.main}</mainClass>
+                                        <commandLineArguments>
+                                            <commandLineArgument>start</commandLineArgument>
+                                        </commandLineArguments>
+                                        <platforms>
+                                            <platform>jsw</platform>
+                                        </platforms>
+                                        <generatorConfigurations>
+                                            <generatorConfiguration>
+                                                <generator>jsw</generator>
+                                                <includes>
+                                                    <include>linux-x86-32</include>
+                                                    <include>linux-x86-64</include>
+                                                    <include>windows-x86-32</include>
+                                                    <include>windows-x86-64</include>
+                                                </includes>
+                                                <configuration combine.children="append">
+                                                    <property>
+                                                        <name>configuration.directory.in.classpath.first</name>
+                                                        <value>conf</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>set.APP_BASE</name>
+                                                        <value>..</value>
+                                                    </property>
+                                                    <property>
+                                                    <name>set.default.APP_LONG_NAME</name>
+                                                        <value>${project.standalone.name.display}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>set.default.APP_NAME</name>
+                                                        <value>${project.standalone.name}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>set.default.REPO_DIR</name>
+                                                        <value>lib</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.console.format</name>
+                                                        <value>M</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.description</name>
+                                                        <value>${project.standalone.description}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.displayname</name>
+                                                        <value>${project.standalone.name.display}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.1</name>
+                                                        <value>-XX:PermSize=64m</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.2</name>
+                                                        <value>-XX:MaxPermSize=128m</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.3</name>
+                                                        <value>-XX:+UseConcMarkSweepGC</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.4</name>
+                                                        <value>-XX:+CMSClassUnloadingEnabled</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.5</name>
+                                                        <value>-Djava.security.manager</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.6</name>
+                                                        <value>-Djava.security.policy=conf/wrapper.policy</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.7</name>
+                                                        <value>-Ddcdt.log.dir=log</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.8</name>
+                                                        <value>-Ddcdt.log.file.basename=${project.artifactId}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.logfile</name>
+                                                        <value>log/wrapper.log</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.name</name>
+                                                        <value>${project.standalone.name}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.ntservice.description</name>
+                                                        <value>${project.standalone.description}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.ntservice.displayname</name>
+                                                        <value>${project.standalone.name.display}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.ntservice.name</name>
+                                                        <value>${project.standalone.name}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.pidfile</name>
+                                                        <value>../var</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.pidfile.strict</name>
+                                                        <value>true</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.statusfile</name>
+                                                        <value>var/${project.standalone.name}.status</value>
+                                                    </property>
+                                                </configuration>
+                                            </generatorConfiguration>
+                                        </generatorConfigurations>
+                                    </daemon>
+                                </daemons>
+                                <defaultJvmSettings>
+                                    <initialMemorySize>128M</initialMemorySize>
+                                    <maxMemorySize>256M</maxMemorySize>
+                                </defaultJvmSettings>
+                                <target>${project.build.directory}/${project.artifactId}-daemons</target>
+                                <useWildcardClassPath>true</useWildcardClassPath>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.kuali.maven.plugins</groupId>
                     <artifactId>properties-maven-plugin</artifactId>
                     <inherited>true</inherited>
                     <executions>
                         <!-- Reading standalone Maven POM properties files -->
                         <execution>
-                            <id>read-standalone-pom-properties</id>
-                            <phase>initialize</phase>
-                            <goals>
-                                <goal>read-project-properties</goal>
-                            </goals>
+                            <id>read-pom-properties</id>
                             <inherited>true</inherited>
                             <configuration>
                                 <locations>
-                                    <location>${project.basedir}/../dcdt-parent/pom.properties</location>
+                                    <location>${project.module.parent.basedir}/pom.properties</location>
+                                    <location>${project.parent.basedir}/pom.properties</location>
+                                    <location>${project.basedir}/pom.properties</location>
                                 </locations>
                             </configuration>
                         </execution>

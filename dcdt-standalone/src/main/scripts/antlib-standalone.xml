@@ -6,40 +6,42 @@
     <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.classpath}"/>
     <taskdef file="${project.module.core.build.scriptSourceDirectory}/antlib.xml" uri="antlib:gov.hhs.onc.dcdt"/>
     
-    <macrodef name="parse-exec-file" description="Parses an executable file.">
+    <macrodef name="process-exec-file" description="Processes an executable file.">
         <attribute name="file"/>
         <attribute name="baseFile" default="${project.module.standalone.build.standaloneBinSourceFile}"/>
         <attribute name="outDir" default="${project.build.standaloneBinDirectory}"/>
+        <attribute name="binary" default="false"/>
         <sequential>
             <dcdt:filename file="@{file}" property="fileBasename"/>
             <var name="outFile" value="@{outDir}/${fileBasename}"/>
             
-            <!-- Reading standalone-specific executable file content -->
-            <dcdt:readfile file="@{file}" property="fileContent"/>
-            
-            <!-- Making standalone build binary directory, if it does not exist -->
             <if>
-                <not><available file="@{outDir}" type="dir"/></not>
+                <equals arg1="@{binary}" arg2="false"/>
                 <then>
-                    <mkdir dir="${project.build.standaloneBinDirectory}"/>
+                    <!-- Reading standalone-specific executable file content -->
+                    <dcdt:readfile file="@{file}" property="fileContent"/>
+                    
+                    <!-- Copying + filtering base executable file -->
+                    <copy file="@{baseFile}" tofile="${outFile}">
+                        <filterchain>
+                            <!-- Inserting standalone-specific script code -->
+                            <replacestring from="%{STANDALONE_EXEC}" to="${fileContent}"/>
+                        </filterchain>
+                    </copy>
+                    <!-- Removing extraneous shebang -->
+                    <replaceregexp file="${outFile}" match="\n#![^\n]+\n" replace="" flags="g"/>
+                    <!-- Removing extraneous newlines -->
+                    <replaceregexp file="${outFile}" match="(\n\n)\n" replace="\1" flags="g"/>
+                    
+                    <dcdt:info>Processed standalone executable file: ${fileBasename}</dcdt:info>
                 </then>
+                <else>
+                    <dcdt:info>Processed standalone binary file: ${fileBasename}</dcdt:info>
+                </else>
             </if>
             
-            <!-- Copying + filtering base executable file -->
-            <copy file="@{baseFile}" tofile="${outFile}">
-                <filterchain>
-                    <!-- Inserting standalone-specific script code -->
-                    <replacestring from="%{STANDALONE_EXEC}" to="${fileContent}"/>
-                </filterchain>
-            </copy>
-            <!-- Removing extraneous shebang -->
-            <replaceregexp file="${outFile}" match="\n#![^\n]+\n" replace="" flags="g"/>
-            <!-- Removing extraneous newlines -->
-            <replaceregexp file="${outFile}" match="(\n\n)\n" replace="\1" flags="g"/>
             <!-- Setting the output file to be executable -->
             <chmod file="${outFile}" perm="+x"/>
-            
-            <dcdt:info>Parsed standalone executable file: ${fileBasename}</dcdt:info>
         </sequential>
     </macrodef>
 </antlib>
