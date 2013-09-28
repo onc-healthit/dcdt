@@ -438,37 +438,19 @@
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.7</name>
-                                                        <value>-Djava.security.policy=conf/wrapper.policy</value>
+                                                        <value>-Djava.security.policy=conf/standalone/wrapper.policy</value>
                                                     </property>
-                                                    <!--
                                                     <property>
                                                         <name>wrapper.java.additional.8</name>
-                                                        <value>-Dcom.sun.management.jmxremote</value>
+                                                        <value>-Dlogback.configurationFile=${project.standalone.logback.config.file}</value>
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.9</name>
-                                                        <value>-Dcom.sun.management.jmxremote.authenticate=false</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.10</name>
-                                                        <value>-Dcom.sun.management.jmxremote.port=9999</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.11</name>
-                                                        <value>-Dcom.sun.management.jmxremote.ssl=false</value>
-                                                    </property>
-                                                    -->
-                                                    <property>
-                                                        <name>wrapper.java.additional.8</name>
                                                         <value>-Dspring.profiles.active=${project.standalone.spring.profiles.active}</value>
                                                     </property>
                                                     <property>
-                                                        <name>wrapper.java.additional.9</name>
-                                                        <value>-Ddcdt.log.dir=log</value>
-                                                    </property>
-                                                    <property>
                                                         <name>wrapper.java.additional.10</name>
-                                                        <value>-Ddcdt.log.file.basename=${project.artifactId}</value>
+                                                        <value>-Ddcdt.log.dir=log</value>
                                                     </property>
                                                     <property>
                                                         <name>wrapper.logfile</name>

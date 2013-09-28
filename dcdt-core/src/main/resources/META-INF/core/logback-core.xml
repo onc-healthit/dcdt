@@ -1,32 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration
-    debug="false"
-    scan="true"
-    scanPeriod="5 seconds"
+<included
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="https://github.com/enricopulatzo/logback-XSD/raw/master/src/main/xsd/logback.xsd">
     
-    <contextName>%{project.artifactId}</contextName>
+    <conversionRule conversionWord="toolp" converterClass="gov.hhs.onc.dcdt.logback.ToolPriorityConverter"/>
+    
+    <if condition='p("wrapper.daemonize").equalsIgnoreCase(Boolean.toString(true))'>
+        <then>
+            <property name="dcdt.log.console.pattern" value="%p - %m%n" scope="context"/>
+        </then>
+        <else>
+            <property name="dcdt.log.console.pattern" value="%toolp(%p) - %m%n" scope="context"/>
+        </else>
+    </if>
+    
+    <property name="dcdt.log.file.name" value="${dcdt.log.file.name:-${CONTEXT_NAME}}" scope="context"/>
+    <property name="dcdt.log.file.ext" value="${dcdt.log.file.ext:-.log}" scope="context"/>
     
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <target>System.err</target>
         <encoder>
-            <pattern>%p - %m%n</pattern>
+            <pattern>${dcdt.log.console.pattern}</pattern>
         </encoder>
+        <target>System.err</target>
+        <withJansi>true</withJansi>
     </appender>
-    
     <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${dcdt.log.dir}/${dcdt.log.file.basename}.log</file>
-        
+        <file>${dcdt.log.dir}/${dcdt.log.file.name}${dcdt.log.file.ext}</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${dcdt.log.dir}/${dcdt.log.file.basename}.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${dcdt.log.dir}/${dcdt.log.file.name}.%d{yyyy-MM-dd}${dcdt.log.file.ext}</fileNamePattern>
             <maxHistory>30</maxHistory>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
             <cleanHistoryOnStart>true</cleanHistoryOnStart>
         </rollingPolicy>
-        
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss z} [%C:%L %t] %p - %m%n</pattern>
         </encoder>
@@ -45,4 +52,4 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </root>
-</configuration>
+</included>
