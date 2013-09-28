@@ -1,23 +1,37 @@
 package gov.hhs.onc.dcdt.dns;
 
+
+import gov.hhs.onc.dcdt.dns.conf.DnsServerConfig;
 import gov.hhs.onc.dcdt.standalone.ToolWrapper;
-import gov.hhs.onc.dcdt.standalone.utils.ToolWrapperUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-public class ToolDns extends ToolWrapper {
-    // TEMP: dev
-    private final static long MS_IN_SECS = 1000L;
+public class ToolDns extends ToolWrapper<ClassPathXmlApplicationContext> {
+    private final static List<String> CONTEXT_CONFIG_LOCS_DNS = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-dns*.xml");
+    
+    @Autowired
+    private ThreadPoolTaskExecutor dnsServerTaskExecutor;
 
-    // TEMP: dev
-    private final static long SLEEP_TIME_MS = 5000L;
+    @Autowired
+    private List<DnsServerConfig> dnsServerConfigs;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(ToolDns.class);
+    private List<DnsServer> dnsServers;
 
-    // TEMP: dev
-    private int sleepTime = 0;
+    public ToolDns() {
+        super();
+    }
 
-    public ToolDns(String ... args) {
+    public ToolDns(AbstractApplicationContext parentContext) {
+        super(parentContext);
+    }
+
+    private ToolDns(String ... args) {
         super(args);
     }
 
@@ -26,28 +40,34 @@ public class ToolDns extends ToolWrapper {
     }
 
     @Override
-    public void start() {
-        super.start();
+    protected void startWrapper() {
+        if (this.dnsServerConfigs != null) {
+            this.dnsServers = new ArrayList<>(this.dnsServerConfigs.size());
 
-        // TEMP: dev
-        while(true) {
-            try {
-                Thread.sleep(SLEEP_TIME_MS);
+            for (DnsServerConfig dnsServerConfig : this.dnsServerConfigs) {
+                DnsServer dnsServer = new DnsServer();
+                dnsServer.setDnsServerConfig(dnsServerConfig);
+                this.beanFactory.autowireBeanProperties(dnsServer, AutowireCapableBeanFactory.AUTOWIRE_BY_TYPE, false);
+                this.dnsServers.add(dnsServer);
 
-                this.sleepTime += SLEEP_TIME_MS;
-
-                LOGGER.trace(ToolWrapperUtils.getWrapperDisplayName() + " (class=" + this.getClass().getName() + ") slept: " + (this.sleepTime / MS_IN_SECS)
-                        + "s");
-            } catch (InterruptedException e) {
-                break;
+                this.dnsServerTaskExecutor.execute(dnsServer);
             }
         }
     }
 
     @Override
-    public void stop() {
-        // TODO: implement
+    protected void stopWrapper() {
+        if (this.dnsServers != null) {
+            for (DnsServer dnsServer : this.dnsServers) {
+                dnsServer.stop();
+            }
+        }
+    }
 
-        super.stop();
+    @Override
+    protected void initializeContext() {
+        this.contextConfigLocs.addAll(CONTEXT_CONFIG_LOCS_DNS);
+
+        super.initializeContext();
     }
 }

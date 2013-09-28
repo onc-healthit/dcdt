@@ -17,7 +17,7 @@
     
     <name>dcdt-all</name>
     <description>Direct Certificate Discovery Tool (DCDT) aggregate project.</description>
-    <url>http://api.direct-test.com/all/${project.version}/</url>
+    <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <modules>
         <module>dcdt-parent</module>
@@ -30,4 +30,21 @@
         <module>dcdt-utils</module>
         <module>dcdt-web</module>
     </modules>
+    
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>de.smartics.maven.plugin</groupId>
+                <artifactId>buildmetadata-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>write-project-metadata-properties</id>
+                        <configuration>
+                            <basedir>${project.basedir}</basedir>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

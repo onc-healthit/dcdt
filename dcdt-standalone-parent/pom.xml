@@ -17,22 +17,84 @@
     
     <name>dcdt-standalone-parent</name>
     <description>Direct Certificate Discovery Tool (DCDT) standalone parent project.</description>
-    <url>http://api.direct-test.com/standalone-parent/${project.version}/</url>
-    
-    <properties>
-        <!-- Project standalone module properties -->
-        <project.module.standalone.basedir>${project.basedir}/../dcdt-standalone</project.module.standalone.basedir>
-        <!-- Project standalone module build properties -->
-        <project.module.standalone.build.assemblyDirectory>${project.module.standalone.basedir}/src/assembly</project.module.standalone.build.assemblyDirectory>
-        <project.module.standalone.build.directory>${project.module.standalone.basedir}/target</project.module.standalone.build.directory>
-        <project.module.standalone.build.resourcesDirectory>${project.module.standalone.basedir}/src/main/resources</project.module.standalone.build.resourcesDirectory>
-        <project.module.standalone.build.scriptSourceDirectory>${project.module.standalone.basedir}/src/main/scripts</project.module.standalone.build.scriptSourceDirectory>
-        <project.module.standalone.build.testResourcesDirectory>${project.module.standalone.basedir}/src/test/resources</project.module.standalone.build.testResourcesDirectory>
-        <project.module.standalone.build.testScriptSourceDirectory>${project.module.standalone.basedir}/src/test/scripts</project.module.standalone.build.testScriptSourceDirectory>
-    </properties>
+    <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.apache.camel</groupId>
+                <artifactId>camel-spring</artifactId>
+                <version>2.11.1</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-core</artifactId>
+                <version>2.0.0-M15</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.directory.api</groupId>
+                        <artifactId>api-ldap-schema-data</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-core-annotations</artifactId>
+                <version>2.0.0-M15</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.directory.api</groupId>
+                        <artifactId>api-ldap-schema-data</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.directory.jdbm</groupId>
+                        <artifactId>apacheds-jdbm1</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.server</groupId>
+                <artifactId>apacheds-server-annotations</artifactId>
+                <version>2.0.0-M15</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.directory.api</groupId>
+                        <artifactId>api-ldap-schema-data</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.directory.jdbm</groupId>
+                        <artifactId>apacheds-jdbm1</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>apache-james</artifactId>
+                <version>3.0-beta4</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.james</groupId>
+                <artifactId>james-server-queue-activemq</artifactId>
+                <version>3.0-beta4</version>
+            </dependency>
             <dependency>
                 <groupId>tanukisoft</groupId>
                 <artifactId>wrapper</artifactId>
@@ -57,15 +119,10 @@
                             <goals>
                                 <goal>run</goal>
                             </goals>
+                            <inherited>true</inherited>
                             <configuration>
                                 <target>
-                                    <path id="maven.classpath">
-                                        <path refid="maven.compile.classpath"/>
-                                        <path refid="maven.plugin.classpath"/>
-                                        <path refid="maven.runtime.classpath"/>
-                                        <path refid="maven.test.classpath"/>
-                                    </path>
-                                    <ant antfile="${project.module.standalone.build.scriptSourceDirectory}/standalone.xml" target="standalone" inheritRefs="true"/>
+                                    <ant antfile="${project.basedir}/../dcdt-standalone/src/main/scripts/standalone.xml" target="standalone" inheritRefs="true"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -86,7 +143,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <descriptors>
-                                    <descriptor>${project.module.standalone.build.assemblyDirectory}/standalone.xml</descriptor>
+                                    <descriptor>${project.basedir}/../dcdt-standalone/src/assembly/standalone.xml</descriptor>
                                 </descriptors>
                             </configuration>
                         </execution>
@@ -100,7 +157,7 @@
                         <!-- Copying standalone dependencies -->
                         <execution>
                             <id>copy-dependencies-standalone</id>
-                            <phase>prepare-package</phase>
+                            <phase>generate-resources</phase>
                             <goals>
                                 <goal>copy-dependencies</goal>
                             </goals>
@@ -110,6 +167,32 @@
                                 <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
                                 <silent>true</silent>
                             </configuration>
+                        </execution>
+                        <!-- Unpacking dependency resources -->
+                        <execution>
+                            <id>unpack-dependency-resources-standalone</id>
+                            <phase>generate-resources</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>dcdt-core</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>dcdt-standalone</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>META-INF/**/*.conf,META-INF/**/*.policy,META-INF/**/*.properties,META-INF/**/*.xml</includes>
+                            <excludes>META-INF/maven/**/*,META-INF/spring/**/*-embedded.xml</excludes>
+                            <outputDirectory>${project.build.directory}/${project.artifactId}-dependency-resources</outputDirectory>
+                        </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -137,7 +220,7 @@
                     <artifactId>maven-resources-plugin</artifactId>
                     <inherited>true</inherited>
                     <executions>
-                        <!-- Copying standalone resources -->
+                        <!-- Copying dependency resources -->
                         <execution>
                             <id>copy-resources-standalone</id>
                             <phase>process-resources</phase>
@@ -148,6 +231,24 @@
                             <configuration>
                                 <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
                                 <resources>
+                                    <!-- Executable file(s) (project) -->
+                                    <resource>
+                                        <directory>${project.basedir}/src/bin</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.bat</include>
+                                            <include>**/*.sh</include>
+                                        </includes>
+                                        <targetPath>bin</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.basedir}/src/bin</directory>
+                                        <excludes>
+                                            <exclude>**/*.bat</exclude>
+                                            <exclude>**/*.sh</exclude>
+                                        </excludes>
+                                        <targetPath>bin</targetPath>
+                                    </resource>
                                     <!-- Executable file(s) (daemons) -->
                                     <resource>
                                         <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/bin</directory>
@@ -168,27 +269,9 @@
                                         </excludes>
                                         <targetPath>bin</targetPath>
                                     </resource>
-                                    <!-- Executable file(s) (project) -->
-                                    <resource>
-                                        <directory>${project.basedir}/src/bin</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>**/*.bat</include>
-                                            <include>**/*.sh</include>
-                                        </includes>
-                                        <targetPath>bin</targetPath>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.basedir}/src/bin</directory>
-                                        <excludes>
-                                            <exclude>**/*.bat</exclude>
-                                            <exclude>**/*.sh</exclude>
-                                        </excludes>
-                                        <targetPath>bin</targetPath>
-                                    </resource>
                                     <!-- Configuration file(s) (dependencies) -->
                                     <resource>
-                                        <directory>${project.module.core.basedir}/src/conf</directory>
+                                        <directory>${project.build.directory}/${project.artifactId}-dependency-resources/META-INF</directory>
                                         <filtering>true</filtering>
                                         <includes>
                                             <include>**/*.conf</include>
@@ -198,7 +281,7 @@
                                         <targetPath>conf</targetPath>
                                     </resource>
                                     <resource>
-                                        <directory>${project.module.core.basedir}/src/conf</directory>
+                                        <directory>${project.build.directory}/${project.artifactId}-dependency-resources/META-INF</directory>
                                         <excludes>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
@@ -206,18 +289,22 @@
                                         </excludes>
                                         <targetPath>conf</targetPath>
                                     </resource>
+                                    <!-- Configuration file(s) (project) -->
                                     <resource>
-                                        <directory>${project.module.standalone.basedir}/src/conf</directory>
+                                        <directory>${project.basedir}/src/main/resources/META-INF</directory>
                                         <filtering>true</filtering>
                                         <includes>
                                             <include>**/*.conf</include>
                                             <include>**/*.properties</include>
                                             <include>**/*.xml</include>
                                         </includes>
+                                        <excludes>
+                                            <exclude>spring/**/*-embedded.xml</exclude>
+                                        </excludes>
                                         <targetPath>conf</targetPath>
                                     </resource>
                                     <resource>
-                                        <directory>${project.module.standalone.basedir}/src/conf</directory>
+                                        <directory>${project.basedir}/src/main/resources/META-INF</directory>
                                         <excludes>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
@@ -238,26 +325,6 @@
                                     </resource>
                                     <resource>
                                         <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/conf</directory>
-                                        <excludes>
-                                            <exclude>**/*.conf</exclude>
-                                            <exclude>**/*.properties</exclude>
-                                            <exclude>**/*.xml</exclude>
-                                        </excludes>
-                                        <targetPath>conf</targetPath>
-                                    </resource>
-                                    <!-- Configuration file(s) (project) -->
-                                    <resource>
-                                        <directory>${project.basedir}/src/conf</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>**/*.conf</include>
-                                            <include>**/*.properties</include>
-                                            <include>**/*.xml</include>
-                                        </includes>
-                                        <targetPath>conf</targetPath>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.basedir}/src/conf</directory>
                                         <excludes>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
@@ -318,7 +385,7 @@
                                                         <value>..</value>
                                                     </property>
                                                     <property>
-                                                    <name>set.default.APP_LONG_NAME</name>
+                                                        <name>set.default.APP_LONG_NAME</name>
                                                         <value>${project.standalone.name.display}</value>
                                                     </property>
                                                     <property>
@@ -328,6 +395,10 @@
                                                     <property>
                                                         <name>set.default.REPO_DIR</name>
                                                         <value>lib</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>set.LD_PRELOAD</name>
+                                                        <value>/usr/lib/authbind/libauthbind.so.1</value>
                                                     </property>
                                                     <property>
                                                         <name>wrapper.console.format</name>
@@ -359,18 +430,44 @@
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.5</name>
-                                                        <value>-Djava.security.manager</value>
+                                                        <value>-Djava.net.preferIPv4Stack=true</value>
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.6</name>
-                                                        <value>-Djava.security.policy=conf/wrapper.policy</value>
+                                                        <value>-Djava.security.manager</value>
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.7</name>
+                                                        <value>-Djava.security.policy=conf/wrapper.policy</value>
+                                                    </property>
+                                                    <!--
+                                                    <property>
+                                                        <name>wrapper.java.additional.8</name>
+                                                        <value>-Dcom.sun.management.jmxremote</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.9</name>
+                                                        <value>-Dcom.sun.management.jmxremote.authenticate=false</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.10</name>
+                                                        <value>-Dcom.sun.management.jmxremote.port=9999</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.11</name>
+                                                        <value>-Dcom.sun.management.jmxremote.ssl=false</value>
+                                                    </property>
+                                                    -->
+                                                    <property>
+                                                        <name>wrapper.java.additional.8</name>
+                                                        <value>-Dspring.profiles.active=${project.standalone.spring.profiles.active}</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.9</name>
                                                         <value>-Ddcdt.log.dir=log</value>
                                                     </property>
                                                     <property>
-                                                        <name>wrapper.java.additional.8</name>
+                                                        <name>wrapper.java.additional.10</name>
                                                         <value>-Ddcdt.log.file.basename=${project.artifactId}</value>
                                                     </property>
                                                     <property>
@@ -431,8 +528,8 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <locations>
-                                    <location>${project.module.parent.basedir}/pom.properties</location>
-                                    <location>${project.parent.basedir}/pom.properties</location>
+                                    <location>${project.basedir}/../dcdt-parent/pom.properties</location>
+                                    <location>${project.basedir}/${project.parent.relativePath}/pom.properties</location>
                                     <location>${project.basedir}/pom.properties</location>
                                 </locations>
                             </configuration>

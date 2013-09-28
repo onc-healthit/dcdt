@@ -10,8 +10,15 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-            /WEB-INF/spring/app-context.xml
-            /WEB-INF/spring/security-context.xml
+            /WEB-INF/spring/spring-web-security.xml
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>spring.profiles.active</param-name>
+        <param-value>
+            toolDnsEmbedded
+            toolLdapEmbedded
+            toolMailEmbedded
         </param-value>
     </context-param>
     
@@ -21,9 +28,12 @@
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>
-                classpath*:/META-INF/spring/spring-context.xml
-                /WEB-INF/spring/mvc-context.xml
-                /WEB-INF/spring/servlet-context.xml
+                classpath*:META-INF/spring/spring-core.xml
+                classpath*:META-INF/spring/spring-dns*.xml
+                classpath*:META-INF/spring/spring-ldap*.xml
+                classpath*:META-INF/spring/spring-mail*.xml
+                /WEB-INF/spring/spring-web.xml
+                /WEB-INF/spring/spring-web-mvc.xml
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
@@ -34,7 +44,13 @@
     </servlet-mapping>
     
     <listener>
+        <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+    </listener>
+    <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
     <listener>
         <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>

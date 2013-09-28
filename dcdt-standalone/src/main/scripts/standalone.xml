@@ -6,8 +6,8 @@
     <description>Ant project for Direct Certificate Discovery Tool (DCDT) standalones.</description>
     
     <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.classpath}"/>
-    <taskdef file="${project.module.core.build.scriptSourceDirectory}/antlib.xml" uri="antlib:gov.hhs.onc.dcdt"/>
-    <taskdef file="${project.module.standalone.build.scriptSourceDirectory}/antlib-standalone.xml" uri="antlib:gov.hhs.onc.dcdt.standalone"/>
+    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib.xml" uri="antlib:gov.hhs.onc.dcdt"/>
+    <taskdef file="${project.basedir}/../dcdt-standalone/src/main/scripts/antlib-standalone.xml" uri="antlib:gov.hhs.onc.dcdt.standalone"/>
     
     <target name="standalone-process-exec-files" description="Processes standalone executable file(s).">
         <!-- Making standalone build directories, if they do not exist -->
@@ -42,7 +42,7 @@
         <var name="project.build.standaloneVarDirectory" value="${project.build.standaloneAssemblyDirectory}/var"/>
         
         <!-- Project standalone module build standalone directory variable(s) -->
-        <var name="project.module.standalone.build.standaloneBinSourceDirectory" value="${project.module.standalone.basedir}/src/bin"/>
+        <var name="project.module.standalone.build.standaloneBinSourceDirectory" value="${project.basedir}/../dcdt-standalone/src/bin"/>
         
         <!-- Project standalone module build standalone file variable(s) -->
         <var name="project.module.standalone.build.standaloneBinSourceFile"

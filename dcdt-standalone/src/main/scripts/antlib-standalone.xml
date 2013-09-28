@@ -4,7 +4,7 @@
     xmlns:dcdt="antlib:gov.hhs.onc.dcdt">
     
     <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.classpath}"/>
-    <taskdef file="${project.module.core.build.scriptSourceDirectory}/antlib.xml" uri="antlib:gov.hhs.onc.dcdt"/>
+    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib.xml" uri="antlib:gov.hhs.onc.dcdt"/>
     
     <macrodef name="process-exec-file" description="Processes an executable file.">
         <attribute name="file"/>

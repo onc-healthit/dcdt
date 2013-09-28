@@ -12,7 +12,7 @@
     
     <name>dcdt-parent</name>
     <description>Direct Certificate Discovery Tool (DCDT) parent project.</description>
-    <url>http://api.direct-test.com/parent/${project.version}/</url>
+    <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <prerequisites>
         <maven>3.0.4</maven>
@@ -29,33 +29,82 @@
         <project.build.resourcesDirectory>${project.basedir}/src/main/resources</project.build.resourcesDirectory>
         <project.build.testResourcesDirectory>${project.basedir}/src/test/resources</project.build.testResourcesDirectory>
         <project.build.testScriptSourceDirectory>${project.basedir}/src/test/scripts</project.build.testScriptSourceDirectory>
-        <!-- Project core module properties -->
-        <project.module.core.basedir>${project.basedir}/../dcdt-core</project.module.core.basedir>
-        <!-- Project core module build properties -->
-        <project.module.core.build.assemblyDirectory>${project.module.core.basedir}/src/assembly</project.module.core.build.assemblyDirectory>
-        <project.module.core.build.directory>${project.module.core.basedir}/target</project.module.core.build.directory>
-        <project.module.core.build.resourcesDirectory>${project.module.core.basedir}/src/main/resources</project.module.core.build.resourcesDirectory>
-        <project.module.core.build.scriptSourceDirectory>${project.module.core.basedir}/src/main/scripts</project.module.core.build.scriptSourceDirectory>
-        <project.module.core.build.testResourcesDirectory>${project.module.core.basedir}/src/test/resources</project.module.core.build.testResourcesDirectory>
-        <project.module.core.build.testScriptSourceDirectory>${project.module.core.basedir}/src/test/scripts</project.module.core.build.testScriptSourceDirectory>
-        <!-- Project parent module properties -->
-        <project.module.parent.basedir>${project.basedir}/../dcdt-parent</project.module.parent.basedir>
-        <!-- Project parent properties -->
-        <project.parent.basedir>${project.basedir}/${project.parent.relativePath}</project.parent.basedir>
-        <!-- Project parent build properties -->
-        <project.parent.build.assemblyDirectory>${project.parent.basedir}/src/assembly</project.parent.build.assemblyDirectory>
-        <project.parent.build.directory>${project.parent.basedir}/target</project.parent.build.directory>
-        <project.parent.build.resourcesDirectory>${project.parent.basedir}/src/main/resources</project.parent.build.resourcesDirectory>
-        <project.parent.build.scriptSourceDirectory>${project.parent.basedir}/src/main/scripts</project.parent.build.scriptSourceDirectory>
-        <project.parent.build.testResourcesDirectory>${project.parent.basedir}/src/test/resources</project.parent.build.testResourcesDirectory>
-        <project.parent.build.testScriptSourceDirectory>${project.parent.basedir}/src/test/scripts</project.parent.build.testScriptSourceDirectory>
-        <!-- Project reporting properties -->
-        <project.reporting.outputEncoding>${project.build.sourceEncoding}</project.reporting.outputEncoding>
     </properties>
+    
+    <distributionManagement>
+        <snapshotRepository>
+            <id>dcdt-snapshots</id>
+            <name>DCDT Snapshots</name>
+            <url>http://maven.direct-test.com/content/repositories/snapshots/</url>
+        </snapshotRepository>
+        <repository>
+            <id>dcdt-release</id>
+            <name>DCDT Release</name>
+            <url>http://maven.direct-test.com/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
+    
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+        <repository>
+            <id>smartics-release</id>
+            <url>http://www.smartics.eu/nexus/content/groups/public-group</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </repository>
+    </repositories>
+    
+    <pluginRepositories>
+        <pluginRepository>
+            <id>central</id>
+            <name>Maven Plugin Repository</name>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+        <pluginRepository>
+            <id>smartics-plugin-release</id>
+            <url>http://www.smartics.eu/nexus/content/groups/public-group</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+            <releases>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+        </pluginRepository>
+    </pluginRepositories>
     
     <dependencyManagement>
         <dependencies>
             <!-- Runtime dependencies -->
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.0.13</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>1.0.13</version>
+            </dependency>
             <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
@@ -90,16 +139,6 @@
                 </exclusions>
             </dependency>
             <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>apache-log4j-extras</artifactId>
-                <version>1.1</version>
-            </dependency>
-            <dependency>
-                <groupId>log4j</groupId>
-                <artifactId>log4j</artifactId>
-                <version>1.2.17</version>
-            </dependency>
-            <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-io</artifactId>
                 <version>1.3.2</version>
@@ -112,7 +151,7 @@
             <dependency>
                 <groupId>org.apache.directory.api</groupId>
                 <artifactId>api-ldap-client-all</artifactId>
-                <version>1.0.0-M18</version>
+                <version>1.0.0-M20</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.directory.jdbm</groupId>
@@ -120,32 +159,9 @@
                 <version>2.0.0-M2</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-container-spring</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>org.springframework.aop</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>org.springframework.beans</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>org.springframework.context</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>org.springframework.core</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-api</artifactId>
-                <version>1.7.5</version>
+                <groupId>org.logback-extensions</groupId>
+                <artifactId>logback-ext-spring</artifactId>
+                <version>0.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -154,43 +170,53 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-log4j12</artifactId>
+                <artifactId>log4j-over-slf4j</artifactId>
+                <version>1.7.5</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
                 <version>1.7.5</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
-                <version>3.2.3.RELEASE</version>
+                <version>3.2.4.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
-                <version>3.2.3.RELEASE</version>
+                <version>3.2.4.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>3.2.3.RELEASE</version>
+                <version>3.2.4.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>3.2.3.RELEASE</version>
+                <version>3.2.4.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>3.2.3.RELEASE</version>
+                <version>3.2.4.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>3.2.4.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>3.2.3.RELEASE</version>
+                <version>3.2.4.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
-                <version>3.2.3.RELEASE</version>
+                <version>3.2.4.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -206,7 +232,7 @@
             <dependency>
                 <groupId>org.apache.directory.server</groupId>
                 <artifactId>apacheds-test-framework</artifactId>
-                <version>2.0.0-M13</version>
+                <version>2.0.0-M15</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -222,7 +248,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>3.2.3.RELEASE</version>
+                <version>3.2.4.RELEASE</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -237,6 +263,81 @@
     <build>
         <pluginManagement>
             <plugins>
+                <plugin>
+                    <groupId>de.smartics.maven.plugin</groupId>
+                    <artifactId>buildmetadata-maven-plugin</artifactId>
+                    <version>1.1.8</version>
+                    <inherited>true</inherited>
+                    <executions>
+                        <execution>
+                            <id>write-project-metadata-properties</id>
+                            <goals>
+                                <goal>provide-buildmetadata</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <activatePropertyOutputFileMapping>false</activatePropertyOutputFileMapping>
+                                <addEnvInfo>false</addEnvInfo>
+                                <addJavaRuntimeInfo>false</addJavaRuntimeInfo>
+                                <addHostInfo>false</addHostInfo>
+                                <addMavenExecutionInfo>false</addMavenExecutionInfo>
+                                <addOsInfo>false</addOsInfo>
+                                <basedir>${project.basedir}/..</basedir>
+                                <buildDatePattern>yyyy-MM-dd HH:mm:ss z</buildDatePattern>
+                                <createXmlReport>false</createXmlReport>
+                                <forceNewProperties>true</forceNewProperties>
+                                <properties>
+                                    <property>
+                                        <name>project.groupId</name>
+                                        <mappedName>project.module.${project.artifactId}.groupId</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.artifactId</name>
+                                        <mappedName>project.module.${project.artifactId}.artifactId</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.version</name>
+                                        <mappedName>project.module.${project.artifactId}.version</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.basedir</name>
+                                        <mappedName>project.module.${project.artifactId}.basedir</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.build.directory</name>
+                                        <mappedName>project.module.${project.artifactId}.build.directory</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.build.outputDirectory</name>
+                                        <mappedName>project.module.${project.artifactId}.build.outputDirectory</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.build.scriptSourceDirectory</name>
+                                        <mappedName>project.module.${project.artifactId}.build.scriptSourceDirectory</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.build.assemblyDirectory</name>
+                                        <mappedName>project.module.${project.artifactId}.build.assemblyDirectory</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.build.resourcesDirectory</name>
+                                        <mappedName>project.module.${project.artifactId}.build.resourcesDirectory</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.build.testResourcesDirectory</name>
+                                        <mappedName>project.module.${project.artifactId}.build.testResourcesDirectory</mappedName>
+                                    </property>
+                                    <property>
+                                        <name>project.build.testScriptSourceDirectory</name>
+                                        <mappedName>project.module.${project.artifactId}.build.testScriptSourceDirectory</mappedName>
+                                    </property>
+                                </properties>
+                                <propertiesOutputFile>${project.build.directory}/maven-metadata/pom-metadata.properties</propertiesOutputFile>
+                                <scmDatePattern>yyyy-MM-dd HH:mm:ss z</scmDatePattern>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
@@ -260,6 +361,16 @@
                             <version>1.8.4</version>
                         </dependency>
                     </dependencies>
+                    <configuration combine.children="merge">
+                        <target>
+                            <path id="maven.classpath">
+                                <path refid="maven.compile.classpath"/>
+                                <path refid="maven.plugin.classpath"/>
+                                <path refid="maven.runtime.classpath"/>
+                                <path refid="maven.test.classpath"/>
+                            </path>
+                        </target>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -288,6 +399,9 @@
                     <artifactId>maven-dependency-plugin</artifactId>
                     <version>2.8</version>
                     <inherited>true</inherited>
+                    <configuration combine.children="merge">
+                        <silent>true</silent>
+                    </configuration>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -304,6 +418,12 @@
                             <inherited>true</inherited>
                         </execution>
                     </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-reactor-plugin</artifactId>
+                    <version>1.0</version>
+                    <inherited>true</inherited>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -389,7 +509,7 @@
                             <inherited>true</inherited>
                             <configuration combine.children="merge">
                                 <locations>
-                                    <location>${project.parent.basedir}/pom.properties</location>
+                                    <location>${project.basedir}/${project.parent.relativePath}/pom.properties</location>
                                     <location>${project.basedir}/pom.properties</location>
                                 </locations>
                             </configuration>
@@ -398,6 +518,18 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        
+        <plugins>
+            <plugin>
+                <groupId>de.smartics.maven.plugin</groupId>
+                <artifactId>buildmetadata-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>write-project-metadata-properties</id>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
     </build>
     
     <profiles>
