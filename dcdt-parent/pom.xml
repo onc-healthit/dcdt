@@ -243,6 +243,11 @@
                 <artifactId>spring-security-web</artifactId>
                 <version>3.1.4.RELEASE</version>
             </dependency>
+            <dependency>
+                <groupId>org.tuckey</groupId>
+                <artifactId>urlrewritefilter</artifactId>
+                <version>4.0.4</version>
+            </dependency>
             <!-- Test dependencies -->
             <dependency>
                 <groupId>org.apache.directory.server</groupId>
