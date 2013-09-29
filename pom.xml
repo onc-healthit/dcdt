@@ -22,11 +22,11 @@
     <modules>
         <module>dcdt-parent</module>
         <module>dcdt-core</module>
-        <module>dcdt-standalone-parent</module>
-        <module>dcdt-standalone</module>
-        <module>dcdt-dns</module>
-        <module>dcdt-ldap</module>
-        <module>dcdt-mail</module>
+        <module>dcdt-service-parent</module>
+        <module>dcdt-service-core</module>
+        <module>dcdt-service-dns</module>
+        <module>dcdt-service-ldap</module>
+        <module>dcdt-service-mail</module>
         <module>dcdt-utils</module>
         <module>dcdt-web</module>
     </modules>

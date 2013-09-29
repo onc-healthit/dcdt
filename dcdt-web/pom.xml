@@ -16,7 +16,7 @@
     <packaging>war</packaging>
     
     <name>dcdt-web</name>
-    <description>Direct Certificate Discovery Tool (DCDT) web application project.</description>
+    <description>Direct Certificate Discovery Tool (DCDT) web application.</description>
     <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <dependencies>
@@ -28,17 +28,22 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-dns</artifactId>
+            <artifactId>dcdt-service-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-ldap</artifactId>
+            <artifactId>dcdt-service-dns</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-mail</artifactId>
+            <artifactId>dcdt-service-ldap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-mail</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- Runtime dependencies (inherited) -->
@@ -172,7 +177,7 @@
                 <executions>
                     <!-- Unpacking dependency resources -->
                     <execution>
-                        <id>unpack-dependency-resources</id>
+                        <id>unpack-dependency-resources-web</id>
                         <phase>generate-resources</phase>
                         <goals>
                             <goal>unpack</goal>
@@ -186,22 +191,27 @@
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-dns</artifactId>
+                                    <artifactId>dcdt-service-core</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-ldap</artifactId>
+                                    <artifactId>dcdt-service-dns</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-mail</artifactId>
+                                    <artifactId>dcdt-service-ldap</artifactId>
+                                    <version>${project.version}</version>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>dcdt-service-mail</artifactId>
                                     <version>${project.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <includes>META-INF/**/*.conf,META-INF/**/*.properties,META-INF/**/*.xml</includes>
-                            <excludes>META-INF/maven/**/*,META-INF/spring/**/*-standalone.xml</excludes>
+                            <includes>META-INF/**/*</includes>
+                            <excludes>META-INF/maven/**,META-INF/MANIFEST.MF,META-INF/spring/**/*service*-standalone.xml</excludes>
                             <outputDirectory>${project.build.directory}/${project.build.finalName}-dependency-resources</outputDirectory>
                         </configuration>
                     </execution>
@@ -235,6 +245,15 @@
                                     </excludes>
                                     <targetPath>WEB-INF/classes</targetPath>
                                 </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/${project.build.finalName}-dependency-resources/META-INF</directory>
+                                    <excludes>
+                                        <exclude>**/*.conf</exclude>
+                                        <exclude>**/*.properties</exclude>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                    <targetPath>WEB-INF/classes</targetPath>
+                                </resource>
                                 <!-- Configuration file(s) (Spring) -->
                                 <resource>
                                     <directory>${project.build.directory}/${project.build.finalName}-dependency-resources/META-INF/spring</directory>
@@ -242,6 +261,13 @@
                                     <includes>
                                         <include>**/*.xml</include>
                                     </includes>
+                                    <targetPath>WEB-INF/spring</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.directory}/${project.build.finalName}-dependency-resources/META-INF/spring</directory>
+                                    <excludes>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
                                     <targetPath>WEB-INF/spring</targetPath>
                                 </resource>
                             </resources>

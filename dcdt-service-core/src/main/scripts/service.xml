@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="service"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt"
+    xmlns:dcdt-service="antlib:gov.hhs.onc.dcdt.service">
+    
+    <description>Ant project for Direct Certificate Discovery Tool (DCDT) services.</description>
+    
+    <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.classpath}"/>
+    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib.xml" uri="antlib:gov.hhs.onc.dcdt"/>
+    <taskdef file="${project.basedir}/../dcdt-service-core/src/main/scripts/antlib-service.xml" uri="antlib:gov.hhs.onc.dcdt.service"/>
+    
+    <target name="service-process-exec-files" description="Processes service executable file(s).">
+        <!-- Making service build directories, if they do not exist -->
+        <mkdir dir="${project.build.serviceBinDirectory}"/>
+        <mkdir dir="${project.build.serviceLogDirectory}"/>
+        <mkdir dir="${project.build.serviceVarDirectory}"/>
+        <for param="binFile">
+            <fileset dir="${project.build.serviceBinDirectory}">
+                <include name="**/wrapper-*"/>
+            </fileset>
+            <sequential>
+                <dcdt-service:process-exec-file file="@{binFile}" binary="true"/>
+            </sequential>
+        </for>
+        <for param="execFile">
+            <fileset dir="${project.build.serviceBinDirectory}">
+                <include name="**/*.bat"/>
+                <include name="**/*.sh"/>
+                <include name="**/${project.artifactId}"/>
+            </fileset>
+            <sequential>
+                <dcdt-service:process-exec-file file="@{execFile}"/>
+            </sequential>
+        </for>
+    </target>
+    
+    <target name="service-init" description="Initializes service variable(s).">
+        <!-- Project build service directory variable(s) -->
+        <var name="project.build.serviceAssemblyDirectory" value="${project.build.directory}/${project.artifactId}"/>
+        <var name="project.build.serviceBinDirectory" value="${project.build.serviceAssemblyDirectory}/bin"/>
+        <var name="project.build.serviceLogDirectory" value="${project.build.serviceAssemblyDirectory}/log"/>
+        <var name="project.build.serviceVarDirectory" value="${project.build.serviceAssemblyDirectory}/var"/>
+        
+        <!-- Project service-core module build service directory variable(s) -->
+        <var name="project.module.service-core.build.serviceBinSourceDirectory" value="${project.basedir}/../dcdt-service-core/src/bin"/>
+        
+        <!-- Project service-core module build service file variable(s) -->
+        <var name="project.module.service-core.build.serviceBinSourceFile"
+            value="${project.module.service-core.build.serviceBinSourceDirectory}/dcdt-service.sh"/>
+    </target>
+    
+    <target name="service" description="Prepares service assembly file(s)." depends="service-init,service-process-exec-files"/>
+</project>

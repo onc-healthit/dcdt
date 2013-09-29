@@ -7,16 +7,16 @@
     
     <parent>
         <groupId>gov.hhs.onc.dcdt</groupId>
-        <artifactId>dcdt-parent</artifactId>
+        <artifactId>dcdt-service-parent</artifactId>
         <version>3.0-SNAPSHOT</version>
-        <relativePath>../dcdt-parent</relativePath>
+        <relativePath>../dcdt-service-parent</relativePath>
     </parent>
     
-    <artifactId>dcdt-utils</artifactId>
+    <artifactId>dcdt-service-ldap</artifactId>
     <packaging>jar</packaging>
     
-    <name>dcdt-utils</name>
-    <description>Direct Certificate Discovery Tool (DCDT) utilities.</description>
+    <name>dcdt-service-ldap</name>
+    <description>Direct Certificate Discovery Tool (DCDT) LDAP service.</description>
     <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <dependencies>
@@ -24,6 +24,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- Runtime dependencies (inherited) -->
@@ -40,10 +45,6 @@
             <artifactId>commons-collections</artifactId>
         </dependency>
         <dependency>
-            <groupId>dnsjava</groupId>
-            <artifactId>dnsjava</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
@@ -54,6 +55,22 @@
         <dependency>
             <groupId>org.apache.directory.api</groupId>
             <artifactId>api-ldap-client-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.jdbm</groupId>
+            <artifactId>apacheds-jdbm2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-core-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-server-annotations</artifactId>
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
@@ -107,7 +124,18 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
         </dependency>
+        <dependency>
+            <groupId>tanukisoft</groupId>
+            <artifactId>wrapper</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- Test dependencies (inherited) -->
+        <!-- TODO: Remove on development completion -->
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-test-framework</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
@@ -128,6 +156,63 @@
                 <executions>
                     <execution>
                         <id>write-project-metadata-properties</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>assembly-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies-service</id>
+                    </execution>
+                    <execution>
+                        <id>unpack-dependency-resources-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>daemons-service</id>
                     </execution>
                 </executions>
             </plugin>

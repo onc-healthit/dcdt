@@ -25,18 +25,15 @@
         p:localOverride="true">
         <beans:property name="locations">
             <beans:array>
-                <beans:value>classpath*:META-INF/core/dcdt-core.properties</beans:value>
+                <beans:value>classpath*:META-INF/core/core.properties</beans:value>
                 <!--suppress SpringModelInspection -->
-                <beans:value>classpath*:core/dcdt-core.properties</beans:value>
+                <beans:value>classpath*:core/core.properties</beans:value>
             </beans:array>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="toolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
         p:daemon="true"/>
-    
-    <beans:bean id="toolServiceTaskExecutor" parent="toolTaskExecutor" abstract="true"
-        p:queueCapacity="0"/>
     
     <beans:bean id="dnsLookupTaskExecutor" parent="toolTaskExecutor"
         p:maxPoolSize="5"/>

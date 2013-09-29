@@ -7,16 +7,16 @@
     
     <parent>
         <groupId>gov.hhs.onc.dcdt</groupId>
-        <artifactId>dcdt-parent</artifactId>
+        <artifactId>dcdt-service-parent</artifactId>
         <version>3.0-SNAPSHOT</version>
-        <relativePath>../dcdt-parent</relativePath>
+        <relativePath>../dcdt-service-parent</relativePath>
     </parent>
     
-    <artifactId>dcdt-utils</artifactId>
+    <artifactId>dcdt-service-dns</artifactId>
     <packaging>jar</packaging>
     
-    <name>dcdt-utils</name>
-    <description>Direct Certificate Discovery Tool (DCDT) utilities.</description>
+    <name>dcdt-service-dns</name>
+    <description>Direct Certificate Discovery Tool (DCDT) DNS service.</description>
     <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <dependencies>
@@ -24,6 +24,11 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-core</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-core</artifactId>
             <version>${project.version}</version>
         </dependency>
         <!-- Runtime dependencies (inherited) -->
@@ -107,6 +112,11 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
         </dependency>
+        <dependency>
+            <groupId>tanukisoft</groupId>
+            <artifactId>wrapper</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <!-- Test dependencies (inherited) -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -128,6 +138,63 @@
                 <executions>
                     <execution>
                         <id>write-project-metadata-properties</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>prepare-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>assembly-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies-service</id>
+                    </execution>
+                    <execution>
+                        <id>unpack-dependency-resources-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>daemons-service</id>
                     </execution>
                 </executions>
             </plugin>

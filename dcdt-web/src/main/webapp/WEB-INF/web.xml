@@ -35,9 +35,13 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>
                 classpath*:META-INF/spring/spring-core.xml
-                classpath*:META-INF/spring/spring-dns*.xml
-                classpath*:META-INF/spring/spring-ldap*.xml
-                classpath*:META-INF/spring/spring-mail*.xml
+                /WEB-INF/spring/spring-core.xml
+                classpath*:META-INF/spring/spring-service-dns*.xml
+                /WEB-INF/spring/spring-service-dns*.xml
+                classpath*:META-INF/spring/spring-service-ldap*.xml
+                /WEB-INF/spring/spring-service-ldap*.xml
+                classpath*:META-INF/spring/spring-service-mail*.xml
+                /WEB-INF/spring/spring-service-mail*.xml
                 /WEB-INF/spring/spring-web.xml
                 /WEB-INF/spring/spring-web-mvc.xml
             </param-value>
