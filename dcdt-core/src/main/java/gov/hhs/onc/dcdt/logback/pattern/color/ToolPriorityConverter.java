@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.logback;
+package gov.hhs.onc.dcdt.logback.pattern.color;
 
 import static ch.qos.logback.core.pattern.color.ANSIConstants.BLUE_FG;
 import static ch.qos.logback.core.pattern.color.ANSIConstants.BOLD;

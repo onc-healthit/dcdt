@@ -9,14 +9,16 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public abstract class ToolService<T extends AbstractApplicationContext> implements Runnable {
-    protected AbstractApplicationContext parentContext;
+    protected ApplicationContext parentContext;
     protected List<String> contextConfigLocs;
     protected T context;
     protected AutowireCapableBeanFactory beanFactory;
+    protected boolean running;
 
     private final static List<String> CONTEXT_CONFIG_LOCS_CORE = ToolResourceUtils.getOverrideableResourceLocations(Arrays.asList("spring/spring-core.xml",
             "spring/spring-service.xml", "spring/spring-service-embedded.xml", "spring/spring-service-standalone.xml"));
@@ -29,7 +31,7 @@ public abstract class ToolService<T extends AbstractApplicationContext> implemen
         this(null);
     }
 
-    protected ToolService(AbstractApplicationContext parentContext) {
+    protected ToolService(ApplicationContext parentContext) {
         this.parentContext = parentContext;
 
         this.initialize();
@@ -43,6 +45,8 @@ public abstract class ToolService<T extends AbstractApplicationContext> implemen
     public void stop() {
         this.stopService();
         this.stopContext();
+
+        this.running = false;
     }
 
     @Override
@@ -62,6 +66,8 @@ public abstract class ToolService<T extends AbstractApplicationContext> implemen
         Thread currentThread;
 
         while((currentThread = Thread.currentThread()).isAlive() && !currentThread.isInterrupted()) {
+            this.running = true;
+
             try {
                 Thread.sleep(SERVICE_THREAD_SLEEP_TIME_MS);
             } catch (InterruptedException e) {
@@ -117,5 +123,9 @@ public abstract class ToolService<T extends AbstractApplicationContext> implemen
 
     protected boolean isEmbedded() {
         return !this.isStandalone();
+    }
+
+    public boolean isRunning() {
+        return this.running;
     }
 }

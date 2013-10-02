@@ -165,10 +165,9 @@
                             <configuration>
                                 <includeScope>runtime</includeScope>
                                 <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
-                                <silent>true</silent>
                             </configuration>
                         </execution>
-                        <!-- Unpacking dependency resources -->
+                        <!-- Unpacking dependency service resources -->
                         <execution>
                             <id>unpack-dependency-resources-service</id>
                             <phase>generate-resources</phase>
@@ -177,41 +176,65 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-core</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-core</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                            </artifactItems>
-                            <includes>META-INF/**/*</includes>
-                            <excludes>META-INF/maven/**,META-INF/MANIFEST.MF,META-INF/spring/**/*service*-embedded.xml</excludes>
-                            <outputDirectory>${project.build.directory}/${project.artifactId}-dependency-resources</outputDirectory>
-                        </configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>dcdt-core</artifactId>
+                                        <version>${project.version}</version>
+                                    </artifactItem>
+                                    <artifactItem>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>dcdt-service-core</artifactId>
+                                        <version>${project.version}</version>
+                                    </artifactItem>
+                                </artifactItems>
+                                <includes>META-INF/core/**,META-INF/logback/**,META-INF/service/**,META-INF/spring/**</includes>
+                                <excludes>META-INF/spring/**/*service*-embedded.xml</excludes>
+                                <outputDirectory>${project.build.directory}/${project.artifactId}-dependency-resources</outputDirectory>
+                            </configuration>
+                        </execution>
+                        <!-- Unpacking test dependency service resources -->
+                        <execution>
+                            <id>unpack-test-dependency-resources-service</id>
+                            <phase>generate-test-resources</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>dcdt-core</artifactId>
+                                        <version>${project.version}</version>
+                                        <type>test-jar</type>
+                                    </artifactItem>
+                                    <artifactItem>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>dcdt-service-core</artifactId>
+                                        <version>${project.version}</version>
+                                        <type>test-jar</type>
+                                    </artifactItem>
+                                </artifactItems>
+                                <includes>META-INF/core/**,META-INF/logback/**,META-INF/service/**,META-INF/spring/**,META-INF/test/**</includes>
+                                <excludes>META-INF/spring/**/*service*-embedded.xml</excludes>
+                                <outputDirectory>${project.build.directory}/${project.artifactId}-test-dependency-resources</outputDirectory>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <inherited>true</inherited>
                     <executions>
-                        <!-- Building service JAR file -->
                         <execution>
-                            <id>jar-service</id>
-                            <phase>package</phase>
-                            <goals>
-                                <goal>jar</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
+                            <id>default-jar</id>
+                            <configuration combine.children="merge">
                                 <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
                             </configuration>
+                        </execution>
+                        <execution>
+                            <id>test-jar</id>
                         </execution>
                     </executions>
                 </plugin>
@@ -220,7 +243,7 @@
                     <artifactId>maven-resources-plugin</artifactId>
                     <inherited>true</inherited>
                     <executions>
-                        <!-- Copying dependency resources -->
+                        <!-- Copying service resources -->
                         <execution>
                             <id>copy-resources-service</id>
                             <phase>process-resources</phase>
@@ -340,6 +363,86 @@
                                 </resources>
                             </configuration>
                         </execution>
+                        <!-- Copying test service resources -->
+                        <execution>
+                            <id>copy-test-resources-service</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/${project.artifactId}-test</outputDirectory>
+                                <resources>
+                                    <!-- Test configuration file(s) (dependencies) -->
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-test-dependency-resources/META-INF</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-test-dependency-resources/META-INF</directory>
+                                        <excludes>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <!-- Test configuration file(s) (project) -->
+                                    <resource>
+                                        <directory>${project.build.testResourcesDirectory}/META-INF</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                        <excludes>
+                                            <exclude>spring/**/*service*-embedded.xml</exclude>
+                                        </excludes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesDirectory}/META-INF</directory>
+                                        <excludes>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                        <targetPath>conf</targetPath>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <additionalClasspathElements>
+                            <additionalClasspathElement>${project.build.directory}/${project.artifactId}/conf</additionalClasspathElement>
+                            <additionalClasspathElement>${project.build.directory}/${project.artifactId}-test/conf</additionalClasspathElement>
+                        </additionalClasspathElements>
+                        <basedir>${project.build.directory}/${project.artifactId}</basedir>
+                        <systemPropertyVariables>
+                            <dcdt.log.dir>log</dcdt.log.dir>
+                            <spring.profiles.active>${project.service.standalone.spring.profiles.active}</spring.profiles.active>
+                        </systemPropertyVariables>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>test-unit</id>
+                        </execution>
+                        <execution>
+                            <id>test-functional</id>
+                        </execution>
                     </executions>
                 </plugin>
                 <plugin>
@@ -438,11 +541,11 @@
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.7</name>
-                                                        <value>-Djava.security.policy=conf/service/wrapper.policy</value>
+                                                        <value>-Djava.security.policy=conf/service/wrapper-service.policy</value>
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.8</name>
-                                                        <value>-Dlogback.configurationFile=${project.service.logback.config.file}</value>
+                                                        <value>-Dlogback.configurationFile=${project.logback.config.file}</value>
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.9</name>
@@ -454,7 +557,7 @@
                                                     </property>
                                                     <property>
                                                         <name>wrapper.logfile</name>
-                                                        <value>log/wrapper.log</value>
+                                                        <value>log/wrapper-${project.service.name}.log</value>
                                                     </property>
                                                     <property>
                                                         <name>wrapper.name</name>
@@ -515,6 +618,9 @@
                                     <location>${project.basedir}/pom.properties</location>
                                 </locations>
                             </configuration>
+                        </execution>
+                        <execution>
+                            <id>translate-pom-properties</id>
                         </execution>
                     </executions>
                 </plugin>

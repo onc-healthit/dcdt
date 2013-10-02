@@ -19,6 +19,11 @@
     <description>Direct Certificate Discovery Tool (DCDT) web application.</description>
     <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
+    <properties>
+        <!-- Project Java properties -->
+        <project.java.package>${project.groupId}.web</project.java.package>
+    </properties>
+    
     <dependencies>
         <!-- Runtime dependencies (project) -->
         <dependency>
@@ -64,6 +69,16 @@
             <artifactId>dnsjava</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-io</artifactId>
         </dependency>
@@ -82,6 +97,10 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>javax.servlet.jsp.jstl</artifactId>
         </dependency>
         <dependency>
             <groupId>org.logback-extensions</groupId>
@@ -147,6 +166,42 @@
             <groupId>org.tuckey</groupId>
             <artifactId>urlrewritefilter</artifactId>
         </dependency>
+        <!-- Test dependencies (project) -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-dns</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-ldap</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-mail</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
         <!-- Test dependencies (inherited) -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -175,7 +230,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <!-- Unpacking dependency resources -->
+                    <!-- Unpacking dependency web resources -->
                     <execution>
                         <id>unpack-dependency-resources-web</id>
                         <phase>generate-resources</phase>
@@ -210,9 +265,86 @@
                                     <version>${project.version}</version>
                                 </artifactItem>
                             </artifactItems>
-                            <includes>META-INF/**/*</includes>
-                            <excludes>META-INF/maven/**,META-INF/MANIFEST.MF,META-INF/spring/**/*service*-standalone.xml</excludes>
-                            <outputDirectory>${project.build.directory}/${project.build.finalName}-dependency-resources</outputDirectory>
+                            <includes>META-INF/core/**,META-INF/logback/**,META-INF/service/**,META-INF/spring/**</includes>
+                            <excludes>META-INF/service/**/*.policy,META-INF/spring/**/*service*-standalone.xml</excludes>
+                            <outputDirectory>${project.build.webappDirectory}-dependency-resources</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- Copying test web dependencies -->
+                    <execution>
+                        <id>copy-test-dependencies-web</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <inherited>true</inherited>
+                        <configuration>
+                            <excludeScope>runtime</excludeScope>
+                            <includeScope>test</includeScope>
+                            <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- Unpacking test dependency web resources -->
+                    <execution>
+                        <id>unpack-test-dependency-resources-web</id>
+                        <phase>generate-test-resources</phase>
+                        <goals>
+                            <goal>unpack</goal>
+                        </goals>
+                        <configuration>
+                            <artifactItems>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>dcdt-core</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>test-jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>dcdt-service-core</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>test-jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>dcdt-service-dns</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>test-jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>dcdt-service-ldap</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>test-jar</type>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>${project.groupId}</groupId>
+                                    <artifactId>dcdt-service-mail</artifactId>
+                                    <version>${project.version}</version>
+                                    <type>test-jar</type>
+                                </artifactItem>
+                            </artifactItems>
+                            <includes>META-INF/core/**,META-INF/logback/**,META-INF/service/**,META-INF/spring/**,META-INF/test/**</includes>
+                            <excludes>META-INF/service/**/*.policy,META-INF/spring/**/*service*-standalone.xml</excludes>
+                            <outputDirectory>${project.build.testWebappDirectory}-dependency-resources</outputDirectory>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-jar</id>
+                        <configuration>
+                            <outputDirectory>${project.build.webappLibDirectory}</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>test-jar</id>
+                        <configuration>
+                            <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -221,19 +353,19 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
-                    <!-- Copying dependency resources -->
+                    <!-- Copying dependency web resources -->
                     <execution>
-                        <id>copy-dependency-resources</id>
+                        <id>copy-dependency-resources-web</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/${project.build.finalName}</outputDirectory>
+                            <outputDirectory>${project.build.webappWebInfDirectory}</outputDirectory>
                             <resources>
                                 <!-- Configuration file(s) -->
                                 <resource>
-                                    <directory>${project.build.directory}/${project.build.finalName}-dependency-resources/META-INF</directory>
+                                    <directory>${project.build.webappDirectory}-dependency-resources/META-INF</directory>
                                     <filtering>true</filtering>
                                     <includes>
                                         <include>**/*.conf</include>
@@ -241,37 +373,251 @@
                                         <include>**/*.xml</include>
                                     </includes>
                                     <excludes>
-                                        <exclude>spring/**/*.xml</exclude>
+                                        <exclude>spring/**</exclude>
                                     </excludes>
-                                    <targetPath>WEB-INF/classes</targetPath>
+                                    <targetPath>classes</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/${project.build.finalName}-dependency-resources/META-INF</directory>
+                                    <directory>${project.build.webappDirectory}-dependency-resources/META-INF</directory>
+                                    <excludes>
+                                        <exclude>spring/**</exclude>
+                                        <exclude>**/*.conf</exclude>
+                                        <exclude>**/*.properties</exclude>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                    <targetPath>classes</targetPath>
+                                </resource>
+                                <!-- Configuration file(s) (Spring) -->
+                                <resource>
+                                    <directory>${project.build.webappDirectory}-dependency-resources/META-INF/spring</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.webappDirectory}-dependency-resources/META-INF/spring</directory>
+                                    <excludes>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!-- Copying WAR web resources -->
+                    <execution>
+                        <id>copy-war-resources-web</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.webappWebInfDirectory}</outputDirectory>
+                            <resources>
+                                <!-- Configuration file(s) -->
+                                <resource>
+                                    <directory>${project.build.webappClassesSourceDirectory}</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.conf</include>
+                                        <include>**/*.properties</include>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <targetPath>classes</targetPath>
+                                </resource>
+                                <!-- Configuration file(s) (Spring) -->
+                                <resource>
+                                    <directory>${project.build.webappWebInfSourceDirectory}/spring</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                                <!-- Configuration file(s) (webapp) -->
+                                <resource>
+                                    <directory>${project.build.webappWebInfSourceDirectory}</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>web.xml</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!-- Copying test dependency web resources -->
+                    <execution>
+                        <id>copy-test-dependency-resources-web</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.testWebappWebInfDirectory}</outputDirectory>
+                            <resources>
+                                <!-- Configuration file(s) -->
+                                <resource>
+                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.conf</include>
+                                        <include>**/*.properties</include>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>spring/**</exclude>
+                                    </excludes>
+                                    <targetPath>classes</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF</directory>
+                                    <excludes>
+                                        <exclude>spring/**</exclude>
+                                        <exclude>**/*.conf</exclude>
+                                        <exclude>**/*.properties</exclude>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                    <targetPath>classes</targetPath>
+                                </resource>
+                                <!-- Configuration file(s) (Spring) -->
+                                <resource>
+                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF/spring</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF/spring</directory>
+                                    <excludes>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                    <!-- Copying test WAR web resources -->
+                    <execution>
+                        <id>copy-test-war-resources-web</id>
+                        <phase>process-test-resources</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.testWebappWebInfDirectory}</outputDirectory>
+                            <resources>
+                                <!-- Configuration file(s) -->
+                                <resource>
+                                    <directory>${project.build.testWebappClassesSourceDirectory}</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.conf</include>
+                                        <include>**/*.properties</include>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <targetPath>classes</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testWebappClassesSourceDirectory}</directory>
                                     <excludes>
                                         <exclude>**/*.conf</exclude>
                                         <exclude>**/*.properties</exclude>
                                         <exclude>**/*.xml</exclude>
                                     </excludes>
-                                    <targetPath>WEB-INF/classes</targetPath>
+                                    <targetPath>classes</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testOutputDirectory}/META-INF</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.conf</include>
+                                        <include>**/*.properties</include>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <excludes>
+                                        <exclude>spring/**</exclude>
+                                    </excludes>
+                                    <targetPath>classes</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testOutputDirectory}/META-INF</directory>
+                                    <excludes>
+                                        <exclude>spring/**</exclude>
+                                        <exclude>**/*.conf</exclude>
+                                        <exclude>**/*.properties</exclude>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                    <targetPath>classes</targetPath>
                                 </resource>
                                 <!-- Configuration file(s) (Spring) -->
                                 <resource>
-                                    <directory>${project.build.directory}/${project.build.finalName}-dependency-resources/META-INF/spring</directory>
+                                    <directory>${project.build.testWebappWebInfSourceDirectory}/spring</directory>
                                     <filtering>true</filtering>
                                     <includes>
                                         <include>**/*.xml</include>
                                     </includes>
-                                    <targetPath>WEB-INF/spring</targetPath>
+                                    <targetPath>spring</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.directory}/${project.build.finalName}-dependency-resources/META-INF/spring</directory>
+                                    <directory>${project.build.testWebappWebInfSourceDirectory}/spring</directory>
                                     <excludes>
                                         <exclude>**/*.xml</exclude>
                                     </excludes>
-                                    <targetPath>WEB-INF/spring</targetPath>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testOutputDirectory}/META-INF/spring</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testOutputDirectory}/META-INF/spring</directory>
+                                    <excludes>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                                <!-- Configuration file(s) (webapp) -->
+                                <resource>
+                                    <directory>${project.build.testWebappWebInfSourceDirectory}</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>web.xml</include>
+                                    </includes>
                                 </resource>
                             </resources>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>test-unit</id>
+                    </execution>
+                    <execution>
+                        <id>test-functional</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-war</id>
+                    </execution>
+                    <execution>
+                        <id>war-test</id>
                     </execution>
                 </executions>
             </plugin>
@@ -281,6 +627,9 @@
                 <executions>
                     <execution>
                         <id>read-pom-properties</id>
+                    </execution>
+                    <execution>
+                        <id>translate-pom-properties</id>
                     </execution>
                 </executions>
             </plugin>

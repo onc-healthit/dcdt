@@ -3,14 +3,14 @@ package gov.hhs.onc.dcdt.service.mail.james;
 
 import java.util.List;
 import org.apache.james.container.spring.resource.JamesResourceLoader;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.core.io.Resource;
 
 public class ToolJamesServerApplicationContext extends ClassPathXmlApplicationContext implements JamesResourceLoader {
     private JamesResourceLoader jamesResLoader = new ToolJamesResourceLoader();
 
-    public ToolJamesServerApplicationContext(List<String> contextConfigLocs, AbstractApplicationContext parentContext) {
+    public ToolJamesServerApplicationContext(List<String> contextConfigLocs, ApplicationContext parentContext) {
         super(contextConfigLocs.toArray(new String[contextConfigLocs.size()]), false, parentContext);
     }
 

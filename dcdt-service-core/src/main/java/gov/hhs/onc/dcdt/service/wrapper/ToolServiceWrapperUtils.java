@@ -1,8 +1,6 @@
 package gov.hhs.onc.dcdt.service.wrapper;
 
 
-import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapperStatus;
-import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapperStatusName;
 import java.io.File;
 import java.io.IOException;
 import java.util.EnumSet;

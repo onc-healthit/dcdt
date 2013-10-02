@@ -19,6 +19,11 @@
     <description>Direct Certificate Discovery Tool (DCDT) DNS service.</description>
     <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
+    <properties>
+        <!-- Project Java properties -->
+        <project.java.package>${project.groupId}.service.dns</project.java.package>
+    </properties>
+    
     <dependencies>
         <!-- Runtime dependencies (project) -->
         <dependency>
@@ -117,6 +122,21 @@
             <artifactId>wrapper</artifactId>
             <scope>provided</scope>
         </dependency>
+        <!-- Test dependencies (project) -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-core</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
         <!-- Test dependencies (inherited) -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -167,7 +187,13 @@
                         <id>copy-dependencies-service</id>
                     </execution>
                     <execution>
+                        <id>copy-test-dependencies-service</id>
+                    </execution>
+                    <execution>
                         <id>unpack-dependency-resources-service</id>
+                    </execution>
+                    <execution>
+                        <id>unpack-test-dependency-resources-service</id>
                     </execution>
                 </executions>
             </plugin>
@@ -176,7 +202,10 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>jar-service</id>
+                        <id>default-jar</id>
+                    </execution>
+                    <execution>
+                        <id>test-jar</id>
                     </execution>
                 </executions>
             </plugin>
@@ -186,6 +215,21 @@
                 <executions>
                     <execution>
                         <id>copy-resources-service</id>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources-service</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>test-unit</id>
+                    </execution>
+                    <execution>
+                        <id>test-functional</id>
                     </execution>
                 </executions>
             </plugin>
@@ -204,6 +248,9 @@
                 <executions>
                     <execution>
                         <id>read-pom-properties</id>
+                    </execution>
+                    <execution>
+                        <id>translate-pom-properties</id>
                     </execution>
                 </executions>
             </plugin>

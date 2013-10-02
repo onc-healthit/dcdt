@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.service.dns;
 
 import gov.hhs.onc.dcdt.dns.DnsResolver;
 import gov.hhs.onc.dcdt.dns.DnsResolverType;
-import gov.hhs.onc.dcdt.dns.ToolDnsLookupService;
+import gov.hhs.onc.dcdt.dns.lookup.ToolDnsLookupService;
 import gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig;
 import java.io.Closeable;
 import java.io.IOException;

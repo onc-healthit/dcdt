@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowire;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
@@ -55,15 +54,15 @@ public class DnsServer implements InitializingBean, Runnable {
         }
     }
     
-    @Bean(name = "dnsUdpSocketServer", autowire = Autowire.BY_TYPE)
-    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    @Bean(name = "toolDnsUdpSocketServer", autowire = Autowire.BY_TYPE)
+    @Scope("prototype")
     protected DnsUdpSocketServer getDnsUdpSocketServer()
     {
         return new DnsUdpSocketServer();
     }
     
-    @Bean(name = "dnsTcpSocketServer", autowire = Autowire.BY_TYPE)
-    @Scope(BeanDefinition.SCOPE_PROTOTYPE)
+    @Bean(name = "toolDnsTcpSocketServer", autowire = Autowire.BY_TYPE)
+    @Scope("prototype")
     protected DnsTcpSocketServer getDnsTcpSocketServer()
     {
         return new DnsTcpSocketServer();

@@ -1,12 +1,11 @@
 package gov.hhs.onc.dcdt.service.mail;
 
-
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.mail.james.ToolJamesServerApplicationContext;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.Arrays;
 import java.util.List;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.ApplicationContext;
 
 public class ToolMailService extends ToolService<ToolJamesServerApplicationContext> {
     private final static List<String> CONTEXT_CONFIG_LOCS_MAIL = ToolResourceUtils.getOverrideableResourceLocations(Arrays.asList(
@@ -16,7 +15,7 @@ public class ToolMailService extends ToolService<ToolJamesServerApplicationConte
         super();
     }
 
-    public ToolMailService(AbstractApplicationContext parentContext) {
+    public ToolMailService(ApplicationContext parentContext) {
         super(parentContext);
     }
 

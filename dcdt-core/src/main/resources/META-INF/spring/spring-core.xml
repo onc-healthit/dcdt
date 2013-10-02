@@ -35,7 +35,7 @@
     <beans:bean id="toolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
         p:daemon="true"/>
     
-    <beans:bean id="dnsLookupTaskExecutor" parent="toolTaskExecutor"
+    <beans:bean id="toolDnsLookupTaskExecutor" parent="toolTaskExecutor"
         p:maxPoolSize="5"/>
     
     <!--
@@ -81,6 +81,16 @@
     </beans:bean>
     <beans:bean id="toolDnsResolverExternal" class="org.xbill.DNS.ExtendedResolver" parent="toolDnsResolver"
         c:servers-ref="toolDnsResolverHostsExternal">
+        <beans:qualifier type="gov.hhs.onc.dcdt.dns.DnsResolver" value="EXTERNAL"/>
+    </beans:bean>
+    
+    <beans:bean id="toolDnsLookupService" class="gov.hhs.onc.dcdt.dns.lookup.ToolDnsLookupService" abstract="true"/>
+    <beans:bean id="toolDnsLookupServiceLocal" parent="toolDnsLookupService"
+        c:dnsResolvers-ref="toolDnsResolverLocal">
+        <beans:qualifier type="gov.hhs.onc.dcdt.dns.DnsResolver" value="LOCAL"/>
+    </beans:bean>
+    <beans:bean id="toolDnsLookupServiceExternal" parent="toolDnsLookupService"
+        c:dnsResolvers-ref="toolDnsResolverExternal">
         <beans:qualifier type="gov.hhs.onc.dcdt.dns.DnsResolver" value="EXTERNAL"/>
     </beans:bean>
 </beans:beans>

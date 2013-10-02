@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.dns;
 
-
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
@@ -8,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
@@ -27,7 +26,7 @@ public class ToolDnsService extends ToolService<ClassPathXmlApplicationContext> 
         super();
     }
 
-    public ToolDnsService(AbstractApplicationContext parentContext) {
+    public ToolDnsService(ApplicationContext parentContext) {
         super(parentContext);
     }
 

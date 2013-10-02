@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.service.ldap;
 
 
+import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.ldap.conf.DirectoryServiceConfig;
 import gov.hhs.onc.dcdt.service.ldap.conf.LdapServerConfig;
 import gov.hhs.onc.dcdt.service.ldap.conf.TransportConfig;
-import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +19,10 @@ import org.apache.directory.server.protocol.shared.transport.UdpTransport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class ToolLdapService extends ToolService<ClassPathXmlApplicationContext>
-{
+public class ToolLdapService extends ToolService<ClassPathXmlApplicationContext> {
     private final static List<String> CONTEXT_CONFIG_LOCS_LDAP = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-service-ldap*.xml");
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolLdapService.class);
@@ -39,7 +38,7 @@ public class ToolLdapService extends ToolService<ClassPathXmlApplicationContext>
         super();
     }
 
-    public ToolLdapService(AbstractApplicationContext parentContext) {
+    public ToolLdapService(ApplicationContext parentContext) {
         super(parentContext);
     }
 
@@ -81,7 +80,7 @@ public class ToolLdapService extends ToolService<ClassPathXmlApplicationContext>
         } catch (Throwable th) {
             LOGGER.error("Unable to start tool ApacheDS instance.", th);
         }
-        
+
         super.startService();
     }
 
