@@ -9,13 +9,13 @@
 	<parent>
 		<groupId>gov.hhs.onc.dcdt</groupId>
 		<artifactId>direct-cert-discovery-tool-parent</artifactId>
-		<version>2.2-SNAPSHOT</version>
+		<version>2.1.1-RELEASE</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	
 	<groupId>gov.hhs.onc.dcdt</groupId>
 	<artifactId>direct-cert-discovery-tool-utils</artifactId>
-	<version>2.2-SNAPSHOT</version>
+	<version>2.1.1-RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>Direct Certificate Discovery Tool Utilities</name>
@@ -178,13 +178,13 @@
 		<dependency>
 			<groupId>gov.hhs.onc.dcdt</groupId>
 			<artifactId>direct-cert-discovery-tool-core</artifactId>
-			<version>2.2-SNAPSHOT</version>
+			<version>2.1.1-RELEASE</version>
 		</dependency>
 		<!-- Test dependencies (project, internal) -->
 		<dependency>
 			<groupId>gov.hhs.onc.dcdt</groupId>
 			<artifactId>direct-cert-discovery-tool-core</artifactId>
-			<version>2.2-SNAPSHOT</version>
+			<version>2.1.1-RELEASE</version>
 			<type>test-jar</type>
 			<classifier>tests</classifier>
 			<scope>test</scope>
