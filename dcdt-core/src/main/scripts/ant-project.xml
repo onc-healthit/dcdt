@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg"
+    xmlns:dcdt-project="antlib:gov.hhs.onc.dcdt.ant.project">
+    
+    <description>Ant project for Direct Certificate Discovery Tool (DCDT) projects.</description>
+    
+    <import file="${project.basedir}/../dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
+    
+    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-core-hg.xml" uri="antlib:gov.hhs.onc.dcdt.ant.hg"/>
+    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-project.xml" uri="antlib:gov.hhs.onc.dcdt.ant.project"/>
+    
+    <target name="project-process-props" description="Processes Maven project properties.">
+        <dcdt:dirname path="${project.build.pomPropertiesFile}" property="project.build.pomPropertiesDir"/>
+        <mkdir dir="${project.build.pomPropertiesDir}"/>
+        
+        <trycatch>
+            <try>
+                <copy file="${project.build.sourcePomPropertiesFile}" tofile="${project.build.pomPropertiesFile}">
+                    <filterchain>
+                        <expandproperties/>
+                    </filterchain>
+                </copy>
+            </try>
+            <catch/>
+        </trycatch>
+        
+        <dcdt-project:build-version prefix="project.module.${project.artifactId}."/>
+        <dcdt-project:hg-version path="${project.basedir}" prefix="project.module.${project.artifactId}."/>
+        
+        <propertyselector property="project.pom.props.build" override="true"
+            match="^project\.module\.\Q${project.artifactId}\E\.build\.timestamp$"/>
+        <propertyselector property="project.pom.props.hg" override="true"
+            match="^project\.module\.\Q${project.artifactId}\E\.hg\.(?:author(?:\.(?:email|person))?|branch|date|node(?:\.short)?|rev|tag)$"/>
+        <dcdt:write-properties file="${project.build.pomPropertiesFile}" append="true">
+            ${project.pom.props.build},
+            ${project.pom.props.hg}
+        </dcdt:write-properties>
+        
+        <dcdt:info>Processed Maven project properties file: ${project.build.pomPropertiesFile}</dcdt:info>
+    </target>
+    
+    <target name="project-init" description="Initializes project variable(s).">
+        <!-- Project build file variable(s) -->
+        <var name="project.build.pomPropertiesFile" value="${project.build.directory}/maven/pom.properties"/>
+        <var name="project.build.sourcePomPropertiesFile" value="${project.basedir}/pom.properties"/>
+    </target>
+    
+    <target name="project" description="Prepares Maven project file(s)." depends="core,project-init,project-process-props"/>
+</project>

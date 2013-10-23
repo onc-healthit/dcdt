@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg">
+    
+    <macrodef name="hg-version" description="Sets variables that describe the project version in terms of the Mercurial working copy.">
+        <attribute name="path" default="${project.basedir}"/>
+        <attribute name="prefix" default="project."/>
+        <sequential>
+            <dcdt-hg:properties path="@{path}" prefix="@{prefix}"/>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="build-version" description="Sets variables that describe the project version in terms of the current build.">
+        <attribute name="prefix" default="project."/>
+        <sequential>
+            <dcdt:timestamp property="@{prefix}build.timestamp"/>
+        </sequential>
+    </macrodef>
+</antlib>
