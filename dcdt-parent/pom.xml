@@ -59,6 +59,8 @@
         <project.build.testWebappLibDirectory>${project.build.testWebappWebInfDirectory}/lib</project.build.testWebappLibDirectory>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}</project.java.package>
+        <!-- Project reporting properties -->
+        <project.reporting.outputDirectory>${project.build.directory}/site</project.reporting.outputDirectory>
     </properties>
     
     <repositories>
@@ -143,6 +145,13 @@
                 <artifactId>jsp-api</artifactId>
                 <version>2.2</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.sourceforge.cobertura</groupId>
+                <artifactId>cobertura-runtime</artifactId>
+                <version>2.0.3</version>
+                <scope>provided</scope>
+                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -270,6 +279,12 @@
                 <version>4.0.4</version>
             </dependency>
             <!-- Test dependencies -->
+            <dependency>
+                <groupId>net.sourceforge.cobertura</groupId>
+                <artifactId>cobertura</artifactId>
+                <version>2.0.3</version>
+                <scope>test</scope>
+            </dependency>
             <dependency>
                 <groupId>org.apache.directory.server</groupId>
                 <artifactId>apacheds-test-framework</artifactId>
@@ -436,6 +451,16 @@
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>3.3</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <relativizeDecorationLinks>false</relativizeDecorationLinks>
+                        <stagingSiteURL>file://${project.build.directory}/staging-deploy/${project.artifactId}/${project.version}</stagingSiteURL>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
                     <version>2.2.1</version>
                     <inherited>true</inherited>
@@ -464,12 +489,17 @@
                     <version>2.16</version>
                     <inherited>true</inherited>
                     <configuration>
+                        <additionalClasspathElements combine.children="append">
+                            <additionalClasspathElement>${project.build.outputDirectory}</additionalClasspathElement>
+                        </additionalClasspathElements>
                         <argLine>-XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</argLine>
-                        <systemPropertyVariables>
+                        <classesDirectory>${project.build.directory}/generated-classes/cobertura</classesDirectory>
+                        <systemPropertyVariables combine.children="append">
                             <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
                             <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
                             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                             <logback.configurationFile>${project.logback.config.file}</logback.configurationFile>
+                            <net.sourceforge.cobertura.datafile>${project.build.directory}/cobertura/cobertura.ser</net.sourceforge.cobertura.datafile>
                         </systemPropertyVariables>
                         <trimStackTrace>false</trimStackTrace>
                     </configuration>
@@ -666,7 +696,221 @@
         </plugins>
     </build>
     
+    <reporting>
+        <excludeDefaults>true</excludeDefaults>
+        
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.3</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>2.16</version>
+                <configuration>
+                    <aggregate>true</aggregate>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
+    
     <profiles>
+        <!-- Configure code checking / verification oriented reporting plugins -->
+        <profile>
+            <id>site-check</id>
+            <activation>
+                <property>
+                    <name>!skipChecks</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sourceforge.cobertura</groupId>
+                                <artifactId>cobertura</artifactId>
+                                <version>2.0.3</version>
+                            </dependency>
+                        </dependencies>
+                        <executions>
+                            <!-- Preparing Maven project test coverage file(s). -->
+                            <execution>
+                                <id>prepare-project-coverage</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir}/../dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage" inheritRefs="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <!-- Preparing Maven project test coverage report file(s). -->
+                            <execution>
+                                <id>prepare-project-coverage-report</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir}/../dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-report" inheritRefs="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <!-- Check Maven project test coverage result(s). -->
+                            <execution>
+                                <id>check-project-coverage</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir}/../dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-check" inheritRefs="true">
+                                            <!-- See https://github.com/cobertura/cobertura/wiki/Ant-Task-Reference#cobertura-check-task for configuration option descriptions -->
+                                            <property name="project.coverage.check.haltOnFailure" value="true"/>
+                                            <property name="project.coverage.check.branchRate" value="0"/>
+                                            <property name="project.coverage.check.lineRate" value="0"/>
+                                            <property name="project.coverage.check.packageBranchRate" value="0"/>
+                                            <property name="project.coverage.check.packageLineRate" value="0"/>
+                                            <property name="project.coverage.check.totalBranchRate" value="0"/>
+                                            <property name="project.coverage.check.totalLineRate" value="0"/>
+                                        </ant>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>site-check</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>2.10</version>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
+                            <logViolationsToConsole>true</logViolationsToConsole>
+                            <suppressionsLocation>${project.basedir}/../dcdt-core/src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-pmd-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <failOnViolation>true</failOnViolation>
+                            <includeTests>true</includeTests>
+                            <printFailingErrors>true</printFailingErrors>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>findbugs-maven-plugin</artifactId>
+                        <version>2.5.2</version>
+                        <configuration>
+                            <effort>Max</effort>
+                            <failsOnError>true</failsOnError>
+                            <includeTests>true</includeTests>
+                            <xmlOutput>true</xmlOutput>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
+        <!-- Configure documentation-oriented reporting plugins -->
+        <profile>
+            <id>site-doc</id>
+            <properties>
+                <skipDoc>false</skipDoc>
+            </properties>
+            <reporting>
+                <excludeDefaults>false</excludeDefaults>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>2.9.1</version>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <quiet>true</quiet>
+                            <show>private</show>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-project-info-reports-plugin</artifactId>
+                        <version>2.7</version>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>taglist-maven-plugin</artifactId>
+                        <version>2.4</version>
+                        <configuration>
+                            <aggregate>true</aggregate>
+                            <tagListOptions>
+                                <tagClasses>
+                                    <tagClass>
+                                        <displayName>TEMP</displayName>
+                                        <tags>
+                                            <tag>
+                                                <matchString>temp</matchString>
+                                                <matchType>ignoreCase</matchType>
+                                            </tag>
+                                        </tags>
+                                    </tagClass>
+                                    <tagClass>
+                                        <displayName>TODO</displayName>
+                                        <tags>
+                                            <tag>
+                                                <matchString>todo</matchString>
+                                                <matchType>ignoreCase</matchType>
+                                            </tag>
+                                        </tags>
+                                    </tagClass>
+                                </tagClasses>
+                            </tagListOptions>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
         <!-- Set Tomcat manager URL property if not defined already -->
         <profile>
             <id>default-tomcat.manager.url</id>

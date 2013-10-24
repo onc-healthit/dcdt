@@ -43,6 +43,21 @@
                         <inherited>false</inherited>
                     </execution>
                     <execution>
+                        <id>prepare-project-coverage</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>prepare-project-coverage-report</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>check-project-coverage</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
                         <id>prepare-archive</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
@@ -51,4 +66,16 @@
             </plugin>
         </plugins>
     </build>
+    
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <configuration>
+                    <suppressionsLocation>${project.basedir}/dcdt-core/src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+                </configuration>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

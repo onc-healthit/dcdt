@@ -37,6 +37,18 @@
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
         </dependency>
+        <!--
+        <dependency>
+            <groupId>net.sourceforge.cobertura</groupId>
+            <artifactId>cobertura</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.cobertura</groupId>
+            <artifactId>cobertura-runtime</artifactId>
+            <scope>provided</scope>
+            <type>pom</type>
+        </dependency>
+        -->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-io</artifactId>
@@ -103,6 +115,11 @@
         </dependency>
         <!-- Test dependencies (inherited) -->
         <dependency>
+            <groupId>net.sourceforge.cobertura</groupId>
+            <artifactId>cobertura</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
@@ -145,8 +162,8 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <additionalClasspathElements>
-                        <additionalClasspathElement>${project.build.outputDirectory}/META-INF</additionalClasspathElement>
                         <additionalClasspathElement>${project.build.testOutputDirectory}/META-INF</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.outputDirectory}/META-INF</additionalClasspathElement>
                     </additionalClasspathElements>
                     <excludes>
                         <exclude>${project.java.package.path}/service/**</exclude>

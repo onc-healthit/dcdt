@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:cobertura="antlib:net.sourceforge.cobertura.ant"
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant">
+    
+    <macrodef name="check" description="Performs checks against Cobertura results.">
+        <attribute name="coverageFile"/>
+        <attribute name="haltOnFailure" default="true"/>
+        <attribute name="branchRate" default="0"/>
+        <attribute name="lineRate" default="0"/>
+        <attribute name="packageBranchRate" default="0"/>
+        <attribute name="packageLineRate" default="0"/>
+        <attribute name="totalBranchRate" default="0"/>
+        <attribute name="totalLineRate" default="0"/>
+        <element name="check-elements" optional="true" implicit="true"/>
+        <sequential>
+            <cobertura:check datafile="@{coverageFile}" haltonfailure="@{haltOnFailure}" branchrate="@{branchRate}" linerate="@{lineRate}"
+                packagebranchrate="@{packageBranchRate}" packagelinerate="@{packageLineRate}" totalbranchrate="@{totalBranchRate}"
+                totallinerate="@{totalLineRate}" taskname="cobertura-check">
+                <check-elements/>
+            </cobertura:check>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="report" description="Generates a Cobertura report.">
+        <attribute name="coverageFile"/>
+        <attribute name="srcDir"/>
+        <attribute name="outDir"/>
+        <attribute name="maxMemory" default="64M"/>
+        <element name="report-elements" optional="true" implicit="true"/>
+        <sequential>
+            <cobertura:report datafile="@{coverageFile}" srcdir="@{srcDir}" destdir="@{outDir}" maxmemory="@{maxMemory}" taskname="cobertura-report">
+                <report-elements/>
+            </cobertura:report>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="instrument" description="Generates Cobertura instrumented classes + metadata for the given class files.">
+        <attribute name="coverageFile"/>
+        <attribute name="outDir"/>
+        <attribute name="maxMemory" default="64M"/>
+        <element name="instrument-elements" optional="true" implicit="true"/>
+        <sequential>
+            <cobertura:instrument datafile="@{coverageFile}" todir="@{outDir}" maxmemory="@{maxMemory}" taskname="cobertura-instrument">
+                <instrument-elements/>
+            </cobertura:instrument>
+        </sequential>
+    </macrodef>
+</antlib>

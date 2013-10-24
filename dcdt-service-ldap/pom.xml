@@ -150,6 +150,11 @@
             <scope>test</scope>
         </dependency>
         <!-- Test dependencies (inherited) -->
+        <dependency>
+            <groupId>net.sourceforge.cobertura</groupId>
+            <artifactId>cobertura</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- TODO: Remove on development completion -->
         <dependency>
             <groupId>org.apache.directory.server</groupId>

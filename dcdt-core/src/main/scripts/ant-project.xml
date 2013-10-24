@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="project"
+    xmlns:cobertura="antlib:net.sourceforge.cobertura.ant"
     xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:dcdt-cobertura="antlib:gov.hhs.onc.dcdt.ant.cobertura"
     xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg"
     xmlns:dcdt-project="antlib:gov.hhs.onc.dcdt.ant.project">
     
@@ -8,8 +10,45 @@
     
     <import file="${project.basedir}/../dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
     
+    <taskdef resource="net/sourceforge/cobertura/ant/antlib.xml" classpath="${maven.classpath}" uri="antlib:net.sourceforge.cobertura.ant"/>
+    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-core-cobertura.xml" uri="antlib:gov.hhs.onc.dcdt.ant.cobertura"/>
     <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-core-hg.xml" uri="antlib:gov.hhs.onc.dcdt.ant.hg"/>
     <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-project.xml" uri="antlib:gov.hhs.onc.dcdt.ant.project"/>
+    
+    <target name="project-coverage-check" description="Performs checks against Maven project test coverage results." depends="core,project-coverage-init">
+        <dcdt-cobertura:check coverageFile="${project.build.coverageFile}" haltOnFailure="${project.coverage.check.haltOnFailure}"
+            branchRate="${project.coverage.check.branchRate}" lineRate="${project.coverage.check.lineRate}"
+            packageBranchRate="${project.coverage.check.branchRate}" packageLineRate="${project.coverage.check.lineRate}"
+            totalBranchRate="${project.coverage.check.branchRate}" totalLineRate="${project.coverage.check.lineRate}"/>
+    </target>
+    
+    <target name="project-coverage-report" description="Generates a Maven project test coverage report." depends="core,project-coverage-init">
+        <dcdt-cobertura:report coverageFile="${project.build.coverageFile}" srcDir="${project.build.sourceDirectory}"
+            outDir="${project.reporting.coverageOutputDirectory}"/>
+    </target>
+    
+    <target name="project-coverage-instrument" description="Generates Maven project test coverage instrumentation.">
+        <dcdt-cobertura:instrument coverageFile="${project.build.coverageFile}" outDir="${project.build.instrumentedOutputDirectory}">
+            <auxClasspath path="${maven.classpath}"/>
+            <fileset dir="${project.build.outputDirectory}" erroronmissingdir="false">
+                <include name="**/*.class"/>
+            </fileset>
+        </dcdt-cobertura:instrument>
+    </target>
+    
+    <target name="project-coverage-init" description="Initializes Maven project test coverage variable(s).">
+        <!-- Project build test coverage directory variable(s) -->
+        <var name="project.build.instrumentedOutputDirectory" value="${project.build.directory}/generated-classes/cobertura"/>
+        
+        <!-- Project reporting test coverage directory variable(s) -->
+        <var name="project.reporting.coverageOutputDirectory" value="${project.reporting.outputDirectory}/cobertura"/>
+        
+        <!-- Project build test coverage file variable(s) -->
+        <var name="project.build.coverageFile" value="${project.build.directory}/cobertura/cobertura.ser"/>
+    </target>
+    
+    <target name="project-coverage" description="Prepares Maven project test coverage file(s)."
+        depends="core,project-coverage-init,project-coverage-instrument"/>
     
     <target name="project-process-props" description="Processes Maven project properties.">
         <dcdt:dirname path="${project.build.pomPropertiesFile}" property="project.build.pomPropertiesDir"/>

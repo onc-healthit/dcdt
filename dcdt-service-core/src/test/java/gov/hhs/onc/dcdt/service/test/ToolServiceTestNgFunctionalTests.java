@@ -11,6 +11,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
 public abstract class ToolServiceTestNgFunctionalTests<T extends AbstractApplicationContext, U extends ToolService<T>> extends ToolTestNgFunctionalTests {
+    protected final static long SERVICE_SETUP_THREAD_SLEEP_TIME_MS = 1000L;
+
     protected ThreadPoolTaskExecutor serviceTaskExecutor;
     protected Class<U> serviceClass;
     protected U service;
@@ -25,6 +27,7 @@ public abstract class ToolServiceTestNgFunctionalTests<T extends AbstractApplica
         this.serviceTaskExecutor.submit(this.service);
 
         while(!this.service.isRunning()) {
+            Thread.sleep(SERVICE_SETUP_THREAD_SLEEP_TIME_MS);
         }
     }
 
@@ -34,6 +37,7 @@ public abstract class ToolServiceTestNgFunctionalTests<T extends AbstractApplica
             this.service.stop();
 
             while(this.service.isRunning()) {
+                Thread.sleep(SERVICE_SETUP_THREAD_SLEEP_TIME_MS);
             }
         }
     }

@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.service;
 
 
-import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapperUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +70,7 @@ public abstract class ToolService<T extends AbstractApplicationContext> implemen
             try {
                 Thread.sleep(SERVICE_THREAD_SLEEP_TIME_MS);
             } catch (InterruptedException e) {
-                LOGGER.debug(ToolServiceWrapperUtils.getWrapperDisplayName() + " (class=" + this.getClass().getName() + ") thread interrupted.");
+                LOGGER.debug("Tool service (class=" + this.getClass().getName() + ") thread interrupted.");
             }
         }
     }
