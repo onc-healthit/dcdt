@@ -7,7 +7,7 @@
     
     <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.classpath}"/>
     <taskdef resource="org/apache/ant/props/antlib.xml" classpath="${maven.classpath}" uri="antlib:org.apache.ant.props"/>
-    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-core.xml" uri="antlib:gov.hhs.onc.dcdt.ant"/>
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-core.xml" uri="antlib:gov.hhs.onc.dcdt.ant"/>
     
     <propertyhelper>
         <props:conditions/>

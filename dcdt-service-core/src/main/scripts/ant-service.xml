@@ -5,9 +5,9 @@
     
     <description>Ant project for Direct Certificate Discovery Tool (DCDT) services.</description>
     
-    <import file="${project.basedir}/../dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
+    <import file="${project.basedir.all}/dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
     
-    <taskdef file="${project.basedir}/../dcdt-service-core/src/main/scripts/antlib-service.xml" uri="antlib:gov.hhs.onc.dcdt.ant.service"/>
+    <taskdef file="${project.basedir.all}/dcdt-service-core/src/main/scripts/antlib-service.xml" uri="antlib:gov.hhs.onc.dcdt.ant.service"/>
     
     <target name="service-process-exec-files" description="Processes service executable file(s).">
         <!-- Making service build directories, if they do not exist -->
@@ -42,7 +42,7 @@
         <var name="project.build.serviceVarDirectory" value="${project.build.serviceAssemblyDirectory}/var"/>
         
         <!-- Project service-core module build service directory variable(s) -->
-        <var name="project.module.service-core.build.serviceBinSourceDirectory" value="${project.basedir}/../dcdt-service-core/src/bin"/>
+        <var name="project.module.service-core.build.serviceBinSourceDirectory" value="${project.basedir.all}/dcdt-service-core/src/bin"/>
         
         <!-- Project service-core module build service file variable(s) -->
         <var name="project.module.service-core.build.serviceBinSourceFile"

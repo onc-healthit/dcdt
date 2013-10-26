@@ -61,8 +61,10 @@
         <element name="cmd-elements" optional="true" implicit="true"/>
         <sequential>
             <dcdt:unset name="@{outProperty}"/>
-            <exec executable="hg" dir="@{path}" outputproperty="@{outProperty}" searchpath="true" taskname="hg-@{cmd}">
+            <exec executable="hg" outputproperty="@{outProperty}" searchpath="true" taskname="hg-@{cmd}">
                 <arg value="@{cmd}"/>
+                <arg value="--cwd"/>
+                <arg value="@{path}"/>
                 <cmd-elements/>
             </exec>
         </sequential>

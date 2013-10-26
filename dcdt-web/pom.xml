@@ -20,6 +20,8 @@
     <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
+        <!-- Project properties -->
+        <project.basedir.all>${project.basedir}/..</project.basedir.all>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}.web</project.java.package>
     </properties>
@@ -603,6 +605,9 @@
                             </resources>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>copy-resources-site</id>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -614,6 +619,9 @@
                     </execution>
                     <execution>
                         <id>test-functional</id>
+                    </execution>
+                    <execution>
+                        <id>test-integration</id>
                     </execution>
                 </executions>
             </plugin>

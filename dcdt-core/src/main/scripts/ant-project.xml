@@ -8,27 +8,35 @@
     
     <description>Ant project for Direct Certificate Discovery Tool (DCDT) projects.</description>
     
-    <import file="${project.basedir}/../dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
+    <import file="${project.basedir.all}/dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
     
     <taskdef resource="net/sourceforge/cobertura/ant/antlib.xml" classpath="${maven.classpath}" uri="antlib:net.sourceforge.cobertura.ant"/>
-    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-core-cobertura.xml" uri="antlib:gov.hhs.onc.dcdt.ant.cobertura"/>
-    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-core-hg.xml" uri="antlib:gov.hhs.onc.dcdt.ant.hg"/>
-    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-project.xml" uri="antlib:gov.hhs.onc.dcdt.ant.project"/>
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-core-cobertura.xml" uri="antlib:gov.hhs.onc.dcdt.ant.cobertura"/>
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-core-hg.xml" uri="antlib:gov.hhs.onc.dcdt.ant.hg"/>
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-project.xml" uri="antlib:gov.hhs.onc.dcdt.ant.project"/>
     
     <target name="project-coverage-check" description="Performs checks against Maven project test coverage results." depends="core,project-coverage-init">
-        <dcdt-cobertura:check coverageFile="${project.build.coverageFile}" haltOnFailure="${project.coverage.check.haltOnFailure}"
+        <dcdt-cobertura:check metadataFile="${project.build.coverageMetadataFile}" haltOnFailure="${project.coverage.check.haltOnFailure}"
             branchRate="${project.coverage.check.branchRate}" lineRate="${project.coverage.check.lineRate}"
             packageBranchRate="${project.coverage.check.branchRate}" packageLineRate="${project.coverage.check.lineRate}"
             totalBranchRate="${project.coverage.check.branchRate}" totalLineRate="${project.coverage.check.lineRate}"/>
     </target>
     
     <target name="project-coverage-report" description="Generates a Maven project test coverage report." depends="core,project-coverage-init">
-        <dcdt-cobertura:report coverageFile="${project.build.coverageFile}" srcDir="${project.build.sourceDirectory}"
+        <dcdt-cobertura:report metadataFile="${project.build.coverageMetadataFile}" srcDir="${project.build.sourceDirectory}"
             outDir="${project.reporting.coverageOutputDirectory}"/>
     </target>
     
+    <target name="project-coverage-merge" description="Merges Maven project test coverage metadata file(s).">
+        <dcdt-cobertura:merge metadataFile="${project.build.coverageMetadataFile}">
+            <fileset dir="${project.basedir.all}">
+                <include name="*/target/cobertura/cobertura.ser"/>
+            </fileset>
+        </dcdt-cobertura:merge>
+    </target>
+    
     <target name="project-coverage-instrument" description="Generates Maven project test coverage instrumentation.">
-        <dcdt-cobertura:instrument coverageFile="${project.build.coverageFile}" outDir="${project.build.instrumentedOutputDirectory}">
+        <dcdt-cobertura:instrument metadataFile="${project.build.coverageMetadataFile}" outDir="${project.build.coverageOutputDirectory}">
             <auxClasspath path="${maven.classpath}"/>
             <fileset dir="${project.build.outputDirectory}" erroronmissingdir="false">
                 <include name="**/*.class"/>
@@ -37,14 +45,6 @@
     </target>
     
     <target name="project-coverage-init" description="Initializes Maven project test coverage variable(s).">
-        <!-- Project build test coverage directory variable(s) -->
-        <var name="project.build.instrumentedOutputDirectory" value="${project.build.directory}/generated-classes/cobertura"/>
-        
-        <!-- Project reporting test coverage directory variable(s) -->
-        <var name="project.reporting.coverageOutputDirectory" value="${project.reporting.outputDirectory}/cobertura"/>
-        
-        <!-- Project build test coverage file variable(s) -->
-        <var name="project.build.coverageFile" value="${project.build.directory}/cobertura/cobertura.ser"/>
     </target>
     
     <target name="project-coverage" description="Prepares Maven project test coverage file(s)."

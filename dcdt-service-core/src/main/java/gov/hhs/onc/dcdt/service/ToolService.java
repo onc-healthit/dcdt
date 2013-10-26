@@ -19,7 +19,7 @@ public abstract class ToolService<T extends AbstractApplicationContext> implemen
     protected AutowireCapableBeanFactory beanFactory;
     protected boolean running;
 
-    private final static List<String> CONTEXT_CONFIG_LOCS_CORE = ToolResourceUtils.getOverrideableResourceLocations(Arrays.asList("spring/spring-core.xml",
+    private final static List<String> CONTEXT_CONFIG_LOCS_CORE = ToolResourceUtils.getOverrideableResourceLocations(Arrays.asList("spring/spring-core*.xml",
             "spring/spring-service.xml", "spring/spring-service-embedded.xml", "spring/spring-service-standalone.xml"));
 
     private final static long SERVICE_THREAD_SLEEP_TIME_MS = 1000L;

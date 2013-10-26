@@ -20,6 +20,8 @@
     <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
+        <!-- Project properties -->
+        <project.basedir.all>${project.basedir}/..</project.basedir.all>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}.service</project.java.package>
     </properties>
@@ -215,6 +217,9 @@
                     <execution>
                         <id>copy-test-resources-service</id>
                         <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-site</id>
                     </execution>
                 </executions>
             </plugin>

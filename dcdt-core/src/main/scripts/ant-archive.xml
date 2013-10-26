@@ -5,9 +5,9 @@
     
     <description>Ant project for Direct Certificate Discovery Tool (DCDT) archives.</description>
     
-    <import file="${project.basedir}/../dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
+    <import file="${project.basedir.all}/dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
     
-    <taskdef file="${project.basedir}/../dcdt-core/src/main/scripts/antlib-archive.xml" uri="antlib:gov.hhs.onc.dcdt.ant.archive"/>
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-archive.xml" uri="antlib:gov.hhs.onc.dcdt.ant.archive"/>
     
     <target name="archive-process-props" description="Processes Maven archive project properties.">
         <dcdt:dirname path="${project.build.archivePomPropertiesFile}" property="project.build.archivePomPropertiesDir"/>

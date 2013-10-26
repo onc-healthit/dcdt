@@ -23,10 +23,14 @@
         <java.version>1.7</java.version>
         <!-- Project properties -->
         <project.basedir>${project.basedir}</project.basedir>
+        <project.basedir.all>${project.basedir}/..</project.basedir.all>
         <!-- Project build properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Project build assembly properties -->
         <project.build.assemblyDirectory>${project.basedir}/src/assembly</project.build.assemblyDirectory>
+        <!-- Project build coverage properties -->
+        <project.build.coverageMetadataFile>${project.build.directory}/cobertura/cobertura.ser</project.build.coverageMetadataFile>
+        <project.build.coverageOutputDirectory>${project.build.directory}/generated-classes/cobertura</project.build.coverageOutputDirectory>
         <!-- Project build resources properties -->
         <project.build.resourcesDirectory>${project.basedir}/src/main/resources</project.build.resourcesDirectory>
         <!-- Project build test resources properties -->
@@ -57,10 +61,25 @@
         <project.build.testWebappWebInfDirectory>${project.build.testWebappDirectory}/WEB-INF</project.build.testWebappWebInfDirectory>
         <project.build.testWebappClassesDirectory>${project.build.testWebappWebInfDirectory}/classes</project.build.testWebappClassesDirectory>
         <project.build.testWebappLibDirectory>${project.build.testWebappWebInfDirectory}/lib</project.build.testWebappLibDirectory>
+        <!--
+        Project coverage checking properties
+        See https://github.com/cobertura/cobertura/wiki/Ant-Task-Reference#cobertura-check-task for configuration option descriptions
+        -->
+        <project.coverage.check.haltOnFailure>true</project.coverage.check.haltOnFailure>
+        <project.coverage.check.branchRate>0</project.coverage.check.branchRate>
+        <project.coverage.check.lineRate>0</project.coverage.check.lineRate>
+        <project.coverage.check.packageBranchRate>0</project.coverage.check.packageBranchRate>
+        <project.coverage.check.packageLineRate>0</project.coverage.check.packageLineRate>
+        <project.coverage.check.totalBranchRate>0</project.coverage.check.totalBranchRate>
+        <project.coverage.check.totalLineRate>0</project.coverage.check.totalLineRate>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}</project.java.package>
         <!-- Project reporting properties -->
         <project.reporting.outputDirectory>${project.build.directory}/site</project.reporting.outputDirectory>
+        <project.reporting.siteDirectory>${project.basedir}/src/site</project.reporting.siteDirectory>
+        <project.reporting.siteResourcesDirectory>${project.reporting.siteDirectory}/resources</project.reporting.siteResourcesDirectory>
+        <!-- Project reporting coverage properties -->
+        <project.reporting.coverageOutputDirectory>${project.reporting.outputDirectory}/cobertura</project.reporting.coverageOutputDirectory>
     </properties>
     
     <repositories>
@@ -284,6 +303,12 @@
                 <artifactId>cobertura</artifactId>
                 <version>2.0.3</version>
                 <scope>test</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>com.ibm.icu</groupId>
+                        <artifactId>icu4j</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.apache.directory.server</groupId>
@@ -369,7 +394,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <target>
-                                    <ant antfile="${project.basedir}/../dcdt-core/src/main/scripts/ant-project.xml" target="project" inheritRefs="true"/>
+                                    <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project" inheritRefs="true" useNativeBasedir="true"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -383,7 +408,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <target>
-                                    <ant antfile="${project.basedir}/../dcdt-core/src/main/scripts/ant-archive.xml" target="archive" inheritRefs="true"/>
+                                    <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-archive.xml" target="archive" inheritRefs="true" useNativeBasedir="true"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -448,6 +473,37 @@
                         <includeEmptyDirs>true</includeEmptyDirs>
                         <useDefaultDelimiters>false</useDefaultDelimiters>
                     </configuration>
+                    <executions>
+                        <!-- Copying site resources -->
+                        <execution>
+                            <id>copy-resources-site</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.reporting.outputDirectory}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.basedir.all}/dcdt-parent/src/site/resources</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.css</include>
+                                            <include>**/*.js</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.basedir.all}/dcdt-parent/src/site/resources</directory>
+                                        <excludes>
+                                            <exclude>**/*.css</exclude>
+                                            <exclude>**/*.js</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -456,8 +512,27 @@
                     <inherited>true</inherited>
                     <configuration>
                         <relativizeDecorationLinks>false</relativizeDecorationLinks>
+                        <siteDirectory>${project.reporting.siteDirectory}</siteDirectory>
                         <stagingSiteURL>file://${project.build.directory}/staging-deploy/${project.artifactId}/${project.version}</stagingSiteURL>
                     </configuration>
+                    <executions>
+                        <!-- Attaching site descriptor -->
+                        <execution>
+                            <id>attach-descriptor</id>
+                            <goals>
+                                <goal>attach-descriptor</goal>
+                            </goals>
+                        </execution>
+                        <!-- Building site -->
+                        <execution>
+                            <id>site</id>
+                            <phase>post-integration-test</phase>
+                            <goals>
+                                <goal>site</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -492,14 +567,18 @@
                         <additionalClasspathElements combine.children="append">
                             <additionalClasspathElement>${project.build.outputDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
-                        <argLine>-XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</argLine>
-                        <classesDirectory>${project.build.directory}/generated-classes/cobertura</classesDirectory>
+                        <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</argLine>
+                        <classesDirectory>${project.build.coverageOutputDirectory}</classesDirectory>
+                        <excludes combine.children="append">
+                            <exclude>${project.java.package.path}/test/**/*Tests.java</exclude>
+                        </excludes>
+                        <reportFormat>plain</reportFormat>
                         <systemPropertyVariables combine.children="append">
                             <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
                             <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
                             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                             <logback.configurationFile>${project.logback.config.file}</logback.configurationFile>
-                            <net.sourceforge.cobertura.datafile>${project.build.directory}/cobertura/cobertura.ser</net.sourceforge.cobertura.datafile>
+                            <net.sourceforge.cobertura.datafile>${project.build.coverageMetadataFile}</net.sourceforge.cobertura.datafile>
                         </systemPropertyVariables>
                         <trimStackTrace>false</trimStackTrace>
                     </configuration>
@@ -558,6 +637,33 @@
                                 <reportNameSuffix>func</reportNameSuffix>
                                 <systemPropertyVariables>
                                     <dcdt.log.file.name>${project.artifactId}-test-func</dcdt.log.file.name>
+                                </systemPropertyVariables>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>test-integration</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <includes>
+                                    <include>${project.java.package.path}/**/*IntegrationTests.java</include>
+                                </includes>
+                                <properties>
+                                    <property>
+                                        <name>suitename</name>
+                                        <value>${project.name} Integration Tests Suite</value>
+                                    </property>
+                                    <property>
+                                        <name>testname</name>
+                                        <value>${project.name} Integration Tests</value>
+                                    </property>
+                                </properties>
+                                <reportNameSuffix>it</reportNameSuffix>
+                                <systemPropertyVariables>
+                                    <dcdt.log.file.name>${project.artifactId}-test-it</dcdt.log.file.name>
                                 </systemPropertyVariables>
                             </configuration>
                         </execution>
@@ -630,7 +736,7 @@
                         </container>
                         <configuration>
                             <properties>
-                                <cargo.jvmargs>-XX:PermSize=512m -XX:MaxPermSize=1024m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</cargo.jvmargs>
+                                <cargo.jvmargs>-Xms512m -Xmx768m -XX:PermSize=256m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</cargo.jvmargs>
                             </properties>
                         </configuration>
                         <wait>true</wait>
@@ -693,6 +799,28 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>copy-resources-site</id>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>attach-descriptor</id>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
@@ -704,22 +832,49 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>2.3</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
                 <version>2.16</version>
-                <configuration>
-                    <aggregate>true</aggregate>
-                </configuration>
+                <reportSets>
+                    <reportSet>
+                        <id>default</id>
+                        <reports>
+                            <report>report-only</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
             </plugin>
         </plugins>
     </reporting>
     
     <profiles>
+        <!-- Set properties if the project contains a Java source directory -->
+        <profile>
+            <id>src-java</id>
+            <activation>
+                <file>
+                    <exists>${basedir}/src/main/java</exists>
+                </file>
+            </activation>
+            <properties>
+                <project.build.sourceDirectoryExists>true</project.build.sourceDirectoryExists>
+                <project.build.sourceDirectoryNotExists>false</project.build.sourceDirectoryNotExists>
+            </properties>
+        </profile>
+        <profile>
+            <id>not-src-java</id>
+            <activation>
+                <file>
+                    <missing>${basedir}/src/main/java</missing>
+                </file>
+            </activation>
+            <properties>
+                <project.build.sourceDirectoryExists>false</project.build.sourceDirectoryExists>
+                <project.build.sourceDirectoryNotExists>true</project.build.sourceDirectoryNotExists>
+            </properties>
+        </profile>
         <!-- Configure code checking / verification oriented reporting plugins -->
         <profile>
             <id>site-check</id>
@@ -750,8 +905,9 @@
                                 </goals>
                                 <inherited>true</inherited>
                                 <configuration>
+                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
                                     <target>
-                                        <ant antfile="${project.basedir}/../dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage" inheritRefs="true"/>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage" inheritRefs="true" useNativeBasedir="true"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -764,8 +920,9 @@
                                 </goals>
                                 <inherited>true</inherited>
                                 <configuration>
+                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
                                     <target>
-                                        <ant antfile="${project.basedir}/../dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-report" inheritRefs="true"/>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-report" inheritRefs="true" useNativeBasedir="true"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -778,38 +935,42 @@
                                 </goals>
                                 <inherited>true</inherited>
                                 <configuration>
+                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
                                     <target>
-                                        <ant antfile="${project.basedir}/../dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-check" inheritRefs="true">
-                                            <!-- See https://github.com/cobertura/cobertura/wiki/Ant-Task-Reference#cobertura-check-task for configuration option descriptions -->
-                                            <property name="project.coverage.check.haltOnFailure" value="true"/>
-                                            <property name="project.coverage.check.branchRate" value="0"/>
-                                            <property name="project.coverage.check.lineRate" value="0"/>
-                                            <property name="project.coverage.check.packageBranchRate" value="0"/>
-                                            <property name="project.coverage.check.packageLineRate" value="0"/>
-                                            <property name="project.coverage.check.totalBranchRate" value="0"/>
-                                            <property name="project.coverage.check.totalLineRate" value="0"/>
-                                        </ant>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-check" inheritRefs="true" useNativeBasedir="true"/>
                                     </target>
                                 </configuration>
                             </execution>
                         </executions>
                     </plugin>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>build-helper-maven-plugin</artifactId>
+                        <version>1.8</version>
                         <executions>
                             <execution>
-                                <id>site-check</id>
+                                <id>attach-artifact-coverage</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
-                                    <goal>site</goal>
+                                    <goal>attach-artifact</goal>
                                 </goals>
                                 <inherited>true</inherited>
+                                <configuration>
+                                    <artifacts>
+                                        <artifact>
+                                            <classifier>cobertura</classifier>
+                                            <file>${project.build.coverageMetadataFile}</file>
+                                            <type>ser</type>
+                                        </artifact>
+                                    </artifacts>
+                                    <skipAttach>${project.build.sourceDirectoryNotExists}</skipAttach>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
+            
             <reporting>
                 <plugins>
                     <plugin>
@@ -817,24 +978,45 @@
                         <artifactId>maven-checkstyle-plugin</artifactId>
                         <version>2.10</version>
                         <configuration>
-                            <aggregate>true</aggregate>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
                             <includeTestSourceDirectory>true</includeTestSourceDirectory>
                             <logViolationsToConsole>true</logViolationsToConsole>
-                            <suppressionsLocation>${project.basedir}/../dcdt-core/src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
+                            <suppressionsLocation>${project.basedir.all}/dcdt-core/src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
                         </configuration>
+                        <reportSets>
+                            <reportSet>
+                                <id>default</id>
+                                <reports>
+                                    <report>checkstyle</report>
+                                </reports>
+                                <configuration>
+                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
+                                </configuration>
+                            </reportSet>
+                        </reportSets>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
                         <version>3.0.1</version>
                         <configuration>
-                            <aggregate>true</aggregate>
-                            <failOnViolation>true</failOnViolation>
+                            <includeXmlInSite>true</includeXmlInSite>
                             <includeTests>true</includeTests>
                             <printFailingErrors>true</printFailingErrors>
                         </configuration>
+                        <reportSets>
+                            <reportSet>
+                                <id>default</id>
+                                <reports>
+                                    <report>pmd</report>
+                                    <report>cpd</report>
+                                </reports>
+                                <configuration>
+                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
+                                </configuration>
+                            </reportSet>
+                        </reportSets>
                     </plugin>
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
@@ -842,10 +1024,21 @@
                         <version>2.5.2</version>
                         <configuration>
                             <effort>Max</effort>
-                            <failsOnError>true</failsOnError>
                             <includeTests>true</includeTests>
+                            <jvmArgs>-XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</jvmArgs>
                             <xmlOutput>true</xmlOutput>
                         </configuration>
+                        <reportSets>
+                            <reportSet>
+                                <id>default</id>
+                                <reports>
+                                    <report>findbugs</report>
+                                </reports>
+                                <configuration>
+                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
+                                </configuration>
+                            </reportSet>
+                        </reportSets>
                     </plugin>
                 </plugins>
             </reporting>
@@ -864,17 +1057,36 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <version>2.9.1</version>
                         <configuration>
-                            <aggregate>true</aggregate>
+                            <additionalJOptions>
+                                <additionalJOption>-J-XX:PermSize=64m</additionalJOption>
+                                <additionalJOption>-J-XX:MaxPermSize=128m</additionalJOption>
+                                <additionalJOption>-J-XX:+UseConcMarkSweepGC</additionalJOption>
+                                <additionalJOption>-J-XX:+CMSClassUnloadingEnabled</additionalJOption>
+                            </additionalJOptions>
+                            <maxmemory>512m</maxmemory>
+                            <minmemory>256m</minmemory>
                             <quiet>true</quiet>
                             <show>private</show>
                         </configuration>
+                        <reportSets>
+                            <reportSet>
+                                <id>default</id>
+                                <reports>
+                                    <report>javadoc</report>
+                                    <report>test-javadoc</report>
+                                </reports>
+                                <configuration>
+                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
+                                </configuration>
+                            </reportSet>
+                        </reportSets>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-project-info-reports-plugin</artifactId>
                         <version>2.7</version>
                         <configuration>
-                            <aggregate>true</aggregate>
+                            <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
                             <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
                         </configuration>
                     </plugin>
@@ -883,7 +1095,6 @@
                         <artifactId>taglist-maven-plugin</artifactId>
                         <version>2.4</version>
                         <configuration>
-                            <aggregate>true</aggregate>
                             <tagListOptions>
                                 <tagClasses>
                                     <tagClass>
@@ -910,6 +1121,33 @@
                     </plugin>
                 </plugins>
             </reporting>
+        </profile>
+        <!-- Configuring reporting -->
+        <profile>
+            <id>site</id>
+            <activation>
+                <property>
+                    <name>!skipSite</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-site-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>site</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>site</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <!-- Set Tomcat manager URL property if not defined already -->
         <profile>

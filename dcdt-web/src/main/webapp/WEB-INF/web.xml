@@ -36,7 +36,7 @@
             <param-name>contextConfigLocation</param-name>
             <param-value>
                 classpath*:META-INF/spring/spring-core.xml
-                /WEB-INF/spring/spring-core.xml
+                /WEB-INF/spring/spring-core*.xml
                 classpath*:META-INF/spring/spring-service*.xml
                 /WEB-INF/spring/spring-service*.xml
                 /WEB-INF/spring/spring-web.xml
