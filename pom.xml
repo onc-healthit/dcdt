@@ -88,20 +88,19 @@
                                 <inherited>false</inherited>
                             </execution>
                             <execution>
-                                <id>prepare-project-coverage-report</id>
-                                <inherited>false</inherited>
-                                <configuration combine.children="override">
-                                    <skip>false</skip>
-                                    <target>
-                                        <ant antfile="${project.basedir}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-merge" inheritRefs="true"/>
-                                        <ant antfile="${project.basedir}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-report" inheritRefs="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
                                 <id>prepare-archive</id>
                                 <phase>none</phase>
                                 <inherited>false</inherited>
+                            </execution>
+                            <execution>
+                                <id>prepare-project-coverage-report</id>
+                                <inherited>false</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-merge" inheritRefs="true"/>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-report" inheritRefs="true"/>
+                                    </target>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
@@ -145,9 +144,38 @@
             </reporting>
         </profile>
         <profile>
+            <id>site-check-all</id>
+            <activation>
+                <property>
+                    <name>!skipChecks</name>
+                </property>
+            </activation>
+            <properties>
+                <project.coverage.skip>false</project.coverage.skip>
+                <project.coverage.skipReport>false</project.coverage.skipReport>
+            </properties>
+        </profile>
+        <profile>
             <id>site-doc</id>
             <reporting>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-changes-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <reportSets>
+                            <reportSet>
+                                <id>aggregate</id>
+                                <reports>
+                                    <report>changes-report</report>
+                                    <report>jira-report</report>
+                                </reports>
+                                <configuration>
+                                    <aggregated>true</aggregated>
+                                </configuration>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>

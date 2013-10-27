@@ -18,6 +18,30 @@
         <maven>3.0.4</maven>
     </prerequisites>
     
+    <scm>
+        <connection>scm:hg:http://code.google.com/p/direct-certificate-discovery-tool/</connection>
+        <developerConnection>scm:hg:https://code.google.com/p/direct-certificate-discovery-tool/</developerConnection>
+        <url>http://code.google.com/p/direct-certificate-discovery-tool/source/browse/${project.artifactId}/</url>
+    </scm>
+    
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://jira.siframework.org/browse/DCDT/</url>
+    </issueManagement>
+    
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>http://jenkins.direct-test.com/job/DCDT_DEV_CI/</url>
+    </ciManagement>
+    
+    <distributionManagement>
+        <site>
+            <id>api.direct-test.com</id>
+            <name>api.direct-test.com</name>
+            <url>dav:http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
+        </site>
+    </distributionManagement>
+    
     <properties>
         <!-- Java properties -->
         <java.version>1.7</java.version>
@@ -149,6 +173,11 @@
                 <version>3.2.1</version>
             </dependency>
             <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>1.3.2</version>
+            </dependency>
+            <dependency>
                 <groupId>dnsjava</groupId>
                 <artifactId>dnsjava</artifactId>
                 <version>2.1.1</version>
@@ -171,11 +200,6 @@
                 <version>2.0.3</version>
                 <scope>provided</scope>
                 <type>pom</type>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.commons</groupId>
-                <artifactId>commons-io</artifactId>
-                <version>1.3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -308,6 +332,30 @@
                         <groupId>com.ibm.icu</groupId>
                         <artifactId>icu4j</artifactId>
                     </exclusion>
+                    <exclusion>
+                        <groupId>com.sun</groupId>
+                        <artifactId>tools</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>log4j</groupId>
+                        <artifactId>log4j</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.ant</groupId>
+                        <artifactId>ant</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>jetty-util</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.mortbay.jetty</groupId>
+                        <artifactId>servlet-api-2.5</artifactId>
+                    </exclusion>
                 </exclusions>
             </dependency>
             <dependency>
@@ -364,7 +412,7 @@
                         <dependency>
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant</artifactId>
-                            <version>1.8.4</version>
+                            <version>1.9.2</version>
                         </dependency>
                         <dependency>
                             <groupId>org.apache.ant.props</groupId>
@@ -522,15 +570,6 @@
                             <goals>
                                 <goal>attach-descriptor</goal>
                             </goals>
-                        </execution>
-                        <!-- Building site -->
-                        <execution>
-                            <id>site</id>
-                            <phase>post-integration-test</phase>
-                            <goals>
-                                <goal>site</goal>
-                            </goals>
-                            <inherited>true</inherited>
                         </execution>
                     </executions>
                 </plugin>
@@ -695,6 +734,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <classifier>test</classifier>
+                                <!--<packagingExcludes>%regex[WEB\-INF/lib/(?:javax\.servlet\.jsp\.jstl)\-.+\.jar]</packagingExcludes>-->
                                 <primaryArtifact>false</primaryArtifact>
                                 <warSourceDirectory>${project.build.webappDirectory}</warSourceDirectory>
                                 <webappDirectory>${project.build.testWebappDirectory}</webappDirectory>
@@ -741,6 +781,79 @@
                         </configuration>
                         <wait>true</wait>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>webtest-maven-plugin</artifactId>
+                    <version>1.0.0</version>
+                    <inherited>true</inherited>
+                    <dependencies>
+                        <dependency>
+                            <groupId>ant-contrib</groupId>
+                            <artifactId>ant-contrib</artifactId>
+                            <version>1.0b3</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>ant</groupId>
+                                    <artifactId>ant</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>1.9.2</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-apache-bsf</artifactId>
+                            <version>1.9.2</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-junit</artifactId>
+                            <version>1.9.2</version>
+                            <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-launcher</artifactId>
+                            <version>1.9.2</version>
+                            <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-nodeps</artifactId>
+                            <version>1.8.1</version>
+                            <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant-trax</artifactId>
+                            <version>1.8.0</version>
+                            <scope>runtime</scope>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant.props</groupId>
+                            <artifactId>ant-props</artifactId>
+                            <version>1.0Alpha</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <haltonerror>true</haltonerror>
+                        <!--<haltonfailure>true</haltonfailure>-->
+                        <loglevel>info</loglevel>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>test-integration-webtest</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>test</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.kuali.maven.plugins</groupId>
@@ -883,6 +996,11 @@
                     <name>!skipChecks</name>
                 </property>
             </activation>
+            <properties>
+                <project.coverage.skip>${project.build.sourceDirectoryNotExists}</project.coverage.skip>
+                <project.coverage.skipCheck>${project.build.sourceDirectoryNotExists}</project.coverage.skipCheck>
+                <project.coverage.skipReport>${project.build.sourceDirectoryNotExists}</project.coverage.skipReport>
+            </properties>
             <build>
                 <plugins>
                     <plugin>
@@ -893,6 +1011,32 @@
                                 <groupId>net.sourceforge.cobertura</groupId>
                                 <artifactId>cobertura</artifactId>
                                 <version>2.0.3</version>
+                                <exclusions>
+                                    <exclusion>
+                                        <groupId>com.ibm.icu</groupId>
+                                        <artifactId>icu4j</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>com.sun</groupId>
+                                        <artifactId>tools</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>org.apache.ant</groupId>
+                                        <artifactId>ant</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>jetty</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>jetty-util</artifactId>
+                                    </exclusion>
+                                    <exclusion>
+                                        <groupId>org.mortbay.jetty</groupId>
+                                        <artifactId>servlet-api-2.5</artifactId>
+                                    </exclusion>
+                                </exclusions>
                             </dependency>
                         </dependencies>
                         <executions>
@@ -905,7 +1049,7 @@
                                 </goals>
                                 <inherited>true</inherited>
                                 <configuration>
-                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
+                                    <skip>${project.coverage.skip}</skip>
                                     <target>
                                         <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage" inheritRefs="true" useNativeBasedir="true"/>
                                     </target>
@@ -920,7 +1064,7 @@
                                 </goals>
                                 <inherited>true</inherited>
                                 <configuration>
-                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
+                                    <skip>${project.coverage.skipReport}</skip>
                                     <target>
                                         <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-report" inheritRefs="true" useNativeBasedir="true"/>
                                     </target>
@@ -935,7 +1079,7 @@
                                 </goals>
                                 <inherited>true</inherited>
                                 <configuration>
-                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
+                                    <skip>${project.coverage.skipCheck}</skip>
                                     <target>
                                         <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-check" inheritRefs="true" useNativeBasedir="true"/>
                                     </target>
@@ -1052,6 +1196,24 @@
             <reporting>
                 <excludeDefaults>false</excludeDefaults>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-changes-plugin</artifactId>
+                        <version>2.9</version>
+                        <configuration>
+                            <addActionDate>true</addActionDate>
+                            <useJql>true</useJql>
+                        </configuration>
+                        <reportSets>
+                            <reportSet>
+                                <id>default</id>
+                                <reports>
+                                    <report>changes-report</report>
+                                    <report>jira-report</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>

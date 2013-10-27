@@ -14,5 +14,8 @@
         <menu ref="parent"/>
         <menu ref="modules"/>
         <menu ref="reports"/>
+        <menu name="Project Coverage">
+            <item name="Cobertura Report" href="cobertura/index.html"/>
+        </menu>
     </body>
 </project>

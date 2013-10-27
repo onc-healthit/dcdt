@@ -20,9 +20,6 @@
         <menu ref="parent"/>
         <menu ref="modules"/>
         <menu ref="reports"/>
-        <menu name="Project Coverage" inherit="bottom">
-            <item name="Cobertura Report" href="cobertura/index.html"/>
-        </menu>
     </body>
     
     <skin>

@@ -67,6 +67,10 @@
             <artifactId>commons-collections</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
         </dependency>
@@ -79,10 +83,6 @@
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -289,8 +289,7 @@
                         </goals>
                         <inherited>true</inherited>
                         <configuration>
-                            <excludeScope>runtime</excludeScope>
-                            <includeScope>test</includeScope>
+                            <excludeScope>provided</excludeScope>
                             <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
                         </configuration>
                     </execution>
@@ -638,6 +637,20 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>webtest-maven-plugin</artifactId>
+                <configuration>
+                    <basepath>${project.test.server.1.jetty.1.context}</basepath>
+                    <host>${project.test.server.1.jetty.1.host}</host>
+                    <port>${project.test.server.1.jetty.1.port.http}</port>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test-integration-webtest</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.kuali.maven.plugins</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
                 <executions>
@@ -651,6 +664,16 @@
             </plugin>
         </plugins>
     </build>
+    
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>webtest-maven-plugin</artifactId>
+                <version>1.0.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
     
     <profiles>
         <!-- Start/stop integration test components, if tests are not being skipped -->
