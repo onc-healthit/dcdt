@@ -785,7 +785,7 @@
                     <executions>
                         <execution>
                             <id>test-integration-webtest</id>
-                            <phase>integration-test</phase>
+                            <phase>none</phase>
                             <goals>
                                 <goal>test</goal>
                             </goals>
