@@ -52,9 +52,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Project build assembly properties -->
         <project.build.assemblyDirectory>${project.basedir}/src/assembly</project.build.assemblyDirectory>
-        <!-- Project build coverage properties -->
-        <project.build.coverageMetadataFile>${project.build.directory}/cobertura/cobertura.ser</project.build.coverageMetadataFile>
-        <project.build.coverageOutputDirectory>${project.build.directory}/generated-classes/cobertura</project.build.coverageOutputDirectory>
         <!-- Project build resources properties -->
         <project.build.resourcesDirectory>${project.basedir}/src/main/resources</project.build.resourcesDirectory>
         <!-- Project build test resources properties -->
@@ -85,25 +82,14 @@
         <project.build.testWebappWebInfDirectory>${project.build.testWebappDirectory}/WEB-INF</project.build.testWebappWebInfDirectory>
         <project.build.testWebappClassesDirectory>${project.build.testWebappWebInfDirectory}/classes</project.build.testWebappClassesDirectory>
         <project.build.testWebappLibDirectory>${project.build.testWebappWebInfDirectory}/lib</project.build.testWebappLibDirectory>
-        <!--
-        Project coverage checking properties
-        See https://github.com/cobertura/cobertura/wiki/Ant-Task-Reference#cobertura-check-task for configuration option descriptions
-        -->
-        <project.coverage.check.haltOnFailure>true</project.coverage.check.haltOnFailure>
-        <project.coverage.check.branchRate>0</project.coverage.check.branchRate>
-        <project.coverage.check.lineRate>0</project.coverage.check.lineRate>
-        <project.coverage.check.packageBranchRate>0</project.coverage.check.packageBranchRate>
-        <project.coverage.check.packageLineRate>0</project.coverage.check.packageLineRate>
-        <project.coverage.check.totalBranchRate>0</project.coverage.check.totalBranchRate>
-        <project.coverage.check.totalLineRate>0</project.coverage.check.totalLineRate>
+        <!-- Project Clover properties -->
+        <project.clover.pomPropertiesFile>${project.build.directory}/maven/pom-clover.properties</project.clover.pomPropertiesFile>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}</project.java.package>
         <!-- Project reporting properties -->
         <project.reporting.outputDirectory>${project.build.directory}/site</project.reporting.outputDirectory>
         <project.reporting.siteDirectory>${project.basedir}/src/site</project.reporting.siteDirectory>
         <project.reporting.siteResourcesDirectory>${project.reporting.siteDirectory}/resources</project.reporting.siteResourcesDirectory>
-        <!-- Project reporting coverage properties -->
-        <project.reporting.coverageOutputDirectory>${project.reporting.outputDirectory}/cobertura</project.reporting.coverageOutputDirectory>
     </properties>
     
     <repositories>
@@ -193,13 +179,6 @@
                 <artifactId>jsp-api</artifactId>
                 <version>2.2</version>
                 <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>net.sourceforge.cobertura</groupId>
-                <artifactId>cobertura-runtime</artifactId>
-                <version>2.0.3</version>
-                <scope>provided</scope>
-                <type>pom</type>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -322,42 +301,6 @@
                 <version>4.0.4</version>
             </dependency>
             <!-- Test dependencies -->
-            <dependency>
-                <groupId>net.sourceforge.cobertura</groupId>
-                <artifactId>cobertura</artifactId>
-                <version>2.0.3</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.ibm.icu</groupId>
-                        <artifactId>icu4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>com.sun</groupId>
-                        <artifactId>tools</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.ant</groupId>
-                        <artifactId>ant</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>jetty</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>jetty-util</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.mortbay.jetty</groupId>
-                        <artifactId>servlet-api-2.5</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
             <dependency>
                 <groupId>org.apache.directory.server</groupId>
                 <artifactId>apacheds-test-framework</artifactId>
@@ -603,11 +546,7 @@
                     <version>2.16</version>
                     <inherited>true</inherited>
                     <configuration>
-                        <additionalClasspathElements combine.children="append">
-                            <additionalClasspathElement>${project.build.outputDirectory}</additionalClasspathElement>
-                        </additionalClasspathElements>
                         <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</argLine>
-                        <classesDirectory>${project.build.coverageOutputDirectory}</classesDirectory>
                         <excludes combine.children="append">
                             <exclude>${project.java.package.path}/test/**/*Tests.java</exclude>
                         </excludes>
@@ -734,7 +673,6 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <classifier>test</classifier>
-                                <!--<packagingExcludes>%regex[WEB\-INF/lib/(?:javax\.servlet\.jsp\.jstl)\-.+\.jar]</packagingExcludes>-->
                                 <primaryArtifact>false</primaryArtifact>
                                 <warSourceDirectory>${project.build.webappDirectory}</warSourceDirectory>
                                 <webappDirectory>${project.build.testWebappDirectory}</webappDirectory>
@@ -934,6 +872,22 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.kuali.maven.plugins</groupId>
+                <artifactId>properties-maven-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>read-pom-properties</id>
+                        <inherited>false</inherited>
+                        <configuration>
+                            <locations combine.self="override">
+                                <location>${project.build.directory}/maven/pom.properties</location>
+                            </locations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
@@ -988,6 +942,59 @@
                 <project.build.sourceDirectoryNotExists>true</project.build.sourceDirectoryNotExists>
             </properties>
         </profile>
+        <!-- Check if a Clover license is available -->
+        <profile>
+            <id>clover-license</id>
+            <activation>
+                <property>
+                    <name>!skipChecks</name>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>clover-license</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-license" inheritRefs="true" useNativeBasedir="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.kuali.maven.plugins</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <executions>
+                            <!-- Reading Maven project POM Clover properties files -->
+                            <execution>
+                                <id>read-pom-clover-properties</id>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <locations>
+                                        <location>${project.clover.pomPropertiesFile}</location>
+                                    </locations>
+                                    <quiet>true</quiet>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
         <!-- Configure code checking / verification oriented reporting plugins -->
         <profile>
             <id>site-check</id>
@@ -996,127 +1003,33 @@
                     <name>!skipChecks</name>
                 </property>
             </activation>
-            <properties>
-                <project.coverage.skip>${project.build.sourceDirectoryNotExists}</project.coverage.skip>
-                <project.coverage.skipCheck>${project.build.sourceDirectoryNotExists}</project.coverage.skipCheck>
-                <project.coverage.skipReport>${project.build.sourceDirectoryNotExists}</project.coverage.skipReport>
-            </properties>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sourceforge.cobertura</groupId>
-                                <artifactId>cobertura</artifactId>
-                                <version>2.0.3</version>
-                                <exclusions>
-                                    <exclusion>
-                                        <groupId>com.ibm.icu</groupId>
-                                        <artifactId>icu4j</artifactId>
-                                    </exclusion>
-                                    <exclusion>
-                                        <groupId>com.sun</groupId>
-                                        <artifactId>tools</artifactId>
-                                    </exclusion>
-                                    <exclusion>
-                                        <groupId>org.apache.ant</groupId>
-                                        <artifactId>ant</artifactId>
-                                    </exclusion>
-                                    <exclusion>
-                                        <groupId>org.mortbay.jetty</groupId>
-                                        <artifactId>jetty</artifactId>
-                                    </exclusion>
-                                    <exclusion>
-                                        <groupId>org.mortbay.jetty</groupId>
-                                        <artifactId>jetty-util</artifactId>
-                                    </exclusion>
-                                    <exclusion>
-                                        <groupId>org.mortbay.jetty</groupId>
-                                        <artifactId>servlet-api-2.5</artifactId>
-                                    </exclusion>
-                                </exclusions>
-                            </dependency>
-                        </dependencies>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>3.2.0</version>
+                        <inherited>true</inherited>
                         <executions>
-                            <!-- Preparing Maven project test coverage file(s). -->
                             <execution>
-                                <id>prepare-project-coverage</id>
+                                <id>instrument</id>
                                 <phase>process-classes</phase>
                                 <goals>
-                                    <goal>run</goal>
+                                    <goal>instrument-test</goal>
                                 </goals>
                                 <inherited>true</inherited>
-                                <configuration>
-                                    <skip>${project.coverage.skip}</skip>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage" inheritRefs="true" useNativeBasedir="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <!-- Preparing Maven project test coverage report file(s). -->
-                            <execution>
-                                <id>prepare-project-coverage-report</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <skip>${project.coverage.skipReport}</skip>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-report" inheritRefs="true" useNativeBasedir="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <!-- Check Maven project test coverage result(s). -->
-                            <execution>
-                                <id>check-project-coverage</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <skip>${project.coverage.skipCheck}</skip>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-check" inheritRefs="true" useNativeBasedir="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>build-helper-maven-plugin</artifactId>
-                        <version>1.8</version>
-                        <executions>
-                            <execution>
-                                <id>attach-artifact-coverage</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>attach-artifact</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <artifacts>
-                                        <artifact>
-                                            <classifier>cobertura</classifier>
-                                            <file>${project.build.coverageMetadataFile}</file>
-                                            <type>ser</type>
-                                        </artifact>
-                                    </artifacts>
-                                    <skipAttach>${project.build.sourceDirectoryNotExists}</skipAttach>
-                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
                 </plugins>
             </build>
-            
             <reporting>
                 <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <version>3.2.0</version>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -1300,7 +1213,7 @@
                         <executions>
                             <execution>
                                 <id>site</id>
-                                <phase>post-integration-test</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>site</goal>
                                 </goals>
@@ -1310,6 +1223,18 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <!-- Set Clover license location property if not defined already -->
+        <profile>
+            <id>default-maven.clover.licenseLocation</id>
+            <activation>
+                <property>
+                    <name>!maven.clover.licenseLocation</name>
+                </property>
+            </activation>
+            <properties>
+                <maven.clover.licenseLocation>${project.basedir.all}/clover.license</maven.clover.licenseLocation>
+            </properties>
         </profile>
         <!-- Set Tomcat manager URL property if not defined already -->
         <profile>

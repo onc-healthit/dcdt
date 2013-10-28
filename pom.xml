@@ -75,39 +75,22 @@
     <profiles>
         <profile>
             <id>site-check</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <inherited>false</inherited>
-                        <executions>
-                            <execution>
-                                <id>prepare-project</id>
-                                <phase>none</phase>
-                                <inherited>false</inherited>
-                            </execution>
-                            <execution>
-                                <id>prepare-archive</id>
-                                <phase>none</phase>
-                                <inherited>false</inherited>
-                            </execution>
-                            <execution>
-                                <id>prepare-project-coverage-report</id>
-                                <inherited>false</inherited>
-                                <configuration>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-merge" inheritRefs="true"/>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-coverage-report" inheritRefs="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
             <reporting>
                 <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <reportSets>
+                            <reportSet>
+                                <id>aggregate</id>
+                                <inherited>false</inherited>
+                                <reports>
+                                    <report>aggregate</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
@@ -150,10 +133,25 @@
                     <name>!skipChecks</name>
                 </property>
             </activation>
-            <properties>
-                <project.coverage.skip>false</project.coverage.skip>
-                <project.coverage.skipReport>false</project.coverage.skipReport>
-            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.atlassian.maven.plugins</groupId>
+                        <artifactId>maven-clover2-plugin</artifactId>
+                        <inherited>false</inherited>
+                        <executions>
+                            <execution>
+                                <id>aggregate</id>
+                                <phase>process-classes</phase>
+                                <goals>
+                                    <goal>aggregate</goal>
+                                </goals>
+                                <inherited>false</inherited>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
         </profile>
         <profile>
             <id>site-doc</id>
