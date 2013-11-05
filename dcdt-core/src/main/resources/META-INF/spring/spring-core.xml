@@ -20,9 +20,22 @@
     <context:component-scan base-package="gov.hhs.onc.dcdt"/>
     <context:spring-configured/>
     
-    <beans:bean id="toolPropSourcesPlaceholder" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" abstract="true"
+    <beans:bean id="toolInstance" class="gov.hhs.onc.dcdt.config.ToolInstance" abstract="true"/>
+    <beans:bean id="toolInstanceImpl" class="gov.hhs.onc.dcdt.config.impl.ToolInstanceImpl" parent="toolInstance" abstract="true"/>
+    
+    <beans:bean id="toolBeanPropSources" class="gov.hhs.onc.dcdt.config.ToolBeanPropertySources" abstract="true"/>
+    <beans:bean id="toolBeanPropSourcesPropResolver" class="gov.hhs.onc.dcdt.config.ToolBeanPropertySourcesPropertyResolver" abstract="true"/>
+    
+    <beans:bean id="toolInstancePropSource" class="gov.hhs.onc.dcdt.config.impl.ToolInstancePropertySource" autowire="constructor"/>
+    <beans:bean id="toolBeanPropSourcesImpl" class="gov.hhs.onc.dcdt.config.impl.ToolBeanPropertySourcesImpl" parent="toolBeanPropSources"
+        autowire="constructor"/>
+    <beans:bean id="toolBeanPropSourcesPropResolverImpl" class="gov.hhs.onc.dcdt.config.impl.ToolBeanPropertySourcesPropertyResolverImpl"
+        parent="toolBeanPropSourcesPropResolver" autowire="constructor"/>
+    
+    <beans:bean id="toolPropSourcesPlaceholderConfigurer" class="gov.hhs.onc.dcdt.config.impl.ToolPropertySourcesPlaceholderConfigurerImpl" abstract="true"
         p:ignoreResourceNotFound="true"
-        p:localOverride="true">
+        p:localOverride="true"
+        p:propertySourcesPropertyResolver-ref="toolBeanPropSourcesPropResolverImpl">
         <beans:property name="locations">
             <beans:array>
                 <beans:value>classpath*:META-INF/core/core.properties</beans:value>

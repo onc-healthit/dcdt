@@ -17,7 +17,7 @@
     
     <name>dcdt-service-parent</name>
     <description>Direct Certificate Discovery Tool (DCDT) service parent project.</description>
-    <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
+    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
         <!-- Project properties -->
@@ -444,14 +444,13 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
-                        <additionalClasspathElements combine.self="override">
+                        <additionalClasspathElements combine.children="append">
                             <additionalClasspathElement>${project.build.directory}/${project.artifactId}-test/conf</additionalClasspathElement>
                             <additionalClasspathElement>${project.build.directory}/${project.artifactId}/conf</additionalClasspathElement>
-                            <additionalClasspathElement>${project.build.outputDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
                         <systemPropertyVariables>
                             <dcdt.log.dir>log</dcdt.log.dir>
-                            <spring.profiles.active>${project.service.standalone.spring.profiles.active}</spring.profiles.active>
+                            <spring.profiles.active>toolCoreTest,${project.service.standalone.spring.profiles.active}</spring.profiles.active>
                         </systemPropertyVariables>
                         <workingDirectory>${project.build.directory}/${project.artifactId}</workingDirectory>
                     </configuration>

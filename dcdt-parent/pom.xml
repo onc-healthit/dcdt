@@ -12,7 +12,7 @@
     
     <name>dcdt-parent</name>
     <description>Direct Certificate Discovery Tool (DCDT) parent project.</description>
-    <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
+    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <prerequisites>
         <maven>3.0.4</maven>
@@ -26,7 +26,7 @@
     
     <issueManagement>
         <system>JIRA</system>
-        <url>http://jira.siframework.org/browse/DCDT/</url>
+        <url>http://jira.direct-test.com/browse/DCDT/</url>
     </issueManagement>
     
     <ciManagement>
@@ -36,9 +36,9 @@
     
     <distributionManagement>
         <site>
-            <id>api.direct-test.com</id>
-            <name>api.direct-test.com</name>
-            <url>dav:http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
+            <id>site.direct-test.com</id>
+            <name>site.direct-test.com</name>
+            <url>dav:http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
         </site>
     </distributionManagement>
     
@@ -154,6 +154,11 @@
                 <version>1.0.13</version>
             </dependency>
             <dependency>
+                <groupId>com.google.code.findbugs</groupId>
+                <artifactId>annotations</artifactId>
+                <version>2.0.2</version>
+            </dependency>
+            <dependency>
                 <groupId>commons-collections</groupId>
                 <artifactId>commons-collections</artifactId>
                 <version>3.2.1</version>
@@ -167,6 +172,11 @@
                 <groupId>dnsjava</groupId>
                 <artifactId>dnsjava</artifactId>
                 <version>2.1.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.el</groupId>
+                <artifactId>javax.el-api</artifactId>
+                <version>3.0.0</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -269,6 +279,12 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
                 <version>3.2.4.RELEASE</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>javax.el</groupId>
+                        <artifactId>javax.el-api</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -333,6 +349,18 @@
     </dependencyManagement>
     
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <!--
+                The newest version (2.5) is broken - do not upgrade.
+                See: http://jira.codehaus.org/browse/WAGON-356
+                -->
+                <version>2.0</version>
+            </extension>
+        </extensions>
+        
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -640,6 +668,7 @@
                                     </property>
                                 </properties>
                                 <reportNameSuffix>it</reportNameSuffix>
+                                <skipTests>false</skipTests>
                                 <systemPropertyVariables>
                                     <dcdt.log.file.name>${project.artifactId}-test-it</dcdt.log.file.name>
                                 </systemPropertyVariables>
@@ -1012,8 +1041,8 @@
                         <inherited>true</inherited>
                         <executions>
                             <execution>
-                                <id>instrument</id>
-                                <phase>process-classes</phase>
+                                <id>clover-instrument</id>
+                                <phase>process-test-classes</phase>
                                 <goals>
                                     <goal>instrument-test</goal>
                                 </goals>

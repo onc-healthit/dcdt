@@ -10,12 +10,13 @@ import org.testng.annotations.Test;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.TextParseException;
 
+@Test
 public class ToolDnsLookupServiceUnitTests extends ToolTestNgTests {
     @Autowired
     @DnsResolver(DnsResolverType.EXTERNAL)
     private ToolDnsLookupService dnsLookupServiceExternal;
 
-    @Test
+    @Test(enabled = false)
     public void testLookupAddress() throws TextParseException {
         Assert.assertNotNull(this.dnsLookupServiceExternal.lookupAddress(new Name("google.com")).getAddress(), "Unable to lookup address.");
     }

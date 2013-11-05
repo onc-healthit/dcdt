@@ -149,11 +149,10 @@ public class ToolDnsLookupService {
 
         return dnsLookup;
     }
-    
+
     @Required
     @Resource(name = "toolDnsLookupTaskExecutor")
-    protected void setDnsLookupTaskExecutor(ThreadPoolTaskExecutor dnsLookupTaskExecutor)
-    {
+    protected void setDnsLookupTaskExecutor(ThreadPoolTaskExecutor dnsLookupTaskExecutor) {
         this.dnsLookupTaskExecutor = dnsLookupTaskExecutor;
     }
 

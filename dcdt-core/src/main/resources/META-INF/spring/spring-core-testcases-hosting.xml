@@ -13,5 +13,12 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <beans:bean id="hostingTestcase" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase" parent="toolTestcase" abstract="true"/>
+    <beans:bean id="hostingTestcaseResult" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
     
+    <beans:bean id="hostingTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseImpl" parent="hostingTestcase" abstract="true"/>
+    <beans:bean id="hostingTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseResultImpl" parent="hostingTestcaseResult"
+        abstract="true"/>
+    
+    <beans:bean id="hostingTestcase1" parent="hostingTestcaseImpl"/>
 </beans:beans>

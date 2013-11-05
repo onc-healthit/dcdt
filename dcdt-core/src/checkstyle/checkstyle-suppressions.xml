@@ -17,6 +17,7 @@
     <suppress files="\.java$" checks="ModifierOrderCheck"/>
     <suppress files="\.java$" checks="NewlineAtEndOfFileCheck"/>
     <suppress files="\.java$" checks="NoWhitespaceAfterCheck"/>
+    <suppress files="\.java$" checks="RedundantModifierCheck"/>
     <suppress files="\.java$" checks="RedundantThrowsCheck"/>
     <suppress files="\.java$" checks="RegexpSinglelineCheck"/>
     <suppress files="\.java$" checks="StaticVariableNameCheck"/>

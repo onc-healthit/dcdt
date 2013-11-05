@@ -17,7 +17,7 @@
     
     <name>dcdt-core</name>
     <description>Direct Certificate Discovery Tool (DCDT) common component project.</description>
-    <url>http://api.direct-test.com/${project.artifactId}/${project.version}/</url>
+    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
         <!-- Project properties -->
@@ -35,6 +35,10 @@
             <artifactId>logback-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.google.code.findbugs</groupId>
+            <artifactId>annotations</artifactId>
+        </dependency>
+        <dependency>
             <groupId>commons-collections</groupId>
             <artifactId>commons-collections</artifactId>
         </dependency>
@@ -45,6 +49,10 @@
         <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.el</groupId>
+            <artifactId>javax.el-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -166,6 +174,9 @@
                         <exclude>${project.java.package.path}/service/**</exclude>
                         <exclude>${project.java.package.path}/web/**</exclude>
                     </excludes>
+                    <systemPropertyVariables>
+                        <spring.profiles.active>toolCoreTest</spring.profiles.active>
+                    </systemPropertyVariables>
                 </configuration>
                 <executions>
                     <execution>

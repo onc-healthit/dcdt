@@ -13,5 +13,6 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    
+    <beans:bean id="toolTestcase" class="gov.hhs.onc.dcdt.testcases.ToolTestcase" abstract="true"/>
+    <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseResult" abstract="true"/>
 </beans:beans>
