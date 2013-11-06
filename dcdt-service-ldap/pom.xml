@@ -220,6 +220,9 @@
                     <execution>
                         <id>unpack-test-dependency-resources-service</id>
                     </execution>
+                    <execution>
+                        <id>unpack-test-dependency-resources-testng</id>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -245,7 +248,22 @@
                         <id>copy-test-resources-service</id>
                     </execution>
                     <execution>
+                        <id>copy-test-resources-testng</id>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-sources</id>
+                    </execution>
+                    <execution>
+                        <id>test-jar-sources</id>
                     </execution>
                 </executions>
             </plugin>
@@ -258,6 +276,9 @@
                     </execution>
                     <execution>
                         <id>test-functional</id>
+                    </execution>
+                    <execution>
+                        <id>test-integration</id>
                     </execution>
                 </executions>
             </plugin>

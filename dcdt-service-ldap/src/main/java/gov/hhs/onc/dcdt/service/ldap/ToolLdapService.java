@@ -69,7 +69,7 @@ public class ToolLdapService extends ToolService<ClassPathXmlApplicationContext>
 
                 for (TransportConfig transportConfig : ldapServerConfig.getTransports()) {
                     transport = (transportConfig.getType() == TransportType.TCP) ? new TcpTransport(transportConfig.getPort()) : new UdpTransport(
-                            transportConfig.getPort());
+                        transportConfig.getPort());
                     ldapServer.addTransports(transport);
                 }
 

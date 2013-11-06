@@ -17,7 +17,7 @@
         
         <trycatch>
             <try>
-                <copy file="${project.build.sourcePomPropertiesFile}" tofile="${project.build.pomPropertiesFile}">
+                <copy file="${project.build.pomPropertiesSourceFile}" tofile="${project.build.pomPropertiesFile}">
                     <filterchain>
                         <expandproperties/>
                     </filterchain>
@@ -25,6 +25,11 @@
             </try>
             <catch/>
         </trycatch>
+        
+        <var name="project.java.package.regex" value="${project.java.package//\./\\\\.}"/>
+        <dcdt:write-properties file="${project.build.pomPropertiesFile}" append="true">
+            project.java.package.regex
+        </dcdt:write-properties>
         
         <dcdt-project:build-version prefix="project.module.${project.artifactId}."/>
         <dcdt-project:hg-version path="${project.basedir}" prefix="project.module.${project.artifactId}."/>
@@ -42,9 +47,6 @@
     </target>
     
     <target name="project-init" description="Initializes project variable(s).">
-        <!-- Project build file variable(s) -->
-        <var name="project.build.pomPropertiesFile" value="${project.build.directory}/maven/pom.properties"/>
-        <var name="project.build.sourcePomPropertiesFile" value="${project.basedir}/pom.properties"/>
     </target>
     
     <target name="project" description="Prepares Maven project file(s)." depends="core,project-init,project-process-props"/>

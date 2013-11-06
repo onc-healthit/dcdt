@@ -102,7 +102,7 @@ public class ToolDirectoryServiceFactory implements DirectoryServiceFactory {
         SchemaManager schemaManager = this.dirService.getSchemaManager();
 
         Partition sysPartition = this.partitionFactory.createPartition(schemaManager, "system", ServerDNConstants.SYSTEM_DN, 500, new File(this.dirService
-                .getInstanceLayout().getPartitionsDirectory(), "system"));
+            .getInstanceLayout().getPartitionsDirectory(), "system"));
         sysPartition.setSchemaManager(schemaManager);
 
         this.partitionFactory.addIndex(sysPartition, SchemaConstants.OBJECT_CLASS_AT, 100);
@@ -123,7 +123,7 @@ public class ToolDirectoryServiceFactory implements DirectoryServiceFactory {
             for (PartitionConfig partitionConfig : partitionConfigs) {
                 partitionName = partitionConfig.getName();
                 partition = this.partitionFactory.createPartition(schemaManager, partitionName, partitionConfig.getSuffix(), partitionConfig.getCacheSize(),
-                        new File(partitionsDir, partitionName));
+                    new File(partitionsDir, partitionName));
 
                 this.dirService.addPartition(partition);
             }

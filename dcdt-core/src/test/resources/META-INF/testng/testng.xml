@@ -1,8 +1,0 @@
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="" verbose="1">
-    <groups>
-        <define name="dcdt.test.all">
-            
-        </define>
-    </groups>
-</suite>

@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.dns;
 
+
 import gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig;
 import java.util.List;
 import org.springframework.beans.factory.InitializingBean;
@@ -17,12 +18,12 @@ public class DnsServer implements InitializingBean, Runnable {
 
     @Autowired
     private List<DnsSocketServer<?, ?, ?>> dnsSocketServers;
-    
+
     private DnsServerConfig dnsServerConfig;
 
     public DnsServer() {
     }
-    
+
     public DnsServer(DnsServerConfig dnsServerConfig) {
         this.dnsServerConfig = dnsServerConfig;
     }
@@ -33,8 +34,7 @@ public class DnsServer implements InitializingBean, Runnable {
     }
 
     public void start() {
-        for (DnsSocketServer<?, ?, ?> dnsSocketServer : this.dnsSocketServers)
-        {
+        for (DnsSocketServer<?, ?, ?> dnsSocketServer : this.dnsSocketServers) {
             this.dnsSocketServerTaskExecutor.execute(dnsSocketServer);
         }
     }
@@ -46,30 +46,25 @@ public class DnsServer implements InitializingBean, Runnable {
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception
-    {
-        for (DnsSocketServer<?, ?, ?> dnsSocketServer : this.dnsSocketServers)
-        {
+    public void afterPropertiesSet() throws Exception {
+        for (DnsSocketServer<?, ?, ?> dnsSocketServer : this.dnsSocketServers) {
             dnsSocketServer.setDnsServerConfig(this.dnsServerConfig);
         }
     }
-    
+
     @Bean(name = "toolDnsUdpSocketServer", autowire = Autowire.BY_TYPE)
     @Scope("prototype")
-    protected DnsUdpSocketServer getDnsUdpSocketServer()
-    {
+    protected DnsUdpSocketServer getDnsUdpSocketServer() {
         return new DnsUdpSocketServer();
     }
-    
+
     @Bean(name = "toolDnsTcpSocketServer", autowire = Autowire.BY_TYPE)
     @Scope("prototype")
-    protected DnsTcpSocketServer getDnsTcpSocketServer()
-    {
+    protected DnsTcpSocketServer getDnsTcpSocketServer() {
         return new DnsTcpSocketServer();
     }
-    
-    public void setDnsServerConfig(DnsServerConfig dnsServerConfig)
-    {
+
+    public void setDnsServerConfig(DnsServerConfig dnsServerConfig) {
         this.dnsServerConfig = dnsServerConfig;
     }
 }

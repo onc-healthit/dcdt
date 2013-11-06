@@ -23,19 +23,24 @@
     <beans:bean id="toolInstance" class="gov.hhs.onc.dcdt.config.ToolInstance" abstract="true"/>
     <beans:bean id="toolInstanceImpl" class="gov.hhs.onc.dcdt.config.impl.ToolInstanceImpl" parent="toolInstance" abstract="true"/>
     
-    <beans:bean id="toolBeanPropSources" class="gov.hhs.onc.dcdt.config.ToolBeanPropertySources" abstract="true"/>
-    <beans:bean id="toolBeanPropSourcesPropResolver" class="gov.hhs.onc.dcdt.config.ToolBeanPropertySourcesPropertyResolver" abstract="true"/>
+    <beans:bean id="toolBeanPropSource" class="gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertySource" abstract="true"/>
+    <beans:bean id="toolInstancePropSource" class="gov.hhs.onc.dcdt.config.impl.ToolInstancePropertySource" parent="toolBeanPropSource"/>
     
-    <beans:bean id="toolInstancePropSource" class="gov.hhs.onc.dcdt.config.impl.ToolInstancePropertySource" autowire="constructor"/>
-    <beans:bean id="toolBeanPropSourcesImpl" class="gov.hhs.onc.dcdt.config.impl.ToolBeanPropertySourcesImpl" parent="toolBeanPropSources"
-        autowire="constructor"/>
-    <beans:bean id="toolBeanPropSourcesPropResolverImpl" class="gov.hhs.onc.dcdt.config.impl.ToolBeanPropertySourcesPropertyResolverImpl"
-        parent="toolBeanPropSourcesPropResolver" autowire="constructor"/>
+    <beans:bean id="toolBeanPropResolver" class="gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertyResolver" abstract="true"/>
+    <beans:bean id="toolBeanPropResolverImpl" class="gov.hhs.onc.dcdt.beans.factory.impl.ToolBeanPropertyResolverImpl" parent="toolBeanPropResolver">
+        <beans:property name="beanPropertySources">
+            <util:list>
+                <beans:ref local="toolInstancePropSource"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
     
-    <beans:bean id="toolPropSourcesPlaceholderConfigurer" class="gov.hhs.onc.dcdt.config.impl.ToolPropertySourcesPlaceholderConfigurerImpl" abstract="true"
+    <beans:bean id="toolBeanPropPlaceholderConfigurer" class="gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertyPlaceholderConfigurer" abstract="true"/>
+    <beans:bean id="toolBeanPropPlaceholderConfigurerImpl" class="gov.hhs.onc.dcdt.beans.factory.impl.ToolBeanPropertyPlaceholderConfigurerImpl"
+        parent="toolBeanPropPlaceholderConfigurer" abstract="true"
         p:ignoreResourceNotFound="true"
         p:localOverride="true"
-        p:propertySourcesPropertyResolver-ref="toolBeanPropSourcesPropResolverImpl">
+        p:beanPropertyResolver-ref="toolBeanPropResolverImpl">
         <beans:property name="locations">
             <beans:array>
                 <beans:value>classpath*:META-INF/core/core.properties</beans:value>
@@ -44,6 +49,7 @@
             </beans:array>
         </beans:property>
     </beans:bean>
+    <beans:bean id="toolBeanPropPlaceholderConfigurerInstance" parent="toolBeanPropPlaceholderConfigurerImpl"/>
     
     <beans:bean id="toolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
         p:daemon="true"/>

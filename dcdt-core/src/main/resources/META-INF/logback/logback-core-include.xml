@@ -27,7 +27,7 @@
         <withJansi>true</withJansi>
     </appender>
     
-    <if condition='isDefined("dcdt.log.dir") &amp;&amp; new java.io.File(p("dcdt.log.dir")).isDirectory()'>
+    <if condition='isDefined("dcdt.log.dir") &amp;&amp; !new java.io.File(p("dcdt.log.dir")).isFile()'>
         <then>
             <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${dcdt.log.dir}/${dcdt.log.file.name}${dcdt.log.file.ext}</file>
@@ -53,7 +53,7 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
-    <logger name="org.springframework" level="info" additivity="false">
+    <logger name="org.springframework" level="warn" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>

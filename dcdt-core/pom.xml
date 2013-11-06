@@ -143,6 +143,18 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>unpack-test-dependency-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
                 <executions>
                     <execution>
@@ -158,7 +170,22 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-test-resources-testng</id>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-sources</id>
+                    </execution>
+                    <execution>
+                        <id>test-jar-sources</id>
                     </execution>
                 </executions>
             </plugin>
@@ -170,13 +197,6 @@
                         <additionalClasspathElement>${project.build.testOutputDirectory}/META-INF</additionalClasspathElement>
                         <additionalClasspathElement>${project.build.outputDirectory}/META-INF</additionalClasspathElement>
                     </additionalClasspathElements>
-                    <excludes>
-                        <exclude>${project.java.package.path}/service/**</exclude>
-                        <exclude>${project.java.package.path}/web/**</exclude>
-                    </excludes>
-                    <systemPropertyVariables>
-                        <spring.profiles.active>toolCoreTest</spring.profiles.active>
-                    </systemPropertyVariables>
                 </configuration>
                 <executions>
                     <execution>
@@ -184,6 +204,9 @@
                     </execution>
                     <execution>
                         <id>test-functional</id>
+                    </execution>
+                    <execution>
+                        <id>test-integration</id>
                     </execution>
                 </executions>
             </plugin>

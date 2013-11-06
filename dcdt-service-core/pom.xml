@@ -192,6 +192,9 @@
                         <id>unpack-test-dependency-resources-service</id>
                         <phase>none</phase>
                     </execution>
+                    <execution>
+                        <id>unpack-test-dependency-resources-testng</id>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -222,7 +225,22 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
+                        <id>copy-test-resources-testng</id>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-sources</id>
+                    </execution>
+                    <execution>
+                        <id>test-jar-sources</id>
                     </execution>
                 </executions>
             </plugin>
@@ -230,11 +248,10 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <excludes>
-                        <exclude>${project.java.package.path}/dns/**</exclude>
-                        <exclude>${project.java.package.path}/ldap/**</exclude>
-                        <exclude>${project.java.package.path}/mail/**</exclude>
-                    </excludes>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${project.build.testOutputDirectory}/META-INF</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.outputDirectory}/META-INF</additionalClasspathElement>
+                    </additionalClasspathElements>
                 </configuration>
                 <executions>
                     <execution>
@@ -242,6 +259,9 @@
                     </execution>
                     <execution>
                         <id>test-functional</id>
+                    </execution>
+                    <execution>
+                        <id>test-integration</id>
                     </execution>
                 </executions>
             </plugin>

@@ -86,6 +86,10 @@
                 <version>3.0-beta4</version>
                 <exclusions>
                     <exclusion>
+                        <groupId>commons-configuration</groupId>
+                        <artifactId>commons-configuration</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>log4j</groupId>
                         <artifactId>log4j</artifactId>
                     </exclusion>
@@ -450,7 +454,7 @@
                         </additionalClasspathElements>
                         <systemPropertyVariables>
                             <dcdt.log.dir>log</dcdt.log.dir>
-                            <spring.profiles.active>toolCoreTest,${project.service.standalone.spring.profiles.active}</spring.profiles.active>
+                            <spring.profiles.active>${project.service.standalone.spring.profiles.active}</spring.profiles.active>
                         </systemPropertyVariables>
                         <workingDirectory>${project.build.directory}/${project.artifactId}</workingDirectory>
                     </configuration>
@@ -460,6 +464,9 @@
                         </execution>
                         <execution>
                             <id>test-functional</id>
+                        </execution>
+                        <execution>
+                            <id>test-integration</id>
                         </execution>
                     </executions>
                 </plugin>
@@ -633,7 +640,7 @@
                                 <locations combine.self="override">
                                     <location>${project.basedir}/../dcdt-parent/target/maven/pom.properties</location>
                                     <location>${project.basedir}/${project.parent.relativePath}/target/maven/pom.properties</location>
-                                    <location>${project.build.directory}/maven/pom.properties</location>
+                                    <location>${project.build.pomPropertiesFile}</location>
                                 </locations>
                             </configuration>
                         </execution>
@@ -663,11 +670,50 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>unpack-test-dependency-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
+                        <id>copy-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>test-unit</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>test-functional</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>test-integration</id>
+                        <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>
                 </executions>

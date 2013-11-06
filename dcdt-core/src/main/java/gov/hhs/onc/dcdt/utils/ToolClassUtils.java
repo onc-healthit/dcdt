@@ -20,30 +20,6 @@ public abstract class ToolClassUtils {
         return (clazz != null) ? clazz.getName() : defaultIfNull;
     }
 
-    public static String getPackageName(Object obj) {
-        return getPackageName(obj, null);
-    }
-
-    public static String getPackageName(Object obj, String defaultIfNull) {
-        return ClassUtils.getPackageName(obj, defaultIfNull);
-    }
-
-    public static String getPackageName(Class<?> clazz) {
-        return getPackageName(clazz, null);
-    }
-
-    public static String getPackageName(Class<?> clazz, String defaultIfNull) {
-        return ClassUtils.getPackageName(clazz, defaultIfNull);
-    }
-
-    public static String getPackageName(Package pkg) {
-        return getPackageName(pkg, null);
-    }
-
-    public static String getPackageName(Package pkg, String defaultIfNull) {
-        return (pkg != null) ? pkg.getName() : defaultIfNull;
-    }
-
     public static String getShortName(Object obj) {
         return getShortName(obj, null);
     }

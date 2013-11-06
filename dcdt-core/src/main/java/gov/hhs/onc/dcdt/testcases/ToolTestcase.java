@@ -16,6 +16,10 @@ public interface ToolTestcase<T extends ToolTestcaseResult> extends ToolBean {
 
     public void setNameDisplay(String nameDisplay);
 
+    public boolean isOptional();
+
+    public void setOptional(boolean optional);
+
     public T getResult();
 
     public void setResult(T result);

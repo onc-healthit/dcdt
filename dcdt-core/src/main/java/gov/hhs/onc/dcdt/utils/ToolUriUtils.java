@@ -6,15 +6,15 @@ import org.apache.commons.lang3.StringUtils;
 public abstract class ToolUriUtils {
     public final static String DOMAIN_DELIM = ".";
 
-    public static String join(String[] domains) {
+    public static String joinDomains(String ... domains) {
         return ToolStringUtils.joinDelimit(domains, DOMAIN_DELIM);
     }
 
-    public static String join(Iterable<String> domains) {
+    public static String joinDomains(Iterable<String> domains) {
         return ToolStringUtils.joinDelimit(domains, DOMAIN_DELIM);
     }
 
-    public static String[] getSubDomains(String domain) {
+    public static String[] splitDomains(String domain) {
         return StringUtils.split(domain, DOMAIN_DELIM);
     }
 }

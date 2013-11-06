@@ -74,7 +74,7 @@ public abstract class ToolServiceWrapper<T extends AbstractApplicationContext, U
 
     protected void startWrapper() {
         LOGGER.info(ToolServiceWrapperUtils.getWrapperDisplayName() + " (class=" + this.getClass().getName() + ") started: args=["
-                + StringUtils.join(this.args) + "]");
+            + StringUtils.join(this.args) + "]");
     }
 
     protected void stopService() {

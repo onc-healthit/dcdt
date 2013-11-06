@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.mail.james;
 
+
 import javax.management.InstanceAlreadyExistsException;
 import org.apache.james.queue.activemq.ActiveMQMailQueueFactory;
 import org.apache.james.queue.api.MailQueue;

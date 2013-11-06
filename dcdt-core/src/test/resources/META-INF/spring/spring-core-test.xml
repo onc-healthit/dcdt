@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    profile="toolCoreTest"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
@@ -14,8 +13,6 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean id="toolInstanceCoreTest" parent="toolInstanceImpl"
+    <beans:bean id="toolInstanceTest" parent="toolInstanceImpl"
         p:domain="test.direct-test.com"/>
-    
-    <beans:bean id="toolPropSourcesPlaceholderConfigurerCoreTest" parent="toolPropSourcesPlaceholderConfigurer"/>
 </beans:beans>

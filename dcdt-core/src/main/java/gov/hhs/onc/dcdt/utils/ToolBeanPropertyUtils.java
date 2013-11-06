@@ -93,8 +93,8 @@ public abstract class ToolBeanPropertyUtils {
     public static PropertyDescriptor describeProperty(Class<?> beanClass, String beanPropName, Boolean beanPropReadable, Boolean beanPropWriteable) {
         PropertyDescriptor beanPropDesc = BeanUtils.getPropertyDescriptor(beanClass, beanPropName);
 
-        return ((beanPropDesc != null) && ((beanPropReadable == null) || isReadable(beanPropDesc)) && ((beanPropWriteable == null) || isWriteable(beanPropDesc))) ? beanPropDesc
-                : null;
+        return ((beanPropDesc != null) && ((beanPropReadable == null) || isReadable(beanPropDesc)) && ((beanPropWriteable == null) || isWriteable(beanPropDesc)))
+            ? beanPropDesc : null;
     }
 
     public static List<PropertyDescriptor> describeProperties(Class<?> beanClass) {

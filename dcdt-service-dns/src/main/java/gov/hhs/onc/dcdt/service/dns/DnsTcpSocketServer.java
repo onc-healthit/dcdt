@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.dns;
 
+
 import gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -15,10 +16,10 @@ import org.xbill.DNS.Message;
 
 public class DnsTcpSocketServer extends DnsSocketServer<ServerSocket, Socket, Void> {
     private final static Logger LOGGER = LoggerFactory.getLogger(DnsTcpSocketServer.class);
-    
+
     public DnsTcpSocketServer() {
     }
-    
+
     public DnsTcpSocketServer(DnsServerConfig dnsServerConfig) {
         super(dnsServerConfig);
     }
@@ -29,9 +30,8 @@ public class DnsTcpSocketServer extends DnsSocketServer<ServerSocket, Socket, Vo
             while(!this.socketServer.isClosed()) {
                 Socket socket = this.socketServer.accept();
                 InputStream inStream = socket.getInputStream();
-                
-                try (DataInputStream inDataStream = new DataInputStream(inStream))
-                {
+
+                try (DataInputStream inDataStream = new DataInputStream(inStream)) {
                     this.processMessage(socket, null, IOUtils.toByteArray(inDataStream));
                 }
             }
@@ -50,10 +50,8 @@ public class DnsTcpSocketServer extends DnsSocketServer<ServerSocket, Socket, Vo
     }
 
     @Override
-    protected void sendMessage(Socket socket, Void inMsgObj, Message inMsg, Message outMsg) throws IOException
-    {
-        try (DataOutputStream outDataStream = new DataOutputStream(socket.getOutputStream()))
-        {
+    protected void sendMessage(Socket socket, Void inMsgObj, Message inMsg, Message outMsg) throws IOException {
+        try (DataOutputStream outDataStream = new DataOutputStream(socket.getOutputStream())) {
             outDataStream.write(outMsg.toWire());
             outDataStream.flush();
         }

@@ -341,6 +341,9 @@
                             <outputDirectory>${project.build.testWebappDirectory}-dependency-resources</outputDirectory>
                         </configuration>
                     </execution>
+                    <execution>
+                        <id>unpack-test-dependency-resources-testng</id>
+                    </execution>
                 </executions>
             </plugin>
             <plugin>
@@ -365,9 +368,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
-                    <!-- Copying dependency web resources -->
+                    <!-- Copying web resources -->
                     <execution>
-                        <id>copy-dependency-resources-web</id>
+                        <id>copy-resources-web</id>
                         <phase>process-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -399,6 +402,16 @@
                                     </excludes>
                                     <targetPath>classes</targetPath>
                                 </resource>
+                                <resource>
+                                    <directory>${project.build.webappClassesSourceDirectory}</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.conf</include>
+                                        <include>**/*.properties</include>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <targetPath>classes</targetPath>
+                                </resource>
                                 <!-- Configuration file(s) (Spring) -->
                                 <resource>
                                     <directory>${project.build.webappDirectory}-dependency-resources/META-INF/spring</directory>
@@ -415,31 +428,6 @@
                                     </excludes>
                                     <targetPath>spring</targetPath>
                                 </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <!-- Copying WAR web resources -->
-                    <execution>
-                        <id>copy-war-resources-web</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.webappWebInfDirectory}</outputDirectory>
-                            <resources>
-                                <!-- Configuration file(s) -->
-                                <resource>
-                                    <directory>${project.build.webappClassesSourceDirectory}</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.conf</include>
-                                        <include>**/*.properties</include>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <!-- Configuration file(s) (Spring) -->
                                 <resource>
                                     <directory>${project.build.webappWebInfSourceDirectory}/spring</directory>
                                     <filtering>true</filtering>
@@ -459,9 +447,9 @@
                             </resources>
                         </configuration>
                     </execution>
-                    <!-- Copying test dependency web resources -->
+                    <!-- Copying test web resources -->
                     <execution>
-                        <id>copy-test-dependency-resources-web</id>
+                        <id>copy-test-resources-web</id>
                         <phase>process-test-resources</phase>
                         <goals>
                             <goal>copy-resources</goal>
@@ -493,36 +481,6 @@
                                     </excludes>
                                     <targetPath>classes</targetPath>
                                 </resource>
-                                <!-- Configuration file(s) (Spring) -->
-                                <resource>
-                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF/spring</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF/spring</directory>
-                                    <excludes>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                            </resources>
-                        </configuration>
-                    </execution>
-                    <!-- Copying test WAR web resources -->
-                    <execution>
-                        <id>copy-test-war-resources-web</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.testWebappWebInfDirectory}</outputDirectory>
-                            <resources>
-                                <!-- Configuration file(s) -->
                                 <resource>
                                     <directory>${project.build.testWebappClassesSourceDirectory}</directory>
                                     <filtering>true</filtering>
@@ -566,6 +524,21 @@
                                     <targetPath>classes</targetPath>
                                 </resource>
                                 <!-- Configuration file(s) (Spring) -->
+                                <resource>
+                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF/spring</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.xml</include>
+                                    </includes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF/spring</directory>
+                                    <excludes>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
                                 <resource>
                                     <directory>${project.build.testWebappWebInfSourceDirectory}/spring</directory>
                                     <filtering>true</filtering>
@@ -608,7 +581,22 @@
                         </configuration>
                     </execution>
                     <execution>
+                        <id>copy-test-resources-testng</id>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>jar-sources</id>
+                    </execution>
+                    <execution>
+                        <id>test-jar-sources</id>
                     </execution>
                 </executions>
             </plugin>

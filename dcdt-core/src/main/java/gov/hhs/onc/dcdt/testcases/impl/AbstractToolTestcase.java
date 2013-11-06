@@ -9,6 +9,7 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseResult> extends
     protected String mailAddr;
     protected String name;
     protected String nameDisplay;
+    protected boolean optional;
     protected T result;
 
     @Override
@@ -39,6 +40,16 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseResult> extends
     @Override
     public void setNameDisplay(String nameDisplay) {
         this.nameDisplay = nameDisplay;
+    }
+
+    @Override
+    public boolean isOptional() {
+        return this.optional;
+    }
+
+    @Override
+    public void setOptional(boolean optional) {
+        this.optional = optional;
     }
 
     @Override

@@ -46,10 +46,9 @@ public class DnsUdpSocketServer extends DnsSocketServer<DatagramSocket, Datagram
     }
 
     @Override
-    protected void sendMessage(DatagramSocket socket, DatagramPacket inMsgObj, Message inMsg, Message outMsg) throws IOException
-    {
+    protected void sendMessage(DatagramSocket socket, DatagramPacket inMsgObj, Message inMsg, Message outMsg) throws IOException {
         byte[] outMsgData = outMsg.toWire();
-        
+
         socket.send(new DatagramPacket(outMsgData, outMsgData.length, inMsgObj.getSocketAddress()));
     }
 

@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(/* dependsOnGroups = { "dcdt.test.config.all" }, */groups = { "dcdt.test.all", "dcdt.test.testcases.all", "dcdt.test.testcases.discovery" })
+@Test(dependsOnGroups = { "dcdt.test.unit.config.all" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.testcases.all",
+    "dcdt.test.unit.testcases.discovery" })
 public class DiscoveryTestcaseUnitTests extends ToolTestNgUnitTests {
-    @Autowired
+    @Autowired(required = false)
     private ToolInstance instance;
 
     @Autowired(required = false)
@@ -30,8 +31,8 @@ public class DiscoveryTestcaseUnitTests extends ToolTestNgUnitTests {
         for (DiscoveryTestcase discoveryTestcase : this.discoveryTestcases) {
             discoveryTestcaseMailAddr = discoveryTestcase.getMailAddress();
 
-            Assert.assertTrue(discoveryTestcaseMailAddr.endsWith(instanceDomain), "Discovery testcase (name=) mail address does not end with instance domain: "
-                    + discoveryTestcaseMailAddr);
+            Assert.assertTrue(discoveryTestcaseMailAddr.endsWith(instanceDomain), "Discovery testcase (name=" + discoveryTestcase.getName()
+                + ") mail address does not end with instance domain: " + discoveryTestcaseMailAddr);
         }
     }
 }

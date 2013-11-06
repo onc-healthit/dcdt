@@ -52,7 +52,7 @@ public abstract class ToolResourceUtils {
 
     public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault, String baseResourcePath) {
         String[] resourceLocParts = resourceLoc.contains(URL_PREFIX_DELIM) ? resourceLoc.split(URL_PREFIX_DELIM, 2) : ArrayUtils.toArray(urlPrefixDefault,
-                resourceLoc);
+            resourceLoc);
         resourceLoc = ToolStringUtils.joinDelimit(resourceLocParts, URL_PREFIX_DELIM);
 
         return Arrays.asList(ArrayUtils.toArray(resourceLocParts[0] + baseResourcePath + SystemUtils.FILE_SEPARATOR + resourceLocParts[1], resourceLoc));

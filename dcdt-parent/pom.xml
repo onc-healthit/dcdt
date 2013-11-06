@@ -48,12 +48,16 @@
         <!-- Project properties -->
         <project.basedir>${project.basedir}</project.basedir>
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
-        <!-- Project build properties -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Project build assembly properties -->
         <project.build.assemblyDirectory>${project.basedir}/src/assembly</project.build.assemblyDirectory>
+        <!-- Project build POM properties -->
+        <project.build.pomPropertiesFile>${project.build.directory}/maven/pom.properties</project.build.pomPropertiesFile>
+        <!-- Project build POM source properties -->
+        <project.build.pomPropertiesSourceFile>${project.basedir}/pom.properties</project.build.pomPropertiesSourceFile>
         <!-- Project build resources properties -->
         <project.build.resourcesDirectory>${project.basedir}/src/main/resources</project.build.resourcesDirectory>
+        <!-- Project build source properties -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Project build test resources properties -->
         <project.build.testResourcesDirectory>${project.basedir}/src/test/resources</project.build.testResourcesDirectory>
         <!-- Project build test script source properties -->
@@ -463,6 +467,29 @@
                     <configuration>
                         <silent>true</silent>
                     </configuration>
+                    <executions>
+                        <!-- Unpacking test dependency TestNG resources -->
+                        <execution>
+                            <id>unpack-test-dependency-resources-testng</id>
+                            <phase>generate-test-resources</phase>
+                            <goals>
+                                <goal>unpack</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <artifactItems>
+                                    <artifactItem>
+                                        <groupId>${project.groupId}</groupId>
+                                        <artifactId>dcdt-core</artifactId>
+                                        <version>${project.version}</version>
+                                        <classifier>test-sources</classifier>
+                                    </artifactItem>
+                                </artifactItems>
+                                <includes>META-INF/testng/**</includes>
+                                <outputDirectory>${project.build.directory}/${project.artifactId}-test-dependency-resources-testng</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -493,6 +520,54 @@
                         <useDefaultDelimiters>false</useDefaultDelimiters>
                     </configuration>
                     <executions>
+                        <!-- Copying test TestNG resources -->
+                        <execution>
+                            <id>copy-test-resources-testng</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.testOutputDirectory}/META-INF/testng</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-test-dependency-resources-testng/META-INF/testng</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.directory}/${project.artifactId}-test-dependency-resources-testng/META-INF/testng</directory>
+                                        <excludes>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesDirectory}/META-INF/testng</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesDirectory}/META-INF/testng</directory>
+                                        <excludes>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
                         <!-- Copying site resources -->
                         <execution>
                             <id>copy-resources-site</id>
@@ -550,17 +625,19 @@
                     <version>2.2.1</version>
                     <inherited>true</inherited>
                     <executions>
-                        <!-- Building source JAR artifact -->
+                        <!-- Building sources JAR artifact -->
                         <execution>
-                            <id>source-jar</id>
+                            <id>jar-sources</id>
+                            <phase>generate-sources</phase>
                             <goals>
                                 <goal>jar</goal>
                             </goals>
                             <inherited>true</inherited>
                         </execution>
-                        <!-- Building test source JAR artifact -->
+                        <!-- Building test sources JAR artifact -->
                         <execution>
-                            <id>source-test-jar</id>
+                            <id>test-jar-sources</id>
+                            <phase>generate-test-sources</phase>
                             <goals>
                                 <goal>test-jar</goal>
                             </goals>
@@ -575,16 +652,12 @@
                     <inherited>true</inherited>
                     <configuration>
                         <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</argLine>
-                        <excludes combine.children="append">
-                            <exclude>${project.java.package.path}/test/**/*Tests.java</exclude>
-                        </excludes>
                         <reportFormat>plain</reportFormat>
                         <systemPropertyVariables combine.children="append">
                             <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
                             <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
                             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                             <logback.configurationFile>${project.logback.config.file}</logback.configurationFile>
-                            <net.sourceforge.cobertura.datafile>${project.build.coverageMetadataFile}</net.sourceforge.cobertura.datafile>
                         </systemPropertyVariables>
                         <trimStackTrace>false</trimStackTrace>
                     </configuration>
@@ -601,20 +674,10 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <includes>
-                                    <include>${project.java.package.path}/**/*UnitTests.java</include>
-                                </includes>
-                                <properties>
-                                    <property>
-                                        <name>suitename</name>
-                                        <value>${project.name} Unit Tests Suite</value>
-                                    </property>
-                                    <property>
-                                        <name>testname</name>
-                                        <value>${project.name} Unit Tests</value>
-                                    </property>
-                                </properties>
                                 <reportNameSuffix>unit</reportNameSuffix>
+                                <suiteXmlFiles>
+                                    <suiteXmlFile>${project.build.testOutputDirectory}/META-INF/testng/testng-unit.xml</suiteXmlFile>
+                                </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.log.file.name>${project.artifactId}-test-unit</dcdt.log.file.name>
                                 </systemPropertyVariables>
@@ -627,20 +690,10 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <includes>
-                                    <include>${project.java.package.path}/**/*FunctionalTests.java</include>
-                                </includes>
-                                <properties>
-                                    <property>
-                                        <name>suitename</name>
-                                        <value>${project.name} Functional Tests Suite</value>
-                                    </property>
-                                    <property>
-                                        <name>testname</name>
-                                        <value>${project.name} Functional Tests</value>
-                                    </property>
-                                </properties>
                                 <reportNameSuffix>func</reportNameSuffix>
+                                <suiteXmlFiles>
+                                    <suiteXmlFile>${project.build.testOutputDirectory}/META-INF/testng/testng-func.xml</suiteXmlFile>
+                                </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.log.file.name>${project.artifactId}-test-func</dcdt.log.file.name>
                                 </systemPropertyVariables>
@@ -654,21 +707,10 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <includes>
-                                    <include>${project.java.package.path}/**/*IntegrationTests.java</include>
-                                </includes>
-                                <properties>
-                                    <property>
-                                        <name>suitename</name>
-                                        <value>${project.name} Integration Tests Suite</value>
-                                    </property>
-                                    <property>
-                                        <name>testname</name>
-                                        <value>${project.name} Integration Tests</value>
-                                    </property>
-                                </properties>
                                 <reportNameSuffix>it</reportNameSuffix>
-                                <skipTests>false</skipTests>
+                                <suiteXmlFiles>
+                                    <suiteXmlFile>${project.build.testOutputDirectory}/META-INF/testng/testng-it.xml</suiteXmlFile>
+                                </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.log.file.name>${project.artifactId}-test-it</dcdt.log.file.name>
                                 </systemPropertyVariables>
@@ -839,7 +881,7 @@
                             <configuration>
                                 <locations>
                                     <location>${project.basedir}/${project.parent.relativePath}/target/maven/pom.properties</location>
-                                    <location>${project.build.directory}/maven/pom.properties</location>
+                                    <location>${project.build.pomPropertiesFile}</location>
                                 </locations>
                             </configuration>
                         </execution>
@@ -881,9 +923,26 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>unpack-test-dependency-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <inherited>false</inherited>
                 <executions>
+                    <execution>
+                        <id>copy-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
                     <execution>
                         <id>copy-resources-site</id>
                         <inherited>false</inherited>
@@ -902,6 +961,28 @@
                 </executions>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>test-unit</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>test-functional</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>test-integration</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.kuali.maven.plugins</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
                 <inherited>false</inherited>
@@ -911,7 +992,7 @@
                         <inherited>false</inherited>
                         <configuration>
                             <locations combine.self="override">
-                                <location>${project.build.directory}/maven/pom.properties</location>
+                                <location>${project.build.pomPropertiesFile}</location>
                             </locations>
                         </configuration>
                     </execution>
@@ -1006,7 +1087,7 @@
                         <executions>
                             <!-- Reading Maven project POM Clover properties files -->
                             <execution>
-                                <id>read-pom-clover-properties</id>
+                                <id>read-pom-properties-clover</id>
                                 <phase>initialize</phase>
                                 <goals>
                                     <goal>read-project-properties</goal>
@@ -1039,10 +1120,12 @@
                         <artifactId>maven-clover2-plugin</artifactId>
                         <version>3.2.0</version>
                         <inherited>true</inherited>
+                        <configuration>
+                            <includesAllSourceRoots>true</includesAllSourceRoots>
+                        </configuration>
                         <executions>
                             <execution>
                                 <id>clover-instrument</id>
-                                <phase>process-test-classes</phase>
                                 <goals>
                                     <goal>instrument-test</goal>
                                 </goals>

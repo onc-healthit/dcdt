@@ -1,9 +1,10 @@
-package gov.hhs.onc.dcdt.config.impl;
+package gov.hhs.onc.dcdt.beans.factory.impl;
 
 
-import gov.hhs.onc.dcdt.config.ToolBeanPropertySourcesPropertyResolver;
+import gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertyPlaceholderConfigurer;
+import gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertyResolver;
 import gov.hhs.onc.dcdt.config.ToolInstance;
-import gov.hhs.onc.dcdt.config.ToolPropertySourcesPlaceholderConfigurer;
+import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import java.util.Map;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanDefinitionStoreException;
@@ -15,18 +16,19 @@ import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.env.ConfigurablePropertyResolver;
 
-public class ToolPropertySourcesPlaceholderConfigurerImpl extends PropertySourcesPlaceholderConfigurer implements ToolPropertySourcesPlaceholderConfigurer {
+public class ToolBeanPropertyPlaceholderConfigurerImpl extends PropertySourcesPlaceholderConfigurer implements ToolBeanPropertyPlaceholderConfigurer {
+    private ToolBeanPropertyResolver beanPropResolver;
+
     private String beanName;
     private AutowireCapableBeanFactory beanFactory;
-    private ToolBeanPropertySourcesPropertyResolver propSourcesPropResolver;
 
     @Override
     protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, ConfigurablePropertyResolver propResolver) throws BeansException {
         if (beanFactoryToProcess.equals(this.beanFactory)) {
-            Map<String, ToolInstance> instanceBeans = beanFactoryToProcess.getBeansOfType(ToolInstance.class);
+            Map<String, ToolInstance> instanceBeans = ToolBeanFactoryUtils.tryGetBeansOfType(beanFactoryToProcess, ToolInstance.class);
 
             if (!instanceBeans.isEmpty()) {
-                BeanDefinitionVisitor beanDefVisitor = new BeanDefinitionVisitor(this.propSourcesPropResolver);
+                BeanDefinitionVisitor beanDefVisitor = new BeanDefinitionVisitor(this.beanPropResolver);
                 BeanDefinition beanDef;
 
                 for (String beanDefName : beanFactoryToProcess.getBeanDefinitionNames()) {
@@ -54,6 +56,11 @@ public class ToolPropertySourcesPlaceholderConfigurerImpl extends PropertySource
     }
 
     @Override
+    public String getBeanName() {
+        return this.beanName;
+    }
+
+    @Override
     public void setBeanName(String beanName) {
         this.beanName = beanName;
 
@@ -61,7 +68,7 @@ public class ToolPropertySourcesPlaceholderConfigurerImpl extends PropertySource
     }
 
     @Override
-    public void setPropertySourcesPropertyResolver(ToolBeanPropertySourcesPropertyResolver propSourcesPropResolver) {
-        this.propSourcesPropResolver = propSourcesPropResolver;
+    public void setBeanPropertyResolver(ToolBeanPropertyResolver beanPropResolver) {
+        this.beanPropResolver = beanPropResolver;
     }
 }
