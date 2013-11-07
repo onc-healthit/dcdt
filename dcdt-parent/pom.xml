@@ -338,6 +338,12 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.seleniumhq.selenium.client-drivers</groupId>
+                <artifactId>selenium-java-client-driver</artifactId>
+                <version>1.0.2</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
                 <version>3.2.4.RELEASE</version>
@@ -732,7 +738,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <warSourceDirectory>${project.build.webappSourceDirectory}</warSourceDirectory>
-                                <warSourceExcludes>WEB-INF/classes/**/*.conf,WEB-INF/classes/**/*.properties,WEB-INF/classes/**/*.xml,WEB-INF/logback/**/*.xml,WEB-INF/spring/**/*.xml,WEB-INF/web.xml</warSourceExcludes>
+                                <warSourceExcludes>WEB-INF/classes/**/*.conf,WEB-INF/classes/**/*.properties,WEB-INF/classes/**/*.xml,WEB-INF/spring/**/*.xml,WEB-INF/web.xml</warSourceExcludes>
                                 <webappDirectory>${project.build.webappDirectory}</webappDirectory>
                             </configuration>
                         </execution>
@@ -793,76 +799,9 @@
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>webtest-maven-plugin</artifactId>
-                    <version>1.0.0</version>
+                    <artifactId>selenium-maven-plugin</artifactId>
+                    <version>2.3</version>
                     <inherited>true</inherited>
-                    <dependencies>
-                        <dependency>
-                            <groupId>ant-contrib</groupId>
-                            <artifactId>ant-contrib</artifactId>
-                            <version>1.0b3</version>
-                            <exclusions>
-                                <exclusion>
-                                    <groupId>ant</groupId>
-                                    <artifactId>ant</artifactId>
-                                </exclusion>
-                            </exclusions>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant</artifactId>
-                            <version>1.9.2</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant-apache-bsf</artifactId>
-                            <version>1.9.2</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant-junit</artifactId>
-                            <version>1.9.2</version>
-                            <scope>runtime</scope>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant-launcher</artifactId>
-                            <version>1.9.2</version>
-                            <scope>runtime</scope>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant-nodeps</artifactId>
-                            <version>1.8.1</version>
-                            <scope>runtime</scope>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant-trax</artifactId>
-                            <version>1.8.0</version>
-                            <scope>runtime</scope>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant.props</groupId>
-                            <artifactId>ant-props</artifactId>
-                            <version>1.0Alpha</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <haltonerror>true</haltonerror>
-                        <!--<haltonfailure>true</haltonfailure>-->
-                        <loglevel>info</loglevel>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>test-integration-webtest</id>
-                            <phase>none</phase>
-                            <goals>
-                                <goal>test</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.kuali.maven.plugins</groupId>
@@ -1027,6 +966,37 @@
     </reporting>
     
     <profiles>
+        <!-- Set properties specific to the operating system -->
+        <profile>
+            <id>os-unix</id>
+            <activation>
+                <os>
+                    <family>unix</family>
+                </os>
+            </activation>
+            <properties>
+                <os.family>unix</os.family>
+                <os.family.isUnix>true</os.family.isUnix>
+                <os.family.isNotUnix>false</os.family.isNotUnix>
+                <os.family.isWindows>false</os.family.isWindows>
+                <os.family.isNotWindows>true</os.family.isNotWindows>
+            </properties>
+        </profile>
+        <profile>
+            <id>os-windows</id>
+            <activation>
+                <os>
+                    <family>windows</family>
+                </os>
+            </activation>
+            <properties>
+                <os.family>windows</os.family>
+                <os.family.isUnix>false</os.family.isUnix>
+                <os.family.isNotUnix>true</os.family.isNotUnix>
+                <os.family.isWindows>true</os.family.isWindows>
+                <os.family.isNotWindows>false</os.family.isNotWindows>
+            </properties>
+        </profile>
         <!-- Set properties if the project contains a Java source directory -->
         <profile>
             <id>src-java</id>

@@ -28,8 +28,20 @@
                 <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:service/mail/service-mail.properties</beans:value>
                 <!--suppress SpringModelInspection -->
-                <beans:value>classpath*:web/web.properties</beans:value>
+                <beans:value>classpath*:web/web*.properties</beans:value>
             </beans:array>
         </beans:property>
     </beans:bean>
+    
+    <beans:bean id="toolMsgSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+        p:cacheSeconds="30"
+        p:defaultEncoding="UTF-8"
+        p:fallbackToSystemLocale="false">
+        <beans:property name="basenames">
+            <beans:list>
+                <beans:value>WEB-INF/classes/web/web-messages</beans:value>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+    <beans:alias name="toolMsgSource" alias="messageSource"/>
 </beans:beans>

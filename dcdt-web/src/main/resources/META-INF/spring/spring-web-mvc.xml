@@ -38,14 +38,4 @@
     
     <beans:bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver"
         p:defaultThemeName="dcdt"/>
-    
-    <beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
-        p:cacheSeconds="5"
-        p:defaultEncoding="UTF-8">
-        <beans:property name="basenames">
-            <beans:list>
-                <beans:value>WEB-INF/classes/web/web-messages</beans:value>
-            </beans:list>
-        </beans:property>
-    </beans:bean>
 </beans:beans>

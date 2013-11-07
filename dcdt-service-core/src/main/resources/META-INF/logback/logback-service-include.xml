@@ -5,11 +5,4 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="ch.qos.logback /META-INF/logback/logback.xsd">
     
-    <if condition='!isDefined("dcdt.log.console.term") &amp;&amp; 
-        org.tanukisoftware.wrapper.WrapperManager.isControlledByNativeWrapper() &amp;&amp; 
-        !org.tanukisoftware.wrapper.WrapperManager.isLaunchedAsService()'>
-        <then>
-            <property name="dcdt.log.console.term" value="true" scope="context"/>
-        </then>
-    </if>
 </included>

@@ -214,6 +214,11 @@
         </dependency>
         <!-- Test dependencies (inherited) -->
         <dependency>
+            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
+            <artifactId>selenium-java-client-driver</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
             <scope>test</scope>
@@ -403,13 +408,26 @@
                                     <targetPath>classes</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.webappClassesSourceDirectory}</directory>
+                                    <directory>${project.build.outputDirectory}/META-INF</directory>
                                     <filtering>true</filtering>
                                     <includes>
                                         <include>**/*.conf</include>
                                         <include>**/*.properties</include>
                                         <include>**/*.xml</include>
                                     </includes>
+                                    <excludes>
+                                        <exclude>spring/**</exclude>
+                                    </excludes>
+                                    <targetPath>classes</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.outputDirectory}/META-INF</directory>
+                                    <excludes>
+                                        <exclude>spring/**</exclude>
+                                        <exclude>**/*.conf</exclude>
+                                        <exclude>**/*.properties</exclude>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
                                     <targetPath>classes</targetPath>
                                 </resource>
                                 <!-- Configuration file(s) (Spring) -->
@@ -429,11 +447,18 @@
                                     <targetPath>spring</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.webappWebInfSourceDirectory}/spring</directory>
+                                    <directory>${project.build.outputDirectory}/META-INF/spring</directory>
                                     <filtering>true</filtering>
                                     <includes>
                                         <include>**/*.xml</include>
                                     </includes>
+                                    <targetPath>spring</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.outputDirectory}/META-INF/spring</directory>
+                                    <excludes>
+                                        <exclude>**/*.xml</exclude>
+                                    </excludes>
                                     <targetPath>spring</targetPath>
                                 </resource>
                                 <!-- Configuration file(s) (webapp) -->
@@ -446,6 +471,9 @@
                                 </resource>
                             </resources>
                         </configuration>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources-testng</id>
                     </execution>
                     <!-- Copying test web resources -->
                     <execution>
@@ -467,33 +495,18 @@
                                         <include>**/*.xml</include>
                                     </includes>
                                     <excludes>
+                                        <exclude>selenium/**</exclude>
                                         <exclude>spring/**</exclude>
+                                        <exclude>testng/**</exclude>
                                     </excludes>
                                     <targetPath>classes</targetPath>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF</directory>
                                     <excludes>
+                                        <exclude>selenium/**</exclude>
                                         <exclude>spring/**</exclude>
-                                        <exclude>**/*.conf</exclude>
-                                        <exclude>**/*.properties</exclude>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testWebappClassesSourceDirectory}</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.conf</include>
-                                        <include>**/*.properties</include>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testWebappClassesSourceDirectory}</directory>
-                                    <excludes>
+                                        <exclude>testng/**</exclude>
                                         <exclude>**/*.conf</exclude>
                                         <exclude>**/*.properties</exclude>
                                         <exclude>**/*.xml</exclude>
@@ -509,19 +522,39 @@
                                         <include>**/*.xml</include>
                                     </includes>
                                     <excludes>
+                                        <exclude>selenium/**</exclude>
                                         <exclude>spring/**</exclude>
+                                        <exclude>testng/**</exclude>
                                     </excludes>
                                     <targetPath>classes</targetPath>
                                 </resource>
                                 <resource>
                                     <directory>${project.build.testOutputDirectory}/META-INF</directory>
                                     <excludes>
+                                        <exclude>selenium/**</exclude>
                                         <exclude>spring/**</exclude>
+                                        <exclude>testng/**</exclude>
                                         <exclude>**/*.conf</exclude>
                                         <exclude>**/*.properties</exclude>
                                         <exclude>**/*.xml</exclude>
                                     </excludes>
                                     <targetPath>classes</targetPath>
+                                </resource>
+                                <!-- Configuration file(s) (Selenium) -->
+                                <resource>
+                                    <directory>${project.build.testOutputDirectory}/META-INF/selenium</directory>
+                                    <filtering>true</filtering>
+                                    <includes>
+                                        <include>**/*.html</include>
+                                    </includes>
+                                    <targetPath>selenium</targetPath>
+                                </resource>
+                                <resource>
+                                    <directory>${project.build.testOutputDirectory}/META-INF/selenium</directory>
+                                    <excludes>
+                                        <exclude>**/*.html</exclude>
+                                    </excludes>
+                                    <targetPath>selenium</targetPath>
                                 </resource>
                                 <!-- Configuration file(s) (Spring) -->
                                 <resource>
@@ -540,21 +573,6 @@
                                     <targetPath>spring</targetPath>
                                 </resource>
                                 <resource>
-                                    <directory>${project.build.testWebappWebInfSourceDirectory}/spring</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testWebappWebInfSourceDirectory}/spring</directory>
-                                    <excludes>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
                                     <directory>${project.build.testOutputDirectory}/META-INF/spring</directory>
                                     <filtering>true</filtering>
                                     <includes>
@@ -568,6 +586,11 @@
                                         <exclude>**/*.xml</exclude>
                                     </excludes>
                                     <targetPath>spring</targetPath>
+                                </resource>
+                                <!-- Configuration file(s) (TestNG) -->
+                                <resource>
+                                    <directory>${project.build.testOutputDirectory}/META-INF/testng</directory>
+                                    <targetPath>testng</targetPath>
                                 </resource>
                                 <!-- Configuration file(s) (webapp) -->
                                 <resource>
@@ -579,9 +602,6 @@
                                 </resource>
                             </resources>
                         </configuration>
-                    </execution>
-                    <execution>
-                        <id>copy-test-resources-testng</id>
                     </execution>
                     <execution>
                         <id>copy-resources-site</id>
@@ -603,6 +623,15 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <additionalClasspathElements>
+                        <additionalClasspathElement>${project.build.testWebappClassesDirectory}</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.webappClassesDirectory}</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.testWebappWebinfDirectory}</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.webappWebinfDirectory}</additionalClasspathElement>
+                    </additionalClasspathElements>
+                    <workingDirectory>${project.build.testWebappDirectory}</workingDirectory>
+                </configuration>
                 <executions>
                     <execution>
                         <id>test-unit</id>
@@ -628,20 +657,6 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>webtest-maven-plugin</artifactId>
-                <configuration>
-                    <basepath>${project.test.server.1.jetty.1.context}</basepath>
-                    <host>${project.test.server.1.jetty.1.host}</host>
-                    <port>${project.test.server.1.jetty.1.port.http}</port>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>test-integration-webtest</id>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.kuali.maven.plugins</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
                 <executions>
@@ -655,16 +670,6 @@
             </plugin>
         </plugins>
     </build>
-    
-    <reporting>
-        <plugins>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>webtest-maven-plugin</artifactId>
-                <version>1.0.0</version>
-            </plugin>
-        </plugins>
-    </reporting>
     
     <profiles>
         <!-- Start/stop integration test components, if tests are not being skipped -->
@@ -692,7 +697,7 @@
                         </configuration>
                         <executions>
                             <execution>
-                                <id>jetty1-start</id>
+                                <id>start-jetty-1</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
                                     <goal>start</goal>
@@ -700,7 +705,8 @@
                                 <configuration>
                                     <container>
                                         <systemProperties>
-                                            <!-- TODO: implement -->
+                                            <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
+                                            <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
                                         </systemProperties>
                                     </container>
                                     <deployables>
@@ -717,10 +723,71 @@
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>jetty1-stop</id>
+                                <id>stop-jetty-1</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
                                     <goal>stop</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>selenium-maven-plugin</artifactId>
+                        <configuration>
+                            <port>${project.test.server.1.selenium.1.port}</port>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>xvfb-selenium-1</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>xvfb</goal>
+                                </goals>
+                                <configuration>
+                                    <display>${project.test.server.1.selenium.1.xvfb.display}</display>
+                                    <logFile>${project.build.directory}/surefire-logs/selenium-xvfb.log</logFile>
+                                    <reuse>true</reuse>
+                                    <skip>${os.family.isNotUnix}</skip>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>start-server-selenium-1</id>
+                                <phase>pre-integration-test</phase>
+                                <goals>
+                                    <goal>start-server</goal>
+                                </goals>
+                                <configuration>
+                                    <background>true</background>
+                                    <browserSideLog>true</browserSideLog>
+                                    <logFile>${project.build.directory}/surefire-logs/selenium-server.log</logFile>
+                                    <logOutput>true</logOutput>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>test-integration-selenium-1</id>
+                                <!-- TODO: enable if suite-based Selenium integration tests are desired -->
+                                <phase>none</phase>
+                                <!--<phase>integration-test</phase>-->
+                                <goals>
+                                    <goal>selenese</goal>
+                                </goals>
+                                <configuration>
+                                    <browser>${project.test.server.1.selenium.1.browser}</browser>
+                                    <startURL>${project.test.server.1.selenium.1.url.base}</startURL>
+                                    <suite>${project.build.testOutputDirectory}/META-INF/selenium/selenium-suite-it-web.html</suite>
+                                    <systemProperties>
+                                        <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
+                                        <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
+                                    </systemProperties>
+                                    <workingDirectory>${project.build.testWebappDirectory}</workingDirectory>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>stop-server-selenium-1</id>
+                                <phase>post-integration-test</phase>
+                                <goals>
+                                    <goal>stop-server</goal>
                                 </goals>
                             </execution>
                         </executions>
