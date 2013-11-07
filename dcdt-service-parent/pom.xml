@@ -674,6 +674,26 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
+                        <id>copy-dependencies-service</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-test-dependencies-service</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>unpack-dependency-resources-service</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>unpack-test-dependency-resources-service</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
                         <id>unpack-test-dependency-resources-testng</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
