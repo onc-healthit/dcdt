@@ -40,6 +40,7 @@ public abstract class ToolListUtils {
     }
 
     @SafeVarargs
+    @SuppressWarnings({ "varargs" })
     public static <T> List<T> addAllFirst(List<T> list, Collection<? extends T> ... colls) {
         return addAllFirst(list, Arrays.asList(colls));
     }
@@ -69,6 +70,7 @@ public abstract class ToolListUtils {
     }
 
     @SafeVarargs
+    @SuppressWarnings({ "varargs" })
     public static <T> List<T> addAllLast(List<T> list, Collection<? extends T> ... colls) {
         return addAllLast(list, Arrays.asList(colls));
     }
@@ -98,6 +100,7 @@ public abstract class ToolListUtils {
     }
 
     @SafeVarargs
+    @SuppressWarnings({ "varargs" })
     public static <T> List<T> tryAddAll(List<T> list, int index, Collection<? extends T> ... colls) {
         return tryAddAll(list, index, Arrays.asList(colls));
     }

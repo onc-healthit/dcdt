@@ -6,6 +6,7 @@ import org.apache.directory.server.xdbm.Index;
 /**
  * @see org.apache.directory.server.core.annotations.CreateIndex
  */
+@SuppressWarnings({ "rawtypes" })
 public class IndexConfig {
     private Class<? extends Index> type = Index.class;
     private int cacheSize = 1000;

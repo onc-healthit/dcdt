@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.beans.factory.impl;
 
+
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertySource;
@@ -32,7 +33,7 @@ public abstract class AbstractToolBeanPropertySource<T extends ToolBean> extends
             return null;
         }
 
-        return new PropertySource(this.name, this.source) {
+        return new PropertySource<T>(this.name, this.source) {
             @Override
             public Object getProperty(String propName) {
                 if ((this.source != null) && propName.startsWith(propNamePrefix)) {

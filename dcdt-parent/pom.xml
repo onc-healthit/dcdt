@@ -262,27 +262,27 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
                 <exclusions>
                     <exclusion>
                         <groupId>javax.el</groupId>
@@ -293,17 +293,17 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-web</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
@@ -346,7 +346,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>3.2.4.RELEASE</version>
+                <version>3.2.5.RELEASE</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -458,6 +458,11 @@
                     <version>3.1</version>
                     <inherited>true</inherited>
                     <configuration>
+                        <compilerArgs>
+                            <arg>-Xlint</arg>
+                        </compilerArgs>
+                        <maxmem>256m</maxmem>
+                        <meminitial>128m</meminitial>
                         <source>${java.version}</source>
                         <target>${java.version}</target>
                         <showDeprecation>true</showDeprecation>

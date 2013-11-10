@@ -495,7 +495,6 @@
                                         <include>**/*.xml</include>
                                     </includes>
                                     <excludes>
-                                        <exclude>selenium/**</exclude>
                                         <exclude>spring/**</exclude>
                                         <exclude>testng/**</exclude>
                                     </excludes>
@@ -504,7 +503,6 @@
                                 <resource>
                                     <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF</directory>
                                     <excludes>
-                                        <exclude>selenium/**</exclude>
                                         <exclude>spring/**</exclude>
                                         <exclude>testng/**</exclude>
                                         <exclude>**/*.conf</exclude>
@@ -522,7 +520,6 @@
                                         <include>**/*.xml</include>
                                     </includes>
                                     <excludes>
-                                        <exclude>selenium/**</exclude>
                                         <exclude>spring/**</exclude>
                                         <exclude>testng/**</exclude>
                                     </excludes>
@@ -531,7 +528,6 @@
                                 <resource>
                                     <directory>${project.build.testOutputDirectory}/META-INF</directory>
                                     <excludes>
-                                        <exclude>selenium/**</exclude>
                                         <exclude>spring/**</exclude>
                                         <exclude>testng/**</exclude>
                                         <exclude>**/*.conf</exclude>
@@ -539,22 +535,6 @@
                                         <exclude>**/*.xml</exclude>
                                     </excludes>
                                     <targetPath>classes</targetPath>
-                                </resource>
-                                <!-- Configuration file(s) (Selenium) -->
-                                <resource>
-                                    <directory>${project.build.testOutputDirectory}/META-INF/selenium</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.html</include>
-                                    </includes>
-                                    <targetPath>selenium</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testOutputDirectory}/META-INF/selenium</directory>
-                                    <excludes>
-                                        <exclude>**/*.html</exclude>
-                                    </excludes>
-                                    <targetPath>selenium</targetPath>
                                 </resource>
                                 <!-- Configuration file(s) (Spring) -->
                                 <resource>
@@ -762,25 +742,6 @@
                                     <browserSideLog>true</browserSideLog>
                                     <logFile>${project.build.directory}/surefire-logs/selenium-server.log</logFile>
                                     <logOutput>true</logOutput>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>test-integration-selenium-1</id>
-                                <!-- TODO: enable if suite-based Selenium integration tests are desired -->
-                                <phase>none</phase>
-                                <!--<phase>integration-test</phase>-->
-                                <goals>
-                                    <goal>selenese</goal>
-                                </goals>
-                                <configuration>
-                                    <browser>${project.test.server.1.selenium.1.browser}</browser>
-                                    <startURL>${project.test.server.1.selenium.1.url.base}</startURL>
-                                    <suite>${project.build.testOutputDirectory}/META-INF/selenium/selenium-suite-it-web.html</suite>
-                                    <systemProperties>
-                                        <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
-                                        <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
-                                    </systemProperties>
-                                    <workingDirectory>${project.build.testWebappDirectory}</workingDirectory>
                                 </configuration>
                             </execution>
                             <execution>

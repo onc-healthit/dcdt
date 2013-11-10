@@ -4,6 +4,8 @@ package gov.hhs.onc.dcdt.beans;
 import org.springframework.beans.BeansException;
 
 public class ToolBeanException extends BeansException {
+    protected final static long serialVersionUID = 0L;
+
     public ToolBeanException() {
         super(null);
     }

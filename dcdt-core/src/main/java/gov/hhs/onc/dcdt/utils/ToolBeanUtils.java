@@ -7,6 +7,7 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 
 public abstract class ToolBeanUtils {
+    @SuppressWarnings({ "unchecked" })
     public static <T extends ToolBean> T clone(BeanFactory beanFactory, T bean) throws ToolBeanException {
         try {
             return (T) beanFactory.getBean(bean.getBeanName(), bean);

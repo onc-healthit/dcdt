@@ -33,15 +33,15 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="toolMsgSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+    <beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
         p:cacheSeconds="30"
         p:defaultEncoding="UTF-8"
         p:fallbackToSystemLocale="false">
         <beans:property name="basenames">
             <beans:list>
+                <beans:value>META-INF/web/web-messages</beans:value>
                 <beans:value>WEB-INF/classes/web/web-messages</beans:value>
             </beans:list>
         </beans:property>
     </beans:bean>
-    <beans:alias name="toolMsgSource" alias="messageSource"/>
 </beans:beans>

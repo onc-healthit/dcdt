@@ -92,7 +92,7 @@ public abstract class ToolServiceWrapper<T extends AbstractApplicationContext, U
         this.serviceThread = new Thread(this.service);
 
         // Adding shutdown hooks
-        this.shutdownHookThread = new Thread(new ToolServiceWrapperShutdownHook(this.service));
+        this.shutdownHookThread = new Thread(new ToolServiceWrapperShutdownHook<>(this.service));
         Runtime.getRuntime().addShutdownHook(this.shutdownHookThread);
     }
 

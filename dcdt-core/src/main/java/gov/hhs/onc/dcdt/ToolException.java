@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt;
 
 public class ToolException extends Exception {
+    protected final static long serialVersionUID = 0L;
+
     public ToolException() {
         super();
     }

@@ -4,6 +4,8 @@ package gov.hhs.onc.dcdt.beans;
 import org.springframework.core.convert.ConversionException;
 
 public class ToolBeanPropertyConversionException extends ConversionException {
+    protected final static long serialVersionUID = 0L;
+
     public ToolBeanPropertyConversionException() {
         super(null);
     }

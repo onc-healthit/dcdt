@@ -24,7 +24,7 @@
     </sec:authentication-manager>
     
     <sec:http auto-config="true" authentication-manager-ref="toolAuthManager" use-expressions="true">
-        <sec:intercept-url pattern="/gov/hhs/onc/dcdt/testcases/hosting/impl" access="permitAll"/>
+        <sec:intercept-url pattern="/**" access="permitAll"/>
         <sec:session-management>
             <sec:concurrency-control error-if-maximum-exceeded="true" max-sessions="1"/>
         </sec:session-management>

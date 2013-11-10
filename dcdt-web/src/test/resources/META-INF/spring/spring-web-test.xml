@@ -13,10 +13,14 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean id="toolSelenium" class="gov.hhs.onc.dcdt.web.test.ToolSelenium" abstract="true"/>
-    <beans:bean id="toolSeleniumImpl" class="gov.hhs.onc.dcdt.web.test.impl.ToolSeleniumImpl" parent="toolSelenium"
+    <beans:bean id="toolSeleniumCmdProc" class="gov.hhs.onc.dcdt.web.test.ToolSeleniumCommandProcessor" abstract="true"/>
+    <beans:bean id="toolSeleniumCmdProcImpl" class="gov.hhs.onc.dcdt.web.test.impl.ToolSeleniumCommandProcessorImpl" parent="toolSeleniumCmdProc"
         c:serverHost="${dcdt.test.it.web.selenium.1.host}"
         c:serverPort="${dcdt.test.it.web.selenium.1.port}"
-        c:browserStartCommand="${dcdt.test.it.web.selenium.1.browser}"
-        c:browserURL="${dcdt.test.it.web.selenium.1.url.base}"/>
+        c:browserStartCmd="${dcdt.test.it.web.selenium.1.browser}"
+        c:browserUrl="${dcdt.test.it.web.selenium.1.url.base}"/>
+    
+    <beans:bean id="toolSelenium" class="gov.hhs.onc.dcdt.web.test.ToolSelenium" abstract="true"/>
+    <beans:bean id="toolSeleniumImpl" class="gov.hhs.onc.dcdt.web.test.impl.ToolSeleniumImpl" parent="toolSelenium"
+        c:seleniumCmdProc-ref="toolSeleniumCmdProcImpl"/>
 </beans:beans>

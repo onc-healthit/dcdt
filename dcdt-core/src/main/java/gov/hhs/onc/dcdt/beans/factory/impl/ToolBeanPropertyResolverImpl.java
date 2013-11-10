@@ -47,6 +47,7 @@ public class ToolBeanPropertyResolverImpl extends AbstractPropertyResolver imple
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public <T> Class<T> getPropertyAsClass(String propName, Class<T> propValueTargetClass) {
         if (this.hasPropertySources()) {
             Object propValue;

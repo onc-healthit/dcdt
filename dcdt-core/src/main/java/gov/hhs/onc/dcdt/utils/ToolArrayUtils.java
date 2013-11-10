@@ -4,6 +4,10 @@ package gov.hhs.onc.dcdt.utils;
 import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class ToolArrayUtils {
+    public static <T> T[] emptyToNull(T[] arr) {
+        return ArrayUtils.isEmpty(arr) ? null : arr;
+    }
+
     public static <T> T getFirst(T[] arr) {
         return getFirst(arr, null);
     }
