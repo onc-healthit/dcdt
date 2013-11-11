@@ -59,6 +59,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.directory.api</groupId>
             <artifactId>api-ldap-client-all</artifactId>
         </dependency>
@@ -69,6 +73,10 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
         <dependency>
             <groupId>org.logback-extensions</groupId>
@@ -112,7 +120,15 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
         </dependency>
         <!-- Test dependencies (inherited) -->
         <dependency>
@@ -144,12 +160,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
-                <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>unpack-test-dependency-resources-testng</id>
+                        <id>unpack-dependency-resources</id>
                         <phase>none</phase>
-                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>unpack-test-dependency-resources</id>
+                        <phase>none</phase>
                     </execution>
                 </executions>
             </plugin>
@@ -170,7 +188,16 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>copy-test-resources-testng</id>
+                        <id>copy-resources</id>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-spring</id>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources</id>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources-spring</id>
                     </execution>
                     <execution>
                         <id>copy-resources-site</id>
@@ -192,12 +219,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <additionalClasspathElements>
-                        <additionalClasspathElement>${project.build.testOutputDirectory}/META-INF</additionalClasspathElement>
-                        <additionalClasspathElement>${project.build.outputDirectory}/META-INF</additionalClasspathElement>
-                    </additionalClasspathElements>
-                </configuration>
                 <executions>
                     <execution>
                         <id>test-unit</id>

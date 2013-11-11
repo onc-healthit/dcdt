@@ -10,6 +10,10 @@ public abstract class AbstractToolBean implements ToolBean {
     protected transient String beanName;
 
     @Override
+    public void afterPropertiesSet() throws Exception {
+    }
+
+    @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
     }

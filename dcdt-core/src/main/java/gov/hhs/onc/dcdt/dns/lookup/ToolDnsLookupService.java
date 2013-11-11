@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.dns.lookup;
 
 
 import gov.hhs.onc.dcdt.dns.ToolDnsException;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +57,7 @@ public class ToolDnsLookupService {
     }
 
     public ToolDnsLookupService() {
-        this(Arrays.asList(new Resolver[0]));
+        this(ToolArrayUtils.asList(new Resolver[0]));
     }
 
     public ToolDnsLookupService(List<Resolver> dnsResolvers) {
@@ -78,7 +79,7 @@ public class ToolDnsLookupService {
     }
 
     public <T extends Record> List<T> lookup(Class<T> recordClass, Name dnsName) {
-        return this.lookup(recordClass, Arrays.asList(dnsName)).get(dnsName);
+        return this.lookup(recordClass, ToolArrayUtils.asList(dnsName)).get(dnsName);
     }
 
     public <T extends Record> Map<Name, List<T>> lookup(Class<T> recordClass, List<Name> dnsNames) {

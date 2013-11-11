@@ -55,11 +55,17 @@
         <!-- Project build POM source properties -->
         <project.build.pomPropertiesSourceFile>${project.basedir}/pom.properties</project.build.pomPropertiesSourceFile>
         <!-- Project build resources properties -->
-        <project.build.resourcesDirectory>${project.basedir}/src/main/resources</project.build.resourcesDirectory>
+        <project.build.resourcesDirectory>${project.build.directory}/resources</project.build.resourcesDirectory>
+        <project.build.resourcesDependencyDirectory>${project.build.resourcesDirectory}-dependency</project.build.resourcesDependencyDirectory>
+        <!-- Project build resources source properties -->
+        <project.build.resourcesSourceDirectory>${project.basedir}/src/main/resources</project.build.resourcesSourceDirectory>
         <!-- Project build source properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Project build test resources properties -->
-        <project.build.testResourcesDirectory>${project.basedir}/src/test/resources</project.build.testResourcesDirectory>
+        <project.build.testResourcesDirectory>${project.build.directory}/test-resources</project.build.testResourcesDirectory>
+        <project.build.testResourcesDependencyDirectory>${project.build.testResourcesDirectory}-dependency</project.build.testResourcesDependencyDirectory>
+        <!-- Project build test resources source properties -->
+        <project.build.testResourcesSourceDirectory>${project.basedir}/src/test/resources</project.build.testResourcesSourceDirectory>
         <!-- Project build test script source properties -->
         <project.build.testScriptSourceDirectory>${project.basedir}/src/test/scripts</project.build.testScriptSourceDirectory>
         <!-- Project build webapp source properties -->
@@ -200,6 +206,11 @@
                 <version>3.1</version>
             </dependency>
             <dependency>
+                <groupId>org.apache.derby</groupId>
+                <artifactId>derby</artifactId>
+                <version>10.10.1.1</version>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.directory.api</groupId>
                 <artifactId>api-ldap-client-all</artifactId>
                 <version>1.0.0-M20</version>
@@ -233,6 +244,15 @@
                         <artifactId>jsp-api</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <!--
+                The latest (beta) version (4.3.0.Beta5) is broken - do not upgrade.
+                See: https://community.jboss.org/thread/233642
+                -->
+                <version>4.2.7.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.logback-extensions</groupId>
@@ -292,7 +312,17 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
+                <artifactId>spring-jdbc</artifactId>
+                <version>3.2.5.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
+                <version>3.2.5.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
                 <version>3.2.5.RELEASE</version>
             </dependency>
             <dependency>
@@ -364,7 +394,7 @@
                 <groupId>org.apache.maven.wagon</groupId>
                 <artifactId>wagon-webdav-jackrabbit</artifactId>
                 <!--
-                The newest version (2.5) is broken - do not upgrade.
+                The latest version (2.5) is broken - do not upgrade.
                 See: http://jira.codehaus.org/browse/WAGON-356
                 -->
                 <version>2.0</version>
@@ -479,25 +509,38 @@
                         <silent>true</silent>
                     </configuration>
                     <executions>
-                        <!-- Unpacking test dependency TestNG resources -->
+                        <!-- Unpacking dependency resources -->
                         <execution>
-                            <id>unpack-test-dependency-resources-testng</id>
-                            <phase>generate-test-resources</phase>
+                            <id>unpack-dependency-resources</id>
+                            <phase>generate-resources</phase>
                             <goals>
-                                <goal>unpack</goal>
+                                <goal>unpack-dependencies</goal>
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <artifactItems>
-                                    <artifactItem>
-                                        <groupId>${project.groupId}</groupId>
-                                        <artifactId>dcdt-core</artifactId>
-                                        <version>${project.version}</version>
-                                        <classifier>test-sources</classifier>
-                                    </artifactItem>
-                                </artifactItems>
-                                <includes>META-INF/testng/**</includes>
-                                <outputDirectory>${project.build.directory}/${project.artifactId}-test-dependency-resources-testng</outputDirectory>
+                                <includeClassifiers>sources</includeClassifiers>
+                                <includeGroupIds>${project.groupId}</includeGroupIds>
+                                <includes>META-INF/**</includes>
+                                <includeTypes>jar</includeTypes>
+                                <excludes>META-INF/maven,META-INF/MANIFEST.MF</excludes>
+                                <outputDirectory>${project.build.resourcesDependencyDirectory}</outputDirectory>
+                            </configuration>
+                        </execution>
+                        <!-- Unpacking test dependency resources -->
+                        <execution>
+                            <id>unpack-test-dependency-resources</id>
+                            <phase>generate-test-resources</phase>
+                            <goals>
+                                <goal>unpack-dependencies</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <includeClassifiers>test-sources</includeClassifiers>
+                                <includeGroupIds>${project.groupId}</includeGroupIds>
+                                <includes>META-INF/**</includes>
+                                <includeTypes>jar</includeTypes>
+                                <excludes>META-INF/maven,META-INF/MANIFEST.MF</excludes>
+                                <outputDirectory>${project.build.testResourcesDependencyDirectory}</outputDirectory>
                             </configuration>
                         </execution>
                     </executions>
@@ -531,48 +574,192 @@
                         <useDefaultDelimiters>false</useDefaultDelimiters>
                     </configuration>
                     <executions>
-                        <!-- Copying test TestNG resources -->
+                        <!-- Copying resources -->
                         <execution>
-                            <id>copy-test-resources-testng</id>
-                            <phase>process-test-resources</phase>
+                            <id>copy-resources</id>
+                            <phase>process-resources</phase>
                             <goals>
                                 <goal>copy-resources</goal>
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <outputDirectory>${project.build.testOutputDirectory}/META-INF/testng</outputDirectory>
+                                <outputDirectory>${project.build.resourcesDirectory}</outputDirectory>
                                 <resources>
                                     <resource>
-                                        <directory>${project.build.directory}/${project.artifactId}-test-dependency-resources-testng/META-INF/testng</directory>
+                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF</directory>
                                         <filtering>true</filtering>
                                         <includes>
                                             <include>**/*.conf</include>
                                             <include>**/*.properties</include>
                                             <include>**/*.xml</include>
                                         </includes>
+                                        <excludes>
+                                            <exclude>spring/**</exclude>
+                                        </excludes>
                                     </resource>
                                     <resource>
-                                        <directory>${project.build.directory}/${project.artifactId}-test-dependency-resources-testng/META-INF/testng</directory>
+                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF</directory>
                                         <excludes>
+                                            <exclude>spring/**</exclude>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
                                             <exclude>**/*.xml</exclude>
                                         </excludes>
                                     </resource>
                                     <resource>
-                                        <directory>${project.build.testResourcesDirectory}/META-INF/testng</directory>
+                                        <directory>${project.build.resourcesSourceDirectory}/META-INF</directory>
                                         <filtering>true</filtering>
                                         <includes>
                                             <include>**/*.conf</include>
                                             <include>**/*.properties</include>
                                             <include>**/*.xml</include>
                                         </includes>
+                                        <excludes>
+                                            <exclude>spring/**</exclude>
+                                        </excludes>
                                     </resource>
                                     <resource>
-                                        <directory>${project.build.testResourcesDirectory}/META-INF/testng</directory>
+                                        <directory>${project.build.resourcesSourceDirectory}/META-INF</directory>
                                         <excludes>
+                                            <exclude>spring/**</exclude>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <!-- Copying Spring resources -->
+                        <execution>
+                            <id>copy-resources-spring</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.resourcesDirectory}/spring</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF/spring</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF/spring</directory>
+                                        <excludes>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.resourcesSourceDirectory}/META-INF/spring</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.resourcesSourceDirectory}/META-INF/spring</directory>
+                                        <excludes>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <!-- Copying test resources -->
+                        <execution>
+                            <id>copy-test-resources</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.testResourcesDirectory}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.testResourcesDependencyDirectory}/META-INF</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                        <excludes>
+                                            <exclude>spring/**</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesDependencyDirectory}/META-INF</directory>
+                                        <excludes>
+                                            <exclude>spring/**</exclude>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesSourceDirectory}/META-INF</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.conf</include>
+                                            <include>**/*.properties</include>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                        <excludes>
+                                            <exclude>spring/**</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesSourceDirectory}/META-INF</directory>
+                                        <excludes>
+                                            <exclude>spring/**</exclude>
+                                            <exclude>**/*.conf</exclude>
+                                            <exclude>**/*.properties</exclude>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <!-- Copying test Spring resources -->
+                        <execution>
+                            <id>copy-test-resources-spring</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.testResourcesDirectory}/spring</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.testResourcesDependencyDirectory}/META-INF/spring</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesDependencyDirectory}/META-INF/spring</directory>
+                                        <excludes>
+                                            <exclude>**/*.xml</exclude>
+                                        </excludes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesSourceDirectory}/META-INF/spring</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>**/*.xml</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.testResourcesSourceDirectory}/META-INF/spring</directory>
+                                        <excludes>
                                             <exclude>**/*.xml</exclude>
                                         </excludes>
                                     </resource>
@@ -662,6 +849,10 @@
                     <version>2.16</version>
                     <inherited>true</inherited>
                     <configuration>
+                        <additionalClasspathElements combine.children="append">
+                            <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
+                            <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
+                        </additionalClasspathElements>
                         <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</argLine>
                         <reportFormat>plain</reportFormat>
                         <systemPropertyVariables combine.children="append">
@@ -687,10 +878,11 @@
                             <configuration>
                                 <reportNameSuffix>unit</reportNameSuffix>
                                 <suiteXmlFiles>
-                                    <suiteXmlFile>${project.build.testOutputDirectory}/META-INF/testng/testng-unit.xml</suiteXmlFile>
+                                    <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-unit.xml</suiteXmlFile>
                                 </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.log.file.name>${project.artifactId}-test-unit</dcdt.log.file.name>
+                                    <dcdt.test.instance.suffix>-unit</dcdt.test.instance.suffix>
                                 </systemPropertyVariables>
                             </configuration>
                         </execution>
@@ -703,10 +895,11 @@
                             <configuration>
                                 <reportNameSuffix>func</reportNameSuffix>
                                 <suiteXmlFiles>
-                                    <suiteXmlFile>${project.build.testOutputDirectory}/META-INF/testng/testng-func.xml</suiteXmlFile>
+                                    <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-func.xml</suiteXmlFile>
                                 </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.log.file.name>${project.artifactId}-test-func</dcdt.log.file.name>
+                                    <dcdt.test.instance.suffix>-func</dcdt.test.instance.suffix>
                                 </systemPropertyVariables>
                             </configuration>
                         </execution>
@@ -720,10 +913,11 @@
                             <configuration>
                                 <reportNameSuffix>it</reportNameSuffix>
                                 <suiteXmlFiles>
-                                    <suiteXmlFile>${project.build.testOutputDirectory}/META-INF/testng/testng-it.xml</suiteXmlFile>
+                                    <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-it.xml</suiteXmlFile>
                                 </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.log.file.name>${project.artifactId}-test-it</dcdt.log.file.name>
+                                    <dcdt.test.instance.suffix>-it</dcdt.test.instance.suffix>
                                 </systemPropertyVariables>
                             </configuration>
                         </execution>
@@ -743,7 +937,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <warSourceDirectory>${project.build.webappSourceDirectory}</warSourceDirectory>
-                                <warSourceExcludes>WEB-INF/classes/**/*.conf,WEB-INF/classes/**/*.properties,WEB-INF/classes/**/*.xml,WEB-INF/spring/**/*.xml,WEB-INF/web.xml</warSourceExcludes>
+                                <warSourceExcludes>WEB-INF/classes/**,WEB-INF/spring/**,WEB-INF/web.xml</warSourceExcludes>
                                 <webappDirectory>${project.build.webappDirectory}</webappDirectory>
                             </configuration>
                         </execution>
@@ -871,7 +1065,12 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>unpack-test-dependency-resources-testng</id>
+                        <id>unpack-dependency-resources</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>
@@ -883,7 +1082,22 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>copy-resources-testng</id>
+                        <id>copy-resources</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-spring</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources-spring</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>

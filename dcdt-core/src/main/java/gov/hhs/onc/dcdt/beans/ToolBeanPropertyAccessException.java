@@ -5,7 +5,7 @@ import java.beans.PropertyChangeEvent;
 import org.springframework.beans.PropertyAccessException;
 
 public class ToolBeanPropertyAccessException extends PropertyAccessException {
-    protected final static long serialVersionUID = 0L;
+    private final static long serialVersionUID = 0L;
 
     private final static String ERR_CODE = "propAccess";
 

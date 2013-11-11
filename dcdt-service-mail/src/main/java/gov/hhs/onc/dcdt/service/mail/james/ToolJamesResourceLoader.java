@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.service.mail.james;
 
 
-import gov.hhs.onc.dcdt.utils.ToolFileUtils;
 import java.nio.file.Paths;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.james.container.spring.resource.AbstractJamesResourceLoader;
@@ -13,7 +12,7 @@ public class ToolJamesResourceLoader extends AbstractJamesResourceLoader {
 
     @Override
     public String getAbsoluteDirectory() {
-        return ToolFileUtils.ABS_PATH_PREFIX;
+        return ROOT_DIR;
     }
 
     @Override

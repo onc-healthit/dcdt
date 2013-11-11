@@ -6,8 +6,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang3.reflect.MethodUtils;
@@ -102,7 +100,7 @@ public abstract class ToolBeanPropertyUtils {
     }
 
     public static List<PropertyDescriptor> describeProperties(Class<?> beanClass, Boolean beanPropReadable, Boolean beanPropWriteable) {
-        List<PropertyDescriptor> beanPropDescs = new ArrayList<>(Arrays.asList(BeanUtils.getPropertyDescriptors(beanClass)));
+        List<PropertyDescriptor> beanPropDescs = ToolArrayUtils.asList(BeanUtils.getPropertyDescriptors(beanClass));
         Iterator<PropertyDescriptor> beanPropDescsIter = beanPropDescs.iterator();
         PropertyDescriptor beanPropDesc;
 

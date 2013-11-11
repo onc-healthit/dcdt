@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.beans.factory.impl;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertySource;
@@ -15,7 +14,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.env.PropertySource;
 
 public abstract class AbstractToolBeanPropertySource<T extends ToolBean> extends AbstractToolBean implements ToolBeanPropertySource<T> {
-    protected final static String PROP_NAME_PREFIX_TOOL = "dcdt";
+    protected final static String PROP_NAME_PREFIX = "dcdt";
 
     protected String name;
     protected Class<T> sourceClass;
@@ -29,14 +28,14 @@ public abstract class AbstractToolBeanPropertySource<T extends ToolBean> extends
 
     @Override
     public PropertySource<T> toPropertySource() throws ToolBeanException {
-        if (StringUtils.isBlank(this.name) || (this.source == null)) {
+        if (!this.hasName() || !this.hasSource()) {
             return null;
         }
 
         return new PropertySource<T>(this.name, this.source) {
             @Override
             public Object getProperty(String propName) {
-                if ((this.source != null) && propName.startsWith(propNamePrefix)) {
+                if (hasSource() && propName.startsWith(propNamePrefix)) {
                     propName = StringUtils.removeStart(propName, propNamePrefix);
 
                     PropertyDescriptor sourcePropDesc = ToolBeanPropertyUtils.describeProperty(sourceClass, propName, true, null);
@@ -46,7 +45,7 @@ public abstract class AbstractToolBeanPropertySource<T extends ToolBean> extends
                             + ").");
                     }
 
-                    return ToolBeanPropertyUtils.read(sourcePropDesc, this.source, sourcePropDesc.getPropertyType());
+                    return ToolBeanPropertyUtils.read(sourcePropDesc, source, sourcePropDesc.getPropertyType());
                 }
 
                 return null;
@@ -57,7 +56,12 @@ public abstract class AbstractToolBeanPropertySource<T extends ToolBean> extends
     @Override
     public void afterPropertiesSet() throws Exception {
         this.name = this.beanName;
-        this.source = ToolBeanFactoryUtils.tryGetBeanOfType((ListableBeanFactory) this.beanFactory, this.sourceClass, true, false, false);
+        this.source = ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory)this.beanFactory, this.sourceClass, true, false, false);
+    }
+
+    @Override
+    public boolean hasName() {
+        return !StringUtils.isBlank(this.name);
     }
 
     @Override
@@ -68,6 +72,11 @@ public abstract class AbstractToolBeanPropertySource<T extends ToolBean> extends
     @Override
     public void setName() {
         this.name = name;
+    }
+
+    @Override
+    public boolean hasSource() {
+        return this.source != null;
     }
 
     @Override

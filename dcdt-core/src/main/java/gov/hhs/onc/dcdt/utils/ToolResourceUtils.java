@@ -3,7 +3,6 @@ package gov.hhs.onc.dcdt.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,7 +54,8 @@ public abstract class ToolResourceUtils {
             resourceLoc);
         resourceLoc = ToolStringUtils.joinDelimit(resourceLocParts, URL_PREFIX_DELIM);
 
-        return Arrays.asList(ArrayUtils.toArray(resourceLocParts[0] + baseResourcePath + SystemUtils.FILE_SEPARATOR + resourceLocParts[1], resourceLoc));
+        return ToolArrayUtils
+            .asList(ArrayUtils.toArray(resourceLocParts[0] + baseResourcePath + SystemUtils.FILE_SEPARATOR + resourceLocParts[1], resourceLoc));
     }
 
     public static Map<String, List<Resource>> mapResourceLocations(List<String> resourceLocs) {
@@ -83,7 +83,7 @@ public abstract class ToolResourceUtils {
 
     public static List<Resource> resolveResourceLocations(String resourceLoc, ResourcePatternResolver resourcePatternResolver) {
         try {
-            return Arrays.asList(resourcePatternResolver.getResources(resourceLoc));
+            return ToolArrayUtils.asList(resourcePatternResolver.getResources(resourceLoc));
         } catch (IOException e) {
         }
 

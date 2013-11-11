@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.utils;
 
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.apache.commons.lang3.ObjectUtils;
@@ -42,7 +41,7 @@ public abstract class ToolListUtils {
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T> List<T> addAllFirst(List<T> list, Collection<? extends T> ... colls) {
-        return addAllFirst(list, Arrays.asList(colls));
+        return addAllFirst(list, ToolArrayUtils.asList(colls));
     }
 
     public static <T> List<T> addAllFirst(List<T> list, Iterable<? extends Collection<? extends T>> colls) {
@@ -72,7 +71,7 @@ public abstract class ToolListUtils {
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T> List<T> addAllLast(List<T> list, Collection<? extends T> ... colls) {
-        return addAllLast(list, Arrays.asList(colls));
+        return addAllLast(list, ToolArrayUtils.asList(colls));
     }
 
     public static <T> List<T> addAllLast(List<T> list, Iterable<? extends Collection<? extends T>> colls) {
@@ -102,7 +101,7 @@ public abstract class ToolListUtils {
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T> List<T> tryAddAll(List<T> list, int index, Collection<? extends T> ... colls) {
-        return tryAddAll(list, index, Arrays.asList(colls));
+        return tryAddAll(list, index, ToolArrayUtils.asList(colls));
     }
 
     public static <T> List<T> tryAddAll(List<T> list, int index, Iterable<? extends Collection<? extends T>> colls) {

@@ -22,6 +22,10 @@
     <properties>
         <!-- Project properties -->
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
+        <!-- Project build resources properties -->
+        <project.build.resourcesDirectory>${project.build.directory}/resources</project.build.resourcesDirectory>
+        <!-- Project build test resources properties -->
+        <project.build.testResourcesDirectory>${project.build.directory}/test-resources</project.build.testResourcesDirectory>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}.service</project.java.package>
     </properties>
@@ -32,6 +36,12 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
         </dependency>
         <!-- Runtime dependencies (inherited) -->
         <dependency>
@@ -63,6 +73,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.directory.api</groupId>
             <artifactId>api-ldap-client-all</artifactId>
         </dependency>
@@ -73,6 +87,10 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
         <dependency>
             <groupId>org.logback-extensions</groupId>
@@ -116,7 +134,15 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
         </dependency>
         <dependency>
             <groupId>tanukisoft</groupId>
@@ -129,6 +155,13 @@
             <artifactId>dcdt-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>test-sources</classifier>
             <scope>test</scope>
         </dependency>
         <!-- Test dependencies (inherited) -->
@@ -181,19 +214,14 @@
                         <phase>none</phase>
                     </execution>
                     <execution>
+                        <id>unpack-dependency-resources</id>
+                    </execution>
+                    <execution>
                         <id>copy-test-dependencies-service</id>
                         <phase>none</phase>
                     </execution>
                     <execution>
-                        <id>unpack-dependency-resources-service</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>unpack-test-dependency-resources-service</id>
-                        <phase>none</phase>
-                    </execution>
-                    <execution>
-                        <id>unpack-test-dependency-resources-testng</id>
+                        <id>unpack-test-dependency-resources</id>
                     </execution>
                 </executions>
             </plugin>
@@ -217,15 +245,19 @@
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
                     <execution>
+                        <id>copy-resources</id>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-spring</id>
+                    </execution>
+                    <execution>
                         <id>copy-resources-service</id>
-                        <phase>none</phase>
                     </execution>
                     <execution>
-                        <id>copy-test-resources-service</id>
-                        <phase>none</phase>
+                        <id>copy-test-resources</id>
                     </execution>
                     <execution>
-                        <id>copy-test-resources-testng</id>
+                        <id>copy-test-resources-spring</id>
                     </execution>
                     <execution>
                         <id>copy-resources-site</id>
@@ -247,12 +279,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <additionalClasspathElements>
-                        <additionalClasspathElement>${project.build.testOutputDirectory}/META-INF</additionalClasspathElement>
-                        <additionalClasspathElement>${project.build.outputDirectory}/META-INF</additionalClasspathElement>
-                    </additionalClasspathElements>
-                </configuration>
                 <executions>
                     <execution>
                         <id>test-unit</id>

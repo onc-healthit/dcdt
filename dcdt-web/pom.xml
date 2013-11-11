@@ -22,6 +22,12 @@
     <properties>
         <!-- Project properties -->
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
+        <!-- Project build resources properties -->
+        <project.build.resourcesDirectory>${project.build.webappClassesDirectory}</project.build.resourcesDirectory>
+        <project.build.resourcesDependencyDirectory>${project.build.directory}/resources-dependency</project.build.resourcesDependencyDirectory>
+        <!-- Project build test resources properties -->
+        <project.build.testResourcesDirectory>${project.build.testWebappClassesDirectory}</project.build.testResourcesDirectory>
+        <project.build.testResourcesDependencyDirectory>${project.build.directory}/test-resources-dependency</project.build.testResourcesDependencyDirectory>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}.web</project.java.package>
     </properties>
@@ -35,8 +41,20 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-core</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -45,13 +63,31 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-dns</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-ldap</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-ldap</artifactId>
+            <version>${project.version}</version>
+            <classifier>sources</classifier>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-mail</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-mail</artifactId>
             <version>${project.version}</version>
+            <classifier>sources</classifier>
         </dependency>
         <!-- Runtime dependencies (inherited) -->
         <dependency>
@@ -97,6 +133,10 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.derby</groupId>
+            <artifactId>derby</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.directory.api</groupId>
             <artifactId>api-ldap-client-all</artifactId>
         </dependency>
@@ -111,6 +151,10 @@
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.servlet.jsp.jstl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
         </dependency>
         <dependency>
             <groupId>org.logback-extensions</groupId>
@@ -154,7 +198,15 @@
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
@@ -186,9 +238,23 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>test-sources</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-core</artifactId>
+            <version>${project.version}</version>
+            <classifier>test-sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -200,7 +266,28 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-dns</artifactId>
+            <version>${project.version}</version>
+            <classifier>test-sources</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-ldap</artifactId>
+            <version>${project.version}</version>
+            <type>test-jar</type>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-ldap</artifactId>
+            <version>${project.version}</version>
+            <classifier>test-sources</classifier>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>dcdt-service-mail</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
@@ -209,7 +296,7 @@
             <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-mail</artifactId>
             <version>${project.version}</version>
-            <type>test-jar</type>
+            <classifier>test-sources</classifier>
             <scope>test</scope>
         </dependency>
         <!-- Test dependencies (inherited) -->
@@ -248,45 +335,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
-                    <!-- Unpacking dependency web resources -->
                     <execution>
-                        <id>unpack-dependency-resources-web</id>
-                        <phase>generate-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-core</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-core</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-dns</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-ldap</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-mail</artifactId>
-                                    <version>${project.version}</version>
-                                </artifactItem>
-                            </artifactItems>
-                            <includes>META-INF/core/**,META-INF/logback/**,META-INF/service/**,META-INF/spring/**</includes>
-                            <excludes>META-INF/service/**/*.policy,META-INF/spring/**/*service*-standalone.xml</excludes>
-                            <outputDirectory>${project.build.webappDirectory}-dependency-resources</outputDirectory>
-                        </configuration>
+                        <id>unpack-dependency-resources</id>
                     </execution>
                     <!-- Copying test web dependencies -->
                     <execution>
@@ -295,59 +345,14 @@
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>
-                        <inherited>true</inherited>
                         <configuration>
-                            <excludeScope>provided</excludeScope>
+                            <excludeClassifiers>test-sources</excludeClassifiers>
+                            <includeScope>test</includeScope>
                             <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
                         </configuration>
                     </execution>
-                    <!-- Unpacking test dependency web resources -->
                     <execution>
-                        <id>unpack-test-dependency-resources-web</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>unpack</goal>
-                        </goals>
-                        <configuration>
-                            <artifactItems>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-core</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>test-jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-core</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>test-jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-dns</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>test-jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-ldap</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>test-jar</type>
-                                </artifactItem>
-                                <artifactItem>
-                                    <groupId>${project.groupId}</groupId>
-                                    <artifactId>dcdt-service-mail</artifactId>
-                                    <version>${project.version}</version>
-                                    <type>test-jar</type>
-                                </artifactItem>
-                            </artifactItems>
-                            <includes>META-INF/core/**,META-INF/logback/**,META-INF/service/**,META-INF/spring/**,META-INF/test/**</includes>
-                            <excludes>META-INF/service/**/*.policy,META-INF/spring/**/*service*-standalone.xml</excludes>
-                            <outputDirectory>${project.build.testWebappDirectory}-dependency-resources</outputDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>unpack-test-dependency-resources-testng</id>
+                        <id>unpack-test-dependency-resources</id>
                     </execution>
                 </executions>
             </plugin>
@@ -373,6 +378,15 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
                 <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-spring</id>
+                        <configuration>
+                            <outputDirectory>${project.build.webappWebInfDirectory}/spring</outputDirectory>
+                        </configuration>
+                    </execution>
                     <!-- Copying web resources -->
                     <execution>
                         <id>copy-resources-web</id>
@@ -383,85 +397,6 @@
                         <configuration>
                             <outputDirectory>${project.build.webappWebInfDirectory}</outputDirectory>
                             <resources>
-                                <!-- Configuration file(s) -->
-                                <resource>
-                                    <directory>${project.build.webappDirectory}-dependency-resources/META-INF</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.conf</include>
-                                        <include>**/*.properties</include>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>spring/**</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.webappDirectory}-dependency-resources/META-INF</directory>
-                                    <excludes>
-                                        <exclude>spring/**</exclude>
-                                        <exclude>**/*.conf</exclude>
-                                        <exclude>**/*.properties</exclude>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.outputDirectory}/META-INF</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.conf</include>
-                                        <include>**/*.properties</include>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>spring/**</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.outputDirectory}/META-INF</directory>
-                                    <excludes>
-                                        <exclude>spring/**</exclude>
-                                        <exclude>**/*.conf</exclude>
-                                        <exclude>**/*.properties</exclude>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <!-- Configuration file(s) (Spring) -->
-                                <resource>
-                                    <directory>${project.build.webappDirectory}-dependency-resources/META-INF/spring</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.webappDirectory}-dependency-resources/META-INF/spring</directory>
-                                    <excludes>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.outputDirectory}/META-INF/spring</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.outputDirectory}/META-INF/spring</directory>
-                                    <excludes>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <!-- Configuration file(s) (webapp) -->
                                 <resource>
                                     <directory>${project.build.webappWebInfSourceDirectory}</directory>
                                     <filtering>true</filtering>
@@ -473,7 +408,13 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>copy-test-resources-testng</id>
+                        <id>copy-test-resources</id>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources-spring</id>
+                        <configuration>
+                            <outputDirectory>${project.build.testWebappWebInfDirectory}/spring</outputDirectory>
+                        </configuration>
                     </execution>
                     <!-- Copying test web resources -->
                     <execution>
@@ -485,94 +426,6 @@
                         <configuration>
                             <outputDirectory>${project.build.testWebappWebInfDirectory}</outputDirectory>
                             <resources>
-                                <!-- Configuration file(s) -->
-                                <resource>
-                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.conf</include>
-                                        <include>**/*.properties</include>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>spring/**</exclude>
-                                        <exclude>testng/**</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF</directory>
-                                    <excludes>
-                                        <exclude>spring/**</exclude>
-                                        <exclude>testng/**</exclude>
-                                        <exclude>**/*.conf</exclude>
-                                        <exclude>**/*.properties</exclude>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testOutputDirectory}/META-INF</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.conf</include>
-                                        <include>**/*.properties</include>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <excludes>
-                                        <exclude>spring/**</exclude>
-                                        <exclude>testng/**</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testOutputDirectory}/META-INF</directory>
-                                    <excludes>
-                                        <exclude>spring/**</exclude>
-                                        <exclude>testng/**</exclude>
-                                        <exclude>**/*.conf</exclude>
-                                        <exclude>**/*.properties</exclude>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>classes</targetPath>
-                                </resource>
-                                <!-- Configuration file(s) (Spring) -->
-                                <resource>
-                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF/spring</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testWebappDirectory}-dependency-resources/META-INF/spring</directory>
-                                    <excludes>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testOutputDirectory}/META-INF/spring</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>**/*.xml</include>
-                                    </includes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <resource>
-                                    <directory>${project.build.testOutputDirectory}/META-INF/spring</directory>
-                                    <excludes>
-                                        <exclude>**/*.xml</exclude>
-                                    </excludes>
-                                    <targetPath>spring</targetPath>
-                                </resource>
-                                <!-- Configuration file(s) (TestNG) -->
-                                <resource>
-                                    <directory>${project.build.testOutputDirectory}/META-INF/testng</directory>
-                                    <targetPath>testng</targetPath>
-                                </resource>
-                                <!-- Configuration file(s) (webapp) -->
                                 <resource>
                                     <directory>${project.build.testWebappWebInfSourceDirectory}</directory>
                                     <filtering>true</filtering>
@@ -604,11 +457,11 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
-                    <additionalClasspathElements>
-                        <additionalClasspathElement>${project.build.testWebappClassesDirectory}</additionalClasspathElement>
-                        <additionalClasspathElement>${project.build.webappClassesDirectory}</additionalClasspathElement>
+                    <additionalClasspathElements combine.children="override">
                         <additionalClasspathElement>${project.build.testWebappWebinfDirectory}</additionalClasspathElement>
                         <additionalClasspathElement>${project.build.webappWebinfDirectory}</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
                     </additionalClasspathElements>
                     <workingDirectory>${project.build.testWebappDirectory}</workingDirectory>
                 </configuration>
@@ -687,6 +540,7 @@
                                         <systemProperties>
                                             <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
                                             <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
+                                            <dcdt.test.instance.suffix>-it-web</dcdt.test.instance.suffix>
                                         </systemProperties>
                                     </container>
                                     <deployables>

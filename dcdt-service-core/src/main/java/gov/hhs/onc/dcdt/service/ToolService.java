@@ -1,9 +1,9 @@
 package gov.hhs.onc.dcdt.service;
 
 
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,8 +19,8 @@ public abstract class ToolService<T extends AbstractApplicationContext> implemen
     protected AutowireCapableBeanFactory beanFactory;
     protected boolean running;
 
-    private final static List<String> CONTEXT_CONFIG_LOCS_CORE = ToolResourceUtils.getOverrideableResourceLocations(Arrays.asList("spring/spring-core*.xml",
-        "spring/spring-service.xml", "spring/spring-service-embedded.xml", "spring/spring-service-standalone.xml"));
+    private final static List<String> CONTEXT_CONFIG_LOCS_CORE = ToolResourceUtils.getOverrideableResourceLocations(ToolArrayUtils.asList(
+        "spring/spring-core*.xml", "spring/spring-service.xml", "spring/spring-service-embedded.xml", "spring/spring-service-standalone.xml"));
 
     private final static long SERVICE_THREAD_SLEEP_TIME_MS = 1000L;
 

@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.test;
 
 
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
-import java.util.Arrays;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -19,7 +19,7 @@ public class ToolTestNgContextLoader implements ContextLoader {
 
     @Override
     public String[] processLocations(Class<?> clazz, String ... configLocs) {
-        List<String> overrideableConfigLocs = ToolResourceUtils.getOverrideableResourceLocations(Arrays.asList(configLocs));
+        List<String> overrideableConfigLocs = ToolResourceUtils.getOverrideableResourceLocations(ToolArrayUtils.asList(configLocs));
 
         return overrideableConfigLocs.toArray(new String[overrideableConfigLocs.size()]);
     }

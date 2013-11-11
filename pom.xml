@@ -43,7 +43,12 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>unpack-test-dependency-resources-testng</id>
+                        <id>unpack-dependency-resources</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>
@@ -55,7 +60,22 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>copy-resources-testng</id>
+                        <id>copy-resources</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-spring</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources-spring</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>

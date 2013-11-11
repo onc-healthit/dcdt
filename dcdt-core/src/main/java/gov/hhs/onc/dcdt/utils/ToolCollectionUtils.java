@@ -8,8 +8,9 @@ public abstract class ToolCollectionUtils {
     public final static int SIZE_UNKNOWN = -1;
 
     @SafeVarargs
+    @SuppressWarnings({ "varargs" })
     public static <T> Collection<T> addAll(Collection<T> coll, Collection<? extends T> ... collsAdd) {
-        return addAll(coll, Arrays.asList(collsAdd));
+        return addAll(coll, ToolArrayUtils.asList(collsAdd));
     }
 
     public static <T> Collection<T> addAll(Collection<T> coll, Collection<? extends Collection<? extends T>> collsAdd) {

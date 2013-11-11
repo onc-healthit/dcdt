@@ -12,7 +12,7 @@ public abstract class ToolStringUtils {
     }
 
     public static <T> String joinDelimit(T[] items, String delim) {
-        return joinDelimit(Arrays.asList(items), delim);
+        return joinDelimit(ToolArrayUtils.asList(items), delim);
     }
 
     public static <T> String joinDelimit(Iterable<T> items) {

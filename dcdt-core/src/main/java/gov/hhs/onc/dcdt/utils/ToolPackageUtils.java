@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.utils;
 
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.apache.commons.lang3.ClassUtils;
@@ -88,7 +87,7 @@ public abstract class ToolPackageUtils {
     }
 
     public static List<String> getSubPackageNames(Package pkg) {
-        return Arrays.asList(StringUtils.split(getName(pkg), ClassUtils.PACKAGE_SEPARATOR_CHAR));
+        return new ArrayList<>(ToolArrayUtils.asList(StringUtils.split(getName(pkg), ClassUtils.PACKAGE_SEPARATOR_CHAR)));
     }
 
     public static String getName(Object obj) {
@@ -104,7 +103,7 @@ public abstract class ToolPackageUtils {
     }
 
     public static String getName(Class<?> clazz, String defaultIfNull) {
-        return ClassUtils.getPackageName(clazz, defaultIfNull);
+        return (clazz != null) ? getName(clazz.getPackage(), defaultIfNull) : defaultIfNull;
     }
 
     public static String getName(Package pkg) {

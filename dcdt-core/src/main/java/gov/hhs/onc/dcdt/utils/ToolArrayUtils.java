@@ -1,6 +1,9 @@
 package gov.hhs.onc.dcdt.utils;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class ToolArrayUtils {
@@ -30,5 +33,11 @@ public abstract class ToolArrayUtils {
 
     public static <T> T[] removeLast(T[] arr) {
         return !ArrayUtils.isEmpty(arr) ? ArrayUtils.remove(arr, arr.length - 1) : arr;
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({ "varargs" })
+    public static <T> List<T> asList(T ... elems) {
+        return (elems != null) ? new ArrayList<>(Arrays.asList(elems)) : new ArrayList<T>();
     }
 }
