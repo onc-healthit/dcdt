@@ -56,7 +56,7 @@ public abstract class AbstractToolBeanPropertySource<T extends ToolBean> extends
     @Override
     public void afterPropertiesSet() throws Exception {
         this.name = this.beanName;
-        this.source = ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory)this.beanFactory, this.sourceClass, true, false, false);
+        this.source = ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory) this.beanFactory, this.sourceClass, true, false, false);
     }
 
     @Override
