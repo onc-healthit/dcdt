@@ -8,7 +8,7 @@ import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
 
-public class ToolMailService extends ToolService<ToolJamesServerApplicationContext> {
+public class ToolMailService extends ToolService {
     private final static List<String> CONTEXT_CONFIG_LOCS_MAIL = ToolResourceUtils.getOverrideableResourceLocations(ToolArrayUtils.asList(
         "spring/spring-service-mail*.xml", "service/mail/james/META-INF/org/apache/james/spring-server.xml"));
 

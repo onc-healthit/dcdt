@@ -9,13 +9,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.context.support.AbstractXmlApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public abstract class ToolService<T extends AbstractApplicationContext> implements Runnable {
+public abstract class ToolService implements Runnable {
     protected ApplicationContext parentContext;
     protected List<String> contextConfigLocs;
-    protected T context;
+    protected AbstractXmlApplicationContext context;
     protected AutowireCapableBeanFactory beanFactory;
     protected boolean running;
 
@@ -85,8 +85,8 @@ public abstract class ToolService<T extends AbstractApplicationContext> implemen
         Thread.currentThread().interrupt();
     }
 
-    protected T createContext() {
-        return (T) new ClassPathXmlApplicationContext(this.contextConfigLocs.toArray(new String[this.contextConfigLocs.size()]), false, this.parentContext);
+    protected AbstractXmlApplicationContext createContext() {
+        return new ClassPathXmlApplicationContext(this.contextConfigLocs.toArray(new String[this.contextConfigLocs.size()]), false, this.parentContext);
     }
 
     protected void initializeContext() {

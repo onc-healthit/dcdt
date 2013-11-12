@@ -2,10 +2,9 @@ package gov.hhs.onc.dcdt.service.mail.wrapper;
 
 
 import gov.hhs.onc.dcdt.service.mail.ToolMailService;
-import gov.hhs.onc.dcdt.service.mail.james.ToolJamesServerApplicationContext;
 import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapper;
 
-public class ToolMailServiceWrapper extends ToolServiceWrapper<ToolJamesServerApplicationContext, ToolMailService> {
+public class ToolMailServiceWrapper extends ToolServiceWrapper<ToolMailService> {
     public ToolMailServiceWrapper() {
         super();
     }

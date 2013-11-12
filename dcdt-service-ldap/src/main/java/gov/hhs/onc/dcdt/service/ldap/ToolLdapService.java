@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class ToolLdapService extends ToolService<ClassPathXmlApplicationContext> {
+public class ToolLdapService extends ToolService {
     private final static List<String> CONTEXT_CONFIG_LOCS_LDAP = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-service-ldap*.xml");
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolLdapService.class);

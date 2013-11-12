@@ -6,16 +6,15 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.tanukisoftware.wrapper.WrapperManager;
 import org.tanukisoftware.wrapper.event.WrapperEvent;
 import org.tanukisoftware.wrapper.event.WrapperEventListener;
 
-public abstract class ToolServiceWrapper<T extends AbstractApplicationContext, U extends ToolService<T>> implements Runnable, WrapperEventListener {
-    protected static class ToolServiceWrapperShutdownHook<T extends AbstractApplicationContext, U extends ToolService<T>> implements Runnable {
-        private U service;
+public abstract class ToolServiceWrapper<T extends ToolService> implements Runnable, WrapperEventListener {
+    protected static class ToolServiceWrapperShutdownHook<T extends ToolService> implements Runnable {
+        private T service;
 
-        public ToolServiceWrapperShutdownHook(U service) {
+        public ToolServiceWrapperShutdownHook(T service) {
             this.service = service;
         }
 
@@ -27,7 +26,7 @@ public abstract class ToolServiceWrapper<T extends AbstractApplicationContext, U
 
     protected Thread shutdownHookThread;
     protected String[] args;
-    protected U service;
+    protected T service;
     protected Thread serviceThread;
 
     private final static long WRAPPER_EVENT_LISTENER_MASK = WrapperEventListener.EVENT_FLAG_SERVICE | WrapperEventListener.EVENT_FLAG_CONTROL;
@@ -85,7 +84,7 @@ public abstract class ToolServiceWrapper<T extends AbstractApplicationContext, U
         LOGGER.info(ToolServiceWrapperUtils.getWrapperDisplayName() + " (class=" + this.getClass().getName() + ") stopped.");
     }
 
-    protected abstract U createService();
+    protected abstract T createService();
 
     protected void initializeService() {
         this.service = this.createService();

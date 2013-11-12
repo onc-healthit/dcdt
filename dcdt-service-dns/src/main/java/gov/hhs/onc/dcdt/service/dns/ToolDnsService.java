@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-public class ToolDnsService extends ToolService<ClassPathXmlApplicationContext> {
+public class ToolDnsService extends ToolService {
     private final static List<String> CONTEXT_CONFIG_LOCS_DNS = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-service-dns*.xml");
 
     @Autowired

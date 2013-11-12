@@ -3,9 +3,8 @@ package gov.hhs.onc.dcdt.service.dns.wrapper;
 
 import gov.hhs.onc.dcdt.service.dns.ToolDnsService;
 import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapper;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-public class ToolDnsServiceWrapper extends ToolServiceWrapper<ClassPathXmlApplicationContext, ToolDnsService> {
+public class ToolDnsServiceWrapper extends ToolServiceWrapper<ToolDnsService> {
     public ToolDnsServiceWrapper() {
         super();
     }

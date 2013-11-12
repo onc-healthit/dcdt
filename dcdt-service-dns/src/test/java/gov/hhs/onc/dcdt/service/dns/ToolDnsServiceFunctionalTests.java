@@ -14,7 +14,7 @@ import org.xbill.DNS.TextParseException;
 
 @ContextConfiguration({ "spring/spring-service-dns*.xml" })
 @Test(groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.service.all", "dcdt.test.func.service.dns" })
-public class ToolDnsServiceFunctionalTests extends ToolServiceTestNgFunctionalTests<ClassPathXmlApplicationContext, ToolDnsService> {
+public class ToolDnsServiceFunctionalTests extends ToolServiceTestNgFunctionalTests<ToolDnsService> {
     @Autowired
     @DnsResolver(DnsResolverType.LOCAL)
     private ToolDnsLookupService dnsLookupServiceLocal;
