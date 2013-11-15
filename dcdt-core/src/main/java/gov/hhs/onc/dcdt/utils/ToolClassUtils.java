@@ -1,9 +1,32 @@
 package gov.hhs.onc.dcdt.utils;
 
 
+import java.util.Iterator;
 import org.apache.commons.lang3.ClassUtils;
 
 public abstract class ToolClassUtils {
+    public static boolean isAssignable(Class<?>[] classes1, Class<?>[] classes2) {
+        return isAssignable(ToolArrayUtils.asList(classes1), ToolArrayUtils.asList(classes2));
+    }
+    
+    public static boolean isAssignable(Iterable <Class<?>> classes1, Iterable<Class<?>> classes2) {
+        Iterator<Class<?>> classesIter1 = classes1.iterator(), classesIter2 = classes2.iterator();
+        Class<?> class1, class2;
+        
+        do {
+            class1 = classesIter1.hasNext() ? classesIter1.next() : null;
+            class2 = classesIter2.hasNext() ? classesIter2.next() : null;
+            
+            if ((class1 == null) || (class2 == null)) {
+                return (class1 == null) && (class2 == null);
+            } else if (!isAssignable(class1, class2)) {
+                return false;
+            }
+        } while (classesIter1.hasNext() && classesIter2.hasNext());
+        
+        return true;
+    }
+
     public static boolean isAssignable(Class<?> class1, Class<?> class2) {
         return (class1 != null) && (class2 != null) && class1.isAssignableFrom(class2);
     }

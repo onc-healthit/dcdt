@@ -117,6 +117,7 @@
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -147,6 +148,11 @@
         <dependency>
             <groupId>org.fusesource.jansi</groupId>
             <artifactId>jansi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.web</groupId>
+            <artifactId>javax.el</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
@@ -324,7 +330,7 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>prepare-project</id>
+                        <id>process-properties</id>
                     </execution>
                     <execution>
                         <id>prepare-archive</id>
@@ -380,6 +386,9 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-module</id>
                     </execution>
                     <execution>
                         <id>copy-resources-spring</id>
@@ -495,6 +504,13 @@
                 <executions>
                     <execution>
                         <id>read-pom-properties</id>
+                        <configuration>
+                            <locations combine.self="override">
+                                <location>${project.basedir.parent}/target/maven/pom.properties</location>
+                                <location>${project.basedir.all}/dcdt-service-parent/target/maven/pom.properties</location>
+                                <location>${project.build.pomPropertiesFile}</location>
+                            </locations>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>translate-pom-properties</id>

@@ -25,6 +25,11 @@
         <!-- Project build resources properties -->
         <project.build.resourcesDirectory>${project.build.directory}/${project.artifactId}/conf</project.build.resourcesDirectory>
         <project.build.resourcesDependencyDirectory>${project.build.directory}/resources-dependency</project.build.resourcesDependencyDirectory>
+        <!-- Project build service properties -->
+        <project.build.serviceAssemblyDirectory>${project.build.directory}/${project.artifactId}</project.build.serviceAssemblyDirectory>
+        <project.build.serviceBinDirectory>${project.build.serviceAssemblyDirectory}/bin</project.build.serviceBinDirectory>
+        <project.build.serviceLogDirectory>${project.build.serviceAssemblyDirectory}/log</project.build.serviceLogDirectory>
+        <project.build.serviceVarDirectory>${project.build.serviceAssemblyDirectory}/var</project.build.serviceVarDirectory>
         <!-- Project build test resources properties -->
         <project.build.testResourcesDirectory>${project.build.directory}/${project.artifactId}-test/conf</project.build.testResourcesDirectory>
         <project.build.testResourcesDependencyDirectory>${project.build.directory}/test-resources-dependency</project.build.testResourcesDependencyDirectory>
@@ -126,9 +131,9 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <executions>
-                        <!-- Preparing service assembly file(s) -->
+                        <!-- Processing service executable file(s) -->
                         <execution>
-                            <id>prepare-service</id>
+                            <id>process-executables-service</id>
                             <phase>prepare-package</phase>
                             <goals>
                                 <goal>run</goal>
@@ -136,7 +141,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <target>
-                                    <ant antfile="${project.basedir.all}/dcdt-service-core/src/main/scripts/ant-service.xml" target="service" inheritRefs="true" useNativeBasedir="true"/>
+                                    <ant antfile="${project.basedir.all}/dcdt-service-core/src/main/scripts/ant-service.xml" target="service-process-exec-files" inheritRefs="true" useNativeBasedir="true"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -477,16 +482,13 @@
                 <plugin>
                     <groupId>org.kuali.maven.plugins</groupId>
                     <artifactId>properties-maven-plugin</artifactId>
-                    <inherited>true</inherited>
                     <executions>
-                        <!-- Reading service Maven POM properties files -->
                         <execution>
                             <id>read-pom-properties</id>
-                            <inherited>true</inherited>
                             <configuration>
                                 <locations combine.self="override">
-                                    <location>${project.basedir}/../dcdt-parent/target/maven/pom.properties</location>
-                                    <location>${project.basedir}/${project.parent.relativePath}/target/maven/pom.properties</location>
+                                    <location>${project.basedir.all}/dcdt-parent/target/maven/pom.properties</location>
+                                    <location>${project.basedir.parent}/target/maven/pom.properties</location>
                                     <location>${project.build.pomPropertiesFile}</location>
                                 </locations>
                             </configuration>
@@ -506,11 +508,7 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>prepare-project</id>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>prepare-archive</id>
+                        <id>process-properties</id>
                         <inherited>false</inherited>
                     </execution>
                 </executions>
@@ -549,6 +547,11 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-module</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>

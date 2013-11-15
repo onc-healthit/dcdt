@@ -9,6 +9,7 @@
     
     <context-param>
         <param-name>contextConfigLocation</param-name>
+        <!--suppress XmlPathReference -->
         <param-value>
             /WEB-INF/spring/spring-web-security.xml
         </param-value>
@@ -34,6 +35,7 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
+            <!--suppress XmlPathReference -->
             <param-value>
                 classpath*:META-INF/spring/spring-core.xml
                 /WEB-INF/spring/spring-core*.xml
@@ -41,6 +43,7 @@
                 /WEB-INF/spring/spring-service*.xml
                 /WEB-INF/spring/spring-web.xml
                 /WEB-INF/spring/spring-web-mvc.xml
+                /WEB-INF/spring/spring-web-version.xml
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>
@@ -82,8 +85,8 @@
     <filter-mapping>
         <filter-name>urlRewriteFilter</filter-name>
         <servlet-name>dispatcherServlet</servlet-name>
-        <dispatcher>REQUEST</dispatcher>
         <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     
     <filter>

@@ -16,7 +16,9 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <mvc:annotation-driven/>
-
+    
+    <mvc:default-servlet-handler/>
+    
     <mvc:interceptors>
         <!-- Deactivating web content cache usage -->
         <beans:bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor"
@@ -29,8 +31,10 @@
     <mvc:resources mapping="/static/**" location="/static/"/>
     
     <beans:bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
+        p:exposeContextBeansAsAttributes="true"
+        p:exposePathVariables="true"
         p:prefix="/WEB-INF/views/"
-        p:suffix=".jsp"
+        p:suffix=".jspx"
         p:viewClass="org.springframework.web.servlet.view.JstlView"/>
     
     <beans:bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource"

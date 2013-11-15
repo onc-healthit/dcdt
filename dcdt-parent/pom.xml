@@ -48,8 +48,11 @@
         <!-- Project properties -->
         <project.basedir>${project.basedir}</project.basedir>
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
+        <project.basedir.parent>${project.basedir}/${project.parent.relativePath}</project.basedir.parent>
         <!-- Project build assembly properties -->
         <project.build.assemblyDirectory>${project.basedir}/src/assembly</project.build.assemblyDirectory>
+        <!-- Project build Clover properties -->
+        <project.build.cloverPomPropertiesFile>${project.build.directory}/maven/pom-clover.properties</project.build.cloverPomPropertiesFile>
         <!-- Project build POM properties -->
         <project.build.pomPropertiesFile>${project.build.directory}/maven/pom.properties</project.build.pomPropertiesFile>
         <!-- Project build POM source properties -->
@@ -92,8 +95,6 @@
         <project.build.testWebappWebInfDirectory>${project.build.testWebappDirectory}/WEB-INF</project.build.testWebappWebInfDirectory>
         <project.build.testWebappClassesDirectory>${project.build.testWebappWebInfDirectory}/classes</project.build.testWebappClassesDirectory>
         <project.build.testWebappLibDirectory>${project.build.testWebappWebInfDirectory}/lib</project.build.testWebappLibDirectory>
-        <!-- Project Clover properties -->
-        <project.clover.pomPropertiesFile>${project.build.directory}/maven/pom-clover.properties</project.clover.pomPropertiesFile>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}</project.java.package>
         <!-- Project reporting properties -->
@@ -186,7 +187,8 @@
             <dependency>
                 <groupId>javax.el</groupId>
                 <artifactId>javax.el-api</artifactId>
-                <version>3.0.0</version>
+                <version>2.2.5</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -229,6 +231,12 @@
                 <groupId>org.fusesource.jansi</groupId>
                 <artifactId>jansi</artifactId>
                 <version>1.11</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.web</groupId>
+                <artifactId>javax.el</artifactId>
+                <version>2.2.6</version>
+                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>org.glassfish.web</groupId>
@@ -443,9 +451,9 @@
                         </target>
                     </configuration>
                     <executions>
-                        <!-- Preparing Maven project file(s) -->
+                        <!-- Processing Maven project properties -->
                         <execution>
-                            <id>prepare-project</id>
+                            <id>process-properties</id>
                             <phase>initialize</phase>
                             <goals>
                                 <goal>run</goal>
@@ -453,21 +461,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <target>
-                                    <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project" inheritRefs="true" useNativeBasedir="true"/>
-                                </target>
-                            </configuration>
-                        </execution>
-                        <!-- Preparing archive file(s) -->
-                        <execution>
-                            <id>prepare-archive</id>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
-                                <target>
-                                    <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-archive.xml" target="archive" inheritRefs="true" useNativeBasedir="true"/>
+                                    <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-process-props" inheritRefs="true" useNativeBasedir="true"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -522,7 +516,7 @@
                                 <includeGroupIds>${project.groupId}</includeGroupIds>
                                 <includes>META-INF/**</includes>
                                 <includeTypes>jar</includeTypes>
-                                <excludes>META-INF/maven,META-INF/MANIFEST.MF</excludes>
+                                <excludes>META-INF/maven/**/pom.*,META-INF/MANIFEST.MF,META-INF/spring.*</excludes>
                                 <outputDirectory>${project.build.resourcesDependencyDirectory}</outputDirectory>
                             </configuration>
                         </execution>
@@ -539,7 +533,7 @@
                                 <includeGroupIds>${project.groupId}</includeGroupIds>
                                 <includes>META-INF/**</includes>
                                 <includeTypes>jar</includeTypes>
-                                <excludes>META-INF/maven,META-INF/MANIFEST.MF</excludes>
+                                <excludes>META-INF/maven/**/pom.*,META-INF/MANIFEST.MF,META-INF/spring.*</excludes>
                                 <outputDirectory>${project.build.testResourcesDependencyDirectory}</outputDirectory>
                             </configuration>
                         </execution>
@@ -551,7 +545,14 @@
                     <version>2.4</version>
                     <inherited>true</inherited>
                     <executions>
-                        <!-- Building test JAR artifact -->
+                        <execution>
+                            <id>default-jar</id>
+                            <configuration>
+                                <excludes>
+                                    <exclude>META-INF/maven/module*.properties</exclude>
+                                </excludes>
+                            </configuration>
+                        </execution>
                         <execution>
                             <id>test-jar</id>
                             <goals>
@@ -594,13 +595,17 @@
                                             <include>**/*.xml</include>
                                         </includes>
                                         <excludes>
+                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
+                                            <exclude>spring.*</exclude>
                                         </excludes>
                                     </resource>
                                     <resource>
                                         <directory>${project.build.resourcesDependencyDirectory}/META-INF</directory>
                                         <excludes>
+                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
+                                            <exclude>spring.*</exclude>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
                                             <exclude>**/*.xml</exclude>
@@ -615,17 +620,49 @@
                                             <include>**/*.xml</include>
                                         </includes>
                                         <excludes>
+                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
+                                            <exclude>spring.*</exclude>
                                         </excludes>
                                     </resource>
                                     <resource>
                                         <directory>${project.build.resourcesSourceDirectory}/META-INF</directory>
                                         <excludes>
+                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
+                                            <exclude>spring.*</exclude>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
                                             <exclude>**/*.xml</exclude>
                                         </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <!-- Copying Maven module resources -->
+                        <execution>
+                            <id>copy-resources-module</id>
+                            <phase>process-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.outputDirectory}/META-INF/maven/${project.groupId}/${project.artifactId}</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF/maven</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>module*.properties</include>
+                                        </includes>
+                                    </resource>
+                                    <resource>
+                                        <directory>${project.build.resourcesSourceDirectory}/META-INF/maven</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>module*.properties</include>
+                                        </includes>
                                     </resource>
                                 </resources>
                             </configuration>
@@ -690,13 +727,17 @@
                                             <include>**/*.xml</include>
                                         </includes>
                                         <excludes>
+                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
+                                            <exclude>spring.*</exclude>
                                         </excludes>
                                     </resource>
                                     <resource>
                                         <directory>${project.build.testResourcesDependencyDirectory}/META-INF</directory>
                                         <excludes>
+                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
+                                            <exclude>spring.*</exclude>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
                                             <exclude>**/*.xml</exclude>
@@ -711,13 +752,17 @@
                                             <include>**/*.xml</include>
                                         </includes>
                                         <excludes>
+                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
+                                            <exclude>spring.*</exclude>
                                         </excludes>
                                     </resource>
                                     <resource>
                                         <directory>${project.build.testResourcesSourceDirectory}/META-INF</directory>
                                         <excludes>
+                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
+                                            <exclude>spring.*</exclude>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
                                             <exclude>**/*.xml</exclude>
@@ -823,21 +868,17 @@
                     <version>2.2.1</version>
                     <inherited>true</inherited>
                     <executions>
-                        <!-- Building sources JAR artifact -->
                         <execution>
                             <id>jar-sources</id>
-                            <phase>generate-sources</phase>
                             <goals>
-                                <goal>jar</goal>
+                                <goal>jar-no-fork</goal>
                             </goals>
                             <inherited>true</inherited>
                         </execution>
-                        <!-- Building test sources JAR artifact -->
                         <execution>
                             <id>test-jar-sources</id>
-                            <phase>generate-test-sources</phase>
                             <goals>
-                                <goal>test-jar</goal>
+                                <goal>test-jar-no-fork</goal>
                             </goals>
                             <inherited>true</inherited>
                         </execution>
@@ -948,6 +989,7 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
+                                <classesClassifier>test-classes</classesClassifier>
                                 <classifier>test</classifier>
                                 <primaryArtifact>false</primaryArtifact>
                                 <warSourceDirectory>${project.build.webappDirectory}</warSourceDirectory>
@@ -959,7 +1001,7 @@
                 <plugin>
                     <groupId>org.apache.tomcat.maven</groupId>
                     <artifactId>tomcat7-maven-plugin</artifactId>
-                    <version>2.1</version>
+                    <version>2.2</version>
                     <inherited>true</inherited>
                     <configuration>
                         <password>${tomcat.manager.password}</password>
@@ -986,6 +1028,28 @@
                     <configuration>
                         <container>
                             <containerId>jetty9x</containerId>
+                            <dependencies>
+                                <dependency>
+                                    <groupId>javax.el</groupId>
+                                    <artifactId>javax.el-api</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>javax.servlet</groupId>
+                                    <artifactId>javax.servlet-api</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>javax.servlet.jsp</groupId>
+                                    <artifactId>jsp-api</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.web</groupId>
+                                    <artifactId>javax.el</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.web</groupId>
+                                    <artifactId>javax.servlet.jsp.jstl</artifactId>
+                                </dependency>
+                            </dependencies>
                             <type>embedded</type>
                         </container>
                         <configuration>
@@ -1018,7 +1082,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <locations>
-                                    <location>${project.basedir}/${project.parent.relativePath}/target/maven/pom.properties</location>
+                                    <location>${project.basedir.parent}/target/maven/pom.properties</location>
                                     <location>${project.build.pomPropertiesFile}</location>
                                 </locations>
                             </configuration>
@@ -1049,12 +1113,7 @@
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>prepare-project</id>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>prepare-archive</id>
-                        <phase>none</phase>
+                        <id>process-properties</id>
                         <inherited>false</inherited>
                     </execution>
                 </executions>
@@ -1083,6 +1142,11 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-module</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>
@@ -1167,19 +1231,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>2.3</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.16</version>
-                <reportSets>
-                    <reportSet>
-                        <id>default</id>
-                        <reports>
-                            <report>report-only</report>
-                        </reports>
-                    </reportSet>
-                </reportSets>
             </plugin>
         </plugins>
     </reporting>
@@ -1284,7 +1335,7 @@
                                 <inherited>true</inherited>
                                 <configuration>
                                     <locations>
-                                        <location>${project.clover.pomPropertiesFile}</location>
+                                        <location>${project.build.cloverPomPropertiesFile}</location>
                                     </locations>
                                     <quiet>true</quiet>
                                 </configuration>
@@ -1498,6 +1549,32 @@
                 </plugins>
             </reporting>
         </profile>
+        <!-- Configure testing-oriented reporting plugins -->
+        <profile>
+            <id>site-test</id>
+            <activation>
+                <property>
+                    <name>!skipTests</name>
+                </property>
+            </activation>
+            <reporting>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-report-plugin</artifactId>
+                        <version>2.16</version>
+                        <reportSets>
+                            <reportSet>
+                                <id>default</id>
+                                <reports>
+                                    <report>report-only</report>
+                                </reports>
+                            </reportSet>
+                        </reportSets>
+                    </plugin>
+                </plugins>
+            </reporting>
+        </profile>
         <!-- Configuring reporting -->
         <profile>
             <id>site</id>
@@ -1514,7 +1591,6 @@
                         <executions>
                             <execution>
                                 <id>site</id>
-                                <phase>verify</phase>
                                 <goals>
                                     <goal>site</goal>
                                 </goals>

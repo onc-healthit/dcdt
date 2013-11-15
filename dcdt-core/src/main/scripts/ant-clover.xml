@@ -9,7 +9,7 @@
     
     <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-clover.xml" uri="antlib:gov.hhs.onc.dcdt.ant.clover"/>
     
-    <target name="clover-license" description="Checks if a Clover license is available." depends="core,project-init,clover-init">
+    <target name="clover-license" description="Checks if a Clover license is available." depends="core-init,clover-init">
         <dcdt-clover:license licenseProperty="maven.clover.license" licenseLocationProperty="maven.clover.licenseLocation"
             licenseAvailableProperty="${maven.clover.licenseAvailableProperty}"/>
         <if>
@@ -18,7 +18,7 @@
                 <dcdt:info>Clover license available.</dcdt:info>
             </then>
             <else>
-                <dcdt:write-properties file="${project.clover.pomPropertiesFile}">
+                <dcdt:write-properties file="${project.build.cloverPomPropertiesFile}">
                     maven.clover.skip=true
                 </dcdt:write-properties>
                 <dcdt:warn>Clover license not available - skipping Clover Maven executions.</dcdt:warn>

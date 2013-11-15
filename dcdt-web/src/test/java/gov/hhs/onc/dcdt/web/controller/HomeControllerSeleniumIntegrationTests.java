@@ -14,7 +14,7 @@ public class HomeControllerSeleniumIntegrationTests extends ToolWebTestNgSeleniu
     public void testTitle() {
         this.selenium.open();
 
-        Assert.assertEquals(this.selenium.getTitle(), ToolMessageUtils.getMessage(this.msgSource, "dcdt.web.home.title"),
+        Assert.assertEquals(this.selenium.getTitle(), ToolMessageUtils.getMessage(this.msgSource, "dcdt.web.title.home"),
             "Home page title does not match expected value.");
     }
 

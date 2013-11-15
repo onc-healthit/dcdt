@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="project"
     xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
-    xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg"
-    xmlns:dcdt-project="antlib:gov.hhs.onc.dcdt.ant.project">
+    xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg">
     
     <description>Ant project for Direct Certificate Discovery Tool (DCDT) projects.</description>
     
     <import file="${project.basedir.all}/dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
     
-    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-core-hg.xml" uri="antlib:gov.hhs.onc.dcdt.ant.hg"/>
-    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-project.xml" uri="antlib:gov.hhs.onc.dcdt.ant.project"/>
-    
-    <target name="project-process-props" description="Processes Maven project properties.">
-        <dcdt:dirname path="${project.build.pomPropertiesFile}" property="project.build.pomPropertiesDir"/>
-        <mkdir dir="${project.build.pomPropertiesDir}"/>
+    <target name="project-process-props" description="Processes Maven project properties." depends="core-init">
+        <dcdt:mkdir-tree path="${project.build.pomPropertiesFile}"/>
         
         <trycatch>
             <try>
@@ -31,23 +26,23 @@
             project.java.package.regex
         </dcdt:write-properties>
         
-        <dcdt-project:build-version prefix="project.module.${project.artifactId}."/>
-        <dcdt-project:hg-version path="${project.basedir}" prefix="project.module.${project.artifactId}."/>
+        <dcdt:timestamp property="project.build.timestamp"/>
+        <dcdt-hg:properties path="${project.basedir}" pathBase="${project.basedir.all}"/>
         
-        <propertyselector property="project.pom.props.build" override="true"
-            match="^project\.module\.\Q${project.artifactId}\E\.build\.timestamp$"/>
-        <propertyselector property="project.pom.props.hg" override="true"
-            match="^project\.module\.\Q${project.artifactId}\E\.hg\.(?:author(?:\.(?:email|person))?|branch|date|node(?:\.short)?|rev|tag)$"/>
+        <propertyset id="project-process-props.props">
+            <propertyref regex="^project\.(?:groupId|artifactId|version|name|description)$"/>
+            <propertyref regex="^project\.build\.timestamp$"/>
+            <propertyref regex="^project\.hg\.(?:author(?:\.(?:email|person))?|branch|date|node(?:\.short)?|path\.[^$]+|rev|tag)$"/>
+        </propertyset>
+        <propertyset id="project-process-props.props.module">
+            <propertyset refid="project-process-props.props"/>
+            <regexpmapper from="^(project\.)([^$]+)$" to="\1module.${project.artifactId}.\2"/>
+        </propertyset>
         <dcdt:write-properties file="${project.build.pomPropertiesFile}" append="true">
-            ${project.pom.props.build},
-            ${project.pom.props.hg}
+            ${toString:project-process-props.props},
+            ${toString:project-process-props.props.module}
         </dcdt:write-properties>
         
         <dcdt:info>Processed Maven project properties file: ${project.build.pomPropertiesFile}</dcdt:info>
     </target>
-    
-    <target name="project-init" description="Initializes project variable(s).">
-    </target>
-    
-    <target name="project" description="Prepares Maven project file(s)." depends="core,project-init,project-process-props"/>
 </project>

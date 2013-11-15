@@ -65,10 +65,6 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
-            <groupId>javax.el</groupId>
-            <artifactId>javax.el-api</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
@@ -184,13 +180,10 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>prepare-project</id>
+                        <id>process-properties</id>
                     </execution>
                     <execution>
-                        <id>prepare-archive</id>
-                    </execution>
-                    <execution>
-                        <id>prepare-service</id>
+                        <id>process-executables-service</id>
                         <phase>none</phase>
                     </execution>
                 </executions>
@@ -246,6 +239,9 @@
                 <executions>
                     <execution>
                         <id>copy-resources</id>
+                    </execution>
+                    <execution>
+                        <id>copy-resources-module</id>
                     </execution>
                     <execution>
                         <id>copy-resources-spring</id>

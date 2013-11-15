@@ -59,6 +59,19 @@
         </sequential>
     </macrodef>
     
+    <macrodef name="mkdir-tree" description="Makes directories in the tree of a path.">
+        <attribute name="path"/>
+        <sequential>
+            <current:dirname path="@{path}" property="mkdir-tree.dir"/>
+            <if>
+                <not><available file="${mkdir-tree.dir}" type="dir"/></not>
+                <then>
+                    <mkdir dir="${mkdir-tree.dir}"/>
+                </then>
+            </if>
+        </sequential>
+    </macrodef>
+    
     <macrodef name="basename" description="Sets a variable to the base name of a path.">
         <attribute name="path"/>
         <attribute name="property"/>
@@ -79,7 +92,7 @@
     
     <macrodef name="timestamp" description="Sets a variable to a timestamp.">
         <attribute name="property"/>
-        <attribute name="pattern" default="yyyy-MM-dd_HH:mm:ss_Z"/>
+        <attribute name="pattern" default="yyyy-MM-dd HH:mm:ss Z"/>
         <attribute name="locale" default="en,US"/>
         <sequential>
             <current:unset name="@{property}"/>

@@ -33,7 +33,7 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"
+    <beans:bean id="messageSource" class="gov.hhs.onc.dcdt.web.context.impl.ToolMessageSourceImpl"
         p:cacheSeconds="30"
         p:defaultEncoding="UTF-8"
         p:fallbackToSystemLocale="false">
