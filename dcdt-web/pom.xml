@@ -352,7 +352,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <excludeClassifiers>test-sources</excludeClassifiers>
+                            <excludeClassifiers>sources,test-sources</excludeClassifiers>
                             <includeScope>test</includeScope>
                             <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
                         </configuration>

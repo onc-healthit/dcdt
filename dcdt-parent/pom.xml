@@ -971,6 +971,7 @@
                     <inherited>true</inherited>
                     <configuration>
                         <archiveClasses>true</archiveClasses>
+                        <packagingExcludes>WEB-INF/lib/*-sources.jar</packagingExcludes>
                     </configuration>
                     <executions>
                         <execution>

@@ -57,9 +57,9 @@
         <beans:property name="locations">
             <beans:array>
                 <!--suppress SpringModelInspection -->
-                <beans:value>classpath*:META-INF/maven/**/module*.properties</beans:value>
+                <beans:value>classpath*:META-INF/maven/*/*/module*.properties</beans:value>
                 <!--suppress SpringModelInspection -->
-                <beans:value>classpath*:maven/**/module*.properties</beans:value>
+                <beans:value>classpath*:maven/*/*/module*.properties</beans:value>
                 <beans:value>classpath*:META-INF/core/core*.properties</beans:value>
                 <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:core/core*.properties</beans:value>
