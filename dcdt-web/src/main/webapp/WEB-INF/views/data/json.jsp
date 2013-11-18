@@ -1,0 +1,1 @@
+<%@ page contentType="application/json; UTF-8" pageEncoding="UTF-8"%>${value}

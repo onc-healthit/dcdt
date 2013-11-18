@@ -1,0 +1,4 @@
+// Granting wrapper all permissions
+grant codeBase "file:lib/-" {
+    permission java.security.AllPermission;
+};

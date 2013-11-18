@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant">
+    
+    <macrodef name="process-exec-file" description="Processes an executable file.">
+        <attribute name="file"/>
+        <attribute name="baseFile" default="${project.module.service-core.build.serviceBinSourceFile}"/>
+        <attribute name="outDir" default="${project.build.serviceBinDirectory}"/>
+        <attribute name="binary" default="false"/>
+        <sequential>
+            <dcdt:basename path="@{file}" property="fileBasename"/>
+            <var name="outFile" value="@{outDir}/${fileBasename}"/>
+            
+            <if>
+                <equals arg1="@{binary}" arg2="false"/>
+                <then>
+                    <!-- Reading service-specific executable file content -->
+                    <dcdt:read-file file="@{file}" property="fileContent"/>
+                    
+                    <!-- Copying + filtering base executable file -->
+                    <copy file="@{baseFile}" tofile="${outFile}">
+                        <filterchain>
+                            <!-- Inserting service-specific script code -->
+                            <replacestring from="%{STANDALONE_EXEC}" to="${fileContent}"/>
+                        </filterchain>
+                    </copy>
+                    <!-- Removing extraneous shebang -->
+                    <replaceregexp file="${outFile}" match="\n#![^\n]+\n" replace="" flags="g"/>
+                    <!-- Removing extraneous newlines -->
+                    <replaceregexp file="${outFile}" match="(\n\n)\n" replace="\1" flags="g"/>
+                    
+                    <dcdt:info>Processed standalone executable file: ${fileBasename}</dcdt:info>
+                </then>
+                <else>
+                    <dcdt:info>Processed standalone binary file: ${fileBasename}</dcdt:info>
+                </else>
+            </if>
+            
+            <!-- Setting the output file to be executable -->
+            <chmod file="${outFile}" perm="+x"/>
+        </sequential>
+    </macrodef>
+</antlib>
