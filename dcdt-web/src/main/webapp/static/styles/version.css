@@ -1,0 +1,7 @@
+div#version-modules div.version-module:not(:first-of-type) {
+    margin-top: 10px;
+}
+
+span.version-module-attr-unknown {
+    font-style: italic;
+}

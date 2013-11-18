@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant">
+    
+    <macrodef name="license" description="Checks if a Clover license is available.">
+        <attribute name="licenseProperty"/>
+        <attribute name="licenseLocationProperty"/>
+        <attribute name="licenseAvailableProperty"/>
+        <sequential>
+            <if>
+                <or>
+                    <and>
+                        <isset property="@{licenseLocationProperty}"/>
+                        <not><equals arg1="${@{licenseLocationProperty}}" arg2=""/></not>
+                        <available file="${@{licenseLocationProperty}}"/>
+                    </and>
+                    <and>
+                        <isset property="@{licenseProperty}"/>
+                        <not><equals arg1="${@{licenseProperty}}" arg2=""/></not>
+                    </and>
+                </or>
+                <then>
+                    <var name="@{licenseAvailableProperty}" value="true"/>
+                </then>
+                <else>
+                    <var name="@{licenseAvailableProperty}" value="false"/>
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+</antlib>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="core"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg"
+    xmlns:props="antlib:org.apache.ant.props">
+    
+    <description>Ant project for common components of Direct Certificate Discovery Tool (DCDT) Ant projects.</description>
+    
+    <taskdef resource="net/sf/antcontrib/antlib.xml" classpath="${maven.classpath}"/>
+    <!-- Defining missing Ant-Contrib condition types -->
+    <typedef name="islessthan" classname="net.sf.antcontrib.logic.condition.IsLessThan" classpath="${maven.classpath}"/>
+    <typedef name="isgreaterthan" classname="net.sf.antcontrib.logic.condition.IsGreaterThan" classpath="${maven.classpath}"/>
+    <typedef name="ispropertyfalse" classname="net.sf.antcontrib.logic.condition.IsPropertyFalse" classpath="${maven.classpath}"/>
+    <typedef name="ispropertytrue" classname="net.sf.antcontrib.logic.condition.IsPropertyTrue" classpath="${maven.classpath}"/>
+    
+    <taskdef resource="org/apache/ant/props/antlib.xml" classpath="${maven.classpath}" uri="antlib:org.apache.ant.props"/>
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-core.xml" uri="antlib:gov.hhs.onc.dcdt.ant"/>
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-core-hg.xml" uri="antlib:gov.hhs.onc.dcdt.ant.hg"/>
+    
+    <propertyhelper>
+        <props:conditions/>
+        <props:encodeURL/>
+        <props:nested/>
+        <props:stringops/>
+        <props:types/>
+    </propertyhelper>
+    
+    <target name="core-init" description="Initializes Ant project variable(s).">
+        <!-- String variable(s) -->
+        <var name="n" value="${line.separator}"/>
+    </target>
+</project>

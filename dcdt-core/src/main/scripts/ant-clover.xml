@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="clover"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:dcdt-clover="antlib:gov.hhs.onc.dcdt.ant.clover">
+    
+    <description>Ant project for Direct Certificate Discovery Tool (DCDT) Clover usage.</description>
+    
+    <import file="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" as="" prefixSeparator=""/>
+    
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-clover.xml" uri="antlib:gov.hhs.onc.dcdt.ant.clover"/>
+    
+    <target name="clover-license" description="Checks if a Clover license is available." depends="core-init,clover-init">
+        <dcdt-clover:license licenseProperty="maven.clover.license" licenseLocationProperty="maven.clover.licenseLocation"
+            licenseAvailableProperty="${maven.clover.licenseAvailableProperty}"/>
+        <if>
+            <equals arg1="${${maven.clover.licenseAvailableProperty}}" arg2="true"/>
+            <then>
+                <dcdt:info>Clover license available.</dcdt:info>
+            </then>
+            <else>
+                <dcdt:write-properties file="${project.build.cloverPomPropertiesFile}">
+                    maven.clover.skip=true
+                </dcdt:write-properties>
+                <dcdt:warn>Clover license not available - skipping Clover Maven executions.</dcdt:warn>
+            </else>
+        </if>
+    </target>
+    
+    <target name="clover-init" description="Initializes Clover variable(s).">
+        <!-- Clover variable(s) -->
+        <var name="maven.clover.licenseAvailableProperty" value="maven.clover.licenseAvailable"/>
+    </target>
+</project>
