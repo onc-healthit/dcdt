@@ -1,15 +1,13 @@
 package gov.hhs.onc.dcdt.crypto;
 
-import java.security.Security;
 import java.security.cert.CertificateException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.testng.Assert;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import gov.hhs.onc.dcdt.crypto.impl.CertificateValidIntervalImpl;
@@ -18,9 +16,8 @@ import gov.hhs.onc.dcdt.crypto.impl.CertificateValidIntervalImpl;
 public class CertificateValidIntervalTest {
     private DateFormat formatter;
 
-    @BeforeTest
+    @BeforeClass
     public void setUp() {
-        Security.addProvider(new BouncyCastleProvider());
         formatter = new SimpleDateFormat("MMM dd hh:mm:ss yyyy Z");
     }
 

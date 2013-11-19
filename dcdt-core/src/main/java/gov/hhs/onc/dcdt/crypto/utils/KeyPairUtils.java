@@ -1,7 +1,18 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
-import java.io.*;
-import java.security.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.PrivateKey;
+import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 
@@ -64,7 +75,7 @@ public abstract class KeyPairUtils {
         }
     }
 
-    public static void writeKeyPair(File file, PrivateKey privateKey, String encoding) throws CryptographyException {
+    public static void writePrivateKey(File file, PrivateKey privateKey, String encoding) throws CryptographyException {
         try {
             writePrivateKey(new FileOutputStream(file), privateKey, encoding);
         } catch (IOException e) {

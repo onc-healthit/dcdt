@@ -49,10 +49,10 @@ public class CertificateNameTest {
     }
 
     @Test
-    public void testEquals() {
-        Assert.assertFalse(subject.equals(subject2));
-        Assert.assertFalse(subject2.equals(subject3));
-        Assert.assertTrue(subject.equals(subject3));
+    public void testHasSameRDNs() {
+        Assert.assertFalse(subject.hasSameRDNs(subject2));
+        Assert.assertFalse(subject2.hasSameRDNs(subject3));
+        Assert.assertTrue(subject.hasSameRDNs(subject3));
     }
 
     @Test
@@ -94,5 +94,16 @@ public class CertificateNameTest {
         Assert.assertTrue(subject2.hasValue(BCStyle.OU));
         Assert.assertTrue(subject2.hasValue(BCStyle.EmailAddress));
         Assert.assertEquals(subject2.getRdnMap().size(), 7);
+    }
+
+    @Test
+    public void testGetRDNValues() {
+        Assert.assertEquals(subject.getCommonName(), "commonName");
+        Assert.assertEquals(subject.getCountry(), "country");
+        Assert.assertEquals(subject.getState(), "state");
+        Assert.assertEquals(subject.getLocality(), "locality");
+        Assert.assertEquals(subject.getOrganization(), "organization");
+        Assert.assertEquals(subject.getOrganizationUnit(), "organizationUnit");
+        Assert.assertEquals(subject2.getMail(), "test@testdomain.com");
     }
 }
