@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<html
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:c="http://java.sun.com/jsp/jstl/core"
+    xmlns:fmt="http://java.sun.com/jsp/jstl/fmt"
+    xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+    xmlns:jsp="http://java.sun.com/JSP/Page"
+    xmlns:spring="http://www.springframework.org/tags"
+    xmlns:spring-form="http://www.springframework.org/tags/form"
+    xmlns:x="http://java.sun.com/jsp/jstl/xml">
+    <jsp:directive.page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8"/>
+    <jsp:output doctype-root-element="html" doctype-system="about:legacy-compat" omit-xml-declaration="true"/>
+    <head>
+        <jsp:directive.include file="include/head.jsp"/>
+        <link rel="stylesheet" type="text/css" href="${urlStaticStyles}/version.css"/>
+        <title><spring:message code="dcdt.web.title.version"/></title>
+    </head>
+    <body>
+        <jsp:directive.include file="include/nav.jsp"/>
+        <div id="content" class="container">
+            <h2><spring:message code="dcdt.web.heading.version"/></h2>
+            <div id="version-modules">
+                <c:forEach var="moduleVersion" items="${toolVersionImpl.moduleVersions}">
+                    <div class="version-module">
+                        <h3>Module: ${moduleVersion.artifactId}</h3>
+                        <h4>Project</h4>
+                        <ul>
+                            <li>
+                                <strong>groupId</strong>: ${moduleVersion.groupId}
+                            </li>
+                            <li>
+                                <strong>artifactId</strong>: ${moduleVersion.artifactId}
+                            </li>
+                            <li>
+                                <strong>version</strong>: ${moduleVersion.version}
+                            </li>
+                            <li>
+                                <strong>name</strong>: ${moduleVersion.name}
+                            </li>
+                            <li>
+                                <strong>description</strong>: ${moduleVersion.description}
+                            </li>
+                        </ul>
+                        <h4>Build</h4>
+                        <ul>
+                            <li>
+                                <strong>timestamp</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasBuildTimestampString()}">
+                                        ${moduleVersion.buildTimestampString}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                        </ul>
+                        <h4>Mercurial</h4>
+                        <ul>
+                            <li>
+                                <strong>author</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasHgAuthor()}">
+                                        ${moduleVersion.hgAuthor}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                            <li>
+                                <strong>branch</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasHgBranch()}">
+                                        ${moduleVersion.hgBranch}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                            <li>
+                                <strong>date</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasHgDateString()}">
+                                        ${moduleVersion.hgDateString}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                            <li>
+                                <strong>node</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasHgNode()}">
+                                        ${moduleVersion.hgNode}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                            <li>
+                                <strong>nodeShort</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasHgNodeShort()}">
+                                        ${moduleVersion.hgNodeShort}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                            <li>
+                                <strong>path</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasHgPath()}">
+                                        ${moduleVersion.hgPath}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                            <li>
+                                <strong>revision</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasHgRevision()}">
+                                        ${moduleVersion.hgRevision}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                            <li>
+                                <strong>tag</strong>:
+                                <c:choose>
+                                    <c:when test="${moduleVersion.hasHgTag()}">
+                                        ${moduleVersion.hgTag}
+                                    </c:when>
+                                    <c:otherwise>
+                                        <span class="version-module-attr-unknown">unknown</span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </li>
+                        </ul>
+                    </div>
+                </c:forEach>
+            </div>
+        </div>
+    </body>
+</html>

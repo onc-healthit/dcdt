@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    profile="toolInstanceConfigured"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <beans:bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
+        p:targetClass="java.lang.System"
+        p:targetMethod="setProperty">
+        <beans:property name="arguments">
+            <util:list>
+                <beans:value>derby.stream.error.method</beans:value>
+                <beans:value>org.springframework.jdbc.datasource.embedded.OutputStreamFactory.getNoopOutputStream</beans:value>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceConfigDataSource" class="gov.hhs.onc.dcdt.config.InstanceConfigDataSource" abstract="true"/>
+    <beans:bean id="instanceConfigDataSourceImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigDataSourceImpl" parent="instanceConfigDataSource"
+        p:driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+        p:password="${dcdt.instance.db.pass}"
+        p:url="jdbc:derby:@{dcdt.instance.directory}/db;create=true"
+        p:username="${dcdt.instance.db.user}"/>
+    
+    <jdbc:initialize-database data-source="instanceConfigDataSourceImpl" ignore-failures="DROPS">
+        <!--suppress SpringModelInspection -->
+        <jdbc:script location="classpath*:core/db/db-instance-init.sql"/>
+    </jdbc:initialize-database>
+    
+    <beans:bean id="instanceConfigSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+        p:dataSource-ref="instanceConfigDataSourceImpl"
+        p:packagesToScan="gov.hhs.onc.dcdt">
+        <beans:property name="hibernateProperties">
+            <util:properties>
+                <beans:prop key="hibernate.dialect">org.hibernate.dialect.DerbyTenSevenDialect</beans:prop>
+                <beans:prop key="hibernate.show_sql">true</beans:prop>
+            </util:properties>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceConfigTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+        p:sessionFactory-ref="instanceConfigSessionFactory"/>
+    
+    <beans:bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    
+    <tx:annotation-driven transaction-manager="instanceConfigTransactionManager"/>
+    
+    <beans:bean id="toolBeanDao" class="gov.hhs.onc.dcdt.beans.ToolBeanDao" abstract="true"/>
+    
+    <beans:bean id="discoveryTestcaseDao" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDao" abstract="true"/>
+    <beans:bean id="discoveryTestcaseDaoImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDaoImpl" parent="discoveryTestcaseDao"/>
+</beans:beans>

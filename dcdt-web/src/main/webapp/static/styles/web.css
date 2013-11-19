@@ -1,0 +1,42 @@
+body {
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
+}
+
+hr {
+    margin: 10px 0;
+}
+
+.navbar {
+    height: 70px;
+}
+
+.navbar .brand {
+    font-size: 18px;
+    font-weight: bold;
+}
+
+.navbar .brand img {
+    width: 48px;
+    height: 48px;
+    margin-right: 2px;
+}
+
+.navbar .brand a,
+.navbar .brand a:focus,
+.navbar .brand a:hover {
+    color: #777777;
+}
+
+.navbar .nav > li > a {
+    padding: 15px 25px;
+}
+
+div#content {
+    margin-top: 70px;
+}
+
+div#footer-version {
+    text-align: center;
+    color: rgb(150, 150, 150);
+}
