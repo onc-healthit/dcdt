@@ -54,7 +54,7 @@ public interface CertificateName {
 
     public Map<ASN1ObjectIdentifier, ASN1Encodable> getRdnMap();
 
-    public boolean equals(CertificateName certificateName);
+    public boolean hasSameRDNs(CertificateName certificateName);
 
     public boolean hasValue(ASN1ObjectIdentifier oid);
 }

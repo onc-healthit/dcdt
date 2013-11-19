@@ -1,11 +1,21 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.security.NoSuchProviderException;
 import java.security.PrivateKey;
 import java.security.SecureRandom;
-import java.security.cert.*;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateEncodingException;
+import java.security.cert.CertificateException;
+import java.security.cert.CertificateFactory;
+import java.security.cert.X509Certificate;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
@@ -28,6 +38,7 @@ import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
 
 import gov.hhs.onc.dcdt.crypto.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.CertificateName;
+import gov.hhs.onc.dcdt.crypto.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.constants.CertificateType;
 import gov.hhs.onc.dcdt.crypto.constants.DataEncoding;
@@ -36,16 +47,23 @@ import gov.hhs.onc.dcdt.crypto.constants.PemType;
 public abstract class CertificateUtils {
     private final static int SERIAL_NUM_SEED_SIZE = 8;
 
-    public static X509Certificate generateCertificate(CertificateInfo cert) throws CryptographyException {
+    public static X509Certificate generateCertificate(CredentialInfo credentialInfo) throws CryptographyException {
         X509Certificate certificate;
+        CertificateInfo certificateInfo = credentialInfo.getCertificateInfo();
+
+        PrivateKey signerKey;
+        if (!certificateInfo.getIsCa()) {
+            signerKey = certificateInfo.getIssuerPrivateKey();
+        } else {
+            signerKey = credentialInfo.getKeyPairInfo().getPrivateKey();
+        }
 
         try {
-            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(cert.getSigAlgName());
+            AlgorithmIdentifier sigAlgId = new DefaultSignatureAlgorithmIdentifierFinder().find(certificateInfo.getSigAlgName());
             AlgorithmIdentifier digAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(sigAlgId);
-            PrivateKey signerKey = cert.getIssuerPrivateKey();
             AsymmetricKeyParameter keyParam = PrivateKeyFactory.createKey(signerKey.getEncoded());
 
-            X509v3CertificateBuilder certGen = generateCertBuilder(cert);
+            X509v3CertificateBuilder certGen = generateCertBuilder(certificateInfo);
             X509CertificateHolder certHolder = certGen.build(new BcRSAContentSignerBuilder(sigAlgId, digAlgId).build(keyParam));
 
             certificate = (X509Certificate) CertificateFactory.getInstance(CertificateType.X509, BouncyCastleProvider.PROVIDER_NAME).generateCertificate(
@@ -57,19 +75,20 @@ public abstract class CertificateUtils {
         return certificate;
     }
 
-    private static X509v3CertificateBuilder generateCertBuilder(CertificateInfo cert) throws CertIOException {
-        CertificateName issuer = cert.getIssuer();
+    private static X509v3CertificateBuilder generateCertBuilder(CertificateInfo certificateInfo) throws CertIOException {
+        CertificateName issuer = certificateInfo.getIssuer();
 
-        X509v3CertificateBuilder certGen = new X509v3CertificateBuilder(issuer.toX500Name(), cert.getSerialNumber(), cert.getValidInterval().getNotBefore(),
-            cert.getValidInterval().getNotAfter(), cert.getSubject().toX500Name(), cert.getPublicKey());
+        X509v3CertificateBuilder certGen = new X509v3CertificateBuilder(issuer.toX500Name(), certificateInfo.getSerialNumber(), certificateInfo
+            .getValidInterval().getNotBefore(), certificateInfo.getValidInterval().getNotAfter(), certificateInfo.getSubject().toX500Name(),
+            certificateInfo.getPublicKey());
 
-        certGen.addExtension(X509Extension.basicConstraints, false, new BasicConstraints(cert.getIsCa()));
+        certGen.addExtension(X509Extension.basicConstraints, false, new BasicConstraints(certificateInfo.getIsCa()));
 
-        GeneralNames subjAltNames = cert.getSubject().getSubjAltNames();
+        GeneralNames subjAltNames = certificateInfo.getSubject().getSubjAltNames();
 
-        if (!cert.getIsCa()) {
-            certGen.addExtension(X509Extension.authorityKeyIdentifier, false, cert.getAuthKeyId());
-            certGen.addExtension(X509Extension.subjectKeyIdentifier, false, cert.getSubjKeyId());
+        if (!certificateInfo.getIsCa()) {
+            certGen.addExtension(X509Extension.authorityKeyIdentifier, false, certificateInfo.getAuthKeyId());
+            certGen.addExtension(X509Extension.subjectKeyIdentifier, false, certificateInfo.getSubjKeyId());
 
             GeneralNames issuerAltNames = issuer.getSubjAltNames();
 

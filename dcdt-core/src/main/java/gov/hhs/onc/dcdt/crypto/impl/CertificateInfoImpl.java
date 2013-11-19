@@ -70,7 +70,7 @@ public class CertificateInfoImpl implements CertificateInfo {
 
     @Override
     public CertificateName getIssuer() {
-        return this.issuerCredentials != null ? this.getIssuerCredentials().getCertificateInfo().getSubject() : null;
+        return this.issuerCredentials != null ? this.getIssuerCredentials().getCertificateInfo().getSubject() : this.getSubject();
     }
 
     @Override
@@ -131,7 +131,8 @@ public class CertificateInfoImpl implements CertificateInfo {
     public SubjectKeyIdentifier getSubjKeyId() {
         if (this.getPublicKey() != null) {
             Digest subjKeyDigest = new SHA1Digest();
-            byte[] pubKeyData = this.getPublicKey().getPublicKeyData().getBytes(), subjKeyIdData = new byte[subjKeyDigest.getDigestSize()];
+            byte[] subjKeyIdData = new byte[subjKeyDigest.getDigestSize()];
+            byte[] pubKeyData = this.getPublicKey().getPublicKeyData().getBytes();
 
             subjKeyDigest.update(pubKeyData, 0, pubKeyData.length);
             subjKeyDigest.doFinal(subjKeyIdData, 0);
