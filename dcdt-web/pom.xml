@@ -521,6 +521,33 @@
     </build>
     
     <profiles>
+        <profile>
+            <id>development-build</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <enabledStatus>false</enabledStatus>
+                <id>NA</id>
+                <url>NA</url>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev-tier</id>
+            <properties>
+                <enabledStatus>true</enabledStatus>
+                <id>UA-45838460-1</id>
+                <url>dev.direct-test.com</url>
+            </properties>
+        </profile>
+        <profile>
+            <id>demo-tier</id>
+            <properties>
+                <enabledStatus>true</enabledStatus>
+                <id>UA-37416124-2</id>
+                <url>direct-test.com</url>
+            </properties>
+        </profile>
         <!-- Start/stop integration test components, if tests are not being skipped -->
         <profile>
             <id>test-integration-components</id>
