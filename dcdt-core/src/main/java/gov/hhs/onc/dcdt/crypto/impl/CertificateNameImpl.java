@@ -16,7 +16,7 @@ import gov.hhs.onc.dcdt.crypto.CertificateName;
 
 public class CertificateNameImpl implements CertificateName {
     private final static String MAIL_ADDRESS_DELIM = "@";
-    private Map<ASN1ObjectIdentifier, ASN1Encodable> rdnMap = new HashMap<>();
+    private final Map<ASN1ObjectIdentifier, ASN1Encodable> rdnMap = new HashMap<>();
 
     @Override
     public String getMail() {
@@ -153,7 +153,7 @@ public class CertificateNameImpl implements CertificateName {
     }
 
     @Override
-    public boolean equals(CertificateName certificateName) {
+    public boolean hasSameRDNs(CertificateName certificateName) {
         if (this.rdnMap.size() == certificateName.getRdnMap().size()) {
             for (ASN1ObjectIdentifier oid : rdnMap.keySet()) {
                 if (!certificateName.hasValue(oid) || !certificateName.getValue(oid).equals(this.getValue(oid))) {

@@ -1,9 +1,16 @@
 package gov.hhs.onc.dcdt.crypto.constants;
 
-public final class DataEncoding {
-    public final static String DER = "der";
-    public final static String PEM = "pem";
+public enum DataEncoding {
+    DER("der"), PEM("pem");
 
-    private DataEncoding() {
+    private final String encoding;
+
+    private DataEncoding(String encoding) {
+        this.encoding = encoding;
     }
+
+    public String getEncoding() {
+        return this.encoding;
+    }
+
 }
