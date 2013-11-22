@@ -33,7 +33,7 @@ import gov.hhs.onc.dcdt.crypto.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyPairUtils;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.cert" })
+@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.cert" }, dependsOnGroups = { "dcdt.test.unit.crypto.key" })
 public class CertificateUtilsTest {
     private CertificateInfo certificateInfo;
     private X509Certificate leafCert;
@@ -78,13 +78,12 @@ public class CertificateUtilsTest {
         when(validInterval.getNotAfter()).thenReturn(notAfter);
         when(certificateInfo.getValidInterval()).thenReturn(validInterval);
 
-        when(certificateInfo.getDataEncoding()).thenReturn(DataEncoding.DER);
+        when(certificateInfo.getDataEncoding()).thenReturn(DataEncoding.DER.getEncoding());
     }
 
     private void setupLeafCertificate() throws CryptographyException {
         CertificateName subject = mock(CertificateName.class);
         CertificateName issuer = mock(CertificateName.class);
-
         KeyPair subjectKeyPair = KeyPairUtils.generateKeyPair(1024);
 
         leafCredentialInfo = mock(CredentialInfo.class);
@@ -173,7 +172,7 @@ public class CertificateUtilsTest {
     }
 
     @Test(dataProvider = "encoding", dependsOnMethods = "testGenerateLeafCertificate")
-    public void testWriteReadCertificate(String fileName, String encoding) throws CryptographyException {
+    public void testWriteReadCertificate(String fileName, DataEncoding encoding) throws CryptographyException {
         try {
             File tempFile = File.createTempFile(fileName, "." + encoding);
             CertificateUtils.writeCertificate(tempFile, leafCert, encoding);
@@ -187,7 +186,7 @@ public class CertificateUtilsTest {
             Assert.assertEquals(certRead.getIssuerDN().getName(), leafCert.getIssuerDN().getName());
             Assert.assertEquals(certRead.getSubjectDN().getName(), leafCert.getSubjectDN().getName());
         } catch (IOException e) {
-            Assert.fail("Could not write " + encoding.toUpperCase() + "-encoded certificate to temporary file.", e);
+            Assert.fail("Could not write " + encoding.toString() + "-encoded certificate to temporary file.", e);
         }
     }
 
