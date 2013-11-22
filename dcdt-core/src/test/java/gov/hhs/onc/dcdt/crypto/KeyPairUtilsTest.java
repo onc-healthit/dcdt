@@ -15,22 +15,21 @@ import gov.hhs.onc.dcdt.crypto.utils.KeyPairUtils;
 
 @Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.key" })
 public class KeyPairUtilsTest {
-    private KeyPair keyPair;
     private PrivateKey privateKey;
 
     @Test
     public void testGenerateKeyPair() throws CryptographyException {
-        keyPair = KeyPairUtils.generateKeyPair(1024);
+        KeyPair keyPair = KeyPairUtils.generateKeyPair(1024);
         privateKey = keyPair.getPrivate();
         Assert.assertNotNull(keyPair);
-        Assert.assertEquals(keyPair.getPublic().getAlgorithm(), KeyAlgorithm.RSA);
-        Assert.assertEquals(keyPair.getPrivate().getAlgorithm(), KeyAlgorithm.RSA);
+        Assert.assertEquals(keyPair.getPublic().getAlgorithm(), KeyAlgorithm.RSA.getAlgorithm());
+        Assert.assertEquals(keyPair.getPrivate().getAlgorithm(), KeyAlgorithm.RSA.getAlgorithm());
     }
 
     @Test(dataProvider = "encoding", dependsOnMethods = "testGenerateKeyPair")
-    public void testWriteReadPrivateKey(String fileName, String encoding) throws CryptographyException {
+    public void testWriteReadPrivateKey(String fileName, DataEncoding encoding) throws CryptographyException {
         try {
-            File tempFile = File.createTempFile(fileName, "." + encoding);
+            File tempFile = File.createTempFile(fileName, "." + encoding.getEncoding());
             KeyPairUtils.writePrivateKey(tempFile, privateKey, encoding);
             PrivateKey privateKeyRead = KeyPairUtils.readPrivateKey(tempFile, encoding);
 
@@ -38,7 +37,7 @@ public class KeyPairUtilsTest {
             Assert.assertEquals(privateKeyRead.getEncoded(), privateKey.getEncoded());
             Assert.assertEquals(privateKeyRead.getAlgorithm(), privateKey.getAlgorithm());
         } catch (IOException e) {
-            Assert.fail("Could not write " + encoding.toUpperCase() + "-encoded private key to temporary file.", e);
+            Assert.fail("Could not write " + encoding.toString() + "-encoded private key to temporary file.", e);
         }
     }
 

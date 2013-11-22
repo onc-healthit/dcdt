@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.crypto;
 
-import java.security.cert.CertificateException;
 import java.util.Date;
 
 public interface CertificateValidInterval {
@@ -13,7 +12,7 @@ public interface CertificateValidInterval {
 
     public void setNotAfter(Date notAfter);
 
-    public boolean isValidInterval() throws CertificateException;
+    public boolean isValidInterval();
 
-    public boolean isValidInterval(Date date) throws CertificateException;
+    public boolean isValidInterval(Date date);
 }

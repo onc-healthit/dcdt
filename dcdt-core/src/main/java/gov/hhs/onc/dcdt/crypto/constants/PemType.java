@@ -1,9 +1,15 @@
 package gov.hhs.onc.dcdt.crypto.constants;
 
-public final class PemType {
-    public final static String PKCS8_PRIVATE_KEY = "PRIVATE KEY";
-    public final static String X509_CERTIFICATE = "CERTIFICATE";
+public enum PemType {
+    PKCS8_PRIVATE_KEY("RSA PRIVATE KEY"), X509_CERTIFICATE("X.509 CERTIFICATE");
 
-    private PemType() {
+    private final String type;
+
+    private PemType(String type) {
+        this.type = type;
+    }
+
+    public String getType() {
+        return this.type;
     }
 }

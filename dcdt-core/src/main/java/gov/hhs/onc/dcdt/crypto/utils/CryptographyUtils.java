@@ -25,7 +25,7 @@ public abstract class CryptographyUtils {
         Security.addProvider(BOUNCY_CASTLE_PROVIDER);
     }
 
-    public static SecureRandom getRandom(int seedSize) throws CryptographyException {
+    public static SecureRandom getRandom(int seedSize) {
         return getRandom(generateRandomSeed(seedSize));
     }
 
@@ -33,9 +33,9 @@ public abstract class CryptographyUtils {
         return new SecureRandom(seed);
     }
 
-    public static byte[] generateRandomSeed(int size) throws CryptographyException {
+    public static byte[] generateRandomSeed(int size) {
         if (size <= 0) {
-            throw new CryptographyException("Random seed size must be a positive integer: " + size);
+            throw new IllegalArgumentException("Random seed size must be a positive integer: " + size);
         }
 
         byte[] randSeed = new byte[size];
