@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.crypto.impl;
 
-import java.security.cert.CertificateException;
 import java.util.Date;
 
 import gov.hhs.onc.dcdt.crypto.CertificateValidInterval;
@@ -35,18 +34,12 @@ public class CertificateValidIntervalImpl implements CertificateValidInterval {
     }
 
     @Override
-    public boolean isValidInterval() throws CertificateException {
+    public boolean isValidInterval() {
         return isValidInterval(new Date());
     }
 
     @Override
-    public boolean isValidInterval(Date date) throws CertificateException {
-        if (date.before(this.notBefore)) {
-            throw new CertificateException("Certificate not yet valid.");
-        } else if (date.after(this.notAfter)) {
-            throw new CertificateException("Certificate expired.");
-        } else {
-            return true;
-        }
+    public boolean isValidInterval(Date date) {
+        return date.after(this.notBefore) && date.before(this.notAfter);
     }
 }

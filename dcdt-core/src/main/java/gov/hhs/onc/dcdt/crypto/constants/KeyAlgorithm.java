@@ -1,8 +1,15 @@
 package gov.hhs.onc.dcdt.crypto.constants;
 
-public final class KeyAlgorithm {
-    public final static String RSA = "RSA";
+public enum KeyAlgorithm {
+    RSA("RSA");
 
-    private KeyAlgorithm() {
+    private final String algorithm;
+
+    private KeyAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
+    }
+
+    public String getAlgorithm() {
+        return this.algorithm;
     }
 }

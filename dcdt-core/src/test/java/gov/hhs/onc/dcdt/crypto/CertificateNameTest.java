@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.crypto;
 
+import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.testng.Assert;
@@ -44,15 +45,17 @@ public class CertificateNameTest {
 
     @Test
     public void testToX500Name() {
-        Assert.assertNotNull(subject.toX500Name());
-        Assert.assertNotNull(subject2.toX500Name());
+        String subjectDN = "C=country,CN=commonName,OU=organizationUnit,L=locality,O=organization,ST=state";
+        Assert.assertEquals(subject.toX500Name(), new X500Name(subjectDN));
+        Assert.assertEquals(subject2.toX500Name(), new X500Name("E=test@testdomain.com," + subjectDN));
+        Assert.assertEquals(subject3.toX500Name(), new X500Name(subjectDN));
     }
 
     @Test
-    public void testEquals() {
-        Assert.assertFalse(subject.equals(subject2));
-        Assert.assertFalse(subject2.equals(subject3));
-        Assert.assertTrue(subject.equals(subject3));
+    public void testHasSameRDNs() {
+        Assert.assertFalse(subject.hasSameRDNs(subject2));
+        Assert.assertFalse(subject2.hasSameRDNs(subject3));
+        Assert.assertTrue(subject.hasSameRDNs(subject3));
     }
 
     @Test
@@ -94,5 +97,16 @@ public class CertificateNameTest {
         Assert.assertTrue(subject2.hasValue(BCStyle.OU));
         Assert.assertTrue(subject2.hasValue(BCStyle.EmailAddress));
         Assert.assertEquals(subject2.getRdnMap().size(), 7);
+    }
+
+    @Test
+    public void testGetRDNValues() {
+        Assert.assertEquals(subject.getCommonName(), "commonName");
+        Assert.assertEquals(subject.getCountry(), "country");
+        Assert.assertEquals(subject.getState(), "state");
+        Assert.assertEquals(subject.getLocality(), "locality");
+        Assert.assertEquals(subject.getOrganization(), "organization");
+        Assert.assertEquals(subject.getOrganizationUnit(), "organizationUnit");
+        Assert.assertEquals(subject2.getMail(), "test@testdomain.com");
     }
 }

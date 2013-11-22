@@ -1,6 +1,10 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
@@ -21,7 +25,7 @@ public abstract class CryptographyUtils {
         Security.addProvider(BOUNCY_CASTLE_PROVIDER);
     }
 
-    public static SecureRandom getRandom(int seedSize) throws CryptographyException {
+    public static SecureRandom getRandom(int seedSize) {
         return getRandom(generateRandomSeed(seedSize));
     }
 
@@ -29,9 +33,9 @@ public abstract class CryptographyUtils {
         return new SecureRandom(seed);
     }
 
-    public static byte[] generateRandomSeed(int size) throws CryptographyException {
+    public static byte[] generateRandomSeed(int size) {
         if (size <= 0) {
-            throw new CryptographyException("Random seed size must be a positive integer: " + size);
+            throw new IllegalArgumentException("Random seed size must be a positive integer: " + size);
         }
 
         byte[] randSeed = new byte[size];
@@ -48,21 +52,18 @@ public abstract class CryptographyUtils {
     }
 
     public static PemObject readPemObject(InputStream stream) throws CryptographyException {
-        try {
-            PEMParser pemParser = new PEMParser(new InputStreamReader(stream));
-            PemObject pemObject = pemParser.readPemObject();
-            pemParser.close();
-            return pemObject;
+        try (PEMParser pemParser = new PEMParser(new InputStreamReader(stream))) {
+            return pemParser.readPemObject();
         } catch (IOException e) {
             throw new CryptographyException("Unable to read PEM object from stream.", e);
         }
     }
 
-    public static void writePemContent(OutputStream stream, String pemType, byte[] pemContent) throws CryptographyException, IOException {
+    public static void writePemContent(OutputStream stream, String pemType, byte[] pemContent) throws CryptographyException {
         writePemObject(stream, new PemObject(pemType, pemContent));
     }
 
-    public static void writePemObject(OutputStream stream, PemObject pemObj) throws CryptographyException, IOException {
+    public static void writePemObject(OutputStream stream, PemObject pemObj) throws CryptographyException {
         try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(stream))) {
             pemWriter.writeObject(pemObj);
             pemWriter.flush();
