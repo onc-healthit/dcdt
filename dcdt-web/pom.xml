@@ -521,6 +521,33 @@
     </build>
     
     <profiles>
+        <profile>
+            <id>development-build</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <dcdt.google.analytics.enabledStatus>false</dcdt.google.analytics.enabledStatus>
+                <dcdt.google.analytics.id>NA</dcdt.google.analytics.id>
+                <dcdt.google.analytics.url>NA</dcdt.google.analytics.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev-tier</id>
+            <properties>
+                <dcdt.google.analytics.enabledStatus>true</dcdt.google.analytics.enabledStatus>
+                <dcdt.google.analytics.id>UA-45838460-1</dcdt.google.analytics.id>
+                <dcdt.google.analytics.url>dev.direct-test.com</dcdt.google.analytics.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>demo-tier</id>
+            <properties>
+                <dcdt.google.analytics.enabledStatus>true</dcdt.google.analytics.enabledStatus>
+                <dcdt.google.analytics.id>UA-37416124-2</dcdt.google.analytics.id>
+                <dcdt.google.analytics.url>direct-test.com</dcdt.google.analytics.url>
+            </properties>
+        </profile>
         <!-- Start/stop integration test components, if tests are not being skipped -->
         <profile>
             <id>test-integration-components</id>
