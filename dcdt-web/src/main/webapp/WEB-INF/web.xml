@@ -114,4 +114,34 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <servlet-name>dispatcherServlet</servlet-name>
     </filter-mapping>
+    
+    <filter>
+        <filter-name>jtidyFilter</filter-name>
+        <filter-class>org.w3c.tidy.servlet.filter.JTidyFilter</filter-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>
+                char-encoding: UTF-8;
+                force-output: true;
+                indent: auto;
+                indent-spaces: 4;
+                join-styles: false;
+                literal-attributes: true;
+                output-encoding: UTF-8;
+                trim-empty-elements: false;
+                wrap: 160;
+            </param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>jtidyFilter</filter-name>
+        <url-pattern>/</url-pattern>
+        <url-pattern>/admin</url-pattern>
+        <url-pattern>/admin/login</url-pattern>
+        <url-pattern>/error</url-pattern>
+        <url-pattern>/version</url-pattern>
+        <url-pattern>/home</url-pattern>
+        <url-pattern>/hosting</url-pattern>
+        <url-pattern>/discovery</url-pattern>
+    </filter-mapping>
 </web-app>

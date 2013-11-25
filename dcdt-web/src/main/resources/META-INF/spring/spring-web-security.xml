@@ -15,16 +15,26 @@
         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean id="anonAuthProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider">
-        <beans:constructor-arg name="key" value="AUTH_ANON"/>
-    </beans:bean>
+    <beans:bean id="anonAuthProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider"
+        c:key="AUTH_ANON"/>
     
     <sec:authentication-manager id="toolAuthManager">
+        <sec:authentication-provider>
+            <!--suppress SpringModelInspection -->
+            <sec:user-service id="toolUserService" properties="/WEB-INF/classes/web/web-users.properties"/>
+        </sec:authentication-provider>
         <sec:authentication-provider ref="anonAuthProvider"/>
     </sec:authentication-manager>
     
-    <sec:http auto-config="true" authentication-manager-ref="toolAuthManager" use-expressions="true">
+    <sec:http authentication-manager-ref="toolAuthManager" use-expressions="true">
+        <sec:intercept-url pattern="/admin/login**" access="permitAll"/>
+        <sec:intercept-url pattern="/admin/logout**" access="permitAll"/>
+        <sec:intercept-url pattern="/admin**" access="hasAuthority('ROLE_ADMIN')"/>
         <sec:intercept-url pattern="/**" access="permitAll"/>
+        <sec:form-login authentication-failure-url="/admin/login?error" default-target-url="/admin" login-page="/admin/login"
+            login-processing-url="/admin/login/process" password-parameter="pass" username-parameter="user"/>
+        <sec:logout logout-url="/admin/logout" logout-success-url="/"/>
+        <sec:remember-me key="AUTH_REMEMBERED"/>
         <sec:session-management>
             <sec:concurrency-control error-if-maximum-exceeded="true" max-sessions="1"/>
         </sec:session-management>

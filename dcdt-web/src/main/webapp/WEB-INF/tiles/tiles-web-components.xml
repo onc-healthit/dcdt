@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+    <definition name="component">
+        <put-attribute name="tag" cascade="true" type="string"/>
+        <put-attribute name="classes-base" cascade="true" type="string"/>
+        <put-attribute name="classes" cascade="true" type="string"/>
+        <put-attribute name="attrs-base" cascade="true" type="string"/>
+        <put-attribute name="attrs" cascade="true" type="string"/>
+        <put-attribute name="content-base" cascade="true" type="string"/>
+        <put-attribute name="content" cascade="true" type="string"/>
+    </definition>
+    
+    <definition name="component-glyph" template="/WEB-INF/views/include/component/component-glyph.jsp" extends="component">
+        <put-attribute name="glyph-classes-base" value="glyphicon" cascade="true" type="string"/>
+        <put-attribute name="glyph-classes" cascade="true" type="string"/>
+        <put-attribute name="glyph-attrs-base" cascade="true" type="string"/>
+        <put-attribute name="glyph-attrs" cascade="true" type="string"/>
+    </definition>
+    
+    <definition name="component-glyph-item" template="/WEB-INF/views/include/component/component-glyph-item.jsp" extends="component">
+        <put-attribute name="glyph-classes-base" value="glyphicon" cascade="true" type="string"/>
+        <put-attribute name="glyph-classes" cascade="true" type="string"/>
+        <put-attribute name="glyph-attrs-base" cascade="true" type="string"/>
+        <put-attribute name="glyph-attrs" cascade="true" type="string"/>
+        <put-attribute name="glyph-def" value="component-glyph" type="definition"/>
+    </definition>
+    
+    <definition name="component-glyph-button" extends="component-glyph-item">
+        <put-attribute name="tag" value="button" cascade="true" type="string"/>
+        <put-attribute name="classes-base" value="btn btn-default btn-sm" cascade="true" type="string"/>
+        <put-attribute name="attrs-base" value="type=&quot;button&quot;" cascade="true" type="string"/>
+    </definition>
+    
+    <definition name="component-glyph-label" extends="component-glyph-item">
+        <put-attribute name="tag" value="label" cascade="true" type="string"/>
+    </definition>
+    
+    <definition name="component-glyph-link" extends="component-glyph-item">
+        <put-attribute name="tag" value="a" cascade="true" type="string"/>
+    </definition>
+</tiles-definitions>

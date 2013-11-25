@@ -1,32 +1,47 @@
-<spring:message var="urlGoogleCodeProject" code="dcdt.web.url.google.code.project"/>
-<spring:message var="urlWikiUserGuide" code="dcdt.web.url.wiki.user.guide"/>
-<spring:message var="urlWikiFaq" code="dcdt.web.url.wiki.faq"/>
-<spring:url var="urlBase" value="/"/>
-<spring:url var="urlStatic" value="/static"/>
-<spring:url var="urlStaticImages" value="/static/images"/>
-<spring:url var="urlStaticScripts" value="/static/scripts"/>
-<spring:url var="urlStaticStyles" value="/static/styles"/>
-<spring:url var="urlHome" value="/home"/>
-<spring:url var="urlHosting" value="/hosting"/>
-<spring:url var="urlDiscovery" value="/discovery"/>
-<spring:url var="urlVersion" value="/version"/>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>--%>
+<%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@taglib prefix="spring-form" uri="http://www.springframework.org/tags/form" %>
+<%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
+<%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
+<%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
+<%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<spring:message var="urlGoogleCodeProject" code="dcdt.web.url.google.code.project" scope="request"/>
+<spring:message var="urlWikiUserGuide" code="dcdt.web.url.wiki.user.guide" scope="request"/>
+<spring:message var="urlWikiFaq" code="dcdt.web.url.wiki.faq" scope="request"/>
+<spring:url var="urlBase" value="/" scope="request"/>
+<spring:url var="urlStatic" value="/static" scope="request"/>
+<spring:url var="urlStaticImages" value="/static/images" scope="request"/>
+<spring:url var="urlStaticScripts" value="/static/scripts" scope="request"/>
+<spring:url var="urlStaticStyles" value="/static/styles" scope="request"/>
+<spring:url var="urlAdmin" value="/admin" scope="request"/>
+<spring:url var="urlAdminInstance" value="/admin/instance" scope="request"/>
+<spring:url var="urlAdminInstanceRemove" value="/admin/instance/rm" scope="request"/>
+<spring:url var="urlAdminInstanceSet" value="/admin/instance/set" scope="request"/>
+<spring:url var="urlAdminLogin" value="/admin/login" scope="request"/>
+<spring:url var="urlAdminLoginProcess" value="/admin/login/process" scope="request"/>
+<spring:url var="urlAdminLogout" value="/admin/logout" scope="request"/>
+<spring:url var="urlError" value="/error" scope="request"/>
+<spring:url var="urlVersion" value="/version" scope="request"/>
+<c:set var="urlHome" value="${urlBase}" scope="request"/>
+<spring:url var="urlHosting" value="/hosting" scope="request"/>
+<spring:url var="urlDiscovery" value="/discovery" scope="request"/>
+<c:set var="templateName" scope="request"><tiles:getAsString name="name"/></c:set>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
-<script type="text/javascript" src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/web.js"></script>
+<c:if test="${googleAnalytics.enabled}">
+    <script type="text/javascript">
+    var googleAnalyticsId = "${googleAnalytics.id}", googleAnalyticsUrl = "${googleAnalytics.url}";
+    </script>
+    <script type="text/javascript" src="${urlStaticScripts}/web-ga.js"></script>
+</c:if>
 <link rel="icon" type="image/png" href="${urlStaticImages}/dcdt-logo-16x16.png"/>
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
-<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css"/>
+<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"/>
 <link rel="stylesheet" type="text/css" href="${urlStaticStyles}/web.css"/>
-<script>
-    if(${googleAnalyticsConfiguration.enabledStatus}) {
-        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-        ga('create', '${googleAnalyticsConfiguration.id}', '${googleAnalyticsConfiguration.url}');
-        ga('send', 'pageview');
-    }
-</script>
+<title><spring:message code="dcdt.web.title.${templateName}"/></title>

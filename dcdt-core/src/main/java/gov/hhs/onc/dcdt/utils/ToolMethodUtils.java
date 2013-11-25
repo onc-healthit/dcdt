@@ -116,4 +116,8 @@ public abstract class ToolMethodUtils {
 
         return null;
     }
+
+    public static String getName(@Nullable Method method) {
+        return (method != null) ? method.getName() : null;
+    }
 }
