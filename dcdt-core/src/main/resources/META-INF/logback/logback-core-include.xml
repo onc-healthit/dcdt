@@ -53,6 +53,10 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
+    <logger name="org.apache" level="warn" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
     <logger name="org.springframework" level="warn" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>

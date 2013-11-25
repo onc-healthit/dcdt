@@ -2,9 +2,11 @@ package gov.hhs.onc.dcdt.utils;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -84,15 +86,45 @@ public abstract class ToolBeanFactoryUtils {
         return getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, includeAbstract) != null;
     }
 
+    public static <T> Class<T> getBeanDefinitionClassOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
+        return getBeanDefinitionClassOfType(beanFactory, beanDefReg, beanClass, false);
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public static <T> Class<T> getBeanDefinitionClassOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
+        boolean includeAbstract) {
+        return (Class<T>) getBeanDefinitionClass(beanDefReg, getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, includeAbstract));
+    }
+
+    public static <T> Set<Class<T>> getBeanDefinitionClassesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
+        return getBeanDefinitionClassesOfType(beanFactory, beanDefReg, beanClass, false);
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public static <T> Set<Class<T>> getBeanDefinitionClassesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
+        boolean includeAbstract) {
+        List<BeanDefinition> beanDefs = getBeanDefinitionsOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
+        Set<Class<T>> beanDefClasses = new HashSet<>(beanDefs.size());
+        Class<?> beanDefClass;
+
+        for (BeanDefinition beanDef : beanDefs) {
+            if (!(beanDefClass = getBeanDefinitionClass(beanDefReg, beanDef)).equals(beanClass)) {
+                beanDefClasses.add((Class<T>) beanDefClass);
+            }
+        }
+
+        return beanDefClasses;
+    }
+
     public static <T> BeanDefinition getBeanDefinitionOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
         return getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, false);
     }
 
     public static <T> BeanDefinition getBeanDefinitionOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
         boolean includeAbstract) {
-        List<String> beanDefNames = getBeanDefinitionNamesOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
+        String beanDefName = getBeanDefinitionNameOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
 
-        return !beanDefNames.isEmpty() ? beanDefReg.getBeanDefinition(ToolListUtils.getFirst(beanDefNames)) : null;
+        return (beanDefName != null) ? beanDefReg.getBeanDefinition(beanDefName) : null;
     }
 
     public static <T> List<BeanDefinition> getBeanDefinitionsOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
@@ -126,6 +158,17 @@ public abstract class ToolBeanFactoryUtils {
         }
 
         return beanDefsMap;
+    }
+
+    public static <T> String getBeanDefinitionNameOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
+        return getBeanDefinitionNameOfType(beanFactory, beanDefReg, beanClass, false);
+    }
+
+    public static <T> String getBeanDefinitionNameOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
+        boolean includeAbstract) {
+        List<String> beanDefNames = getBeanDefinitionNamesOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
+
+        return !beanDefNames.isEmpty() ? ToolListUtils.getFirst(beanDefNames) : null;
     }
 
     public static <T> List<String> getBeanDefinitionNamesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
