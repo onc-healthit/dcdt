@@ -206,6 +206,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>1</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>3.1.0</version>
@@ -648,6 +653,19 @@
                                 <includeTypes>jar</includeTypes>
                                 <excludes>META-INF/maven/**/pom.*,META-INF/MANIFEST.MF,META-INF/spring.*</excludes>
                                 <outputDirectory>${project.build.testResourcesDependencyDirectory}</outputDirectory>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>analyze-dependencies</id>
+                            <goals>
+                                <goal>analyze-only</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <!--
+                                TODO: uncomment if strict Maven dependency usage is to be enforced
+                                -->
+                                <!--<failOnWarning>true</failOnWarning>-->
                             </configuration>
                         </execution>
                     </executions>
@@ -1261,6 +1279,10 @@
                     <execution>
                         <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>analyze-dependencies</id>
                         <inherited>false</inherited>
                     </execution>
                 </executions>

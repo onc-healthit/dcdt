@@ -7,6 +7,21 @@ import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class ToolArrayUtils {
+    @SuppressWarnings({ "varargs" })
+    public static Object[][] wrapElements(Object... elems) {
+        return wrapElements(asList(elems));
+    }
+
+    public static Object[][] wrapElements(Iterable<?> elems) {
+        List<Object[]> objsArrs = new ArrayList<>();
+
+        for (Object elem : elems) {
+            objsArrs.add(ArrayUtils.toArray(elem));
+        }
+
+        return objsArrs.toArray(new Object[objsArrs.size()][]);
+    }
+
     public static <T> T[] emptyToNull(T[] arr) {
         return ArrayUtils.isEmpty(arr) ? null : arr;
     }

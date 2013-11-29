@@ -15,6 +15,7 @@ import org.xbill.DNS.TextParseException;
 public class ToolDnsLookupServiceUnitTests extends ToolTestNgTests {
     @Autowired
     @DnsResolver(DnsResolverType.EXTERNAL)
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private ToolDnsLookupService dnsLookupServiceExternal;
 
     @Test

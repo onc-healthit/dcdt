@@ -63,6 +63,10 @@
             <artifactId>dnsjava</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
         </dependency>
@@ -198,6 +202,9 @@
                     <execution>
                         <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
+                    </execution>
+                    <execution>
+                        <id>analyze-dependencies</id>
                     </execution>
                 </executions>
             </plugin>

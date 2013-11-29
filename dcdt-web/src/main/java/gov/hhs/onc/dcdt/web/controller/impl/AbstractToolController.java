@@ -74,7 +74,7 @@ public abstract class AbstractToolController extends AbstractToolBean implements
 
     protected ModelMap displayMapAttributes(@Nullable ModelMap modelMap) {
         if (modelMap == null) {
-            return modelMap;
+            return null;
         }
 
         Object userObj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();

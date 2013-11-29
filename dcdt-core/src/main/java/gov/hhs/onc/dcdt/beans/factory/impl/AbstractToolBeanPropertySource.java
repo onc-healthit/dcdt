@@ -38,7 +38,7 @@ public abstract class AbstractToolBeanPropertySource<T extends ToolBean> extends
                 if (hasSource() && propName.startsWith(propNamePrefix)) {
                     propName = StringUtils.removeStart(propName, propNamePrefix);
 
-                    PropertyDescriptor sourcePropDesc = ToolBeanPropertyUtils.describeProperty(sourceClass, propName, true, null);
+                    PropertyDescriptor sourcePropDesc = ToolBeanPropertyUtils.describeProperty(sourceClass, propName);
 
                     if (sourcePropDesc == null) {
                         throw new ToolBeanException("Unable to describe bean (class=" + ToolClassUtils.getName(sourceClass) + ") property (name=" + propName

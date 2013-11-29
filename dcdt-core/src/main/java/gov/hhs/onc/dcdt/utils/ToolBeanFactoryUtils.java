@@ -2,17 +2,11 @@ package gov.hhs.onc.dcdt.utils;
 
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.config.BeanDefinition;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
 public abstract class ToolBeanFactoryUtils {
     public static <T> boolean containsBeanOfType(ListableBeanFactory beanFactory, Class<T> beanClass) {
@@ -67,6 +61,15 @@ public abstract class ToolBeanFactoryUtils {
         return beansMap;
     }
 
+    public static <T> String getBeanNameOfType(ListableBeanFactory beanFactory, Class<T> beanClass) {
+        return ToolListUtils.getFirst(getBeanNamesOfType(beanFactory, beanClass, true, true, true));
+    }
+
+    public static <T> String getBeanNameOfType(ListableBeanFactory beanFactory, Class<T> beanClass, boolean includeAncestors, boolean includeNonSingletons,
+        boolean allowEagerInit) {
+        return ToolListUtils.getFirst(getBeanNamesOfType(beanFactory, beanClass, includeAncestors, includeNonSingletons, allowEagerInit));
+    }
+
     public static <T> List<String> getBeanNamesOfType(ListableBeanFactory beanFactory, Class<T> beanClass) {
         return getBeanNamesOfType(beanFactory, beanClass, true, true, true);
     }
@@ -75,145 +78,5 @@ public abstract class ToolBeanFactoryUtils {
         boolean includeNonSingletons, boolean allowEagerInit) {
         return ToolArrayUtils.asList(includeAncestors ? BeanFactoryUtils.beanNamesForTypeIncludingAncestors(beanFactory, beanClass, includeNonSingletons,
             allowEagerInit) : beanFactory.getBeanNamesForType(beanClass, includeNonSingletons, allowEagerInit));
-    }
-
-    public static <T> boolean containsBeanDefinitionOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
-        return containsBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, false);
-    }
-
-    public static <T> boolean containsBeanDefinitionOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
-        boolean includeAbstract) {
-        return getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, includeAbstract) != null;
-    }
-
-    public static <T> Class<T> getBeanDefinitionClassOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
-        return getBeanDefinitionClassOfType(beanFactory, beanDefReg, beanClass, false);
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    public static <T> Class<T> getBeanDefinitionClassOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
-        boolean includeAbstract) {
-        return (Class<T>) getBeanDefinitionClass(beanDefReg, getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, includeAbstract));
-    }
-
-    public static <T> Set<Class<T>> getBeanDefinitionClassesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
-        return getBeanDefinitionClassesOfType(beanFactory, beanDefReg, beanClass, false);
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    public static <T> Set<Class<T>> getBeanDefinitionClassesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
-        boolean includeAbstract) {
-        List<BeanDefinition> beanDefs = getBeanDefinitionsOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
-        Set<Class<T>> beanDefClasses = new HashSet<>(beanDefs.size());
-        Class<?> beanDefClass;
-
-        for (BeanDefinition beanDef : beanDefs) {
-            if (!(beanDefClass = getBeanDefinitionClass(beanDefReg, beanDef)).equals(beanClass)) {
-                beanDefClasses.add((Class<T>) beanDefClass);
-            }
-        }
-
-        return beanDefClasses;
-    }
-
-    public static <T> BeanDefinition getBeanDefinitionOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
-        return getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, false);
-    }
-
-    public static <T> BeanDefinition getBeanDefinitionOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
-        boolean includeAbstract) {
-        String beanDefName = getBeanDefinitionNameOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
-
-        return (beanDefName != null) ? beanDefReg.getBeanDefinition(beanDefName) : null;
-    }
-
-    public static <T> List<BeanDefinition> getBeanDefinitionsOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
-        return getBeanDefinitionsOfType(beanFactory, beanDefReg, beanClass, false);
-    }
-
-    public static <T> List<BeanDefinition> getBeanDefinitionsOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
-        boolean includeAbstract) {
-        List<String> beanDefNames = getBeanDefinitionNamesOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
-        List<BeanDefinition> beanDefs = new ArrayList<>(beanDefNames.size());
-
-        for (String beanDefName : beanDefNames) {
-            beanDefs.add(beanDefReg.getBeanDefinition(beanDefName));
-        }
-
-        return beanDefs;
-    }
-
-    public static <T> Map<String, BeanDefinition> mapBeanDefinitionsOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg,
-        Class<T> beanClass) {
-        return mapBeanDefinitionsOfType(beanFactory, beanDefReg, beanClass, false);
-    }
-
-    public static <T> Map<String, BeanDefinition> mapBeanDefinitionsOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg,
-        Class<T> beanClass, boolean includeAbstract) {
-        List<String> beanDefNames = getBeanDefinitionNamesOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
-        Map<String, BeanDefinition> beanDefsMap = new LinkedHashMap<>(beanDefNames.size());
-
-        for (String beanDefName : beanDefNames) {
-            beanDefsMap.put(beanDefName, beanDefReg.getBeanDefinition(beanDefName));
-        }
-
-        return beanDefsMap;
-    }
-
-    public static <T> String getBeanDefinitionNameOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
-        return getBeanDefinitionNameOfType(beanFactory, beanDefReg, beanClass, false);
-    }
-
-    public static <T> String getBeanDefinitionNameOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
-        boolean includeAbstract) {
-        List<String> beanDefNames = getBeanDefinitionNamesOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
-
-        return !beanDefNames.isEmpty() ? ToolListUtils.getFirst(beanDefNames) : null;
-    }
-
-    public static <T> List<String> getBeanDefinitionNamesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
-        return getBeanDefinitionNamesOfType(beanFactory, beanDefReg, beanClass, false);
-    }
-
-    public static <T> List<String> getBeanDefinitionNamesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
-        boolean includeAbstract) {
-        List<String> beanDefNames = new ArrayList<>();
-        BeanDefinition beanDef;
-
-        for (String beanDefName : beanFactory.getBeanDefinitionNames()) {
-            beanDef = beanDefReg.getBeanDefinition(beanDefName);
-
-            if ((includeAbstract || !beanDef.isAbstract()) && ToolClassUtils.isAssignable(beanClass, getBeanDefinitionClass(beanDefReg, beanDef))) {
-                beanDefNames.add(beanDefName);
-            }
-        }
-
-        return beanDefNames;
-    }
-
-    // TODO: handle FactoryBean classes
-    public static Class<?> getBeanDefinitionClass(BeanDefinitionRegistry beanDefReg, @Nullable BeanDefinition beanDef) {
-        String beanDefClassName = getBeanDefinitionClassName(beanDefReg, beanDef);
-
-        return !StringUtils.isBlank(beanDefClassName) ? ToolClassUtils.forName(beanDefClassName, false) : null;
-    }
-
-    public static String getBeanDefinitionClassName(BeanDefinitionRegistry beanDefReg, @Nullable BeanDefinition beanDef) {
-        if (beanDef == null) {
-            return null;
-        }
-
-        String beanDefClassName = beanDef.getBeanClassName();
-
-        return !StringUtils.isBlank(beanDefClassName) ? beanDefClassName : getBeanDefinitionClassName(beanDefReg,
-            getBeanDefinition(beanDefReg, beanDef.getParentName()));
-    }
-
-    public static BeanDefinition getBeanDefinition(BeanDefinitionRegistry beanDefReg, @Nullable String beanDefName) {
-        return containsBeanDefinition(beanDefReg, beanDefName) ? beanDefReg.getBeanDefinition(beanDefName) : null;
-    }
-
-    public static boolean containsBeanDefinition(BeanDefinitionRegistry beanDefReg, @Nullable String beanDefName) {
-        return !StringUtils.isBlank(beanDefName) && beanDefReg.containsBeanDefinition(beanDefName);
     }
 }
