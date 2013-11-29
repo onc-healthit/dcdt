@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.test;
 
-
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
 import javax.annotation.Resource;
@@ -29,7 +28,7 @@ public abstract class ToolServiceTestNgFunctionalTests<T extends ToolService> ex
         this.service = this.createService();
         this.serviceTaskExecutor.submit(this.service);
 
-        while(!this.service.isRunning()) {
+        while (!this.service.isRunning()) {
             Thread.sleep(SERVICE_SETUP_THREAD_SLEEP_TIME_MS);
         }
     }
@@ -39,7 +38,7 @@ public abstract class ToolServiceTestNgFunctionalTests<T extends ToolService> ex
         if (this.service != null) {
             this.service.stop();
 
-            while(this.service.isRunning()) {
+            while (this.service.isRunning()) {
                 Thread.sleep(SERVICE_SETUP_THREAD_SLEEP_TIME_MS);
             }
         }
@@ -49,6 +48,7 @@ public abstract class ToolServiceTestNgFunctionalTests<T extends ToolService> ex
 
     @Required
     @Resource(name = "toolServiceTaskExecutor")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     protected void setServiceTaskExecutor(ThreadPoolTaskExecutor serviceTaskExecutor) {
         this.serviceTaskExecutor = serviceTaskExecutor;
     }

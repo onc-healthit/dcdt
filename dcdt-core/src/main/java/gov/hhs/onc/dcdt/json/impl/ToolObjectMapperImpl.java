@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.json.impl;
 
-
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.DeserializationFeature;

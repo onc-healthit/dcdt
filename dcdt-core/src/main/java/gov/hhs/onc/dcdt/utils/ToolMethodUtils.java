@@ -1,10 +1,11 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -88,18 +89,37 @@ public abstract class ToolMethodUtils {
     }
 
     @SuppressWarnings({ "varargs" })
-    public static Method getMethod(Class<?> clazz, String methodName, @Nullable Class<?> ... argClasses) {
-        return getMethod(clazz, methodName, ToolArrayUtils.asList(argClasses));
+    public static Method getMethod(Class<?> clazz, String methodName, @Nullable Class<?> ... methodParamClasses) {
+        return getMethod(clazz, true, methodName, methodParamClasses);
     }
 
-    public static Method getMethod(Class<?> clazz, String methodName, @Nullable Iterable<Class<?>> argClasses) {
-        List<Method> methods = getMethods(clazz);
+    @SuppressWarnings({ "varargs" })
+    public static Method getMethod(Class<?> clazz, boolean hierarchy, String methodName, @Nullable Class<?> ... methodParamClasses) {
+        return getMethod(clazz, hierarchy, methodName, ToolArrayUtils.asList(methodParamClasses));
+    }
 
-        if (methods != null) {
-            for (Method method : methods) {
-                if (method.getName().equals(methodName)) {
-                    if ((argClasses == null) || ToolClassUtils.isAssignable(ToolArrayUtils.asList(method.getParameterTypes()), argClasses)) {
-                        return method;
+    public static Method getMethod(Class<?> clazz, String methodName, @Nullable Iterable<Class<?>> methodParamClasses) {
+        return getMethod(clazz, true, methodName, methodParamClasses);
+    }
+
+    public static Method getMethod(Class<?> clazz, boolean hierarchy, String methodName, @Nullable Iterable<Class<?>> methodParamClasses) {
+        boolean ignoreMethodParams = (methodParamClasses == null);
+
+        for (Method methodDeclared : getDeclaredMethods(clazz)) {
+            if (methodDeclared.getName().equals(methodName)
+                && (ignoreMethodParams || ToolClassUtils.isAssignable(ToolArrayUtils.asList(methodDeclared.getParameterTypes()), methodParamClasses))) {
+                return methodDeclared;
+            }
+        }
+
+        if (hierarchy) {
+            Set<Class<?>> classHierarchy = ToolClassUtils.getHierarchy(clazz, false);
+            Method methodHierarchical;
+
+            if (classHierarchy != null) {
+                for (Class<?> classHierarchical : classHierarchy) {
+                    if ((methodHierarchical = getMethod(classHierarchical, true, methodName, methodParamClasses)) != null) {
+                        return methodHierarchical;
                     }
                 }
             }
@@ -108,13 +128,58 @@ public abstract class ToolMethodUtils {
         return null;
     }
 
-    public static List<Method> getMethods(Class<?> clazz) {
-        try {
-            return ToolArrayUtils.asList(clazz.getMethods());
-        } catch (NoClassDefFoundError ignored) {
+    public static Set<Method> getMethods(Class<?> clazz) {
+        return getMethods(clazz, true, null);
+    }
+
+    public static Set<Method> getMethods(Class<?> clazz, boolean hierarchy, @Nullable String methodName, @Nullable Class<?> ... methodParamClasses) {
+        return getMethods(clazz, hierarchy, methodName, ToolArrayUtils.asList(methodParamClasses));
+    }
+
+    public static Set<Method> getMethods(Class<?> clazz, boolean hierarchy, @Nullable String methodName, @Nullable Iterable<Class<?>> methodParamClasses) {
+        boolean ignoreMethodName = (methodName == null), ignoreMethodParams = (methodParamClasses == null);
+        Set<Method> methods = new LinkedHashSet<>();
+
+        for (Method methodDeclared : getDeclaredMethods(clazz)) {
+            if ((ignoreMethodName || methodDeclared.getName().equals(methodName))
+                && (ignoreMethodParams || ToolClassUtils.isAssignable(ToolArrayUtils.asList(methodDeclared.getParameterTypes()), methodParamClasses))) {
+                methods.add(methodDeclared);
+            }
         }
 
-        return null;
+        if (hierarchy) {
+            Set<Class<?>> classHierarchy = ToolClassUtils.getHierarchy(clazz, false);
+
+            if (classHierarchy != null) {
+                for (Class<?> classHierarchical : classHierarchy) {
+                    methods.addAll(getMethods(classHierarchical, true, methodName, methodParamClasses));
+                }
+            }
+        }
+
+        return methods;
+    }
+
+    public static List<Method> getDeclaredMethods(Class<?> clazz) {
+        try {
+            return ToolArrayUtils.asList(clazz.getDeclaredMethods());
+        } catch (NoClassDefFoundError ignored) {
+            return new ArrayList<>();
+        }
+    }
+
+    public static boolean isAssignable(@Nullable Method method1, @Nullable Method method2) {
+        return isAssignable(method1, method2, false);
+    }
+
+    public static boolean isAssignable(@Nullable Method method1, @Nullable Method method2, boolean ignoreMethodParams) {
+        return isAssignable(method1, method2, ignoreMethodParams, false);
+    }
+
+    public static boolean isAssignable(@Nullable Method method1, @Nullable Method method2, boolean ignoreMethodParams, boolean defaultIfNull) {
+        return ((method1 != null) && (method2 != null))
+            ? (method1.equals(method2) || (method1.getName().equals(method2.getName()) && (ignoreMethodParams || ToolClassUtils.isAssignable(
+                method1.getParameterTypes(), method2.getParameterTypes())))) : defaultIfNull;
     }
 
     public static String getName(@Nullable Method method) {

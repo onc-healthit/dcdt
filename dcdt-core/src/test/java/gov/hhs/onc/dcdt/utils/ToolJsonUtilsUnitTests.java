@@ -46,6 +46,7 @@ public class ToolJsonUtilsUnitTests extends ToolTestNgUnitTests {
         + "\", \"" + TEST_JSON_BEAN_PROP1_NAME + "\": \"" + TEST_JSON_BEAN_PROP1_VALUE + "\" }";
 
     @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private ToolObjectMapper toolObjMapper;
 
     private ToolTestJsonBean testJsonBean;

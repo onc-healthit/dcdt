@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.jsontype.NamedType;
 import com.fasterxml.jackson.databind.jsontype.SubtypeResolver;
 import com.fasterxml.jackson.databind.jsontype.impl.StdSubtypeResolver;
 import gov.hhs.onc.dcdt.json.ToolSubtypeResolver;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.utils.ToolBeanDefinitionUtils;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -47,7 +47,7 @@ public class ToolSubtypeResolverImpl extends StdSubtypeResolver implements ToolS
     protected Collection<NamedType> collectAndResolveSubtypes(Collection<NamedType> subtypes, Class<?> clazz) {
         Set<NamedType> subtypesNamed = new LinkedHashSet<>(subtypes);
         
-        for (Class<?> subtypeBeanClass : ToolBeanFactoryUtils.getBeanDefinitionClassesOfType(this.beanFactory, this.beanDefReg, clazz, true)) {
+        for (Class<?> subtypeBeanClass : ToolBeanDefinitionUtils.getBeanDefinitionClassesOfType(this.beanFactory, this.beanDefReg, clazz, true)) {
             subtypesNamed.add(new NamedType(subtypeBeanClass));
         }
         

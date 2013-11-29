@@ -4,7 +4,7 @@ package gov.hhs.onc.dcdt.config.impl;
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.impl.AbstractToolBeanFactoryPostProcessor;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.utils.ToolBeanDefinitionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +28,7 @@ public class InstanceConfigBeanFactoryPostProcessor extends AbstractToolBeanFact
         ConfigurableEnvironment env = this.appContext.getEnvironment();
 
         if (!ArrayUtils.contains(env.getActiveProfiles(), INSTANCE_CONFIGURED_PROFILE)
-            && ToolBeanFactoryUtils.containsBeanDefinitionOfType(beanFactory, (BeanDefinitionRegistry) beanFactory, InstanceConfig.class)) {
+            && ToolBeanDefinitionUtils.containsBeanDefinitionOfType(beanFactory, (BeanDefinitionRegistry)beanFactory, InstanceConfig.class)) {
             env.addActiveProfile(INSTANCE_CONFIGURED_PROFILE);
 
             LOGGER.debug("Instance configuration detected - adding active profile: " + INSTANCE_CONFIGURED_PROFILE);
