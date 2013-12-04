@@ -5,7 +5,7 @@ import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.ToolBeanDao;
 import gov.hhs.onc.dcdt.beans.ToolBeanDataAccessException;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.utils.ToolBeanDefinitionUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -215,8 +215,8 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     @Override
     @SuppressWarnings({ "unchecked" })
     public void afterPropertiesSet() throws Exception {
-        this.beanImplClass = (Class<? extends T>) ToolBeanFactoryUtils.getBeanDefinitionClass(this.beanDefReg,
-            ToolBeanFactoryUtils.getBeanDefinitionOfType(this.beanFactory, this.beanDefReg, this.beanClass));
+        this.beanImplClass = (Class<? extends T>) ToolBeanDefinitionUtils.getBeanDefinitionClass(this.beanDefReg,
+            ToolBeanDefinitionUtils.getBeanDefinitionOfType(this.beanFactory, this.beanDefReg, this.beanClass));
 
         if (this.beanImplClass == null) {
             throw new ToolBeanDataAccessException(String.format("Unable to find bean (class=%s) implementation class.", ToolClassUtils.getName(this.beanClass)));

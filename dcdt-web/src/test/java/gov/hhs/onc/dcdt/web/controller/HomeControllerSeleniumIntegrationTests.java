@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 
 @Test(groups = { "dcdt.test.all", "dcdt.test.it.all", "dcdt.test.it.web.all", "dcdt.test.it.web.controller.all", "dcdt.test.it.web.controller.home" })
 public class HomeControllerSeleniumIntegrationTests extends ToolWebTestNgSeleniumIntegrationTests {
-    @Test
+    @Test(enabled = false)
     public void testTitle() {
         this.selenium.open();
 

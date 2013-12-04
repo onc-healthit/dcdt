@@ -30,16 +30,36 @@
 
     <mvc:resources mapping="/static/**" location="/static/"/>
     
-    <beans:bean id="internalResourceViewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver"
-        p:exposeContextBeansAsAttributes="true"
+    <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <beans:property name="messageConverters">
+            <util:list>
+                <beans:bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"
+                    p:objectMapper-ref="toolObjMapperImpl"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="tilesviewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"
         p:exposePathVariables="true"
-        p:prefix="/WEB-INF/views/"
-        p:suffix=".jspx"
-        p:viewClass="org.springframework.web.servlet.view.JstlView"/>
+        p:viewClass="org.springframework.web.servlet.view.tiles3.TilesView"/>
+    
+    <beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer"
+        p:checkRefresh="true"
+        p:completeAutoload="true">
+        <beans:property name="definitions">
+            <util:list>
+                <beans:value>/WEB-INF/tiles/tiles-web-components.xml</beans:value>
+                <beans:value>/WEB-INF/tiles/tiles-web.xml</beans:value>
+            </util:list>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource"
         p:basenamePrefix="web/theme/"/>
     
     <beans:bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver"
         p:defaultThemeName="dcdt"/>
+    
+    <beans:bean id="adminControllerBeanRegDefPostProc"
+        class="gov.hhs.onc.dcdt.web.controller.impl.AdminBeanDefinitionRegistryPostProcessor" parent="toolBeanFactoryPostProc"/>
 </beans:beans>

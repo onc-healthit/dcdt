@@ -11,9 +11,11 @@ import org.testng.annotations.Test;
     "dcdt.test.unit.testcases.discovery.dao" })
 public class DiscoveryTestcaseDaoUnitTests extends ToolTestNgUnitTests {
     @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private List<DiscoveryTestcase> discoveryTestcases;
 
     @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private DiscoveryTestcaseDao discoveryTestcaseDao;
 
     @Test

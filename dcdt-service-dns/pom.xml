@@ -76,6 +76,10 @@
             <artifactId>dnsjava</artifactId>
         </dependency>
         <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
@@ -98,6 +102,10 @@
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
         </dependency>
         <dependency>
             <groupId>org.logback-extensions</groupId>
@@ -236,6 +244,9 @@
                     </execution>
                     <execution>
                         <id>unpack-test-dependency-resources</id>
+                    </execution>
+                    <execution>
+                        <id>analyze-dependencies</id>
                     </execution>
                 </executions>
             </plugin>

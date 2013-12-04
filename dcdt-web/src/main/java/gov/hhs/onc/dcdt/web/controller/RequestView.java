@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.web;
+package gov.hhs.onc.dcdt.web.controller;
 
 
 import java.lang.annotation.Documented;
@@ -11,7 +11,13 @@ import java.lang.annotation.Target;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
+@Target({ ElementType.TYPE })
 public @interface RequestView {
     String value();
+
+    String[] contentTypes() default {};
+
+    boolean forward() default false;
+
+    boolean redirect() default false;
 }

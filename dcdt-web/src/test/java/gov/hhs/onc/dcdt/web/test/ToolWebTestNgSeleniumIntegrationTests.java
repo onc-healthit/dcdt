@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.test;
 
-
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +11,7 @@ public abstract class ToolWebTestNgSeleniumIntegrationTests extends ToolWebTestN
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolWebTestNgSeleniumIntegrationTests.class);
 
     @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     protected ToolSelenium selenium;
 
     public void beforeWebSeleniumIntegrationTests() throws Exception {

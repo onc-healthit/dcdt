@@ -19,13 +19,13 @@ public class InstanceConfigUnitTests extends ToolTestNgUnitTests {
         BeanDefinition instanceBeanDef = this.beanDefReg.getBeanDefinition(INSTANCE_CONFIG_BEAN_NAME);
 
         this.beanDefReg.removeBeanDefinition(INSTANCE_CONFIG_BEAN_NAME);
-        this.getApplicationContext().refresh();
+        this.applicationContext.refresh();
 
         Assert.assertFalse(this.beanDefReg.containsBeanDefinition(INSTANCE_CONFIG_BEAN_NAME), "Unable to remove instance configuration Spring bean (name="
             + INSTANCE_CONFIG_BEAN_NAME + ").");
 
         this.beanDefReg.registerBeanDefinition(INSTANCE_CONFIG_BEAN_NAME, instanceBeanDef);
-        this.getApplicationContext().refresh();
+        this.applicationContext.refresh();
 
         Assert.assertTrue(this.beanDefReg.containsBeanDefinition(INSTANCE_CONFIG_BEAN_NAME), "Unable to re-register instance configuration Spring bean (name="
             + INSTANCE_CONFIG_BEAN_NAME + ").");

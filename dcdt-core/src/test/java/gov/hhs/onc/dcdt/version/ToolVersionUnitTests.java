@@ -10,6 +10,7 @@ import org.testng.annotations.Test;
 @Test(dependsOnGroups = { "dcdt.test.unit.utils.all" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.version" })
 public class ToolVersionUnitTests extends ToolTestNgUnitTests {
     @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private ToolVersion version;
 
     @Test
