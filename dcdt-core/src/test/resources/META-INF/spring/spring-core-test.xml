@@ -13,6 +13,24 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <beans:bean id="messageSource" parent="messageSourceBase" primary="true">
+        <beans:property name="basenames">
+            <beans:array merge="true">
+                <beans:value>META-INF/core/core-messages-test</beans:value>
+                <beans:value>core/core-messages-test</beans:value>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase">
+        <beans:property name="basenames">
+            <beans:array merge="true">
+                <beans:value>META-INF/core/core-messages-validation-test</beans:value>
+                <beans:value>core/core-messages-validation-test</beans:value>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+    
     <beans:bean id="instanceConfigTest" parent="instanceConfigImpl"
         p:directory="${dcdt.test.instance.dir}"
         p:domain="${dcdt.test.instance.domain}"/>

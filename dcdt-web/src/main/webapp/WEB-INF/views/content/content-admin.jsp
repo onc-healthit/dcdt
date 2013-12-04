@@ -7,41 +7,85 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
-<div id="admin-instance" class="form-container">
-    <spring-form:form name="admin-instance-form">
-        <div class="form-item">
-            <span class="form-item-label-container">
-                <tiles:insertDefinition name="component-glyph-label">
-                    <tiles:putAttribute name="classes" value="form-item-label"/>
-                    <tiles:putAttribute name="attrs">for="admin-instance-dir"</tiles:putAttribute>
-                    <tiles:putAttribute name="glyph-classes" value="glyphicon-folder-open glyphicon-type-info"/>
-                    <tiles:putAttribute name="content" value="Directory"/>
-                </tiles:insertDefinition>:
-            </span>
-            <input id="admin-instance-dir" name="dir" type="text"/>
+<form name="admin-instance-config">
+    <div class="input-group-sm">
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Invalid instance configuration</strong>:
+                    <ul>
+                    </ul>
+                </div>
+            </div>
         </div>
-        <div class="form-item">
-            <span class="form-item-label-container">
-                <tiles:insertDefinition name="component-glyph-label">
-                    <tiles:putAttribute name="classes" value="form-item-label"/>
-                    <tiles:putAttribute name="attrs">for="admin-instance-domain"</tiles:putAttribute>
-                    <tiles:putAttribute name="glyph-classes" value="glyphicon-link glyphicon-type-info"/>
-                    <tiles:putAttribute name="content" value="Domain"/>
-                </tiles:insertDefinition>:
-            </span>
-            <input id="admin-instance-domain" name="domain" type="text"/>
+        <div class="form-group">
+            <div>
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="attrs">for="admin-instance-config-dir"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-folder-open"/>
+                        <tiles:putAttribute name="content" value="Directory"/>
+                    </tiles:insertDefinition>:
+                </span>
+                <span class="form-cell form-cell-control">
+                    <input id="admin-instance-config-dir" class="input-sm form-control" name="directory" type="text"/>
+                </span>
+            </div>
         </div>
-        <tiles:insertDefinition name="component-glyph-button">
-            <tiles:putAttribute name="classes" value="admin-instance-button"/>
-            <tiles:putAttribute name="attrs">id="admin-instance-rm"</tiles:putAttribute>
-            <tiles:putAttribute name="glyph-classes" value="glyphicon-remove-circle glyphicon-type-error"/>
-            <tiles:putAttribute name="content" value="Remove Instance Configuration"/>
-        </tiles:insertDefinition>
-        <tiles:insertDefinition name="component-glyph-button">
-            <tiles:putAttribute name="classes" value="admin-instance-button"/>
-            <tiles:putAttribute name="attrs">id="admin-instance-set"</tiles:putAttribute>
-            <tiles:putAttribute name="glyph-classes" value="glyphicon-edit glyphicon-type-success"/>
-            <tiles:putAttribute name="content" value="Set Instance Configuration"/>
-        </tiles:insertDefinition>
-    </spring-form:form>
-</div>
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Invalid instance configuration directory</strong>:
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="attrs">for="admin-instance-config-domain"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-link"/>
+                        <tiles:putAttribute name="content" value="Domain"/>
+                    </tiles:insertDefinition>:
+                </span>
+                <span class="form-cell form-cell-control">
+                    <input id="admin-instance-config-domain" class="input-sm form-control" name="domain" type="text"/>
+                </span>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Invalid instance configuration domain</strong>:
+                    <ul>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group form-group-buttons">
+            <span class="btn-group btn-group-sm">
+                <tiles:insertDefinition name="component-glyph-button">
+                    <tiles:putAttribute name="attrs">id="admin-instance-config-rm"</tiles:putAttribute>
+                    <tiles:putAttribute name="glyph-classes" value="glyphicon-remove-circle glyphicon-type-error"/>
+                    <tiles:putAttribute name="content" value="Remove Instance Configuration"/>
+                </tiles:insertDefinition>
+                <tiles:insertDefinition name="component-glyph-button">
+                    <tiles:putAttribute name="attrs">id="admin-instance-config-set"</tiles:putAttribute>
+                    <tiles:putAttribute name="glyph-classes" value="glyphicon-edit glyphicon-type-success"/>
+                    <tiles:putAttribute name="content" value="Set Instance Configuration"/>
+                </tiles:insertDefinition>
+            </span>
+        </div>
+    </div>
+</form>

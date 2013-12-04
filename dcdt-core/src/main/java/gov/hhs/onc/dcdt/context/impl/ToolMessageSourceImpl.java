@@ -1,7 +1,6 @@
-package gov.hhs.onc.dcdt.web.context.impl;
+package gov.hhs.onc.dcdt.context.impl;
 
-
-import gov.hhs.onc.dcdt.web.context.ToolMessageSource;
+import gov.hhs.onc.dcdt.context.ToolMessageSource;
 import java.io.IOException;
 import java.util.Properties;
 import org.apache.commons.lang3.text.StrSubstitutor;
@@ -19,7 +18,7 @@ public class ToolMessageSourceImpl extends ReloadableResourceBundleMessageSource
         public String getProperty(String key) {
             String value = super.getProperty(key);
 
-            return (value != null) ? StrSubstitutor.replace(value, this.defaults) : value;
+            return (value != null) ? StrSubstitutor.replace(value, this.defaults) : null;
         }
     }
 

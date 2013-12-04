@@ -8,13 +8,22 @@ function setInstanceConfiguration(querySettings) {
             ]
         }),
         "error": function (jqXHR, textStatus, errorThrown) {
-            // TODO: implement UI error reporting
-            console.error("Unable to set instance configuration (status=" + textStatus + ")" + ((errorThrown) ? (":\n" + errorThrown) : "."));
+            console.error("Unable to set (status=" + textStatus + ") instance configuration" + ((errorThrown) ? (":\n" + errorThrown) : "."));
+            
+            addQueryErrorGlobal("Unable to set (status=" + textStatus + ") instance configuration" + ((errorThrown) ? (":\n" + errorThrown) : "."));
         },
         "success": function (data, textStatus, jqXhr) {
-            console.info("Successfully (status=" + textStatus + ") set instance configuration:\n" + $.encodeJson(data));
+            var dataJson = $.encodeJson(data);
             
-            getInstanceConfiguration();
+            if (isQuerySuccess(data)) {
+                console.info("Successfully set (status=" + textStatus + ") instance configuration:\n" + dataJson);
+                
+                getInstanceConfiguration();
+            } else {
+                console.error("Unable to set (status=" + textStatus + ") instance configuration:\n" + dataJson);
+                
+                addQueryErrors(data);
+            }
         },
         "type": "POST",
         "url": urlAdminInstanceSet
@@ -24,13 +33,22 @@ function setInstanceConfiguration(querySettings) {
 function removeInstanceConfiguration(querySettings) {
     queryInstanceConfiguration($.extend({
         "error": function (jqXHR, textStatus, errorThrown) {
-            // TODO: implement UI error reporting
-            console.error("Unable to remove instance configuration (status=" + textStatus + ")" + ((errorThrown) ? (":\n" + errorThrown) : "."));
+            console.error("Unable to remove (status=" + textStatus + ") instance configuration" + ((errorThrown) ? (":\n" + errorThrown) : "."));
+            
+            addQueryErrorGlobal("Unable to remove (status=" + textStatus + ") instance configuration" + ((errorThrown) ? (":\n" + errorThrown) : "."));
         },
         "success": function (data, textStatus, jqXhr) {
-            console.info("Successfully (status=" + textStatus + ") removed instance configuration:\n" + $.encodeJson(data));
+            var dataJson = $.encodeJson(data);
             
-            getInstanceConfiguration();
+            if (isQuerySuccess(data)) {
+                console.info("Successfully removed (status=" + textStatus + ") instance configuration:\n" + dataJson);
+                
+                getInstanceConfiguration();
+            } else {
+                console.error("Unable to remove (status=" + textStatus + ") instance configuration:\n" + dataJson);
+                
+                addQueryErrors(data);
+            }
         },
         "type": "POST",
         "url": urlAdminInstanceRemove
@@ -44,22 +62,31 @@ function getInstanceConfiguration(querySettings) {
         },
         "complete": function () {
             if (instanceConfig) {
-                dirInput.val(instanceConfig["directory"]);
-                domainInput.val(instanceConfig["domain"]);
+                instanceConfigDirInput.val(instanceConfig["directory"]);
+                instanceConfigDomainInput.val(instanceConfig["domain"]);
                 
-                rmButton.show();
+                instanceConfigRmButton.show();
             } else {
-                rmButton.hide();
+                instanceConfigRmButton.hide();
             }
         },
         "error": function (jqXHR, textStatus, errorThrown) {
-            // TODO: implement UI error reporting
-            console.error("Unable to get instance configuration (status=" + textStatus + ")" + ((errorThrown) ? (":\n" + errorThrown) : "."));
+            console.error("Unable to get (status=" + textStatus + ") instance configuration" + ((errorThrown) ? (":\n" + errorThrown) : "."));
+            
+            addQueryErrorGlobal("Unable to get (status=" + textStatus + ") instance configuration" + ((errorThrown) ? (":\n" + errorThrown) : "."));
         },
         "success": function (data, textStatus, jqXhr) {
-            console.info("Successfully (status=" + textStatus + ") got instance configuration:\n" + $.encodeJson(data));
+            var dataJson = $.encodeJson(data);
             
-            instanceConfig = data["items"][0];
+            if (isQuerySuccess(data)) {
+                console.info("Successfully got (status=" + textStatus + ") instance configuration:\n" + dataJson);
+                
+                instanceConfig = data["items"][0];
+            } else {
+                console.error("Unable to get (status=" + textStatus + ") instance configuration:\n" + dataJson);
+                
+                addQueryErrors(data);
+            }
         },
         "url": urlAdminInstance
     }, querySettings));
@@ -71,27 +98,63 @@ function queryInstanceConfiguration(querySettings) {
     }, querySettings));
 }
 
-var formInstance;
-var dirInput, domainInput;
-var rmButton, setButton;
+function isQuerySuccess(data) {
+    return data["status"].toLowerCase() == "success";
+}
+
+function addQueryErrors(data) {
+    var dataErrors = data["errors"];
+    
+    if (dataErrors) {
+        var dataErrorsGlobal = dataErrors["global"];
+        
+        if (dataErrorsGlobal) {
+            dataErrorsGlobal.forEach(function (index, item) {
+                addQueryErrorGlobal(item["messages"].join("<br/>"));
+            });
+        }
+        
+        var dataErrorsFields = dataErrors["fields"];
+        
+        if (dataErrorsFields) {
+            for (var dataErrorsFieldName in dataErrorsFields) {
+                if (dataErrorsFields.hasOwnProperty(dataErrorsFieldName)) {
+                    addQueryErrorField(dataErrorsFieldName, dataErrorsFields[dataErrorsFieldName]["messages"].join("<br/>"));
+                }
+            }
+        }
+    }
+}
+
+function addQueryErrorField(fieldName, errorMsg) {
+    formInstanceConfig.dcdt().data("dcdt").addErrorField(fieldName, errorMsg);
+}
+
+function addQueryErrorGlobal(errorMsg) {
+    formInstanceConfig.dcdt().data("dcdt").addErrorGlobal(errorMsg);
+}
+
+var formInstanceConfig;
+var instanceConfigDirInput, instanceConfigDomainInput;
+var instanceConfigRmButton, instanceConfigSetButton;
 var instanceConfig;
 
 $(document).ready(function () {
-    formInstance = $("form[name=\"admin-instance-form\"]");
-    dirInput = $("input#admin-instance-dir", formInstance);
-    domainInput = $("input#admin-instance-domain", formInstance);
-    rmButton = $("button#admin-instance-rm", formInstance);
-    setButton = $("button#admin-instance-set", formInstance);
+    formInstanceConfig = $("form[name=\"admin-instance-config\"]");
+    instanceConfigDirInput = $("input#admin-instance-config-dir", formInstanceConfig);
+    instanceConfigDomainInput = $("input#admin-instance-config-domain", formInstanceConfig);
+    instanceConfigRmButton = $("button#admin-instance-config-rm", formInstanceConfig);
+    instanceConfigSetButton = $("button#admin-instance-config-set", formInstanceConfig);
     
-    rmButton.click(function (event) {
+    instanceConfigRmButton.click(function (event) {
         removeInstanceConfiguration();
     });
     
-    setButton.click(function (event) {
+    instanceConfigSetButton.click(function (event) {
         instanceConfig = {
             "@type": "instanceConfig",
-            "directory": dirInput.val(),
-            "domain": domainInput.val()
+            "directory": instanceConfigDirInput.val(),
+            "domain": instanceConfigDomainInput.val()
         };
         
         setInstanceConfiguration();

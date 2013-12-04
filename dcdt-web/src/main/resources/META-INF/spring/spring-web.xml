@@ -28,20 +28,28 @@
                 <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:service/mail/service-mail.properties</beans:value>
                 <!--suppress SpringModelInspection -->
+                <beans:value>classpath*:web/web.properties</beans:value>
+                <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:web/web*.properties</beans:value>
             </beans:array>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="messageSource" class="gov.hhs.onc.dcdt.web.context.impl.ToolMessageSourceImpl"
-        p:cacheSeconds="30"
-        p:defaultEncoding="UTF-8"
-        p:fallbackToSystemLocale="false">
+    <beans:bean id="messageSource" parent="messageSourceBase" primary="true">
         <beans:property name="basenames">
-            <beans:list>
+            <beans:array merge="true">
                 <beans:value>META-INF/web/web-messages</beans:value>
-                <beans:value>WEB-INF/classes/web/web-messages</beans:value>
-            </beans:list>
+                <beans:value>web/web-messages</beans:value>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase">
+        <beans:property name="basenames">
+            <beans:array merge="true">
+                <beans:value>META-INF/web/web-messages-validation</beans:value>
+                <beans:value>web/web-messages-validation</beans:value>
+            </beans:array>
         </beans:property>
     </beans:bean>
 </beans:beans>

@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
+
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -20,6 +21,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -37,15 +39,18 @@ public abstract class AbstractToolController extends AbstractToolBean implements
     protected final static Class<?> USER_CLASS = User.class;
 
     @Autowired
+    protected MessageSource msgSource;
+    
+    @Autowired
     protected ToolVersion version;
 
     @Autowired
     protected GoogleAnalyticsConfig googleAnalyticsConfig;
 
     @ExceptionHandler({ Throwable.class })
-    @RequestViews({ @RequestView(value = "/error", forward = true),
-        @RequestView(value = "/error-json", contentTypes = { MediaType.APPLICATION_JSON_VALUE }, forward = true) })
-    public ModelAndView displayError(Throwable error, HttpServletRequest httpServletReq) throws ToolWebException {
+    @RequestViews({ @RequestView(value = "/errors", forward = true),
+        @RequestView(value = "/errors-json", contentTypes = { MediaType.APPLICATION_JSON_VALUE }, forward = true) })
+    public ModelAndView displayErrors(Throwable error, HttpServletRequest httpServletReq) throws ToolWebException {
         httpServletReq.setAttribute(MODEL_ATTR_KEY_ERROR, error);
         
         return this.display(null, httpServletReq.getContentType());

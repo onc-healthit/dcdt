@@ -1,14 +1,14 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class ToolArrayUtils {
     @SuppressWarnings({ "varargs" })
-    public static Object[][] wrapElements(Object... elems) {
+    public static Object[][] wrapElements(Object ... elems) {
         return wrapElements(asList(elems));
     }
 
@@ -22,37 +22,43 @@ public abstract class ToolArrayUtils {
         return objsArrs.toArray(new Object[objsArrs.size()][]);
     }
 
-    public static <T> T[] emptyToNull(T[] arr) {
+    @Nullable
+    public static <T> T[] emptyToNull(@Nullable T[] arr) {
         return ArrayUtils.isEmpty(arr) ? null : arr;
     }
 
-    public static <T> T getFirst(T[] arr) {
+    @Nullable
+    public static <T> T getFirst(@Nullable T[] arr) {
         return getFirst(arr, null);
     }
 
-    public static <T> T getFirst(T[] arr, T defaultIfEmpty) {
+    @Nullable
+    public static <T> T getFirst(@Nullable T[] arr, @Nullable T defaultIfEmpty) {
         return !ArrayUtils.isEmpty(arr) ? arr[0] : defaultIfEmpty;
     }
 
-    public static <T> T[] removeFirst(T[] arr) {
+    @Nullable
+    public static <T> T[] removeFirst(@Nullable T[] arr) {
         return !ArrayUtils.isEmpty(arr) ? ArrayUtils.remove(arr, 0) : arr;
     }
 
-    public static <T> T getLast(T[] arr) {
+    @Nullable
+    public static <T> T getLast(@Nullable T[] arr) {
         return getLast(arr, null);
     }
 
-    public static <T> T getLast(T[] arr, T defaultIfEmpty) {
+    @Nullable
+    public static <T> T getLast(@Nullable T[] arr, @Nullable T defaultIfEmpty) {
         return !ArrayUtils.isEmpty(arr) ? arr[arr.length - 1] : defaultIfEmpty;
     }
 
-    public static <T> T[] removeLast(T[] arr) {
+    public static <T> T[] removeLast(@Nullable T[] arr) {
         return !ArrayUtils.isEmpty(arr) ? ArrayUtils.remove(arr, arr.length - 1) : arr;
     }
 
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T> List<T> asList(T ... elems) {
+    public static <T> List<T> asList(@Nullable T ... elems) {
         return (elems != null) ? new ArrayList<>(Arrays.asList(elems)) : new ArrayList<T>();
     }
 }

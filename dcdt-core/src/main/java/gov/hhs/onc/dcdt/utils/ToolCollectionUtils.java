@@ -1,20 +1,22 @@
 package gov.hhs.onc.dcdt.utils;
 
 
-import java.util.Arrays;
 import java.util.Collection;
+import javax.annotation.Nullable;
 
 public abstract class ToolCollectionUtils {
     public final static int SIZE_UNKNOWN = -1;
 
+    @Nullable
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T> Collection<T> addAll(Collection<T> coll, Collection<? extends T> ... collsAdd) {
+    public static <T> Collection<T> addAll(@Nullable Collection<T> coll, Collection<? extends T> ... collsAdd) {
         return addAll(coll, ToolArrayUtils.asList(collsAdd));
     }
 
-    public static <T> Collection<T> addAll(Collection<T> coll, Collection<? extends Collection<? extends T>> collsAdd) {
-        if (!isEmpty(coll)) {
+    @Nullable
+    public static <T> Collection<T> addAll(@Nullable Collection<T> coll, @Nullable Iterable<? extends Collection<? extends T>> collsAdd) {
+        if ((coll != null) && (collsAdd != null)) {
             for (Collection<? extends T> collAdd : collsAdd) {
                 if (!isEmpty(collAdd)) {
                     coll.addAll(collAdd);
@@ -25,19 +27,20 @@ public abstract class ToolCollectionUtils {
         return coll;
     }
 
-    public static <T> Collection<T> add(Collection<T> coll, T element) {
-        if (!isEmpty(coll)) {
+    @Nullable
+    public static <T> Collection<T> add(@Nullable Collection<T> coll, @Nullable T element) {
+        if (coll != null) {
             coll.add(element);
         }
 
         return coll;
     }
 
-    public static <T> boolean isEmpty(Collection<T> coll) {
+    public static <T> boolean isEmpty(@Nullable Collection<T> coll) {
         return (coll == null) || coll.isEmpty();
     }
 
-    public static <T> int size(Collection<T> coll) {
+    public static <T> int size(@Nullable Collection<T> coll) {
         return (coll != null) ? coll.size() : SIZE_UNKNOWN;
     }
 }

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.ldap;
 
-
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.ldap.conf.DirectoryServiceConfig;
 import gov.hhs.onc.dcdt.service.ldap.conf.LdapServerConfig;
@@ -22,7 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 
 public class LdapService extends ToolService {
-    private final static List<String> CONTEXT_CONFIG_LOCS_LDAP = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-service-ldap*.xml");
+    private final static List<String> CONTEXT_CONFIG_LOCS_LDAP = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-service-ldap.xml",
+        "spring/spring-service-ldap*.xml");
 
     private final static Logger LOGGER = LoggerFactory.getLogger(LdapService.class);
 

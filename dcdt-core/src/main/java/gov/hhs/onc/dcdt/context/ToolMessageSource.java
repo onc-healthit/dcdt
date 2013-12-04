@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.web.context;
+package gov.hhs.onc.dcdt.context;
 
 import org.springframework.context.HierarchicalMessageSource;
 

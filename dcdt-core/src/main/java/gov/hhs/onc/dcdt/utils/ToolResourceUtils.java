@@ -1,16 +1,18 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 
@@ -18,10 +20,11 @@ public abstract class ToolResourceUtils {
     public final static String URL_PREFIX_DELIM = ":";
     public final static String CLASSPATH_ALL_URL_PREFIX = "classpath*" + URL_PREFIX_DELIM;
 
+    public final static ResourceLoader RESOURCE_LOADER_DEFAULT = new DefaultResourceLoader();
+    public final static ResourcePatternResolver RESOURCE_PATTERN_RESOLVER_DEFAULT = getResourcePatternResolver();
+
     private final static String RESOURCE_LOC_DELIMS = ",; \t\n";
     private final static String META_INF_RESOURCE_PATH = "META-INF";
-
-    private final static ResourcePatternResolver RES_PATTERN_RESOLVER_DEFAULT = ResourcePatternUtils.getResourcePatternResolver(new DefaultResourceLoader());
 
     public static List<String> getOverrideableResourceLocations(List<String> resourceLocs) {
         return getOverrideableResourceLocations(resourceLocs, CLASSPATH_ALL_URL_PREFIX);
@@ -59,7 +62,7 @@ public abstract class ToolResourceUtils {
     }
 
     public static Map<String, List<Resource>> mapResourceLocations(List<String> resourceLocs) {
-        return mapResourceLocations(resourceLocs, RES_PATTERN_RESOLVER_DEFAULT);
+        return mapResourceLocations(resourceLocs, RESOURCE_PATTERN_RESOLVER_DEFAULT);
     }
 
     public static Map<String, List<Resource>> mapResourceLocations(List<String> resourceLocs, ResourcePatternResolver resourcePatternResolver) {
@@ -78,16 +81,24 @@ public abstract class ToolResourceUtils {
     }
 
     public static List<Resource> resolveResourceLocations(String resourceLoc) {
-        return resolveResourceLocations(resourceLoc, RES_PATTERN_RESOLVER_DEFAULT);
+        return resolveResourceLocations(resourceLoc, RESOURCE_PATTERN_RESOLVER_DEFAULT);
     }
 
     public static List<Resource> resolveResourceLocations(String resourceLoc, ResourcePatternResolver resourcePatternResolver) {
         try {
             return ToolArrayUtils.asList(resourcePatternResolver.getResources(resourceLoc));
-        } catch (IOException e) {
+        } catch (IOException ignored) {
         }
 
         return null;
+    }
+
+    public static ResourcePatternResolver getResourcePatternResolver() {
+        return getResourcePatternResolver(null);
+    }
+
+    public static ResourcePatternResolver getResourcePatternResolver(@Nullable ResourceLoader resourceLoader) {
+        return ResourcePatternUtils.getResourcePatternResolver(ObjectUtils.defaultIfNull(resourceLoader, RESOURCE_LOADER_DEFAULT));
     }
 
     public static List<String> splitResourceLocations(String resourceLocsStr) {

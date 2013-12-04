@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.mail;
 
-
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.mail.james.ToolJamesServerApplicationContext;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
@@ -10,7 +9,7 @@ import org.springframework.context.ApplicationContext;
 
 public class MailService extends ToolService {
     private final static List<String> CONTEXT_CONFIG_LOCS_MAIL = ToolResourceUtils.getOverrideableResourceLocations(ToolArrayUtils.asList(
-        "spring/spring-service-mail*.xml", "service/mail/james/META-INF/org/apache/james/spring-server.xml"));
+        "spring/spring-service-mail.xml", "spring/spring-service-mail*.xml", "service/mail/james/META-INF/org/apache/james/spring-server.xml"));
 
     public MailService() {
         super();

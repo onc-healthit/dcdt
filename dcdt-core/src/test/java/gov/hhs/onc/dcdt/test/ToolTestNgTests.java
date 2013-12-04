@@ -19,7 +19,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
-@ContextConfiguration(loader = ToolTestNgContextLoader.class, locations = { "spring/spring-core*.xml" })
+@ContextConfiguration(loader = ToolTestNgContextLoader.class, locations = { "spring/spring-core.xml", "spring/spring-core-*.xml" })
 public abstract class ToolTestNgTests extends AbstractTestNGSpringContextTests implements BeanDefinitionRegistryAware, BeanFactoryAware, InitializingBean,
     MessageSourceAware {
     /**

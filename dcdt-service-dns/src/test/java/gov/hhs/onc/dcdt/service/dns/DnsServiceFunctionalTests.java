@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.TextParseException;
 
-@ContextConfiguration({ "spring/spring-service-dns*.xml" })
+@ContextConfiguration({ "spring/spring-service-dns.xml", "spring/spring-service-dns*.xml" })
 @Test(groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.service.all", "dcdt.test.func.service.dns" })
 public class DnsServiceFunctionalTests extends ToolServiceTestNgFunctionalTests<DnsService> {
     @Autowired
