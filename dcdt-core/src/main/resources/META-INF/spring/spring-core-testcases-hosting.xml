@@ -12,13 +12,152 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-    
+
     <beans:bean id="hostingTestcase" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase" parent="toolTestcase" abstract="true"/>
     <beans:bean id="hostingTestcaseResult" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
     
     <beans:bean id="hostingTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseImpl" parent="hostingTestcase" abstract="true"/>
     <beans:bean id="hostingTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseResultImpl" parent="hostingTestcaseResult"
         abstract="true"/>
-    
-    <beans:bean id="hostingTestcase1" parent="hostingTestcaseImpl"/>
+
+    <!--========== Hosting Test Cases ==========-->
+    <beans:bean id="hostingTestcase1" parent="hostingTestcaseImpl"
+        p:name="H1_DNS_AB_Normal"
+        p:nameDisplay="H1 - Normal address-bound certificate search in DNS"
+        p:binding="ADDRESS"
+        p:location="DNS"
+        p:description="This test case verifies that your system's DNS can host and return the expected address-bound X.509 certificate."
+        p:instructions="Enter a Direct address corresponding to an address-bound X.509 certificate that is hosted by your system's DNS and then click Submit. DCDT will attempt to discover the certificate and display the result on the screen."
+        p:rtm="1\, 3"
+        p:specifications-ref="dnsSpecs"/>
+
+    <beans:bean id="hostingTestcase2" parent="hostingTestcaseImpl"
+        p:name="H2_DNS_DB_Normal"
+        p:nameDisplay="H2 - Normal domain-bound certificate search in DNS"
+        p:binding="DOMAIN"
+        p:location="DNS"
+        p:description="This test case verifies that your system's DNS can host and return the expected domain-bound X.509 certificate."
+        p:instructions="Enter a Direct address corresponding to a domain-bound X.509 certificate that is hosted by your system's DNS and then click Submit. DCDT will attempt to discover the certificate and display the result on the screen."
+        p:rtm="1\, 3"
+        p:specifications-ref="dnsSpecs"/>
+
+    <beans:bean id="hostingTestcase3" parent="hostingTestcaseImpl"
+        p:name="H3_LDAP_AB_Normal"
+        p:nameDisplay="H3 - Normal address-bound certificate search in LDAP"
+        p:binding="ADDRESS"
+        p:location="LDAP"
+        p:description="This test case verifies that your system's LDAP server can host and return the expected address-bound X.509 certificate."
+        p:instructions="Enter a Direct address corresponding to an address-bound X.509 certificate that is hosted by your system's LDAP server and then click Submit. DCDT will attempt to discover the certificate and display the result on the screen."
+        p:rtm="2\, 3\, 5\, 6\, 7\, 8\, 9\, 10\, 11\, 12\, 13\, 14\, 15\, 16\, 17\, 19\, 20\, 21\, 22"
+        p:specifications="RFC 2798: Section 9.1.2"/>
+
+    <beans:bean id="hostingTestcase4" parent="hostingTestcaseImpl"
+        p:name="H4_LDAP_DB_Normal"
+        p:nameDisplay="H4 - Normal domain-bound certificate search in LDAP"
+        p:binding="DOMAIN"
+        p:location="LDAP"
+        p:description="This test case verifies that your system's LDAP server can host and return the expected domain-bound X.509 certificate."
+        p:instructions="Enter a Direct address corresponding to a domain-bound X.509 certificate that is hosted by your system's LDAP server and then click Submit. DCDT will attempt to discover the certificate and display the result on the screen."
+        p:rtm="2\, 3\, 5\, 6\, 7\, 8\, 9\, 10\, 11\, 12\, 13\, 14\, 15\, 16\, 17\, 19\, 20\, 21\, 22"
+        p:specifications="RFC 2798: Section 9.1.2"/>
+
+    <beans:bean id="hostingTestcase5" parent="hostingTestcaseImpl"
+        p:name="H5_LDAP_NB_InvalidDirectAddr"
+        p:nameDisplay="H5 - Invalid Direct address for certificate search in LDAP"
+        p:binding="NEITHER"
+        p:location="LDAP"
+        p:description="This test case verifies that your system's LDAP server does not return any X.509 certificates in response to a query for certificates associated with a Direct address that your system does not support."
+        p:instructions="Enter a Direct address that is not associated with a X.509 certificate hosted by your system's LDAP server and then click Submit. DCDT will attempt to discover the certificate but should not be able to find it\, so the server may take up to 15 seconds to display the result on the screen."
+        p:rtm="2\, 3\, 5\, 6\, 7\, 8\, 9\, 10\, 11\, 12\, 13\, 14\, 17\, 19\, 20\, 21\, 22">
+        <beans:property name="specifications">
+            <util:list>
+                <beans:value>RFC 4511: Section 4.5.2</beans:value>
+                <beans:value>RFC 4511: Appendix A.2</beans:value>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="hostingTestcase6" parent="hostingTestcaseImpl"
+        p:name="H6_DNS_EB_TCP"
+        p:nameDisplay="H6 - TCP connection handling in DNS"
+        p:binding="EITHER"
+        p:location="DNS"
+        p:description="This test case verifies that your system's DNS can support TCP connection requests."
+        p:instructions="Enter a Direct address corresponding to an address-bound or domain-bound X.509 certificate that is hosted by your system's DNS and then click Submit. DCDT will attempt to discover the certificate using a TCP connection and display the result on the screen."
+        p:rtm="1\, 3">
+        <beans:property name="specifications">
+            <util:list>
+                <beans:value>RFC 1035: Section 4.2</beans:value>
+                <beans:value>Direct Applicability Statement for Secure Health Transport: Section 5.4</beans:value>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+
+    <beans:bean id="hostingTestcase7" parent="hostingTestcaseImpl"
+        p:name="H7_DNS_EB_IPKIX"
+        p:nameDisplay="H7 - IPKIX URL Redirect in DNS"
+        p:binding="EITHER"
+        p:location="DNS"
+        p:description="This test case verifies that your system's DNS can host and return the expected address-bound or domain-bound certificate corresponding to the content served as a result of an IPKIX URL redirect."
+        p:instructions="Enter a Direct address corresponding to an address-bound or domain-bound certificate that can be reached by an IPKIX URL redirect and is hosted by your system's DNS and then click Submit. DCDT will attempt to discover the certificate and display the result on the screen."
+        p:rtm="1\, 3"
+        p:specifications-ref="dnsSpecs"/>
+
+    <beans:bean id="hostingTestcase8" parent="hostingTestcaseImpl"
+        p:name="H8_DNS_EB_AddrLetterCase"
+        p:nameDisplay="H8 - Mixed letter case in Direct address DNS query"
+        p:binding="EITHER"
+        p:location="DNS"
+        p:description="This test case verifies that your system's DNS can host and return the expected address-bound or domain-bound X.509 certificate in response to a query that contains a mixture of upper and lower case letters in the Direct address."
+        p:instructions="Enter a Direct address containing a mixture of lower and upper case letters corresponding to an address-bound or domain-bound X.509 certificate that is hosted by your system's DNS and then click Submit. DCDT will attempt to discover the certificate and display the result on the screen."
+        p:rtm="1\, 3"
+        p:specifications-ref="dnsSpecs"/>
+
+    <beans:bean id="hostingTestcase9" parent="hostingTestcaseImpl"
+        p:name="H9_LDAP_EB_AddrLetterCase"
+        p:nameDisplay="H9 - Mixed letter case in Direct address LDAP query"
+        p:binding="EITHER"
+        p:location="LDAP"
+        p:description="This test case verifies that your system's LDAP server can host and return the expected address-bound or domain-bound X.509 certificate in response to a query that contains a mixture of upper and lower case letters in the Direct address."
+        p:instructions="Enter a Direct address containing a mixture of upper and lower case letters corresponding to an address-bound or domain-bound X.509 certificate that is hosted by your system's LDAP server and then click Submit. DCDT will attempt to discover the certificate and display the result on the screen."
+        p:rtm="2\, 3\, 5\, 6\, 7\, 8\, 9\, 10\, 11\, 12\, 13\, 14\, 15\, 16\, 17\, 19\, 20\, 21\, 22"
+        p:specifications="RFC 2798: Section 9.1.3"/>
+
+    <util:list id="dnsSpecs">
+        <beans:value>RFC 4398: Section 2.1</beans:value>
+        <beans:value>Direct Applicability Statement for Secure Health Transport: Section 5.3</beans:value>
+    </util:list>
+
+    <!--========== Results ==========-->
+    <beans:bean id="hostingTestcaseResultABPassed" parent="hostingTestcaseResultImpl"
+        p:passed="true"
+        p:message="This test case passed. Verify that the discovered certificate is the intended certificate for the Direct address provided and that the rfc822Name of the SubjectAlternativeName extension contains the Direct address."/>
+
+    <beans:bean id="hostingTestcaseResultPassedDB" parent="hostingTestcaseResultImpl"
+        p:passed="true"
+        p:message="This test case passed. Verify that the discovered certificate is the intended certificate for the Direct address provided and that the rfc822Name of the SubjectAlternativeName extension contains the Direct address' domain."/>
+
+    <beans:bean id="hostingTestcaseResultPassedEB" parent="hostingTestcaseResultImpl"
+        p:passed="true"
+        p:message="This test case passed. Verify that the discovered certificate is the intended certificate for the Direct address provided and that the rfc822Name of the SubjectAlternativeName extension contains the Direct address\, for an address-bound certificate\, or its domain\, for a domain-bound certificate."/>
+
+    <beans:bean id="hostingTestcaseResultPassedNB" parent="hostingTestcaseResultImpl"
+        p:passed="true"
+        p:message="This test case passed. No certificates were found for the Direct address provided."/>
+
+    <beans:bean id="hostingTestcaseResultFailedAB" parent="hostingTestcaseResultImpl"
+        p:passed="false"
+        p:message="This test case failed. An address-bound certificate was not found for the Direct address provided."/>
+
+    <beans:bean id="hostingTestcaseResultFailedDB" parent="hostingTestcaseResultImpl"
+        p:passed="false"
+        p:message="This test case failed. A domain-bound certificate was not found for the Direct address provided."/>
+
+    <beans:bean id="hostingTestcaseResultFailedEB" parent="hostingTestcaseResultImpl"
+        p:passed="false"
+        p:message="This test case failed. Neither an address-bound nor a domain-bound certificate was found for the Direct address provided."/>
+
+    <beans:bean id="hostingTestcaseResultFailedNB" parent="hostingTestcaseResultImpl"
+        p:passed="false"
+        p:message="This test case failed. A certificate should not have been found for the Direct address provided."/>
 </beans:beans>
