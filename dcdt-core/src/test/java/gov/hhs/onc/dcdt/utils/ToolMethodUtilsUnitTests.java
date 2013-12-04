@@ -33,7 +33,7 @@ public class ToolMethodUtilsUnitTests extends ToolTestNgUnitTests {
         Assert.assertEquals(callerMethod.getName(), "testGetCaller", "Method caller method name is incorrect.");
     }
 
-    public static Pair<Class<?>, Method> getCallerMethod() {
+    private static Pair<Class<?>, Method> getCallerMethod() {
         return ToolMethodUtils.getCaller();
     }
 }

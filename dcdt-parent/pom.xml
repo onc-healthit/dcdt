@@ -119,7 +119,7 @@
             <id>DCDT Public Repositories</id>
             <url>http://maven.direct-test.com/content/groups/public</url>
             <snapshots>
-                <enabled>false</enabled>
+                <updatePolicy>daily</updatePolicy>
             </snapshots>
             <releases>
                 <updatePolicy>never</updatePolicy>
@@ -143,7 +143,7 @@
             <id>DCDT Public Repositories</id>
             <url>http://maven.direct-test.com/content/groups/public</url>
             <snapshots>
-                <enabled>false</enabled>
+                <updatePolicy>daily</updatePolicy>
             </snapshots>
             <releases>
                 <updatePolicy>never</updatePolicy>
@@ -163,6 +163,21 @@
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
                 <version>1.0.13</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-annotations</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>2.3.0</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.3.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -191,6 +206,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>javax.inject</groupId>
+                <artifactId>javax.inject</artifactId>
+                <version>1</version>
+            </dependency>
+            <dependency>
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>3.1.0</version>
@@ -198,9 +218,29 @@
             </dependency>
             <dependency>
                 <groupId>javax.servlet.jsp</groupId>
-                <artifactId>jsp-api</artifactId>
-                <version>2.2</version>
+                <artifactId>javax.servlet.jsp-api</artifactId>
+                <version>2.3.1</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>javax.servlet.jsp.jstl</groupId>
+                <artifactId>javax.servlet.jsp.jstl-api</artifactId>
+                <version>1.2.1</version>
+            </dependency>
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>1.1.0.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.jtidy</groupId>
+                <artifactId>jtidy</artifactId>
+                <version>r938</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.jtidy</groupId>
+                <artifactId>jtidyservlet</artifactId>
+                <version>8.0-SNAPSHOT</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -221,6 +261,36 @@
                 <groupId>org.apache.directory.jdbm</groupId>
                 <artifactId>apacheds-jdbm2</artifactId>
                 <version>2.0.0-M2</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-api</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-core</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-el</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-extras</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-jsp</artifactId>
+                <version>3.0.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.tiles</groupId>
+                <artifactId>tiles-servlet</artifactId>
+                <version>3.0.3</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
@@ -248,9 +318,21 @@
                 <version>1.11</version>
             </dependency>
             <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.servlet</artifactId>
+                <version>3.1.1</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish.web</groupId>
                 <artifactId>javax.el</artifactId>
                 <version>2.2.6</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.web</groupId>
+                <artifactId>javax.servlet.jsp</artifactId>
+                <version>2.3.2</version>
                 <scope>provided</scope>
             </dependency>
             <dependency>
@@ -276,6 +358,11 @@
                 See: https://community.jboss.org/thread/233642
                 -->
                 <version>4.2.7.Final</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-validator</artifactId>
+                <version>5.0.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.logback-extensions</groupId>
@@ -328,6 +415,10 @@
                 <version>3.2.5.RELEASE</version>
                 <exclusions>
                     <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>javax.el</groupId>
                         <artifactId>javax.el-api</artifactId>
                     </exclusion>
@@ -372,6 +463,12 @@
                 <groupId>org.tuckey</groupId>
                 <artifactId>urlrewritefilter</artifactId>
                 <version>4.0.4</version>
+            </dependency>
+            <dependency>
+                <groupId>taglibs</groupId>
+                <artifactId>standard</artifactId>
+                <version>1.1.2</version>
+                <scope>provided</scope>
             </dependency>
             <!-- Test dependencies -->
             <dependency>
@@ -556,6 +653,19 @@
                                 <includeTypes>jar</includeTypes>
                                 <excludes>META-INF/maven/**/pom.*,META-INF/MANIFEST.MF,META-INF/spring.*</excludes>
                                 <outputDirectory>${project.build.testResourcesDependencyDirectory}</outputDirectory>
+                            </configuration>
+                        </execution>
+                        <execution>
+                            <id>analyze-dependencies</id>
+                            <goals>
+                                <goal>analyze-only</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <!--
+                                TODO: uncomment if strict Maven dependency usage is to be enforced
+                                -->
+                                <!--<failOnWarning>true</failOnWarning>-->
                             </configuration>
                         </execution>
                     </executions>
@@ -1000,7 +1110,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <warSourceDirectory>${project.build.webappSourceDirectory}</warSourceDirectory>
-                                <warSourceExcludes>WEB-INF/classes/**,WEB-INF/spring/**,WEB-INF/web.xml</warSourceExcludes>
+                                <warSourceExcludes>WEB-INF/classes/**,WEB-INF/spring/**,WEB-INF/views/**/*.jsp,WEB-INF/web.xml</warSourceExcludes>
                                 <webappDirectory>${project.build.webappDirectory}</webappDirectory>
                             </configuration>
                         </execution>
@@ -1061,7 +1171,15 @@
                                 </dependency>
                                 <dependency>
                                     <groupId>javax.servlet.jsp</groupId>
-                                    <artifactId>jsp-api</artifactId>
+                                    <artifactId>javax.servlet.jsp-api</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>javax.servlet.jsp.jstl</groupId>
+                                    <artifactId>javax.servlet.jsp.jstl-api</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish</groupId>
+                                    <artifactId>javax.servlet</artifactId>
                                 </dependency>
                                 <dependency>
                                     <groupId>org.glassfish.web</groupId>
@@ -1069,7 +1187,15 @@
                                 </dependency>
                                 <dependency>
                                     <groupId>org.glassfish.web</groupId>
+                                    <artifactId>javax.servlet.jsp</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>org.glassfish.web</groupId>
                                     <artifactId>javax.servlet.jsp.jstl</artifactId>
+                                </dependency>
+                                <dependency>
+                                    <groupId>taglibs</groupId>
+                                    <artifactId>standard</artifactId>
                                 </dependency>
                             </dependencies>
                             <type>embedded</type>
@@ -1153,6 +1279,10 @@
                     <execution>
                         <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>analyze-dependencies</id>
                         <inherited>false</inherited>
                     </execution>
                 </executions>
@@ -1622,6 +1752,39 @@
                     </plugin>
                 </plugins>
             </build>
+        </profile>
+        <!-- Configuring build tier -->
+        <profile>
+            <id>default-build-tier</id>
+            <activation>
+                <property>
+                    <name>!project.build.tier</name>
+                </property>
+            </activation>
+            <properties>
+                <project.build.tier>default</project.build.tier>
+                <project.google.analytics.enabled>false</project.google.analytics.enabled>
+                <project.google.analytics.id/>
+                <project.google.analytics.url/>
+            </properties>
+        </profile>
+        <profile>
+            <id>dev-tier</id>
+            <properties>
+                <project.build.tier>dev</project.build.tier>
+                <project.google.analytics.enabled>true</project.google.analytics.enabled>
+                <project.google.analytics.id>UA-45838460-1</project.google.analytics.id>
+                <project.google.analytics.url>dev.direct-test.com</project.google.analytics.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>demo-tier</id>
+            <properties>
+                <project.build.tier>demo</project.build.tier>
+                <project.google.analytics.enabled>true</project.google.analytics.enabled>
+                <project.google.analytics.id>UA-37416124-2</project.google.analytics.id>
+                <project.google.analytics.url>demo.direct-test.com</project.google.analytics.url>
+            </properties>
         </profile>
         <!-- Set Clover license location property if not defined already -->
         <profile>
