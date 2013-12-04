@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <beans:bean id="dnsServerTaskExecutor" parent="toolServiceTaskExecutor"
+        p:corePoolSize="1"
+        p:maxPoolSize="5"/>
+    
+    <beans:bean id="dnsSocketServerTaskExecutor" parent="toolServiceTaskExecutor"
+        p:corePoolSize="#{ dnsServerTaskExecutor.corePoolSize * 2 }"
+        p:maxPoolSize="#{ dnsServerTaskExecutor.maxPoolSize * 2 }"/>
+    
+    <beans:bean id="dnsQueryTaskExecutor" parent="toolServiceTaskExecutor"
+        p:corePoolSize="#{ dnsServerTaskExecutor.corePoolSize * 10 }"
+        p:maxPoolSize="#{ dnsServerTaskExecutor.maxPoolSize * 20 }"
+        p:queueCapacity="#{ dnsServerTaskExecutor.maxPoolSize * 50 }"/>
+    
+    <beans:bean id="dnsServerDefault" class="gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig"
+        p:host="${dcdt.dns.server.1.host}"
+        p:port="${dcdt.dns.server.1.port}"/>
+</beans:beans>

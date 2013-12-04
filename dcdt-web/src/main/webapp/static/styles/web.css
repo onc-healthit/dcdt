@@ -1,0 +1,169 @@
+body {
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
+}
+
+input[type="password"],
+input[type="text"] {
+    width: 350px;
+    padding: 0 5px;
+}
+
+span.glyphicon {
+    font-size: 11px;
+}
+
+a span.glyphicon,
+button span.glyphicon,
+label span.glyphicon {
+    margin-right: 4px;
+}
+
+a span.glyphicon:focus
+a span.glyphicon:hover {
+    text-decoration: none;
+}
+
+span.glyphicon-type-error {
+    color: #B94A48;
+}
+
+a:focus span.glyphicon-type-error,
+button:focus span.glyphicon-type-error,
+a:hover span.glyphicon-type-error,
+button:hover span.glyphicon-type-error {
+    color: #953B39;
+}
+
+span.glyphicon-type-info {
+    color: #3A87AD;
+}
+
+a:focus span.glyphicon-type-info,
+button:focus span.glyphicon-type-info,
+a:hover span.glyphicon-type-info,
+button:hover span.glyphicon-type-info {
+    color: #2D6987;
+}
+
+span.glyphicon-type-link {
+    color: #428BCA;
+}
+
+a:focus span.glyphicon-type-link,
+button:focus span.glyphicon-type-link,
+a:hover span.glyphicon-type-link,
+button:hover span.glyphicon-type-link {
+    color: #2A6496;
+}
+
+span.glyphicon-type-success {
+    color: #468847;
+}
+
+a:focus span.glyphicon-type-success,
+button:focus span.glyphicon-type-success,
+a:hover span.glyphicon-type-success,
+button:hover span.glyphicon-type-success {
+    color: #356635;
+}
+
+span.glyphicon-type-warning {
+    color: #C09853;
+}
+
+a:focus span.glyphicon-type-warning,
+button:focus span.glyphicon-type-warning,
+a:hover span.glyphicon-type-warning,
+button:hover span.glyphicon-type-warning {
+    color: #A47E3C;
+}
+
+div#wrap {
+    height: auto;
+    min-height: 100%;
+    margin: 0 auto -52px;
+    padding: 0 0 52px;
+}
+
+div.navbar a.navbar-brand {
+    padding: 10px;
+    font-size: 17px;
+}
+
+ul.navbar-nav {
+    height: 52px;
+    padding: 10px;
+    line-height: 32px;
+}
+
+ul.navbar-nav li a,
+ul.navbar-nav li a span.glyphicon {
+    font-size: 13px;
+}
+
+ul.navbar-nav li a {
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: inherit;
+}
+
+ul.dropdown-menu,
+ul.dropdown-menu li.dropdown-header {
+    font-size: 11px;
+}
+
+span.caret {
+    margin-left: 5px;
+}
+
+div#content div.container {
+    padding: 52px 15px 0;
+}
+
+h1, h2, h3 {
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 18px;
+}
+
+h2 {
+    font-size: 16px;
+}
+
+h3 {
+    font-size: 14px;
+}
+
+div.form-container {
+    text-align: center;
+}
+
+div.form-item {
+    margin-bottom: 10px;
+}
+
+span.form-item-label-container {
+    display: inline-block;
+    width: 100px;
+    text-align: right;
+}
+
+label,
+label span.glyphicon {
+    font-size: 13px;
+}
+
+div#footer {
+    height: 60px;
+}
+
+div#footer div.footer-content {
+    text-align: center;
+}
+
+div#footer-version {
+    color: rgb(150, 150, 150);
+}

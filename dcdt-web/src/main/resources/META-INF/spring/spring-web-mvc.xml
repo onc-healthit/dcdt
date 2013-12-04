@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <mvc:annotation-driven/>
+    
+    <mvc:default-servlet-handler/>
+    
+    <mvc:interceptors>
+        <!-- Deactivating web content cache usage -->
+        <beans:bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor"
+            p:cacheSeconds="0"
+            p:useCacheControlHeader="true"
+            p:useCacheControlNoStore="true"
+            p:useExpiresHeader="true"/>
+    </mvc:interceptors>
+
+    <mvc:resources mapping="/static/**" location="/static/"/>
+    
+    <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <beans:property name="messageConverters">
+            <util:list>
+                <beans:bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"
+                    p:objectMapper-ref="toolObjMapperImpl"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="tilesviewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"
+        p:exposePathVariables="true"
+        p:viewClass="org.springframework.web.servlet.view.tiles3.TilesView"/>
+    
+    <beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer"
+        p:checkRefresh="true"
+        p:completeAutoload="true">
+        <beans:property name="definitions">
+            <util:list>
+                <beans:value>/WEB-INF/tiles/tiles-web-components.xml</beans:value>
+                <beans:value>/WEB-INF/tiles/tiles-web.xml</beans:value>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="themeSource" class="org.springframework.ui.context.support.ResourceBundleThemeSource"
+        p:basenamePrefix="web/theme/"/>
+    
+    <beans:bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver"
+        p:defaultThemeName="dcdt"/>
+    
+    <beans:bean id="adminControllerBeanRegDefPostProc"
+        class="gov.hhs.onc.dcdt.web.controller.impl.AdminBeanDefinitionRegistryPostProcessor" parent="toolBeanFactoryPostProc"/>
+</beans:beans>
