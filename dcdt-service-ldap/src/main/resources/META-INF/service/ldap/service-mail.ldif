@@ -1,0 +1,23 @@
+version: 1
+
+dn: dc=mail,dc=direct-test,dc=com
+objectClass: top
+objectClass: domain
+dc: mail
+
+dn: ou=users,dc=mail,dc=direct-test,dc=com
+objectClass: top
+objectClass: organizationalUnit
+ou: users
+
+dn: uid=dts500,ou=users,dc=mail,dc=direct-test,dc=com
+objectClass: top
+objectClass: inetOrgPerson
+objectClass: person
+objectClass: organizationalPerson
+cn: dts500
+sn: dts500
+mail: dts500@localhost
+uid: dts500
+userPassword:: e1NTSEF9VmQvczEySDFsdnhVVWtkTjZUZ2VrcjRhcUlWaVlVMlFzZjR3d2c9PQ==
+
