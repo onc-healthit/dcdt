@@ -18,7 +18,7 @@ public interface ToolBeanDao<T extends ToolBean> extends BeanDefinitionRegistryA
 
     public List<T> getBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException;
 
-    public List<T> getBeansById(Iterable<Serializable> beanIdValues) throws ToolBeanDataAccessException;
+    public List<T> getBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException;
 
     public T getBeanById(Serializable beanIdValue) throws ToolBeanDataAccessException;
 

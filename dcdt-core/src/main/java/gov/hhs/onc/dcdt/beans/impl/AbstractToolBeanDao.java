@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.HibernateException;
+import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
@@ -22,7 +23,6 @@ import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(readOnly = true)
 public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBeanDao<T> {
     @Autowired(required = false)
     protected SessionFactory sessionFactory;
@@ -68,7 +68,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     }
 
     @Override
-    public List<T> getBeansById(Iterable<Serializable> beanIdValues) throws ToolBeanDataAccessException {
+    public List<T> getBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
         Session session = this.getCheckedSession();
         List<T> beans = new ArrayList<>();
         T bean;
@@ -228,7 +228,11 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     }
 
     protected T getBeanById(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
-        return this.beanClass.cast(session.load(this.beanImplClass, beanIdValue));
+        try {
+            return this.beanClass.cast(session.load(this.beanImplClass, beanIdValue));
+        } catch(ObjectNotFoundException objectNotFoundException) {
+            return null;
+        }
     }
 
     protected List<T> getBeans(Session session, Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
