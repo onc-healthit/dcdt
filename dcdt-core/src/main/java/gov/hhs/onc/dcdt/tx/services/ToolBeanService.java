@@ -9,7 +9,7 @@ public interface ToolBeanService<T extends ToolBean> {
 
     public List<T> getBeansById(Iterable<? extends Serializable> beanIdValues);
 
-    public boolean containsBeans(Iterable<T> beans);
+    public boolean containsBeans(Iterable<? extends Serializable> beanIdValues);
 
     public List<T> addBeans(Iterable<T> beans);
 

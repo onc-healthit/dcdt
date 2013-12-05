@@ -57,15 +57,14 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
-    <logger name="org.springframework" level="warn" additivity="false">
-        <appender-ref ref="console"/>
-        <appender-ref ref="file"/>
-    </logger>
     <logger name="org.hibernate" level="warn" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
-    
+    <logger name="org.springframework" level="warn" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
     <root level="warn">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
