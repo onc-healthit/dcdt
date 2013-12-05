@@ -13,7 +13,7 @@ public class HostingTestcaseUnitTests extends ToolTestNgUnitTests {
         Assert.assertNotNull(hostingTestcase1.getName());
         Assert.assertEquals(hostingTestcase1.getBinding(), HostingTestcaseBinding.ADDRESS);
         Assert.assertEquals(hostingTestcase1.getLocation(), HostingTestcaseLocation.DNS);
-        Assert.assertEquals(hostingTestcase1.getSpecifications().size(), 2);
+        Assert.assertEquals(hostingTestcase1.getHostingTestcaseDescription().getSpecifications().size(), 2);
 
         HostingTestcaseResult hostingTestcaseResult = (HostingTestcaseResult) this.applicationContext.getBean("hostingTestcaseResultABPassed");
         hostingTestcase1.setResult(hostingTestcaseResult);
@@ -21,6 +21,6 @@ public class HostingTestcaseUnitTests extends ToolTestNgUnitTests {
         Assert.assertTrue(hostingTestcase1.getResult().getMessage().contains("This test case passed."));
 
         HostingTestcase hostingTestcase3 = (HostingTestcase) this.applicationContext.getBean("hostingTestcase3");
-        Assert.assertEquals(hostingTestcase3.getSpecifications().size(), 1);
+        Assert.assertEquals(hostingTestcase3.getHostingTestcaseDescription().getSpecifications().size(), 1);
     }
 }
