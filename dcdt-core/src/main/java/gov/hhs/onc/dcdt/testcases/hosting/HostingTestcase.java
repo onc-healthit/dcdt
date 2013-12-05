@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.hosting;
 
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
-import java.util.List;
 
 public interface HostingTestcase extends ToolTestcase<HostingTestcaseResult> {
     public HostingTestcaseBinding getBinding();
@@ -12,19 +11,7 @@ public interface HostingTestcase extends ToolTestcase<HostingTestcaseResult> {
 
     public void setLocation(HostingTestcaseLocation location);
 
-    public String getDescription();
+    public HostingTestcaseDescription getHostingTestcaseDescription();
 
-    public void setDescription(String description);
-
-    public String getInstructions();
-
-    public void setInstructions(String instructions);
-
-    public String getRtm();
-
-    public void setRtm(String rtm);
-
-    public List<String> getSpecifications();
-
-    public void setSpecifications(List<String> specifications);
+    public void setHostingTestcaseDescription(HostingTestcaseDescription hostingTestcaseDescription);
 }
