@@ -38,8 +38,8 @@
     <beans:bean id="messageSource" parent="messageSourceBase" primary="true">
         <beans:property name="basenames">
             <beans:array merge="true">
-                <beans:value>META-INF/web/web-messages</beans:value>
-                <beans:value>web/web-messages</beans:value>
+                <beans:value>classpath:META-INF/web/web-messages</beans:value>
+                <beans:value>classpath:web/web-messages</beans:value>
             </beans:array>
         </beans:property>
     </beans:bean>
@@ -47,8 +47,8 @@
     <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase">
         <beans:property name="basenames">
             <beans:array merge="true">
-                <beans:value>META-INF/web/web-messages-validation</beans:value>
-                <beans:value>web/web-messages-validation</beans:value>
+                <beans:value>classpath:META-INF/web/web-messages-validation</beans:value>
+                <beans:value>classpath:web/web-messages-validation</beans:value>
             </beans:array>
         </beans:property>
     </beans:bean>
