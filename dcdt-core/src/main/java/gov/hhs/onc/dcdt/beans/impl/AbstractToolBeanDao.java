@@ -1,15 +1,11 @@
 package gov.hhs.onc.dcdt.beans.impl;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.ToolBeanDao;
 import gov.hhs.onc.dcdt.beans.ToolBeanDataAccessException;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolBeanDefinitionUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -22,6 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBeanDao<T> {
     @Autowired(required = false)
@@ -39,16 +39,16 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     @Override
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public final boolean containsBeans(T ... beans) throws ToolBeanDataAccessException {
-        return this.containsBeans(ToolArrayUtils.asList(beans));
+    public final boolean containsBeans(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
+        return this.containsBeans(ToolArrayUtils.asList(beanIdValues));
     }
 
     @Override
-    public boolean containsBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
+    public boolean containsBeans(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
         Session session = this.getCheckedSession();
 
-        for (T bean : beans) {
-            if (!this.containsBean(session, bean)) {
+        for (Serializable beanIdValue : beanIdValues) {
+            if (!this.containsBean(session, beanIdValue)) {
                 return false;
             }
         }
@@ -57,8 +57,8 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     }
 
     @Override
-    public boolean containsBean(T bean) throws ToolBeanDataAccessException {
-        return this.containsBean(this.getCheckedSession(), bean);
+    public boolean containsBean(Serializable beanIdValue) throws ToolBeanDataAccessException {
+        return this.containsBean(this.getCheckedSession(), beanIdValue);
     }
 
     @Override
@@ -223,14 +223,17 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
         }
     }
 
-    protected boolean containsBean(Session session, T bean) throws ToolBeanDataAccessException {
-        return session.contains(bean);
+    protected boolean containsBean(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
+        if(null != this.getBeanById(session, beanIdValue)) {
+            return true;
+        }
+        return false;
     }
 
     protected T getBeanById(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
         try {
             return this.beanClass.cast(session.load(this.beanImplClass, beanIdValue));
-        } catch(ObjectNotFoundException objectNotFoundException) {
+        } catch (ObjectNotFoundException objectNotFoundException) {
             return null;
         }
     }

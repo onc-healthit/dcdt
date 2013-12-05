@@ -10,8 +10,8 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all" })
-public class ToolBeanServiceTest extends ToolTestNgFunctionalTests {
+@Test(groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.tx.all", "dcdt.test.func.tx.services" })
+public class ToolBeanServiceFunctionalTests extends ToolTestNgFunctionalTests {
 
     private static final String FOO = "foo";
     private static final String BAR = "bar";
@@ -72,6 +72,22 @@ public class ToolBeanServiceTest extends ToolTestNgFunctionalTests {
         removeBean(FOO);
         resultsList = getBean(FOO);
         Assert.assertEquals(resultsList.size(), 0);
+    }
+
+    @Test
+    public void testContainsBean() throws Exception {
+        List<String> idsList = new ArrayList<>();
+        idsList.add(FOO);
+        DiscoveryTestcaseImpl discoveryTestcaseImpl = new DiscoveryTestcaseImpl();
+        discoveryTestcaseImpl.setName(FOO);
+        List<ToolBean> toolBeansList = new ArrayList<>();
+        toolBeansList.add(discoveryTestcaseImpl);
+        Assert.assertFalse(toolBeanToolBeanService.containsBeans(idsList));
+        toolBeanToolBeanService.addBeans(toolBeansList);
+        toolBeansList = getBean(FOO);
+        Assert.assertTrue(toolBeanToolBeanService.containsBeans(idsList));
+        removeBean(FOO);
+        Assert.assertFalse(toolBeanToolBeanService.containsBeans(idsList));
     }
 
     private  List<ToolBean> getBean(final String id) {

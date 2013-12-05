@@ -23,8 +23,8 @@ public class ToolBeanServiceImpl<T extends ToolBean> implements ToolBeanService<
     }
 
     @Override
-    public boolean containsBeans(Iterable<T> beans) {
-        return toolBeanDao.containsBeans(beans);
+    public boolean containsBeans(Iterable<? extends Serializable> beanIdValues) {
+        return toolBeanDao.containsBeans(beanIdValues);
     }
 
     @Override
