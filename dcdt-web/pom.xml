@@ -202,21 +202,6 @@
             <artifactId>jansi</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.glassfish</groupId>
-            <artifactId>javax.servlet</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>javax.el</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.glassfish.web</groupId>
-            <artifactId>javax.servlet.jsp</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>javax.servlet.jsp.jstl</artifactId>
         </dependency>
@@ -604,52 +589,49 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.codehaus.cargo</groupId>
-                        <artifactId>cargo-maven2-plugin</artifactId>
-                        <configuration>
-                            <configuration>
-                                <home>${project.test.server.1.jetty.1.config.home}</home>
-                                <properties>
-                                    <cargo.hostname>${project.test.server.1.jetty.1.host}</cargo.hostname>
-                                    <cargo.rmi.port>${project.test.server.1.jetty.1.port.rmi}</cargo.rmi.port>
-                                    <cargo.servlet.port>${project.test.server.1.jetty.1.port.http}</cargo.servlet.port>
-                                </properties>
-                            </configuration>
-                        </configuration>
+                        <groupId>org.apache.tomcat.maven</groupId>
+                        <artifactId>tomcat7-maven-plugin</artifactId>
                         <executions>
                             <execution>
-                                <id>start-jetty-1</id>
+                                <id>start-tomcat-1</id>
                                 <phase>pre-integration-test</phase>
                                 <goals>
-                                    <goal>start</goal>
+                                    <goal>run-war-only</goal>
                                 </goals>
                                 <configuration>
-                                    <container>
-                                        <systemProperties>
-                                            <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
-                                            <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
-                                            <dcdt.test.instance.suffix>-it-web</dcdt.test.instance.suffix>
-                                        </systemProperties>
-                                    </container>
-                                    <deployables>
-                                        <deployable>
+                                    <configurationDir>${project.build.testWebappDirectory}-tomcat</configurationDir>
+                                    <contextReloadable>true</contextReloadable>
+                                    <fork>true</fork>
+                                    <hostName>${project.test.server.1.tomcat.1.host}</hostName>
+                                    <jarScanAllDirectories>false</jarScanAllDirectories>
+                                    <path>/</path>
+                                    <port>${project.test.server.1.tomcat.1.port.http}</port>
+                                    <systemProperties>
+                                        <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
+                                        <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
+                                        <dcdt.test.instance.suffix>-it-web</dcdt.test.instance.suffix>
+                                    </systemProperties>
+                                    <webapps>
+                                        <webapp>
+                                            <asWebapp>true</asWebapp>
                                             <groupId>${project.groupId}</groupId>
                                             <artifactId>${project.artifactId}</artifactId>
-                                            <type>${project.packaging}</type>
+                                            <version>${project.version}</version>
                                             <classifier>test</classifier>
-                                            <properties>
-                                                <context>/${project.test.server.1.jetty.1.context}</context>
-                                            </properties>
-                                        </deployable>
-                                    </deployables>
+                                            <contextPath>/${project.test.server.1.tomcat.1.context}</contextPath>
+                                        </webapp>
+                                    </webapps>
                                 </configuration>
                             </execution>
                             <execution>
-                                <id>stop-jetty-1</id>
+                                <id>stop-tomcat-1</id>
                                 <phase>post-integration-test</phase>
                                 <goals>
-                                    <goal>stop</goal>
+                                    <goal>shutdown</goal>
                                 </goals>
+                                <configuration>
+                                    <path>/</path>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
