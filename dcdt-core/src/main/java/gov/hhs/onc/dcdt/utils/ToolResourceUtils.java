@@ -39,11 +39,11 @@ public abstract class ToolResourceUtils {
     }
 
     public static List<String> getOverrideableResourceLocations(List<String> resourceLocs, String urlPrefixDefault, String baseResourcePath,
-        boolean urlPrefixToggle) {
-        List<String> overrideableResourceLocs = new ArrayList<>(resourceLocs.size() * 2);
+        boolean includeResourceRawLocs) {
+        List<String> overrideableResourceLocs = new ArrayList<>(resourceLocs.size() * (includeResourceRawLocs ? 4 : 2));
 
         for (String resourceLoc : resourceLocs) {
-            overrideableResourceLocs.addAll(getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, baseResourcePath, urlPrefixToggle));
+            overrideableResourceLocs.addAll(getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, baseResourcePath, includeResourceRawLocs));
         }
 
         return overrideableResourceLocs;
@@ -61,13 +61,16 @@ public abstract class ToolResourceUtils {
         return getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, baseResourcePath, false);
     }
 
-    public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault, String baseResourcePath, boolean urlPrefixToggle) {
+    public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault, String baseResourcePath,
+        boolean includeResourceRawLocs) {
         String[] resourceLocParts = resourceLoc.contains(URL_PREFIX_DELIM) ? resourceLoc.split(URL_PREFIX_DELIM, 2) : ArrayUtils.toArray(urlPrefixDefault,
             resourceLoc);
         String resourceLocBaseRaw = baseResourcePath + SystemUtils.FILE_SEPARATOR + resourceLocParts[1], resourceLocRaw = resourceLocParts[1];
-        List<String> resourceLocs = ToolArrayUtils.asList(resourceLocParts[0] + resourceLocBaseRaw, resourceLocRaw);
+        List<String> resourceLocs = ToolArrayUtils.asList(
+            ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocBaseRaw), URL_PREFIX_DELIM),
+            ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocRaw), URL_PREFIX_DELIM));
 
-        if (urlPrefixToggle) {
+        if (includeResourceRawLocs) {
             resourceLocs.add(1, resourceLocBaseRaw);
             resourceLocs.add(resourceLocRaw);
         }

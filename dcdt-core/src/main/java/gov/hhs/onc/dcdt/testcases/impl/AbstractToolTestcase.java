@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.testcases.impl;
 
-
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseResult;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -10,7 +10,8 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 @MappedSuperclass
-public abstract class AbstractToolTestcase<T extends ToolTestcaseResult> extends AbstractToolBean implements ToolTestcase<T> {
+public abstract class AbstractToolTestcase<T extends ToolTestcaseResult, U extends ToolTestcaseDescription> extends AbstractToolBean implements
+    ToolTestcase<T, U> {
     @Column(name = "name", nullable = false)
     @Id
     protected String name;
