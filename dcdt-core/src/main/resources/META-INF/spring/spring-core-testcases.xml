@@ -16,6 +16,4 @@
     <beans:bean id="toolTestcase" class="gov.hhs.onc.dcdt.testcases.ToolTestcase" abstract="true"/>
     <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseResult" abstract="true"/>
     <beans:bean id="toolTestcaseDescription" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription" abstract="true"/>
-    <beans:bean id="toolTestcaseDescriptionImpl" class="gov.hhs.onc.dcdt.testcases.impl.ToolTestcaseDescriptionImpl"
-        parent="toolTestcaseDescription" abstract="true"/>
 </beans:beans>

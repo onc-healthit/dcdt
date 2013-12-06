@@ -7,7 +7,7 @@ import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseLocation;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 
-public class HostingTestcaseImpl extends AbstractToolTestcase<HostingTestcaseResult> implements HostingTestcase {
+public class HostingTestcaseImpl extends AbstractToolTestcase<HostingTestcaseResult, HostingTestcaseDescription> implements HostingTestcase {
     private HostingTestcaseBinding binding;
     private HostingTestcaseLocation location;
     private HostingTestcaseDescription hostingTestcaseDescription;
