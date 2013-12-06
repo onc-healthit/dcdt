@@ -1,9 +1,8 @@
 package gov.hhs.onc.dcdt.testcases;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 
-public interface ToolTestcase<T extends ToolTestcaseResult> extends ToolBean {
+public interface ToolTestcase<T extends ToolTestcaseResult, U extends ToolTestcaseDescription> extends ToolBean {
     public String getMailAddress();
 
     public void setMailAddress(String mailAddr);
