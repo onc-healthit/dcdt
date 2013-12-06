@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.testcases.impl;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
 import java.util.List;
 
-public abstract class ToolTestcaseDescriptionImpl implements ToolTestcaseDescription {
+public abstract class AbstractToolTestcaseDescription implements ToolTestcaseDescription {
     private String description;
     private String instructions;
     private String rtm;
