@@ -61,10 +61,6 @@
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>
-                    <execution>
-                        <id>analyze-dependencies</id>
-                        <inherited>false</inherited>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>

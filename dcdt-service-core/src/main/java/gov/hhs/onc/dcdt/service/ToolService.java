@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service;
 
-
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.ArrayList;
@@ -20,7 +19,8 @@ public abstract class ToolService implements Runnable {
     protected boolean running;
 
     private final static List<String> CONTEXT_CONFIG_LOCS_CORE = ToolResourceUtils.getOverrideableResourceLocations(ToolArrayUtils.asList(
-        "spring/spring-core*.xml", "spring/spring-service.xml", "spring/spring-service-embedded.xml", "spring/spring-service-standalone.xml"));
+        "spring/spring-core.xml", "spring/spring-core*.xml", "spring/spring-service.xml", "spring/spring-service-embedded.xml",
+        "spring/spring-service-standalone.xml"));
 
     private final static long SERVICE_THREAD_SLEEP_TIME_MS = 1000L;
 
@@ -64,7 +64,7 @@ public abstract class ToolService implements Runnable {
     protected void startService() {
         Thread currentThread;
 
-        while((currentThread = Thread.currentThread()).isAlive() && !currentThread.isInterrupted()) {
+        while ((currentThread = Thread.currentThread()).isAlive() && !currentThread.isInterrupted()) {
             this.running = true;
 
             try {

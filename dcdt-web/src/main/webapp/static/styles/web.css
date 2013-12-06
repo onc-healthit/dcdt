@@ -3,20 +3,31 @@ body {
     font-size: 11px;
 }
 
-input[type="password"],
-input[type="text"] {
-    width: 350px;
-    padding: 0 5px;
+.has-info .help-block, .has-info .control-label, .has-info .radio, .has-info .checkbox, .has-info .radio-inline, .has-info .checkbox-inline {
+    color: #3A87AD;
+}
+.has-info .form-control {
+    border-color: #3A87AD;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+.has-info .form-control:focus {
+    border-color: #2D6987;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px #3AAED5;
+}
+.has-info .input-group-addon {
+    background-color: #D9EDF7;
+    border-color: #3A87AD;
+    color: #3A87AD;
 }
 
 span.glyphicon {
-    font-size: 11px;
+    font-size: 13px;
 }
 
 a span.glyphicon,
-button span.glyphicon,
-label span.glyphicon {
-    margin-right: 4px;
+label span.glyphicon,
+button span.glyphicon {
+    margin-right: 6px;
 }
 
 a span.glyphicon:focus
@@ -24,58 +35,66 @@ a span.glyphicon:hover {
     text-decoration: none;
 }
 
-span.glyphicon-type-error {
+span.glyphicon.glyphicon-type-error,
+*.has-error label span.glyphicon,
+button span.glyphicon.glyphicon-type-error {
     color: #B94A48;
 }
 
-a:focus span.glyphicon-type-error,
-button:focus span.glyphicon-type-error,
-a:hover span.glyphicon-type-error,
-button:hover span.glyphicon-type-error {
+a:focus span.glyphicon.glyphicon-type-error,
+button:focus span.glyphicon.glyphicon-type-error,
+a:hover span.glyphicon.glyphicon-type-error,
+button:hover span.glyphicon.glyphicon-type-error {
     color: #953B39;
 }
 
-span.glyphicon-type-info {
+span.glyphicon.glyphicon-type-info,
+label span.glyphicon,
+button span.glyphicon {
     color: #3A87AD;
 }
 
-a:focus span.glyphicon-type-info,
-button:focus span.glyphicon-type-info,
-a:hover span.glyphicon-type-info,
-button:hover span.glyphicon-type-info {
+a:focus span.glyphicon.glyphicon-type-info,
+button:focus span.glyphicon,
+a:hover span.glyphicon.glyphicon-type-info,
+button:hover span.glyphicon {
     color: #2D6987;
 }
 
-span.glyphicon-type-link {
+span.glyphicon.glyphicon-type-link {
     color: #428BCA;
 }
 
-a:focus span.glyphicon-type-link,
-button:focus span.glyphicon-type-link,
-a:hover span.glyphicon-type-link,
-button:hover span.glyphicon-type-link {
+a:focus span.glyphicon.glyphicon-type-link,
+button:focus span.glyphicon.glyphicon-type-link,
+a:hover span.glyphicon.glyphicon-type-link,
+button:hover span.glyphicon.glyphicon-type-link {
     color: #2A6496;
 }
 
-span.glyphicon-type-success {
+span.glyphicon.glyphicon-type-success,
+*.has-success label span.glyphicon,
+button span.glyphicon.glyphicon-type-success {
     color: #468847;
 }
 
-a:focus span.glyphicon-type-success,
-button:focus span.glyphicon-type-success,
-a:hover span.glyphicon-type-success,
-button:hover span.glyphicon-type-success {
+a:focus span.glyphicon.glyphicon-type-success,
+button:focus span.glyphicon.glyphicon-type-success,
+a:hover span.glyphicon.glyphicon-type-success,
+button:hover span.glyphicon.glyphicon-type-success {
     color: #356635;
 }
 
-span.glyphicon-type-warning {
+span.glyphicon.glyphicon-type-warning,
+*.has-warning label span.glyphicon,
+button span.glyphicon.glyphicon-type-warning {
     color: #C09853;
 }
 
-a:focus span.glyphicon-type-warning,
-button:focus span.glyphicon-type-warning,
-a:hover span.glyphicon-type-warning,
-button:hover span.glyphicon-type-warning {
+a:focus span.glyphicon.glyphicon-type-warning,
+button:focus span.glyphicon.glyphicon-type-warning,
+a:hover span.glyphicon.glyphicon-type-warning,
+button:hover span.glyphicon.glyphicon-type-warning {
     color: #A47E3C;
 }
 
@@ -97,8 +116,7 @@ ul.navbar-nav {
     line-height: 32px;
 }
 
-ul.navbar-nav li a,
-ul.navbar-nav li a span.glyphicon {
+ul.navbar-nav li a {
     font-size: 13px;
 }
 
@@ -137,22 +155,88 @@ h3 {
     font-size: 14px;
 }
 
-div.form-container {
-    text-align: center;
+ol, ul {
+    margin-bottom: 0;
 }
 
-div.form-item {
+div.input-group-sm div.form-group {
     margin-bottom: 10px;
 }
 
-span.form-item-label-container {
-    display: inline-block;
-    width: 100px;
+div.input-group-sm div.form-group.form-group-addons:not(:first-child),
+div.input-group-sm div.form-group.form-group-buttons {
+    margin-left: 35px;
+}
+
+div.input-group-sm div.form-group.form-group-addons div:not(:first-child) {
+    margin-top: 5px;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon,
+div.input-group-sm div.form-group.form-group-buttons span.button-group,
+div.input-group-sm div.form-group span.form-cell {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon,
+div.input-group-sm div.form-group.form-group-buttons span.btn-group {
+    column-span: all;
+    -webkit-column-span: all;
+    -moz-column-span: all;
+    -ms-column-span: all;
+    -o-column-span: all;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon {
+    display: none;
+    width: 675px;
+    text-align: left;
+    font-size: 11px;
+    white-space: normal;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon.input-group-addon-active {
+    display: table-cell;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon:first-child,
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon:last-child {
+    border: 1px solid;
+    border-radius: 4px;
+}
+
+div.input-group-sm div.form-group span.form-cell.form-cell-label {
+    min-width: 125px;
+    padding-right: 10px;
     text-align: right;
 }
 
-label,
-label span.glyphicon {
+div.input-group-sm div.form-group span.form-cell.form-cell-label label {
+    font-size: 13px;
+}
+
+div.input-group-sm div.form-group span.form-cell.form-cell-control input.form-control[type="password"],
+div.input-group-sm div.form-group span.form-cell.form-cell-control input.form-control[type="text"] {
+    width: 500px;
+    padding: 0 5px;
+}
+
+div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn {
+    margin-left: 5px;
+}
+
+div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn:first-child,
+div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn:last-child {
+    border-radius: 3px;
+}
+
+div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn:first-child {
+    margin-left: 0;
+}
+
+div.input-group-sm div.form-group.form-group-buttons span.btn-group.btn-group-sm button.btn {
     font-size: 13px;
 }
 

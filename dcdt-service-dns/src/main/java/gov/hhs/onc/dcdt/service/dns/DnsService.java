@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.dns;
 
-
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
@@ -12,7 +11,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public class DnsService extends ToolService {
-    private final static List<String> CONTEXT_CONFIG_LOCS_DNS = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-service-dns*.xml");
+    private final static List<String> CONTEXT_CONFIG_LOCS_DNS = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-service-dns.xml",
+        "spring/spring-service-dns*.xml");
 
     @Autowired
     private ThreadPoolTaskExecutor dnsServerTaskExecutor;

@@ -230,7 +230,7 @@
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>1.1.0.Final</version>
+                <version>1.0.0.GA</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.jtidy</groupId>
@@ -318,24 +318,6 @@
                 <version>1.11</version>
             </dependency>
             <dependency>
-                <groupId>org.glassfish</groupId>
-                <artifactId>javax.servlet</artifactId>
-                <version>3.1.1</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.web</groupId>
-                <artifactId>javax.el</artifactId>
-                <version>2.2.6</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.glassfish.web</groupId>
-                <artifactId>javax.servlet.jsp</artifactId>
-                <version>2.3.2</version>
-                <scope>provided</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.glassfish.web</groupId>
                 <artifactId>javax.servlet.jsp.jstl</artifactId>
                 <version>1.2.2</version>
@@ -362,7 +344,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.0.1.Final</version>
+                <version>4.3.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.logback-extensions</groupId>
@@ -653,19 +635,6 @@
                                 <includeTypes>jar</includeTypes>
                                 <excludes>META-INF/maven/**/pom.*,META-INF/MANIFEST.MF,META-INF/spring.*</excludes>
                                 <outputDirectory>${project.build.testResourcesDependencyDirectory}</outputDirectory>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>analyze-dependencies</id>
-                            <goals>
-                                <goal>analyze-only</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
-                                <!--
-                                TODO: uncomment if strict Maven dependency usage is to be enforced
-                                -->
-                                <!--<failOnWarning>true</failOnWarning>-->
                             </configuration>
                         </execution>
                     </executions>
@@ -1153,62 +1122,6 @@
                     </configuration>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.cargo</groupId>
-                    <artifactId>cargo-maven2-plugin</artifactId>
-                    <version>1.4.5</version>
-                    <inherited>true</inherited>
-                    <configuration>
-                        <container>
-                            <containerId>jetty9x</containerId>
-                            <dependencies>
-                                <dependency>
-                                    <groupId>javax.el</groupId>
-                                    <artifactId>javax.el-api</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>javax.servlet</groupId>
-                                    <artifactId>javax.servlet-api</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>javax.servlet.jsp</groupId>
-                                    <artifactId>javax.servlet.jsp-api</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>javax.servlet.jsp.jstl</groupId>
-                                    <artifactId>javax.servlet.jsp.jstl-api</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish</groupId>
-                                    <artifactId>javax.servlet</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.web</groupId>
-                                    <artifactId>javax.el</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.web</groupId>
-                                    <artifactId>javax.servlet.jsp</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>org.glassfish.web</groupId>
-                                    <artifactId>javax.servlet.jsp.jstl</artifactId>
-                                </dependency>
-                                <dependency>
-                                    <groupId>taglibs</groupId>
-                                    <artifactId>standard</artifactId>
-                                </dependency>
-                            </dependencies>
-                            <type>embedded</type>
-                        </container>
-                        <configuration>
-                            <properties>
-                                <cargo.jvmargs>-Xms512m -Xmx768m -XX:PermSize=256m -XX:MaxPermSize=512m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</cargo.jvmargs>
-                            </properties>
-                        </configuration>
-                        <wait>true</wait>
-                    </configuration>
-                </plugin>
-                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>selenium-maven-plugin</artifactId>
                     <version>2.3</version>
@@ -1279,10 +1192,6 @@
                     <execution>
                         <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>analyze-dependencies</id>
                         <inherited>false</inherited>
                     </execution>
                 </executions>

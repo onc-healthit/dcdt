@@ -6,14 +6,19 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.web.json.impl.ErrorJsonWrapperImpl;
+import java.util.List;
 
 @JsonRootName("error")
 @JsonSubTypes({ @Type(ErrorJsonWrapperImpl.class) })
 public interface ErrorJsonWrapper extends ToolBean {
-    @JsonProperty(value = "message")
-    public String getMessage();
+    public boolean hasMessages();
 
-    public void setMessage(String msg);
+    @JsonProperty(value = "messages")
+    public List<String> getMessages();
+
+    public void setMessages(List<String> msgs);
+
+    public boolean hasStackTrace();
 
     @JsonProperty(value = "stackTrace")
     public String getStackTrace();

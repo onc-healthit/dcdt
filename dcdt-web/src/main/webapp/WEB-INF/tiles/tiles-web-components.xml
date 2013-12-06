@@ -23,12 +23,12 @@
         <put-attribute name="glyph-classes" cascade="true" type="string"/>
         <put-attribute name="glyph-attrs-base" cascade="true" type="string"/>
         <put-attribute name="glyph-attrs" cascade="true" type="string"/>
-        <put-attribute name="glyph-def" value="component-glyph" type="definition"/>
+        <put-attribute name="glyph-def" value="component-glyph"/>
     </definition>
     
     <definition name="component-glyph-button" extends="component-glyph-item">
         <put-attribute name="tag" value="button" cascade="true" type="string"/>
-        <put-attribute name="classes-base" value="btn btn-default btn-sm" cascade="true" type="string"/>
+        <put-attribute name="classes-base" value="btn btn-default" cascade="true" type="string"/>
         <put-attribute name="attrs-base" value="type=&quot;button&quot;" cascade="true" type="string"/>
     </definition>
     

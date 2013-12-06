@@ -1,10 +1,9 @@
 package gov.hhs.onc.dcdt.config.impl;
 
-
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
-import gov.hhs.onc.dcdt.utils.ToolFileUtils;
+import gov.hhs.onc.dcdt.io.utils.ToolFileUtils;
 import java.io.File;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -16,7 +15,7 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
 
     @Override
     public boolean hasDirectory() {
-        return ToolFileUtils.isDirectory(dir);
+        return ToolFileUtils.isDirectory(ToolFileUtils.toPath(this.dir));
     }
 
     @Override
@@ -41,7 +40,9 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
 
     @Override
     public void setDirectoryPath(String dirPath) {
-        this.dir = new File(dirPath);
+        if (!StringUtils.isBlank(dirPath)) {
+            this.dir = new File(dirPath);
+        }
     }
 
     @Override

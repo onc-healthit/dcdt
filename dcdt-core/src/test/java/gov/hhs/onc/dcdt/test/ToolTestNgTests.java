@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.test;
 
 import gov.hhs.onc.dcdt.beans.factory.BeanDefinitionRegistryAware;
+import gov.hhs.onc.dcdt.context.ToolMessageSource;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolIterableUtils;
@@ -19,7 +20,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 
-@ContextConfiguration(loader = ToolTestNgContextLoader.class, locations = { "spring/spring-core*.xml" })
+@ContextConfiguration(loader = ToolTestNgContextLoader.class, locations = { "spring/spring-core.xml", "spring/spring-core-*.xml" })
 public abstract class ToolTestNgTests extends AbstractTestNGSpringContextTests implements BeanDefinitionRegistryAware, BeanFactoryAware, InitializingBean,
     MessageSourceAware {
     /**

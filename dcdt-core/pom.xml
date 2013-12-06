@@ -203,9 +203,6 @@
                         <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
                     </execution>
-                    <execution>
-                        <id>analyze-dependencies</id>
-                    </execution>
                 </executions>
             </plugin>
             <plugin>

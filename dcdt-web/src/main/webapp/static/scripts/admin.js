@@ -1,101 +1,98 @@
-function setInstanceConfiguration(querySettings) {
-    queryInstanceConfiguration($.extend({
-        "contentType": "application/json",
-        "data": $.encodeJson({
-            "@type": "request",
-            "items": [
-                instanceConfig
-            ]
-        }),
-        "error": function (jqXHR, textStatus, errorThrown) {
-            // TODO: implement UI error reporting
-            console.error("Unable to set instance configuration (status=" + textStatus + ")" + ((errorThrown) ? (":\n" + errorThrown) : "."));
-        },
-        "success": function (data, textStatus, jqXhr) {
-            console.info("Successfully (status=" + textStatus + ") set instance configuration:\n" + $.encodeJson(data));
-            
-            getInstanceConfiguration();
-        },
-        "type": "POST",
-        "url": urlAdminInstanceSet
-    }, querySettings));
-}
-
-function removeInstanceConfiguration(querySettings) {
-    queryInstanceConfiguration($.extend({
-        "error": function (jqXHR, textStatus, errorThrown) {
-            // TODO: implement UI error reporting
-            console.error("Unable to remove instance configuration (status=" + textStatus + ")" + ((errorThrown) ? (":\n" + errorThrown) : "."));
-        },
-        "success": function (data, textStatus, jqXhr) {
-            console.info("Successfully (status=" + textStatus + ") removed instance configuration:\n" + $.encodeJson(data));
-            
-            getInstanceConfiguration();
-        },
-        "type": "POST",
-        "url": urlAdminInstanceRemove
-    }, querySettings));
-}
-
-function getInstanceConfiguration(querySettings) {
-    queryInstanceConfiguration($.extend({
-        "beforeSend": function () {
-            instanceConfig = null;
-        },
-        "complete": function () {
-            if (instanceConfig) {
-                dirInput.val(instanceConfig["directory"]);
-                domainInput.val(instanceConfig["domain"]);
-                
-                rmButton.show();
-            } else {
-                rmButton.hide();
+(function ($) {
+    $.extend($.dcdt, {
+        "admin": $.extend(function () {
+            return this;
+        }, {
+            "setInstanceConfig": function () {
+                return $.dcdt.beans.setBean({
+                    "data": $.encodeJson({
+                        "@type": "request",
+                        "items": [
+                            instanceConfig
+                        ]
+                    }),
+                    "queryBeanSuccess": function (data, status, jqXhr) {
+                        $.dcdt.admin.getInstanceConfig();
+                    },
+                    "queryBeanErrors": function (data, status, jqXhr) {
+                        $.dcdt.beans.addQueryErrors(instanceConfigForm, data);
+                    },
+                    "preQueryBean": function (jqXhr, settings) {
+                        $.dcdt.beans.clearBeanErrors(instanceConfigForm);
+                    },
+                    "url": URL_ADMIN_INSTANCE_CONFIG_SET
+                });
+            },
+            "removeInstanceConfig": function () {
+                return $.dcdt.beans.removeBean({
+                    "queryBeanSuccess": function (data, status, jqXhr) {
+                        $.dcdt.admin.getInstanceConfig();
+                    },
+                    "queryBeanErrors": function (data, status, jqXhr) {
+                        $.dcdt.beans.addQueryErrors(instanceConfigForm, data);
+                    },
+                    "preQueryBean": function (jqXhr, settings) {
+                        $.dcdt.beans.clearBeanErrors(instanceConfigForm);
+                    },
+                    "url": URL_ADMIN_INSTANCE_CONFIG_RM
+                });
+            },
+            "getInstanceConfig": function () {
+                return $.dcdt.beans.getBean({
+                    "queryBeanSuccess": function (data, status, jqXhr) {
+                        instanceConfig = data["items"][0];
+                    },
+                    "queryBeanErrors": function (data, status, jqXhr) {
+                        $.dcdt.beans.addQueryErrors(instanceConfigForm, data);
+                    },
+                    "postQueryBean": function (jqXhr, status) {
+                        if (instanceConfig) {
+                            instanceConfigDirInput.val(instanceConfig["directory"]);
+                            instanceConfigDomainInput.val(instanceConfig["domain"]);
+                            
+                            instanceConfigRmButton.removeAttr("disabled");
+                        } else {
+                            instanceConfigRmButton.attr("disabled", "disabled");
+                        }
+                    },
+                    "preQueryBean": function (jqXhr, settings) {
+                        instanceConfig = null;
+                        
+                        $.dcdt.beans.clearBeanErrors(instanceConfigForm);
+                    },
+                    "url": URL_ADMIN_INSTANCE_CONFIG_GET
+                });
             }
-        },
-        "error": function (jqXHR, textStatus, errorThrown) {
-            // TODO: implement UI error reporting
-            console.error("Unable to get instance configuration (status=" + textStatus + ")" + ((errorThrown) ? (":\n" + errorThrown) : "."));
-        },
-        "success": function (data, textStatus, jqXhr) {
-            console.info("Successfully (status=" + textStatus + ") got instance configuration:\n" + $.encodeJson(data));
-            
-            instanceConfig = data["items"][0];
-        },
-        "url": urlAdminInstance
-    }, querySettings));
-}
-
-function queryInstanceConfiguration(querySettings) {
-    $.ajax($.extend({
-        "dataType": "json"
-    }, querySettings));
-}
-
-var formInstance;
-var dirInput, domainInput;
-var rmButton, setButton;
-var instanceConfig;
-
-$(document).ready(function () {
-    formInstance = $("form[name=\"admin-instance-form\"]");
-    dirInput = $("input#admin-instance-dir", formInstance);
-    domainInput = $("input#admin-instance-domain", formInstance);
-    rmButton = $("button#admin-instance-rm", formInstance);
-    setButton = $("button#admin-instance-set", formInstance);
-    
-    rmButton.click(function (event) {
-        removeInstanceConfiguration();
+        })
     });
     
-    setButton.click(function (event) {
-        instanceConfig = {
-            "@type": "instanceConfig",
-            "directory": dirInput.val(),
-            "domain": domainInput.val()
-        };
+    var instanceConfigForm, instanceConfigDirInput, instanceConfigDomainInput, instanceConfigRmButton, instanceConfigSetButton, instanceConfig;
+    
+    $(document).ready(function () {
+        instanceConfigForm = $("form[name=\"admin-instance-config\"]");
+        instanceConfigDirInput = instanceConfigForm.find("input#admin-instance-config-dir");
+        instanceConfigDomainInput = instanceConfigForm.find("input#admin-instance-config-domain");
+        instanceConfigRmButton = instanceConfigForm.find("button#admin-instance-config-rm");
+        instanceConfigSetButton = instanceConfigForm.find("button#admin-instance-config-set");
         
-        setInstanceConfiguration();
+        instanceConfigRmButton.click(function (event) {
+            if (!instanceConfigRmButton.attr("disabled")) {
+                $.dcdt.admin.removeInstanceConfig();
+            }
+        });
+        
+        instanceConfigSetButton.click(function (event) {
+            if (!instanceConfigSetButton.attr("disabled")) {
+                instanceConfig = {
+                    "@type": "instanceConfig",
+                    "directory": instanceConfigDirInput.val(),
+                    "domain": instanceConfigDomainInput.val()
+                };
+                
+                $.dcdt.admin.setInstanceConfig();
+            }
+        });
+        
+        $.dcdt.admin.getInstanceConfig();
     });
-    
-    getInstanceConfiguration();
-});
+})(jQuery);
