@@ -16,9 +16,9 @@
 <spring:url var="urlStaticScripts" value="/static/scripts" scope="request"/>
 <spring:url var="urlStaticStyles" value="/static/styles" scope="request"/>
 <spring:url var="urlAdmin" value="/admin" scope="request"/>
-<spring:url var="urlAdminInstance" value="/admin/instance" scope="request"/>
-<spring:url var="urlAdminInstanceRemove" value="/admin/instance/rm" scope="request"/>
-<spring:url var="urlAdminInstanceSet" value="/admin/instance/set" scope="request"/>
+<spring:url var="urlAdminInstanceConfigGet" value="/admin/instance" scope="request"/>
+<spring:url var="urlAdminInstanceConfigRemove" value="/admin/instance/rm" scope="request"/>
+<spring:url var="urlAdminInstanceConfigSet" value="/admin/instance/set" scope="request"/>
 <spring:url var="urlAdminLogin" value="/admin/login" scope="request"/>
 <spring:url var="urlAdminLoginProcess" value="/admin/login/process" scope="request"/>
 <spring:url var="urlAdminLogout" value="/admin/logout" scope="request"/>
@@ -33,11 +33,13 @@
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
 <script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/web.js"></script>
+<script type="text/javascript" src="${urlStaticScripts}/web-form.js"></script>
+<script type="text/javascript" src="${urlStaticScripts}/web-beans.js"></script>
 <c:if test="${googleAnalytics.enabled}">
     <script type="text/javascript">
     var googleAnalyticsId = "${googleAnalytics.id}", googleAnalyticsUrl = "${googleAnalytics.url}";
     </script>
-    <script type="text/javascript" src="${urlStaticScripts}/web-ga.js"></script>
+    <script type="text/javascript" src="${urlStaticScripts}/ga.js"></script>
 </c:if>
 <link rel="icon" type="image/png" href="${urlStaticImages}/dcdt-logo-16x16.png"/>
 <link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>

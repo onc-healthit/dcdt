@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.utils;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
-import javax.validation.constraints.NotNull;
+import gov.hhs.onc.dcdt.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -26,7 +26,7 @@ public class ToolValidationUtilsUnitTests extends ToolTestNgUnitTests {
         @Pattern(regexp = "^$", message = "{dcdt.test.unit.utils.validation.constraints.Pattern.msg}")
         public String getProp2();
 
-        @NotNull(message = "{dcdt.test.unit.utils.validation.constraints.NotNull.msg}")
+        @NotBlank(message = "{dcdt.test.unit.utils.validation.constraints.NotBlank.msg}")
         public String getProp3();
     }
 
@@ -65,7 +65,7 @@ public class ToolValidationUtilsUnitTests extends ToolTestNgUnitTests {
     private final static String VALIDATION_TEST_BEAN_PROP2_FIELD_ERROR_MSG_CODE = "dcdt.test.unit.utils.validation.constraints.Pattern.msg";
     private final static String VALIDATION_TEST_BEAN_PROP3_NAME = "prop3";
     private final static String VALIDATION_TEST_BEAN_PROP3_VALUE = null;
-    private final static String VALIDATION_TEST_BEAN_PROP3_FIELD_ERROR_MSG_CODE = "dcdt.test.unit.utils.validation.constraints.NotNull.msg";
+    private final static String VALIDATION_TEST_BEAN_PROP3_FIELD_ERROR_MSG_CODE = "dcdt.test.unit.utils.validation.constraints.NotBlank.msg";
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })

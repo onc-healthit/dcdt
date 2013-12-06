@@ -23,8 +23,8 @@ public abstract class ToolResourceUtils {
     public final static ResourceLoader RESOURCE_LOADER_DEFAULT = new DefaultResourceLoader();
     public final static ResourcePatternResolver RESOURCE_PATTERN_RESOLVER_DEFAULT = getResourcePatternResolver();
 
-    private final static String RESOURCE_LOC_DELIMS = ",; \t\n";
-    private final static String META_INF_RESOURCE_PATH = "META-INF";
+    public final static String RESOURCE_LOC_DELIMS = ",; \t\n";
+    public final static String META_INF_RESOURCE_PATH = "META-INF";
 
     public static List<String> getOverrideableResourceLocations(List<String> resourceLocs) {
         return getOverrideableResourceLocations(resourceLocs, CLASSPATH_ALL_URL_PREFIX);
@@ -35,10 +35,15 @@ public abstract class ToolResourceUtils {
     }
 
     public static List<String> getOverrideableResourceLocations(List<String> resourceLocs, String urlPrefixDefault, String baseResourcePath) {
+        return getOverrideableResourceLocations(resourceLocs, urlPrefixDefault, baseResourcePath, false);
+    }
+
+    public static List<String> getOverrideableResourceLocations(List<String> resourceLocs, String urlPrefixDefault, String baseResourcePath,
+        boolean urlPrefixToggle) {
         List<String> overrideableResourceLocs = new ArrayList<>(resourceLocs.size() * 2);
 
         for (String resourceLoc : resourceLocs) {
-            overrideableResourceLocs.addAll(getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, baseResourcePath));
+            overrideableResourceLocs.addAll(getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, baseResourcePath, urlPrefixToggle));
         }
 
         return overrideableResourceLocs;
@@ -53,12 +58,21 @@ public abstract class ToolResourceUtils {
     }
 
     public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault, String baseResourcePath) {
+        return getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, baseResourcePath, false);
+    }
+
+    public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault, String baseResourcePath, boolean urlPrefixToggle) {
         String[] resourceLocParts = resourceLoc.contains(URL_PREFIX_DELIM) ? resourceLoc.split(URL_PREFIX_DELIM, 2) : ArrayUtils.toArray(urlPrefixDefault,
             resourceLoc);
-        resourceLoc = ToolStringUtils.joinDelimit(resourceLocParts, URL_PREFIX_DELIM);
+        String resourceLocBaseRaw = baseResourcePath + SystemUtils.FILE_SEPARATOR + resourceLocParts[1], resourceLocRaw = resourceLocParts[1];
+        List<String> resourceLocs = ToolArrayUtils.asList(resourceLocParts[0] + resourceLocBaseRaw, resourceLocRaw);
 
-        return ToolArrayUtils
-            .asList(ArrayUtils.toArray(resourceLocParts[0] + baseResourcePath + SystemUtils.FILE_SEPARATOR + resourceLocParts[1], resourceLoc));
+        if (urlPrefixToggle) {
+            resourceLocs.add(1, resourceLocBaseRaw);
+            resourceLocs.add(resourceLocRaw);
+        }
+
+        return resourceLocs;
     }
 
     public static Map<String, List<Resource>> mapResourceLocations(List<String> resourceLocs) {

@@ -11,13 +11,12 @@
     <div class="input-group-sm">
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon">
+                <div class="input-group-addon input-group-addon-errors input-group-addon-errors-global">
                     <tiles:insertDefinition name="component-glyph">
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid instance configuration</strong>:
-                    <ul>
-                    </ul>
+                    <ul></ul>
                 </div>
             </div>
         </div>
@@ -36,14 +35,27 @@
             </div>
         </div>
         <div class="form-group form-group-addons">
+            <div class="has-info">
+                <div class="input-group-addon input-group-addon-active">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-info-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Note</strong>:
+                    <ul>
+                        <li>
+                            Non-absolute instance configuration directory paths are relative to:
+                            ${adminInstanceConfigDirBase}
+                        </li>
+                    </ul>
+                </div>
+            </div>
             <div class="has-error">
-                <div class="input-group-addon">
+                <div class="input-group-addon input-group-addon-errors">
                     <tiles:insertDefinition name="component-glyph">
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid instance configuration directory</strong>:
-                    <ul>
-                    </ul>
+                    <ul></ul>
                 </div>
             </div>
         </div>
@@ -63,20 +75,19 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon">
+                <div class="input-group-addon input-group-addon-errors">
                     <tiles:insertDefinition name="component-glyph">
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid instance configuration domain</strong>:
-                    <ul>
-                    </ul>
+                    <ul></ul>
                 </div>
             </div>
         </div>
         <div class="form-group form-group-buttons">
             <span class="btn-group btn-group-sm">
                 <tiles:insertDefinition name="component-glyph-button">
-                    <tiles:putAttribute name="attrs">id="admin-instance-config-rm"</tiles:putAttribute>
+                    <tiles:putAttribute name="attrs">id="admin-instance-config-rm" disabled="disabled"</tiles:putAttribute>
                     <tiles:putAttribute name="glyph-classes" value="glyphicon-remove-circle glyphicon-type-error"/>
                     <tiles:putAttribute name="content" value="Remove Instance Configuration"/>
                 </tiles:insertDefinition>

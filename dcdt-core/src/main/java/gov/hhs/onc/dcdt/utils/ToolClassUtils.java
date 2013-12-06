@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ClassUtils;
+import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class ToolClassUtils {
     public static boolean isAssignable(@Nullable Class<?>[] classes1, @Nullable Class<?>[] classes2) {
@@ -47,14 +47,17 @@ public abstract class ToolClassUtils {
         return ((class1 != null) && (class2 != null)) ? class1.isAssignableFrom(class2) : defaultIfNull;
     }
 
+    @Nullable
     public static Class<?> forName(String className) {
         return forName(className, true);
     }
 
+    @Nullable
     public static Class<?> forName(String className, boolean initialize) {
         return forName(className, initialize, ToolClassUtils.class.getClassLoader());
     }
 
+    @Nullable
     public static Class<?> forName(String className, boolean initialize, ClassLoader classLoader) {
         try {
             return Class.forName(className, initialize, classLoader);
@@ -64,42 +67,72 @@ public abstract class ToolClassUtils {
         return null;
     }
 
-    public static String getName(Object obj) {
+    @Nullable
+    public static String getName(@Nullable Object obj) {
         return getName(obj, null);
     }
 
-    public static String getName(Object obj, String defaultIfNull) {
+    @Nullable
+    public static String getName(@Nullable Object obj, @Nullable String defaultIfNull) {
         return (obj != null) ? getName(obj.getClass(), defaultIfNull) : defaultIfNull;
     }
 
-    public static String getName(Class<?> clazz) {
+    @Nullable
+    public static String getName(@Nullable TypeDescriptor typeDesc) {
+        return getName(typeDesc, null);
+    }
+
+    @Nullable
+    public static String getName(@Nullable TypeDescriptor typeDesc, @Nullable String defaultIfNull) {
+        return (typeDesc != null) ? getName(typeDesc.getObjectType(), defaultIfNull) : defaultIfNull;
+    }
+
+    @Nullable
+    public static String getName(@Nullable Class<?> clazz) {
         return getName(clazz, null);
     }
 
-    public static String getName(Class<?> clazz, String defaultIfNull) {
+    @Nullable
+    public static String getName(@Nullable Class<?> clazz, @Nullable String defaultIfNull) {
         return (clazz != null) ? clazz.getName() : defaultIfNull;
     }
 
-    public static String getShortName(Object obj) {
+    @Nullable
+    public static String getShortName(@Nullable Object obj) {
         return getShortName(obj, null);
     }
 
-    public static String getShortName(Object obj, String defaultIfNull) {
+    @Nullable
+    public static String getShortName(@Nullable Object obj, @Nullable String defaultIfNull) {
         return ClassUtils.getShortClassName(obj, defaultIfNull);
     }
 
-    public static String getShortName(Class<?> clazz) {
+    @Nullable
+    public static String getShortName(@Nullable TypeDescriptor typeDesc) {
+        return getShortName(typeDesc, null);
+    }
+
+    @Nullable
+    public static String getShortName(@Nullable TypeDescriptor typeDesc, @Nullable String defaultIfNull) {
+        return (typeDesc != null) ? getShortName(typeDesc.getObjectType(), defaultIfNull) : defaultIfNull;
+    }
+
+    @Nullable
+    public static String getShortName(@Nullable Class<?> clazz) {
         return getShortName(clazz, null);
     }
 
-    public static String getShortName(Class<?> clazz, String defaultIfNull) {
+    @Nullable
+    public static String getShortName(@Nullable Class<?> clazz, @Nullable String defaultIfNull) {
         return ClassUtils.getShortClassName(clazz, defaultIfNull);
     }
 
-    public static <T> Class<?> getClass(T obj) {
+    @Nullable
+    public static <T> Class<?> getClass(@Nullable T obj) {
         return getClass(obj, null);
     }
 
+    @Nullable
     public static <T> Class<?> getClass(T obj, Class<?> defaultIfNull) {
         return (obj != null) ? obj.getClass() : defaultIfNull;
     }
@@ -123,46 +156,46 @@ public abstract class ToolClassUtils {
     public static boolean hasPrivateAccess(Class<?> clazz) {
         return hasModifiers(clazz, Modifier.PRIVATE);
     }
-    
+
     public static boolean hasProtectedAccess(Class<?> clazz) {
         return hasModifiers(clazz, Modifier.PROTECTED);
     }
-    
+
     public static boolean hasPackageAccess(Class<?> clazz) {
         return hasModifiers(clazz, Modifier.PUBLIC | Modifier.PROTECTED | Modifier.PRIVATE);
     }
-    
+
     public static boolean hasPublicAccess(Class<?> clazz) {
         return hasModifiers(clazz, Modifier.PUBLIC);
     }
-    
+
     public static boolean hasModifiers(Class<?> clazz, int mods) {
         return ToolReflectionUtils.hasModifiers(mods, clazz.getModifiers());
     }
-    
+
     @Nullable
     public static Set<Class<?>> getHierarchy(@Nullable Class<?> clazz) {
         return getHierarchy(clazz, true);
     }
-    
+
     @Nullable
     public static Set<Class<?>> getHierarchy(@Nullable Class<?> clazz, boolean includeRootClass) {
         if (clazz == null) {
             return null;
         }
-        
+
         Set<Class<?>> classHierarchy = new LinkedHashSet<>();
-        
+
         if (includeRootClass) {
             classHierarchy.add(clazz);
         }
-        
+
         ToolCollectionUtils.addAll(classHierarchy, getHierarchy(clazz.getSuperclass()));
-        
+
         for (Class<?> classInterface : clazz.getInterfaces()) {
             ToolCollectionUtils.addAll(classHierarchy, getHierarchy(classInterface));
         }
-        
+
         return classHierarchy;
     }
 }

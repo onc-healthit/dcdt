@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.test;
 
 import gov.hhs.onc.dcdt.beans.factory.BeanDefinitionRegistryAware;
+import gov.hhs.onc.dcdt.context.ToolMessageSource;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolIterableUtils;

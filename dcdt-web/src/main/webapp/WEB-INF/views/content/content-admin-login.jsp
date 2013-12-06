@@ -13,7 +13,7 @@
     <div class="input-group-sm">
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon${adminLoginHasError ? ' input-group-addon-active' : ''}">
+                <div class="input-group-addon input-group-addon-errors input-group-addon-errors-global${adminLoginHasError ? ' input-group-addon-active' : ''}">
                     <tiles:insertDefinition name="component-glyph">
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>

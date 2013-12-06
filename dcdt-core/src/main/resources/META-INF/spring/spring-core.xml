@@ -22,6 +22,18 @@
     <context:component-scan base-package="gov.hhs.onc.dcdt"/>
     <context:spring-configured/>
     
+    <beans:bean id="toolConverter" class="gov.hhs.onc.dcdt.convert.ToolConverter" abstract="true"/>
+    
+    <beans:bean id="pathConverter" class="gov.hhs.onc.dcdt.convert.impl.PathConverter" parent="toolConverter"/>
+    
+    <beans:bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+        <beans:property name="converters">
+            <util:list>
+                <beans:ref local="pathConverter"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
     <beans:bean id="instanceConfig" class="gov.hhs.onc.dcdt.config.InstanceConfig" abstract="true"/>
     <beans:bean id="instanceConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigImpl" parent="instanceConfig" abstract="true"/>
     
@@ -80,7 +92,6 @@
     <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true">
         <beans:property name="basenames">
             <beans:array>
-                <beans:value>META-INF/core/core-messages</beans:value>
                 <beans:value>core/core-messages</beans:value>
             </beans:array>
         </beans:property>
@@ -91,16 +102,22 @@
         <beans:property name="basenames">
             <beans:array>
                 <beans:value>org/hibernate/validator/ValidationMessages</beans:value>
-                <beans:value>META-INF/core/core-messages-validation</beans:value>
                 <beans:value>core/core-messages-validation</beans:value>
+                <beans:value>core/core-messages-validation-io</beans:value>
             </beans:array>
         </beans:property>
         <beans:qualifier value="validation"/>
     </beans:bean>
     <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase"/>
     
+    <beans:bean id="messageSourceValidationLocator" class="org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator"
+        c:messageSource-ref="messageSourceValidation"/>
+    
+    <beans:bean id="messageInterpolatorValidation" class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator"
+        c:userResourceBundleLocator-ref="messageSourceValidationLocator"/>
+    
     <beans:bean id="toolValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"
-        p:validationMessageSource-ref="messageSourceValidation"/>
+        p:messageInterpolator-ref="messageInterpolatorValidation"/>
     
     <beans:bean id="toolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
         p:daemon="true"/>

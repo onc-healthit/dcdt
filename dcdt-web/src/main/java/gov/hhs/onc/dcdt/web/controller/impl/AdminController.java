@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
-import gov.hhs.onc.dcdt.beans.factory.BeanDefinitionRegistryAware;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
@@ -23,7 +22,6 @@ import java.util.Map;
 import javax.validation.Valid;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Scope;
@@ -42,12 +40,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller("adminController")
 @Scope("singleton")
-public class AdminController extends AbstractToolController implements ApplicationContextAware, BeanDefinitionRegistryAware {
+public class AdminController extends AbstractToolController implements ApplicationContextAware {
     @Autowired(required = false)
     private InstanceConfig instanceConfig;
 
     private AbstractRefreshableApplicationContext appContext;
-    private BeanDefinitionRegistry beanDefReg;
 
     @RequestMapping(value = { "/admin/instance/set" }, method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
@@ -88,17 +85,19 @@ public class AdminController extends AbstractToolController implements Applicati
             resp.setStatus(ResponseStatus.ERROR);
         } else {
             InstanceConfig reqInstanceConfig = ToolListUtils.getFirst(req.getItems());
-    
-            if (this.instanceConfig != null) {
-                this.instanceConfig.setDirectory(reqInstanceConfig.getDirectory());
-                this.instanceConfig.setDomain(reqInstanceConfig.getDomain());
-            } else {
-                this.instanceConfig = reqInstanceConfig;
+
+            if (reqInstanceConfig != null) {
+                if (this.instanceConfig != null) {
+                    this.instanceConfig.setDirectory(reqInstanceConfig.getDirectory());
+                    this.instanceConfig.setDomain(reqInstanceConfig.getDomain());
+                } else {
+                    this.instanceConfig = reqInstanceConfig;
+                }
+
+                AdminBeanDefinitionRegistryPostProcessor.instanceConfig = this.instanceConfig;
+
+                this.appContext.refresh();
             }
-    
-            AdminBeanDefinitionRegistryPostProcessor.instanceConfig = this.instanceConfig;
-    
-            this.appContext.refresh();
         }
 
         return resp;
@@ -110,9 +109,7 @@ public class AdminController extends AbstractToolController implements Applicati
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
 
         if (this.instanceConfig != null) {
-            beanDefReg.removeBeanDefinition(this.instanceConfig.getBeanName());
-
-            this.appContext.refresh();
+            AdminBeanDefinitionRegistryPostProcessor.instanceConfig = this.instanceConfig = null;
         } else {
             ErrorsJsonWrapper errors = new ErrorsJsonWrapperImpl();
             errors.setGlobalErrors(ToolArrayUtils.asList((ErrorJsonWrapper) new ErrorJsonWrapperImpl("No instance configuration is set.")));
@@ -151,10 +148,5 @@ public class AdminController extends AbstractToolController implements Applicati
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
         this.appContext = (AbstractRefreshableApplicationContext) appContext;
-    }
-
-    @Override
-    public void setBeanDefinitionRegistry(BeanDefinitionRegistry beanDefReg) {
-        this.beanDefReg = beanDefReg;
     }
 }

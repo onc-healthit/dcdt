@@ -10,7 +10,7 @@ import org.springframework.core.annotation.Order;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 public class AdminBeanDefinitionRegistryPostProcessor extends AbstractToolBeanDefinitionRegistryPostProcessor {
-    private final static String INSTANCE_CONFIG_BEAN_NAME = "instanceConfigAdmin";
+    public final static String INSTANCE_CONFIG_BEAN_NAME = "instanceConfigAdmin";
 
     static InstanceConfig instanceConfig;
 
