@@ -1662,9 +1662,9 @@
                 </plugins>
             </build>
         </profile>
-        <!-- Configuring build tier -->
+        <!-- Set tier properties if a tier is not defined already -->
         <profile>
-            <id>default-build-tier</id>
+            <id>default-tier</id>
             <activation>
                 <property>
                     <name>!project.build.tier</name>
@@ -1675,24 +1675,6 @@
                 <project.google.analytics.enabled>false</project.google.analytics.enabled>
                 <project.google.analytics.id/>
                 <project.google.analytics.url/>
-            </properties>
-        </profile>
-        <profile>
-            <id>dev-tier</id>
-            <properties>
-                <project.build.tier>dev</project.build.tier>
-                <project.google.analytics.enabled>true</project.google.analytics.enabled>
-                <project.google.analytics.id>UA-45838460-1</project.google.analytics.id>
-                <project.google.analytics.url>dev.direct-test.com</project.google.analytics.url>
-            </properties>
-        </profile>
-        <profile>
-            <id>demo-tier</id>
-            <properties>
-                <project.build.tier>demo</project.build.tier>
-                <project.google.analytics.enabled>true</project.google.analytics.enabled>
-                <project.google.analytics.id>UA-37416124-2</project.google.analytics.id>
-                <project.google.analytics.url>demo.direct-test.com</project.google.analytics.url>
             </properties>
         </profile>
         <!-- Set Clover license location property if not defined already -->
