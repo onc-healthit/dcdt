@@ -2,6 +2,34 @@
 <antlib
     xmlns:current="ant:current">
     
+    <macrodef name="compile" description="Invokes the Java compiler.">
+        <attribute name="srcDir"/>
+        <attribute name="outDir"/>
+        <attribute name="source"/>
+        <attribute name="target"/>
+        <attribute name="memInitial" default="128m"/>
+        <attribute name="memMax" default="256m"/>
+        <element name="compile-elements" optional="true" implicit="true"/>
+        <sequential>
+            <if>
+                <available file="@{srcDir}" type="dir"/>
+                <then>
+                    <mkdir dir="@{outDir}"/>
+                    <javac destdir="@{outDir}" source="@{source}" target="@{target}" memoryInitialSize="@{memInitial}" memoryMaximumSize="@{memMax}"
+                        debug="true" deprecation="true" includeAntRuntime="false" fork="true">
+                        <compilerarg value="-proc:none"/>
+                        <compilerarg value="-Werror"/>
+                        <compilerarg value="-Xlint"/>
+                        <compilerarg value="-Xlint:-path"/>
+                        <compilerarg value="-Xlint:-try"/>
+                        <src path="@{srcDir}"/>
+                        <compile-elements/>
+                    </javac>
+                </then>
+            </if>
+        </sequential>
+    </macrodef>
+    
     <macrodef name="write-properties" description="Writes a list of properties to a file.">
         <attribute name="file"/>
         <attribute name="append" default="false"/>

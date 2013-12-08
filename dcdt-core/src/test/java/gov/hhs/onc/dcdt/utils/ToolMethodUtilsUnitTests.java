@@ -10,29 +10,19 @@ import org.testng.annotations.Test;
 public class ToolMethodUtilsUnitTests extends ToolTestNgUnitTests {
     @Test
     public void testGetCallee() {
-        Pair<Class<?>, Method> callee = ToolMethodUtils.getCallee();
-        Assert.assertNotNull(callee, "Unable to get method callee.");
-
-        Assert.assertEquals(callee.getLeft(), ToolMethodUtilsUnitTests.class, "Method callee class is incorrect.");
-
-        Method calleeMethod = callee.getRight();
-        Assert.assertNotNull(calleeMethod, "Unable to get method callee method.");
-        Assert.assertEquals(calleeMethod.getName(), "testGetCallee", "Method callee method name is incorrect.");
+        Assert.assertEquals(ToolMethodUtils.getCallee(), getTestCall(), "Callee call does not match the test method call.");
     }
 
     @Test(dependsOnMethods = { "testGetCallee" })
     public void testGetCaller() {
-        Pair<Class<?>, Method> caller = getCallerMethod();
-        Assert.assertNotNull(caller, "Unable to get method caller.");
-
-        Assert.assertEquals(caller.getLeft(), ToolMethodUtilsUnitTests.class, "Method caller class is incorrect.");
-
-        Method callerMethod = caller.getRight();
-        Assert.assertNotNull(callerMethod, "Unable to get method caller method.");
-        Assert.assertEquals(callerMethod.getName(), "testGetCaller", "Method caller method name is incorrect.");
+        Assert.assertEquals(getCallerCall(), getTestCall(), "Caller call does not match the test method call.");
     }
 
-    private static Pair<Class<?>, Method> getCallerMethod() {
+    private static Pair<Class<?>, Method> getCallerCall() {
         return ToolMethodUtils.getCaller();
+    }
+
+    private static Pair<Class<?>, Method> getTestCall() {
+        return ToolMethodUtils.getCalls().get(1);
     }
 }

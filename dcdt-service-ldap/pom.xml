@@ -206,6 +206,11 @@
             <scope>test</scope>
         </dependency>
         <!-- Test dependencies (inherited) -->
+        <dependency>
+            <groupId>com.cenqua.clover</groupId>
+            <artifactId>clover</artifactId>
+            <scope>test</scope>
+        </dependency>
         <!-- TODO: Remove on development completion -->
         <dependency>
             <groupId>org.apache.directory.server</groupId>

@@ -52,7 +52,11 @@
         <!-- Project build assembly properties -->
         <project.build.assemblyDirectory>${project.basedir}/src/assembly</project.build.assemblyDirectory>
         <!-- Project build Clover properties -->
+        <project.build.cloverDirectory>${project.build.directory}/clover</project.build.cloverDirectory>
+        <project.build.cloverDbFile>${project.build.cloverDirectory}/clover.db</project.build.cloverDbFile>
+        <project.build.cloverOutputDirectory>${project.build.cloverDirectory}/classes-instrumented</project.build.cloverOutputDirectory>
         <project.build.cloverPomPropertiesFile>${project.build.directory}/maven/pom-clover.properties</project.build.cloverPomPropertiesFile>
+        <project.build.cloverSourceDirectory>${project.build.cloverDirectory}/src-instrumented</project.build.cloverSourceDirectory>
         <!-- Project build POM properties -->
         <project.build.pomPropertiesFile>${project.build.directory}/maven/pom.properties</project.build.pomPropertiesFile>
         <!-- Project build POM source properties -->
@@ -64,6 +68,9 @@
         <project.build.resourcesSourceDirectory>${project.basedir}/src/main/resources</project.build.resourcesSourceDirectory>
         <!-- Project build source properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <!-- Project build test Clover properties -->
+        <project.build.cloverTestOutputDirectory>${project.build.cloverDirectory}/test-classes-instrumented</project.build.cloverTestOutputDirectory>
+        <project.build.cloverTestSourceDirectory>${project.build.cloverDirectory}/test-src-instrumented</project.build.cloverTestSourceDirectory>
         <!-- Project build test resources properties -->
         <project.build.testResourcesDirectory>${project.build.directory}/test-resources</project.build.testResourcesDirectory>
         <project.build.testResourcesDependencyDirectory>${project.build.testResourcesDirectory}-dependency</project.build.testResourcesDependencyDirectory>
@@ -454,6 +461,12 @@
             </dependency>
             <!-- Test dependencies -->
             <dependency>
+                <groupId>com.cenqua.clover</groupId>
+                <artifactId>clover</artifactId>
+                <version>3.2.0</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
                 <groupId>org.apache.directory.server</groupId>
                 <artifactId>apacheds-test-framework</artifactId>
                 <version>2.0.0-M15</version>
@@ -529,6 +542,11 @@
                             </exclusions>
                         </dependency>
                         <dependency>
+                            <groupId>com.cenqua.clover</groupId>
+                            <artifactId>clover</artifactId>
+                            <version>3.2.0</version>
+                        </dependency>
+                        <dependency>
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant</artifactId>
                             <version>1.9.2</version>
@@ -561,7 +579,8 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <target>
-                                    <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-process-props" inheritRefs="true" useNativeBasedir="true"/>
+                                    <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-process-props"
+                                        inheritRefs="true" useNativeBasedir="true"/>
                                 </target>
                             </configuration>
                         </execution>
@@ -582,7 +601,7 @@
                     <version>3.1</version>
                     <inherited>true</inherited>
                     <configuration>
-                        <compilerArgs>
+                        <compilerArgs combine.children="append">
                             <!--
                             Annotation processing due to a bug in JPA.
                             See: https://issues.apache.org/jira/browse/OPENJPA-2300
@@ -1010,6 +1029,7 @@
                             <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
                         <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</argLine>
+                        <classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>
                         <reportFormat>plain</reportFormat>
                         <systemPropertyVariables combine.children="append">
                             <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
@@ -1017,6 +1037,8 @@
                             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                             <logback.configurationFile>${project.logback.config.file}</logback.configurationFile>
                         </systemPropertyVariables>
+                        <testClassesDirectory>${project.build.cloverTestOutputDirectory}</testClassesDirectory>
+                        <testSourceDirectory>${project.build.cloverTestSourceDirectory}</testSourceDirectory>
                         <trimStackTrace>false</trimStackTrace>
                     </configuration>
                     <executions>
@@ -1391,7 +1413,8 @@
                                 <inherited>true</inherited>
                                 <configuration>
                                     <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-license" inheritRefs="true" useNativeBasedir="true"/>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-license"
+                                            inheritRefs="true" useNativeBasedir="true"/>
                                     </target>
                                 </configuration>
                             </execution>
@@ -1432,20 +1455,50 @@
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>com.atlassian.maven.plugins</groupId>
-                        <artifactId>maven-clover2-plugin</artifactId>
-                        <version>3.2.0</version>
-                        <inherited>true</inherited>
-                        <configuration>
-                            <includesAllSourceRoots>true</includesAllSourceRoots>
-                        </configuration>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-antrun-plugin</artifactId>
                         <executions>
                             <execution>
                                 <id>clover-instrument</id>
+                                <phase>generate-sources</phase>
                                 <goals>
-                                    <goal>instrument-test</goal>
+                                    <goal>run</goal>
                                 </goals>
                                 <inherited>true</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-instrument"
+                                            inheritRefs="true" useNativeBasedir="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>clover-compile</id>
+                                <phase>compile</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-compile"
+                                            inheritRefs="true" useNativeBasedir="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>clover-test-compile</id>
+                                <phase>test-compile</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-test-compile"
+                                            inheritRefs="true" useNativeBasedir="true"/>
+                                    </target>
+                                </configuration>
                             </execution>
                         </executions>
                     </plugin>
