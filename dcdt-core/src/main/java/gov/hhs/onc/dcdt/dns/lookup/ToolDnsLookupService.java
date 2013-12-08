@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.dns.lookup;
 
-
 import gov.hhs.onc.dcdt.dns.ToolDnsException;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.net.UnknownHostException;

@@ -46,11 +46,11 @@ public class ToolSubtypeResolverImpl extends StdSubtypeResolver implements ToolS
 
     protected Collection<NamedType> collectAndResolveSubtypes(Collection<NamedType> subtypes, Class<?> clazz) {
         Set<NamedType> subtypesNamed = new LinkedHashSet<>(subtypes);
-        
+
         for (Class<?> subtypeBeanClass : ToolBeanDefinitionUtils.getBeanDefinitionClassesOfType(this.beanFactory, this.beanDefReg, clazz, true)) {
             subtypesNamed.add(new NamedType(subtypeBeanClass));
         }
-        
+
         return subtypesNamed;
     }
 

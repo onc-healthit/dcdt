@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.crypto;
 
 import java.math.BigInteger;
 import java.security.PrivateKey;
-
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;

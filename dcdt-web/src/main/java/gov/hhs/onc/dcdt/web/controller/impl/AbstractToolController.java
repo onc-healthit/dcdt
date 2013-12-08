@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
-
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -40,7 +39,7 @@ public abstract class AbstractToolController extends AbstractToolBean implements
 
     @Autowired
     protected MessageSource msgSource;
-    
+
     @Autowired
     protected ToolVersion version;
 
@@ -52,7 +51,7 @@ public abstract class AbstractToolController extends AbstractToolBean implements
         @RequestView(value = "/errors-json", contentTypes = { MediaType.APPLICATION_JSON_VALUE }, forward = true) })
     public ModelAndView displayErrors(Throwable error, HttpServletRequest httpServletReq) throws ToolWebException {
         httpServletReq.setAttribute(MODEL_ATTR_KEY_ERROR, error);
-        
+
         return this.display(null, httpServletReq.getContentType());
     }
 

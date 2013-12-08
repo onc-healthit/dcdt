@@ -43,9 +43,10 @@ public abstract class ToolFileUtils {
 
             case OTHER:
                 return isOther(followLinks, paths);
-        }
 
-        return false;
+            default:
+                return false;
+        }
     }
 
     public static boolean isOther(@Nullable Path ... paths) {

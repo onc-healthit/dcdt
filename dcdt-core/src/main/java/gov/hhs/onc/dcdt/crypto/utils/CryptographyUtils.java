@@ -8,13 +8,11 @@ import java.io.OutputStreamWriter;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.security.Security;
-
 import org.bouncycastle.crypto.prng.VMPCRandomGenerator;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
-
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 
 public abstract class CryptographyUtils {

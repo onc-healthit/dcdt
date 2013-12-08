@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import javax.annotation.Nullable;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.PropertyValue;

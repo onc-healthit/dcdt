@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.config;
 
-
 import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.testng.Assert;
@@ -10,7 +9,7 @@ import org.testng.annotations.Test;
     "dcdt.test.unit.config.instance" })
 public class InstanceConfigUnitTests extends ToolTestNgUnitTests {
     private final static String INSTANCE_CONFIG_BEAN_NAME = "instanceConfigTest";
-    
+
     @Test
     public void testBeanDefinition() {
         Assert.assertTrue(this.beanDefReg.containsBeanDefinition(INSTANCE_CONFIG_BEAN_NAME), "Unable to find instance configuration Spring bean (name="

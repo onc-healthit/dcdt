@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.dns;
 
-
 import gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -27,7 +26,7 @@ public class DnsTcpSocketServer extends DnsSocketServer<ServerSocket, Socket, Vo
     @Override
     public void start() {
         try {
-            while(!this.socketServer.isClosed()) {
+            while (!this.socketServer.isClosed()) {
                 Socket socket = this.socketServer.accept();
                 InputStream inStream = socket.getInputStream();
 

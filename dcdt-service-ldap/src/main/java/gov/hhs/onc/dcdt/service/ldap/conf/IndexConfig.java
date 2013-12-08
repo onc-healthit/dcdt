@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.ldap.conf;
 
-
 import org.apache.directory.server.xdbm.Index;
 
 /**

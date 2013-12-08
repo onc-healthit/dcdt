@@ -1,8 +1,7 @@
-package gov.hhs.onc.dcdt.beans.impl;
-
+package gov.hhs.onc.dcdt.data.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.beans.ToolBeanDataSource;
+import gov.hhs.onc.dcdt.data.ToolBeanDataSource;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 
 public abstract class AbstractToolBeanDataSource<T extends ToolBean> extends DriverManagerDataSource implements ToolBeanDataSource<T> {

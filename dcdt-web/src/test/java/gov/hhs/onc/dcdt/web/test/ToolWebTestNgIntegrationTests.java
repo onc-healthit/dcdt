@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.test;
 
-
 import gov.hhs.onc.dcdt.test.ToolTestNgIntegrationTests;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;

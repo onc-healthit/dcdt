@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.crypto.impl;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
@@ -11,7 +10,6 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
-
 import gov.hhs.onc.dcdt.crypto.CertificateName;
 
 public class CertificateNameImpl implements CertificateName {

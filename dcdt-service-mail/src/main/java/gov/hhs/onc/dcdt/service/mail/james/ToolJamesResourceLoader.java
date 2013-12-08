@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.mail.james;
 
-
 import java.nio.file.Paths;
 import org.apache.commons.lang3.SystemUtils;
 import org.apache.james.container.spring.resource.AbstractJamesResourceLoader;

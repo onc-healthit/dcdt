@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.test.impl;
 
-
 import com.thoughtworks.selenium.DefaultSelenium;
 import gov.hhs.onc.dcdt.web.test.ToolSelenium;
 import gov.hhs.onc.dcdt.web.test.ToolSeleniumCommandProcessor;

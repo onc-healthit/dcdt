@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto;
 
 import java.util.Map;
-
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;

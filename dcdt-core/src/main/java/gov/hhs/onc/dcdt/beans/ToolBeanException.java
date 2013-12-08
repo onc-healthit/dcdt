@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.beans;
 
-
 import org.springframework.beans.BeansException;
 
 public class ToolBeanException extends BeansException {

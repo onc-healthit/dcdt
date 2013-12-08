@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -18,7 +17,8 @@ public abstract class ToolAnnotationUtils {
 
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T extends Annotation, U> U getValue(Class<T> annoClass, Class<U> annoValueClass, @Nullable String annoAttrName, Pair<Class<?>, Method> ... calls) {
+    public static <T extends Annotation, U> U getValue(Class<T> annoClass, Class<U> annoValueClass, @Nullable String annoAttrName,
+        Pair<Class<?>, Method> ... calls) {
         return getValue(annoClass, annoValueClass, annoAttrName, ToolArrayUtils.asList(calls));
     }
 
@@ -27,7 +27,8 @@ public abstract class ToolAnnotationUtils {
     }
 
     @SuppressWarnings({ "unchecked" })
-    public static <T extends Annotation, U> U getValue(Class<T> annoClass, Class<U> annoValueClass, @Nullable String annoAttrName, Iterable<Pair<Class<?>, Method>> calls) {
+    public static <T extends Annotation, U> U getValue(Class<T> annoClass, Class<U> annoValueClass, @Nullable String annoAttrName,
+        Iterable<Pair<Class<?>, Method>> calls) {
         T anno = findAnnotation(annoClass, calls);
 
         return (anno != null) ? (U) AnnotationUtils.getValue(anno, annoAttrName) : null;
@@ -41,7 +42,8 @@ public abstract class ToolAnnotationUtils {
 
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T extends Annotation, U> List<U> getValues(Class<T> annoClass, Class<U> annoValueClass, @Nullable String annoAttrName, Pair<Class<?>, Method> ... calls) {
+    public static <T extends Annotation, U> List<U> getValues(Class<T> annoClass, Class<U> annoValueClass, @Nullable String annoAttrName,
+        Pair<Class<?>, Method> ... calls) {
         return getValues(annoClass, annoValueClass, annoAttrName, ToolArrayUtils.asList(calls));
     }
 

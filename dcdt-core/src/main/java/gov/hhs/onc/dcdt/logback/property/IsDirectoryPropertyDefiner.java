@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.logback.property;
 
-
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.io.IOException;
 import org.springframework.core.io.Resource;

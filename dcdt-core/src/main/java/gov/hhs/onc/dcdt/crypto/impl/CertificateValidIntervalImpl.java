@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.impl;
 
 import java.util.Date;
-
 import gov.hhs.onc.dcdt.crypto.CertificateValidInterval;
 
 public class CertificateValidIntervalImpl implements CertificateValidInterval {

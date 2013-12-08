@@ -10,6 +10,7 @@
     <suppress files="\.java$" checks="FinalParametersCheck"/>
     <suppress files="\.java$" checks="HiddenFieldCheck"/>
     <suppress files="\.java$" checks="InnerAssignmentCheck"/>
+    <suppress files="\.java$" checks="InterfaceIsTypeCheck"/>
     <suppress files="\.java$" checks="Javadoc.+Check"/>
     <suppress files="\.java$" checks="LeftCurlyCheck"/>
     <suppress files="\.java$" checks="LineLengthCheck"/>

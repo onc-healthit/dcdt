@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.ldap.conf;
 
-
 import gov.hhs.onc.dcdt.service.ldap.factory.ToolDirectoryServiceFactory;
 import java.io.File;
 import org.apache.directory.server.core.factory.DirectoryServiceFactory;

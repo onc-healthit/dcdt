@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.beans.impl;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;

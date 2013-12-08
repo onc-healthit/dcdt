@@ -6,7 +6,6 @@ import org.bouncycastle.asn1.x509.GeneralName;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
 import gov.hhs.onc.dcdt.crypto.impl.CertificateNameImpl;
 
 @Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.cert" })

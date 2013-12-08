@@ -12,17 +12,17 @@ public abstract class ToolArrayUtils {
     public static <T> List<T> unwrapElements(T[] ... elemsArrs) {
         return unwrapElements(asList(elemsArrs));
     }
-    
+
     public static <T> List<T> unwrapElements(Iterable<T[]> elemsArrs) {
         List<T> elems = new ArrayList<>();
-        
+
         for (T[] elemsArr : elemsArrs) {
             ToolCollectionUtils.addAll(elems, asList(elemsArr));
         }
-        
+
         return elems;
     }
-    
+
     @SuppressWarnings({ "varargs" })
     public static Object[][] wrapElements(Object ... elems) {
         return wrapElements(asList(elems));

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.hhs.onc.dcdt.json.ToolJsonException;
 import java.io.IOException;

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.json.impl;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.web.json.JsonWrapper;

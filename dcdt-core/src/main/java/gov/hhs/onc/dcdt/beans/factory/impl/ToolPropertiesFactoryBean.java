@@ -16,13 +16,13 @@ public class ToolPropertiesFactoryBean extends PropertiesFactoryBean {
             }
         }
     }
-    
+
     private Pattern namePattern;
-    
+
     @Override
     protected Properties createProperties() throws IOException {
         Properties props = super.createProperties();
-        
+
         return (this.namePattern != null) ? new ToolProperties(props) : props;
     }
 

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class ToolPropertyUtils {

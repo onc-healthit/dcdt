@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.ldap.factory;
 
-
 import gov.hhs.onc.dcdt.service.ldap.conf.DirectoryServiceConfig;
 import gov.hhs.onc.dcdt.service.ldap.conf.PartitionConfig;
 import gov.hhs.onc.dcdt.service.ldap.conf.SchemaConfig;

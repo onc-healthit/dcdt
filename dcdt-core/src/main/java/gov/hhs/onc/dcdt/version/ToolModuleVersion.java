@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.version;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import java.text.ParseException;
 import java.util.Date;

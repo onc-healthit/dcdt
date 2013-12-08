@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.beans.factory.impl;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.ToolBeanFactoryPostProcessor;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;

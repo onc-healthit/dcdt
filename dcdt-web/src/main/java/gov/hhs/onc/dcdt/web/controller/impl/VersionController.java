@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
-
 import gov.hhs.onc.dcdt.web.ToolWebException;
 import gov.hhs.onc.dcdt.web.controller.RequestView;
 import gov.hhs.onc.dcdt.web.controller.RequestViews;

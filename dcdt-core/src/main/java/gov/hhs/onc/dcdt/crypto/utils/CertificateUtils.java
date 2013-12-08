@@ -17,7 +17,6 @@ import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
 import java.util.Set;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -34,7 +33,6 @@ import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
-
 import gov.hhs.onc.dcdt.crypto.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.CertificateName;
 import gov.hhs.onc.dcdt.crypto.CredentialInfo;
@@ -118,6 +116,7 @@ public abstract class CertificateUtils {
         }
     }
 
+    @SuppressWarnings({ "fallthrough" })
     public static X509Certificate readCertificate(byte[] data, DataEncoding encoding) throws CryptographyException {
         try {
             switch (encoding) {

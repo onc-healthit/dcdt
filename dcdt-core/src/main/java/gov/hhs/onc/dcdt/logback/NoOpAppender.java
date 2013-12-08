@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.logback;
 
-
 import ch.qos.logback.core.Appender;
 import ch.qos.logback.core.Context;
 import ch.qos.logback.core.LogbackException;

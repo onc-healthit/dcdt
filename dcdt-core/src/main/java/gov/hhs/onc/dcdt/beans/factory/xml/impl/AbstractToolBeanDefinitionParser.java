@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.beans.factory.xml.impl;
 
-
 import gov.hhs.onc.dcdt.beans.factory.xml.ToolBeanDefinitionParser;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;

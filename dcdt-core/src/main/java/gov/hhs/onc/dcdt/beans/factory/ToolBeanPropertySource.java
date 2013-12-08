@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.beans.factory;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import org.springframework.core.env.PropertySource;

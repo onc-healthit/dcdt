@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.mail.james;
 
-
 import java.util.List;
 import org.apache.james.container.spring.resource.JamesResourceLoader;
 import org.springframework.context.ApplicationContext;
