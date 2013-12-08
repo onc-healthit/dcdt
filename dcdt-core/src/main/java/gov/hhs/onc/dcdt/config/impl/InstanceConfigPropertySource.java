@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.config.impl;
 
-
 import gov.hhs.onc.dcdt.beans.factory.impl.AbstractToolBeanPropertySource;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.utils.ToolPropertyUtils;

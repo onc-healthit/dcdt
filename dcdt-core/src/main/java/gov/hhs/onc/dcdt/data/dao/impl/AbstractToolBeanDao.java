@@ -1,11 +1,12 @@
-package gov.hhs.onc.dcdt.beans.impl;
+package gov.hhs.onc.dcdt.data.dao.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.beans.ToolBeanDao;
-import gov.hhs.onc.dcdt.beans.ToolBeanDataAccessException;
+import gov.hhs.onc.dcdt.data.ToolBeanDataAccessException;
+import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolBeanDefinitionUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.HibernateException;
 import org.hibernate.ObjectNotFoundException;
@@ -18,11 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+@SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBeanDao<T> {
     @Autowired(required = false)
     protected SessionFactory sessionFactory;
@@ -37,7 +38,6 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     }
 
     @Override
-    @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public final boolean containsBeans(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
         return this.containsBeans(ToolArrayUtils.asList(beanIdValues));
@@ -184,6 +184,28 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     }
 
     @Override
+    public List<T> removeBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
+        return this.removeBeansById(ToolArrayUtils.asList(beanIdValues));
+    }
+
+    @Override
+    public List<T> removeBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
+        Session session = this.getCheckedSession();
+        List<T> beansRemoved = new ArrayList<>();
+
+        for (Serializable beanIdValue : beanIdValues) {
+            beansRemoved.add(this.removeBeanById(session, beanIdValue));
+        }
+
+        return beansRemoved;
+    }
+
+    @Override
+    public T removeBeanById(Serializable beanIdValue) throws ToolBeanDataAccessException {
+        return this.removeBeanById(this.getCheckedSession(), beanIdValue);
+    }
+
+    @Override
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public final List<T> removeBeans(T ... beans) throws ToolBeanDataAccessException {
@@ -224,10 +246,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     }
 
     protected boolean containsBean(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
-        if(null != this.getBeanById(session, beanIdValue)) {
-            return true;
-        }
-        return false;
+        return this.getBeanById(session, beanIdValue) != null;
     }
 
     protected T getBeanById(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
@@ -248,28 +267,30 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
         return null;
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     protected T setBean(Session session, T bean) throws ToolBeanDataAccessException {
         session.saveOrUpdate(bean);
 
         return bean;
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     protected T addBean(Session session, T bean) throws ToolBeanDataAccessException {
         session.save(bean);
 
         return bean;
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     protected T updateBean(Session session, T bean) throws ToolBeanDataAccessException {
         session.update(bean);
 
         return bean;
     }
 
-    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
+    protected T removeBeanById(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
+        T bean = this.getBeanById(session, beanIdValue);
+
+        return (bean != null) ? this.removeBean(session, bean) : null;
+    }
+
     protected T removeBean(Session session, T bean) throws ToolBeanDataAccessException {
         session.delete(bean);
 

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -51,7 +50,7 @@ public abstract class ToolPackageUtils {
         Iterator<Package> subPkgsIter = subPkgs.iterator();
         Package subPkg;
 
-        while(subPkgsIter.hasNext() && ((subPkg = subPkgsIter.next()) != null)) {
+        while (subPkgsIter.hasNext() && ((subPkg = subPkgsIter.next()) != null)) {
             pkgNameBuilder.appendSeparator(ClassUtils.PACKAGE_SEPARATOR_CHAR);
             pkgNameBuilder.append(getName(subPkg));
         }

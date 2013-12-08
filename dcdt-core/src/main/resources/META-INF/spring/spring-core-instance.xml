@@ -60,12 +60,4 @@
     <beans:bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
     
     <tx:annotation-driven transaction-manager="instanceConfigTransactionManager"/>
-    
-    <beans:bean id="toolBeanDao" class="gov.hhs.onc.dcdt.beans.ToolBeanDao" abstract="true"/>
-    
-    <beans:bean id="discoveryTestcaseDao" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDao" abstract="true"/>
-    <beans:bean id="discoveryTestcaseDaoImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDaoImpl" parent="discoveryTestcaseDao"/>
-
-    <beans:bean id="toolBeanService" class="gov.hhs.onc.dcdt.tx.services.ToolBeanService" abstract="true"/>
-    <beans:bean id="toolBeanServiceImpl" class="gov.hhs.onc.dcdt.tx.services.impl.ToolBeanServiceImpl" parent="toolBeanService"/>
 </beans:beans>

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import gov.hhs.onc.dcdt.ToolException;
 import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
 import org.testng.Assert;

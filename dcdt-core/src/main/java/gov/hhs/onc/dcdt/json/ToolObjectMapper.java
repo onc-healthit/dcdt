@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.json;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import java.util.Map;

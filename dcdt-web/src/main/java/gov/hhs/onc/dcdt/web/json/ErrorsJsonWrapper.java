@@ -25,7 +25,7 @@ public interface ErrorsJsonWrapper extends ToolBean {
     @JsonProperty(value = "fields")
     @Nullable
     public Map<String, List<ErrorJsonWrapper>> getFieldErrors();
-    
+
     public void setFieldErrors(@Nullable Map<String, List<ErrorJsonWrapper>> fieldErrors);
 
     public boolean hasGlobalErrors();
@@ -33,6 +33,6 @@ public interface ErrorsJsonWrapper extends ToolBean {
     @JsonProperty(value = "global")
     @Nullable
     public List<ErrorJsonWrapper> getGlobalErrors();
-    
+
     public void setGlobalErrors(@Nullable List<ErrorJsonWrapper> globalErrors);
 }

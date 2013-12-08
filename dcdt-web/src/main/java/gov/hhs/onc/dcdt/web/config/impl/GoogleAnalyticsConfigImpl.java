@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.config.impl;
 
-
 import gov.hhs.onc.dcdt.web.config.GoogleAnalyticsConfig;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;

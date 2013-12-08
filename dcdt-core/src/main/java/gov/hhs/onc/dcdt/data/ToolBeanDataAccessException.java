@@ -1,5 +1,4 @@
-package gov.hhs.onc.dcdt.beans;
-
+package gov.hhs.onc.dcdt.data;
 
 import org.springframework.dao.DataAccessException;
 

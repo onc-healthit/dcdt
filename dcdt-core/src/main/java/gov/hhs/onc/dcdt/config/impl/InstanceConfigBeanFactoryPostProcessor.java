@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.config.impl;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.impl.AbstractToolBeanFactoryPostProcessor;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
@@ -28,7 +27,7 @@ public class InstanceConfigBeanFactoryPostProcessor extends AbstractToolBeanFact
         ConfigurableEnvironment env = this.appContext.getEnvironment();
 
         if (!ArrayUtils.contains(env.getActiveProfiles(), INSTANCE_CONFIGURED_PROFILE)
-            && ToolBeanDefinitionUtils.containsBeanDefinitionOfType(beanFactory, (BeanDefinitionRegistry)beanFactory, InstanceConfig.class)) {
+            && ToolBeanDefinitionUtils.containsBeanDefinitionOfType(beanFactory, (BeanDefinitionRegistry) beanFactory, InstanceConfig.class)) {
             env.addActiveProfile(INSTANCE_CONFIGURED_PROFILE);
 
             LOGGER.debug("Instance configuration detected - adding active profile: " + INSTANCE_CONFIGURED_PROFILE);

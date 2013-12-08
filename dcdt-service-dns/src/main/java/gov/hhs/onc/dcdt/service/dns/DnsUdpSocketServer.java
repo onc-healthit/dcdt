@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.dns;
 
-
 import gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig;
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -23,7 +22,7 @@ public class DnsUdpSocketServer extends DnsSocketServer<DatagramSocket, Datagram
     @Override
     public void start() {
         try {
-            while(!this.socketServer.isClosed()) {
+            while (!this.socketServer.isClosed()) {
                 byte[] inMsgData = new byte[this.socketServer.getReceiveBufferSize()];
                 DatagramPacket inMsgPacket = new DatagramPacket(inMsgData, inMsgData.length);
 

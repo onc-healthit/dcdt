@@ -3,14 +3,12 @@ package gov.hhs.onc.dcdt.crypto.impl;
 import java.math.BigInteger;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.crypto.Digest;
 import org.bouncycastle.crypto.digests.SHA1Digest;
-
 import gov.hhs.onc.dcdt.crypto.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.CertificateName;
 import gov.hhs.onc.dcdt.crypto.CertificateValidInterval;

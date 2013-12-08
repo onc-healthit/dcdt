@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.dns;
 
-
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

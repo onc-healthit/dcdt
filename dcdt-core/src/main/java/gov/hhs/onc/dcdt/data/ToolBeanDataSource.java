@@ -1,6 +1,6 @@
-package gov.hhs.onc.dcdt.beans;
+package gov.hhs.onc.dcdt.data;
 
-
+import gov.hhs.onc.dcdt.beans.ToolBean;
 import javax.sql.DataSource;
 
 public interface ToolBeanDataSource<T extends ToolBean> extends DataSource {

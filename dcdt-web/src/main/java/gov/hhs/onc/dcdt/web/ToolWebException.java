@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web;
 
-
 import gov.hhs.onc.dcdt.ToolException;
 
 public class ToolWebException extends ToolException {

@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.crypto;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import java.io.File;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -15,7 +14,6 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
@@ -27,7 +25,6 @@ import org.bouncycastle.asn1.x509.X509Extension;
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import gov.hhs.onc.dcdt.crypto.constants.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;

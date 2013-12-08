@@ -2,9 +2,7 @@ package gov.hhs.onc.dcdt.crypto;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-
 import java.security.KeyPair;
-
 import org.bouncycastle.asn1.ASN1Sequence;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
@@ -14,7 +12,6 @@ import org.bouncycastle.crypto.digests.SHA1Digest;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
 import gov.hhs.onc.dcdt.crypto.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.impl.CredentialInfoImpl;
 import gov.hhs.onc.dcdt.crypto.impl.KeyPairInfoImpl;

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.json;
 
-
 import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.cfg.MapperConfig;

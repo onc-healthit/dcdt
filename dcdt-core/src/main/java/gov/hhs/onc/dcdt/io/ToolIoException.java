@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.ToolException;
 
 public class ToolIoException extends ToolException {
     private final static long serialVersionUID = 0L;
-    
+
     public ToolIoException() {
         super();
     }

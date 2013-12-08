@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.wrapper;
 
-
 import gov.hhs.onc.dcdt.service.ToolService;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;

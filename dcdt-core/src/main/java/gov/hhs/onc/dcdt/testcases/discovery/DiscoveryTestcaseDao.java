@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.testcases.discovery;
 
-import gov.hhs.onc.dcdt.testcases.ToolTestcaseDao;
 
-public interface DiscoveryTestcaseDao extends ToolTestcaseDao<DiscoveryTestcaseResult, DiscoveryTestcaseDescription, DiscoveryTestcase> {
+import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
+
+public interface DiscoveryTestcaseDao extends ToolBeanDao<DiscoveryTestcase> {
 }

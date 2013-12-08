@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.json;
 
-
 import gov.hhs.onc.dcdt.ToolException;
 
 public class ToolJsonException extends ToolException {

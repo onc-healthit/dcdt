@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.logback.property;
 
-
 import ch.qos.logback.core.PropertyDefinerBase;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;

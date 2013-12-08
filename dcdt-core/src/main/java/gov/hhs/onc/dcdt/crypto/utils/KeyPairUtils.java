@@ -15,9 +15,7 @@ import java.security.PrivateKey;
 import java.security.SecureRandom;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
-
 import org.apache.commons.io.IOUtils;
-
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.constants.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.constants.KeyAlgorithm;
@@ -57,6 +55,7 @@ public abstract class KeyPairUtils {
         }
     }
 
+    @SuppressWarnings({ "fallthrough" })
     public static PrivateKey readPrivateKey(byte[] data, DataEncoding encoding) throws CryptographyException {
         try {
             switch (encoding) {

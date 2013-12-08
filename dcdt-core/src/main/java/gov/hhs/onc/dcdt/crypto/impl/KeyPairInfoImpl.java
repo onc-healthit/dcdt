@@ -3,7 +3,6 @@ package gov.hhs.onc.dcdt.crypto.impl;
 import java.security.KeyPair;
 import java.security.PrivateKey;
 import java.security.PublicKey;
-
 import gov.hhs.onc.dcdt.crypto.KeyPairInfo;
 
 public class KeyPairInfoImpl implements KeyPairInfo {

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.controller;
 
-
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.web.test.ToolWebTestNgSeleniumIntegrationTests;
 import org.testng.Assert;

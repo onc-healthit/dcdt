@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;

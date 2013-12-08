@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.test;
 
-
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.List;

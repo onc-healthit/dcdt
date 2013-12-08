@@ -20,7 +20,7 @@ public abstract class ToolMessageUtils {
 
     @SuppressWarnings({ "NullArgumentToVariableArgMethod" })
     public static String getMessage(MessageSource msgSource, String code, @Nullable String defaultMsg) throws NoSuchMessageException {
-        return getMessage(msgSource, code, null, null);
+        return getMessage(msgSource, code, defaultMsg, null);
     }
 
     public static String getMessage(MessageSource msgSource, String code, @Nullable String defaultMsg, @Nullable Object ... msgArgs)
@@ -31,7 +31,7 @@ public abstract class ToolMessageUtils {
     @SuppressWarnings({ "NullArgumentToVariableArgMethod" })
     public static String getMessage(MessageSource msgSource, String code, @Nullable String defaultMsg, @Nullable Locale msgLocale)
         throws NoSuchMessageException {
-        return getMessage(msgSource, code, defaultMsg, null, null);
+        return getMessage(msgSource, code, defaultMsg, msgLocale, (Object[]) null);
     }
 
     public static String getMessage(MessageSource msgSource, String code, @Nullable String defaultMsg, @Nullable Locale msgLocale, @Nullable Object ... msgArgs)

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.beans.factory;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.core.PriorityOrdered;

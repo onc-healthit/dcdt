@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.version;
 
-
 import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

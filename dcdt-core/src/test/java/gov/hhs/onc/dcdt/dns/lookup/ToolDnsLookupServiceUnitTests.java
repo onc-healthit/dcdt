@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.dns.lookup;
 
-
 import gov.hhs.onc.dcdt.dns.DnsResolver;
 import gov.hhs.onc.dcdt.dns.DnsResolverType;
 import gov.hhs.onc.dcdt.test.ToolTestNgTests;

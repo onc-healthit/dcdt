@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.dns;
 
-
 import gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig;
 import java.util.List;
 import org.springframework.beans.factory.InitializingBean;

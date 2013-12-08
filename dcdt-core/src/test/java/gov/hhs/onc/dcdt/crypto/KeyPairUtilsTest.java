@@ -4,11 +4,9 @@ import java.io.File;
 import java.io.IOException;
 import java.security.KeyPair;
 import java.security.PrivateKey;
-
 import org.testng.Assert;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
-
 import gov.hhs.onc.dcdt.crypto.constants.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.constants.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.utils.KeyPairUtils;

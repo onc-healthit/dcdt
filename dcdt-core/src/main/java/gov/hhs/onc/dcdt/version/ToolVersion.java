@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.version;
 
-
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import java.util.List;
 

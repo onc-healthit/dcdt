@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 public class DiscoveryTestcaseUnitTests extends ToolTestNgUnitTests {
     @Value("@{dcdt.instance.domain}")
     private String instanceDomain;
-    
+
     @Autowired(required = false)
     private List<DiscoveryTestcase> discoveryTestcases;
 

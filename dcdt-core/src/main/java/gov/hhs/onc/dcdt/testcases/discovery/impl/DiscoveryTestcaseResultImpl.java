@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
-
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcaseResult;
 import org.springframework.context.annotation.Lazy;

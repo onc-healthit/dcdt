@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.beans;
 
-
 import java.beans.PropertyChangeEvent;
 import org.springframework.beans.PropertyAccessException;
 

@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.test.impl;
 
-
 import com.thoughtworks.selenium.HttpCommandProcessor;
 import gov.hhs.onc.dcdt.web.test.ToolSeleniumCommandProcessor;
 import java.beans.ConstructorProperties;
