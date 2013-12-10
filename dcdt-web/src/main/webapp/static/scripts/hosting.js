@@ -7,11 +7,14 @@ $(document).ready(function () {
             var hostingTestcase = HOSTING_TESTCASES[hostingTestcaseName];
             displayHostingTestcaseDescription(hostingTestcase.testcaseDescription);
         }
+        else{
+            clearHostingTestcaseDescriptionContents();
+        }
     });
 
     $("#hostingReset").click(function () {
         hostingForm[0].reset();
-        $("#hostingTestcaseDescription").empty();
+        clearHostingTestcaseDescriptionContents();
     });
 });
 
@@ -26,4 +29,8 @@ function displayHostingTestcaseDescription(hostingTestcaseDesc){
         desc.append("<ul><li>" + hostingTestcaseDesc.specifications[i] +"</li></ul>");
     }
     desc.append("<br/><br/>");
+}
+
+function clearHostingTestcaseDescriptionContents(){
+    $("#hostingTestcaseDescription").empty();
 }
