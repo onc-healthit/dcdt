@@ -36,4 +36,10 @@
         <put-attribute name="head" value="/WEB-INF/views/content/head-version.jsp" type="template"/>
         <put-attribute name="content" value="/WEB-INF/views/content/content-version.jsp" type="template"/>
     </definition>
+
+    <definition name="hosting" extends="layout">
+        <put-attribute name="name" value="hosting" cascade="true" type="string"/>
+        <put-attribute name="head" value="/WEB-INF/views/content/head-hosting.jsp" type="template"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-hosting.jsp" type="template"/>
+    </definition>
 </tiles-definitions>
