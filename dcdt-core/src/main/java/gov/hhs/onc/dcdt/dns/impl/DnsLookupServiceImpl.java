@@ -27,77 +27,66 @@ public class DnsLookupServiceImpl implements DnsLookupService {
 
     @Override
     public MXRecord[] getMxRecords(String domain) throws DnsLookupException {
-        try {
-            Record[] records = new Lookup(domain, Type.MX).run();
-            if (null == records) {
-                return null;
-            }
+        Record[] records = doLookup(null, null, domain, Type.MX);
+        if(null != records) {
             return Arrays.copyOf(records, records.length, MXRecord[].class);
-        } catch (TextParseException textParseException) {
-            throw new DnsLookupException(textParseException);
         }
+        return null;
     }
 
     @Override
     public CERTRecord[] getCertRecords(String domain) throws DnsLookupException {
-        try {
-            Record[] records = new Lookup(domain, Type.CERT).run();
-            if (null == records) {
-                return null;
-            }
+        Record[] records = doLookup(null, null, domain, Type.CERT);
+        if(null != records) {
             return Arrays.copyOf(records, records.length, CERTRecord[].class);
-        } catch (TextParseException textParseException) {
-            throw new DnsLookupException(textParseException);
         }
+        return null;
     }
 
     @Override
     public ARecord[] getARecords(String domain) throws DnsLookupException {
-        try {
-            Record[] records = new Lookup(domain, Type.A).run();
-            if (null == records) {
-                return null;
-            }
+        Record[] records = doLookup(null, null, domain, Type.A);
+        if(null != records) {
             return Arrays.copyOf(records, records.length, ARecord[].class);
-        } catch (TextParseException textParseException) {
-            throw new DnsLookupException(textParseException);
         }
+        return null;
     }
 
     @Override
     public NSRecord[] getNsRecords(String domain) throws DnsLookupException {
-        try {
-            Record[] records = new Lookup(domain, Type.NS).run();
-            if (null == records) {
-                return null;
-            }
+        Record[] records = doLookup(null, null, domain, Type.NS);
+        if(null != records) {
             return Arrays.copyOf(records, records.length, NSRecord[].class);
-        } catch (TextParseException textParseException) {
-            throw new DnsLookupException(textParseException);
         }
+        return null;
     }
 
     @Override
     public SRVRecord[] getSrvRecords(ServiceType serviceType, Protocol protocol, String domain) throws DnsLookupException {
-        try {
-            Record[] records = new Lookup(serviceType.getServiceType() + DOT + protocol.getProtocol() + DOT + domain, Type.SRV).run();
-            if (null == records) {
-                return null;
-            }
+        Record[] records = doLookup(serviceType, protocol, domain, Type.SRV);
+        if(null != records) {
             return Arrays.copyOf(records, records.length, SRVRecord[].class);
-        } catch (TextParseException textParseException) {
-            throw new DnsLookupException(textParseException);
         }
+        return null;
     }
 
     @Override
     public SOARecord[] getSoaRecords(String domain) throws DnsLookupException {
+        Record[] records = doLookup(null, null, domain, Type.SOA);
+        if(null != records) {
+            return Arrays.copyOf(records, records.length, SOARecord[].class);
+        }
+        return null;
+    }
+
+    private Record[] doLookup(ServiceType serviceType, Protocol protocol, String domain, int type) throws DnsLookupException {
         try {
-            Record[] records = new Lookup(domain, Type.SOA).run();
+            String name = (null != serviceType) ? serviceType.getServiceType() + DOT + protocol.getProtocol() + DOT + domain : domain;
+            Record[] records = new Lookup(name, type).run();
             if (null == records) {
                 return null;
             }
-            return Arrays.copyOf(records, records.length, SOARecord[].class);
+            return records;
         } catch (TextParseException textParseException) {
             throw new DnsLookupException(textParseException);
         }
