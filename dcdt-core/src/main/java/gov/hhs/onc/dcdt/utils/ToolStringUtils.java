@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-import java.util.Arrays;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
@@ -31,5 +30,9 @@ public abstract class ToolStringUtils {
         }
 
         return strBuilder.toString();
+    }
+
+    public static String removeExtraWhitespace(String item) {
+        return item.replaceAll("\\s+", " ").trim();
     }
 }
