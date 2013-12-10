@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <beans:bean id="discoveryTestcase" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" parent="toolTestcase" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCert" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCertificate" abstract="true"/>
+    <beans:bean id="discoveryTestcaseResult" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
+    
+    <beans:bean id="discoveryTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl" parent="discoveryTestcase" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCertImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCertificateImpl" parent="discoveryTestcaseCert"
+        abstract="true"/>
+    <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseResultImpl" parent="toolTestcaseResult"
+        abstract="true"/>
+    
+    <beans:bean id="discoveryTestcase1" parent="discoveryTestcaseImpl"
+        p:mailAddress="d1@domain1.@{dcdt.instance.domain}"
+        p:name="d1"
+        p:nameDisplay="Discovery Testcase 1">
+        <beans:property name="certificates">
+            <util:list>
+                <beans:bean parent="discoveryTestcaseCertImpl"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+</beans:beans>
