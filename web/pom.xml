@@ -9,13 +9,11 @@
 	<parent>
 		<groupId>gov.hhs.onc.dcdt</groupId>
 		<artifactId>direct-cert-discovery-tool-parent</artifactId>
-		<version>2.1.1-RELEASE</version>
+		<version>2.1.2-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	
-	<groupId>gov.hhs.onc.dcdt</groupId>
 	<artifactId>direct-cert-discovery-tool-web</artifactId>
-	<version>2.1.1-RELEASE</version>
 	<packaging>war</packaging>
 
 	<name>Direct Certificate Discovery Tool Webapp</name>
@@ -199,15 +197,15 @@
 		</dependency>
 		<!-- Runtime dependencies (project, internal) -->
 		<dependency>
-			<groupId>gov.hhs.onc.dcdt</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>direct-cert-discovery-tool-core</artifactId>
-			<version>2.1.1-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- Test dependencies (project, internal) -->
 		<dependency>
-			<groupId>gov.hhs.onc.dcdt</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>direct-cert-discovery-tool-core</artifactId>
-			<version>2.1.1-RELEASE</version>
+			<version>${project.version}</version>
 			<type>test-jar</type>
 			<classifier>tests</classifier>
 			<scope>test</scope>
@@ -230,7 +228,7 @@
 							<resources>
 								<!-- Webapp meta (filtered) -->
 								<resource>
-									<directory>src/main/webapp/META-INF</directory>
+                                    <directory>${project.basedir}/src/main/webapp/META-INF</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>**/*.properties</include>
@@ -240,7 +238,7 @@
 								</resource>
 								<!-- Webapp meta (non-filtered) -->
 								<resource>
-									<directory>src/main/webapp/META-INF</directory>
+                                    <directory>${project.basedir}/src/main/webapp/META-INF</directory>
 									<excludes>
 										<exclude>**/*.properties</exclude>
 										<exclude>**/*.xml</exclude>
@@ -249,7 +247,7 @@
 								</resource>
 								<!-- Webapp classes (filtered) -->
 								<resource>
-									<directory>src/main/webapp/WEB-INF/classes</directory>
+                                    <directory>${project.basedir}/src/main/webapp/WEB-INF/classes</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>**/*.properties</include>
@@ -259,7 +257,7 @@
 								</resource>
 								<!-- Webapp classes (non-filtered) -->
 								<resource>
-									<directory>src/main/webapp/WEB-INF/classes</directory>
+                                    <directory>${project.basedir}/src/main/webapp/WEB-INF/classes</directory>
 									<excludes>
 										<exclude>**/*.properties</exclude>
 										<exclude>**/*.xml</exclude>
@@ -268,7 +266,7 @@
 								</resource>
 								<!-- Webapp descriptor (filtered) -->
 								<resource>
-									<directory>src/main/webapp/WEB-INF</directory>
+                                    <directory>${project.basedir}/src/main/webapp/WEB-INF</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>web.xml</include>

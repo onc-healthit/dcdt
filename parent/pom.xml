@@ -8,7 +8,7 @@
 	
 	<groupId>gov.hhs.onc.dcdt</groupId>
 	<artifactId>direct-cert-discovery-tool-parent</artifactId>
-	<version>2.1.1-RELEASE</version>
+	<version>2.1.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<name>Direct Certificate Discovery Tool Parent</name>
@@ -121,7 +121,7 @@
 		<!-- Project build timestamp format -->
 		<maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss Z</maven.build.timestamp.format>
 		<!-- Project build test script source directory (test-specific version of ${project.build.scriptSourceDirectory}) -->
-		<project.build.testScriptSourceDirectory>src/test/scripts</project.build.testScriptSourceDirectory>
+        <project.build.testScriptSourceDirectory>${project.basedir}/src/test/scripts</project.build.testScriptSourceDirectory>
 	</properties>
 	
 	<dependencyManagement>
@@ -428,7 +428,7 @@
 		<resources>
 			<!-- Configuration files (filtered) -->
 			<resource>
-				<directory>src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
 				<filtering>true</filtering>
 				<includes>
 					<include>**/*.properties</include>
@@ -437,7 +437,7 @@
 			</resource>
 			<!-- Configuration files (non-filtered) -->
 			<resource>
-				<directory>src/main/resources</directory>
+                <directory>${project.basedir}/src/main/resources</directory>
 				<excludes>
 					<exclude>**/*.properties</exclude>
 					<exclude>**/*.xml</exclude>
@@ -447,7 +447,7 @@
 		<testResources>
 			<!-- Test configuration files (filtered) -->
 			<testResource>
-				<directory>src/test/resources</directory>
+                <directory>${project.basedir}/src/test/resources</directory>
 				<filtering>true</filtering>
 				<includes>
 					<include>**/*.properties</include>
@@ -456,7 +456,7 @@
 			</testResource>
 			<!-- Test configuration files (non-filtered) -->
 			<testResource>
-				<directory>src/test/resources</directory>
+                <directory>${project.basedir}/src/test/resources</directory>
 				<excludes>
 					<exclude>**/*.properties</exclude>
 					<exclude>**/*.xml</exclude>
@@ -793,7 +793,7 @@
 							<configuration>
 								<files>
 									<file>${project.parent.basedir}/../pom.properties</file>
-									<file>pom.properties</file>
+                                    <file>${project.basedir}/pom.properties</file>
 								</files>
 							</configuration>
 						</execution>

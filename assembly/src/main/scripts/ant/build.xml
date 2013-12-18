@@ -96,19 +96,6 @@
 				
 				log4j.logger.org.nhindirect=INFO, CONS-NHINDIRECT, FILE, MAILETCONTAINER-NHINDIRECT
 			</footer>
-		</concat
-		
-		><dcdt:info>Appending the Direct Project stock assembly Apache James Java Service Wrapper configuration file: ${package.build.james.conf.wrapper.file}</dcdt:info>
-		<concat destfile="${package.build.james.conf.wrapper.file}" fixlastline="true">
-			<path>
-				<pathelement location="${direct-project-stock.build.james.conf.wrapper.file}"/>
-			</path>
-			<footer trimleading="true">
-				#********************************************************************
-				# Wrapper Direct Certificate Discovery Tool (DCDT) Properties
-				#********************************************************************
-				wrapper.java.home=/usr/lib/jvm/java-6-sun
-			</footer>
 		</concat>
 	</target>
 	

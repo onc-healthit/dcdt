@@ -9,13 +9,11 @@
 	<parent>
 		<groupId>gov.hhs.onc.dcdt</groupId>
 		<artifactId>direct-cert-discovery-tool-parent</artifactId>
-		<version>2.1.1-RELEASE</version>
+		<version>2.1.2-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	
-	<groupId>gov.hhs.onc.dcdt</groupId>
 	<artifactId>direct-cert-discovery-tool-core</artifactId>
-	<version>2.1.1-RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>Direct Certificate Discovery Tool Core</name>
@@ -203,7 +201,7 @@
 							<files>
 								<file>${project.parent.basedir}/../pom.properties</file>
 								<file>${project.build.directory}/properties-tmp/pom-all.properties</file>
-								<file>pom.properties</file>
+                                <file>${project.basedir}/pom.properties</file>
 							</files>
 						</configuration>
 					</execution>

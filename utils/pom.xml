@@ -9,13 +9,11 @@
 	<parent>
 		<groupId>gov.hhs.onc.dcdt</groupId>
 		<artifactId>direct-cert-discovery-tool-parent</artifactId>
-		<version>2.1.1-RELEASE</version>
+		<version>2.1.2-SNAPSHOT</version>
 		<relativePath>../parent</relativePath>
 	</parent>
 	
-	<groupId>gov.hhs.onc.dcdt</groupId>
 	<artifactId>direct-cert-discovery-tool-utils</artifactId>
-	<version>2.1.1-RELEASE</version>
 	<packaging>jar</packaging>
 
 	<name>Direct Certificate Discovery Tool Utilities</name>
@@ -176,15 +174,15 @@
 		</dependency>
 		<!-- Runtime dependencies (project, internal) -->
 		<dependency>
-			<groupId>gov.hhs.onc.dcdt</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>direct-cert-discovery-tool-core</artifactId>
-			<version>2.1.1-RELEASE</version>
+			<version>${project.version}</version>
 		</dependency>
 		<!-- Test dependencies (project, internal) -->
 		<dependency>
-			<groupId>gov.hhs.onc.dcdt</groupId>
+			<groupId>${project.groupId}</groupId>
 			<artifactId>direct-cert-discovery-tool-core</artifactId>
-			<version>2.1.1-RELEASE</version>
+			<version>${project.version}</version>
 			<type>test-jar</type>
 			<classifier>tests</classifier>
 			<scope>test</scope>
@@ -224,7 +222,7 @@
 						</goals>
 						<configuration>
 							<descriptors>
-								<descriptor>src/main/assembly/distrib.xml</descriptor>
+                                <descriptor>${project.basedir}/src/main/assembly/distrib.xml</descriptor>
 							</descriptors>
 						</configuration>
 					</execution>
@@ -269,7 +267,7 @@
 							<resources>
 								<!-- Binary/executable files (filtered) -->
 								<resource>
-									<directory>src/main/bin</directory>
+                                    <directory>${project.basedir}/src/main/bin</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>**/*.sh</include>
@@ -278,7 +276,7 @@
 								</resource>
 								<!-- Binary/executable files (non-filtered) -->
 								<resource>
-									<directory>src/main/bin</directory>
+                                    <directory>${project.basedir}/src/main/bin</directory>
 									<excludes>
 										<exclude>**/*.sh</exclude>
 									</excludes>
@@ -286,7 +284,7 @@
 								</resource>
 								<!-- Configuration files (filtered) -->
 								<resource>
-									<directory>src/main/conf</directory>
+                                    <directory>${project.basedir}/src/main/conf</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>**/*.properties</include>
@@ -296,7 +294,7 @@
 								</resource>
 								<!-- Configuration files (non-filtered) -->
 								<resource>
-									<directory>src/main/conf</directory>
+                                    <directory>${project.basedir}/src/main/conf</directory>
 									<excludes>
 										<exclude>**/*.properties</exclude>
 										<exclude>**/*.xml</exclude>
@@ -317,7 +315,7 @@
 							<resources>
 								<!-- Test configuration files (filtered) -->
 								<resource>
-									<directory>src/test/conf</directory>
+                                    <directory>${project.basedir}/src/test/conf</directory>
 									<filtering>true</filtering>
 									<includes>
 										<include>**/*.properties</include>
@@ -327,7 +325,7 @@
 								</resource>
 								<!-- Test configuration files (non-filtered) -->
 								<resource>
-									<directory>src/test/conf</directory>
+                                    <directory>${project.basedir}/src/test/conf</directory>
 									<excludes>
 										<exclude>**/*.properties</exclude>
 										<exclude>**/*.xml</exclude>
