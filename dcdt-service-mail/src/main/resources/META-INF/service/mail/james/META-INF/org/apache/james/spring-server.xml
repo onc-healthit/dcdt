@@ -240,7 +240,7 @@
 
     <!-- 
     ===========================================================================
-       Mail Protocol Servers
+       Mail ServiceProtocol Servers
     ===========================================================================
     -->
    <bean id="protocolhandlerloader" class="org.apache.james.container.spring.bean.factory.protocols.ProtocolHandlerLoaderBeanFactory" />
