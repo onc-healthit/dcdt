@@ -8,7 +8,7 @@
         <attribute name="name"/>
         <attribute name="host" default="${host}"/>
         <attribute name="port" default="${port}"/>
-        <attribute name="serviceProtocol" default="${serviceProtocol}"/>
+        <attribute name="protocol" default="${protocol}"/>
         <attribute name="basepath" default="${basepath}"/>
         <attribute name="summary" default="${summary}"/>
         <attribute name="saveresponse" default="${saveresponse}"/>
