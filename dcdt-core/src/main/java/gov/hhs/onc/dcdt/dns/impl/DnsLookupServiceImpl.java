@@ -22,6 +22,8 @@ import org.xbill.DNS.SOARecord;
 import org.xbill.DNS.SRVRecord;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
+
+import javax.annotation.Nullable;
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
@@ -38,72 +40,82 @@ public class DnsLookupServiceImpl implements DnsLookupService {
 
     @Autowired
     private List<Resolver> dnsResolverHostsExternal;
+    
+    private static final String CASTING_ERROR_MESSAGE = "Unexpected type returned.";
 
     @Override
     public MXRecord[] getMxRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        Record[] records = doLookup(resolveLocally, null, null, dnsName, Type.MX);
-        if (null != records) {
-            return Arrays.copyOf(records, records.length, MXRecord[].class);
+        try {
+            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.MX);
+            return recordsList.toArray(new MXRecord[recordsList.size()]);
+        } catch(ArrayStoreException arrayStoreException) {
+            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
         }
-        return null;
     }
 
     @Override
     public CERTRecord[] getCertRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        Record[] records = doLookup(resolveLocally, null, null, dnsName, Type.CERT);
-        if (null != records) {
-            return Arrays.copyOf(records, records.length, CERTRecord[].class);
+        try {
+            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.CERT);
+            return recordsList.toArray(new CERTRecord[recordsList.size()]);
+        } catch(ArrayStoreException arrayStoreException) {
+            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
         }
-        return null;
     }
 
     @Override
     public ARecord[] getARecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        Record[] records = doLookup(resolveLocally, null, null, dnsName, Type.A);
-        if (null != records) {
-            return Arrays.copyOf(records, records.length, ARecord[].class);
+        try {
+            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.A);
+            return recordsList.toArray(new ARecord[recordsList.size()]);
+        } catch(ArrayStoreException arrayStoreException) {
+            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
         }
-        return null;
     }
 
     @Override
     public NSRecord[] getNsRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        Record[] records = doLookup(resolveLocally, null, null, dnsName, Type.NS);
-        if (null != records) {
-            return Arrays.copyOf(records, records.length, NSRecord[].class);
+        try {
+            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.NS);
+            return recordsList.toArray(new NSRecord[recordsList.size()]);
+        } catch(ArrayStoreException arrayStoreException) {
+            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
         }
-        return null;
     }
 
     @Override
     public SRVRecord[] getSrvRecords(boolean resolveLocally, ServiceType serviceType, ServiceProtocol serviceProtocol, String dnsName)
         throws DnsLookupException {
-        Record[] records = doLookup(resolveLocally, serviceType, serviceProtocol, dnsName, Type.SRV);
-        if (null != records) {
-            return Arrays.copyOf(records, records.length, SRVRecord[].class);
+        try {
+            List<Record> recordsList = doLookup(resolveLocally, serviceType, serviceProtocol, dnsName, Type.SRV);
+            return recordsList.toArray(new SRVRecord[recordsList.size()]);
+        } catch(ArrayStoreException arrayStoreException) {
+            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
         }
-        return null;
     }
 
     @Override
     public SOARecord[] getSoaRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        Record[] records = doLookup(resolveLocally, null, null, dnsName, Type.SOA);
-        if (null != records) {
-            return Arrays.copyOf(records, records.length, SOARecord[].class);
+        try {
+            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.SOA);
+            return recordsList.toArray(new SOARecord[recordsList.size()]);
+        } catch(ArrayStoreException arrayStoreException) {
+            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
         }
-        return null;
     }
 
     @Override
     public CNAMERecord[] getCNameRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        Record[] records = doLookup(resolveLocally, null, null, dnsName, Type.CNAME);
-        if (null != records) {
-            return Arrays.copyOf(records, records.length, CNAMERecord[].class);
+        try {
+            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.CNAME);
+            return recordsList.toArray(new CNAMERecord[recordsList.size()]);
+        } catch(ArrayStoreException arrayStoreException) {
+            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
         }
-        return null;
     }
 
-    private Record[] doLookup(boolean resolveLocally, ServiceType serviceType, ServiceProtocol serviceProtocol, String dnsName, int type)
+    @Nullable
+    private List<Record> doLookup(boolean resolveLocally, ServiceType serviceType, ServiceProtocol serviceProtocol, String dnsName, int type)
         throws DnsLookupException {
         try {
             String name = (null != serviceType) ? serviceType.getServiceType() + ToolUriUtils.DOMAIN_DELIM + serviceProtocol.getServiceProtocol()
@@ -118,11 +130,7 @@ public class DnsLookupServiceImpl implements DnsLookupService {
                 }
             }
             lookup.setCache(this.dnsCache);
-            Record[] records = lookup.run();
-            if (null == records) {
-                return null;
-            }
-            return records;
+            return Arrays.asList(lookup.run());
         } catch (TextParseException | UnknownHostException exception) {
             throw new DnsLookupException(exception);
         }
