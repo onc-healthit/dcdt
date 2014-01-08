@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current">
+    
+    <macrodef name="compile" description="Invokes the Java compiler.">
+        <attribute name="srcDir"/>
+        <attribute name="outDir"/>
+        <attribute name="source"/>
+        <attribute name="target"/>
+        <attribute name="memInitial" default="128m"/>
+        <attribute name="memMax" default="256m"/>
+        <element name="compile-elements" optional="true" implicit="true"/>
+        <sequential>
+            <if>
+                <available file="@{srcDir}" type="dir"/>
+                <then>
+                    <mkdir dir="@{outDir}"/>
+                    <javac destdir="@{outDir}" source="@{source}" target="@{target}" memoryInitialSize="@{memInitial}" memoryMaximumSize="@{memMax}"
+                        debug="true" deprecation="true" includeAntRuntime="false" fork="true">
+                        <compilerarg value="-proc:none"/>
+                        <compilerarg value="-Werror"/>
+                        <compilerarg value="-Xlint"/>
+                        <compilerarg value="-Xlint:-path"/>
+                        <compilerarg value="-Xlint:-try"/>
+                        <src path="@{srcDir}"/>
+                        <compile-elements/>
+                    </javac>
+                </then>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="write-properties" description="Writes a list of properties to a file.">
+        <attribute name="file"/>
+        <attribute name="append" default="false"/>
+        <attribute name="list" default=""/>
+        <attribute name="sort" default="true"/>
+        <text name="write-properties.text" optional="true"/>
+        <element name="write-properties-elements" optional="true" implicit="true"/>
+        <sequential>
+            <if>
+                <equals arg1="@{sort}" arg2="true"/>
+                <then>
+                    <sortlist property="write-properties.list" override="true" value="@{list},@{write-properties.text}"/>
+                </then>
+                <else>
+                    <var name="write-properties.list" value="@{list},@{write-properties.text}"/>
+                </else>
+            </if>
+            <for list="${write-properties.list}" param="write-properties.prop">
+                <sequential>
+                    <var name="write-properties.prop" value="@{write-properties.prop}"/>
+                    <var name="write-properties.prop" value="${write-properties.prop//(^\s+|\s+$)/}"/>
+                    <if>
+                        <and>
+                            <not><equals arg1="${write-properties.prop}" arg2=""/></not>
+                            <or>
+                                <matches string="${write-properties.prop}" pattern="="/>
+                                <isset property="${write-properties.prop}"/>
+                            </or>
+                        </and>
+                        <then>
+                            <echo file="@{file}" append="@{append}">${write-properties.prop}</echo>
+                            <if>
+                                <not><matches string="${write-properties.prop}" pattern="="/></not>
+                                <then>
+                                    <echo file="@{file}" append="true">=${${write-properties.prop}}</echo>
+                                </then>
+                            </if>
+                            <echo file="@{file}" append="true">${n}</echo>
+                        </then>
+                    </if>
+                </sequential>
+            </for>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="read-file" description="Reads a file's content into a variable.">
+        <attribute name="file"/>
+        <attribute name="property"/>
+        <element name="read-file-elements" optional="true" implicit="true"/>
+        <sequential>
+            <current:unset name="@{property}"/>
+            <loadfile srcFile="@{file}" property="@{property}">
+                <read-file-elements/>
+            </loadfile>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="mkdir-tree" description="Makes directories in the tree of a path.">
+        <attribute name="path"/>
+        <sequential>
+            <current:dirname path="@{path}" property="mkdir-tree.dir"/>
+            <if>
+                <not><available file="${mkdir-tree.dir}" type="dir"/></not>
+                <then>
+                    <mkdir dir="${mkdir-tree.dir}"/>
+                </then>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="basename" description="Sets a variable to the base name of a path.">
+        <attribute name="path"/>
+        <attribute name="property"/>
+        <sequential>
+            <current:unset name="@{property}"/>
+            <basename file="@{path}" property="@{property}"/>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="dirname" description="Sets a variable to the directory name of a path.">
+        <attribute name="path"/>
+        <attribute name="property"/>
+        <sequential>
+            <current:unset name="@{property}"/>
+            <dirname file="@{path}" property="@{property}"/>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="timestamp" description="Sets a variable to a timestamp.">
+        <attribute name="property"/>
+        <attribute name="pattern" default="yyyy-MM-dd HH:mm:ss Z"/>
+        <attribute name="locale" default="en,US"/>
+        <sequential>
+            <current:unset name="@{property}"/>
+            <tstamp>
+                <format property="@{property}" pattern="@{pattern}" locale="@{locale}"/>
+            </tstamp>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="unset" description="Unsets a variable.">
+        <attribute name="name"/>
+        <sequential>
+            <var name="@{name}" unset="true"/>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="debug" description="Logs a debug level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="debug">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="verbose" description="Logs a verbose level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="verbose">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="info" description="Logs an info level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="info">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="warn" description="Logs a warn level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="warn">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="error" description="Logs an error level message.">
+        <text name="text" optional="true"/>
+        <sequential>
+            <current:message level="error">@{text}</current:message>
+        </sequential>
+    </macrodef>
+    <macrodef name="message" description="Logs a message.">
+        <attribute name="level" default="info"/>
+        <text name="text" optional="true"/>
+        <sequential>
+            <echo message="@{text}" taskname="@{level}"/>
+        </sequential>
+    </macrodef>
+</antlib>

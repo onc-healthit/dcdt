@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+    <definition name="layout" template="/WEB-INF/views/layout.jsp">
+        <put-attribute name="head-common" value="/WEB-INF/views/include/head.jsp" type="template"/>
+        <put-attribute name="nav-common" value="/WEB-INF/views/include/nav.jsp" type="template"/>
+        <put-attribute name="content-common" value="/WEB-INF/views/include/content.jsp" type="template"/>
+        <put-attribute name="footer-common" value="/WEB-INF/views/include/footer.jsp" type="template"/>
+    </definition>
+    
+    <definition name="admin" extends="layout">
+        <put-attribute name="name" value="admin" cascade="true" type="string"/>
+        <put-attribute name="head" value="/WEB-INF/views/content/head-admin.jsp" type="template"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-admin.jsp" type="template"/>
+    </definition>
+    
+    <definition name="admin-login" extends="layout">
+        <put-attribute name="name" value="admin-login" cascade="true" type="string"/>
+        <put-attribute name="head" value="/WEB-INF/views/content/head-admin-login.jsp" type="template"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-admin-login.jsp" type="template"/>
+    </definition>
+    
+    <definition name="error" extends="layout">
+        <put-attribute name="name" value="error" cascade="true" type="string"/>
+        <put-attribute name="head" value="/WEB-INF/views/content/head-error.jsp" type="template"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-error.jsp" type="template"/>
+    </definition>
+    
+    <definition name="home" extends="layout">
+        <put-attribute name="name" value="home" cascade="true" type="string"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-home.jsp" type="template"/>
+    </definition>
+    
+    <definition name="version" extends="layout">
+        <put-attribute name="name" value="version" cascade="true" type="string"/>
+        <put-attribute name="head" value="/WEB-INF/views/content/head-version.jsp" type="template"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-version.jsp" type="template"/>
+    </definition>
+
+    <definition name="hosting" extends="layout">
+        <put-attribute name="name" value="hosting" cascade="true" type="string"/>
+        <put-attribute name="head" value="/WEB-INF/views/content/head-hosting.jsp" type="template"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-hosting.jsp" type="template"/>
+    </definition>
+</tiles-definitions>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:webtest="antlib:com.canoo.webtest">
+    
+    <macrodef name="test" description="Executes a Canoo webtest test.">
+        <attribute name="name"/>
+        <attribute name="host" default="${host}"/>
+        <attribute name="port" default="${port}"/>
+        <attribute name="protocol" default="${protocol}"/>
+        <attribute name="basepath" default="${basepath}"/>
+        <attribute name="summary" default="${summary}"/>
+        <attribute name="saveresponse" default="${saveresponse}"/>
+        <attribute name="resultpath" default="${resultpath}"/>
+        <attribute name="resultfile" default="${resultfile}"/>
+        <attribute name="haltonfailure" default="${haltonfailure}"/>
+        <attribute name="haltonerror" default="${haltonerror}"/>
+        <attribute name="showhtmlparseroutput" default="${showhtmlparseroutput}"/>
+        <attribute name="autorefresh" default="${autorefresh}"/>
+        <element name="test-elements" optional="true" implicit="true"/>
+        <sequential>
+            <webtest:testSpec name="@{name}">
+                <webtest:config
+                    host="@{host}"
+                    port="@{port}"
+                    serviceProtocol="@{serviceProtocol}"
+                    basepath="@{basepath}"
+                    summary="@{summary}"
+                    saveresponse="@{saveresponse}"
+                    resultpath="@{resultpath}"
+                    resultfile="@{resultfile}"
+                    haltonfailure="@{haltonfailure}"
+                    haltonerror="@{haltonerror}"
+                    showhtmlparseroutput="@{showhtmlparseroutput}"
+                    autorefresh="@{autorefresh}"/>
+                <test-elements/>
+            </webtest:testSpec>
+        </sequential>
+    </macrodef>
+</antlib>
