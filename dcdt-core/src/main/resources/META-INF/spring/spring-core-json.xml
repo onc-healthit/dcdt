@@ -16,14 +16,15 @@
     <beans:bean id="toolObjMapperConvService" class="org.springframework.context.support.ConversionServiceFactoryBean">
         <beans:property name="converters">
             <util:list>
-                <beans:ref local="jsonParserConfigFeatureConv"/>
-                <beans:ref local="jsonGenConfigFeatureConv"/>
+                <beans:ref bean="jsonParserConfigFeatureConv"/>
+                <beans:ref bean="jsonGenConfigFeatureConv"/>
             </util:list>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="toolObjMapper" class="gov.hhs.onc.dcdt.json.ToolObjectMapper" abstract="true"/>
-    <beans:bean id="toolObjMapperImpl" class="gov.hhs.onc.dcdt.json.impl.ToolObjectMapperImpl" parent="toolObjMapper">
+    <beans:bean id="toolObjMapperImpl" class="gov.hhs.onc.dcdt.json.impl.ToolObjectMapperImpl" parent="toolObjMapper"
+        p:annotationIntrospector-ref="toolAnnoInspectorImpl">
         <beans:property name="configFeatures">
             <util:map>
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.DeserializationFeature).READ_ENUMS_USING_TO_STRING }" value="true"/>
@@ -31,6 +32,11 @@
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.SerializationFeature).INDENT_OUTPUT }" value="true"/>
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.SerializationFeature).WRITE_ENUMS_USING_TO_STRING }" value="true"/>
             </util:map>
+        </beans:property>
+        <beans:property name="modules">
+            <util:set>
+                <beans:bean class="com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module"/>
+            </util:set>
         </beans:property>
     </beans:bean>
 </beans:beans>

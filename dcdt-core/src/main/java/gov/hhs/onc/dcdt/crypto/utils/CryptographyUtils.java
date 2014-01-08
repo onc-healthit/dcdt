@@ -1,72 +1,72 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import gov.hhs.onc.dcdt.crypto.CryptographyAlgorithm;
+import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
+import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.security.Provider;
-import java.security.SecureRandom;
 import java.security.Security;
-import org.bouncycastle.crypto.prng.VMPCRandomGenerator;
+import java.util.EnumSet;
+import javax.annotation.Nullable;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
+import org.bouncycastle.jcajce.JcaJceHelper;
+import org.bouncycastle.jcajce.ProviderJcaJceHelper;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
-import org.bouncycastle.openssl.PEMParser;
-import org.bouncycastle.util.io.pem.PemObject;
-import org.bouncycastle.util.io.pem.PemWriter;
-import gov.hhs.onc.dcdt.crypto.CryptographyException;
 
 public abstract class CryptographyUtils {
+    public final static Provider PROVIDER = new BouncyCastleProvider();
 
-    public final static Provider BOUNCY_CASTLE_PROVIDER = new BouncyCastleProvider();
+    public final static String PROVIDER_NAME = PROVIDER.getName();
+
+    public final static JcaJceHelper PROVIDER_HELPER = new ProviderJcaJceHelper(PROVIDER);
 
     static {
-        Security.addProvider(BOUNCY_CASTLE_PROVIDER);
+        Security.addProvider(PROVIDER);
     }
 
-    public static SecureRandom getRandom(int seedSize) {
-        return getRandom(generateRandomSeed(seedSize));
-    }
-
-    public static SecureRandom getRandom(byte[] seed) {
-        return new SecureRandom(seed);
-    }
-
-    public static byte[] generateRandomSeed(int size) {
-        if (size <= 0) {
-            throw new IllegalArgumentException("Random seed size must be a positive integer: " + size);
+    public static <T extends Enum<T> & CryptographyAlgorithm> T findAlgorithm(Class<T> algEnumClass, AlgorithmIdentifier algId) {
+        for (T algEnum : EnumSet.allOf(algEnumClass)) {
+            if (ObjectUtils.equals(algEnum.getId(), algId)) {
+                return algEnum;
+            }
         }
 
-        byte[] randSeed = new byte[size];
-
-        VMPCRandomGenerator seedRandGen = new VMPCRandomGenerator();
-        seedRandGen.addSeedMaterial(System.currentTimeMillis());
-        seedRandGen.nextBytes(randSeed);
-
-        return randSeed;
+        return null;
     }
 
-    public static byte[] readPemContent(InputStream stream) throws CryptographyException {
-        return readPemObject(stream).getContent();
-    }
-
-    public static PemObject readPemObject(InputStream stream) throws CryptographyException {
-        try (PEMParser pemParser = new PEMParser(new InputStreamReader(stream))) {
-            return pemParser.readPemObject();
-        } catch (IOException e) {
-            throw new CryptographyException("Unable to read PEM object from stream.", e);
+    @Nullable
+    public static <T extends Enum<T> & CryptographyObjectIdentifier> T findObjectId(Class<T> idEnumClass, ASN1ObjectIdentifier idOid) {
+        for (T idEnum : EnumSet.allOf(idEnumClass)) {
+            if (ObjectUtils.equals(idEnum.getOid(), idOid)) {
+                return idEnum;
+            }
         }
+
+        return null;
     }
 
-    public static void writePemContent(OutputStream stream, String pemType, byte[] pemContent) throws CryptographyException {
-        writePemObject(stream, new PemObject(pemType, pemContent));
-    }
-
-    public static void writePemObject(OutputStream stream, PemObject pemObj) throws CryptographyException {
-        try (PemWriter pemWriter = new PemWriter(new OutputStreamWriter(stream))) {
-            pemWriter.writeObject(pemObj);
-            pemWriter.flush();
-        } catch (IOException e) {
-            throw new CryptographyException("Unable to write PEM object to stream.", e);
+    @Nullable
+    public static <T, U extends Enum<U> & CryptographyTypeIdentifier<T>> U findTypeId(Class<U> idEnumClass, Class<? extends T> idType) {
+        for (U idEnum : EnumSet.allOf(idEnumClass)) {
+            if (ToolClassUtils.isAssignable(idType, idEnum.getType())) {
+                return idEnum;
+            }
         }
+
+        return null;
+    }
+
+    @Nullable
+    public static <T extends Enum<T> & CryptographyObjectIdentifier> T findId(Class<T> idEnumClass, String idName) {
+        for (T idEnum : EnumSet.allOf(idEnumClass)) {
+            if (StringUtils.equalsIgnoreCase(idEnum.getName(), idName)) {
+                return idEnum;
+            }
+        }
+
+        return null;
     }
 }

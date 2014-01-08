@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <beans:bean id="testKeyPairConfigImpl" parent="keyPairConfigImpl" autowire-candidate="false"/>
+    
+    <beans:bean id="testCertConfigImpl" parent="certConfigImpl" autowire-candidate="false"/>
+    
+    <beans:bean id="testCaCertConfigImpl" parent="caCertConfigImpl" autowire-candidate="false"/>
+    
+    <beans:bean id="testCa1KeyPairConfig" parent="testKeyPairConfigImpl"/>
+    
+    <beans:bean id="testCa1CertConfig" parent="testCaCertConfigImpl">
+        <beans:property name="subject">
+            <beans:bean parent="certNameImpl"
+                c:x500NameStr="${dcdt.test.crypto.ca.1.subject.x500.name}"/>
+        </beans:property>
+    </beans:bean>
+    
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testCa1CredConfig" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testCa1CertConfig"
+        p:keyPairDescriptor-ref="testCa1KeyPairConfig"/>
+    
+    <beans:bean id="testAddr1KeyPairConfig" parent="testKeyPairConfigImpl"/> 
+    
+    <beans:bean id="testAddr1CertConfig" parent="testCertConfigImpl">
+        <beans:property name="subject">
+            <beans:bean parent="certNameImpl"
+                c:x500NameStr="${dcdt.test.crypto.addr.1.subject.x500.name}"/>
+        </beans:property>
+    </beans:bean>
+    
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testAddr1CredConfig" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testAddr1CertConfig"
+        p:keyPairDescriptor-ref="testAddr1KeyPairConfig"/>
+    
+    <beans:bean id="testDomain1KeyPairConfig" parent="testKeyPairConfigImpl"/>
+    
+    <beans:bean id="testDomain1CertConfig" parent="testCertConfigImpl">
+        <beans:property name="subject">
+            <beans:bean parent="certNameImpl"
+                c:x500NameStr="${dcdt.test.crypto.domain.1.subject.x500.name}"/>
+        </beans:property>
+    </beans:bean>
+    
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testDomain1CredConfig" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testDomain1CertConfig"
+        p:keyPairDescriptor-ref="testDomain1KeyPairConfig"/>
+</beans:beans>

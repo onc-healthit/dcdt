@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <beans:bean id="cryptoDesc" class="gov.hhs.onc.dcdt.crypto.CryptographyDescriptor" abstract="true"/>
+    
+    <beans:bean id="keyPairConfig" class="gov.hhs.onc.dcdt.crypto.keys.KeyPairConfig" parent="cryptoDesc" abstract="true"/>
+    
+    <beans:bean id="keyPairConfigImpl" class="gov.hhs.onc.dcdt.crypto.keys.impl.KeyPairConfigImpl" parent="keyPairConfig" abstract="true"
+        p:keyAlgorithm="RSA"
+        p:keySize="1024"/>
+    
+    <beans:bean id="caKeyPairConfigImpl" parent="keyPairConfigImpl" abstract="true">
+        <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
+    </beans:bean>
+    
+    <beans:bean id="certName" class="gov.hhs.onc.dcdt.crypto.certs.CertificateName" abstract="true"/>
+    
+    <beans:bean id="certNameImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateNameImpl" parent="certName" abstract="true"/>
+    
+    <beans:bean id="certValidInterval" class="gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval" abstract="true"/>
+    
+    <beans:bean id="certValidIntervalImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateValidIntervalImpl" parent="certValidInterval" abstract="true"/>
+    
+    <beans:bean id="certConfig" class="gov.hhs.onc.dcdt.crypto.certs.CertificateConfig" parent="cryptoDesc" abstract="true"/>
+    
+    <beans:bean id="certConfigImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateConfigImpl" parent="certConfig" abstract="true"
+        p:certificateType="X509"
+        p:signatureAlgorithm="SHA1WITHRSA">
+        <beans:property name="validInterval">
+            <beans:bean parent="certValidIntervalImpl"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="caCertConfigImpl" parent="certConfigImpl" abstract="true"
+        p:certificateAuthority="true">
+        <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
+    </beans:bean>
+    
+    <beans:bean id="credConfig" class="gov.hhs.onc.dcdt.crypto.CredentialConfig" parent="cryptoDesc" abstract="true"/>
+    
+    <beans:bean id="credConfigImpl" class="gov.hhs.onc.dcdt.crypto.impl.CredentialConfigImpl" parent="credConfig" abstract="true"/>
+    
+    <beans:bean id="caCredConfigImpl" parent="credConfigImpl" abstract="true">
+        <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
+    </beans:bean>
+</beans:beans>

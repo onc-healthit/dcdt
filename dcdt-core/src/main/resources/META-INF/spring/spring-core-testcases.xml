@@ -13,7 +13,13 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <beans:bean id="toolTestcaseConstantStr" class="java.lang.String" abstract="true"/>
+    
+    <beans:bean id="toolTestcaseConstantStrNone" class="java.lang.String">
+        <beans:constructor-arg type="java.lang.String" value="None"/>
+    </beans:bean>
+    
     <beans:bean id="toolTestcase" class="gov.hhs.onc.dcdt.testcases.ToolTestcase" abstract="true"/>
+    <beans:bean id="toolTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription" abstract="true"/>
     <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseResult" abstract="true"/>
-    <beans:bean id="toolTestcaseDescription" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription" abstract="true"/>
 </beans:beans>

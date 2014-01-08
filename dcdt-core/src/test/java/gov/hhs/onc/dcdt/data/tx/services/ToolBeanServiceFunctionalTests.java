@@ -1,21 +1,21 @@
 package gov.hhs.onc.dcdt.data.tx.services;
 
-import gov.hhs.onc.dcdt.data.ToolBeanDataAccessException;
 import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseService;
-import gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.tx.all", "dcdt.test.func.tx.services" })
+@Test(dependsOnGroups = { "dcdt.test.func.config.all" }, groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.data.all",
+    "dcdt.test.func.data.tx.all", "dcdt.test.func.tx.services" })
 public class ToolBeanServiceFunctionalTests extends ToolTestNgFunctionalTests {
+    @Test
+    public void testPlaceholder() {
+        // TODO: implement
+    }
+
+    // @formatter:off
+    /*
     private final static String TEST_BEAN_NAME = "testDiscoveryTestcase";
     private final static String TEST_BEAN_MAIL_ADDR = "discovery-testcase@test.direct-test.com";
-
+    
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private DiscoveryTestcaseService beanService;
@@ -64,4 +64,6 @@ public class ToolBeanServiceFunctionalTests extends ToolTestNgFunctionalTests {
     private DiscoveryTestcase getBean() throws ToolBeanDataAccessException {
         return this.beanService.getBeanById(TEST_BEAN_NAME);
     }
+    */
+    // @formatter:on
 }

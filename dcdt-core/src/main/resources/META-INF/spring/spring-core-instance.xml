@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    profile="toolInstanceConfigured"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
@@ -20,31 +19,35 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean class="org.springframework.beans.factory.config.MethodInvokingFactoryBean"
-        p:targetClass="java.lang.System"
-        p:targetMethod="setProperty">
+    <beans:bean parent="setSysProps">
         <beans:property name="arguments">
-            <util:list>
-                <beans:value>derby.stream.error.method</beans:value>
-                <beans:value>org.springframework.jdbc.datasource.embedded.OutputStreamFactory.getNoopOutputStream</beans:value>
-            </util:list>
+            <util:properties>
+                <beans:prop key="derby.stream.error.method">
+                    org.springframework.jdbc.datasource.embedded.OutputStreamFactory.getNoopOutputStream
+                </beans:prop>
+            </util:properties>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceConfigDataSource" class="gov.hhs.onc.dcdt.config.InstanceConfigDataSource" abstract="true"/>
-    <beans:bean id="instanceConfigDataSourceImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigDataSourceImpl" parent="instanceConfigDataSource"
+    <beans:bean id="instanceConfigDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
         p:driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
-        p:password="${dcdt.instance.db.pass}"
-        p:url="jdbc:derby:@{dcdt.instance.directory}/db;create=true"
-        p:username="${dcdt.instance.db.user}"/>
+        p:password="#{ instanceConfig.databasePassword }"
+        p:url="jdbc:derby:#{ instanceConfig.databaseDirectory }"
+        p:username="#{ instanceConfig.databaseUser }">
+        <beans:property name="connectionProperties">
+            <util:properties>
+                <beans:prop key="create">true</beans:prop>
+            </util:properties>
+        </beans:property>
+    </beans:bean>
     
-    <jdbc:initialize-database data-source="instanceConfigDataSourceImpl" ignore-failures="DROPS">
+    <jdbc:initialize-database data-source="instanceConfigDataSource" ignore-failures="ALL">
         <!--suppress SpringModelInspection -->
         <jdbc:script location="classpath*:core/db/db-instance-init.sql"/>
     </jdbc:initialize-database>
     
     <beans:bean id="instanceConfigSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
-        p:dataSource-ref="instanceConfigDataSourceImpl"
+        p:dataSource-ref="instanceConfigDataSource"
         p:packagesToScan="gov.hhs.onc.dcdt">
         <beans:property name="hibernateProperties">
             <util:properties>
@@ -55,6 +58,7 @@
     </beans:bean>
     
     <beans:bean id="instanceConfigTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+        p:dataSource-ref="instanceConfigDataSource"
         p:sessionFactory-ref="instanceConfigSessionFactory"/>
     
     <beans:bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>

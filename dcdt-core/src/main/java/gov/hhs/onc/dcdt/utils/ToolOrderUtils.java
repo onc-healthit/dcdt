@@ -27,7 +27,7 @@ public abstract class ToolOrderUtils {
     }
 
     public static int getOrder(Class<?> clazz, int defaultIfNone) {
-        Integer orderAnnoValue = ToolAnnotationUtils.getValue(Order.class, Integer.class, new ImmutablePair<Class<?>, Method>(clazz, null));
+        Integer orderAnnoValue = ToolAnnotationUtils.getCallsAttributeValue(Order.class, Integer.class, new ImmutablePair<Class<?>, Method>(clazz, null));
 
         return (orderAnnoValue != null) ? orderAnnoValue : defaultIfNone;
     }

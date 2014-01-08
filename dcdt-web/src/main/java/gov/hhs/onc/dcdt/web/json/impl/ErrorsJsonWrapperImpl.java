@@ -7,8 +7,14 @@ import gov.hhs.onc.dcdt.web.json.ErrorsJsonWrapper;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("errorsJsonWrapperImpl")
 @JsonTypeName("errors")
+@Lazy
+@Scope("prototype")
 public class ErrorsJsonWrapperImpl extends AbstractToolBean implements ErrorsJsonWrapper {
     private List<ErrorJsonWrapper> globalErrors;
     private Map<String, List<ErrorJsonWrapper>> fieldErrors;

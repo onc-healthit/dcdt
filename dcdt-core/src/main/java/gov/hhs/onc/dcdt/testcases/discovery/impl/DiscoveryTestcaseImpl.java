@@ -1,46 +1,36 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCertificate;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import org.hibernate.annotations.Proxy;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-@Entity(name = "testcase_discovery")
-@Proxy(lazy = false)
-@Table(name = "testcases_discovery")
-public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseResult, DiscoveryTestcaseDescription> implements DiscoveryTestcase {
-    @Transient
-    private List<DiscoveryTestcaseCertificate> certs;
-
-    @Transient
-    private DiscoveryTestcaseDescription discoveryTestcaseDescription;
-
+@Entity(name = "discovery_testcase")
+@Table(name = "discovery_testcases")
+public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseResult> implements DiscoveryTestcase {
+    @Column(name = "mail_addr", nullable = false)
     private String mailAddr;
 
+    @JoinColumn(name = "discovery_testcase_name", referencedColumnName = "name", nullable = false)
+    @OneToMany(targetEntity = DiscoveryTestcaseCredentialImpl.class, cascade = { CascadeType.ALL })
+    private List<DiscoveryTestcaseCredential> creds;
+
     @Override
-    public List<DiscoveryTestcaseCertificate> getCertificates() {
-        return this.certs;
+    public List<DiscoveryTestcaseCredential> getCredentials() {
+        return this.creds;
     }
 
     @Override
-    public void setCertificates(List<DiscoveryTestcaseCertificate> certs) {
-        this.certs = certs;
-    }
-
-    @Override
-    public DiscoveryTestcaseDescription getDiscoveryTestcaseDescription() {
-        return this.discoveryTestcaseDescription;
-    }
-
-    @Override
-    public void setDiscoveryTestcaseDescription(DiscoveryTestcaseDescription discoveryTestcaseDescription) {
-        this.discoveryTestcaseDescription = discoveryTestcaseDescription;
+    public void setCredentials(List<DiscoveryTestcaseCredential> creds) {
+        this.creds = creds;
     }
 
     @Override
