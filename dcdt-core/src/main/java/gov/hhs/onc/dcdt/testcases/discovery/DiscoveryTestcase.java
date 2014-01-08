@@ -7,4 +7,8 @@ public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseResult,
     public List<DiscoveryTestcaseCertificate> getCertificates();
 
     public void setCertificates(List<DiscoveryTestcaseCertificate> certs);
+
+    public DiscoveryTestcaseDescription getDiscoveryTestcaseDescription();
+
+    public void setDiscoveryTestcaseDescription(DiscoveryTestcaseDescription discoveryTestcaseDescription);
 }

@@ -18,6 +18,9 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     @Transient
     private List<DiscoveryTestcaseCertificate> certs;
 
+    @Transient
+    private DiscoveryTestcaseDescription discoveryTestcaseDescription;
+
     private String mailAddr;
 
     @Override
@@ -28,6 +31,16 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     @Override
     public void setCertificates(List<DiscoveryTestcaseCertificate> certs) {
         this.certs = certs;
+    }
+
+    @Override
+    public DiscoveryTestcaseDescription getDiscoveryTestcaseDescription() {
+        return this.discoveryTestcaseDescription;
+    }
+
+    @Override
+    public void setDiscoveryTestcaseDescription(DiscoveryTestcaseDescription discoveryTestcaseDescription) {
+        this.discoveryTestcaseDescription = discoveryTestcaseDescription;
     }
 
     @Override

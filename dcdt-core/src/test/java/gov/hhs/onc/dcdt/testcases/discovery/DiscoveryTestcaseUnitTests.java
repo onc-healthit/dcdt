@@ -32,6 +32,8 @@ public class DiscoveryTestcaseUnitTests extends ToolTestNgUnitTests {
             Assert.assertTrue(discoveryTestcaseMailAddr.endsWith(instanceDomain), String.format(
                 "Discovery testcase (name=%s) mail address (%s) does not end with instance domain (%s).", discoveryTestcase.getName(),
                 discoveryTestcaseMailAddr, instanceDomain));
+            Assert.assertNotNull(discoveryTestcase.getName());
+            Assert.assertNotNull(discoveryTestcase.getDiscoveryTestcaseDescription());
         }
     }
 }
