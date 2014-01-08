@@ -21,7 +21,7 @@
     <beans:bean id="discoveryTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl" parent="discoveryTestcase" abstract="true"/>
     <beans:bean id="discoveryTestcaseCertImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCertificateImpl" parent="discoveryTestcaseCert"
         abstract="true"/>
-    <beans:bean id="discoveryTestcaseResultImpl2" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseResultImpl" parent="discoveryTestcaseResult"
+    <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseResultImpl" parent="discoveryTestcaseResult"
         abstract="true"/>
     <beans:bean id="discoveryTestcaseDescriptionImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDescriptionImpl"
         parent="discoveryTestcaseDescription" abstract="true"/>
@@ -700,11 +700,11 @@
     </beans:bean>
 
     <!--========== Results ==========-->
-    <beans:bean id="discoveryTestcaseResultPassed" parent="discoveryTestcaseResultImpl2"
+    <beans:bean id="discoveryTestcaseResultPassed" parent="discoveryTestcaseResultImpl"
         p:passed="true"
         p:message="This test case passed. Your system discovered the expected certificate."/>
 
-    <beans:bean id="discoveryTestcaseResultFailed" parent="discoveryTestcaseResultImpl2"
+    <beans:bean id="discoveryTestcaseResultFailed" parent="discoveryTestcaseResultImpl"
         p:passed="false"
         p:message="This test case failed. Your system discovered the wrong certificate."/>
 </beans:beans>
