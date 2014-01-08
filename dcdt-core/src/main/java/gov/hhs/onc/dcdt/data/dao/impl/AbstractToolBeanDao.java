@@ -3,13 +3,15 @@ package gov.hhs.onc.dcdt.data.dao.impl;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.data.ToolBeanDataAccessException;
 import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
+import gov.hhs.onc.dcdt.data.utils.ToolDataUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolBeanDefinitionUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import javax.annotation.Nullable;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import org.hibernate.HibernateException;
-import org.hibernate.ObjectNotFoundException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.BeansException;
@@ -17,11 +19,6 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBeanDao<T> {
@@ -250,11 +247,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     }
 
     protected T getBeanById(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
-        try {
-            return this.beanClass.cast(session.load(this.beanImplClass, beanIdValue));
-        } catch (ObjectNotFoundException objectNotFoundException) {
-            return null;
-        }
+        return this.beanClass.cast(session.get(this.beanImplClass, beanIdValue));
     }
 
     protected List<T> getBeans(Session session, Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
@@ -268,7 +261,11 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     }
 
     protected T setBean(Session session, T bean) throws ToolBeanDataAccessException {
-        session.saveOrUpdate(bean);
+        if (this.containsBean(session, ToolDataUtils.getIdentifier(bean))) {
+            this.updateBean(session, bean);
+        } else {
+            this.addBean(session, bean);
+        }
 
         return bean;
     }

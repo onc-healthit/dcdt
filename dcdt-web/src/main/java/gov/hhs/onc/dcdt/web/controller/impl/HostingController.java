@@ -33,7 +33,7 @@ public class HostingController extends AbstractToolController {
 
     private void processDescriptionText() {
         for (HostingTestcase hostingTestcase : hostingTestcases) {
-            HostingTestcaseDescription hostingTestcaseDescription = hostingTestcase.getHostingTestcaseDescription();
+            HostingTestcaseDescription hostingTestcaseDescription = hostingTestcase.getDescription();
             String description = hostingTestcaseDescription.getDescription();
             hostingTestcaseDescription.setDescription(ToolStringUtils.removeExtraWhitespace(description));
             String instructions = hostingTestcaseDescription.getInstructions();

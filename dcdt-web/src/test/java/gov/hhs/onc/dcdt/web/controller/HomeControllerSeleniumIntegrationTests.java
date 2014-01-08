@@ -9,11 +9,13 @@ import org.testng.annotations.Test;
 
 @Test(groups = { "dcdt.test.all", "dcdt.test.it.all", "dcdt.test.it.web.all", "dcdt.test.it.web.controller.all", "dcdt.test.it.web.controller.home" })
 public class HomeControllerSeleniumIntegrationTests extends ToolWebTestNgSeleniumIntegrationTests {
+    private final static String TITLE_HOME_MSG_CODE = "dcdt.web.title.home";
+    
     @Test
     public void testTitle() {
         this.selenium.open();
 
-        Assert.assertEquals(this.selenium.getTitle(), ToolMessageUtils.getMessage(this.msgSource, "dcdt.web.title.home"),
+        Assert.assertEquals(this.selenium.getTitle(), ToolMessageUtils.getMessage(this.msgSource, TITLE_HOME_MSG_CODE),
             "Home page title does not match expected value.");
     }
 

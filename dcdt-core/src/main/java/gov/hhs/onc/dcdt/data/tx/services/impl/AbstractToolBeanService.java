@@ -7,11 +7,15 @@ import gov.hhs.onc.dcdt.data.tx.services.ToolBeanService;
 import java.io.Serializable;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractRefreshableApplicationContext;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 public abstract class AbstractToolBeanService<T extends ToolBean, U extends ToolBeanDao<T>> implements ToolBeanService<T, U> {
+    protected AbstractRefreshableApplicationContext appContext;
     protected U beanDao;
 
     @Override
@@ -147,6 +151,11 @@ public abstract class AbstractToolBeanService<T extends ToolBean, U extends Tool
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public T removeBean(T bean) throws ToolBeanDataAccessException {
         return this.beanDao.removeBean(bean);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
+        this.appContext = (AbstractRefreshableApplicationContext) appContext;
     }
 
     protected void setBeanDao(U beanDao) {

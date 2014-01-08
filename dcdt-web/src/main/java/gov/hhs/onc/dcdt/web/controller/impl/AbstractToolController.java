@@ -99,7 +99,7 @@ public abstract class AbstractToolController extends AbstractToolBean implements
 
     protected String findRequestView(@Size(min = 1) List<Pair<Class<?>, Method>> displayCalls, @Nullable String reqContentType) throws ToolWebException {
         Pair<Class<?>, Method> displayCaller = ToolListUtils.getFirst(displayCalls);
-        RequestViews reqViewsAnno = ToolAnnotationUtils.findAnnotation(RequestViews.class, displayCalls);
+        RequestViews reqViewsAnno = ToolAnnotationUtils.findCallsAnnotation(RequestViews.class, displayCalls);
 
         if (reqViewsAnno == null) {
             throw new ToolWebException(String.format("Unable to find request views annotation on controller (class=%s) request method (name=%s).",

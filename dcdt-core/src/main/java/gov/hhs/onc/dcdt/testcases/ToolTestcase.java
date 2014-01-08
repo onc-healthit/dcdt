@@ -2,10 +2,10 @@ package gov.hhs.onc.dcdt.testcases;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
 
-public interface ToolTestcase<T extends ToolTestcaseResult, U extends ToolTestcaseDescription> extends ToolBean {
-    public String getMailAddress();
+public interface ToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult> extends ToolBean {
+    public T getDescription();
 
-    public void setMailAddress(String mailAddr);
+    public void setDescription(T desc);
 
     public String getName();
 
@@ -19,7 +19,7 @@ public interface ToolTestcase<T extends ToolTestcaseResult, U extends ToolTestca
 
     public void setOptional(boolean optional);
 
-    public T getResult();
+    public U getResult();
 
-    public void setResult(T result);
+    public void setResult(U result);
 }

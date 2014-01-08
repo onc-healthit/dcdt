@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.testcases.hosting;
 
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 
-public interface HostingTestcase extends ToolTestcase<HostingTestcaseResult, HostingTestcaseDescription> {
+public interface HostingTestcase extends ToolTestcase<HostingTestcaseDescription, HostingTestcaseResult> {
     public HostingTestcaseBinding getBinding();
 
     public void setBinding(HostingTestcaseBinding binding);
@@ -10,8 +10,4 @@ public interface HostingTestcase extends ToolTestcase<HostingTestcaseResult, Hos
     public HostingTestcaseLocation getLocation();
 
     public void setLocation(HostingTestcaseLocation location);
-
-    public HostingTestcaseDescription getHostingTestcaseDescription();
-
-    public void setHostingTestcaseDescription(HostingTestcaseDescription hostingTestcaseDescription);
 }

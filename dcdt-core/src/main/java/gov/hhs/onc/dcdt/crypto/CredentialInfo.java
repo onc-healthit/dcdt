@@ -1,13 +1,7 @@
 package gov.hhs.onc.dcdt.crypto;
 
-public interface CredentialInfo {
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.crypto.keys.KeyPairInfo;
 
-    public CertificateInfo getCertificateInfo();
-
-    public void setCertificateInfo(CertificateInfo certificateInfo);
-
-    public KeyPairInfo getKeyPairInfo();
-
-    public void setKeyPairInfo(KeyPairInfo keyPairInfo);
-
+public interface CredentialInfo extends CredentialDescriptor<KeyPairInfo, CertificateInfo> {
 }

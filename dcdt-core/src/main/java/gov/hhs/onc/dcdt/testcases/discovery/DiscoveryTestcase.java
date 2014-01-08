@@ -3,12 +3,12 @@ package gov.hhs.onc.dcdt.testcases.discovery;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import java.util.List;
 
-public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseResult, DiscoveryTestcaseDescription> {
-    public List<DiscoveryTestcaseCertificate> getCertificates();
+public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseResult> {
+    public List<DiscoveryTestcaseCredential> getCredentials();
 
-    public void setCertificates(List<DiscoveryTestcaseCertificate> certs);
+    public void setCredentials(List<DiscoveryTestcaseCredential> creds);
 
-    public DiscoveryTestcaseDescription getDiscoveryTestcaseDescription();
+    public String getMailAddress();
 
-    public void setDiscoveryTestcaseDescription(DiscoveryTestcaseDescription discoveryTestcaseDescription);
+    public void setMailAddress(String mailAddr);
 }

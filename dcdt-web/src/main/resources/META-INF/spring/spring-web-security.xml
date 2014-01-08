@@ -39,4 +39,6 @@
             <sec:concurrency-control error-if-maximum-exceeded="true" max-sessions="1"/>
         </sec:session-management>
     </sec:http>
+    
+    <sec:global-method-security authentication-manager-ref="toolAuthManager" pre-post-annotations="enabled" secured-annotations="enabled"/>
 </beans:beans>

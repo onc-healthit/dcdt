@@ -74,8 +74,8 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
 
     protected void initializeConvertibleTypesInternal() {
         List<Pair<Class<?>, Method>> calls = ToolMethodUtils.getCalls();
-        List<Converts> convertsAnnos = ToolArrayUtils.unwrapElements(ToolAnnotationUtils.getValues(Converts.List.class, Converts[].class, calls));
-        ToolCollectionUtils.addAll(convertsAnnos, ToolAnnotationUtils.findAnnotations(Converts.class, calls));
+        List<Converts> convertsAnnos = ToolArrayUtils.unwrapElements(ToolAnnotationUtils.getCallsValues(Converts.List.class, Converts[].class, calls));
+        ToolCollectionUtils.addAll(convertsAnnos, ToolAnnotationUtils.findCallsAnnotations(Converts.class, calls));
 
         this.convertPairs = new LinkedHashSet<>(convertsAnnos.size());
 

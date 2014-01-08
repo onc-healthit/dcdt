@@ -13,28 +13,81 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <beans:bean id="discoveryTestcaseConstantStrVerifyEmail" parent="toolTestcaseConstantStr">
+        <beans:constructor-arg type="java.lang.String">
+            <beans:value>
+                You should have received an email indicating the test case results for your system. Examine the results
+                to see if your system passed the test case. If you do not receive a message for the test case\, then you
+                should assume that the test case failed.
+            </beans:value>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <beans:bean id="discoveryTestcaseConstantStrVerifyNoEmail" parent="toolTestcaseConstantStr">
+        <beans:constructor-arg type="java.lang.String">
+            <beans:value>
+                Verify that your system did NOT send an email because it could not find a certificate for the Direct address.
+                To pass this test case\, you must NOT receive an email in response.
+            </beans:value>
+        </beans:constructor-arg>
+    </beans:bean>
+    
     <beans:bean id="discoveryTestcase" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" parent="toolTestcase" abstract="true"/>
-    <beans:bean id="discoveryTestcaseCert" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCertificate" abstract="true"/>
+    <beans:bean id="discoveryTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription" parent="toolTestcaseDesc" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCred" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential" abstract="true"/>
     <beans:bean id="discoveryTestcaseResult" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
-    <beans:bean id="discoveryTestcaseDescription" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription" parent="toolTestcaseDescription" abstract="true"/>
-
+    
     <beans:bean id="discoveryTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl" parent="discoveryTestcase" abstract="true"/>
-    <beans:bean id="discoveryTestcaseCertImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCertificateImpl" parent="discoveryTestcaseCert"
+    <beans:bean id="discoveryTestcaseDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDescriptionImpl" parent="discoveryTestcaseDesc"
         abstract="true"/>
-    <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseResultImpl" parent="discoveryTestcaseResult"
+    <beans:bean id="discoveryTestcaseCredImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCredentialImpl" parent="discoveryTestcaseCred"
         abstract="true"/>
-    <beans:bean id="discoveryTestcaseDescriptionImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDescriptionImpl"
-        parent="discoveryTestcaseDescription" abstract="true"/>
+    <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseResultImpl" parent="toolTestcaseResult"
+        abstract="true"/>
+    
+    <beans:bean id="discoveryTestcaseResultPassed" parent="discoveryTestcaseResultImpl"
+        p:passed="true"
+        p:message="This test case passed. Your system discovered the expected certificate."/>
 
-    <!--========== Discovery Test Cases ==========-->
+    <beans:bean id="discoveryTestcaseResultFailed" parent="discoveryTestcaseResultImpl"
+        p:message="This test case failed. Your system discovered the wrong certificate."/>
+    
+    <beans:bean id="discoveryTestcaseCaKeyPairConfig" parent="caKeyPairConfigImpl"/>
+    
+    <beans:bean id="discoveryTestcaseCaCertConfig" parent="caCertConfigImpl">
+        <beans:property name="subject">
+            <beans:bean parent="certNameImpl"
+                p:commonName="#{ instanceConfig.domain }_ca"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="discoveryTestcaseCaCredConfig" parent="discoveryTestcaseCredImpl">
+        <beans:property name="credentialConfig">
+            <beans:bean parent="caCredConfigImpl"
+                p:certificateDescriptor-ref="discoveryTestcaseCaCertConfig"
+                p:keyPairDescriptor-ref="discoveryTestcaseCaKeyPairConfig"/>
+        </beans:property>
+        <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
+    </beans:bean>
+    
+    <beans:bean id="discoveryTestcase1KeyPair1Config" parent="keyPairConfigImpl"/>
+    
+    <beans:bean id="discoveryTestcase1Cert1Config" parent="certConfigImpl">
+        <beans:property name="subject">
+            <beans:bean parent="certNameImpl"
+                p:commonName="d1@domain1.#{ instanceConfig.domain }"
+                p:mailAddress="d1@domain1.#{ instanceConfig.domain }"/>
+        </beans:property>
+    </beans:bean>
+    
     <beans:bean id="discoveryTestcase1" parent="discoveryTestcaseImpl"
-        p:mailAddress="d1@domain1.@{dcdt.instance.domain}"
+        p:mailAddress="d1@domain1.#{ instanceConfig.domain }"
         p:name="D1_DNS_AB_Valid"
         p:nameDisplay="D1 - Valid address-bound certificate discovery in DNS">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>RFC 4398: Section 2.1</beans:value>
@@ -65,21 +118,27 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase1Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase1KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase2" parent="discoveryTestcaseImpl"
-        p:mailAddress="d2@domain1.@{dcdt.instance.domain}"
+        p:mailAddress="d2@domain1.#{ instanceConfig.domain }"
         p:name="D2_DNS_DB_Valid"
         p:nameDisplay="D2 - Valid domain-bound certificate discovery in DNS">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>RFC 4398: Section 2.1</beans:value>
@@ -110,21 +169,30 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase2Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase2KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase3" parent="discoveryTestcaseImpl"
-        p:mailAddress="d3@domain2.@{dcdt.instance.domain}"
+        p:mailAddress="d3@domain2.#{ instanceConfig.domain }"
         p:name="D3_LDAP_AB_Valid"
         p:nameDisplay="D3 - Valid address-bound certificate discovery in LDAP">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="2\, 3\, 5\, 6\, 7\, 8\, 9\, 10\, 11\, 12\, 13\, 14\, 15\, 16\, 17\, 19\, 20\, 21\, 22"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>RFC 2798: Section 9.1.2</beans:value>
@@ -156,21 +224,30 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase3Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase3KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase4" parent="discoveryTestcaseImpl"
-        p:mailAddress="d4@domain2.@{dcdt.instance.domain}"
+        p:mailAddress="d4@domain2.#{ instanceConfig.domain }"
         p:name="D4_LDAP_DB_Valid"
         p:nameDisplay="D4 - Valid domain-bound certificate discovery in LDAP">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="2\, 3\, 5\, 6\, 7\, 8\, 9\, 10\, 11\, 12\, 13\, 14\, 15\, 16\, 17\, 19\, 20\, 21\, 22"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>RFC 2798: Section 9.1.2</beans:value>
@@ -202,28 +279,37 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase4Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase4KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase5" parent="discoveryTestcaseImpl"
-        p:mailAddress="d5@domain1.@{dcdt.instance.domain}"
+        p:mailAddress="d5@domain1.#{ instanceConfig.domain }"
         p:name="D5_DNS_AB_Invalid"
         p:nameDisplay="D5 - Invalid address-bound certificate discovery in DNS">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3"
-                p:instructions-ref="verifyNoEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail">
                 <beans:property name="description">
                     <beans:value>
                         This test case verifies that your system can query DNS for address-bound CERT records and does
                         not select the associated invalid address-bound X.509 certificate.
                     </beans:value>
                 </beans:property>
-                <beans:property name="targetCertificate" ref="none"/>
+                <beans:property name="targetCertificate" ref="toolTestcaseConstantStrNone"/>
                 <beans:property name="backgroundCertificates">
                     <util:list>
                         <beans:value>An invalid address-bound certificate for the Direct address in a DNS CERT record.</beans:value>
@@ -235,28 +321,37 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase5Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase5KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase6" parent="discoveryTestcaseImpl"
-        p:mailAddress="d6@domain4.@{dcdt.instance.domain}"
+        p:mailAddress="d6@domain4.#{ instanceConfig.domain }"
         p:name="D6_DNS_DB_Invalid"
         p:nameDisplay="D6 - Invalid domain-bound certificate discovery in DNS">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3"
-                p:instructions-ref="verifyNoEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail">
                 <beans:property name="description">
                     <beans:value>
                         This test case verifies that your system can query DNS for domain-bound CERT records and does not
                         select the associated invalid domain-bound X.509 certificate.
                     </beans:value>
                 </beans:property>
-                <beans:property name="targetCertificate" ref="none"/>
+                <beans:property name="targetCertificate" ref="toolTestcaseConstantStrNone"/>
                 <beans:property name="backgroundCertificates">
                     <util:list>
                         <beans:value>An invalid domain-bound certificate for the Direct address in a DNS CERT record.</beans:value>
@@ -264,28 +359,37 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase6Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase6KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase7" parent="discoveryTestcaseImpl"
-        p:mailAddress="d7@domain2.@{dcdt.instance.domain}"
+        p:mailAddress="d7@domain2.#{ instanceConfig.domain }"
         p:name="D7_LDAP_AB_Invalid"
         p:nameDisplay="D7 - Invalid address-bound certificate discovery in LDAP">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="3\, 22"
-                p:instructions-ref="verifyNoEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail">
                 <beans:property name="description">
                     <beans:value>
                         This test case verifies that your system can query DNS for SRV records and does not select the
                         invalid address-bound X.509 certificate in the associated LDAP server.
                     </beans:value>
                 </beans:property>
-                <beans:property name="targetCertificate" ref="none"/>
+                <beans:property name="targetCertificate" ref="toolTestcaseConstantStrNone"/>
                 <beans:property name="backgroundCertificates">
                     <util:list>
                         <beans:value>
@@ -300,28 +404,37 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase7Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase7KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase8" parent="discoveryTestcaseImpl"
-        p:mailAddress="d8@domain5.@{dcdt.instance.domain}"
+        p:mailAddress="d8@domain5.#{ instanceConfig.domain }"
         p:name="D8_LDAP_DB_Invalid"
         p:nameDisplay="D8 - Invalid domain-bound certificate discovery in LDAP">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="3\, 22"
-                p:instructions-ref="verifyNoEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail">
                 <beans:property name="description">
                     <beans:value>
                         This test case verifies that your system can query DNS for SRV records and does not select the
                         invalid domain-bound X.509 certificate in the associated LDAP server.
                     </beans:value>
                 </beans:property>
-                <beans:property name="targetCertificate" ref="none"/>
+                <beans:property name="targetCertificate" ref="toolTestcaseConstantStrNone"/>
                 <beans:property name="backgroundCertificates">
                     <util:list>
                         <beans:value>
@@ -336,21 +449,30 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase8Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase8KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase9" parent="discoveryTestcaseImpl"
-        p:mailAddress="d9@domain1.@{dcdt.instance.domain}"
+        p:mailAddress="d9@domain1.#{ instanceConfig.domain }"
         p:name="D9_DNS_AB_SelectValid"
         p:nameDisplay="D9 - Select valid address-bound certificate over invalid certificate in DNS">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="description">
                     <beans:value>
                         This test case verifies that your system can query DNS for address-bound CERT records and select
@@ -374,21 +496,30 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase9Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase0KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase10" parent="discoveryTestcaseImpl"
-        p:mailAddress="d10@domain3.@{dcdt.instance.domain}"
+        p:mailAddress="d10@domain3.#{ instanceConfig.domain }"
         p:name="D10_LDAP_AB_UnavailableLDAPServer"
         p:nameDisplay="D10 - Certificate discovery in LDAP with one unavailable LDAP server">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="15\, 18"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>RFC 2782: Page 3\, Priority Section</beans:value>
@@ -411,49 +542,67 @@
                         InetOrgPerson schema. The associated SRV record has Priority = 1.
                     </beans:value>
                 </beans:property>
-                <beans:property name="backgroundCertificates" ref="none"/>
+                <beans:property name="backgroundCertificates" ref="toolTestcaseConstantStrNone"/>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase10Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase10KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase11" parent="discoveryTestcaseImpl"
-        p:mailAddress="d11@domain6.@{dcdt.instance.domain}"
+        p:mailAddress="d11@domain6.#{ instanceConfig.domain }"
         p:name="D11_DNS_NB_NoDNSCertsorSRV"
         p:nameDisplay="D11 - No certificates discovered in DNS CERT records and no SRV records">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3\, 18"
-                p:instructions-ref="verifyNoEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail">
                 <beans:property name="description">
                     <beans:value>
                         This test case verifies that your system does not find any certificates when querying DNS for
                         CERT records and does not find any SRV records in DNS.
                     </beans:value>
                 </beans:property>
-                <beans:property name="targetCertificate" ref="none"/>
-                <beans:property name="backgroundCertificates" ref="none"/>
+                <beans:property name="targetCertificate" ref="toolTestcaseConstantStrNone"/>
+                <beans:property name="backgroundCertificates" ref="toolTestcaseConstantStrNone"/>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase11Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase11KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase12" parent="discoveryTestcaseImpl"
-        p:mailAddress="d12@domain7.@{dcdt.instance.domain}"
+        p:mailAddress="d12@domain7.#{ instanceConfig.domain }"
         p:name="D12_LDAP_NB_UnavailableLDAPServer"
         p:nameDisplay="D12 - No certificates found in DNS CERT records and no available LDAP servers">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3\, 18"
-                p:instructions-ref="verifyNoEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail">
                 <beans:property name="description">
                     <beans:value>
                         This test case verifies that your system can query DNS for SRV records and attempts to connect
@@ -462,50 +611,68 @@
                         should not discover any X.509 certificates in either DNS CERT records or LDAP servers.
                     </beans:value>
                 </beans:property>
-                <beans:property name="targetCertificate" ref="none"/>
-                <beans:property name="backgroundCertificates" ref="none"/>
+                <beans:property name="targetCertificate" ref="toolTestcaseConstantStrNone"/>
+                <beans:property name="backgroundCertificates" ref="toolTestcaseConstantStrNone"/>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase12Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase12KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase13" parent="discoveryTestcaseImpl"
-        p:mailAddress="d13@domain8.@{dcdt.instance.domain}"
+        p:mailAddress="d13@domain8.#{ instanceConfig.domain }"
         p:name="D13_LDAP_NB_NoCerts"
         p:nameDisplay="D13 - No certificates discovered in DNS CERT records or LDAP servers">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3\, 18"
-                p:instructions-ref="verifyNoEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail">
                 <beans:property name="description">
                     <beans:value>
                         This test case verifies that your system does not discover any certificates in DNS CERT records
                         or LDAP servers when no certificates should be found.
                     </beans:value>
                 </beans:property>
-                <beans:property name="targetCertificate" ref="none"/>
-                <beans:property name="backgroundCertificates" ref="none"/>
+                <beans:property name="targetCertificate" ref="toolTestcaseConstantStrNone"/>
+                <beans:property name="backgroundCertificates" ref="toolTestcaseConstantStrNone"/>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase13Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase13KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase14" parent="discoveryTestcaseImpl"
-        p:mailAddress="d14@domain1.@{dcdt.instance.domain}"
+        p:mailAddress="d14@domain1.#{ instanceConfig.domain }"
         p:name="D14_DNS_AB_TCPLargeCert"
         p:nameDisplay="D14 - Discovery of certificate larger than 512 bytes in DNS">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3\, 4"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>Direct Applicability Statement for Secure Health Transport: Section 5.4</beans:value>
@@ -533,21 +700,30 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase14Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase14KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase15" parent="discoveryTestcaseImpl"
-        p:mailAddress="d15@domain1.@{dcdt.instance.domain}"
+        p:mailAddress="d15@domain1.#{ instanceConfig.domain }"
         p:name="D15_DNS_AB_IPKIX"
         p:nameDisplay="D15 - Certificate discovery in DNS after IPKIX URL redirect">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="1\, 3"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>RFC 4398: Section 2.1</beans:value>
@@ -574,21 +750,30 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase15Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase15KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase16" parent="discoveryTestcaseImpl"
-        p:mailAddress="d16@domain2.@{dcdt.instance.domain}"
+        p:mailAddress="d16@domain2.#{ instanceConfig.domain }"
         p:name="D16_LDAP_AB_SRVPriority"
         p:nameDisplay="D16 - Certificate discovery in LDAP based on SRV priority value">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="15\, 18"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>RFC 2782: Page 3\, Priority Section</beans:value>
@@ -621,21 +806,30 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase16Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase16KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
 
     <beans:bean id="discoveryTestcase17" parent="discoveryTestcaseImpl"
-        p:mailAddress="d17@domain5.@{dcdt.instance.domain}"
+        p:mailAddress="d17@domain5.#{ instanceConfig.domain }"
         p:name="D17_LDAP_AB_SRVWeight"
         p:nameDisplay="D17 - Certificate discovery in LDAP based on SRV weight value">
-        <beans:property name="discoveryTestcaseDescription">
-            <beans:bean parent="discoveryTestcaseDescriptionImpl"
+        <beans:property name="description">
+            <beans:bean parent="discoveryTestcaseDescImpl"
                 p:rtm="16\, 18"
-                p:instructions-ref="verifyEmail">
+                p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail">
                 <beans:property name="specifications">
                     <util:list>
                         <beans:value>RFC 2782: Page 3\, Weight Section</beans:value>
@@ -669,42 +863,19 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="certificates">
+        <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCertImpl"/>
+                <!-- TODO: implement Discovery testcase credential configs -->
+                <!--
+                <beans:bean parent="discoveryTestcaseCredImpl">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="credConfigImpl"
+                            p:certificateDescriptor-ref="discoveryTestcase17Cert1Config"
+                            p:keyPairDescriptor-ref="discoveryTestcase17KeyPair1Config"/>
+                    </beans:property>
+                </beans:bean>
+                -->
             </util:list>
         </beans:property>
     </beans:bean>
-
-    <beans:bean id="none" class="java.lang.String">
-        <beans:constructor-arg type="java.lang.String" value="None"/>
-    </beans:bean>
-
-    <beans:bean id="verifyEmail" class="java.lang.String">
-        <beans:constructor-arg type="java.lang.String">
-            <beans:value>
-                You should have received an email indicating the test case results for your system. Examine the results
-                to see if your system passed the test case. If you do not receive a message for the test case\, then you
-                should assume that the test case failed.
-            </beans:value>
-        </beans:constructor-arg>
-    </beans:bean>
-
-    <beans:bean id="verifyNoEmail" class="java.lang.String">
-        <beans:constructor-arg type="java.lang.String">
-            <beans:value>
-                Verify that your system did NOT send an email because it could not find a certificate for the Direct address.
-                To pass this test case\, you must NOT receive an email in response.
-            </beans:value>
-        </beans:constructor-arg>
-    </beans:bean>
-
-    <!--========== Results ==========-->
-    <beans:bean id="discoveryTestcaseResultPassed" parent="discoveryTestcaseResultImpl"
-        p:passed="true"
-        p:message="This test case passed. Your system discovered the expected certificate."/>
-
-    <beans:bean id="discoveryTestcaseResultFailed" parent="discoveryTestcaseResultImpl"
-        p:passed="false"
-        p:message="This test case failed. Your system discovered the wrong certificate."/>
 </beans:beans>
