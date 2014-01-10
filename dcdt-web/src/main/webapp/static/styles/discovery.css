@@ -1,0 +1,9 @@
+.textEmail {
+    font-family: monospace;
+    font-size: 13px;
+}
+
+div#discoveryTestcaseDescription {
+    margin-left: 20px;
+    width: 600px;
+}
