@@ -21,7 +21,8 @@ import java.util.List;
 public class DiscoveryController extends AbstractToolController {
     private final static String MODEL_ATTR_KEY_DISCOVERY = "discovery";
 
-    @Autowired(required = false)
+    @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private List<DiscoveryTestcase> discoveryTestcases;
 
     @RequestMapping(value = { "/discovery" }, method = { RequestMethod.GET })
