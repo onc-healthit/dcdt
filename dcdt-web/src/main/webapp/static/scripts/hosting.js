@@ -21,13 +21,10 @@ $(document).ready(function () {
 function displayHostingTestcaseDescription(hostingTestcaseDesc){
     var desc = $("#hostingTestcaseDescription");
     desc.empty();
-    desc.append("<p><b>Description: </b>" + hostingTestcaseDesc.description +"</p>");
-    desc.append("<p><b>Instructions: </b>" + hostingTestcaseDesc.instructions +"</p>");
-    desc.append("<p><b>RTM: </b>" + hostingTestcaseDesc.rtm +"</p>");
-    desc.append("<p><b>Underlying Specification Reference: </b></p>");
-    for(var i = 0; i < hostingTestcaseDesc.specifications.length; i++){
-        desc.append("<ul><li>" + hostingTestcaseDesc.specifications[i] +"</li></ul>");
-    }
+    appendTestcaseInfo(desc, "Description", hostingTestcaseDesc.description, false, true);
+    appendTestcaseInfo(desc, "Instructions", hostingTestcaseDesc.instructions, false, true);
+    appendTestcaseInfo(desc, "RTM", hostingTestcaseDesc.rtm, false, true);
+    appendTestcaseInfo(desc, "Underlying Specification Reference", hostingTestcaseDesc.specifications, true, false);
     desc.append("<br/><br/>");
 }
 

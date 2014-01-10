@@ -8,6 +8,7 @@
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <script type="text/javascript" src="${urlStaticScripts}/${templateName}.js"></script>
+<script type="text/javascript" src="${urlStaticScripts}/testcases.js"></script>
 <script type="text/javascript">
 var HOSTING_TESTCASES = {};
 $(document).ready(function () {

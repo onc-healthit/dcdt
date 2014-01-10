@@ -42,4 +42,10 @@
         <put-attribute name="head" value="/WEB-INF/views/content/head-hosting.jsp" type="template"/>
         <put-attribute name="content" value="/WEB-INF/views/content/content-hosting.jsp" type="template"/>
     </definition>
+
+    <definition name="discovery" extends="layout">
+        <put-attribute name="name" value="discovery" cascade="true" type="string"/>
+        <put-attribute name="head" value="/WEB-INF/views/content/head-discovery.jsp" type="template"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-discovery.jsp" type="template"/>
+    </definition>
 </tiles-definitions>
