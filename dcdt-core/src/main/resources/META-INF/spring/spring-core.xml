@@ -28,7 +28,7 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="propSourcesPlaceholderConfigurer" class="gov.hhs.onc.dcdt.context.impl.ToolPropertySourcesPlaceholderConfigurer"
+    <beans:bean id="propSourcesPlaceholderConfigurerBase" class="gov.hhs.onc.dcdt.context.impl.ToolPropertySourcesPlaceholderConfigurer" abstract="true"
         p:environmentOverride="true"
         p:ignoreResourceNotFound="true"
         p:localOverride="true">
@@ -47,6 +47,7 @@
             </beans:array>
         </beans:property>
     </beans:bean>
+    <beans:bean id="propSourcesPlaceholderConfigurer" parent="propSourcesPlaceholderConfigurerBase"/>
     
     <beans:bean id="toolMsgSource" class="gov.hhs.onc.dcdt.context.ToolMessageSource" abstract="true"/>
     <beans:bean id="toolMsgSourceImpl" class="gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl" parent="toolMsgSource" abstract="true"

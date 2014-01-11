@@ -452,6 +452,10 @@
                                                     </property>
                                                     <property>
                                                         <name>wrapper.java.additional.10</name>
+                                                        <value>-Ddcdt.data.dir=var</value>
+                                                    </property>
+                                                    <property>
+                                                        <name>wrapper.java.additional.11</name>
                                                         <value>-Ddcdt.log.dir=log</value>
                                                     </property>
                                                     <property>

@@ -28,6 +28,13 @@ public interface DiscoveryTestcaseCredential extends ToolBean {
 
     public void setCredentialInfo(@Nullable CredentialInfo credInfo);
 
+    public boolean hasIssuerCredential();
+
+    @Nullable
+    public DiscoveryTestcaseCredential getIssuerCredential();
+
+    public void setIssuerCredential(@Nullable DiscoveryTestcaseCredential issuerCred);
+
     public boolean hasName();
 
     @Nullable

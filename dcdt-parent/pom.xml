@@ -253,7 +253,7 @@
             <dependency>
                 <groupId>javax.validation</groupId>
                 <artifactId>validation-api</artifactId>
-                <version>1.0.0.GA</version>
+                <version>1.1.0.Final</version>
             </dependency>
             <dependency>
                 <groupId>net.sf.jtidy</groupId>
@@ -273,7 +273,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.1</version>
+                <version>3.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.derby</groupId>
@@ -362,17 +362,13 @@
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-entitymanager</artifactId>
-                <!--
-                The latest (beta) version (4.3.0.Beta5) is broken - do not upgrade.
-                See: https://community.jboss.org/thread/233642
-                -->
-                <version>4.2.7.Final</version>
+                <artifactId>hibernate-core</artifactId>
+                <version>4.2.8.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>4.3.1.Final</version>
+                <version>5.0.2.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.logback-extensions</groupId>

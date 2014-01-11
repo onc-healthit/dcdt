@@ -8,10 +8,10 @@ import gov.hhs.onc.dcdt.crypto.utils.X500Utils.OrderedOidComparator;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.List;
+import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.ObjectUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.RDN;
@@ -67,7 +67,7 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
     @Override
     public boolean equals(Object obj) {
         return (this == obj)
-            || (ToolClassUtils.isAssignable(CertificateName.class, ToolClassUtils.getClass(obj)) && ObjectUtils.equals(this.getName(),
+            || (ToolClassUtils.isAssignable(CertificateName.class, ToolClassUtils.getClass(obj)) && Objects.equals(this.getName(),
                 ((CertificateName) obj).getName()));
     }
 

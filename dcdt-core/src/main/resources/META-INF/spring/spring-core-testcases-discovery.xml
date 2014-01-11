@@ -34,15 +34,16 @@
     
     <beans:bean id="discoveryTestcase" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" parent="toolTestcase" abstract="true"/>
     <beans:bean id="discoveryTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription" parent="toolTestcaseDesc" abstract="true"/>
-    <beans:bean id="discoveryTestcaseCred" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential" abstract="true"/>
     <beans:bean id="discoveryTestcaseResult" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCred" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential" abstract="true"/>
     
-    <beans:bean id="discoveryTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl" parent="discoveryTestcase" abstract="true"/>
+    <beans:bean id="discoveryTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseFactoryBean" parent="discoveryTestcase"
+        abstract="true"/>
     <beans:bean id="discoveryTestcaseDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDescriptionImpl" parent="discoveryTestcaseDesc"
         abstract="true"/>
-    <beans:bean id="discoveryTestcaseCredImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCredentialImpl" parent="discoveryTestcaseCred"
-        abstract="true"/>
     <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseResultImpl" parent="toolTestcaseResult"
+        abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCredentialImpl" parent="discoveryTestcaseCred"
         abstract="true"/>
     
     <beans:bean id="discoveryTestcaseResultPassed" parent="discoveryTestcaseResultImpl"
@@ -61,7 +62,7 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="discoveryTestcaseCaCredConfig" parent="discoveryTestcaseCredImpl">
+    <beans:bean id="discoveryTestcaseCaCred" parent="discoveryTestcaseCredImpl">
         <beans:property name="credentialConfig">
             <beans:bean parent="caCredConfigImpl"
                 p:certificateDescriptor-ref="discoveryTestcaseCaCertConfig"
@@ -69,6 +70,9 @@
         </beans:property>
         <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
     </beans:bean>
+    
+    <beans:bean id="discoveryTestcaseLeafCred" parent="discoveryTestcaseCredImpl" abstract="true"
+        p:issuerCredential-ref="discoveryTestcaseCaCred"/>
     
     <beans:bean id="discoveryTestcase1KeyPair1Config" parent="keyPairConfigImpl"/>
     
@@ -120,7 +124,7 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase1Cert1Config"
@@ -173,7 +177,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase2Cert1Config"
@@ -228,7 +232,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase3Cert1Config"
@@ -283,7 +287,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase4Cert1Config"
@@ -325,7 +329,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase5Cert1Config"
@@ -363,7 +367,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase6Cert1Config"
@@ -408,7 +412,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase7Cert1Config"
@@ -453,7 +457,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase8Cert1Config"
@@ -500,7 +504,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase9Cert1Config"
@@ -549,7 +553,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase10Cert1Config"
@@ -583,7 +587,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase11Cert1Config"
@@ -619,7 +623,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase12Cert1Config"
@@ -653,7 +657,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase13Cert1Config"
@@ -704,7 +708,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase14Cert1Config"
@@ -754,7 +758,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase15Cert1Config"
@@ -810,7 +814,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase16Cert1Config"
@@ -867,7 +871,7 @@
             <util:list>
                 <!-- TODO: implement Discovery testcase credential configs -->
                 <!--
-                <beans:bean parent="discoveryTestcaseCredImpl">
+                <beans:bean parent="discoveryTestcaseLeafCred">
                     <beans:property name="credentialConfig">
                         <beans:bean parent="credConfigImpl"
                             p:certificateDescriptor-ref="discoveryTestcase17Cert1Config"

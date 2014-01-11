@@ -3,15 +3,11 @@ package gov.hhs.onc.dcdt.utils;
 import gov.hhs.onc.dcdt.beans.ToolBeanPropertyAccessException;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyDescriptor;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.reflect.FieldUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.util.Assert;
 
@@ -54,12 +50,24 @@ public abstract class ToolBeanPropertyUtils {
         }
     }
 
+    public static boolean isReadable(PropertyDescriptor beanPropDesc) {
+        return isReadable(beanPropDesc, null);
+    }
+
     public static boolean isReadable(PropertyDescriptor beanPropDesc, @Nullable Integer beanPropReadMods) {
         return hasAccessorMethod(beanPropDesc.getReadMethod(), beanPropReadMods);
     }
 
+    public static boolean isWriteable(PropertyDescriptor beanPropDesc) {
+        return isWriteable(beanPropDesc, null);
+    }
+
     public static boolean isWriteable(PropertyDescriptor beanPropDesc, @Nullable Integer beanPropWriteMods) {
         return hasAccessorMethod(beanPropDesc.getWriteMethod(), beanPropWriteMods);
+    }
+
+    public static boolean hasAccessorMethod(@Nullable Method accessorMethod) {
+        return hasAccessorMethod(accessorMethod, null);
     }
 
     public static boolean hasAccessorMethod(@Nullable Method accessorMethod, @Nullable Integer beanPropAccessorMods) {
@@ -76,25 +84,6 @@ public abstract class ToolBeanPropertyUtils {
 
     public static PropertyChangeEvent toChangeEvent(PropertyDescriptor beanPropDesc, Object bean, Object oldBeanPropValue, Object newBeanPropValue) {
         return new PropertyChangeEvent(bean, beanPropDesc.getName(), oldBeanPropValue, newBeanPropValue);
-    }
-
-    public static List<AccessibleObject> getPropertyReadAccessibleObjects(PropertyDescriptor beanPropDesc) {
-        List<AccessibleObject> beanPropReadAccessibleObjs = new ArrayList<>();
-
-        if (isReadable(beanPropDesc, null)) {
-            Method beanPropReadMethod = beanPropDesc.getReadMethod();
-            Class<?> beanPropReadClass = beanPropReadMethod.getDeclaringClass();
-            Field beanPropField = FieldUtils.getField(beanPropReadClass, beanPropDesc.getName(), true);
-
-            if (beanPropField != null) {
-                beanPropReadAccessibleObjs.add(beanPropField);
-            }
-            
-            beanPropReadAccessibleObjs.addAll(ToolMethodUtils.getMethods(beanPropReadClass, true, beanPropReadMethod.getName(),
-                beanPropReadMethod.getParameterTypes()));
-        }
-
-        return beanPropReadAccessibleObjs;
     }
 
     public static PropertyDescriptor describeProperty(Class<?> beanClass, String beanPropName) {

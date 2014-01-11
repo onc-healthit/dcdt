@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.config;
 
-import gov.hhs.onc.dcdt.crypto.CryptographyException;
+import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,10 +8,10 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @Test(groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.config.all", "dcdt.test.func.config.instance" })
-public class InstanceConfigFunctionalTests extends ToolTestNgFunctionalTests {
+public class InstanceConfigRegistryFunctionalTests extends ToolTestNgFunctionalTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private InstanceConfigService instanceConfigService;
+    private InstanceConfigRegistry instanceConfigRegistry;
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -21,10 +21,10 @@ public class InstanceConfigFunctionalTests extends ToolTestNgFunctionalTests {
     private String testInstanceConfigDomain;
 
     @Test
-    public void testProcessInstanceConfig() throws CryptographyException {
+    public void testProcessBeans() throws ToolBeanRegistryException {
         this.instanceConfig.setDomain(this.testInstanceConfigDomain);
 
-        this.instanceConfig = this.instanceConfigService.processInstanceConfig();
+        this.instanceConfigRegistry.processBeans();
 
         Assert.assertEquals(this.instanceConfig.getDomain(), this.testInstanceConfigDomain, "Instance configuration domains are not equal.");
     }

@@ -1,12 +1,36 @@
 package gov.hhs.onc.dcdt.utils;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.ObjectUtils;
 
 public abstract class ToolListUtils {
     public final static int INDEX_UNKNOWN = -1;
+
+    @Nullable
+    public static <T extends Comparable<T>> List<T> sort(@Nullable List<T> list) {
+        if (list == null) {
+            return null;
+        }
+
+        Collections.sort(list);
+
+        return list;
+    }
+
+    @Nullable
+    public static <T> List<T> sort(@Nullable List<T> list, Comparator<T> comparator) {
+        if (list == null) {
+            return null;
+        }
+
+        Collections.sort(list, comparator);
+
+        return list;
+    }
 
     public static <T> boolean startsWith(@Nullable List<T> list1, @Nullable List<T> list2) {
         if ((list1 == null) || (list2 == null) || (list2.size() > list1.size())) {
@@ -14,7 +38,7 @@ public abstract class ToolListUtils {
         }
 
         for (int a = 0; a < list2.size(); a++) {
-            if (!ObjectUtils.equals(list1.get(a), list2.get(a))) {
+            if (!Objects.equals(list1.get(a), list2.get(a))) {
                 return false;
             }
         }
@@ -30,7 +54,7 @@ public abstract class ToolListUtils {
         int listStart = list1.size() - list2.size();
 
         for (int a = 0; a < list2.size(); a++) {
-            if (!ObjectUtils.equals(list1.get(listStart + a), list2.get(a))) {
+            if (!Objects.equals(list1.get(listStart + a), list2.get(a))) {
                 return false;
             }
         }

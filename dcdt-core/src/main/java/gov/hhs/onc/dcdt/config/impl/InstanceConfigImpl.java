@@ -8,17 +8,16 @@ import java.io.File;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.NamedNativeQueries;
+import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-@Component("instanceConfig")
 @Entity(name = "instance_config")
 @JsonTypeName("instanceConfig")
-@Scope("singleton")
+@NamedNativeQueries({ @NamedNativeQuery(name = AbstractToolBean.QUERY_NAME_GET_ALL_BEANS, query = "select * from instance_configs", resultClass = InstanceConfigImpl.class) })
 @Table(name = "instance_configs")
 public class InstanceConfigImpl extends AbstractToolBean implements InstanceConfig {
     @Transient
@@ -37,8 +36,7 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
     @Value("${dcdt.instance.db.pass}")
     private String dbPass;
 
-    @Column(name = "domain", nullable = false)
-    @Id
+    @Transient
     private String domain;
 
     @Override
@@ -110,6 +108,8 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
         return !StringUtils.isBlank(this.domain);
     }
 
+    @Column(name = "domain", nullable = false)
+    @Id
     @Override
     public String getDomain() {
         return this.domain;

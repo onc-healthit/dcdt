@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
+
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.crypto.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.CredentialInfo;
@@ -16,9 +17,13 @@ import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential;
 import javax.annotation.Nullable;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +37,9 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolBean implements
     @Transient
     private CredentialInfo credInfo;
 
+    @Transient
+    private DiscoveryTestcaseCredential issuerCred;
+
     @Override
     public boolean hasCertificateData() {
         try {
@@ -43,6 +51,7 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolBean implements
     }
 
     @Column(name = "cert_data", nullable = false)
+    @Lob
     @Nullable
     @Override
     public byte[] getCertificateData() throws CryptographyException {
@@ -108,11 +117,29 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolBean implements
     }
 
     @Override
+    public boolean hasIssuerCredential() {
+        return this.issuerCred != null;
+    }
+
+    @JoinColumn(name = "issuer_name", referencedColumnName = "name")
+    @ManyToOne(targetEntity = DiscoveryTestcaseCredentialImpl.class, cascade = CascadeType.ALL)
+    @Nullable
+    @Override
+    public DiscoveryTestcaseCredential getIssuerCredential() {
+        return this.issuerCred;
+    }
+
+    @Override
+    public void setIssuerCredential(@Nullable DiscoveryTestcaseCredential issuerCred) {
+        this.issuerCred = issuerCred;
+    }
+
+    @Override
     public boolean hasName() {
         return !StringUtils.isBlank(this.getName());
     }
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", updatable = false, nullable = false)
     @Id
     @Nullable
     @Override
@@ -136,6 +163,7 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolBean implements
     }
 
     @Column(name = "private_key_data", nullable = false)
+    @Lob
     @Nullable
     @Override
     public byte[] getPrivateKeyData() throws CryptographyException {

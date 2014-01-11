@@ -1,18 +1,17 @@
 package gov.hhs.onc.dcdt.crypto.keys;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
-import java.security.Key;
 import java.security.KeyRep.Type;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-public enum KeyType implements CryptographyTypeIdentifier<Key> {
+public enum KeyType implements CryptographyTypeIdentifier {
     PUBLIC(Type.PUBLIC.name(), PublicKey.class), PRIVATE(Type.PRIVATE.name(), PrivateKey.class);
 
     private final String name;
-    private final Class<? extends Key> type;
+    private final Class<?> type;
 
-    private KeyType(String name, Class<? extends Key> type) {
+    private KeyType(String name, Class<?> type) {
         this.name = name;
         this.type = type;
     }
@@ -27,7 +26,7 @@ public enum KeyType implements CryptographyTypeIdentifier<Key> {
     }
 
     @Override
-    public Class<? extends Key> getType() {
+    public Class<?> getType() {
         return this.type;
     }
 }

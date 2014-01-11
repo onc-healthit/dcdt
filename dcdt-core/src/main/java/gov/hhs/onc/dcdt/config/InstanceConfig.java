@@ -30,7 +30,6 @@ public interface InstanceConfig extends ToolBean {
 
     public boolean hasDirectory();
 
-    @JsonProperty("directory")
     public File getDirectory();
 
     public void setDirectory(File dir);

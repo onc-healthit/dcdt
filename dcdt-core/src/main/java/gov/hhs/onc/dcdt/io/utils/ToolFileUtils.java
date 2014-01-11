@@ -10,9 +10,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.ObjectUtils;
 
 public abstract class ToolFileUtils {
     public final static LinkOption[] LINK_OPTS_FOLLOW = new LinkOption[0];
@@ -185,7 +185,7 @@ public abstract class ToolFileUtils {
             } else if (ToolClassUtils.isAssignable(File.class, objClass)) {
                 return ((File) obj).toPath();
             } else {
-                return Paths.get(ObjectUtils.toString(obj, null));
+                return Paths.get(Objects.toString(obj, null));
             }
         }
     }

@@ -215,7 +215,7 @@
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
+            <artifactId>hibernate-core</artifactId>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -622,7 +622,6 @@
                                     <systemProperties>
                                         <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
                                         <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
-                                        <dcdt.test.instance.suffix>-it-web</dcdt.test.instance.suffix>
                                     </systemProperties>
                                     <webapps>
                                         <webapp>
