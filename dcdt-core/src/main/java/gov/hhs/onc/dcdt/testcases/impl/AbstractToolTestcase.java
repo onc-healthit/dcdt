@@ -12,8 +12,7 @@ import javax.persistence.Transient;
 @MappedSuperclass
 public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult> extends AbstractToolBean implements
     ToolTestcase<T, U> {
-    @Column(name = "name", nullable = false)
-    @Id
+    @Transient
     protected String name;
 
     @Transient
@@ -29,6 +28,7 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
     protected U result;
 
     @Override
+    @Transient
     public T getDescription() {
         return this.desc;
     }
@@ -38,6 +38,8 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
         this.desc = desc;
     }
 
+    @Column(name = "name", nullable = false)
+    @Id
     @Override
     public String getName() {
         return this.name;
@@ -49,6 +51,7 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
     }
 
     @Override
+    @Transient
     public String getNameDisplay() {
         return this.nameDisplay;
     }
@@ -59,6 +62,7 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
     }
 
     @Override
+    @Transient
     public boolean isOptional() {
         return this.optional;
     }
@@ -69,6 +73,7 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
     }
 
     @Override
+    @Transient
     public U getResult() {
         return this.result;
     }

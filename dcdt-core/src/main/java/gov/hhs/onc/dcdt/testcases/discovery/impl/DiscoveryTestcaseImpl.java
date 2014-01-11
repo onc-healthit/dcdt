@@ -11,18 +11,22 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity(name = "discovery_testcase")
 @Table(name = "discovery_testcases")
 public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseResult> implements DiscoveryTestcase {
-    @Column(name = "mail_addr", nullable = false)
+    @Transient
     private String mailAddr;
 
-    @JoinColumn(name = "discovery_testcase_name", referencedColumnName = "name", nullable = false)
-    @OneToMany(targetEntity = DiscoveryTestcaseCredentialImpl.class, cascade = { CascadeType.ALL })
+    @Transient
     private List<DiscoveryTestcaseCredential> creds;
 
+    @JoinColumn(name = "discovery_testcase_name", referencedColumnName = "name", nullable = false)
+    @OneToMany(targetEntity = DiscoveryTestcaseCredentialImpl.class, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @OrderBy("name")
     @Override
     public List<DiscoveryTestcaseCredential> getCredentials() {
         return this.creds;
@@ -33,6 +37,7 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
         this.creds = creds;
     }
 
+    @Column(name = "mail_addr", nullable = false)
     @Override
     public String getMailAddress() {
         return this.mailAddr;

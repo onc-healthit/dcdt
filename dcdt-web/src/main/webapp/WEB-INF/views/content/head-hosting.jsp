@@ -19,7 +19,7 @@ $(document).ready(function () {
 
             HOSTING_TESTCASES["${hostingTestcase.name}"] = {
             name: "${hostingTestcase.name}",
-            nameDisplay: "${hostingTestcase.nameDisplay}",
+            nameDisplay: "${hostingTestcase.typeDisplay}",
             binding: "${hostingTestcase.binding}",
             location: "${hostingTestcase.location}",
             testcaseDescription: {

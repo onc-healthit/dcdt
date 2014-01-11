@@ -68,7 +68,4 @@
     
     <beans:bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver"
         p:defaultThemeName="dcdt"/>
-    
-    <beans:bean id="adminControllerBeanRegDefPostProc"
-        class="gov.hhs.onc.dcdt.web.controller.impl.AdminBeanDefinitionRegistryPostProcessor" parent="toolBeanFactoryPostProc"/>
 </beans:beans>

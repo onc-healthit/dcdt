@@ -9,12 +9,12 @@ public abstract class ToolCollectionUtils {
     @Nullable
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T> Collection<T> addAll(@Nullable Collection<T> coll, Collection<? extends T> ... collsAdd) {
+    public static <T, U extends Collection<T>> U addAll(@Nullable U coll, Collection<? extends T> ... collsAdd) {
         return addAll(coll, ToolArrayUtils.asList(collsAdd));
     }
 
     @Nullable
-    public static <T> Collection<T> addAll(@Nullable Collection<T> coll, @Nullable Iterable<? extends Collection<? extends T>> collsAdd) {
+    public static <T, U extends Collection<T>> U addAll(@Nullable U coll, @Nullable Iterable<? extends Collection<? extends T>> collsAdd) {
         if ((coll != null) && (collsAdd != null)) {
             for (Collection<? extends T> collAdd : collsAdd) {
                 if (!isEmpty(collAdd)) {
@@ -27,7 +27,7 @@ public abstract class ToolCollectionUtils {
     }
 
     @Nullable
-    public static <T> Collection<T> add(@Nullable Collection<T> coll, @Nullable T element) {
+    public static <T, U extends Collection<T>> U add(@Nullable U coll, @Nullable T element) {
         if (coll != null) {
             coll.add(element);
         }

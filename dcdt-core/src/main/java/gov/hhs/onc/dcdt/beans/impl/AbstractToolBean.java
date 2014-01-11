@@ -1,6 +1,12 @@
 package gov.hhs.onc.dcdt.beans.impl;
 
+
 import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.utils.ToolBeanPropertyUtils;
+import java.beans.PropertyDescriptor;
+import java.io.Serializable;
+import javax.annotation.Nullable;
+import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import org.hibernate.annotations.Proxy;
@@ -10,11 +16,31 @@ import org.springframework.beans.factory.BeanFactory;
 @MappedSuperclass
 @Proxy(lazy = false)
 public abstract class AbstractToolBean implements ToolBean {
-    @Transient
-    protected BeanFactory beanFactory;
+    public final static String QUERY_NAME_GET_ALL_BEANS = "getAllBeans";
     
     @Transient
+    protected BeanFactory beanFactory;
+
+    @Transient
     protected String beanName;
+    
+    @Override
+    public boolean hasBeanId() {
+        return this.getBeanId() != null;
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public Serializable getBeanId() {
+        for (PropertyDescriptor beanPropDesc : ToolBeanPropertyUtils.describeProperties(this.getClass())) {
+            if (ToolBeanPropertyUtils.isReadable(beanPropDesc) && beanPropDesc.getReadMethod().isAnnotationPresent(Id.class)) {
+                return ToolBeanPropertyUtils.read(beanPropDesc, this, Serializable.class);
+            }
+        }
+
+        return null;
+    }
 
     @Override
     public void afterPropertiesSet() throws Exception {

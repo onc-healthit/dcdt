@@ -47,7 +47,6 @@
                     },
                     "postQueryBean": function (jqXhr, status) {
                         if (instanceConfig) {
-                            instanceConfigDirInput.val(instanceConfig["directory"]);
                             instanceConfigDomainInput.val(instanceConfig["domain"]);
                             
                             instanceConfigRmButton.removeAttr("disabled");
@@ -70,7 +69,6 @@
     
     $(document).ready(function () {
         instanceConfigForm = $("form[name=\"admin-instance-config\"]");
-        instanceConfigDirInput = instanceConfigForm.find("input#admin-instance-config-dir");
         instanceConfigDomainInput = instanceConfigForm.find("input#admin-instance-config-domain");
         instanceConfigRmButton = instanceConfigForm.find("button#admin-instance-config-rm");
         instanceConfigSetButton = instanceConfigForm.find("button#admin-instance-config-set");
@@ -85,7 +83,6 @@
             if (!instanceConfigSetButton.attr("disabled")) {
                 instanceConfig = {
                     "@type": "instanceConfig",
-                    "directory": instanceConfigDirInput.val(),
                     "domain": instanceConfigDomainInput.val()
                 };
                 

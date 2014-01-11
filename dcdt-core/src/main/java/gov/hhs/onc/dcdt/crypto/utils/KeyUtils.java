@@ -17,7 +17,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
-import java.io.Serializable;
 import java.io.Writer;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -122,9 +121,8 @@ public abstract class KeyUtils {
                 data = PemUtils.readPemContent(data);
             }
 
-            return keyType.getType().cast(
-                SerializationUtils.deserialize(SerializationUtils.serialize(new KeyRep(keyType.getKeyRepType(), keyAlg.getName(), keyAlg.getFormat(keyType),
-                    data))));
+            return (Key) SerializationUtils.deserialize(SerializationUtils.serialize(new KeyRep(keyType.getKeyRepType(), keyAlg.getName(), keyAlg
+                .getFormat(keyType), data)));
         } catch (SerializationException e) {
             throw new KeyException(String.format("Unable to read key instance (type=%s) for key algorithm (name=%s, format=%s, providerName=%s) from data.",
                 keyType.getName(), keyAlg.getName(), keyAlg.getPrivateFormat(), CryptographyUtils.PROVIDER_NAME), e);
@@ -148,7 +146,7 @@ public abstract class KeyUtils {
 
         try {
             if (dataEnc == DataEncoding.PEM) {
-                PemUtils.writePemContent(writer, CryptographyUtils.findTypeId(PemType.class, (Class<? extends Serializable>) key.getClass()), data);
+                PemUtils.writePemContent(writer, CryptographyUtils.findTypeId(PemType.class, key.getClass()), data);
             } else {
                 IOUtils.write(data, writer);
             }

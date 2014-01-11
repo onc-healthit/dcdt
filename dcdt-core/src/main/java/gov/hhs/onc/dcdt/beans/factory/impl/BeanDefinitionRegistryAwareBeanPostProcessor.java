@@ -26,6 +26,6 @@ public class BeanDefinitionRegistryAwareBeanPostProcessor extends AbstractToolBe
 
         bean.setBeanDefinitionRegistry((BeanDefinitionRegistry) this.beanFactory);
 
-        return super.postProcessAfterInitializationInternal(bean, beanName);
+        return super.postProcessBeforeInitializationInternal(bean, beanName);
     }
 }

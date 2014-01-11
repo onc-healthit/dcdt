@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 
+@SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolBean implements ToolBeanPostProcessor<T> {
     protected Class<T> beanClass;
 

@@ -55,7 +55,7 @@
                     <select id="hostingTestcases">
                         <option value="">-- No test case selected --</option>
                         <c:forEach var="hostingTestcase" items="${hosting}">
-                            <option value=${hostingTestcase.name}>${hostingTestcase.nameDisplay}</option>
+                            <option value=${hostingTestcase.name}>${hostingTestcase.typeDisplay}</option>
                         </c:forEach>
                     </select>
                 </span>

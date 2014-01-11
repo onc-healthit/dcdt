@@ -61,6 +61,10 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
+    <logger name="org.hibernate.SQL" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
     <logger name="org.springframework" level="info" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>

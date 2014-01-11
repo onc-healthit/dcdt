@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Scope("singleton")
 public class InstanceConfigDaoImpl extends AbstractToolBeanDao<InstanceConfig> implements InstanceConfigDao {
     public InstanceConfigDaoImpl() {
-        super(InstanceConfig.class);
+        super(InstanceConfig.class, InstanceConfigImpl.class);
     }
 }

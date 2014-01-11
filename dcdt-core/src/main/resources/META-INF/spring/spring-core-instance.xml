@@ -31,9 +31,9 @@
     
     <beans:bean id="instanceConfigDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
         p:driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
-        p:password="#{ instanceConfig.databasePassword }"
-        p:url="jdbc:derby:#{ instanceConfig.databaseDirectory }"
-        p:username="#{ instanceConfig.databaseUser }">
+        p:password="${dcdt.instance.db.pass}"
+        p:url="jdbc:derby:${dcdt.instance.db.dir}"
+        p:username="${dcdt.instance.db.user}">
         <beans:property name="connectionProperties">
             <util:properties>
                 <beans:prop key="create">true</beans:prop>
@@ -48,20 +48,26 @@
     
     <beans:bean id="instanceConfigSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
         p:dataSource-ref="instanceConfigDataSource"
+        p:entityInterceptor-ref="compositeBeanInterceptor"
         p:packagesToScan="gov.hhs.onc.dcdt">
         <beans:property name="hibernateProperties">
             <util:properties>
                 <beans:prop key="hibernate.dialect">org.hibernate.dialect.DerbyTenSevenDialect</beans:prop>
-                <beans:prop key="hibernate.show_sql">true</beans:prop>
+                <!--<beans:prop key="hibernate.hbm2ddl.auto">update</beans:prop>-->
             </util:properties>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="instanceConfigTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"
-        p:dataSource-ref="instanceConfigDataSource"
-        p:sessionFactory-ref="instanceConfigSessionFactory"/>
+        p:entityInterceptor-ref="compositeBeanInterceptor"
+        p:nestedTransactionAllowed="true"
+        p:rollbackOnCommitFailure="true"
+        p:sessionFactory-ref="instanceConfigSessionFactory"
+        p:validateExistingTransaction="true"/>
     
     <beans:bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
     
     <tx:annotation-driven transaction-manager="instanceConfigTransactionManager"/>
+    
+    <beans:bean id="instanceConfig" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigFactoryBean"/>
 </beans:beans>
