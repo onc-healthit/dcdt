@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.io.utils.ToolFileUtils;
 import java.io.File;
+import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -110,13 +111,14 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
 
     @Column(name = "domain", nullable = false)
     @Id
+    @Nullable
     @Override
     public String getDomain() {
         return this.domain;
     }
 
     @Override
-    public void setDomain(String domain) {
+    public void setDomain(@Nullable String domain) {
         this.domain = domain;
     }
 }

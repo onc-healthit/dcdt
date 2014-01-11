@@ -44,7 +44,7 @@ public class AdminController extends AbstractToolController {
 
     @RequestMapping(value = { "/admin/instance/set" }, method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
-    public ResponseJsonWrapper<InstanceConfig> setInstanceConfiguration(@RequestBody @Valid RequestJsonWrapper<InstanceConfig> req, BindingResult bindingResult) {
+    public ResponseJsonWrapper<InstanceConfig> setInstanceConfig(@RequestBody @Valid RequestJsonWrapper<InstanceConfig> req, BindingResult bindingResult) {
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
 
         if (bindingResult.hasErrors()) {
@@ -83,9 +83,12 @@ public class AdminController extends AbstractToolController {
             InstanceConfig reqInstanceConfig = ToolListUtils.getFirst(req.getItems());
 
             if (reqInstanceConfig != null) {
-                ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory) this.beanFactory, InstanceConfig.class).setDomain(reqInstanceConfig.getDomain());
+                InstanceConfig instanceConfig = this.getInstanceConfigBean();
+                instanceConfig.setDomain(reqInstanceConfig.getDomain());
 
-                this.instanceConfigRegistry.processBeans();
+                this.instanceConfigRegistry.registerBean(instanceConfig);
+
+                resp.getItems().add(this.getInstanceConfigBean());
             }
         }
 
@@ -94,22 +97,21 @@ public class AdminController extends AbstractToolController {
 
     @RequestMapping(value = { "/admin/instance/rm" }, method = { RequestMethod.POST }, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
-    public ResponseJsonWrapper<InstanceConfig> removeInstanceConfiguration() {
+    public ResponseJsonWrapper<InstanceConfig> removeInstanceConfig() {
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
 
-        // TODO: implement instance configuration deletion/removal
+        this.instanceConfigRegistry.removeBean(this.getInstanceConfigBean());
 
-        resp.getItems().add(ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory) this.beanFactory, InstanceConfig.class));
+        resp.getItems().add(this.getInstanceConfigBean());
 
         return resp;
     }
 
     @RequestMapping(value = { "/admin/instance" }, method = { RequestMethod.GET }, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
-    public ResponseJsonWrapper<InstanceConfig> getInstanceConfiguration() {
+    public ResponseJsonWrapper<InstanceConfig> getInstanceConfig() {
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
-
-        resp.getItems().add(ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory) this.beanFactory, InstanceConfig.class));
+        resp.getItems().add(this.getInstanceConfigBean());
 
         return resp;
     }
@@ -124,5 +126,9 @@ public class AdminController extends AbstractToolController {
     @RequestViews({ @RequestView("admin-login") })
     public ModelAndView displayAdminLogin(ModelMap modelMap) throws ToolWebException {
         return this.display(modelMap);
+    }
+
+    private InstanceConfig getInstanceConfigBean() {
+        return ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory) this.beanFactory, InstanceConfig.class);
     }
 }

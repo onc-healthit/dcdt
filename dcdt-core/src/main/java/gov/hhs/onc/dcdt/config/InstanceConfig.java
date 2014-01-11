@@ -7,6 +7,7 @@ import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.config.impl.InstanceConfigImpl;
 import gov.hhs.onc.dcdt.validation.constraints.Domain;
 import java.io.File;
+import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(InstanceConfigImpl.class) })
 public interface InstanceConfig extends ToolBean {
@@ -38,7 +39,8 @@ public interface InstanceConfig extends ToolBean {
 
     @Domain
     @JsonProperty("domain")
+    @Nullable
     public String getDomain();
 
-    public void setDomain(String domain);
+    public void setDomain(@Nullable String domain);
 }

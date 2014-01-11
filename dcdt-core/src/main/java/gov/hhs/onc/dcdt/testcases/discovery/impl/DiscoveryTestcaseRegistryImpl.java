@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
+import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.crypto.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
@@ -14,10 +15,10 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDao;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseService;
+import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -30,11 +31,15 @@ public class DiscoveryTestcaseRegistryImpl extends AbstractToolBeanRegistry<Disc
     private DiscoveryTestcaseCredential discoveryTestcaseIssuerCred;
 
     public DiscoveryTestcaseRegistryImpl() {
-        super(DiscoveryTestcase.class);
+        super(DiscoveryTestcase.class, DiscoveryTestcaseService.class);
     }
 
     @Override
-    protected void processBean(DiscoveryTestcase bean) throws ToolBeanRegistryException {
+    public void registerBean(DiscoveryTestcase bean) throws ToolBeanRegistryException {
+        if (!bean.hasInstanceConfig()) {
+            bean.setInstanceConfig(ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), InstanceConfig.class));
+        }
+
         for (DiscoveryTestcaseCredential discoveryTestcaseCred : bean.getCredentials()) {
             if (!discoveryTestcaseCred.hasCredentialInfo()) {
                 if (this.discoveryTestcaseIssuerCred == null) {
@@ -72,7 +77,7 @@ public class DiscoveryTestcaseRegistryImpl extends AbstractToolBeanRegistry<Disc
             }
         }
 
-        super.processBean(bean);
+        super.registerBean(bean);
     }
 
     protected CredentialInfo generateDiscoveryTestcaseCredential(@Nullable CredentialInfo discoveryTestcaseIssuerCredInfo,
@@ -87,11 +92,5 @@ public class DiscoveryTestcaseRegistryImpl extends AbstractToolBeanRegistry<Disc
             discoveryTestcaseCredConfig.getCertificateDescriptor()));
 
         return discoveryTestcaseCredInfo;
-    }
-
-    @Autowired
-    @Override
-    protected void setBeanService(DiscoveryTestcaseService beanService) {
-        super.setBeanService(beanService);
     }
 }

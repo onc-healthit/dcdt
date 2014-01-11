@@ -8,7 +8,6 @@ import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.data.registry.impl.AbstractToolBeanRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseRegistry;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,19 +16,13 @@ import org.springframework.stereotype.Component;
 public class InstanceConfigRegistryImpl extends AbstractToolBeanRegistry<InstanceConfig, InstanceConfigDao, InstanceConfigService> implements
     InstanceConfigRegistry {
     public InstanceConfigRegistryImpl() {
-        super(InstanceConfig.class);
+        super(InstanceConfig.class, InstanceConfigService.class);
     }
 
     @Override
-    public void processBeans() throws ToolBeanRegistryException {
-        super.processBeans();
+    public void registerBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
+        super.registerBeans(beans);
 
-        ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseRegistry.class).processBeans();
-    }
-
-    @Autowired
-    @Override
-    protected void setBeanService(InstanceConfigService beanService) {
-        super.setBeanService(beanService);
+        ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseRegistry.class).registerAllBeans();
     }
 }
