@@ -19,10 +19,10 @@ public class InstanceConfigFactoryBean extends AbstractToolFactoryBean<InstanceC
 
         if (instanceConfigExisting != null) {
             instanceConfig.setDomain(instanceConfigExisting.getDomain());
-            
+
             this.instanceConfigService.updateBean(instanceConfig);
         }
-        
+
         return instanceConfig;
     }
 }

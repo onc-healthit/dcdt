@@ -3,6 +3,7 @@ create table instance_configs (
 );
 
 create table discovery_testcases (
+    instance_config_domain varchar(253) references instance_configs(domain),
     name varchar(100) not null primary key,
     mail_addr varchar(507) not null
 );
