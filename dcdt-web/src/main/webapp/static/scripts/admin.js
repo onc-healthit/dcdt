@@ -51,6 +51,8 @@
                             
                             instanceConfigRmButton.removeAttr("disabled");
                         } else {
+                            instanceConfigDomainInput.val("");
+                            
                             instanceConfigRmButton.attr("disabled", "disabled");
                         }
                     },
@@ -65,7 +67,7 @@
         })
     });
     
-    var instanceConfigForm, instanceConfigDirInput, instanceConfigDomainInput, instanceConfigRmButton, instanceConfigSetButton, instanceConfig;
+    var instanceConfigForm, instanceConfigDomainInput, instanceConfigRmButton, instanceConfigSetButton, instanceConfig;
     
     $(document).ready(function () {
         instanceConfigForm = $("form[name=\"admin-instance-config\"]");
