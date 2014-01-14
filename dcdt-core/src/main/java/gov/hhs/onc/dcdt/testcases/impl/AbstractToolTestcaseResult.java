@@ -2,6 +2,8 @@ package gov.hhs.onc.dcdt.testcases.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseResult;
+import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class AbstractToolTestcaseResult extends AbstractToolBean implements ToolTestcaseResult {
     protected boolean passed;
@@ -18,12 +20,18 @@ public abstract class AbstractToolTestcaseResult extends AbstractToolBean implem
     }
 
     @Override
+    public boolean hasMessage() {
+        return !StringUtils.isBlank(this.message);
+    }
+
+    @Nullable
+    @Override
     public String getMessage() {
         return this.message;
     }
 
     @Override
-    public void setMessage(String message) {
+    public void setMessage(@Nullable String message) {
         this.message = message;
     }
 }

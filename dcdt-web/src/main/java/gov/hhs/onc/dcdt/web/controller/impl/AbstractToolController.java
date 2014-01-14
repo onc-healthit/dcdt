@@ -19,8 +19,12 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.MessageSource;
+import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -29,7 +33,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
-public abstract class AbstractToolController extends AbstractToolBean implements ToolController {
+public abstract class AbstractToolController extends AbstractToolBean implements ApplicationContextAware, ToolController {
     protected final static String MODEL_ATTR_KEY_ERROR = "error";
     protected final static String MODEL_ATTR_KEY_GOOGLE_ANALYTICS = "googleAnalytics";
     protected final static String MODEL_ATTR_KEY_USER = "user";
@@ -45,6 +49,8 @@ public abstract class AbstractToolController extends AbstractToolBean implements
 
     @Autowired
     protected GoogleAnalyticsConfig googleAnalyticsConfig;
+
+    protected AbstractApplicationContext appContext;
 
     @ExceptionHandler({ Throwable.class })
     @RequestViews({ @RequestView(value = "/errors", forward = true),
@@ -99,7 +105,7 @@ public abstract class AbstractToolController extends AbstractToolBean implements
 
     protected String findRequestView(@Size(min = 1) List<Pair<Class<?>, Method>> displayCalls, @Nullable String reqContentType) throws ToolWebException {
         Pair<Class<?>, Method> displayCaller = ToolListUtils.getFirst(displayCalls);
-        RequestViews reqViewsAnno = ToolAnnotationUtils.findAnnotation(RequestViews.class, displayCalls);
+        RequestViews reqViewsAnno = ToolAnnotationUtils.findCallsAnnotation(RequestViews.class, displayCalls);
 
         if (reqViewsAnno == null) {
             throw new ToolWebException(String.format("Unable to find request views annotation on controller (class=%s) request method (name=%s).",
@@ -146,5 +152,10 @@ public abstract class AbstractToolController extends AbstractToolBean implements
         throw new ToolWebException(String.format(
             "No matching (contentType=%s) request view annotation found on controller (class=%s) request method (name=%s).", reqContentType,
             ToolClassUtils.getName(displayCaller.getLeft()), ToolMethodUtils.getName(displayCaller.getRight())));
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
+        this.appContext = (AbstractApplicationContext) appContext;
     }
 }

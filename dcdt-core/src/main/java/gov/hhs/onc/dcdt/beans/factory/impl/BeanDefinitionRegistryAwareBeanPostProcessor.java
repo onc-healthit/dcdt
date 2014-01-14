@@ -3,7 +3,11 @@ package gov.hhs.onc.dcdt.beans.factory.impl;
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.BeanDefinitionRegistryAware;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("beanDefRegAwareBeanPostProc")
+@Scope("singleton")
 public class BeanDefinitionRegistryAwareBeanPostProcessor extends AbstractToolBeanPostProcessor<BeanDefinitionRegistryAware> {
     public BeanDefinitionRegistryAwareBeanPostProcessor() {
         super(BeanDefinitionRegistryAware.class);
@@ -22,6 +26,6 @@ public class BeanDefinitionRegistryAwareBeanPostProcessor extends AbstractToolBe
 
         bean.setBeanDefinitionRegistry((BeanDefinitionRegistry) this.beanFactory);
 
-        return super.postProcessAfterInitializationInternal(bean, beanName);
+        return super.postProcessBeforeInitializationInternal(bean, beanName);
     }
 }

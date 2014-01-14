@@ -4,16 +4,31 @@
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
     xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
     xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <beans:bean id="toolTestcase" class="gov.hhs.onc.dcdt.testcases.ToolTestcase" abstract="true"/>
+    <beans:bean id="toolTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription" abstract="true"/>
     <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseResult" abstract="true"/>
-    <beans:bean id="toolTestcaseDescription" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription" abstract="true"/>
+    
+    <!--====================================================================================================
+    = TESTCASE STRINGS
+    =====================================================================================================-->
+    <dcdt:normalized-string id="toolTestcaseConstantStrNone">None</dcdt:normalized-string>
+    
+    <!--====================================================================================================
+    = TESTCASE SPECIFICATIONS
+    =====================================================================================================-->
+    <util:list id="toolTestcaseSpecsDns">
+        <dcdt:normalized-string>RFC 4398: Section 2.1</dcdt:normalized-string>
+        <dcdt:normalized-string>Direct Applicability Statement for Secure Health Transport: Section 5.3</dcdt:normalized-string>
+    </util:list>
 </beans:beans>

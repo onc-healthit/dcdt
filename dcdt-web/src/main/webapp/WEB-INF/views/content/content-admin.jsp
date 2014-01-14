@@ -24,45 +24,6 @@
             <div>
                 <span class="form-cell form-cell-label">
                     <tiles:insertDefinition name="component-glyph-label">
-                        <tiles:putAttribute name="attrs">for="admin-instance-config-dir"</tiles:putAttribute>
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-folder-open"/>
-                        <tiles:putAttribute name="content" value="Directory"/>
-                    </tiles:insertDefinition>:
-                </span>
-                <span class="form-cell form-cell-control">
-                    <input id="admin-instance-config-dir" class="input-sm form-control" name="directory" type="text"/>
-                </span>
-            </div>
-        </div>
-        <div class="form-group form-group-addons">
-            <div class="has-info">
-                <div class="input-group-addon input-group-addon-active">
-                    <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-info-sign"/>
-                    </tiles:insertDefinition>
-                    <strong>Note</strong>:
-                    <ul>
-                        <li>
-                            Non-absolute instance configuration directory paths are relative to:
-                            ${adminInstanceConfigDirBase}
-                        </li>
-                    </ul>
-                </div>
-            </div>
-            <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
-                    <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
-                    </tiles:insertDefinition>
-                    <strong>Invalid instance configuration directory</strong>:
-                    <ul></ul>
-                </div>
-            </div>
-        </div>
-        <div class="form-group">
-            <div>
-                <span class="form-cell form-cell-label">
-                    <tiles:insertDefinition name="component-glyph-label">
                         <tiles:putAttribute name="attrs">for="admin-instance-config-domain"</tiles:putAttribute>
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-link"/>
                         <tiles:putAttribute name="content" value="Domain"/>

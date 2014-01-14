@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.utils;
 
-import org.apache.commons.lang3.ObjectUtils;
+import java.util.Objects;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 
@@ -26,13 +26,9 @@ public abstract class ToolStringUtils {
 
         for (T item : items) {
             strBuilder.appendSeparator(delim);
-            strBuilder.append(StringUtils.stripEnd(ObjectUtils.toString(item), delim));
+            strBuilder.append(StringUtils.stripEnd(Objects.toString(item), delim));
         }
 
         return strBuilder.toString();
-    }
-
-    public static String removeExtraWhitespace(String item) {
-        return item.replaceAll("\\s+", " ").trim();
     }
 }

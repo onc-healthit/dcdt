@@ -6,7 +6,7 @@ $(document).ready(function () {
         if(discoveryTestcaseName != ""){
             var discoveryTestcase = DISCOVERY_TESTCASES[discoveryTestcaseName];
             displayMailAddress(discoveryTestcase.mailAddress);
-            displayDiscoveryTestcaseDescription(discoveryTestcase.testcaseDescription);
+            displayDiscoveryTestcaseDescription(discoveryTestcase.description);
         }
         else{
             clearDiscoveryTestcaseInfo();
@@ -24,7 +24,7 @@ function displayMailAddress(mailAddress){
 function displayDiscoveryTestcaseDescription(discoveryTestcaseDesc){
     var desc = $("#discoveryTestcaseDescription");
     desc.empty();
-    appendTestcaseInfo(desc, "Description", discoveryTestcaseDesc.description, false, true);
+    appendTestcaseInfo(desc, "Description", discoveryTestcaseDesc.text, false, true);
     appendTestcaseInfo(desc, "Target Certificate", discoveryTestcaseDesc.targetCertificate, true, true);
     appendTestcaseInfo(desc, "Background Certificates", discoveryTestcaseDesc.backgroundCertificates, true, false);
     appendTestcaseInfo(desc, "RTM", discoveryTestcaseDesc.rtm, false, true);

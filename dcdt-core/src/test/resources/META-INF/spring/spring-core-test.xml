@@ -28,8 +28,4 @@
             </beans:array>
         </beans:property>
     </beans:bean>
-    
-    <beans:bean id="instanceConfigTest" parent="instanceConfigImpl"
-        p:directory="${dcdt.test.instance.dir}"
-        p:domain="${dcdt.test.instance.domain}"/>
 </beans:beans>

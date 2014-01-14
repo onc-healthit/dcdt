@@ -16,35 +16,20 @@
     <beans:bean id="toolDnsLookupTaskExecutor" parent="toolTaskExecutor"
         p:maxPoolSize="5"/>
     
-    <!--
-    <util:list id="toolDnsRecordTypes" value-type="java.lang.Integer">
-        <util:constant static-field="org.xbill.DNS.Type.A"/>
-        <util:constant static-field="org.xbill.DNS.Type.CERT"/>
-        <util:constant static-field="org.xbill.DNS.Type.CNAME"/>
-        <util:constant static-field="org.xbill.DNS.Type.MX"/>
-        <util:constant static-field="org.xbill.DNS.Type.NS"/>
-        <util:constant static-field="org.xbill.DNS.Type.SOA"/>
-        <util:constant static-field="org.xbill.DNS.Type.SRV"/>
-    </util:list>
-    -->
+    <beans:bean id="dnsResolver" class="org.xbill.DNS.Resolver" abstract="true"/>
     
-    <beans:bean id="dnsCache" class="org.xbill.DNS.Cache"
-        p:maxCache="0"
-        p:maxEntries="0"
-        p:maxNCache="0"/>
-    
-    <beans:bean id="dnsResolverHosts" class="java.util.List" abstract="true"/>
-    <beans:bean id="dnsResolverHostsLocal" class="java.util.ArrayList" parent="dnsResolverHosts">
-        <beans:constructor-arg>
-            <util:list value-type="java.lang.String">
+    <beans:bean id="dnsResolverLocal" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver">
+        <beans:constructor-arg name="servers">
+            <util:list>
                 <beans:value>127.0.0.1</beans:value>
             </util:list>
         </beans:constructor-arg>
         <beans:qualifier type="gov.hhs.onc.dcdt.dns.DnsResolver" value="LOCAL"/>
     </beans:bean>
-    <beans:bean id="dnsResolverHostsExternal" class="java.util.ArrayList" parent="dnsResolverHosts">
-        <beans:constructor-arg>
-            <util:list value-type="java.lang.String">
+    
+    <beans:bean id="dnsResolverExternal" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver">
+        <beans:constructor-arg name="servers">
+            <util:list>
                 <beans:value>8.8.8.8</beans:value>
                 <beans:value>8.8.4.4</beans:value>
             </util:list>
@@ -52,13 +37,24 @@
         <beans:qualifier type="gov.hhs.onc.dcdt.dns.DnsResolver" value="EXTERNAL"/>
     </beans:bean>
     
-    <beans:bean id="toolDnsResolver" class="org.xbill.DNS.Resolver" abstract="true"/>
-    <beans:bean id="toolDnsResolverLocal" class="org.xbill.DNS.ExtendedResolver" parent="toolDnsResolver"
-        c:servers-ref="dnsResolverHostsLocal">
+    <beans:bean id="dnsLookupService" class="gov.hhs.onc.dcdt.dns.DnsLookupService" abstract="true"/>
+    
+    <beans:bean id="dnsLookupServiceImpl" class="gov.hhs.onc.dcdt.dns.impl.DnsLookupServiceImpl" parent="dnsLookupService" abstract="true">
+        <beans:property name="dnsCache">
+            <beans:bean class="org.xbill.DNS.Cache"
+                p:maxCache="0"
+                p:maxEntries="0"
+                p:maxNCache="0"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="dnsLookupServiceLocal" parent="dnsLookupServiceImpl"
+        p:dnsResolver-ref="dnsResolverLocal">
         <beans:qualifier type="gov.hhs.onc.dcdt.dns.DnsResolver" value="LOCAL"/>
     </beans:bean>
-    <beans:bean id="toolDnsResolverExternal" class="org.xbill.DNS.ExtendedResolver" parent="toolDnsResolver"
-        c:servers-ref="dnsResolverHostsExternal">
+    
+    <beans:bean id="dnsLookupServiceExternal" parent="dnsLookupServiceImpl" primary="true"
+        p:dnsResolver-ref="dnsResolverExternal">
         <beans:qualifier type="gov.hhs.onc.dcdt.dns.DnsResolver" value="EXTERNAL"/>
     </beans:bean>
 </beans:beans>

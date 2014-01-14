@@ -29,6 +29,10 @@
             toolMailServiceEmbedded
         </param-value>
     </context-param>
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>dcdt.web.webapp.dir</param-value>
+    </context-param>
     
     <servlet>
         <servlet-name>dispatcherServlet</servlet-name>
@@ -53,6 +57,9 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     
+    <listener>
+        <listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+    </listener>
     <listener>
         <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
     </listener>

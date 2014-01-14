@@ -4,13 +4,11 @@
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
     xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
     xmlns:task="http://www.springframework.org/schema/task"
     xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
-        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
@@ -22,48 +20,16 @@
     <context:component-scan base-package="gov.hhs.onc.dcdt"/>
     <context:spring-configured/>
     
-    <beans:bean id="toolConverter" class="gov.hhs.onc.dcdt.convert.ToolConverter" abstract="true"/>
-    
-    <beans:bean id="pathConverter" class="gov.hhs.onc.dcdt.convert.impl.PathConverter" parent="toolConverter"/>
-    
-    <beans:bean id="conversionService" class="org.springframework.context.support.ConversionServiceFactoryBean">
+    <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
         <beans:property name="converters">
             <util:list>
-                <beans:ref local="pathConverter"/>
+                <beans:ref bean="pathConverter"/>
             </util:list>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceConfig" class="gov.hhs.onc.dcdt.config.InstanceConfig" abstract="true"/>
-    <beans:bean id="instanceConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigImpl" parent="instanceConfig" abstract="true"/>
-    
-    <beans:bean id="toolBeanFactoryPostProc" class="gov.hhs.onc.dcdt.beans.factory.ToolBeanFactoryPostProcessor" abstract="true"/>
-    
-    <beans:bean id="instanceConfigBeanFactoryPostProc" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigBeanFactoryPostProcessor"
-        parent="toolBeanFactoryPostProc"/>
-    
-    <beans:bean id="toolBeanPostProc" class="gov.hhs.onc.dcdt.beans.factory.ToolBeanPostProcessor" abstract="true"/>
-    
-    <beans:bean id="beanDefRegAwareBeanPostProc" class="gov.hhs.onc.dcdt.beans.factory.impl.BeanDefinitionRegistryAwareBeanPostProcessor"
-        parent="toolBeanPostProc"/>
-    
-    <beans:bean id="toolBeanPropSource" class="gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertySource" abstract="true"/>
-    
-    <beans:bean id="instanceConfigPropSource" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigPropertySource" parent="toolBeanPropSource"/>
-    
-    <beans:bean id="toolBeanPropResolver" class="gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertyResolver" abstract="true"/>
-    <beans:bean id="toolBeanPropResolverImpl" class="gov.hhs.onc.dcdt.beans.factory.impl.ToolBeanPropertyResolverImpl" parent="toolBeanPropResolver">
-        <beans:property name="beanPropertySources">
-            <util:list>
-                <beans:ref local="instanceConfigPropSource"/>
-            </util:list>
-        </beans:property>
-    </beans:bean>
-    
-    <beans:bean id="toolBeanPropPlaceholderConfigurer" class="gov.hhs.onc.dcdt.beans.factory.ToolBeanPropertyPlaceholderConfigurer" abstract="true"/>
-    <beans:bean id="toolBeanPropPlaceholderConfigurerImpl" class="gov.hhs.onc.dcdt.beans.factory.impl.ToolBeanPropertyPlaceholderConfigurerImpl"
-        parent="toolBeanPropPlaceholderConfigurer" abstract="true"
-        p:beanPropertyResolver-ref="toolBeanPropResolverImpl"
+    <beans:bean id="propSourcesPlaceholderConfigurerBase" class="gov.hhs.onc.dcdt.context.impl.ToolPropertySourcesPlaceholderConfigurer" abstract="true"
+        p:environmentOverride="true"
         p:ignoreResourceNotFound="true"
         p:localOverride="true">
         <beans:property name="locations">
@@ -81,7 +47,7 @@
             </beans:array>
         </beans:property>
     </beans:bean>
-    <beans:bean id="toolBeanPropPlaceholderConfigurerInstance" parent="toolBeanPropPlaceholderConfigurerImpl"/>
+    <beans:bean id="propSourcesPlaceholderConfigurer" parent="propSourcesPlaceholderConfigurerBase"/>
     
     <beans:bean id="toolMsgSource" class="gov.hhs.onc.dcdt.context.ToolMessageSource" abstract="true"/>
     <beans:bean id="toolMsgSourceImpl" class="gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl" parent="toolMsgSource" abstract="true"
@@ -103,6 +69,7 @@
             <beans:array>
                 <beans:value>org/hibernate/validator/ValidationMessages</beans:value>
                 <beans:value>core/core-messages-validation</beans:value>
+                <beans:value>core/core-messages-validation-crypto</beans:value>
                 <beans:value>core/core-messages-validation-io</beans:value>
             </beans:array>
         </beans:property>
@@ -121,4 +88,12 @@
     
     <beans:bean id="toolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
         p:daemon="true"/>
+    
+    <beans:bean id="setSysProps" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"
+        p:targetObject="#{ systemProperties }"
+        p:targetMethod="putAll">
+        <beans:property name="arguments">
+            <util:properties/>
+        </beans:property>
+    </beans:bean>
 </beans:beans>

@@ -53,12 +53,13 @@
                         <redirector>
                             <outputfilterchain>
                                 <linecontainsregexp>
-                                    <regexp pattern="^(parent:\s\d+:[\da-f]+|branch:)\s[^$]+$"/>
+                                    <regexp pattern="^(parent:\s+\d+:[\da-f]+\s*[^$]*|branch:\s+[^$]+)$"/>
                                 </linecontainsregexp>
                                 <tokenfilter>
-                                    <replaceregex pattern="^parent:\s(\d+):([\da-f]+)\s([^$]+)$"
+                                    <linetokenizer/>
+                                    <replaceregex pattern="^parent:\s+(\d+):([\da-f]+)\s*([^$]*)$"
                                         replace="rev=\1${n}node.short=\2${n}tag=\3"/>
-                                    <replaceregex pattern="^branch:\s([^$]+)$" replace="branch=\1"/>
+                                    <replaceregex pattern="^branch:\s+([^$]+)$" replace="branch=\1"/>
                                 </tokenfilter>
                             </outputfilterchain>
                         </redirector>
@@ -66,6 +67,12 @@
                     <loadproperties prefix="@{prefix}hg.">
                         <string>${@{prefix}hg.sum.out}</string>
                     </loadproperties>
+                    <if>
+                        <dcdt:isempty string="${@{prefix}hg.tag}"/>
+                        <then>
+                            <var name="@{prefix}hg.tag" value="tip"/>
+                        </then>
+                    </if>
                 </then>
                 <else>
                     <loadproperties prefix="@{prefix}hg.">
@@ -107,6 +114,8 @@
             <exec executable="hg" outputproperty="@{prefix}hg.@{cmd}.out" errorproperty="@{prefix}hg.@{cmd}.err" resultproperty="@{prefix}hg.@{cmd}.result"
                 failifexecutionfails="false" searchpath="true" taskname="hg-@{cmd}">
                 <arg value="@{cmd}"/>
+                <arg value="--color"/>
+                <arg value="never"/>
                 <arg value="--cwd"/>
                 <arg value="@{path}"/>
                 <cmd-elements/>

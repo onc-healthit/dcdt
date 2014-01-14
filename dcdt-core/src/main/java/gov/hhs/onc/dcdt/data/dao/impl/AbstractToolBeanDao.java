@@ -1,40 +1,36 @@
 package gov.hhs.onc.dcdt.data.dao.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.data.ToolBeanDataAccessException;
 import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolBeanDefinitionUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
-import org.hibernate.HibernateException;
-import org.hibernate.ObjectNotFoundException;
-import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.ListableBeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
+import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.lang3.tuple.Pair;
+import org.hibernate.HibernateException;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBeanDao<T> {
-    @Autowired(required = false)
+    @Autowired
     protected SessionFactory sessionFactory;
 
-    protected BeanDefinitionRegistry beanDefReg;
-    protected ListableBeanFactory beanFactory;
+    protected AbstractApplicationContext appContext;
     protected Class<T> beanClass;
     protected Class<? extends T> beanImplClass;
 
-    protected AbstractToolBeanDao(Class<T> beanClass) {
+    protected AbstractToolBeanDao(Class<T> beanClass, Class<? extends T> beanImplClass) {
         this.beanClass = beanClass;
+        this.beanImplClass = beanImplClass;
     }
 
     @Override
@@ -59,6 +55,16 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     @Override
     public boolean containsBean(Serializable beanIdValue) throws ToolBeanDataAccessException {
         return this.containsBean(this.getCheckedSession(), beanIdValue);
+    }
+
+    @Override
+    public T getFirstBean() throws ToolBeanDataAccessException {
+        return this.getFirstBean(this.getCheckedSession());
+    }
+
+    @Override
+    public List<T> getAllBeans() throws ToolBeanDataAccessException {
+        return this.getAllBeans(this.getCheckedSession());
     }
 
     @Override
@@ -234,27 +240,22 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
         return this.getSession() != null;
     }
 
-    @Override
-    @SuppressWarnings({ "unchecked" })
-    public void afterPropertiesSet() throws Exception {
-        this.beanImplClass = (Class<? extends T>) ToolBeanDefinitionUtils.getBeanDefinitionClass(this.beanDefReg,
-            ToolBeanDefinitionUtils.getBeanDefinitionOfType(this.beanFactory, this.beanDefReg, this.beanClass));
-
-        if (this.beanImplClass == null) {
-            throw new ToolBeanDataAccessException(String.format("Unable to find bean (class=%s) implementation class.", ToolClassUtils.getName(this.beanClass)));
-        }
-    }
-
     protected boolean containsBean(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
         return this.getBeanById(session, beanIdValue) != null;
     }
 
+    @SuppressWarnings({ "unchecked" })
+    protected T getFirstBean(Session session) throws ToolBeanDataAccessException {
+        return ToolListUtils.getFirst((List<T>) session.getNamedQuery(AbstractToolBean.QUERY_NAME_GET_ALL_BEANS).setMaxResults(1).list());
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    protected List<T> getAllBeans(Session session) throws ToolBeanDataAccessException {
+        return (List<T>) session.getNamedQuery(AbstractToolBean.QUERY_NAME_GET_ALL_BEANS).list();
+    }
+
     protected T getBeanById(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
-        try {
-            return this.beanClass.cast(session.load(this.beanImplClass, beanIdValue));
-        } catch (ObjectNotFoundException objectNotFoundException) {
-            return null;
-        }
+        return this.beanClass.cast(session.get(this.beanImplClass, beanIdValue));
     }
 
     protected List<T> getBeans(Session session, Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
@@ -308,8 +309,8 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
         return session;
     }
 
-    protected Session getSession() {
-        if (this.hasSessionFactory() && !this.sessionFactory.isClosed()) {
+    protected synchronized Session getSession() {
+        if (this.hasSessionFactory()) {
             try {
                 return this.sessionFactory.getCurrentSession();
             } catch (HibernateException ignored) {
@@ -320,17 +321,12 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
         return null;
     }
 
-    protected boolean hasSessionFactory() {
-        return this.sessionFactory != null;
+    protected synchronized boolean hasSessionFactory() {
+        return (this.sessionFactory != null) && !this.sessionFactory.isClosed();
     }
 
     @Override
-    public void setBeanDefinitionRegistry(BeanDefinitionRegistry beanDefReg) {
-        this.beanDefReg = beanDefReg;
-    }
-
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = (ListableBeanFactory) beanFactory;
+    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
+        this.appContext = (AbstractApplicationContext) appContext;
     }
 }

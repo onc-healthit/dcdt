@@ -12,32 +12,33 @@
 <script type="text/javascript" src="${urlStaticScripts}/${templateName}.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/testcases.js"></script>
 <script type="text/javascript">
-    var DISCOVERY_TESTCASES = {};
-    $(document).ready(function () {
-        <c:forEach var="discoveryTestcase" items="${discovery}">
-        var specs = [];
-        <c:forEach var="specification" items="${discoveryTestcase.discoveryTestcaseDescription.specifications}">
-            specs.push("${specification}");
-        </c:forEach>
-        var backgroundCerts = [];
-        <c:forEach var="backgroundCert" items="${discoveryTestcase.discoveryTestcaseDescription.backgroundCertificates}">
-        backgroundCerts.push("${backgroundCert}");
-        </c:forEach>
-
-        DISCOVERY_TESTCASES["${discoveryTestcase.name}"] = {
-            name: "${discoveryTestcase.name}",
-            nameDisplay: "${discoveryTestcase.nameDisplay}",
-            mailAddress: "${discoveryTestcase.mailAddress}",
-            testcaseDescription: {
-                description: "${discoveryTestcase.discoveryTestcaseDescription.description}",
-                targetCertificate: "${discoveryTestcase.discoveryTestcaseDescription.targetCertificate}",
-                backgroundCertificates: backgroundCerts,
-                rtm: "${discoveryTestcase.discoveryTestcaseDescription.rtm}",
-                specifications: specs,
-                instructions: "${discoveryTestcase.discoveryTestcaseDescription.instructions}"
+var DISCOVERY_TESTCASES = {
+    <c:forEach var="discoveryTestcase" varStatus="discoveryTestcasesStatus" items="${discoveryTestcases}">
+        "${discoveryTestcase.name}": {
+            "name": "${discoveryTestcase.name}",
+            "nameDisplay": "${discoveryTestcase.nameDisplay}",
+            "mailAddress": "${discoveryTestcase.mailAddress}",
+            "description": {
+                <c:set var="discoveryTestcaseDesc" value="${discoveryTestcase.description}"/>
+                "text": "${discoveryTestcaseDesc.text}",
+                "instructions": "${discoveryTestcaseDesc.instructions}",
+                "rtm": "${discoveryTestcaseDesc.rtm}",
+                "specifications": [
+                    <c:forEach var="discoveryTestcaseSpec" varStatus="discoveryTestcaseSpecsStatus"
+                        items="${discoveryTestcaseDesc.specifications}">
+                        "${discoveryTestcaseSpec}"<c:if test="${not discoveryTestcaseSpecsStatus.last}">,</c:if>
+                    </c:forEach>
+                ],
+                "backgroundCertificates": [
+                    <c:forEach var="discoveryTestcaseBackgroundCert" varStatus="discoveryTestcaseBackgroundCertsStatus"
+                        items="${discoveryTestcaseDesc.backgroundCertificates}">
+                        "${discoveryTestcaseBackgroundCert}"<c:if test="${not discoveryTestcaseBackgroundCertsStatus.last}">,</c:if>
+                    </c:forEach>
+                ],
+                "targetCertificate": "${discoveryTestcaseDesc.targetCertificate}"
             }
-        };
-        </c:forEach>
-    });
+        }<c:if test="${not discoveryTestcasesStatus.last}">,</c:if>
+    </c:forEach>
+};
 </script>
 <link rel="stylesheet" type="text/css" href="${urlStaticStyles}/${templateName}.css"/>

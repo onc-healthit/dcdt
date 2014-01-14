@@ -7,10 +7,9 @@ import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseLocation;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 
-public class HostingTestcaseImpl extends AbstractToolTestcase<HostingTestcaseResult, HostingTestcaseDescription> implements HostingTestcase {
+public class HostingTestcaseImpl extends AbstractToolTestcase<HostingTestcaseDescription, HostingTestcaseResult> implements HostingTestcase {
     private HostingTestcaseBinding binding;
     private HostingTestcaseLocation location;
-    private HostingTestcaseDescription hostingTestcaseDescription;
 
     @Override
     public HostingTestcaseBinding getBinding() {
@@ -30,15 +29,5 @@ public class HostingTestcaseImpl extends AbstractToolTestcase<HostingTestcaseRes
     @Override
     public void setLocation(HostingTestcaseLocation location) {
         this.location = location;
-    }
-
-    @Override
-    public HostingTestcaseDescription getHostingTestcaseDescription() {
-        return this.hostingTestcaseDescription;
-    }
-
-    @Override
-    public void setHostingTestcaseDescription(HostingTestcaseDescription hostingTestcaseDescription) {
-        this.hostingTestcaseDescription = hostingTestcaseDescription;
     }
 }

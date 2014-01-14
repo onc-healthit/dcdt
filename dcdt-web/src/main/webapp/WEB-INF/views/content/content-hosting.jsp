@@ -54,7 +54,7 @@
                     </tiles:insertDefinition>:
                     <select id="hostingTestcases">
                         <option value="">-- No test case selected --</option>
-                        <c:forEach var="hostingTestcase" items="${hosting}">
+                        <c:forEach var="hostingTestcase" items="${hostingTestcases}">
                             <option value=${hostingTestcase.name}>${hostingTestcase.nameDisplay}</option>
                         </c:forEach>
                     </select>
