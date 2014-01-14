@@ -8,7 +8,7 @@
     <parent>
         <groupId>gov.hhs.onc.dcdt</groupId>
         <artifactId>dcdt-parent</artifactId>
-        <version>3.0-SNAPSHOT</version>
+        <version>3.0-M1</version>
         <relativePath>../dcdt-parent</relativePath>
     </parent>
 
