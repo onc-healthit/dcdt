@@ -42,7 +42,8 @@ public class AdminController extends AbstractToolController {
     @Autowired
     private InstanceConfigRegistry instanceConfigRegistry;
 
-    @RequestMapping(value = { "/admin/instance/set" }, method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping(value = { "/admin/instance/set" }, method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE },
+        produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
     public ResponseJsonWrapper<InstanceConfig> setInstanceConfig(@RequestBody @Valid RequestJsonWrapper<InstanceConfig> req, BindingResult bindingResult) {
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
@@ -86,7 +87,7 @@ public class AdminController extends AbstractToolController {
                 InstanceConfig instanceConfig = this.getInstanceConfigBean();
                 instanceConfig.setDomain(reqInstanceConfig.getDomain());
 
-                this.instanceConfigRegistry.registerBean(instanceConfig);
+                this.instanceConfigRegistry.registerBeans(instanceConfig);
 
                 resp.getItems().add(this.getInstanceConfigBean());
             }
@@ -100,7 +101,7 @@ public class AdminController extends AbstractToolController {
     public ResponseJsonWrapper<InstanceConfig> removeInstanceConfig() {
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
 
-        this.instanceConfigRegistry.removeBean(this.getInstanceConfigBean());
+        this.instanceConfigRegistry.removeBeans(this.getInstanceConfigBean());
 
         resp.getItems().add(this.getInstanceConfigBean());
 
@@ -129,6 +130,6 @@ public class AdminController extends AbstractToolController {
     }
 
     private InstanceConfig getInstanceConfigBean() {
-        return ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory) this.beanFactory, InstanceConfig.class);
+        return ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory) this.appContext.getAutowireCapableBeanFactory(), InstanceConfig.class);
     }
 }
