@@ -3,8 +3,7 @@ package gov.hhs.onc.dcdt.crypto;
 import gov.hhs.onc.dcdt.ToolException;
 
 public class CryptographyException extends ToolException {
-
-    private static final long serialVersionUID = 0L;
+    private final static long serialVersionUID = 0L;
 
     public CryptographyException() {
         super();

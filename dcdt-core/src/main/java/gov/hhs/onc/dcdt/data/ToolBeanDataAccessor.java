@@ -13,6 +13,10 @@ public interface ToolBeanDataAccessor<T extends ToolBean> {
 
     public boolean containsBean(Serializable beanIdValue) throws ToolBeanDataAccessException;
 
+    public T getFirstBean() throws ToolBeanDataAccessException;
+
+    public List<T> getAllBeans() throws ToolBeanDataAccessException;
+
     public List<T> getBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException;
 
     public List<T> getBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException;

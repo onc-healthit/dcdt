@@ -12,11 +12,13 @@ import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.ConstraintComposition;
+import org.hibernate.validator.constraints.Length;
 
 @Constraint(validatedBy = { DomainConstraintValidator.class })
 @ConstraintComposition
 @Documented
 @Inherited
+@Length(min = 1, max = 253)
 @NotBlank
 @Pattern(regexp = "^[\\w\\-\\.]+$")
 @ReportAsSingleViolation

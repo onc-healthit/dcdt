@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.web.json;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolBean;
@@ -10,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 
-@JsonRootName("errors")
 @JsonSubTypes({ @Type(ErrorsJsonWrapperImpl.class) })
 public interface ErrorsJsonWrapper extends ToolBean {
     public boolean hasErrors();
@@ -22,7 +20,7 @@ public interface ErrorsJsonWrapper extends ToolBean {
     @Nullable
     public List<ErrorJsonWrapper> getFieldErrors(String fieldName);
 
-    @JsonProperty(value = "fields")
+    @JsonProperty("fields")
     @Nullable
     public Map<String, List<ErrorJsonWrapper>> getFieldErrors();
 
@@ -30,7 +28,7 @@ public interface ErrorsJsonWrapper extends ToolBean {
 
     public boolean hasGlobalErrors();
 
-    @JsonProperty(value = "global")
+    @JsonProperty("global")
     @Nullable
     public List<ErrorJsonWrapper> getGlobalErrors();
 

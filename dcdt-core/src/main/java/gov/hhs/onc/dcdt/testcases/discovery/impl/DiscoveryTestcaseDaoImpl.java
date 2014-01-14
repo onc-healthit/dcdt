@@ -10,6 +10,6 @@ import org.springframework.stereotype.Repository;
 @Scope("singleton")
 public class DiscoveryTestcaseDaoImpl extends AbstractToolBeanDao<DiscoveryTestcase> implements DiscoveryTestcaseDao {
     public DiscoveryTestcaseDaoImpl() {
-        super(DiscoveryTestcase.class);
+        super(DiscoveryTestcase.class, DiscoveryTestcaseImpl.class);
     }
 }

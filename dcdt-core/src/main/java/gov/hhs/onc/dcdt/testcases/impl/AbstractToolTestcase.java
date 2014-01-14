@@ -10,14 +10,10 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 @MappedSuperclass
-public abstract class AbstractToolTestcase<T extends ToolTestcaseResult, U extends ToolTestcaseDescription> extends AbstractToolBean implements
+public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult> extends AbstractToolBean implements
     ToolTestcase<T, U> {
-    @Column(name = "name", nullable = false)
-    @Id
-    protected String name;
-
     @Transient
-    protected String mailAddr;
+    protected String name;
 
     @Transient
     protected String nameDisplay;
@@ -26,18 +22,24 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseResult, U exten
     protected boolean optional;
 
     @Transient
-    protected T result;
+    protected T desc;
+
+    @Transient
+    protected U result;
 
     @Override
-    public String getMailAddress() {
-        return this.mailAddr;
+    @Transient
+    public T getDescription() {
+        return this.desc;
     }
 
     @Override
-    public void setMailAddress(String mailAddr) {
-        this.mailAddr = mailAddr;
+    public void setDescription(T desc) {
+        this.desc = desc;
     }
 
+    @Column(name = "name", nullable = false)
+    @Id
     @Override
     public String getName() {
         return this.name;
@@ -49,6 +51,7 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseResult, U exten
     }
 
     @Override
+    @Transient
     public String getNameDisplay() {
         return this.nameDisplay;
     }
@@ -59,6 +62,7 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseResult, U exten
     }
 
     @Override
+    @Transient
     public boolean isOptional() {
         return this.optional;
     }
@@ -69,12 +73,13 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseResult, U exten
     }
 
     @Override
-    public T getResult() {
+    @Transient
+    public U getResult() {
         return this.result;
     }
 
     @Override
-    public void setResult(T result) {
+    public void setResult(U result) {
         this.result = result;
     }
 }

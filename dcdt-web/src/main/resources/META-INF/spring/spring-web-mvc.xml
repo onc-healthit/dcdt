@@ -31,6 +31,15 @@
     <mvc:resources mapping="/static/**" location="/static/"/>
     
     <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter">
+        <beans:property name="customArgumentResolvers">
+            <util:list>
+                <!--
+                Adding support for the @AuthenticationPrincipal annotation.
+                See: http://docs.spring.io/spring-security/site/docs/3.2.0.RELEASE/reference/htmlsingle/#mvc-authentication-principal
+                -->
+                <beans:bean class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver"/>
+            </util:list>
+        </beans:property>
         <beans:property name="messageConverters">
             <util:list>
                 <beans:bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"
@@ -59,7 +68,4 @@
     
     <beans:bean id="themeResolver" class="org.springframework.web.servlet.theme.FixedThemeResolver"
         p:defaultThemeName="dcdt"/>
-    
-    <beans:bean id="adminControllerBeanRegDefPostProc"
-        class="gov.hhs.onc.dcdt.web.controller.impl.AdminBeanDefinitionRegistryPostProcessor" parent="toolBeanFactoryPostProc"/>
 </beans:beans>

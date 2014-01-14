@@ -50,12 +50,24 @@ public abstract class ToolBeanPropertyUtils {
         }
     }
 
+    public static boolean isReadable(PropertyDescriptor beanPropDesc) {
+        return isReadable(beanPropDesc, null);
+    }
+
     public static boolean isReadable(PropertyDescriptor beanPropDesc, @Nullable Integer beanPropReadMods) {
         return hasAccessorMethod(beanPropDesc.getReadMethod(), beanPropReadMods);
     }
 
+    public static boolean isWriteable(PropertyDescriptor beanPropDesc) {
+        return isWriteable(beanPropDesc, null);
+    }
+
     public static boolean isWriteable(PropertyDescriptor beanPropDesc, @Nullable Integer beanPropWriteMods) {
         return hasAccessorMethod(beanPropDesc.getWriteMethod(), beanPropWriteMods);
+    }
+
+    public static boolean hasAccessorMethod(@Nullable Method accessorMethod) {
+        return hasAccessorMethod(accessorMethod, null);
     }
 
     public static boolean hasAccessorMethod(@Nullable Method accessorMethod, @Nullable Integer beanPropAccessorMods) {

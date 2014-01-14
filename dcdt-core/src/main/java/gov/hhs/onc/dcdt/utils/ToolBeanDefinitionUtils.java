@@ -90,30 +90,31 @@ public abstract class ToolBeanDefinitionUtils {
         return getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, includeAbstract) != null;
     }
 
-    public static <T> Class<T> getBeanDefinitionClassOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
+    public static <T> Class<? extends T> getBeanDefinitionClassOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
         return getBeanDefinitionClassOfType(beanFactory, beanDefReg, beanClass, false);
     }
 
     @SuppressWarnings({ "unchecked" })
-    public static <T> Class<T> getBeanDefinitionClassOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
+    public static <T> Class<? extends T> getBeanDefinitionClassOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
         boolean includeAbstract) {
-        return (Class<T>) getBeanDefinitionClass(beanDefReg, getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, includeAbstract));
+        return (Class<? extends T>) getBeanDefinitionClass(beanDefReg, getBeanDefinitionOfType(beanFactory, beanDefReg, beanClass, includeAbstract));
     }
 
-    public static <T> Set<Class<T>> getBeanDefinitionClassesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass) {
+    public static <T> Set<Class<? extends T>> getBeanDefinitionClassesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg,
+        Class<T> beanClass) {
         return getBeanDefinitionClassesOfType(beanFactory, beanDefReg, beanClass, false);
     }
 
     @SuppressWarnings({ "unchecked" })
-    public static <T> Set<Class<T>> getBeanDefinitionClassesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg, Class<T> beanClass,
-        boolean includeAbstract) {
+    public static <T> Set<Class<? extends T>> getBeanDefinitionClassesOfType(ListableBeanFactory beanFactory, BeanDefinitionRegistry beanDefReg,
+        Class<T> beanClass, boolean includeAbstract) {
         List<BeanDefinition> beanDefs = getBeanDefinitionsOfType(beanFactory, beanDefReg, beanClass, includeAbstract);
-        Set<Class<T>> beanDefClasses = new HashSet<>(beanDefs.size());
+        Set<Class<? extends T>> beanDefClasses = new HashSet<>(beanDefs.size());
         Class<?> beanDefClass;
 
         for (BeanDefinition beanDef : beanDefs) {
             if (!(beanDefClass = getBeanDefinitionClass(beanDefReg, beanDef)).equals(beanClass)) {
-                beanDefClasses.add((Class<T>) beanDefClass);
+                beanDefClasses.add((Class<? extends T>) beanDefClass);
             }
         }
 

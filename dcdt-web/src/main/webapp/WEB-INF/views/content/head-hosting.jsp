@@ -10,27 +10,27 @@
 <script type="text/javascript" src="${urlStaticScripts}/${templateName}.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/testcases.js"></script>
 <script type="text/javascript">
-var HOSTING_TESTCASES = {};
-$(document).ready(function () {
-    <c:forEach var="hostingTestcase" items="${hosting}">
-            var specs = [];
-            <c:forEach var="specification" items="${hostingTestcase.hostingTestcaseDescription.specifications}">
-                specs.push("${specification}");
-            </c:forEach>
-
-            HOSTING_TESTCASES["${hostingTestcase.name}"] = {
-            name: "${hostingTestcase.name}",
-            nameDisplay: "${hostingTestcase.nameDisplay}",
-            binding: "${hostingTestcase.binding}",
-            location: "${hostingTestcase.location}",
-            testcaseDescription: {
-                description: "${hostingTestcase.hostingTestcaseDescription.description}",
-                instructions: "${hostingTestcase.hostingTestcaseDescription.instructions}",
-                rtm: "${hostingTestcase.hostingTestcaseDescription.rtm}",
-                specifications: specs
+var HOSTING_TESTCASES = {
+    <c:forEach var="hostingTestcase" varStatus="hostingTestcasesStatus" items="${hostingTestcases}">
+        "${hostingTestcase.name}": {
+            "name": "${hostingTestcase.name}",
+            "nameDisplay": "${hostingTestcase.nameDisplay}",
+            "binding": "${hostingTestcase.binding}",
+            "location": "${hostingTestcase.location}",
+            "description": {
+                <c:set var="hostingTestcaseDesc" value="${hostingTestcase.description}"/>
+                "text": "${hostingTestcaseDesc.text}",
+                "instructions": "${hostingTestcaseDesc.instructions}",
+                "rtm": "${hostingTestcaseDesc.rtm}",
+                "specifications": [
+                    <c:forEach var="hostingTestcaseSpec" varStatus="hostingTestcaseSpecsStatus"
+                        items="${hostingTestcaseDesc.specifications}">
+                        "${hostingTestcaseSpec}"<c:if test="${not hostingTestcaseSpecsStatus.last}">,</c:if>
+                    </c:forEach>
+                ]
             }
-        };
+        }<c:if test="${not hostingTestcasesStatus.last}">,</c:if>
     </c:forEach>
-});
+};
 </script>
 <link rel="stylesheet" type="text/css" href="${urlStaticStyles}/${templateName}.css"/>

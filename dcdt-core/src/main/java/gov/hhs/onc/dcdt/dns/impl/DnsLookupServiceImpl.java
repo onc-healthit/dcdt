@@ -1,21 +1,24 @@
 package gov.hhs.onc.dcdt.dns.impl;
 
 import gov.hhs.onc.dcdt.dns.DnsLookupException;
+import gov.hhs.onc.dcdt.dns.DnsLookupResultType;
 import gov.hhs.onc.dcdt.dns.DnsLookupService;
-import gov.hhs.onc.dcdt.dns.ServiceProtocol;
-import gov.hhs.onc.dcdt.dns.ServiceType;
+import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
+import gov.hhs.onc.dcdt.dns.DnsServiceType;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolUriUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+import java.util.List;
+import javax.annotation.Nullable;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.CNAMERecord;
 import org.xbill.DNS.Cache;
-import org.xbill.DNS.ExtendedResolver;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.MXRecord;
 import org.xbill.DNS.NSRecord;
+import org.xbill.DNS.Name;
+import org.xbill.DNS.NameTooLongException;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SOARecord;
@@ -23,117 +26,147 @@ import org.xbill.DNS.SRVRecord;
 import org.xbill.DNS.TextParseException;
 import org.xbill.DNS.Type;
 
-import javax.annotation.Nullable;
-import java.net.UnknownHostException;
-import java.util.Arrays;
-import java.util.List;
-
-@Service
-@Component("dnsLookupServiceImpl")
 public class DnsLookupServiceImpl implements DnsLookupService {
-
-    @Autowired
     private Cache dnsCache;
-
-    @Autowired
-    private List<Resolver> dnsResolverHostsLocal;
-
-    @Autowired
-    private List<Resolver> dnsResolverHostsExternal;
-    
-    private static final String CASTING_ERROR_MESSAGE = "Unexpected type returned.";
+    private Resolver dnsResolver;
 
     @Override
-    public MXRecord[] getMxRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        try {
-            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.MX);
-            return recordsList.toArray(new MXRecord[recordsList.size()]);
-        } catch(ArrayStoreException arrayStoreException) {
-            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
-        }
+    public List<ARecord> getARecords(String dnsNameStr) throws DnsLookupException {
+        return this.getARecords(buildDnsName(dnsNameStr));
     }
 
     @Override
-    public CERTRecord[] getCertRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        try {
-            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.CERT);
-            return recordsList.toArray(new CERTRecord[recordsList.size()]);
-        } catch(ArrayStoreException arrayStoreException) {
-            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
-        }
+    public List<ARecord> getARecords(Name dnsName) throws DnsLookupException {
+        return this.getRecords(ARecord.class, Type.A, dnsName);
     }
 
     @Override
-    public ARecord[] getARecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        try {
-            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.A);
-            return recordsList.toArray(new ARecord[recordsList.size()]);
-        } catch(ArrayStoreException arrayStoreException) {
-            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
-        }
+    public List<MXRecord> getMxRecords(String dnsNameStr) throws DnsLookupException {
+        return this.getMxRecords(buildDnsName(dnsNameStr));
     }
 
     @Override
-    public NSRecord[] getNsRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        try {
-            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.NS);
-            return recordsList.toArray(new NSRecord[recordsList.size()]);
-        } catch(ArrayStoreException arrayStoreException) {
-            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
-        }
+    public List<MXRecord> getMxRecords(Name dnsName) throws DnsLookupException {
+        return this.getRecords(MXRecord.class, Type.MX, dnsName);
     }
 
     @Override
-    public SRVRecord[] getSrvRecords(boolean resolveLocally, ServiceType serviceType, ServiceProtocol serviceProtocol, String dnsName)
-        throws DnsLookupException {
-        try {
-            List<Record> recordsList = doLookup(resolveLocally, serviceType, serviceProtocol, dnsName, Type.SRV);
-            return recordsList.toArray(new SRVRecord[recordsList.size()]);
-        } catch(ArrayStoreException arrayStoreException) {
-            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
-        }
+    public List<CERTRecord> getCertRecords(String dnsNameStr) throws DnsLookupException {
+        return this.getCertRecords(buildDnsName(dnsNameStr));
     }
 
     @Override
-    public SOARecord[] getSoaRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
-        try {
-            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.SOA);
-            return recordsList.toArray(new SOARecord[recordsList.size()]);
-        } catch(ArrayStoreException arrayStoreException) {
-            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
-        }
+    public List<CERTRecord> getCertRecords(Name dnsName) throws DnsLookupException {
+        return this.getRecords(CERTRecord.class, Type.CERT, dnsName);
     }
 
     @Override
-    public CNAMERecord[] getCNameRecords(boolean resolveLocally, String dnsName) throws DnsLookupException {
+    public List<CNAMERecord> getCnameRecords(String dnsNameStr) throws DnsLookupException {
+        return this.getCnameRecords(buildDnsName(dnsNameStr));
+    }
+
+    @Override
+    public List<CNAMERecord> getCnameRecords(Name dnsName) throws DnsLookupException {
+        return this.getRecords(CNAMERecord.class, Type.CNAME, dnsName);
+    }
+
+    @Override
+    public List<NSRecord> getNsRecords(String dnsNameStr) throws DnsLookupException {
+        return this.getNsRecords(buildDnsName(dnsNameStr));
+    }
+
+    @Override
+    public List<NSRecord> getNsRecords(Name dnsName) throws DnsLookupException {
+        return this.getRecords(NSRecord.class, Type.NS, dnsName);
+    }
+
+    @Override
+    public List<SOARecord> getSoaRecords(String dnsNameStr) throws DnsLookupException {
+        return this.getSoaRecords(buildDnsName(dnsNameStr));
+    }
+
+    @Override
+    public List<SOARecord> getSoaRecords(Name dnsName) throws DnsLookupException {
+        return this.getRecords(SOARecord.class, Type.SOA, dnsName);
+    }
+
+    @Override
+    public List<SRVRecord> getSrvRecords(DnsServiceType dnsServiceType, DnsServiceProtocol dnsServiceProtocol, Name dnsName) throws DnsLookupException {
+        return this.getSrvRecords(dnsServiceType, dnsServiceProtocol, dnsName.toString());
+    }
+
+    @Override
+    public List<SRVRecord> getSrvRecords(DnsServiceType dnsServiceType, DnsServiceProtocol dnsServiceProtocol, String dnsNameStr) throws DnsLookupException {
+        return this.getRecords(SRVRecord.class, Type.SRV, buildDnsName(dnsServiceType.toString(), dnsServiceProtocol.toString(), dnsNameStr));
+    }
+
+    private static Name buildDnsName(String ... dnsNamePartStrs) throws DnsLookupException {
+        Name dnsName = null, dnsNamePart;
+
         try {
-            List<Record> recordsList = doLookup(resolveLocally, null, null, dnsName, Type.CNAME);
-            return recordsList.toArray(new CNAMERecord[recordsList.size()]);
-        } catch(ArrayStoreException arrayStoreException) {
-            throw new DnsLookupException(CASTING_ERROR_MESSAGE, arrayStoreException);
+            for (String dnsNamePartStr : dnsNamePartStrs) {
+                dnsNamePart = Name.fromString(dnsNamePartStr);
+                dnsName = (dnsName != null) ? Name.concatenate(dnsName, dnsNamePart) : dnsNamePart;
+            }
+
+            return dnsName;
+        } catch (NameTooLongException | TextParseException e) {
+            throw new DnsLookupException(String.format("Invalid DNS name: %s", ToolUriUtils.joinDomains(dnsNamePartStrs)), e);
         }
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    private <T extends Record> List<T> getRecords(Class<T> dnsRecordClass, int dnsRecordType, Name dnsName) throws DnsLookupException {
+        Lookup dnsLookup = new Lookup(dnsName, dnsRecordType);
+
+        if (this.hasDnsCache()) {
+            dnsLookup.setCache(this.dnsCache);
+        }
+
+        if (this.hasDnsResolver()) {
+            dnsLookup.setResolver(this.dnsResolver);
+        }
+
+        Record[] dnsLookupResults = dnsLookup.run();
+        DnsLookupResultType dnsLookupResultType = DnsLookupResultType.findByResult(dnsLookup.getResult());
+
+        if (dnsLookupResultType != DnsLookupResultType.SUCCESSFUL) {
+            throw new DnsLookupException(String.format("DNS lookup (recordClass=%s, recordType=%s, name=%s) failed (result=%s): %s",
+                ToolClassUtils.getName(dnsRecordClass), Type.string(dnsRecordType), dnsName, dnsLookupResultType, dnsLookup.getErrorString()));
+        }
+
+        return ToolArrayUtils.asList((T[]) dnsLookupResults);
+    }
+
+    @Override
+    public boolean hasDnsCache() {
+        return this.dnsCache != null;
     }
 
     @Nullable
-    private List<Record> doLookup(boolean resolveLocally, ServiceType serviceType, ServiceProtocol serviceProtocol, String dnsName, int type)
-        throws DnsLookupException {
-        try {
-            String name = (null != serviceType) ? serviceType.getServiceType() + ToolUriUtils.DOMAIN_DELIM + serviceProtocol.getServiceProtocol()
-                + ToolUriUtils.DOMAIN_DELIM + dnsName : dnsName;
-            Lookup lookup = new Lookup(name, type);
-            if (resolveLocally) {
-                lookup.setResolver(new ExtendedResolver(this.dnsResolverHostsLocal.toArray(new Resolver[this.dnsResolverHostsLocal.size()])));
-            } else {
-                // there is some bug with external resolvers and SOA records...working around it
-                if(Type.SOA != type) {
-                    lookup.setResolver(new ExtendedResolver(this.dnsResolverHostsExternal.toArray(new Resolver[this.dnsResolverHostsExternal.size()])));
-                }
-            }
-            lookup.setCache(this.dnsCache);
-            return Arrays.asList(lookup.run());
-        } catch (TextParseException | UnknownHostException exception) {
-            throw new DnsLookupException(exception);
-        }
+    @Override
+    public Cache getDnsCache() {
+        return this.dnsCache;
     }
 
+    @Override
+    public void setDnsCache(@Nullable Cache dnsCache) {
+        this.dnsCache = dnsCache;
+    }
+
+    @Override
+    public boolean hasDnsResolver() {
+        return this.dnsResolver != null;
+    }
+
+    @Nullable
+    @Override
+    public Resolver getDnsResolver() {
+        return this.dnsResolver;
+    }
+
+    @Override
+    public void setDnsResolver(@Nullable Resolver dnsResolver) {
+        this.dnsResolver = dnsResolver;
+    }
 }

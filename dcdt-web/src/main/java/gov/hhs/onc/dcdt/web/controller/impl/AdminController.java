@@ -1,7 +1,8 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
 import gov.hhs.onc.dcdt.config.InstanceConfig;
-import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.config.InstanceConfigRegistry;
+import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.web.ToolWebException;
@@ -20,12 +21,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.validation.Valid;
-import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.support.AbstractRefreshableApplicationContext;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -40,15 +38,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller("adminController")
 @Scope("singleton")
-public class AdminController extends AbstractToolController implements ApplicationContextAware {
-    @Autowired(required = false)
-    private InstanceConfig instanceConfig;
-
-    private AbstractRefreshableApplicationContext appContext;
+public class AdminController extends AbstractToolController {
+    @Autowired
+    private InstanceConfigRegistry instanceConfigRegistry;
 
     @RequestMapping(value = { "/admin/instance/set" }, method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
-    public ResponseJsonWrapper<InstanceConfig> setInstanceConfiguration(@RequestBody @Valid RequestJsonWrapper<InstanceConfig> req, BindingResult bindingResult) {
+    public ResponseJsonWrapper<InstanceConfig> setInstanceConfig(@RequestBody @Valid RequestJsonWrapper<InstanceConfig> req, BindingResult bindingResult) {
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
 
         if (bindingResult.hasErrors()) {
@@ -87,16 +83,12 @@ public class AdminController extends AbstractToolController implements Applicati
             InstanceConfig reqInstanceConfig = ToolListUtils.getFirst(req.getItems());
 
             if (reqInstanceConfig != null) {
-                if (this.instanceConfig != null) {
-                    this.instanceConfig.setDirectory(reqInstanceConfig.getDirectory());
-                    this.instanceConfig.setDomain(reqInstanceConfig.getDomain());
-                } else {
-                    this.instanceConfig = reqInstanceConfig;
-                }
+                InstanceConfig instanceConfig = this.getInstanceConfigBean();
+                instanceConfig.setDomain(reqInstanceConfig.getDomain());
 
-                AdminBeanDefinitionRegistryPostProcessor.instanceConfig = this.instanceConfig;
+                this.instanceConfigRegistry.registerBean(instanceConfig);
 
-                this.appContext.refresh();
+                resp.getItems().add(this.getInstanceConfigBean());
             }
         }
 
@@ -105,30 +97,21 @@ public class AdminController extends AbstractToolController implements Applicati
 
     @RequestMapping(value = { "/admin/instance/rm" }, method = { RequestMethod.POST }, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
-    public ResponseJsonWrapper<InstanceConfig> removeInstanceConfiguration() {
+    public ResponseJsonWrapper<InstanceConfig> removeInstanceConfig() {
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
 
-        if (this.instanceConfig != null) {
-            AdminBeanDefinitionRegistryPostProcessor.instanceConfig = this.instanceConfig = null;
-        } else {
-            ErrorsJsonWrapper errors = new ErrorsJsonWrapperImpl();
-            errors.setGlobalErrors(ToolArrayUtils.asList((ErrorJsonWrapper) new ErrorJsonWrapperImpl("No instance configuration is set.")));
+        this.instanceConfigRegistry.removeBean(this.getInstanceConfigBean());
 
-            resp.setErrors(errors);
-            resp.setStatus(ResponseStatus.ERROR);
-        }
+        resp.getItems().add(this.getInstanceConfigBean());
 
         return resp;
     }
 
     @RequestMapping(value = { "/admin/instance" }, method = { RequestMethod.GET }, produces = { MediaType.APPLICATION_JSON_VALUE })
     @ResponseBody
-    public ResponseJsonWrapper<InstanceConfig> getInstanceConfiguration() {
+    public ResponseJsonWrapper<InstanceConfig> getInstanceConfig() {
         ResponseJsonWrapper<InstanceConfig> resp = new ResponseJsonWrapperImpl<>();
-
-        if (this.instanceConfig != null) {
-            resp.getItems().add(this.instanceConfig);
-        }
+        resp.getItems().add(this.getInstanceConfigBean());
 
         return resp;
     }
@@ -145,8 +128,7 @@ public class AdminController extends AbstractToolController implements Applicati
         return this.display(modelMap);
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
-        this.appContext = (AbstractRefreshableApplicationContext) appContext;
+    private InstanceConfig getInstanceConfigBean() {
+        return ToolBeanFactoryUtils.getBeanOfType((ListableBeanFactory) this.beanFactory, InstanceConfig.class);
     }
 }

@@ -8,10 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 
-public class AbstractToolBeanDefinitionRegistryPostProcessor extends AbstractToolBeanFactoryPostProcessor implements ToolBeanDefinitionRegistryPostProcessor {
-    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolBeanDefinitionRegistryPostProcessor.class);
+public abstract class AbstractToolBeanDefinitionRegistryPostProcessor extends AbstractToolBeanFactoryPostProcessor implements
+    ToolBeanDefinitionRegistryPostProcessor {
+    protected BeanDefinitionRegistry beanDefReg;
 
-    private BeanDefinitionRegistry beanDefReg;
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolBeanDefinitionRegistryPostProcessor.class);
 
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry beanDefReg) throws BeansException {

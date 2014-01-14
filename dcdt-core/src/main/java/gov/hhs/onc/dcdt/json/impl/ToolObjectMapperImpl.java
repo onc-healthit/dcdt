@@ -1,18 +1,20 @@
 package gov.hhs.onc.dcdt.json.impl;
 
+
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
+import com.fasterxml.jackson.databind.Module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import gov.hhs.onc.dcdt.json.ToolObjectMapper;
-import gov.hhs.onc.dcdt.json.ToolSubtypeResolver;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.Set;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.stereotype.Component;
@@ -83,10 +85,8 @@ public class ToolObjectMapperImpl extends ObjectMapper implements ToolObjectMapp
     private final static Class<JsonParserConfigFeature> JSON_PARSER_FEATURE_CLASS = JsonParserConfigFeature.class;
     private final static Class<JsonGeneratorConfigFeature> JSON_GEN_FEATURE_CLASS = JsonGeneratorConfigFeature.class;
 
-    @Autowired
-    private ToolSubtypeResolver subtypeResolver;
-
     private Map<ConfigFeature, Boolean> configFeatures = new HashMap<>();
+    private Set<Module> modules = new HashSet<>();
 
     public ToolObjectMapperImpl() {
         super();
@@ -123,8 +123,8 @@ public class ToolObjectMapperImpl extends ObjectMapper implements ToolObjectMapp
                 this.configure(JSON_GEN_FEATURE_CLASS.cast(configFeature).getJsonFeature(), configFeatureValue);
             }
         }
-
-        this.setSubtypeResolver(this.subtypeResolver.toSubtypeResolver());
+        
+        this.registerModules(this.modules);
     }
 
     @Override
@@ -135,5 +135,15 @@ public class ToolObjectMapperImpl extends ObjectMapper implements ToolObjectMapp
     @Override
     public void setConfigFeatures(Map<ConfigFeature, Boolean> configFeatures) {
         this.configFeatures.putAll(configFeatures);
+    }
+
+    @Override
+    public Set<Module> getModules() {
+        return this.modules;
+    }
+
+    @Override
+    public void setModules(Set<Module> modules) {
+        this.modules = modules;
     }
 }

@@ -53,15 +53,23 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
-    <logger name="org.apache" level="warn" additivity="false">
+    <logger name="org.apache" level="info" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
-    <logger name="org.hibernate" level="warn" additivity="false">
+    <logger name="org.hibernate" level="info" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
-    <logger name="org.springframework" level="warn" additivity="false">
+    <logger name="org.hibernate.SQL" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="org.springframework" level="info" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="warn" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
