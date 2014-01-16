@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <aop:aspectj-autoproxy/>
+    
+    <context:component-scan base-package="gov.hhs.onc.dcdt"/>
+    <context:spring-configured/>
+    
+    <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <beans:property name="converters">
+            <beans:set>
+                <beans:ref bean="dnsNameConv"/>
+                <beans:ref bean="inetAddrConv"/>
+                <beans:ref bean="jsonParserConfigFeatureConv"/>
+                <beans:ref bean="jsonGenConfigFeatureConv"/>
+                <beans:ref bean="pathConv"/>
+                <beans:ref bean="x500NameConv"/>
+            </beans:set>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="propSourcesPlaceholderConfigurerBase" class="gov.hhs.onc.dcdt.context.impl.ToolPropertySourcesPlaceholderConfigurer" abstract="true"
+        p:environmentOverride="true"
+        p:ignoreResourceNotFound="true"
+        p:localOverride="true">
+        <beans:property name="locations">
+            <beans:array>
+                <!--suppress SpringModelInspection -->
+                <beans:value>classpath*:META-INF/maven/*/*/module*.properties</beans:value>
+                <!--suppress SpringModelInspection -->
+                <beans:value>classpath*:maven/*/*/module*.properties</beans:value>
+                <beans:value>classpath*:META-INF/core/core.properties</beans:value>
+                <!--suppress SpringModelInspection -->
+                <beans:value>classpath*:core/core.properties</beans:value>
+                <beans:value>classpath*:META-INF/core/core-*.properties</beans:value>
+                <!--suppress SpringModelInspection -->
+                <beans:value>classpath*:core/core-*.properties</beans:value>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+    <beans:bean id="propSourcesPlaceholderConfigurer" parent="propSourcesPlaceholderConfigurerBase"/>
+    
+    <beans:bean id="toolMsgSource" class="gov.hhs.onc.dcdt.context.ToolMessageSource" abstract="true"/>
+    <beans:bean id="toolMsgSourceImpl" class="gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl" parent="toolMsgSource" abstract="true"
+        p:cacheSeconds="300"
+        p:defaultEncoding="UTF-8"
+        p:fallbackToSystemLocale="false"/>
+    
+    <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true">
+        <beans:property name="basenames">
+            <beans:array>
+                <beans:value>core/core-messages</beans:value>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+    <beans:bean id="messageSource" parent="messageSourceBase" primary="true"/>
+    
+    <beans:bean id="messageSourceValidationBase" parent="toolMsgSourceImpl" abstract="true">
+        <beans:property name="basenames">
+            <beans:array>
+                <beans:value>org/hibernate/validator/ValidationMessages</beans:value>
+                <beans:value>core/core-messages-validation</beans:value>
+            </beans:array>
+        </beans:property>
+        <beans:qualifier value="validation"/>
+    </beans:bean>
+    <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase"/>
+    
+    <beans:bean id="messageSourceValidationLocator" class="org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator"
+        c:messageSource-ref="messageSourceValidation"/>
+    
+    <beans:bean id="messageInterpolatorValidation" class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator"
+        c:userResourceBundleLocator-ref="messageSourceValidationLocator"/>
+    
+    <beans:bean id="toolValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"
+        p:messageInterpolator-ref="messageInterpolatorValidation"/>
+    
+    <beans:bean id="toolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
+        p:daemon="true"/>
+    
+    <beans:bean id="setSysProps" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"
+        p:targetObject="#{ systemProperties }"
+        p:targetMethod="putAll">
+        <beans:property name="arguments">
+            <util:properties/>
+        </beans:property>
+    </beans:bean>
+</beans:beans>

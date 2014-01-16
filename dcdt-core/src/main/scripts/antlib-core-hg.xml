@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant">
+    
+    <macrodef name="properties" description="Sets variables to the Mercurial information (summary, log commands + paths) components for a working copy path.">
+        <attribute name="path"/>
+        <attribute name="pathBase" default="@{path}/.."/>
+        <attribute name="prefix" default="project."/>
+        <sequential>
+            <current:test path="@{path}" prefix="@{prefix}"/>
+            <current:summary path="@{path}" prefix="@{prefix}"/>
+            <current:log path="@{path}" rev="${@{prefix}hg.rev}" prefix="@{prefix}"/>
+            <current:paths path="@{pathBase}" prefix="@{prefix}"/>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="log" description="Sets variables to the Mercurial log components for a working copy path.">
+        <attribute name="path" default="${project.basedir}"/>
+        <attribute name="rev" default="tip"/>
+        <attribute name="prefix" default="project."/>
+        <sequential>
+            <if>
+                <ispropertytrue property="@{prefix}hg"/>
+                <then>
+                    <current:cmd cmd="log" path="@{path}" prefix="@{prefix}">
+                        <arg value="-r"/>
+                        <arg value="@{rev}"/>
+                        <arg value="--template"/>
+                        <arg value="author={author}\nauthor.email={author|email}\nauthor.person={author|person}\ndate={date|isodatesec}\nnode={node}"/>
+                    </current:cmd>
+                    <loadproperties prefix="@{prefix}hg.">
+                        <string>${@{prefix}hg.log.out}</string>
+                    </loadproperties>
+                </then>
+                <else>
+                    <loadproperties prefix="@{prefix}hg.">
+                        <string>author=${n}author.email=${n}author.person=${n}date=${n}node=</string>
+                    </loadproperties>
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="summary" description="Sets variables to the Mercurial summary components for a working copy path.">
+        <attribute name="path"/>
+        <attribute name="prefix" default="project."/>
+        <sequential>
+            <if>
+                <ispropertytrue property="@{prefix}hg"/>
+                <then>
+                    <current:cmd cmd="sum" path="@{path}" prefix="@{prefix}">
+                        <redirector>
+                            <outputfilterchain>
+                                <linecontainsregexp>
+                                    <regexp pattern="^(parent:\s+\d+:[\da-f]+\s*[^$]*|branch:\s+[^$]+)$"/>
+                                </linecontainsregexp>
+                                <tokenfilter>
+                                    <linetokenizer/>
+                                    <replaceregex pattern="^parent:\s+(\d+):([\da-f]+)\s*([^$]*)$"
+                                        replace="rev=\1${n}node.short=\2${n}tag=\3"/>
+                                    <replaceregex pattern="^branch:\s+([^$]+)$" replace="branch=\1"/>
+                                </tokenfilter>
+                            </outputfilterchain>
+                        </redirector>
+                    </current:cmd>
+                    <loadproperties prefix="@{prefix}hg.">
+                        <string>${@{prefix}hg.sum.out}</string>
+                    </loadproperties>
+                    <if>
+                        <dcdt:isempty string="${@{prefix}hg.tag}"/>
+                        <then>
+                            <var name="@{prefix}hg.tag" value="tip"/>
+                        </then>
+                    </if>
+                </then>
+                <else>
+                    <loadproperties prefix="@{prefix}hg.">
+                        <string>rev=${n}node.short=${n}tag=${n}branch=</string>
+                    </loadproperties>
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="test" description="Tests whether the Mercurial command line interface (CLI) can be executed.">
+        <attribute name="path"/>
+        <attribute name="prefix" default="project."/>
+        <sequential>
+            <current:cmd cmd="version" path="@{path}" prefix="@{prefix}"/>
+            <if>
+                <equals arg1="${@{prefix}hg.version.result}" arg2="0"/>
+                <then>
+                    <var name="@{prefix}hg" value="true"/>
+                </then>
+                <else>
+                    <var name="@{prefix}hg" value="false"/>
+                    <dcdt:warn>Mercurial command line interface test execution failed - most project Mercurial information will be unavailable.</dcdt:warn>
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="cmd" description="Executes a Mercurial command for a working copy path.">
+        <attribute name="cmd"/>
+        <attribute name="path"/>
+        <attribute name="prefix" default="project."/>
+        <attribute name="silent" default="false"/>
+        <element name="cmd-elements" optional="true" implicit="true"/>
+        <sequential>
+            <dcdt:unset name="@{prefix}hg.@{cmd}.out"/>
+            <dcdt:unset name="@{prefix}hg.@{cmd}.err"/>
+            <dcdt:unset name="@{prefix}hg.@{cmd}.result"/>
+            <exec executable="hg" outputproperty="@{prefix}hg.@{cmd}.out" errorproperty="@{prefix}hg.@{cmd}.err" resultproperty="@{prefix}hg.@{cmd}.result"
+                failifexecutionfails="false" searchpath="true" taskname="hg-@{cmd}">
+                <arg value="@{cmd}"/>
+                <arg value="--cwd"/>
+                <arg value="@{path}"/>
+                <cmd-elements/>
+            </exec>
+            <property name="@{prefix}hg.@{cmd}.err" value=""/>
+            <property name="@{prefix}hg.@{cmd}.result" value="-1"/>
+            <if>
+                <and>
+                    <equals arg1="@{silent}" arg2="false"/>
+                    <isgreaterthan arg1="${@{prefix}hg.@{cmd}.result}" arg2="0"/>
+                </and>
+                <then>
+                    <dcdt:warn>Mercurial command line interface execution failed (cmd=@{cmd}, exitCode=${@{prefix}hg.@{cmd}.result}):${n}${@{prefix}hg.@{cmd}.err}</dcdt:warn>
+                </then>
+            </if>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="paths" description="Sets variables to the Mercurial path components for a working copy path.">
+        <attribute name="path"/>
+        <attribute name="prefix" default="project."/>
+        <sequential>
+            <current:find-dir path="@{path}" property="@{prefix}hg.dir"/>
+            <var name="@{prefix}hg.hgrc.file" value="${@{prefix}hg.dir}/hgrc"/>
+            <if>
+                <not><available file="${@{prefix}hg.hgrc.file}" type="file"/></not>
+                <then>
+                    <fail>Mercurial working copy (path=@{path}) .hg directory does not contain a hgrc file.</fail>
+                </then>
+            </if>
+            <dcdt:read-file file="${@{prefix}hg.hgrc.file}" property="@{prefix}hg.paths">
+                <filterchain>
+                    <linecontainsregexp>
+                        <regexp pattern="^\s*default\s*=\s*[^$]+\s*$"/>
+                    </linecontainsregexp>
+                    <tokenfilter>
+                        <replaceregex pattern="^\s*(default)\s*=\s*([^$]+)\s*$" replace="\1=\2"/>
+                    </tokenfilter>
+                </filterchain>
+            </dcdt:read-file>
+            <loadproperties prefix="@{prefix}hg.path.">
+                <string>${@{prefix}hg.paths}</string>
+            </loadproperties>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="find-dir" description="Sets a variable to the Mercurial directory for a working copy path.">
+        <attribute name="path"/>
+        <attribute name="property"/>
+        <attribute name="failOnMissing" default="true"/>
+        <sequential>
+            <dcdt:unset name="@{property}"/>
+            <var name="@{property}.path"/>
+            <for list="@{path}" param="path.part" delimiter="/">
+                <sequential>
+                    <if>
+                        <not><isset property="@{property}"/></not>
+                        <then>
+                            <var name="@{property}.path" value="${@{property}.path}/@{path.part}"/>
+                            <var name="@{property}.path.hg.dir" value="${@{property}.path}/.hg"/>
+                            <if>
+                                <available file="${@{property}.path.hg.dir}" type="dir"/>
+                                <then>
+                                    <var name="@{property}" value="${@{property}.path.hg.dir}"/>
+                                </then>
+                            </if>
+                        </then>
+                    </if>
+                </sequential>
+            </for>
+            
+            <if>
+                <and>
+                    <not><isset property="@{property}"/></not>
+                    <equals arg1="@{failOnMissing}" arg2="true"/>
+                </and>
+                <then>
+                    <fail>Unable to find Mercurial directory for path: @{path}</fail>
+                </then>
+            </if>
+        </sequential>
+    </macrodef>
+</antlib>

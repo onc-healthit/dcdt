@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    version="3.0"
+    xmlns="http://java.sun.com/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3.0.xsd">
+    
+    <display-name>Direct Certificate Discovery Tool (DCDT) Webapp</display-name>
+    
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <!--suppress XmlPathReference -->
+        <param-value>
+            /WEB-INF/spring/spring-web-security.xml
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>logbackConfigLocation</param-name>
+        <param-value>
+            classpath:logback/logback-web.xml
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>spring.profiles.active</param-name>
+        <param-value>
+            toolServiceEmbedded
+            toolDnsServiceEmbedded
+            toolLdapServiceEmbedded
+            toolMailServiceEmbedded
+        </param-value>
+    </context-param>
+    <context-param>
+        <param-name>webAppRootKey</param-name>
+        <param-value>dcdt.web.webapp.dir</param-value>
+    </context-param>
+    
+    <servlet>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <!--suppress XmlPathReference -->
+            <param-value>
+                classpath*:META-INF/spring/spring-core.xml
+                /WEB-INF/spring/spring-core*.xml
+                classpath*:META-INF/spring/spring-service*.xml
+                /WEB-INF/spring/spring-service*.xml
+                /WEB-INF/spring/spring-web.xml
+                /WEB-INF/spring/spring-web-mvc.xml
+                /WEB-INF/spring/spring-web-version.xml
+            </param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+    
+    <listener>
+        <listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
+    
+    <filter>
+        <filter-name>urlRewriteFilter</filter-name>
+        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+        <init-param>
+            <param-name>confPath</param-name>
+            <param-value>/WEB-INF/urlrewrite/urlrewrite-web.xml</param-value>
+        </init-param>
+        <init-param>
+            <param-name>confReloadCheckInterval</param-name>
+            <param-value>30</param-value>
+        </init-param>
+        <init-param>
+            <param-name>statusPath</param-name>
+            <param-value>/urlrewrite/status</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>urlRewriteFilter</filter-name>
+        <servlet-name>dispatcherServlet</servlet-name>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+    
+    <filter>
+        <filter-name>characterEncodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>characterEncodingFilter</filter-name>
+        <servlet-name>dispatcherServlet</servlet-name>
+    </filter-mapping>
+    
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <servlet-name>dispatcherServlet</servlet-name>
+    </filter-mapping>
+    
+    <filter>
+        <filter-name>jtidyFilter</filter-name>
+        <filter-class>org.w3c.tidy.servlet.filter.JTidyFilter</filter-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>
+                char-encoding: UTF-8;
+                force-output: true;
+                indent: auto;
+                indent-spaces: 4;
+                join-styles: false;
+                literal-attributes: true;
+                output-encoding: UTF-8;
+                trim-empty-elements: false;
+                wrap: 160;
+            </param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>jtidyFilter</filter-name>
+        <url-pattern>/</url-pattern>
+        <url-pattern>/admin</url-pattern>
+        <url-pattern>/admin/login</url-pattern>
+        <url-pattern>/error</url-pattern>
+        <url-pattern>/version</url-pattern>
+        <url-pattern>/home</url-pattern>
+        <url-pattern>/hosting</url-pattern>
+        <url-pattern>/discovery</url-pattern>
+    </filter-mapping>
+</web-app>

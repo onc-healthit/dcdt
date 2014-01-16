@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suppressions PUBLIC "-//Puppy Crawl//DTD Suppressions 1.0//EN" "http://www.puppycrawl.com/dtds/suppressions_1_0.dtd">
+<suppressions>
+    <suppress files="\.properties$" checks="NewlineAtEndOfFileCheck"/>
+    <suppress files="\.properties$" checks="RegexpSinglelineCheck"/>
+    
+    <suppress files="\.java$" checks="AvoidInlineConditionalsCheck"/>
+    <suppress files="\.java$" checks="DesignForExtensionCheck"/>
+    <suppress files="\.java$" checks="EmptyBlockCheck"/>
+    <suppress files="\.java$" checks="FinalParametersCheck"/>
+    <suppress files="\.java$" checks="HiddenFieldCheck"/>
+    <suppress files="\.java$" checks="InnerAssignmentCheck"/>
+    <suppress files="\.java$" checks="InterfaceIsTypeCheck"/>
+    <suppress files="\.java$" checks="Javadoc.+Check"/>
+    <suppress files="\.java$" checks="LeftCurlyCheck"/>
+    <suppress files="\.java$" checks="LineLengthCheck"/>
+    <suppress files="\.java$" checks="MagicNumberCheck"/>
+    <suppress files="\.java$" checks="ModifierOrderCheck"/>
+    <suppress files="\.java$" checks="NewlineAtEndOfFileCheck"/>
+    <suppress files="\.java$" checks="NoWhitespaceAfterCheck"/>
+    <suppress files="\.java$" checks="RedundantModifierCheck"/>
+    <suppress files="\.java$" checks="RedundantThrowsCheck"/>
+    <suppress files="\.java$" checks="RegexpSinglelineCheck"/>
+    <suppress files="\.java$" checks="StaticVariableNameCheck"/>
+    <suppress files="\.java$" checks="TodoCommentCheck"/>
+    <suppress files="\.java$" checks="UnusedImportsCheck"/>
+    <suppress files="\.java$" checks="VisibilityModifierCheck"/>
+    <suppress files="\.java$" checks="WhitespaceAroundCheck"/>
+</suppressions>

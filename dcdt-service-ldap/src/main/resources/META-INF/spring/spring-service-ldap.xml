@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <beans:bean id="ldapServerDefault" class="gov.hhs.onc.dcdt.service.ldap.conf.LdapServerConfig">
+        <beans:property name="transports">
+            <beans:array>
+                <beans:bean class="gov.hhs.onc.dcdt.service.ldap.conf.TransportConfig"
+                    p:address="${dcdt.ldap.server.1.host}"
+                    p:port="${dcdt.ldap.server.1.port}"/>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="dirServiceDefault" class="gov.hhs.onc.dcdt.service.ldap.conf.DirectoryServiceConfig"
+        p:instanceDir="var/apacheds/default">
+        <beans:property name="ldapServers">
+            <beans:array>
+                <beans:ref bean="ldapServerDefault"/>
+            </beans:array>
+        </beans:property>
+        <beans:property name="ldifFiles">
+            <beans:array>
+                <beans:value>conf/service/ldap/service-mail.ldif</beans:value>
+            </beans:array>
+        </beans:property>
+        <beans:property name="partitions">
+            <beans:array>
+                <beans:bean class="gov.hhs.onc.dcdt.service.ldap.conf.PartitionConfig"
+                    p:name="dcdt-mail"
+                    p:suffix="dc=mail,dc=direct-test,dc=com"/>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+</beans:beans>
