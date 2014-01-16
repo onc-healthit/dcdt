@@ -69,8 +69,8 @@ public class AdminController extends AbstractToolController {
                 List<ErrorJsonWrapper> fieldErrors;
 
                 for (FieldError fieldErrorObj : fieldErrorObjs) {
-                    fieldErrors = fieldErrorsMap.containsKey(fieldName = fieldErrorObj.getField())
-                        ? fieldErrorsMap.get(fieldName) : new ArrayList<ErrorJsonWrapper>();
+                    fieldErrors =
+                        fieldErrorsMap.containsKey(fieldName = fieldErrorObj.getField()) ? fieldErrorsMap.get(fieldName) : new ArrayList<ErrorJsonWrapper>();
                     fieldErrors.add(new ErrorJsonWrapperImpl(ToolMessageUtils.getMessage(this.msgSource, fieldErrorObj)));
                     fieldErrorsMap.put(fieldName, fieldErrors);
                 }
@@ -85,7 +85,8 @@ public class AdminController extends AbstractToolController {
 
             if (reqInstanceConfig != null) {
                 InstanceConfig instanceConfig = this.getInstanceConfigBean();
-                instanceConfig.setDomain(reqInstanceConfig.getDomain());
+                instanceConfig.setDomainName(reqInstanceConfig.getDomainName());
+                instanceConfig.setIpAddress(reqInstanceConfig.getIpAddress());
 
                 this.instanceConfigRegistry.registerBeans(instanceConfig);
 

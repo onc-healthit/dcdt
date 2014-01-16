@@ -15,17 +15,22 @@ var HOSTING_TESTCASES = {
         "${hostingTestcase.name}": {
             "name": "${hostingTestcase.name}",
             "nameDisplay": "${hostingTestcase.nameDisplay}",
-            "binding": "${hostingTestcase.binding}",
-            "location": "${hostingTestcase.location}",
+            "bindingType": "${hostingTestcase.bindingType}",
+            "locationType": "${hostingTestcase.locationType}",
+            <c:set var="hostingTestcaseDesc" value="${hostingTestcase.description}"/>
             "description": {
-                <c:set var="hostingTestcaseDesc" value="${hostingTestcase.description}"/>
                 "text": "${hostingTestcaseDesc.text}",
                 "instructions": "${hostingTestcaseDesc.instructions}",
-                "rtm": "${hostingTestcaseDesc.rtm}",
+                "rtmSections": [
+                    <c:forEach var="hostingTestcaseDescRtmSection" varStatus="hostingTestcaseDescRtmSectionsStatus"
+                        items="${hostingTestcaseDesc.rtmSections}">
+                        "${hostingTestcaseDescRtmSection}"<c:if test="${not hostingTestcaseDescRtmSectionsStatus.last}">,</c:if>
+                    </c:forEach>
+                ],
                 "specifications": [
-                    <c:forEach var="hostingTestcaseSpec" varStatus="hostingTestcaseSpecsStatus"
+                    <c:forEach var="hostingTestcaseDescSpec" varStatus="hostingTestcaseDescSpecsStatus"
                         items="${hostingTestcaseDesc.specifications}">
-                        "${hostingTestcaseSpec}"<c:if test="${not hostingTestcaseSpecsStatus.last}">,</c:if>
+                        "${hostingTestcaseDescSpec}"<c:if test="${not hostingTestcaseDescSpecsStatus.last}">,</c:if>
                     </c:forEach>
                 ]
             }

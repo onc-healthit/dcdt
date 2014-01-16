@@ -20,7 +20,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBeanDao<T> {
+public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractToolBean implements ToolBeanDao<T> {
     @Autowired
     protected SessionFactory sessionFactory;
 
@@ -115,6 +115,54 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
     @Override
     public T getBean(Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
         return this.getBean(this.getCheckedSession(), beanColumnPairs);
+    }
+
+    @Override
+    @SafeVarargs
+    @SuppressWarnings({ "varargs" })
+    public final List<T> loadBeans(T ... beans) throws ToolBeanDataAccessException {
+        return this.loadBeans(ToolArrayUtils.asList(beans));
+    }
+
+    @Override
+    public List<T> loadBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
+        Session session = this.getCheckedSession();
+        List<T> beansLoaded = new ArrayList<>();
+
+        for (T bean : beans) {
+            beansLoaded.add(this.loadBean(session, bean));
+        }
+
+        return beansLoaded;
+    }
+
+    @Override
+    public T loadBean(T bean) throws ToolBeanDataAccessException {
+        return this.loadBean(this.getCheckedSession(), bean);
+    }
+
+    @Override
+    @SafeVarargs
+    @SuppressWarnings({ "varargs" })
+    public final List<T> refreshBeans(T ... beans) throws ToolBeanDataAccessException {
+        return this.refreshBeans(ToolArrayUtils.asList(beans));
+    }
+
+    @Override
+    public List<T> refreshBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
+        Session session = this.getCheckedSession();
+        List<T> beansRefreshed = new ArrayList<>();
+
+        for (T bean : beans) {
+            beansRefreshed.add(this.refreshBean(session, bean));
+        }
+
+        return beansRefreshed;
+    }
+
+    @Override
+    public T refreshBean(T bean) throws ToolBeanDataAccessException {
+        return this.refreshBean(this.getCheckedSession(), bean);
     }
 
     @Override
@@ -268,6 +316,31 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
         return null;
     }
 
+    @SuppressWarnings({ "unchecked" })
+    protected T loadBean(Session session, T bean) throws ToolBeanDataAccessException {
+        Serializable beanId = bean.getBeanId();
+
+        if (this.containsBean(session, beanId)) {
+            T beanPersistent;
+
+            if ((beanPersistent = (T) session.get(bean.getClass(), beanId)) != null) {
+                session.evict(beanPersistent);
+            }
+
+            session.load(bean, beanId);
+        }
+
+        return bean;
+    }
+
+    protected T refreshBean(Session session, T bean) throws ToolBeanDataAccessException {
+        if (this.containsBean(session, bean.getBeanId())) {
+            session.refresh(bean);
+        }
+
+        return bean;
+    }
+
     protected T setBean(Session session, T bean) throws ToolBeanDataAccessException {
         session.saveOrUpdate(bean);
 
@@ -292,8 +365,17 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> implements ToolBea
         return (bean != null) ? this.removeBean(session, bean) : null;
     }
 
+    @SuppressWarnings({ "unchecked" })
     protected T removeBean(Session session, T bean) throws ToolBeanDataAccessException {
-        session.delete(bean);
+        if (session.contains(bean)) {
+            session.delete(bean);
+        } else {
+            T beanPersistent;
+
+            if ((beanPersistent = (T) session.get(bean.getClass(), bean.getBeanId())) != null) {
+                session.delete(beanPersistent);
+            }
+        }
 
         return bean;
     }

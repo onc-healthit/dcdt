@@ -1,11 +1,10 @@
 create table instance_configs (
-    domain varchar(253) not null primary key
+    domain_name varchar(253) not null primary key,
+    ip_address varchar(15) not null
 );
 
 create table discovery_testcases (
-    instance_config_domain varchar(253) references instance_configs(domain),
-    name varchar(100) not null primary key,
-    mail_addr varchar(507) not null
+    name varchar(100) not null primary key
 );
 
 create table discovery_testcase_creds (

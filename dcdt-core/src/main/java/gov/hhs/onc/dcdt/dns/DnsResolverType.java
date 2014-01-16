@@ -5,7 +5,7 @@ public enum DnsResolverType {
 
     private String type;
 
-    DnsResolverType(String type) {
+    private DnsResolverType(String type) {
         this.type = type;
     }
 

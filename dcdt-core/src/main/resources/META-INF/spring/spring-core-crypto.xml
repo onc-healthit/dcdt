@@ -17,21 +17,37 @@
     
     <beans:bean id="cryptoDesc" class="gov.hhs.onc.dcdt.crypto.CryptographyDescriptor" abstract="true"/>
     
+    <!--====================================================================================================
+    = KEYS
+    =====================================================================================================-->
     <beans:bean id="keyConfig" class="gov.hhs.onc.dcdt.crypto.keys.KeyConfig" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="keyConfigImpl" class="gov.hhs.onc.dcdt.crypto.keys.impl.KeyConfigImpl" parent="keyConfig" abstract="true"
         p:keyAlgorithm="RSA"
         p:keySize="1024"/>
     
-    <beans:bean id="caKeyConfigImpl" parent="keyConfigImpl" abstract="true">
+    <beans:bean id="keyConfigCa" parent="keyConfigImpl" abstract="true">
         <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
     </beans:bean>
     
+    <!--====================================================================================================
+    = CERTIFICATE NAMES
+    =====================================================================================================-->
     <beans:bean id="certName" class="gov.hhs.onc.dcdt.crypto.certs.CertificateName" abstract="true"/>
     <beans:bean id="certNameImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateNameImpl" parent="certName" abstract="true"/>
     
+    <!--====================================================================================================
+    = CERTIFICATE VALID INTERVALS
+    =====================================================================================================-->
     <beans:bean id="certValidInterval" class="gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval" abstract="true"/>
     <beans:bean id="certValidIntervalImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateValidIntervalImpl" parent="certValidInterval" abstract="true"/>
     
+    <beans:bean id="certValidIntervalExpired" parent="certValidIntervalImpl"
+        c:notBefore="#{ T(org.apache.commons.lang3.time.DateUtils).addYears(new java.util.Date(), -1) }"
+        c:intervalYears="0"/>
+    
+    <!--====================================================================================================
+    = CERTIFICATES
+    =====================================================================================================-->
     <beans:bean id="certConfig" class="gov.hhs.onc.dcdt.crypto.certs.CertificateConfig" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="certConfigImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateConfigImpl" parent="certConfig" abstract="true"
         p:certificateType="X509"
@@ -41,15 +57,18 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="caCertConfigImpl" parent="certConfigImpl" abstract="true"
+    <beans:bean id="certConfigCa" parent="certConfigImpl" abstract="true"
         p:certificateAuthority="true">
         <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
     </beans:bean>
     
+    <!--====================================================================================================
+    = CREDENTIALS
+    =====================================================================================================-->
     <beans:bean id="credConfig" class="gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="credConfigImpl" class="gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialConfigImpl" parent="credConfig" abstract="true"/>
     
-    <beans:bean id="caCredConfigImpl" parent="credConfigImpl" abstract="true">
+    <beans:bean id="credConfigCa" parent="credConfigImpl" abstract="true">
         <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
     </beans:bean>
 </beans:beans>

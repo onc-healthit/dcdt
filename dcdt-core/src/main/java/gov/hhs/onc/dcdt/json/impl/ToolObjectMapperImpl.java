@@ -1,8 +1,5 @@
 package gov.hhs.onc.dcdt.json.impl;
 
-
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonParser.Feature;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.Module;
@@ -10,80 +7,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import gov.hhs.onc.dcdt.json.ToolObjectMapper;
+import gov.hhs.onc.dcdt.json.impl.JsonConfigConfiguration.JsonGeneratorConfigFeature;
+import gov.hhs.onc.dcdt.json.impl.JsonConfigConfiguration.JsonParserConfigFeature;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import org.springframework.context.annotation.Scope;
-import org.springframework.core.convert.converter.Converter;
-import org.springframework.stereotype.Component;
 
 @SuppressWarnings({ "serial" })
 public class ToolObjectMapperImpl extends ObjectMapper implements ToolObjectMapper {
-    private static interface JsonConfigFeature<T> extends ConfigFeature {
-        public T getJsonFeature();
-    }
-
-    private static interface JsonParserConfigFeature extends JsonConfigFeature<Feature> {
-    }
-
-    private static interface JsonGeneratorConfigFeature extends JsonConfigFeature<JsonGenerator.Feature> {
-    }
-
-    @Component("jsonParserConfigFeatureConv")
-    @Scope("singleton")
-    private static class JsonParserConfigFeatureConverter implements Converter<Feature, JsonParserConfigFeature> {
-        @Override
-        public JsonParserConfigFeature convert(final Feature jsonParserFeature) {
-            return new JsonParserConfigFeature() {
-                @Override
-                public boolean enabledByDefault() {
-                    return jsonParserFeature.enabledByDefault();
-                }
-
-                @Override
-                public int getMask() {
-                    return jsonParserFeature.getMask();
-                }
-
-                @Override
-                public Feature getJsonFeature() {
-                    return jsonParserFeature;
-                }
-            };
-        }
-    }
-
-    @Component("jsonGenConfigFeatureConv")
-    @Scope("singleton")
-    private static class JsonGeneratorConfigFeatureConverter implements Converter<JsonGenerator.Feature, JsonGeneratorConfigFeature> {
-        @Override
-        public JsonGeneratorConfigFeature convert(final JsonGenerator.Feature jsonGenFeature) {
-            return new JsonGeneratorConfigFeature() {
-                @Override
-                public boolean enabledByDefault() {
-                    return jsonGenFeature.enabledByDefault();
-                }
-
-                @Override
-                public int getMask() {
-                    return jsonGenFeature.getMask();
-                }
-
-                @Override
-                public JsonGenerator.Feature getJsonFeature() {
-                    return jsonGenFeature;
-                }
-            };
-        }
-    }
-
-    private final static Class<MapperFeature> MAPPER_FEATURE_CLASS = MapperFeature.class;
-    private final static Class<DeserializationFeature> DESERIALIZATION_FEATURE_CLASS = DeserializationFeature.class;
-    private final static Class<SerializationFeature> SERIALIZATION_FEATURE_CLASS = SerializationFeature.class;
-    private final static Class<JsonParserConfigFeature> JSON_PARSER_FEATURE_CLASS = JsonParserConfigFeature.class;
-    private final static Class<JsonGeneratorConfigFeature> JSON_GEN_FEATURE_CLASS = JsonGeneratorConfigFeature.class;
+    private final static Class<MapperFeature> CLASS_MAPPER_FEATURE = MapperFeature.class;
+    private final static Class<DeserializationFeature> CLASS_DESERIALIZATION_FEATURE = DeserializationFeature.class;
+    private final static Class<SerializationFeature> CLASS_SERIALIZATION_FEATURE = SerializationFeature.class;
+    private final static Class<JsonParserConfigFeature> CLASS_JSON_PARSER_FEATURE = JsonParserConfigFeature.class;
+    private final static Class<JsonGeneratorConfigFeature> CLASS_JSON_GEN_FEATURE = JsonGeneratorConfigFeature.class;
 
     private Map<ConfigFeature, Boolean> configFeatures = new HashMap<>();
     private Set<Module> modules = new HashSet<>();
@@ -111,19 +49,19 @@ public class ToolObjectMapperImpl extends ObjectMapper implements ToolObjectMapp
             configFeatureClass = configFeature.getClass();
             configFeatureValue = this.configFeatures.get(configFeature);
 
-            if (ToolClassUtils.isAssignable(MAPPER_FEATURE_CLASS, configFeatureClass)) {
-                this.configure(MAPPER_FEATURE_CLASS.cast(configFeature), configFeatureValue);
-            } else if (ToolClassUtils.isAssignable(DESERIALIZATION_FEATURE_CLASS, configFeatureClass)) {
-                this.configure(DESERIALIZATION_FEATURE_CLASS.cast(configFeature), configFeatureValue);
-            } else if (ToolClassUtils.isAssignable(SERIALIZATION_FEATURE_CLASS, configFeatureClass)) {
-                this.configure(SERIALIZATION_FEATURE_CLASS.cast(configFeature), configFeatureValue);
-            } else if (ToolClassUtils.isAssignable(JSON_PARSER_FEATURE_CLASS, configFeatureClass)) {
-                this.configure(JSON_PARSER_FEATURE_CLASS.cast(configFeature).getJsonFeature(), configFeatureValue);
-            } else if (ToolClassUtils.isAssignable(JSON_GEN_FEATURE_CLASS, configFeatureClass)) {
-                this.configure(JSON_GEN_FEATURE_CLASS.cast(configFeature).getJsonFeature(), configFeatureValue);
+            if (ToolClassUtils.isAssignable(CLASS_MAPPER_FEATURE, configFeatureClass)) {
+                this.configure(CLASS_MAPPER_FEATURE.cast(configFeature), configFeatureValue);
+            } else if (ToolClassUtils.isAssignable(CLASS_DESERIALIZATION_FEATURE, configFeatureClass)) {
+                this.configure(CLASS_DESERIALIZATION_FEATURE.cast(configFeature), configFeatureValue);
+            } else if (ToolClassUtils.isAssignable(CLASS_SERIALIZATION_FEATURE, configFeatureClass)) {
+                this.configure(CLASS_SERIALIZATION_FEATURE.cast(configFeature), configFeatureValue);
+            } else if (ToolClassUtils.isAssignable(CLASS_JSON_PARSER_FEATURE, configFeatureClass)) {
+                this.configure(CLASS_JSON_PARSER_FEATURE.cast(configFeature).getJsonFeature(), configFeatureValue);
+            } else if (ToolClassUtils.isAssignable(CLASS_JSON_GEN_FEATURE, configFeatureClass)) {
+                this.configure(CLASS_JSON_GEN_FEATURE.cast(configFeature).getJsonFeature(), configFeatureValue);
             }
         }
-        
+
         this.registerModules(this.modules);
     }
 
@@ -134,7 +72,7 @@ public class ToolObjectMapperImpl extends ObjectMapper implements ToolObjectMapp
 
     @Override
     public void setConfigFeatures(Map<ConfigFeature, Boolean> configFeatures) {
-        this.configFeatures.putAll(configFeatures);
+        this.configFeatures = configFeatures;
     }
 
     @Override

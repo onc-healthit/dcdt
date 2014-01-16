@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 @Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.utils.all", "dcdt.test.unit.utils.msgs" })
 public class ToolMessageUtilsUnitTests extends ToolTestNgUnitTests {
-    private final static String TEST_MSG_CODE = "dcdt.test.unit.utils.msgs.msg2";
+    private final static String TEST_MSG_CODE = "dcdt.test.unit.utils.msgs.msg.2";
     private final static String TEST_MSG = "msg1value,msg2value";
 
     @Test

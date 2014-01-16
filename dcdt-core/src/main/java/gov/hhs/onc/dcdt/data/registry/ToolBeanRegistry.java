@@ -13,14 +13,10 @@ public interface ToolBeanRegistry<T extends ToolBean, U extends ToolBeanDao<T>, 
 
     public void registerBeans(Iterable<T> beans) throws ToolBeanRegistryException;
 
-    public void registerBean(T bean) throws ToolBeanRegistryException;
-
     public void removeAllBeans() throws ToolBeanRegistryException;
 
     @SuppressWarnings({ "unchecked" })
     public void removeBeans(T ... beans) throws ToolBeanRegistryException;
 
     public void removeBeans(Iterable<T> beans) throws ToolBeanRegistryException;
-
-    public void removeBean(T bean) throws ToolBeanRegistryException;
 }

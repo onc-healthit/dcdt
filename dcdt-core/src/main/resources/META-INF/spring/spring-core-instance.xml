@@ -21,6 +21,9 @@
         http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <!--====================================================================================================
+    = INSTANCE CONFIG PERSISTENCE
+    =====================================================================================================-->
     <beans:bean parent="setSysProps">
         <beans:property name="arguments">
             <util:properties>
@@ -43,10 +46,20 @@
         </beans:property>
     </beans:bean>
     
-    <jdbc:initialize-database data-source="instanceConfigDataSource" ignore-failures="ALL">
-        <!--suppress SpringModelInspection -->
-        <jdbc:script location="classpath*:core/db/db-instance-init.sql"/>
-    </jdbc:initialize-database>
+    <beans:bean id="instanceConfigDataSourceInit" class="org.springframework.jdbc.datasource.init.DataSourceInitializer"
+        p:dataSource-ref="instanceConfigDataSource">
+        <beans:property name="databasePopulator">
+            <beans:bean class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator"
+                p:continueOnError="true"
+                p:ignoreFailedDrops="true">
+                <beans:property name="scripts">
+                    <util:list>
+                        <beans:value>classpath*:core/db/db-instance-init.sql</beans:value>
+                    </util:list>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceConfigSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
         p:dataSource-ref="instanceConfigDataSource"
@@ -71,5 +84,8 @@
     
     <tx:annotation-driven transaction-manager="instanceConfigTransactionManager"/>
     
+    <!--====================================================================================================
+    = INSTANCE CONFIG
+    =====================================================================================================-->
     <beans:bean id="instanceConfig" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigFactoryBean"/>
 </beans:beans>

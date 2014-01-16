@@ -191,7 +191,7 @@ div.input-group-sm div.form-group.form-group-buttons span.btn-group {
 
 div.input-group-sm div.form-group.form-group-addons div.input-group-addon {
     display: none;
-    width: 675px;
+    width: 700px;
     text-align: left;
     font-size: 11px;
     white-space: normal;
@@ -208,7 +208,7 @@ div.input-group-sm div.form-group.form-group-addons div.input-group-addon:last-c
 }
 
 div.input-group-sm div.form-group span.form-cell.form-cell-label {
-    min-width: 125px;
+    min-width: 150px;
     padding-right: 10px;
     text-align: right;
 }

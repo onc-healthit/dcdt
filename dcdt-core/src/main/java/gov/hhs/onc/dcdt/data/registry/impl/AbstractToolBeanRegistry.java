@@ -58,11 +58,6 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
     }
 
     @Override
-    public void registerBean(T bean) throws ToolBeanRegistryException {
-        this.getBeanService().setBean(bean);
-    }
-
-    @Override
     public void removeAllBeans() throws ToolBeanRegistryException {
         this.removeBeans(this.getBeans());
     }
@@ -90,8 +85,11 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
         this.appContext.refresh();
     }
 
-    @Override
-    public void removeBean(T bean) throws ToolBeanRegistryException {
+    protected void registerBean(T bean) throws ToolBeanRegistryException {
+        this.getBeanService().setBean(bean);
+    }
+
+    protected void removeBean(T bean) throws ToolBeanRegistryException {
         this.getBeanService().removeBean(bean);
     }
 

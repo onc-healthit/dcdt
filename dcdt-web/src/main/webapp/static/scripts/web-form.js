@@ -39,6 +39,30 @@
                 
                 return errorsAddons;
             },
+            "formReady": function () {
+                var elem = $(this);
+                elem.dcdt.form.formInputs().removeAttr("disabled");
+                
+                var formButtons = elem.dcdt.form.formButtons();
+                formButtons.removeAttr("disabled");
+                formButtons.find("span.glyphicon").removeClass("fa").removeClass("fa-cog").removeClass("fa-spin");
+                
+                return elem;
+            },
+            "formWait": function (formButton) {
+                var elem = $(this);
+                elem.dcdt.form.formInputs().attr("disabled", "disabled");
+                elem.dcdt.form.formButtons().attr("disabled", "disabled");
+                
+                formButton.find("span.glyphicon").addClass("fa").addClass("fa-cog").addClass("fa-spin");
+                
+                return elem;
+            },
+            "formButtons": function (selector) {
+                var formButtons = $(this).find("button.btn");
+                
+                return selector ? formButtons.filter(selector) : formButtons;
+            },
             "errorsAddonsFields": function (fieldName) {
                 var errorsAddonsFields = $(this).dcdt.form.errorsAddons(":not(.input-group-addon-errors-global)");
                 
@@ -54,6 +78,9 @@
                 var errorsAddons = $(this).dcdt.form.formGroupsAddons().find("div.has-error div.input-group-addon-errors");
                 
                 return selector ? errorsAddons.filter(selector) : errorsAddons;
+            },
+            "formInputs": function (fieldName) {
+                return $(this).dcdt.form.formGroupsFields(fieldName).find("input.form-control");
             },
             "formGroupsFields": function (fieldName) {
                 var formGroupsFields = $(this).dcdt.form.formGroups(":not(.form-group-addons)");

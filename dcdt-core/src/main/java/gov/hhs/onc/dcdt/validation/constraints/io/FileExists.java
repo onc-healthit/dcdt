@@ -34,7 +34,7 @@ public @interface FileExists {
 
     boolean followLinks() default true;
 
-    String message() default "{dcdt.validation.constraints.io.FileExists.msg}";
+    String message() default "{dcdt.io.validation.constraints.FileExists.msg}";
 
     Class<?>[] groups() default {};
 

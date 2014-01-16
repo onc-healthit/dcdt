@@ -24,48 +24,50 @@ public class CertificateGeneratorUnitTests extends ToolTestNgUnitTests {
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private CertificateGenerator certGen;
 
-    @Resource(name = "testCa1CredConfig")
+    @Resource(name = "testCredConfigCa1")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private CredentialConfig testCa1CredConfig;
+    private CredentialConfig testCredConfigCa1;
 
-    @Resource(name = "testAddr1CredConfig")
+    @Resource(name = "testCredConfigAddr1")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private CredentialConfig testAddr1CredConfig;
+    private CredentialConfig testCredConfigAddr1;
 
-    @Resource(name = "testDomain1CredConfig")
+    @Resource(name = "testCredConfigDomain1")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private CredentialConfig testDomain1CredConfig;
+    private CredentialConfig testCredConfigDomain1;
 
-    private CredentialInfo testCa1CredInfo, testAddr1CredInfo, testDomain1CredInfo;
+    private CredentialInfo testCredInfoCa1;
 
     @Test(dependsOnMethods = { "testGenerateCaCertificate" })
     public void testGenerateDomainBoundCertificate() throws CryptographyException {
-        KeyInfo testDomain1KeyPairInfo = this.keyGen.generateKeys(this.testDomain1CredConfig.getKeyDescriptor());
+        KeyInfo testDomain1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigDomain1.getKeyDescriptor());
 
-        this.testDomain1CredInfo = new CredentialInfoImpl(testDomain1KeyPairInfo, this.certGen.generateCertificate(this.testCa1CredInfo,
-            testDomain1KeyPairInfo, this.testDomain1CredConfig.getCertificateDescriptor()));
+        CredentialInfo testDomain1CredInfo =
+            new CredentialInfoImpl(testDomain1KeyPairInfo, this.certGen.generateCertificate(this.testCredInfoCa1, testDomain1KeyPairInfo,
+                this.testCredConfigDomain1.getCertificateDescriptor()));
 
-        assertCredentialDescriptorsMatch(this.testDomain1CredConfig, this.testDomain1CredInfo);
+        assertCredentialDescriptorsMatch(this.testCredConfigDomain1, testDomain1CredInfo);
     }
 
     @Test(dependsOnMethods = { "testGenerateCaCertificate" })
     public void testGenerateAddressBoundCertificate() throws CryptographyException {
-        KeyInfo testAddr1KeyPairInfo = this.keyGen.generateKeys(this.testAddr1CredConfig.getKeyDescriptor());
+        KeyInfo testAddr1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigAddr1.getKeyDescriptor());
 
-        this.testAddr1CredInfo = new CredentialInfoImpl(testAddr1KeyPairInfo, this.certGen.generateCertificate(this.testCa1CredInfo, testAddr1KeyPairInfo,
-            this.testAddr1CredConfig.getCertificateDescriptor()));
+        CredentialInfo testAddr1CredInfo =
+            new CredentialInfoImpl(testAddr1KeyPairInfo, this.certGen.generateCertificate(this.testCredInfoCa1, testAddr1KeyPairInfo,
+                this.testCredConfigAddr1.getCertificateDescriptor()));
 
-        assertCredentialDescriptorsMatch(this.testAddr1CredConfig, this.testAddr1CredInfo);
+        assertCredentialDescriptorsMatch(this.testCredConfigAddr1, testAddr1CredInfo);
     }
 
     @Test
     public void testGenerateCaCertificate() throws CryptographyException {
-        KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCa1CredConfig.getKeyDescriptor());
+        KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor());
 
-        this.testCa1CredInfo = new CredentialInfoImpl(testCa1KeyPairInfo, this.certGen.generateCertificate(testCa1KeyPairInfo,
-            this.testCa1CredConfig.getCertificateDescriptor()));
+        this.testCredInfoCa1 =
+            new CredentialInfoImpl(testCa1KeyPairInfo, this.certGen.generateCertificate(testCa1KeyPairInfo, this.testCredConfigCa1.getCertificateDescriptor()));
 
-        assertCredentialDescriptorsMatch(this.testCa1CredConfig, this.testCa1CredInfo);
+        assertCredentialDescriptorsMatch(this.testCredConfigCa1, this.testCredInfoCa1);
     }
 
     private static void assertCredentialDescriptorsMatch(CredentialConfig testCredConfig, CredentialInfo testCredInfo) {

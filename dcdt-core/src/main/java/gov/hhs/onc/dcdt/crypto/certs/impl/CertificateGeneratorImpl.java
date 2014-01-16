@@ -12,7 +12,6 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyGenerator;
-import gov.hhs.onc.dcdt.crypto.keys.KeyException;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -49,7 +48,8 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
         BindingResult certConfigBindingResult = this.validateConfig(certConfig, GenerateConstraintGroup.class);
 
         if (certConfigBindingResult.hasErrors()) {
-            throw new KeyException(String.format("Invalid certificate configuration (class=%s): %s", ToolClassUtils.getName(certConfig),
+            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format("Invalid certificate configuration (class=%s): %s",
+                ToolClassUtils.getName(certConfig),
                 ToolStringUtils.joinDelimit(ToolValidationUtils.mapErrorMessages(this.msgSourceValidation, certConfigBindingResult).entrySet(), ", ")));
         }
 
@@ -61,8 +61,8 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
         try {
             SignatureAlgorithm certSigAlg = certConfig.getSignatureAlgorithm();
             X509CertificateHolder certHolder = certBuilder.build(new BcRSAContentSignerBuilder(certSigAlg.getId(), certSigAlg.getDigestId())
-                .build(PrivateKeyFactory.createKey(certConfig.isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo
-                    .getKeyDescriptor().getPrivateKeyInfo())));
+                .build(PrivateKeyFactory.createKey(certConfig.isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo.getKeyDescriptor()
+                    .getPrivateKeyInfo())));
 
             return new CertificateInfoImpl((X509Certificate) CertificateUtils.getCertificateFactory(certType).generateCertificate(
                 new ByteArrayInputStream(certHolder.getEncoded())));

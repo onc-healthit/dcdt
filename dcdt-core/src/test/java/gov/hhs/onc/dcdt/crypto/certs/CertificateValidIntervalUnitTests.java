@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 @Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all",
     "dcdt.test.unit.crypto.certs.all", "dcdt.test.unit.crypto.certs.valid" })
 public class CertificateValidIntervalUnitTests extends ToolTestNgUnitTests {
-    @Resource(name = "testCa1CertConfig")
+    @Resource(name = "testCertConfigCa1")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private CertificateConfig testCertConfig;
 

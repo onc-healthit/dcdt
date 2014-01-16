@@ -1,17 +1,10 @@
 package gov.hhs.onc.dcdt.testcases;
 
-import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.beans.ToolDescriptionBean;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public interface ToolTestcaseDescription extends ToolBean {
-    public boolean hasText();
-
-    @Nullable
-    public String getText();
-
-    public void setText(@Nullable String text);
-
+public interface ToolTestcaseDescription extends ToolDescriptionBean {
     public boolean hasInstructions();
 
     @Nullable
@@ -19,12 +12,12 @@ public interface ToolTestcaseDescription extends ToolBean {
 
     public void setInstructions(@Nullable String instructions);
 
-    public boolean hasRtm();
+    public boolean hasRtmSections();
 
     @Nullable
-    public String getRtm();
+    public List<String> getRtmSections();
 
-    public void setRtm(@Nullable String rtm);
+    public void setRtmSections(@Nullable List<String> rtmSections);
 
     public boolean hasSpecifications();
 

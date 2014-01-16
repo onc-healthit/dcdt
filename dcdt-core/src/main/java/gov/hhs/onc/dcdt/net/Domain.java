@@ -1,6 +1,6 @@
-package gov.hhs.onc.dcdt.validation.constraints;
+package gov.hhs.onc.dcdt.net;
 
-import gov.hhs.onc.dcdt.validation.constraints.impl.DomainConstraintValidator;
+import gov.hhs.onc.dcdt.validation.constraints.NotBlank;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -14,7 +14,7 @@ import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.ConstraintComposition;
 import org.hibernate.validator.constraints.Length;
 
-@Constraint(validatedBy = { DomainConstraintValidator.class })
+@Constraint(validatedBy = {})
 @ConstraintComposition
 @Documented
 @Inherited
@@ -33,7 +33,7 @@ public @interface Domain {
         Domain[] value();
     }
 
-    String message() default "{dcdt.validation.constraints.Domain.msg}";
+    String message() default "{dcdt.net.validation.constraints.Domain.msg}";
 
     Class<?>[] groups() default {};
 

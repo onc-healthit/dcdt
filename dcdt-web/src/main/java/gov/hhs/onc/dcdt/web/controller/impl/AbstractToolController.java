@@ -15,6 +15,7 @@ import java.lang.reflect.Method;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.Size;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,7 +35,8 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.UrlBasedViewResolver;
 
 public abstract class AbstractToolController extends AbstractToolBean implements ApplicationContextAware, ToolController {
-    protected final static String MODEL_ATTR_KEY_ERROR = "error";
+    public final static String SERVLET_REQ_ATTR_KEY_ERROR = "error";
+
     protected final static String MODEL_ATTR_KEY_GOOGLE_ANALYTICS = "googleAnalytics";
     protected final static String MODEL_ATTR_KEY_USER = "user";
     protected final static String MODEL_ATTR_KEY_VERSION = "version";
@@ -55,10 +57,10 @@ public abstract class AbstractToolController extends AbstractToolBean implements
     @ExceptionHandler({ Throwable.class })
     @RequestViews({ @RequestView(value = "/errors", forward = true),
         @RequestView(value = "/errors-json", contentTypes = { MediaType.APPLICATION_JSON_VALUE }, forward = true) })
-    public ModelAndView displayErrors(Throwable error, HttpServletRequest httpServletReq) throws ToolWebException {
-        httpServletReq.setAttribute(MODEL_ATTR_KEY_ERROR, error);
+    public ModelAndView displayErrors(Throwable error, HttpServletRequest httpServletReq, HttpServletResponse httpServletResp) throws ToolWebException {
+        httpServletReq.setAttribute(SERVLET_REQ_ATTR_KEY_ERROR, error);
 
-        return this.display(null, httpServletReq.getContentType());
+        return this.display(null, httpServletResp.getContentType());
     }
 
     protected ModelAndView display() throws ToolWebException {

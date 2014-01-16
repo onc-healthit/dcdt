@@ -7,12 +7,12 @@ import javax.validation.constraints.NotNull;
 
 @ValidKeyConfig(groups = { GenerateConstraintGroup.class })
 public interface KeyConfig extends KeyDescriptor, CryptographyConfig {
-    @NotNull(message = "{dcdt.validation.constraints.crypto.keys.key.alg.NotNull.msg}", groups = { GenerateConstraintGroup.class })
+    @NotNull(message = "{dcdt.crypto.keys.validation.constraints.key.alg.NotNull.msg}", groups = { GenerateConstraintGroup.class })
     @Nullable
     @Override
     public KeyAlgorithm getKeyAlgorithm();
 
-    @NotNull(message = "{dcdt.validation.constraints.crypto.keys.key.size.NotNull.msg}", groups = { GenerateConstraintGroup.class })
+    @NotNull(message = "{dcdt.crypto.keys.validation.constraints.key.size.NotNull.msg}", groups = { GenerateConstraintGroup.class })
     @Nullable
     @Override
     public Integer getKeySize();

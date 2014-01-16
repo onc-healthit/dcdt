@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.ScriptAssert;
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @ScriptAssert(lang = "javascript", script = "(_this.keySize == null) || (_this.keySize >= _this.keyAlgorithm.keySizeMin)",
-    message = "{dcdt.validation.constraints.crypto.keys.key.size.ScriptAssert.msg}")
+    message = "{dcdt.crypto.keys.validation.constraints.key.size.ScriptAssert.msg}")
 @Target({ ElementType.TYPE, ElementType.ANNOTATION_TYPE })
 public @interface ValidKeyConfig {
     @Documented
@@ -30,7 +30,7 @@ public @interface ValidKeyConfig {
         ValidKeyConfig[] value();
     }
 
-    String message() default "{dcdt.validation.constraints.crypto.keys.key.ValidKeyConfig.msg}";
+    String message() default "{dcdt.crypto.keys.validation.constraints.key.ValidKeyConfig.msg}";
 
     Class<?>[] groups() default {};
 

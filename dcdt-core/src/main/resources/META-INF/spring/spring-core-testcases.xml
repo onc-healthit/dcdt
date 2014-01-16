@@ -20,11 +20,6 @@
     <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseResult" abstract="true"/>
     
     <!--====================================================================================================
-    = TESTCASE STRINGS
-    =====================================================================================================-->
-    <dcdt:normalized-string id="toolTestcaseConstantStrNone">None</dcdt:normalized-string>
-    
-    <!--====================================================================================================
     = TESTCASE SPECIFICATIONS
     =====================================================================================================-->
     <util:list id="toolTestcaseSpecsDns">

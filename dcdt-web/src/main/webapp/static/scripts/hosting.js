@@ -5,7 +5,7 @@ $(document).ready(function () {
         var hostingTestcaseName = $("#hostingTestcases option:selected").val();
         if(hostingTestcaseName != ""){
             var hostingTestcase = HOSTING_TESTCASES[hostingTestcaseName];
-            displayHostingTestcaseDescription(hostingTestcase.description);
+            displayHostingTestcaseDescription(hostingTestcase);
         }
         else{
             clearHostingTestcaseDescriptionContents();
@@ -18,13 +18,15 @@ $(document).ready(function () {
     });
 });
 
-function displayHostingTestcaseDescription(hostingTestcaseDesc){
-    var desc = $("#hostingTestcaseDescription");
+function displayHostingTestcaseDescription(hostingTestcase){
+    var hostingTestcaseDesc = hostingTestcase.description, desc = $("#hostingTestcaseDescription");
     desc.empty();
+    
     appendTestcaseInfo(desc, "Description", hostingTestcaseDesc.text, false, true);
     appendTestcaseInfo(desc, "Instructions", hostingTestcaseDesc.instructions, false, true);
-    appendTestcaseInfo(desc, "RTM", hostingTestcaseDesc.rtm, false, true);
+    appendTestcaseInfo(desc, "RTM Sections", hostingTestcaseDesc.rtmSections.join(", "), false, true);
     appendTestcaseInfo(desc, "Underlying Specification Reference", hostingTestcaseDesc.specifications, true, false);
+    
     desc.append("<br/><br/>");
 }
 

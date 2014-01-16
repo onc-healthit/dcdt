@@ -1,33 +1,33 @@
 package gov.hhs.onc.dcdt.testcases.hosting.impl;
 
+import gov.hhs.onc.dcdt.testcases.BindingType;
+import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseBinding;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseDescription;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseLocation;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 
 public class HostingTestcaseImpl extends AbstractToolTestcase<HostingTestcaseDescription, HostingTestcaseResult> implements HostingTestcase {
-    private HostingTestcaseBinding binding;
-    private HostingTestcaseLocation location;
+    private BindingType bindingType;
+    private LocationType locType;
 
     @Override
-    public HostingTestcaseBinding getBinding() {
-        return this.binding;
+    public BindingType getBindingType() {
+        return this.bindingType;
     }
 
     @Override
-    public void setBinding(HostingTestcaseBinding binding) {
-        this.binding = binding;
+    public void setBindingType(BindingType bindingType) {
+        this.bindingType = bindingType;
     }
 
     @Override
-    public HostingTestcaseLocation getLocation() {
-        return this.location;
+    public LocationType getLocationType() {
+        return this.locType;
     }
 
     @Override
-    public void setLocation(HostingTestcaseLocation location) {
-        this.location = location;
+    public void setLocationType(LocationType locType) {
+        this.locType = locType;
     }
 }

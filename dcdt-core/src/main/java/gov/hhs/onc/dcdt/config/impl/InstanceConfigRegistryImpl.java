@@ -28,8 +28,8 @@ public class InstanceConfigRegistryImpl extends AbstractToolBeanRegistry<Instanc
 
     @Override
     public void removeBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
-        super.removeBeans(beans);
-
         ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseRegistry.class).removeAllBeans();
+
+        super.removeBeans(beans);
     }
 }

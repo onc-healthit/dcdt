@@ -1,8 +1,6 @@
 package gov.hhs.onc.dcdt.dns;
 
-import gov.hhs.onc.dcdt.ToolException;
-
-public class DnsLookupException extends ToolException {
+public class DnsLookupException extends DnsException {
     private final static long serialVersionUID = 0L;
 
     public DnsLookupException() {

@@ -1,7 +1,10 @@
 package gov.hhs.onc.dcdt.utils;
 
+import gov.hhs.onc.dcdt.dns.DnsNameException;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.xbill.DNS.Name;
 
 public abstract class ToolMailAddressUtils {
     private final static String PART_DELIM = "@";
@@ -10,7 +13,11 @@ public abstract class ToolMailAddressUtils {
         return ToolArrayUtils.getFirst(getParts(mailAddr));
     }
 
-    public static String getDomain(String mailAddr) {
+    public static Name getDomainName(String mailAddr) throws DnsNameException {
+        return ToolDnsNameUtils.fromString(getDomainNameString(mailAddr));
+    }
+
+    public static String getDomainNameString(String mailAddr) {
         return ToolArrayUtils.getLast(getParts(mailAddr));
     }
 

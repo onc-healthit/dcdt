@@ -1,16 +1,15 @@
 package gov.hhs.onc.dcdt.testcases.impl;
 
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolDescriptionBean;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class AbstractToolTestcaseDescription extends AbstractToolBean implements ToolTestcaseDescription {
-    protected String text;
+public abstract class AbstractToolTestcaseDescription extends AbstractToolDescriptionBean implements ToolTestcaseDescription {
     protected String instructions;
-    protected String rtm;
+    protected List<String> rtmSections;
     protected List<String> specifications;
 
     @Override
@@ -30,19 +29,19 @@ public abstract class AbstractToolTestcaseDescription extends AbstractToolBean i
     }
 
     @Override
-    public boolean hasRtm() {
-        return !StringUtils.isBlank(this.rtm);
+    public boolean hasRtmSections() {
+        return !CollectionUtils.isEmpty(this.rtmSections);
     }
 
     @Nullable
     @Override
-    public String getRtm() {
-        return this.rtm;
+    public List<String> getRtmSections() {
+        return this.rtmSections;
     }
 
     @Override
-    public void setRtm(String rtm) {
-        this.rtm = rtm;
+    public void setRtmSections(@Nullable List<String> rtmSections) {
+        this.rtmSections = rtmSections;
     }
 
     @Override
@@ -59,21 +58,5 @@ public abstract class AbstractToolTestcaseDescription extends AbstractToolBean i
     @Override
     public void setSpecifications(@Nullable List<String> specifications) {
         this.specifications = specifications;
-    }
-
-    @Override
-    public boolean hasText() {
-        return !StringUtils.isBlank(this.text);
-    }
-
-    @Nullable
-    @Override
-    public String getText() {
-        return this.text;
-    }
-
-    @Override
-    public void setText(@Nullable String text) {
-        this.text = text;
     }
 }

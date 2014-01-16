@@ -35,7 +35,7 @@ public @interface FileType {
 
     boolean followLinks() default true;
 
-    String message() default "{dcdt.validation.constraints.io.FileType.msg}";
+    String message() default "{dcdt.io.validation.constraints.FileType.msg}";
 
     Class<?>[] groups() default {};
 

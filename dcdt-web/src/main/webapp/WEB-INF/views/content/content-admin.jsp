@@ -24,13 +24,13 @@
             <div>
                 <span class="form-cell form-cell-label">
                     <tiles:insertDefinition name="component-glyph-label">
-                        <tiles:putAttribute name="attrs">for="admin-instance-config-domain"</tiles:putAttribute>
+                        <tiles:putAttribute name="attrs">for="admin-instance-config-domain-name"</tiles:putAttribute>
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-link"/>
-                        <tiles:putAttribute name="content" value="Domain"/>
+                        <tiles:putAttribute name="content" value="Domain Name"/>
                     </tiles:insertDefinition>:
                 </span>
                 <span class="form-cell form-cell-control">
-                    <input id="admin-instance-config-domain" class="input-sm form-control" name="domain" type="text"/>
+                    <input id="admin-instance-config-domain-name" class="input-sm form-control" name="domainName" type="text"/>
                 </span>
             </div>
         </div>
@@ -40,7 +40,32 @@
                     <tiles:insertDefinition name="component-glyph">
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
-                    <strong>Invalid instance configuration domain</strong>:
+                    <strong>Invalid instance configuration domain name.</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="attrs">for="admin-instance-config-ip-address"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-globe"/>
+                        <tiles:putAttribute name="content" value="IP Address"/>
+                    </tiles:insertDefinition>:
+                </span>
+                <span class="form-cell form-cell-control">
+                    <input id="admin-instance-config-ip-address" class="input-sm form-control" name="ipAddress" type="text"/>
+                </span>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon input-group-addon-errors">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Invalid instance configuration IP address.</strong>:
                     <ul></ul>
                 </div>
             </div>

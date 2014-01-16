@@ -5,41 +5,28 @@ import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.ToolConverter;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolMethodUtils;
 import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class AbstractToolConverter extends AbstractToolBean implements ToolConverter {
+    protected final static TypeDescriptor TYPE_DESC_STR = TypeDescriptor.valueOf(String.class);
+    protected final static TypeDescriptor TYPE_DESC_STR_ARR = TypeDescriptor.array(TYPE_DESC_STR);
+
     protected Set<ConvertiblePair> convertPairs;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolConverter.class);
-
+    @Nullable
     @Override
     public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
         ConvertiblePair convertPair = this.findConvertibleTypes(sourceType, targetType);
-        Object target = this.convertInternal(source, sourceType, targetType, convertPair);
 
-        if (target != null) {
-            LOGGER.trace(String.format(
-                "Successfully converted (class=%s) source object (sourceType=%s, sourceClass=%s) to target object (targetType=%s, targetClass=%s).",
-                ToolClassUtils.getName(this), ToolClassUtils.getName(sourceType), ToolClassUtils.getName(convertPair.getSourceType()),
-                ToolClassUtils.getName(targetType), ToolClassUtils.getName(convertPair.getTargetType())));
-        } else {
-            LOGGER.trace(String.format(
-                "Unable to convert (class=%s) source object (sourceType=%s, sourceClass=%s) to target object (targetType=%s, targetClass=%s).",
-                ToolClassUtils.getName(this), ToolClassUtils.getName(sourceType), ToolClassUtils.getName(convertPair.getSourceType()),
-                ToolClassUtils.getName(targetType), ToolClassUtils.getName(convertPair.getTargetType())));
-        }
-
-        return target;
+        return this.convertInternal(source, sourceType, targetType, convertPair);
     }
 
     @Override
@@ -57,10 +44,12 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
         this.initializeConvertibleTypesInternal();
     }
 
+    @Nullable
     protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) {
         return null;
     }
 
+    @Nullable
     protected ConvertiblePair findConvertibleTypes(TypeDescriptor sourceType, TypeDescriptor targetType) {
         for (ConvertiblePair convertPair : this.convertPairs) {
             if (sourceType.isAssignableTo(TypeDescriptor.valueOf(convertPair.getSourceType()))

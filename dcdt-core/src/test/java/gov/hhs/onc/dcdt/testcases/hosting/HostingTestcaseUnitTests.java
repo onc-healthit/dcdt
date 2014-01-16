@@ -1,7 +1,11 @@
 package gov.hhs.onc.dcdt.testcases.hosting;
 
 import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.testcases.BindingType;
+import gov.hhs.onc.dcdt.testcases.LocationType;
 import javax.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -18,12 +22,18 @@ public class HostingTestcaseUnitTests extends ToolTestNgUnitTests {
     @Test
     public void testHostingTestcaseConfiguration() {
         Assert.assertNotNull(this.hostingTestcase1.getName());
-        Assert.assertEquals(this.hostingTestcase1.getBinding(), HostingTestcaseBinding.ADDRESS);
-        Assert.assertEquals(this.hostingTestcase1.getLocation(), HostingTestcaseLocation.DNS);
-        Assert.assertEquals(this.hostingTestcase1.getDescription().getSpecifications().size(), 2);
+        Assert.assertSame(this.hostingTestcase1.getBindingType(), BindingType.ADDRESS);
+        Assert.assertSame(this.hostingTestcase1.getLocationType(), LocationType.DNS);
+
+        HostingTestcaseDescription hostingTestcase1Desc = this.hostingTestcase1.getDescription();
+        Assert.assertNotNull(hostingTestcase1Desc);
+        Assert.assertEquals(CollectionUtils.size(hostingTestcase1Desc.getSpecifications()), 2);
 
         this.hostingTestcase1.setResult(this.hostingTestcaseResultPassedAnyBound);
         Assert.assertTrue(this.hostingTestcaseResultPassedAnyBound.isPassed());
-        Assert.assertTrue(this.hostingTestcase1.getResult().getMessage().contains("This test case passed."));
+
+        HostingTestcaseResult hostingTestcase1Result = this.hostingTestcase1.getResult();
+        Assert.assertNotNull(hostingTestcase1Result);
+        Assert.assertTrue(StringUtils.contains(hostingTestcase1Result.getMessage(), "This test case passed."));
     }
 }

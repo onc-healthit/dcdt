@@ -4,41 +4,63 @@ import gov.hhs.onc.dcdt.config.impl.InstanceConfigImpl;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.utils.ToolInetAddressUtils;
+import java.net.InetAddress;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.xbill.DNS.Name;
 
 @Test(groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.config.all", "dcdt.test.func.config.instance" })
 public class InstanceConfigRegistryFunctionalTests extends ToolTestNgFunctionalTests {
-    @Value("${dcdt.test.instance.domain.base}")
-    private String testInstanceConfigDomainBase;
+    @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private InstanceConfigRegistry instanceConfigReg;
 
-    @Value("${dcdt.test.instance.domain.rm}")
-    private String testInstanceConfigDomainRm;
+    @Value("${dcdt.test.instance.domain.name}")
+    private Name testInstanceConfigDomainName;
 
-    @Test(dependsOnMethods = { "testRemoveBean" })
-    public void testRegisterBean() throws ToolBeanRegistryException {
+    @Value("${dcdt.test.instance.domain.rm.name}")
+    private Name testInstanceConfigDomainRmName;
+
+    @Value("${dcdt.test.instance.ip.addr}")
+    private String testInstanceConfigIpAddrStr;
+
+    private InetAddress testInstanceConfigIpAddr;
+
+    @Test(dependsOnMethods = { "testRemoveBeans" })
+    public void testRegisterBeans() throws ToolBeanRegistryException {
+        InstanceConfig instanceConfigRegister = this.getInstanceConfig();
+        instanceConfigRegister.setDomainName(this.testInstanceConfigDomainName);
+        instanceConfigRegister.setIpAddress(this.testInstanceConfigIpAddr);
+
+        this.instanceConfigReg.registerBeans(instanceConfigRegister);
+
         InstanceConfig instanceConfig = this.getInstanceConfig();
-        instanceConfig.setDomain(this.testInstanceConfigDomainBase);
-
-        this.getInstanceConfigRegistry().registerBeans(instanceConfig);
-
-        Assert.assertEquals(this.getInstanceConfig().getDomain(), this.testInstanceConfigDomainBase, "Instance configuration domains are not equal.");
+        Assert.assertEquals(instanceConfig.getDomainName(), this.testInstanceConfigDomainName, "Instance configuration domain names are not equal.");
+        Assert.assertEquals(instanceConfig.getIpAddress(), this.testInstanceConfigIpAddr, "Instance configuration IP addresses are not equal.");
     }
 
     @Test
-    public void testRemoveBean() throws ToolBeanRegistryException {
-        InstanceConfig instanceConfig = new InstanceConfigImpl();
-        instanceConfig.setDomain(this.testInstanceConfigDomainRm);
+    public void testRemoveBeans() throws ToolBeanRegistryException {
+        InstanceConfig instanceConfigRm = new InstanceConfigImpl();
+        instanceConfigRm.setDomainName(this.testInstanceConfigDomainRmName);
+        instanceConfigRm.setIpAddress(this.testInstanceConfigIpAddr);
 
-        this.getInstanceConfigService().setBean(instanceConfig);
-        this.getInstanceConfigRegistry().removeBeans(instanceConfig);
+        this.getInstanceConfigService().setBean(instanceConfigRm);
+        this.instanceConfigReg.removeBeans(instanceConfigRm);
 
-        Assert.assertNotEquals(this.getInstanceConfig().getDomain(), this.testInstanceConfigDomainRm, "Instance configuration domains are equal.");
+        InstanceConfig instanceConfig = this.getInstanceConfig();
+        Assert.assertNotEquals(instanceConfig.getDomainName(), this.testInstanceConfigDomainRmName, "Instance configuration domain names are equal.");
+        Assert.assertNotEquals(instanceConfig.getIpAddress(), this.testInstanceConfigIpAddr, "Instance configuration IP addresses are equal.");
     }
 
-    private InstanceConfigRegistry getInstanceConfigRegistry() {
-        return ToolBeanFactoryUtils.getBeanOfType(this.applicationContext.getBeanFactory(), InstanceConfigRegistry.class);
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        super.afterPropertiesSet();
+
+        this.testInstanceConfigIpAddr = ToolInetAddressUtils.getByAddress(null, this.testInstanceConfigIpAddrStr);
     }
 
     private InstanceConfigService getInstanceConfigService() {

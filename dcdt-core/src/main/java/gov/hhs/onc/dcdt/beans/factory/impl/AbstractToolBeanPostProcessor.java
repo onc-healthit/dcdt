@@ -2,14 +2,15 @@ package gov.hhs.onc.dcdt.beans.factory.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.ToolBeanPostProcessor;
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolBean implements ToolBeanPostProcessor<T> {
+public abstract class AbstractToolBeanPostProcessor<T> implements ToolBeanPostProcessor<T> {
+    protected ApplicationContext appContext;
     protected Class<T> beanClass;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolBeanPostProcessor.class);
@@ -42,17 +43,12 @@ public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolBean 
 
     @Override
     public boolean canPostProcessBeforeInitialization(T bean, String beanName) {
-        return true;
+        return false;
     }
 
     @Override
     public boolean canPostProcessAfterInitialization(T bean, String beanName) {
-        return true;
-    }
-
-    @Override
-    public int getOrder() {
-        return LOWEST_PRECEDENCE;
+        return false;
     }
 
     protected T postProcessBeforeInitializationInternal(T bean, String beanName) throws ToolBeanException {
@@ -67,5 +63,15 @@ public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolBean 
             ToolClassUtils.getName(bean)));
 
         return bean;
+    }
+
+    @Override
+    public int getOrder() {
+        return LOWEST_PRECEDENCE;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
+        this.appContext = appContext;
     }
 }

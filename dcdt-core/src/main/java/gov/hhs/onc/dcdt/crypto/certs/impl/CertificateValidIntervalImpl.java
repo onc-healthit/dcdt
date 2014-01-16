@@ -15,7 +15,11 @@ public class CertificateValidIntervalImpl implements CertificateValidInterval {
     }
 
     public CertificateValidIntervalImpl(Date notBefore) {
-        this(notBefore, DateUtils.addYears(notBefore, INTERVAL_YEARS_DEFAULT));
+        this(notBefore, INTERVAL_YEARS_DEFAULT);
+    }
+
+    public CertificateValidIntervalImpl(Date notBefore, int intervalYears) {
+        this(notBefore, DateUtils.addYears(notBefore, intervalYears));
     }
 
     public CertificateValidIntervalImpl(Date notBefore, Date notAfter) {

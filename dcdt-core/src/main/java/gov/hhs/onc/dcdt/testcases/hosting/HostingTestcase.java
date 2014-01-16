@@ -1,13 +1,15 @@
 package gov.hhs.onc.dcdt.testcases.hosting;
 
+import gov.hhs.onc.dcdt.testcases.BindingType;
+import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 
 public interface HostingTestcase extends ToolTestcase<HostingTestcaseDescription, HostingTestcaseResult> {
-    public HostingTestcaseBinding getBinding();
+    public BindingType getBindingType();
 
-    public void setBinding(HostingTestcaseBinding binding);
+    public void setBindingType(BindingType bindingType);
 
-    public HostingTestcaseLocation getLocation();
+    public LocationType getLocationType();
 
-    public void setLocation(HostingTestcaseLocation location);
+    public void setLocationType(LocationType locType);
 }

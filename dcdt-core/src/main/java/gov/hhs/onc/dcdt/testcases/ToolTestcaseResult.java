@@ -1,9 +1,9 @@
 package gov.hhs.onc.dcdt.testcases;
 
-import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.beans.ToolNamedBean;
 import javax.annotation.Nullable;
 
-public interface ToolTestcaseResult extends ToolBean {
+public interface ToolTestcaseResult extends ToolNamedBean {
     public boolean isPassed();
 
     public void setPassed(boolean passed);

@@ -15,15 +15,6 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean id="toolObjMapperConvService" class="org.springframework.context.support.ConversionServiceFactoryBean">
-        <beans:property name="converters">
-            <util:list>
-                <beans:ref bean="jsonParserConfigFeatureConv"/>
-                <beans:ref bean="jsonGenConfigFeatureConv"/>
-            </util:list>
-        </beans:property>
-    </beans:bean>
-    
     <beans:bean id="toolObjMapper" class="gov.hhs.onc.dcdt.json.ToolObjectMapper" abstract="true"/>
     <beans:bean id="toolObjMapperImpl" class="gov.hhs.onc.dcdt.json.impl.ToolObjectMapperImpl" parent="toolObjMapper"
         p:annotationIntrospector-ref="toolAnnoInspectorImpl">

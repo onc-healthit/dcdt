@@ -18,24 +18,45 @@ var DISCOVERY_TESTCASES = {
             "name": "${discoveryTestcase.name}",
             "nameDisplay": "${discoveryTestcase.nameDisplay}",
             "mailAddress": "${discoveryTestcase.mailAddress}",
+            "negative": "${discoveryTestcase.negative}",
+            "credentials": {
+                <c:if test="${discoveryTestcase.hasBackgroundCredentials()}">
+                    "background": [
+                        <c:forEach var="discoveryTestcaseBackgroundCred" varStatus="discoveryTestcaseBackgroundCredsStatus"
+                            items="${discoveryTestcase.backgroundCredentials}">
+                            {
+                                "name": "${discoveryTestcaseBackgroundCred.name}",
+                                "nameDisplay": "${discoveryTestcaseBackgroundCred.nameDisplay}",
+                                "description": "${discoveryTestcaseBackgroundCred.description.text}"
+                            }<c:if test="${not discoveryTestcaseBackgroundCredsStatus.last}">,</c:if>
+                        </c:forEach>
+                    ]
+                </c:if>
+                <c:if test="${discoveryTestcase.hasTargetCredential()}">,
+                    <c:set var="discoveryTestcaseTargetCred" value="${discoveryTestcase.targetCredential}"/>
+                    "target": {
+                        "name": "${discoveryTestcaseTargetCred.name}",
+                        "nameDisplay": "${discoveryTestcaseTargetCred.nameDisplay}",
+                        "description": "${discoveryTestcaseTargetCred.description.text}"
+                    }
+                </c:if>
+            },
+            <c:set var="discoveryTestcaseDesc" value="${discoveryTestcase.description}"/>
             "description": {
-                <c:set var="discoveryTestcaseDesc" value="${discoveryTestcase.description}"/>
                 "text": "${discoveryTestcaseDesc.text}",
                 "instructions": "${discoveryTestcaseDesc.instructions}",
-                "rtm": "${discoveryTestcaseDesc.rtm}",
+                "rtmSections": [
+                    <c:forEach var="discoveryTestcaseDescRtmSection" varStatus="discoveryTestcaseDescRtmSectionsStatus"
+                        items="${discoveryTestcaseDesc.rtmSections}">
+                        "${discoveryTestcaseDescRtmSection}"<c:if test="${not discoveryTestcaseDescRtmSectionsStatus.last}">,</c:if>
+                    </c:forEach>
+                ],
                 "specifications": [
-                    <c:forEach var="discoveryTestcaseSpec" varStatus="discoveryTestcaseSpecsStatus"
+                    <c:forEach var="discoveryTestcaseDescSpec" varStatus="discoveryTestcaseDescSpecsStatus"
                         items="${discoveryTestcaseDesc.specifications}">
-                        "${discoveryTestcaseSpec}"<c:if test="${not discoveryTestcaseSpecsStatus.last}">,</c:if>
+                        "${discoveryTestcaseDescSpec}"<c:if test="${not discoveryTestcaseDescSpecsStatus.last}">,</c:if>
                     </c:forEach>
-                ],
-                "backgroundCertificates": [
-                    <c:forEach var="discoveryTestcaseBackgroundCert" varStatus="discoveryTestcaseBackgroundCertsStatus"
-                        items="${discoveryTestcaseDesc.backgroundCertificates}">
-                        "${discoveryTestcaseBackgroundCert}"<c:if test="${not discoveryTestcaseBackgroundCertsStatus.last}">,</c:if>
-                    </c:forEach>
-                ],
-                "targetCertificate": "${discoveryTestcaseDesc.targetCertificate}"
+                ]
             }
         }<c:if test="${not discoveryTestcasesStatus.last}">,</c:if>
     </c:forEach>

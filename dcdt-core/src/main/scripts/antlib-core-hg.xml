@@ -114,8 +114,6 @@
             <exec executable="hg" outputproperty="@{prefix}hg.@{cmd}.out" errorproperty="@{prefix}hg.@{cmd}.err" resultproperty="@{prefix}hg.@{cmd}.result"
                 failifexecutionfails="false" searchpath="true" taskname="hg-@{cmd}">
                 <arg value="@{cmd}"/>
-                <arg value="--color"/>
-                <arg value="never"/>
                 <arg value="--cwd"/>
                 <arg value="@{path}"/>
                 <cmd-elements/>

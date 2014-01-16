@@ -3,6 +3,8 @@ package gov.hhs.onc.dcdt.web.controller.impl;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.web.ToolWebException;
+import gov.hhs.onc.dcdt.web.controller.RequestView;
+import gov.hhs.onc.dcdt.web.controller.RequestViews;
 import gov.hhs.onc.dcdt.web.json.ErrorJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ErrorsJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
@@ -27,15 +29,16 @@ public class ErrorController extends AbstractToolController {
         ResponseJsonWrapper<ToolBean> resp = new ResponseJsonWrapperImpl<>();
 
         ErrorsJsonWrapper errors = new ErrorsJsonWrapperImpl();
-        errors
-            .setGlobalErrors(ToolArrayUtils.asList((ErrorJsonWrapper) new ErrorJsonWrapperImpl((Throwable) httpServletReq.getAttribute(MODEL_ATTR_KEY_ERROR))));
+        errors.setGlobalErrors(ToolArrayUtils.asList((ErrorJsonWrapper) new ErrorJsonWrapperImpl((Throwable) httpServletReq
+            .getAttribute(SERVLET_REQ_ATTR_KEY_ERROR))));
         resp.setErrors(errors);
         resp.setStatus(ResponseStatus.ERROR);
 
         return resp;
     }
 
-    @RequestMapping(value = { "/errors" }, produces = { MediaType.APPLICATION_JSON_VALUE })
+    @RequestMapping({ "/errors" })
+    @RequestViews({ @RequestView("error") })
     public ModelAndView displayError() throws ToolWebException {
         return this.display();
     }

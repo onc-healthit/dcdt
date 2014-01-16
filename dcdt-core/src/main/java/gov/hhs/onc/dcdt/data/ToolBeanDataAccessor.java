@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 
-public interface ToolBeanDataAccessor<T extends ToolBean> {
+public interface ToolBeanDataAccessor<T extends ToolBean> extends ToolBean {
     @SuppressWarnings({ "unchecked" })
     public boolean containsBeans(Serializable ... beanIdValues) throws ToolBeanDataAccessException;
 
@@ -32,6 +32,20 @@ public interface ToolBeanDataAccessor<T extends ToolBean> {
     public T getBean(Pair<String, ? extends Serializable> ... beanColumnPairs) throws ToolBeanDataAccessException;
 
     public T getBean(Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException;
+
+    @SuppressWarnings({ "unchecked" })
+    public List<T> loadBeans(T ... beans) throws ToolBeanDataAccessException;
+
+    public List<T> loadBeans(Iterable<T> beans) throws ToolBeanDataAccessException;
+
+    public T loadBean(T bean) throws ToolBeanDataAccessException;
+
+    @SuppressWarnings({ "unchecked" })
+    public List<T> refreshBeans(T ... beans) throws ToolBeanDataAccessException;
+
+    public List<T> refreshBeans(Iterable<T> beans) throws ToolBeanDataAccessException;
+
+    public T refreshBean(T bean) throws ToolBeanDataAccessException;
 
     @SuppressWarnings({ "unchecked" })
     public List<T> setBeans(T ... beans) throws ToolBeanDataAccessException;

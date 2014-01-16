@@ -13,7 +13,7 @@ public class KeyGeneratorUnitTests extends ToolTestNgUnitTests {
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private KeyGenerator keyGen;
 
-    @Resource(name = "testCa1KeyConfig")
+    @Resource(name = "testKeyConfigCa1")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private KeyConfig testKeyConfig;
 
