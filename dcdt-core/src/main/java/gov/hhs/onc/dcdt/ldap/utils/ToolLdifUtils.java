@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.ldap;
+package gov.hhs.onc.dcdt.ldap.utils;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -12,12 +12,13 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
+import gov.hhs.onc.dcdt.ldap.LdifException;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.ldif.LdifEntry;
 import org.apache.directory.api.ldap.model.ldif.LdifReader;
 import org.apache.directory.api.ldap.model.ldif.LdifUtils;
 
-public abstract class LdifWrapper {
+public abstract class ToolLdifUtils {
     public static List<LdifEntry> readLdifEntries(byte[] data) throws LdifException {
         return readLdifEntries(new ByteArrayInputStream(data));
     }
