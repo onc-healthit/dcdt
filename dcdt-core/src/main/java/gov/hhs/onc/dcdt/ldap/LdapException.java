@@ -2,22 +2,22 @@ package gov.hhs.onc.dcdt.ldap;
 
 import gov.hhs.onc.dcdt.ToolException;
 
-public class LdifException extends ToolException {
+public class LdapException extends ToolException{
     private final static long serialVersionUID = 0L;
 
-    public LdifException() {
+    public LdapException() {
         super();
     }
 
-    public LdifException(Throwable cause) {
+    public LdapException(Throwable cause) {
         super(cause);
     }
 
-    public LdifException(String message) {
+    public LdapException(String message) {
         super(message);
     }
 
-    public LdifException(String message, Throwable cause) {
+    public LdapException(String message, Throwable cause) {
         super(message, cause);
     }
 }
