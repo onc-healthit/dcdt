@@ -1,13 +1,8 @@
-div#testcase-discovery-direct-addr,
-div#testcase-discovery-direct-addr i {
-    display: none;
-}
-
-div#testcase-discovery-direct-addr span:last-of-type,
-div#testcase-discovery-direct-addr i {
-    font-family: monospace;
-}
-
 div#testcase-discovery-direct-addr {
+    display: none;
     font-size: 13px;
+}
+
+div#testcase-discovery-direct-addr span:last-of-type {
+    font-family: monospace;
 }

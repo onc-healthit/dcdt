@@ -11,11 +11,10 @@ import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseImpl.class) })
 public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseResult> {
-    public boolean hasTargetCredential();
+    public boolean hasTargetCredentials();
 
-    @JsonProperty("targetCred")
-    @Nullable
-    public DiscoveryTestcaseCredential getTargetCredential();
+    @JsonProperty("targetCreds")
+    public Collection<DiscoveryTestcaseCredential> getTargetCredentials();
 
     public boolean hasBackgroundCredentials();
 

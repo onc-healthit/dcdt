@@ -1,39 +1,30 @@
 $(document).ready(function () {
     var formTestcasesDiscovery = $("form[name=\"form-testcases-discovery\"]"), testcasesDiscoverySelect = $("select#testcase-select", formTestcasesDiscovery),
         testcaseDiscoveryDirectAddr = $("div#testcase-discovery-direct-addr", formTestcasesDiscovery),
-        testcaseDiscoveryDirectAddrContent = $("span:last-of-type", testcaseDiscoveryDirectAddr),
-        testcaseDiscoveryDirectAddrDomainPlaceholder = $("i", testcaseDiscoveryDirectAddr);
+        testcaseDiscoveryDirectAddrContent = $("span:last-of-type", testcaseDiscoveryDirectAddr);
     
     testcasesDiscoverySelect.change(function (event) {
         $(event.target).dcdt.testcases.selectTestcase(event, formTestcasesDiscovery, {
             "postBuildTestcaseDescription": function (settings, testcase, testcaseDesc, testcaseDescElem) {
-                var elem = $(this), buildDiscoveryTestcaseCredentialDescriptionFunc = settings["buildDiscoveryTestcaseCredentialDescription"];
+                var elem = $(this);
                 
-                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Target Certificate",
-                    [ buildDiscoveryTestcaseCredentialDescriptionFunc(testcase["targetCred"]) ]));
+                [ "target", "background" ].forEach(function (testcaseDiscoveryCredsType) {
+                    var testcaseDiscoveryCreds = testcase[testcaseDiscoveryCredsType + "Creds"], testcaseDiscoveryCredDescElems = [];
+                    
+                    if (testcaseDiscoveryCreds) {
+                        testcaseDiscoveryCreds.forEach(function (testcaseDiscoveryCred) {
+                            testcaseDiscoveryCredDescElems.push(settings["buildDiscoveryTestcaseCredentialDescription"](settings, testcaseDiscoveryCred));
+                        });
+                    }
+                    
+                    testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem($.capitalize(testcaseDiscoveryCredsType) + " Certificate(s)",
+                        testcaseDiscoveryCredDescElems));
+                });
                 
-                var testcaseDiscoveryBackgroundCreds = testcase["backgroundCreds"], testcaseDiscoveryBackgroundCredDescElems = [];
-                
-                if (testcaseDiscoveryBackgroundCreds) {
-                    testcaseDiscoveryBackgroundCreds.forEach(function (testcaseDiscoveryBackgroundCred) {
-                        testcaseDiscoveryBackgroundCredDescElems.push(buildDiscoveryTestcaseCredentialDescriptionFunc(testcaseDiscoveryBackgroundCred));
-                    });
-                }
-                
-                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Background Certificate(s)",
-                    testcaseDiscoveryBackgroundCredDescElems));
-                
-                var testcaseDiscoveryMailAddr = testcase["mailAddr"];
-                
-                testcaseDiscoveryDirectAddrContent.text(testcaseDiscoveryMailAddr);
-                
-                if (testcaseDiscoveryMailAddr.endsWith(".")) {
-                    testcaseDiscoveryDirectAddrDomainPlaceholder.show();
-                }
-                
+                testcaseDiscoveryDirectAddrContent.append(settings["buildDiscoveryTestcaseDnsName"](testcase["mailAddr"]));
                 testcaseDiscoveryDirectAddr.show();
             },
-            "buildDiscoveryTestcaseCredentialDescription": function (testcaseDiscoveryCred) {
+            "buildDiscoveryTestcaseCredentialDescription": function (settings, testcaseDiscoveryCred) {
                 var elem = $(this), testcaseDiscoveryCredDescElems = [];
                 
                 if (testcaseDiscoveryCred) {
@@ -47,12 +38,12 @@ $(document).ready(function () {
                     
                     if (testcaseDiscoveryCredLocType == "DNS") {
                         testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Domain",
-                            testcaseDiscoveryCredLoc["instanceDomainConfig"]["domainName"]));
+                            settings["buildDiscoveryTestcaseDnsName"](testcaseDiscoveryCredLoc["instanceDomainConfig"]["domainName"])));
                     } else if (testcaseDiscoveryCredLocType == "LDAP") {
                         var testcaseDiscoveryCredLocInstanceLdapConfig = testcaseDiscoveryCredLoc["instanceLdapConfig"];
                         
                         testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Host",
-                            testcaseDiscoveryCredLocInstanceLdapConfig["host"]));
+                            settings["buildDiscoveryTestcaseDnsName"](testcaseDiscoveryCredLocInstanceLdapConfig["host"])));
                         testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Port",
                             testcaseDiscoveryCredLocInstanceLdapConfig["port"]));
                     }
@@ -66,9 +57,22 @@ $(document).ready(function () {
                 
                 return testcaseDiscoveryCredDescElems;
             },
+            "buildDiscoveryTestcaseDnsName": function (testcaseDiscoveryDnsName) {
+                if (!testcaseDiscoveryDnsName) {
+                    return null;
+                }
+                
+                var testcaseDiscoveryDnsNameElem = $("<span/>");
+                testcaseDiscoveryDnsNameElem.text(testcaseDiscoveryDnsName);
+                
+                if (testcaseDiscoveryDnsName.lastIndexOf(".") == (testcaseDiscoveryDnsName.length - 1)) {
+                    testcaseDiscoveryDnsNameElem.append($("<i/>").text("<domain>"));
+                }
+                
+                return testcaseDiscoveryDnsNameElem;
+            },
             "postClearTestcaseDescription": function (settings, testcaseDescElem) {
                 testcaseDiscoveryDirectAddrContent.empty();
-                testcaseDiscoveryDirectAddrDomainPlaceholder.hide();
                 testcaseDiscoveryDirectAddr.hide();
             }
         });

@@ -65,7 +65,7 @@
             <tiles:putAttribute name="glyph-classes" value="glyphicon-envelope glyphicon-type-info"/>
         </tiles:insertDefinition>
         <strong>Direct Address</strong>:
-        <span></span><i>&lt;domain&gt;</i>
+        <span></span>
     </div>
     <div id="testcase-desc"></div>
 </form>
