@@ -6,13 +6,14 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.core.annotation.AnnotationUtils;
 
 public abstract class ToolAnnotationUtils {
     public final static String ANNO_ATTR_NAME_DEFAULT = "value";
-    
+
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T extends Annotation, U> U getCallsAttributeValue(Class<T> annoClass, Class<U> annoValueClass, Pair<Class<?>, Method> ... calls) {
@@ -35,7 +36,31 @@ public abstract class ToolAnnotationUtils {
         Iterable<Pair<Class<?>, Method>> calls) {
         T anno = findCallsAnnotation(annoClass, calls);
 
-        return (anno != null) ? (U) AnnotationUtils.getValue(anno, annoAttrName) : null;
+        return (anno != null) ? (U) AnnotationUtils.getValue(anno, ObjectUtils.defaultIfNull(annoAttrName, ANNO_ATTR_NAME_DEFAULT)) : null;
+    }
+
+    @SuppressWarnings({ "varargs" })
+    public static <T extends Annotation, U> List<U> getValues(Class<T> annoClass, Class<U> annoValueClass, AnnotatedElement ... annoElems) {
+        return getValues(annoClass, annoValueClass, ToolArrayUtils.asList(annoElems));
+    }
+
+    public static <T extends Annotation, U> List<U> getValues(Class<T> annoClass, Class<U> annoValueClass, Iterable<AnnotatedElement> annoElems) {
+        return getValues(annoClass, annoValueClass, ANNO_ATTR_NAME_DEFAULT, annoElems);
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public static <T extends Annotation, U> List<U> getValues(Class<T> annoClass, Class<U> annoValueClass, @Nullable String annoAttrName,
+        Iterable<AnnotatedElement> annoElems) {
+        annoAttrName = (annoAttrName != null) ? annoAttrName : ANNO_ATTR_NAME_DEFAULT;
+
+        List<T> annos = findAnnotations(annoClass, annoElems);
+        List<U> annoValues = new ArrayList<>(annos.size());
+
+        for (T anno : annos) {
+            annoValues.add((U) AnnotationUtils.getValue(anno, annoAttrName));
+        }
+
+        return annoValues;
     }
 
     @SuppressWarnings({ "varargs" })
@@ -52,7 +77,7 @@ public abstract class ToolAnnotationUtils {
         Iterable<AnnotatedElement> annoElems) {
         T anno = findAnnotation(annoClass, annoElems);
 
-        return (anno != null) ? (U) AnnotationUtils.getValue(anno, annoAttrName) : null;
+        return (anno != null) ? (U) AnnotationUtils.getValue(anno, ObjectUtils.defaultIfNull(annoAttrName, ANNO_ATTR_NAME_DEFAULT)) : null;
     }
 
     @SafeVarargs
@@ -75,6 +100,8 @@ public abstract class ToolAnnotationUtils {
     @SuppressWarnings({ "unchecked" })
     public static <T extends Annotation, U> List<U> getCallsAttributeValues(Class<T> annoClass, Class<U> annoValueClass, @Nullable String annoAttrName,
         Iterable<Pair<Class<?>, Method>> calls) {
+        annoAttrName = (annoAttrName != null) ? annoAttrName : ANNO_ATTR_NAME_DEFAULT;
+
         List<T> annos = findCallsAnnotations(annoClass, calls);
         List<U> annoValues = new ArrayList<>(annos.size());
 
@@ -144,10 +171,11 @@ public abstract class ToolAnnotationUtils {
             annoElemClass = annoElem.getClass();
 
             // noinspection ConstantConditions
-            if ((ToolClassUtils.isAssignable(Method.class, annoElemClass) && ((annoElemMethod = (Method) annoElem) != null) && ((anno = findCallsAnnotation(
-                annoClass, new ImmutablePair<Class<?>, Method>(annoElemMethod.getDeclaringClass(), annoElemMethod))) != null))
-                || (ToolClassUtils.isAssignable(Class.class, annoElemClass) && ((annoElemClassObj = (Class<?>) annoElem) != null) && ((anno = AnnotationUtils
-                    .findAnnotation(annoElemClassObj, annoClass)) != null)) || ((anno = AnnotationUtils.getAnnotation(annoElem, annoClass)) != null)) {
+            if ((ToolClassUtils.isAssignable(Method.class, annoElemClass) && ((annoElemMethod = (Method) annoElem) != null) && ((anno =
+                findCallsAnnotation(annoClass, new ImmutablePair<Class<?>, Method>(annoElemMethod.getDeclaringClass(), annoElemMethod))) != null))
+                || (ToolClassUtils.isAssignable(Class.class, annoElemClass) && ((annoElemClassObj = (Class<?>) annoElem) != null) && ((anno =
+                    AnnotationUtils.findAnnotation(annoElemClassObj, annoClass)) != null))
+                || ((anno = AnnotationUtils.getAnnotation(annoElem, annoClass)) != null)) {
                 annos.add(anno);
             }
         }
@@ -169,10 +197,11 @@ public abstract class ToolAnnotationUtils {
             annoElemClass = annoElem.getClass();
 
             // noinspection ConstantConditions
-            if ((ToolClassUtils.isAssignable(Method.class, annoElemClass) && ((annoElemMethod = (Method) annoElem) != null) && ((anno = findCallsAnnotation(
-                annoClass, new ImmutablePair<Class<?>, Method>(annoElemMethod.getDeclaringClass(), annoElemMethod))) != null))
-                || (ToolClassUtils.isAssignable(Class.class, annoElemClass) && ((annoElemClassObj = (Class<?>) annoElem) != null) && ((anno = AnnotationUtils
-                    .findAnnotation(annoElemClassObj, annoClass)) != null)) || ((anno = AnnotationUtils.getAnnotation(annoElem, annoClass)) != null)) {
+            if ((ToolClassUtils.isAssignable(Method.class, annoElemClass) && ((annoElemMethod = (Method) annoElem) != null) && ((anno =
+                findCallsAnnotation(annoClass, new ImmutablePair<Class<?>, Method>(annoElemMethod.getDeclaringClass(), annoElemMethod))) != null))
+                || (ToolClassUtils.isAssignable(Class.class, annoElemClass) && ((annoElemClassObj = (Class<?>) annoElem) != null) && ((anno =
+                    AnnotationUtils.findAnnotation(annoElemClassObj, annoClass)) != null))
+                || ((anno = AnnotationUtils.getAnnotation(annoElem, annoClass)) != null)) {
                 return anno;
             }
         }

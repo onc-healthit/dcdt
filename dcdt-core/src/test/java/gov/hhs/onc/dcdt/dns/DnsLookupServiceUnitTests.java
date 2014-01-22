@@ -1,13 +1,7 @@
-package gov.hhs.onc.dcdt.dns.lookup;
+package gov.hhs.onc.dcdt.dns;
 
-import gov.hhs.onc.dcdt.dns.DnsException;
-import gov.hhs.onc.dcdt.dns.DnsLookupService;
-import gov.hhs.onc.dcdt.dns.DnsResolver;
-import gov.hhs.onc.dcdt.dns.DnsResolverType;
-import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
-import gov.hhs.onc.dcdt.dns.DnsServiceType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
-import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
+import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +18,8 @@ import org.xbill.DNS.Name;
 import org.xbill.DNS.SOARecord;
 import org.xbill.DNS.SRVRecord;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.dns.all", "dcdt.test.func.dns.lookup" })
-public class DnsLookupServiceFunctionalTest extends ToolTestNgFunctionalTests {
+@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.dns.all", "dcdt.test.unit.dns.lookup" })
+public class DnsLookupServiceUnitTests extends ToolTestNgUnitTests {
     @Autowired
     @DnsResolver(DnsResolverType.EXTERNAL)
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })

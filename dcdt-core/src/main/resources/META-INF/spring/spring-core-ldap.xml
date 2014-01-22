@@ -15,4 +15,12 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <!--====================================================================================================
+    = LDAP BIND CONFIG
+    =====================================================================================================-->
+    <beans:bean id="ldapBindConfig" class="gov.hhs.onc.dcdt.ldap.LdapBindConfig" abstract="true"/>
+    <beans:bean id="ldapBindConfigImpl" class="gov.hhs.onc.dcdt.ldap.impl.LdapBindConfigImpl" parent="ldapBindConfig" abstract="true"/>
+    
+    <beans:bean id="ldapBindConfigAnon" parent="ldapBindConfigImpl" abstract="true"
+        p:anonymous="true"/>
 </beans:beans>
