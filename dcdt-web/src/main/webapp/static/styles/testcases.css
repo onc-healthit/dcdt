@@ -1,0 +1,7 @@
+div#testcase-desc {
+    width: 695px;
+}
+
+div#testcase-desc div > div {
+    margin: 15px;
+}

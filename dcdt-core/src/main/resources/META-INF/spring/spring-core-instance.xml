@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = INSTANCE CONFIG PERSISTENCE
+    =====================================================================================================-->
+    <beans:bean parent="setSysProps">
+        <beans:property name="arguments">
+            <util:properties>
+                <beans:prop key="derby.stream.error.method">
+                    org.springframework.jdbc.datasource.embedded.OutputStreamFactory.getNoopOutputStream
+                </beans:prop>
+            </util:properties>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceConfigDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+        p:driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+        p:password="${dcdt.instance.db.pass}"
+        p:url="jdbc:derby:${dcdt.instance.db.dir}"
+        p:username="${dcdt.instance.db.user}">
+        <beans:property name="connectionProperties">
+            <util:properties>
+                <beans:prop key="create">true</beans:prop>
+            </util:properties>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceConfigDataSourceInit" class="org.springframework.jdbc.datasource.init.DataSourceInitializer"
+        p:dataSource-ref="instanceConfigDataSource">
+        <beans:property name="databasePopulator">
+            <beans:bean class="org.springframework.jdbc.datasource.init.ResourceDatabasePopulator"
+                p:continueOnError="true"
+                p:ignoreFailedDrops="true">
+                <beans:property name="scripts">
+                    <util:list>
+                        <beans:value>classpath*:core/db/db-instance-init.sql</beans:value>
+                    </util:list>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceConfigSessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean"
+        p:dataSource-ref="instanceConfigDataSource"
+        p:entityInterceptor-ref="compositeBeanInterceptor"
+        p:packagesToScan="gov.hhs.onc.dcdt">
+        <beans:property name="hibernateProperties">
+            <util:properties>
+                <beans:prop key="hibernate.dialect">org.hibernate.dialect.DerbyTenSevenDialect</beans:prop>
+                <!--<beans:prop key="hibernate.hbm2ddl.auto">update</beans:prop>-->
+            </util:properties>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceConfigTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+        p:entityInterceptor-ref="compositeBeanInterceptor"
+        p:nestedTransactionAllowed="true"
+        p:rollbackOnCommitFailure="true"
+        p:sessionFactory-ref="instanceConfigSessionFactory"
+        p:validateExistingTransaction="true"/>
+    
+    <beans:bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    
+    <tx:annotation-driven transaction-manager="instanceConfigTransactionManager"/>
+    
+    <!--====================================================================================================
+    = INSTANCE CONFIG
+    =====================================================================================================-->
+    <beans:bean id="instanceConfig" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigFactoryBean"/>
+</beans:beans>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <beans:bean id="toolModuleVersion" class="gov.hhs.onc.dcdt.version.ToolModuleVersion" abstract="true"/>
+    <beans:bean id="toolModuleVersionImpl" class="gov.hhs.onc.dcdt.version.impl.ToolModuleVersionImpl" abstract="true"/>
+    
+    <beans:bean id="toolModuleVersionParent" parent="toolModuleVersionImpl"
+        c:groupId="${dcdt.module.dcdt-parent.groupId}"
+        c:artifactId="${dcdt.module.dcdt-parent.artifactId}"
+        c:version="${dcdt.module.dcdt-parent.version}"
+        c:name="${dcdt.module.dcdt-parent.name}"
+        c:description="${dcdt.module.dcdt-parent.description}"
+        p:buildTimestampString="${dcdt.module.dcdt-parent.build.timestamp}"
+        p:hgAuthor="${dcdt.module.dcdt-parent.hg.author}"
+        p:hgAuthorMail="${dcdt.module.dcdt-parent.hg.author.email}"
+        p:hgAuthorPerson="${dcdt.module.dcdt-parent.hg.author.person}"
+        p:hgBranch="${dcdt.module.dcdt-parent.hg.branch}"
+        p:hgDateString="${dcdt.module.dcdt-parent.hg.date}"
+        p:hgNode="${dcdt.module.dcdt-parent.hg.node}"
+        p:hgNodeShort="${dcdt.module.dcdt-parent.hg.node.short}"
+        p:hgPath="${dcdt.module.dcdt-parent.hg.path}"
+        p:hgRevision="${dcdt.module.dcdt-parent.hg.rev}"
+        p:hgTag="${dcdt.module.dcdt-parent.hg.tag}"/>
+    
+    <beans:bean id="toolModuleVersionCore" parent="toolModuleVersionImpl"
+        c:groupId="${dcdt.module.dcdt-core.groupId}"
+        c:artifactId="${dcdt.module.dcdt-core.artifactId}"
+        c:version="${dcdt.module.dcdt-core.version}"
+        c:name="${dcdt.module.dcdt-core.name}"
+        c:description="${dcdt.module.dcdt-core.description}"
+        p:buildTimestampString="${dcdt.module.dcdt-core.build.timestamp}"
+        p:hgAuthor="${dcdt.module.dcdt-core.hg.author}"
+        p:hgAuthorMail="${dcdt.module.dcdt-core.hg.author.email}"
+        p:hgAuthorPerson="${dcdt.module.dcdt-core.hg.author.person}"
+        p:hgBranch="${dcdt.module.dcdt-core.hg.branch}"
+        p:hgDateString="${dcdt.module.dcdt-core.hg.date}"
+        p:hgNode="${dcdt.module.dcdt-core.hg.node}"
+        p:hgNodeShort="${dcdt.module.dcdt-core.hg.node.short}"
+        p:hgPath="${dcdt.module.dcdt-core.hg.path}"
+        p:hgRevision="${dcdt.module.dcdt-core.hg.rev}"
+        p:hgTag="${dcdt.module.dcdt-core.hg.tag}"/>
+</beans:beans>
