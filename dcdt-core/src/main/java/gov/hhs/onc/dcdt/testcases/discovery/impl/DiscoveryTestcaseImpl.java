@@ -51,15 +51,14 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     }
 
     @Override
-    public boolean hasTargetCredential() {
-        return this.getTargetCredential() != null;
+    public boolean hasTargetCredentials() {
+        return !this.getTargetCredentials().isEmpty();
     }
 
-    @Nullable
     @Override
     @Transient
-    public DiscoveryTestcaseCredential getTargetCredential() {
-        return CollectionUtils.find(this.creds, DiscoveryTestcaseCredentialTypePredicate.INSTANCE_TARGET);
+    public Collection<DiscoveryTestcaseCredential> getTargetCredentials() {
+        return CollectionUtils.select(this.creds, DiscoveryTestcaseCredentialTypePredicate.INSTANCE_TARGET);
     }
 
     @Override

@@ -1,5 +1,8 @@
 (function ($) {
     $.extend($, {
+        "capitalize": function (str) {
+            return str ? (str.charAt(0).toUpperCase() + str.slice(1)) : str;
+        },
         "encodeJson": function (value, replacer, space) {
             return JSON.stringify(value, replacer, (space || "    "));
         },
