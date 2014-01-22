@@ -132,6 +132,7 @@
     </beans:bean>
     
     <beans:bean id="discoveryTestcaseKeyConfigLeaf" parent="keyConfigImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseKeyConfigLeaf2" parent="keyConfigImpl2" abstract="true"/>
     
     <beans:bean id="discoveryTestcaseCertConfigLeaf" parent="certConfigImpl" abstract="true"/>
     <beans:bean id="discoveryTestcaseCertConfigLeafExpired" parent="discoveryTestcaseCertConfigLeaf" abstract="true"
