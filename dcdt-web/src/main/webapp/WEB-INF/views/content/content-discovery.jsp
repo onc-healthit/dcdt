@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="dcdt" uri="/META-INF/tags/tags-dcdt.tld" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -7,11 +8,11 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
-<div id="discoveryIntro">
+<div class="testcases-intro">
     <p>
         <strong>Step 1: </strong>Download the Testing Tool's trust anchor.<br/>
         <ul>
-            <li><a href="${urlAnchor}" target="_blank"><strong>Download Anchor</strong></a></li>
+            <li><a href="${urlDiscoveryTrustAnchor}" target="_blank"><strong>Download Trust Anchor</strong></a></li>
         </ul><br/>
         <strong>Step 2: </strong> Upload the anchor to your Direct instance. This will allow you to send messages to our tool.
         <br/><br/>
@@ -21,7 +22,7 @@
         the receipt of the messages.
         <br/><br/>
         <ul>
-            <li><a href="${urlEmailMapping}" target="_blank"><strong>Map Email Addresses</strong></a></li>
+            <li><a href="${urlDiscoveryMailMapping}" target="_blank"><strong>Map Email Addresses</strong></a></li>
         </ul>
         <br/>
         <strong>Step 4: </strong> Choose a test case from the drop down menu below. Read the test case description below
@@ -37,26 +38,34 @@
         <br/>
     </p>
 </div>
-<div id="content" class="form-container">
-    <spring-form:form name="discovery-form">
-        <div class="form-item">
-            <span class="form-item-label-container">
-                <tiles:insertDefinition name="component-glyph-label">
-                    <tiles:putAttribute name="classes" value="form-item-label"/>
-                    <tiles:putAttribute name="attrs">for="discoveryTestcases"</tiles:putAttribute>
-                    <tiles:putAttribute name="glyph-classes" value="glyphicon-arrow-right glyphicon-type-info"/>
-                    <tiles:putAttribute name="content" value="Choose test case"/>
-                </tiles:insertDefinition>:
-                <select id="discoveryTestcases">
-                    <option value="">-- No test case selected --</option>
-                    <c:forEach var="discoveryTestcase" items="${discoveryTestcases}">
-                        <option value=${discoveryTestcase.name}>${discoveryTestcase.nameDisplay}</option>
-                    </c:forEach>
-                </select>
-            </span>
+<form name="form-testcases-discovery">
+    <div class="input-group-sm">
+        <div class="form-group">
+            <div>
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="attrs">for="testcase-select"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-cloud-upload glyphicon-type-info"/>
+                        <tiles:putAttribute name="content" value="Discovery Testcase"/>
+                    </tiles:insertDefinition>:
+                </span>
+                <span class="form-cell form-cell-control">
+                    <select id="testcase-select" class="input-sm form-control">
+                        <option>-- No testcase selected --</option>
+                        <c:forEach var="testcase" items="${testcases}">
+                            <option value=${testcase.name}>${testcase.nameDisplay}</option>
+                        </c:forEach>
+                    </select>
+                </span>
+            </div>
         </div>
-        <br/>
-        <div id="directAddress" class="textEmail"></div>
-        <div id="discoveryTestcaseDescription"></div>
-    </spring-form:form>
-</div>
+    </div>
+    <div id="testcase-discovery-direct-addr">
+        <tiles:insertDefinition name="component-glyph">
+            <tiles:putAttribute name="glyph-classes" value="glyphicon-envelope glyphicon-type-info"/>
+        </tiles:insertDefinition>
+        <strong>Direct Address</strong>:
+        <span></span><i>&lt;domain&gt;</i>
+    </div>
+    <div id="testcase-desc"></div>
+</form>

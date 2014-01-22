@@ -1,45 +1,76 @@
 $(document).ready(function () {
-    $("#discoveryTestcases").change(function () {
-        var discoveryTestcaseName = $("#discoveryTestcases option:selected").val();
-        if(discoveryTestcaseName != ""){
-            var discoveryTestcase = DISCOVERY_TESTCASES[discoveryTestcaseName];
-            displayMailAddress(discoveryTestcase.mailAddress);
-            displayDiscoveryTestcase(discoveryTestcase);
-        }
-        else{
-            clearDiscoveryTestcaseInfo();
-        }
+    var formTestcasesDiscovery = $("form[name=\"form-testcases-discovery\"]"), testcasesDiscoverySelect = $("select#testcase-select", formTestcasesDiscovery),
+        testcaseDiscoveryDirectAddr = $("div#testcase-discovery-direct-addr", formTestcasesDiscovery),
+        testcaseDiscoveryDirectAddrContent = $("span:last-of-type", testcaseDiscoveryDirectAddr),
+        testcaseDiscoveryDirectAddrDomainPlaceholder = $("i", testcaseDiscoveryDirectAddr);
+    
+    testcasesDiscoverySelect.change(function (event) {
+        $(event.target).dcdt.testcases.selectTestcase(event, formTestcasesDiscovery, {
+            "postBuildTestcaseDescription": function (settings, testcase, testcaseDesc, testcaseDescElem) {
+                var elem = $(this), buildDiscoveryTestcaseCredentialDescriptionFunc = settings["buildDiscoveryTestcaseCredentialDescription"];
+                
+                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Target Certificate",
+                    [ buildDiscoveryTestcaseCredentialDescriptionFunc(testcase["targetCred"]) ]));
+                
+                var testcaseDiscoveryBackgroundCreds = testcase["backgroundCreds"], testcaseDiscoveryBackgroundCredDescElems = [];
+                
+                if (testcaseDiscoveryBackgroundCreds) {
+                    testcaseDiscoveryBackgroundCreds.forEach(function (testcaseDiscoveryBackgroundCred) {
+                        testcaseDiscoveryBackgroundCredDescElems.push(buildDiscoveryTestcaseCredentialDescriptionFunc(testcaseDiscoveryBackgroundCred));
+                    });
+                }
+                
+                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Background Certificate(s)",
+                    testcaseDiscoveryBackgroundCredDescElems));
+                
+                var testcaseDiscoveryMailAddr = testcase["mailAddr"];
+                
+                testcaseDiscoveryDirectAddrContent.text(testcaseDiscoveryMailAddr);
+                
+                if (testcaseDiscoveryMailAddr.endsWith(".")) {
+                    testcaseDiscoveryDirectAddrDomainPlaceholder.show();
+                }
+                
+                testcaseDiscoveryDirectAddr.show();
+            },
+            "buildDiscoveryTestcaseCredentialDescription": function (testcaseDiscoveryCred) {
+                var elem = $(this), testcaseDiscoveryCredDescElems = [];
+                
+                if (testcaseDiscoveryCred) {
+                    var testcaseDiscoveryCredDesc = testcaseDiscoveryCred["desc"], testcaseDiscoveryCredLoc = testcaseDiscoveryCred["loc"],
+                        testcaseDiscoveryCredLocType = testcaseDiscoveryCredLoc["type"], testcaseDiscoveryCredLocElems = [];
+                    
+                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Valid", testcaseDiscoveryCred["valid"]));
+                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Binding Type", testcaseDiscoveryCred["bindingType"]));
+                    
+                    testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Type", testcaseDiscoveryCredLocType));
+                    
+                    if (testcaseDiscoveryCredLocType == "DNS") {
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Domain",
+                            testcaseDiscoveryCredLoc["instanceDomainConfig"]["domainName"]));
+                    } else if (testcaseDiscoveryCredLocType == "LDAP") {
+                        var testcaseDiscoveryCredLocInstanceLdapConfig = testcaseDiscoveryCredLoc["instanceLdapConfig"];
+                        
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Host",
+                            testcaseDiscoveryCredLocInstanceLdapConfig["host"]));
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Port",
+                            testcaseDiscoveryCredLocInstanceLdapConfig["port"]));
+                    }
+                    
+                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Location", testcaseDiscoveryCredLocElems));
+                    
+                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Description", testcaseDiscoveryCredDesc["text"]));
+                    testcaseDiscoveryCredDescElems = elem.dcdt.testcases.buildTestcaseDescriptionItem(testcaseDiscoveryCred["nameDisplay"],
+                        testcaseDiscoveryCredDescElems);
+                }
+                
+                return testcaseDiscoveryCredDescElems;
+            },
+            "postClearTestcaseDescription": function (settings, testcaseDescElem) {
+                testcaseDiscoveryDirectAddrContent.empty();
+                testcaseDiscoveryDirectAddrDomainPlaceholder.hide();
+                testcaseDiscoveryDirectAddr.hide();
+            }
+        });
     });
 });
-
-function displayMailAddress(mailAddress){
-    var addr = $("#directAddress");
-    addr.empty();
-    addr.append("<span class=\"glyphicon glyphicon-envelope glyphicon-type-info\"/> </span>");
-    addr.append("<b>Direct Address: </b>" + mailAddress + ((mailAddress.lastIndexOf(".") == (mailAddress.length - 1)) ? "<i>&lt;domain&gt;</i>" : "") +
-        "<br/><br/>");
-}
-
-function displayDiscoveryTestcase(discoveryTestcase){
-    var discoveryTestcaseDesc = discoveryTestcase.description, desc = $("#discoveryTestcaseDescription");
-    desc.empty();
-    
-    appendTestcaseInfo(desc, "Description", discoveryTestcaseDesc.text, false, true);
-    appendTestcaseInfo(desc, "RTM Sections", discoveryTestcaseDesc.rtmSections.join(", "), false, true);
-    appendTestcaseInfo(desc, "Underlying Specification Reference", discoveryTestcaseDesc.specifications, true, false);
-    appendTestcaseInfo(desc, "Instructions", discoveryTestcaseDesc.instructions, false, true);
-    
-    var discoveryTestcaseCreds = discoveryTestcase.credentials, discoveryTestcaseBackgroundCreds = discoveryTestcaseCreds.background,
-        discoveryTestcaseTargetCred = discoveryTestcaseCreds.target;
-    
-    appendTestcaseInfo(desc, "Target Certificate", (discoveryTestcaseTargetCred ? discoveryTestcaseTargetCred.description : "<i>None</i>"), true, true);
-    appendTestcaseInfo(desc, "Background Certificates", (discoveryTestcaseBackgroundCreds ? 
-        $.map(discoveryTestcaseBackgroundCreds, function (discoveryTestcaseBackgroundCred) {
-            return discoveryTestcaseBackgroundCred.description;
-        }) : "<i>None</i>"), $.isArray(discoveryTestcaseBackgroundCreds), false);
-}
-
-function clearDiscoveryTestcaseInfo(){
-    $("#discoveryTestcaseDescription").empty();
-    $("#directAddress").empty();
-}

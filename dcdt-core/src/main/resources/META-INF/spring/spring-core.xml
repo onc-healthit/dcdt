@@ -22,22 +22,6 @@
     <context:component-scan base-package="gov.hhs.onc.dcdt"/>
     <context:spring-configured/>
     
-    <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
-        <beans:property name="converters">
-            <beans:set>
-                <beans:ref bean="dnConv"/>
-                <beans:ref bean="dnsNameConv"/>
-                <beans:ref bean="exprNodeConv"/>
-                <beans:ref bean="inetAddrConv"/>
-                <beans:ref bean="jsonGenConfigFeatureConv"/>
-                <beans:ref bean="jsonParserConfigFeatureConv"/>
-                <beans:ref bean="pathConv"/>
-                <beans:ref bean="rdnConv"/>
-                <beans:ref bean="x500NameConv"/>
-            </beans:set>
-        </beans:property>
-    </beans:bean>
-    
     <beans:bean id="propSourcesPlaceholderConfigurerBase" class="gov.hhs.onc.dcdt.context.impl.ToolPropertySourcesPlaceholderConfigurer" abstract="true"
         p:environmentOverride="true"
         p:ignoreResourceNotFound="true"

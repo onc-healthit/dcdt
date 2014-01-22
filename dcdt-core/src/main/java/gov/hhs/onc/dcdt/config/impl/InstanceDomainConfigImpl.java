@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.config.impl;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.config.InstanceDomainConfig;
 import gov.hhs.onc.dcdt.dns.config.ARecordConfig;
@@ -18,6 +19,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 
+@JsonTypeName("instanceDomainConfig")
 public class InstanceDomainConfigImpl extends AbstractToolNamedBean implements InstanceDomainConfig {
     private Name domainName;
     private List<ARecordConfig> aRecordsConfigs;

@@ -2,6 +2,15 @@
     $.extend($, {
         "encodeJson": function (value, replacer, space) {
             return JSON.stringify(value, replacer, (space || "    "));
+        },
+        "isBoolean": function (value) {
+            return !$.isNull(value) && !$.isUndefined(value) && (value.__proto__ == Boolean.prototype);
+        },
+        "isNull": function (value) {
+            return value === null;
+        },
+        "isUndefined": function (value) {
+            return value === undefined;
         }
     });
     

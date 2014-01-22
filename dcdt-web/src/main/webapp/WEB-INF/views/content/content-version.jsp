@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="dcdt" uri="/META-INF/tags/tags-dcdt.tld" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -38,7 +39,7 @@
                             ${moduleVersion.buildTimestampString}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>
@@ -52,7 +53,7 @@
                             ${moduleVersion.hgAuthor}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>
@@ -63,7 +64,7 @@
                             ${moduleVersion.hgBranch}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>
@@ -74,7 +75,7 @@
                             ${moduleVersion.hgDateString}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>
@@ -85,7 +86,7 @@
                             ${moduleVersion.hgNode}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>
@@ -96,7 +97,7 @@
                             ${moduleVersion.hgNodeShort}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>
@@ -107,7 +108,7 @@
                             ${moduleVersion.hgPath}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>
@@ -118,7 +119,7 @@
                             ${moduleVersion.hgRevision}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>
@@ -129,7 +130,7 @@
                             ${moduleVersion.hgTag}
                         </c:when>
                         <c:otherwise>
-                            <span class="version-module-attr-unknown">unknown</span>
+                            <i>unknown</i>
                         </c:otherwise>
                     </c:choose>
                 </li>

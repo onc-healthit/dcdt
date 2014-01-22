@@ -104,6 +104,9 @@
     <!--====================================================================================================
     = HOSTING TESTCASES
     =====================================================================================================-->
+    <beans:bean id="hostingTestcaseNeg" parent="hostingTestcaseImpl" abstract="true"
+        p:negative="true"/>
+    
     <beans:bean id="hostingTestcase1" parent="hostingTestcaseImpl"
         p:name="H1_DNS_AB_Normal"
         p:nameDisplay="H1 - Normal address-bound certificate search in DNS"
@@ -208,7 +211,7 @@
         </beans:property>
     </beans:bean>
 
-    <beans:bean id="hostingTestcase5" parent="hostingTestcaseImpl"
+    <beans:bean id="hostingTestcase5" parent="hostingTestcaseNeg"
         p:name="H5_LDAP_NB_InvalidDirectAddr"
         p:nameDisplay="H5 - Invalid Direct address for certificate search in LDAP"
         p:bindingType="NONE"

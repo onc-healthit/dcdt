@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = CONVERTIBLE PAIRS
+    =====================================================================================================-->
+    <beans:bean id="convPair" class="org.springframework.core.convert.converter.GenericConverter$ConvertiblePair" abstract="true"/>
+    
+    <beans:bean id="convPairFromStr" parent="convPair" abstract="true">
+        <beans:constructor-arg name="sourceType" value="java.lang.String"/>
+    </beans:bean>
+    
+    <beans:bean id="convPairToStr" parent="convPair" abstract="true">
+        <beans:constructor-arg name="targetType" value="java.lang.String"/>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = CONVERSION SERVICE
+    =====================================================================================================-->
+    <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean">
+        <beans:property name="converters">
+            <beans:set>
+                <beans:ref bean="dnConv"/>
+                <beans:ref bean="dnsNameConv"/>
+                <beans:ref bean="exprNodeConv"/>
+                <beans:ref bean="inetAddrConv"/>
+                <beans:ref bean="jsonGenConfigFeatureConv"/>
+                <beans:ref bean="jsonParserConfigFeatureConv"/>
+                <beans:ref bean="pathConv"/>
+                <beans:ref bean="rdnConv"/>
+                <beans:ref bean="x500NameConv"/>
+            </beans:set>
+        </beans:property>
+    </beans:bean>
+</beans:beans>

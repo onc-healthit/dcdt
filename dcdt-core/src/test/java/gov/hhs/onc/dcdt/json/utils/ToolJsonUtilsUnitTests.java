@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils;
+package gov.hhs.onc.dcdt.json.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
@@ -8,13 +8,14 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.json.ToolJsonException;
 import gov.hhs.onc.dcdt.json.ToolObjectMapper;
 import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.utils.all", "dcdt.test.unit.utils.json" })
+@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.json.all", "dcdt.test.unit.json.utils.all", "dcdt.test.unit.json.utils.json" })
 public class ToolJsonUtilsUnitTests extends ToolTestNgUnitTests {
     private static interface ToolTestJsonBean extends ToolBean {
         public String getProp1();

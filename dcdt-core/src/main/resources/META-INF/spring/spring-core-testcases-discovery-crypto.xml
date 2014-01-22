@@ -28,7 +28,7 @@
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc1Ldap" parent="discoveryTestcaseCredLoc1" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc1Ldap1" parent="discoveryTestcaseCredLoc1"
+    <beans:bean id="discoveryTestcaseCredLoc1Ldap1" parent="discoveryTestcaseCredLoc1Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig1"/>
     
     <beans:bean id="discoveryTestcaseCredLoc2" parent="discoveryTestcaseCredLocImpl" abstract="true"
@@ -37,9 +37,9 @@
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc2Ldap" parent="discoveryTestcaseCredLoc2" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc2Ldap1" parent="discoveryTestcaseCredLoc2"
+    <beans:bean id="discoveryTestcaseCredLoc2Ldap1" parent="discoveryTestcaseCredLoc2Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig1"/>
-    <beans:bean id="discoveryTestcaseCredLoc2Ldap2" parent="discoveryTestcaseCredLoc2"
+    <beans:bean id="discoveryTestcaseCredLoc2Ldap2" parent="discoveryTestcaseCredLoc2Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig2"/>
     
     <beans:bean id="discoveryTestcaseCredLoc3" parent="discoveryTestcaseCredLocImpl" abstract="true"
@@ -48,9 +48,9 @@
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc3Ldap" parent="discoveryTestcaseCredLoc3" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc3Ldap1" parent="discoveryTestcaseCredLoc3"
+    <beans:bean id="discoveryTestcaseCredLoc3Ldap1" parent="discoveryTestcaseCredLoc3Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig1"/>
-    <beans:bean id="discoveryTestcaseCredLoc3Ldap2" parent="discoveryTestcaseCredLoc3"
+    <beans:bean id="discoveryTestcaseCredLoc3Ldap2" parent="discoveryTestcaseCredLoc3Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig2"/>
     
     <beans:bean id="discoveryTestcaseCredLoc4" parent="discoveryTestcaseCredLocImpl" abstract="true"
@@ -59,7 +59,7 @@
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc4Ldap" parent="discoveryTestcaseCredLoc4" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc4Ldap1" parent="discoveryTestcaseCredLoc4"
+    <beans:bean id="discoveryTestcaseCredLoc4Ldap1" parent="discoveryTestcaseCredLoc4Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig1"/>
     
     <beans:bean id="discoveryTestcaseCredLoc5" parent="discoveryTestcaseCredLocImpl" abstract="true"
@@ -68,9 +68,9 @@
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc5Ldap" parent="discoveryTestcaseCredLoc5" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc5Ldap1" parent="discoveryTestcaseCredLoc5"
+    <beans:bean id="discoveryTestcaseCredLoc5Ldap1" parent="discoveryTestcaseCredLoc5Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig1"/>
-    <beans:bean id="discoveryTestcaseCredLoc5Ldap3" parent="discoveryTestcaseCredLoc5"
+    <beans:bean id="discoveryTestcaseCredLoc5Ldap3" parent="discoveryTestcaseCredLoc5Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig3"/>
     
     <beans:bean id="discoveryTestcaseCredLoc6" parent="discoveryTestcaseCredLocImpl" abstract="true"
@@ -79,7 +79,7 @@
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc6Ldap" parent="discoveryTestcaseCredLoc6" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc6Ldap1" parent="discoveryTestcaseCredLoc6"
+    <beans:bean id="discoveryTestcaseCredLoc6Ldap1" parent="discoveryTestcaseCredLoc6Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig1"/>
     
     <beans:bean id="discoveryTestcaseCredLoc7" parent="discoveryTestcaseCredLocImpl" abstract="true"
@@ -88,7 +88,7 @@
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc7Ldap" parent="discoveryTestcaseCredLoc7" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc7Ldap1" parent="discoveryTestcaseCredLoc7"
+    <beans:bean id="discoveryTestcaseCredLoc7Ldap1" parent="discoveryTestcaseCredLoc7Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig1"/>
     
     <beans:bean id="discoveryTestcaseCredLoc8" parent="discoveryTestcaseCredLocImpl" abstract="true"
@@ -97,7 +97,7 @@
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc8Ldap" parent="discoveryTestcaseCredLoc8" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc8Ldap1" parent="discoveryTestcaseCredLoc8"
+    <beans:bean id="discoveryTestcaseCredLoc8Ldap1" parent="discoveryTestcaseCredLoc8Ldap"
         p:instanceLdapConfig-ref="instanceLdapConfig1"/>
     
     <!--====================================================================================================

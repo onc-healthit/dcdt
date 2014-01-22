@@ -1,13 +1,18 @@
 package gov.hhs.onc.dcdt.testcases.discovery;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.testcases.BindingType;
+import gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCredentialImpl;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.Predicate;
 
+@JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
 public interface DiscoveryTestcaseCredential extends ToolNamedBean {
     final static class DiscoveryTestcaseCredentialTypePredicate implements Predicate<DiscoveryTestcaseCredential> {
         public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_CA = new DiscoveryTestcaseCredentialTypePredicate(
@@ -31,6 +36,7 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
 
     public boolean hasBindingType();
 
+    @JsonProperty("bindingType")
     @Nullable
     public BindingType getBindingType();
 
@@ -59,6 +65,7 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
 
     public boolean hasDescription();
 
+    @JsonProperty("desc")
     @Nullable
     public DiscoveryTestcaseCredentialDescription getDescription();
 
@@ -66,6 +73,7 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
 
     public boolean hasIssuerCredential();
 
+    @JsonProperty("issuerCred")
     @Nullable
     public DiscoveryTestcaseCredential getIssuerCredential();
 
@@ -73,6 +81,7 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
 
     public boolean hasLocation();
 
+    @JsonProperty("loc")
     @Nullable
     public DiscoveryTestcaseCredentialLocation getLocation();
 
@@ -87,11 +96,13 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
 
     public boolean hasType();
 
+    @JsonProperty("type")
     @Nullable
     public DiscoveryTestcaseCredentialType getType();
 
     public void setType(@Nullable DiscoveryTestcaseCredentialType type);
 
+    @JsonProperty("valid")
     public boolean isValid();
 
     public void setValid(boolean valid);

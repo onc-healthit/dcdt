@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="dcdt" uri="/META-INF/tags/tags-dcdt.tld" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -49,13 +50,13 @@
             <div>
                 <span class="form-cell form-cell-label">
                     <tiles:insertDefinition name="component-glyph-label">
-                        <tiles:putAttribute name="attrs">for="admin-instance-config-ip-address"</tiles:putAttribute>
+                        <tiles:putAttribute name="attrs">for="admin-instance-config-ip-addr"</tiles:putAttribute>
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-globe"/>
                         <tiles:putAttribute name="content" value="IP Address"/>
                     </tiles:insertDefinition>:
                 </span>
                 <span class="form-cell form-cell-control">
-                    <input id="admin-instance-config-ip-address" class="input-sm form-control" name="ipAddress" type="text"/>
+                    <input id="admin-instance-config-ip-addr" class="input-sm form-control" name="ipAddr" type="text"/>
                 </span>
             </div>
         </div>

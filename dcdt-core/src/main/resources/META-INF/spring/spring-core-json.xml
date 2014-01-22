@@ -26,10 +26,102 @@
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.SerializationFeature).WRITE_ENUMS_USING_TO_STRING }" value="true"/>
             </util:map>
         </beans:property>
+        <beans:property name="deserializationConverters">
+            <util:map>
+                <beans:entry value-ref="dnConv">
+                    <beans:key>
+                        <beans:bean parent="convPairFromStr"
+                            c:targetType="org.apache.directory.api.ldap.model.name.Dn"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="dnsNameConv">
+                    <beans:key>
+                        <beans:bean parent="convPairFromStr"
+                            c:targetType="org.xbill.DNS.Name"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="exprNodeConv">
+                    <beans:key>
+                        <beans:bean parent="convPairFromStr"
+                            c:targetType="org.apache.directory.api.ldap.model.filter.ExprNode"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="inetAddrConv">
+                    <beans:key>
+                        <beans:bean parent="convPairFromStr"
+                            c:targetType="java.net.InetAddress"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="pathConv">
+                    <beans:key>
+                        <beans:bean parent="convPairFromStr"
+                            c:targetType="java.nio.file.Path"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="rdnConv">
+                    <beans:key>
+                        <beans:bean parent="convPairFromStr"
+                            c:targetType="org.apache.directory.api.ldap.model.name.Rdn"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="x500NameConv">
+                    <beans:key>
+                        <beans:bean parent="convPairFromStr"
+                            c:targetType="org.bouncycastle.asn1.x500.X500Name"/>
+                    </beans:key>
+                </beans:entry>
+            </util:map>
+        </beans:property>
         <beans:property name="modules">
             <util:set>
                 <beans:bean class="com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module"/>
             </util:set>
+        </beans:property>
+        <beans:property name="serializationConverters">
+            <util:map>
+                <beans:entry value-ref="dnConv">
+                    <beans:key>
+                        <beans:bean parent="convPairToStr"
+                            c:sourceType="org.apache.directory.api.ldap.model.name.Dn"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="dnsNameConv">
+                    <beans:key>
+                        <beans:bean parent="convPairToStr"
+                            c:sourceType="org.xbill.DNS.Name"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="exprNodeConv">
+                    <beans:key>
+                        <beans:bean parent="convPairToStr"
+                            c:sourceType="org.apache.directory.api.ldap.model.filter.ExprNode"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="inetAddrConv">
+                    <beans:key>
+                        <beans:bean parent="convPairToStr"
+                            c:sourceType="java.net.InetAddress"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="pathConv">
+                    <beans:key>
+                        <beans:bean parent="convPairToStr"
+                            c:sourceType="java.nio.file.Path"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="rdnConv">
+                    <beans:key>
+                        <beans:bean parent="convPairToStr"
+                            c:sourceType="org.apache.directory.api.ldap.model.name.Rdn"/>
+                    </beans:key>
+                </beans:entry>
+                <beans:entry value-ref="x500NameConv">
+                    <beans:key>
+                        <beans:bean parent="convPairToStr"
+                            c:sourceType="org.bouncycastle.asn1.x500.X500Name"/>
+                    </beans:key>
+                </beans:entry>
+            </util:map>
         </beans:property>
     </beans:bean>
 </beans:beans>

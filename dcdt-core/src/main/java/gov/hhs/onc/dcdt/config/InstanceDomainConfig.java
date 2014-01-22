@@ -1,6 +1,10 @@
 package gov.hhs.onc.dcdt.config;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
+import gov.hhs.onc.dcdt.config.impl.InstanceDomainConfigImpl;
 import gov.hhs.onc.dcdt.dns.config.ARecordConfig;
 import gov.hhs.onc.dcdt.dns.config.CnameRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.MxRecordConfig;
@@ -11,6 +15,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.xbill.DNS.Name;
 
+@JsonSubTypes({ @Type(InstanceDomainConfigImpl.class) })
 public interface InstanceDomainConfig extends ToolNamedBean {
     public boolean hasARecordConfigs();
 
@@ -28,6 +33,7 @@ public interface InstanceDomainConfig extends ToolNamedBean {
 
     public boolean hasDomainName();
 
+    @JsonProperty("domainName")
     @Nullable
     public Name getDomainName();
 

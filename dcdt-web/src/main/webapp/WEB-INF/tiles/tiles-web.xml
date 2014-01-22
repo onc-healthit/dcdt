@@ -36,14 +36,18 @@
         <put-attribute name="head" value="/WEB-INF/views/content/head-version.jsp" type="template"/>
         <put-attribute name="content" value="/WEB-INF/views/content/content-version.jsp" type="template"/>
     </definition>
-
-    <definition name="hosting" extends="layout">
+    
+    <definition name="layout-testcases" extends="layout">
+        <put-attribute name="head-common" value="/WEB-INF/views/include/head-testcases.jsp" type="template"/>
+    </definition>
+    
+    <definition name="hosting" extends="layout-testcases">
         <put-attribute name="name" value="hosting" cascade="true" type="string"/>
         <put-attribute name="head" value="/WEB-INF/views/content/head-hosting.jsp" type="template"/>
         <put-attribute name="content" value="/WEB-INF/views/content/content-hosting.jsp" type="template"/>
     </definition>
-
-    <definition name="discovery" extends="layout">
+    
+    <definition name="discovery" extends="layout-testcases">
         <put-attribute name="name" value="discovery" cascade="true" type="string"/>
         <put-attribute name="head" value="/WEB-INF/views/content/head-discovery.jsp" type="template"/>
         <put-attribute name="content" value="/WEB-INF/views/content/content-discovery.jsp" type="template"/>

@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
@@ -23,6 +24,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 
 @Entity(name = "discovery_testcase")
+@JsonTypeName("discoveryTestcase")
 @Table(name = "discovery_testcases")
 public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseResult> implements DiscoveryTestcase {
     @Transient
@@ -30,9 +32,6 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
 
     @Transient
     private String mailAddr;
-
-    @Transient
-    private boolean neg;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -107,16 +106,5 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     @Override
     public void setMailAddress(@Nullable String mailAddr) {
         this.mailAddr = mailAddr;
-    }
-
-    @Override
-    @Transient
-    public boolean isNegative() {
-        return this.neg;
-    }
-
-    @Override
-    public void setNegative(boolean neg) {
-        this.neg = neg;
     }
 }

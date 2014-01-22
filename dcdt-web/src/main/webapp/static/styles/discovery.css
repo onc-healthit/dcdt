@@ -1,9 +1,13 @@
-.textEmail {
-    font-family: monospace;
-    font-size: 13px;
+div#testcase-discovery-direct-addr,
+div#testcase-discovery-direct-addr i {
+    display: none;
 }
 
-div#discoveryTestcaseDescription {
-    margin-left: 20px;
-    width: 600px;
+div#testcase-discovery-direct-addr span:last-of-type,
+div#testcase-discovery-direct-addr i {
+    font-family: monospace;
+}
+
+div#testcase-discovery-direct-addr {
+    font-size: 13px;
 }

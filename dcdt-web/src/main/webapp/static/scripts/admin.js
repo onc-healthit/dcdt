@@ -60,7 +60,7 @@
                         
                         if (instanceConfig) {
                             instanceConfigInputDomainName.val(instanceConfigDomainName = instanceConfig["domainName"]);
-                            instanceConfigInputIpAddr.val(instanceConfigIpAddr = instanceConfig["ipAddress"]);
+                            instanceConfigInputIpAddr.val(instanceConfigIpAddr = instanceConfig["ipAddr"]);
                         } else {
                             instanceConfigInputDomainName.val("");
                             instanceConfigInputIpAddr.val("");
@@ -89,7 +89,7 @@
     $(document).ready(function () {
         instanceConfigForm = $("form[name=\"admin-instance-config\"]");
         instanceConfigInputDomainName = instanceConfigForm.dcdt.form.formInputs("domainName");
-        instanceConfigInputIpAddr = instanceConfigForm.dcdt.form.formInputs("ipAddress");
+        instanceConfigInputIpAddr = instanceConfigForm.dcdt.form.formInputs("ipAddr");
         instanceConfigButtons = instanceConfigForm.dcdt.form.formButtons();
         instanceConfigButtonRm = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-rm");
         instanceConfigButtonSet = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-set");
@@ -101,7 +101,7 @@
                 instanceConfig = {
                     "@type": "instanceConfig",
                     "domainName": instanceConfigInputDomainName.val(),
-                    "ipAddress": instanceConfigInputIpAddr.val()
+                    "ipAddr": instanceConfigInputIpAddr.val()
                 };
                 
                 $.dcdt.admin.setInstanceConfig();

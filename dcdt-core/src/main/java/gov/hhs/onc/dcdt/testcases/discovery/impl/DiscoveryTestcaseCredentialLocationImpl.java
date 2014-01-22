@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.config.InstanceDomainConfig;
 import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
@@ -7,6 +8,7 @@ import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredentialLocation;
 import javax.annotation.Nullable;
 
+@JsonTypeName("discoveryTestcaseCredLoc")
 public class DiscoveryTestcaseCredentialLocationImpl extends AbstractToolBean implements DiscoveryTestcaseCredentialLocation {
     private InstanceDomainConfig instanceDomainConfig;
     private InstanceLdapConfig instanceLdapConfig;

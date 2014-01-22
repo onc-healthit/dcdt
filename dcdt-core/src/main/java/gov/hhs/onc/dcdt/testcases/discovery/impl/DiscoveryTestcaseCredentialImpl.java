@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
@@ -32,6 +33,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
 
 @Entity(name = "discovery_testcase_cred")
+@JsonTypeName("discoveryTestcaseCred")
 @Table(name = "discovery_testcase_creds")
 public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean implements DiscoveryTestcaseCredential {
     @Transient

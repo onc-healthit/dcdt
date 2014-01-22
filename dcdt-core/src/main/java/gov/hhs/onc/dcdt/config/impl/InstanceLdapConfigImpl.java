@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.config.impl;
 
+import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.ldap.LdapBindConfig;
 import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
@@ -8,6 +9,7 @@ import java.util.Objects;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 import org.xbill.DNS.Name;
 
+@JsonTypeName("instanceLdapConfig")
 public class InstanceLdapConfigImpl extends AbstractToolNamedBean implements InstanceLdapConfig {
     private LdapBindConfig bindConfigAdmin;
     private LdapBindConfig bindConfigAnon;

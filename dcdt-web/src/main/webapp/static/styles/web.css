@@ -191,7 +191,7 @@ div.input-group-sm div.form-group.form-group-buttons span.btn-group {
 
 div.input-group-sm div.form-group.form-group-addons div.input-group-addon {
     display: none;
-    width: 700px;
+    width: 725px;
     text-align: left;
     font-size: 11px;
     white-space: normal;
@@ -208,7 +208,7 @@ div.input-group-sm div.form-group.form-group-addons div.input-group-addon:last-c
 }
 
 div.input-group-sm div.form-group span.form-cell.form-cell-label {
-    min-width: 150px;
+    min-width: 175px;
     padding-right: 10px;
     text-align: right;
 }
@@ -218,9 +218,10 @@ div.input-group-sm div.form-group span.form-cell.form-cell-label label {
 }
 
 div.input-group-sm div.form-group span.form-cell.form-cell-control input.form-control[type="password"],
-div.input-group-sm div.form-group span.form-cell.form-cell-control input.form-control[type="text"] {
+div.input-group-sm div.form-group span.form-cell.form-cell-control input.form-control[type="text"],
+div.input-group-sm div.form-group span.form-cell.form-cell-control select.form-control {
     width: 500px;
-    padding: 0 5px;
+    padding: 5px;
 }
 
 div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn {

@@ -14,10 +14,13 @@ import javax.persistence.Transient;
 public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult> extends AbstractToolNamedBean implements
     ToolTestcase<T, U> {
     @Transient
-    protected boolean optional;
+    protected T desc;
 
     @Transient
-    protected T desc;
+    protected boolean neg;
+
+    @Transient
+    protected boolean optional;
 
     @Transient
     protected U result;
@@ -45,6 +48,17 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
     @Override
     public String getName() {
         return super.getName();
+    }
+
+    @Override
+    @Transient
+    public boolean isNegative() {
+        return this.neg;
+    }
+
+    @Override
+    public void setNegative(boolean neg) {
+        this.neg = neg;
     }
 
     @Override

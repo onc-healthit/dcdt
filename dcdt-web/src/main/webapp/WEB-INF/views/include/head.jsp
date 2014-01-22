@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="dcdt" uri="/META-INF/tags/tags-dcdt.tld" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -27,6 +28,8 @@
 <c:set var="urlHome" value="${urlBase}" scope="request"/>
 <spring:url var="urlHosting" value="/hosting" scope="request"/>
 <spring:url var="urlDiscovery" value="/discovery" scope="request"/>
+<spring:url var="urlDiscoveryMailMapping" value="/discovery/mail/mapping" scope="request"/>
+<spring:url var="urlDiscoveryTrustAnchor" value="/discovery/anchor" scope="request"/>
 <c:set var="templateName" scope="request"><tiles:getAsString name="name"/></c:set>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>

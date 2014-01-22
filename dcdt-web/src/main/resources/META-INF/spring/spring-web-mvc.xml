@@ -51,12 +51,12 @@
     </beans:bean>
     
     <beans:bean id="tilesviewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"
-        p:exposePathVariables="true"
-        p:viewClass="org.springframework.web.servlet.view.tiles3.TilesView"/>
+        p:exposePathVariables="true"/>
     
     <beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer"
         p:checkRefresh="true"
-        p:completeAutoload="true">
+        p:completeAutoload="true"
+        p:useMutableTilesContainer="true">
         <beans:property name="definitions">
             <util:list>
                 <beans:value>/WEB-INF/tiles/tiles-web-components.xml</beans:value>

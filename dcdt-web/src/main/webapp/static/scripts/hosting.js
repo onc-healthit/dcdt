@@ -1,35 +1,32 @@
 $(document).ready(function () {
-    var hostingForm = $("form[name='hosting-form']");
-
-    $("#hostingTestcases").change(function () {
-        var hostingTestcaseName = $("#hostingTestcases option:selected").val();
-        if(hostingTestcaseName != ""){
-            var hostingTestcase = HOSTING_TESTCASES[hostingTestcaseName];
-            displayHostingTestcaseDescription(hostingTestcase);
-        }
-        else{
-            clearHostingTestcaseDescriptionContents();
-        }
+    var formTestcasesHosting = $("form[name=\"form-testcases-hosting\"]"), testcasesHostingSelect = $("select#testcase-select", formTestcasesHosting),
+        testcaseHostingDirectAddr = $("input[name=\"testcaseHostingDirectAddr\"]", formTestcasesHosting),
+        testcaseHostingSubmit = $("button#testcase-hosting-submit"), testcaseHostingReset = $("button#testcase-hosting-reset");
+    
+    formTestcasesHosting.submit(function (event) {
+        // TODO: implement
+        
+        event.preventDefault();
+        event.stopPropagation();
     });
-
-    $("#hostingReset").click(function () {
-        hostingForm[0].reset();
-        clearHostingTestcaseDescriptionContents();
+    
+    testcasesHostingSelect.change(function (event) {
+        $(event.target).dcdt.testcases.selectTestcase(event, formTestcasesHosting, {
+            "postBuildTestcaseDescription": function (settings, testcase, testcaseDesc, testcaseDescElem) {
+                var elem = $(this);
+                
+                testcaseDescElem.prepend(elem.dcdt.testcases.buildTestcaseDescriptionItem("Binding Type", testcase["bindingType"]),
+                    elem.dcdt.testcases.buildTestcaseDescriptionItem("Location Type", testcase["locType"]));
+            }
+        });
+    });
+    
+    testcaseHostingSubmit.click(function (event) {
+        formTestcasesHosting.submit();
+    });
+    
+    testcaseHostingReset.click(function (event) {
+        testcaseHostingDirectAddr.val("");
+        testcasesHostingSelect.val("");
     });
 });
-
-function displayHostingTestcaseDescription(hostingTestcase){
-    var hostingTestcaseDesc = hostingTestcase.description, desc = $("#hostingTestcaseDescription");
-    desc.empty();
-    
-    appendTestcaseInfo(desc, "Description", hostingTestcaseDesc.text, false, true);
-    appendTestcaseInfo(desc, "Instructions", hostingTestcaseDesc.instructions, false, true);
-    appendTestcaseInfo(desc, "RTM Sections", hostingTestcaseDesc.rtmSections.join(", "), false, true);
-    appendTestcaseInfo(desc, "Underlying Specification Reference", hostingTestcaseDesc.specifications, true, false);
-    
-    desc.append("<br/><br/>");
-}
-
-function clearHostingTestcaseDescriptionContents(){
-    $("#hostingTestcaseDescription").empty();
-}
