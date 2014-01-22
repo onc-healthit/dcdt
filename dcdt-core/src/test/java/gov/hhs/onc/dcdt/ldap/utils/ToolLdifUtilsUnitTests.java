@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.ldap.all", "dcdt.test.unit.ldap.ldif" })
+@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.ldap.all", "dcdt.test.unit.ldap.utils.all", "dcdt.test.unit.ldap.utils.ldif" })
 public class ToolLdifUtilsUnitTests extends ToolTestNgUnitTests {
     private List<LdifEntry> ldifEntries;
     private byte[] ldifData;

@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 public class X500NameConverter extends AbstractToolConverter {
     @Nullable
     @Override
-    protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) {
+    protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
         return new X500Name((String) source);
     }
 }

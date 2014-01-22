@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 public class PathConverter extends AbstractToolConverter {
     @Nullable
     @Override
-    protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) {
+    protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
         return ToolFileUtils.toPath(source);
     }
 }

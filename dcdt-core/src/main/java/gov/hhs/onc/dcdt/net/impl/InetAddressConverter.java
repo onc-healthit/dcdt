@@ -5,7 +5,6 @@ import gov.hhs.onc.dcdt.convert.Converts.List;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.utils.ToolInetAddressUtils;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.annotation.Scope;
@@ -21,19 +20,14 @@ public class InetAddressConverter extends AbstractToolConverter {
 
     @Nullable
     @Override
-    protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) {
+    protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
         if (targetType.isAssignableTo(TYPE_DESC_INET_ADDR)) {
             return ((InetAddress) source).getHostAddress();
-        } else if (targetType.isAssignableTo(TYPE_DESC_STR_ARR) || targetType.isAssignableTo(TYPE_DESC_STR)) {
+        } else {
             String[] sourceStrs;
 
-            try {
-                return (sourceType.isArray() && (ArrayUtils.getLength(source) == 2)) ? ToolInetAddressUtils.getByAddress((sourceStrs = (String[]) source)[0],
-                    sourceStrs[1]) : ToolInetAddressUtils.getByAddress(null, (String) source);
-            } catch (UnknownHostException ignored) {
-            }
+            return (sourceType.isArray() && (ArrayUtils.getLength(source) == 2)) ? ToolInetAddressUtils.getByAddress((sourceStrs = (String[]) source)[0],
+                sourceStrs[1]) : ToolInetAddressUtils.getByAddress(null, (String) source);
         }
-
-        return null;
     }
 }

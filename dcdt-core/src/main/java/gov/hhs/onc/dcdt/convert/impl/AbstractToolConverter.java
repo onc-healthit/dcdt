@@ -1,18 +1,17 @@
 package gov.hhs.onc.dcdt.convert.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.convert.ConversionRuntimeException;
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.ToolConverter;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import gov.hhs.onc.dcdt.utils.ToolMethodUtils;
-import java.lang.reflect.Method;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class AbstractToolConverter extends AbstractToolBean implements ToolConverter {
@@ -26,7 +25,12 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
         ConvertiblePair convertPair = this.findConvertibleTypes(sourceType, targetType);
 
-        return this.convertInternal(source, sourceType, targetType, convertPair);
+        try {
+            return this.convertInternal(source, sourceType, targetType, convertPair);
+        } catch (Exception e) {
+            throw new ConversionRuntimeException(String.format("Unable to convert source (sourceClass=%s, class=%s) to target (targetClass=%s).",
+                ToolClassUtils.getName(sourceType), ToolClassUtils.getName(source), ToolClassUtils.getName(targetType)), e);
+        }
     }
 
     @Override
@@ -45,9 +49,8 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     }
 
     @Nullable
-    protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) {
-        return null;
-    }
+    protected abstract Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair)
+        throws Exception;
 
     @Nullable
     protected ConvertiblePair findConvertibleTypes(TypeDescriptor sourceType, TypeDescriptor targetType) {
@@ -62,9 +65,8 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     }
 
     protected void initializeConvertibleTypesInternal() {
-        List<Pair<Class<?>, Method>> calls = ToolMethodUtils.getCalls();
-        List<Converts> convertsAnnos = ToolArrayUtils.unwrapElements(ToolAnnotationUtils.getCallsValues(Converts.List.class, Converts[].class, calls));
-        ToolCollectionUtils.addAll(convertsAnnos, ToolAnnotationUtils.findCallsAnnotations(Converts.class, calls));
+        List<Converts> convertsAnnos = ToolArrayUtils.unwrapElements(ToolAnnotationUtils.getValues(Converts.List.class, Converts[].class, this.getClass()));
+        ToolCollectionUtils.addAll(convertsAnnos, ToolAnnotationUtils.findAnnotations(Converts.class, this.getClass()));
 
         this.convertPairs = new LinkedHashSet<>(convertsAnnos.size());
 
