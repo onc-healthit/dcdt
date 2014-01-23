@@ -27,10 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 @JsonTypeName("discoveryTestcase")
 @Table(name = "discovery_testcases")
 public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseResult> implements DiscoveryTestcase {
-    @Transient
     private List<DiscoveryTestcaseCredential> creds;
-
-    @Transient
     private String mailAddr;
 
     @Override
@@ -78,7 +75,7 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     }
 
     @JoinColumn(name = "discovery_testcase_name", referencedColumnName = "name", nullable = false)
-    @OneToMany(targetEntity = DiscoveryTestcaseCredentialImpl.class, cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true)
     @OrderBy("name")
     @Override
     public List<DiscoveryTestcaseCredential> getCredentials() {

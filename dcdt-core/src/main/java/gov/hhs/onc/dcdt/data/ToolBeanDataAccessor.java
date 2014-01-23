@@ -3,35 +3,30 @@ package gov.hhs.onc.dcdt.data;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import java.io.Serializable;
 import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
+import org.hibernate.criterion.Criterion;
 
 public interface ToolBeanDataAccessor<T extends ToolBean> extends ToolBean {
-    @SuppressWarnings({ "unchecked" })
-    public boolean containsBeans(Serializable ... beanIdValues) throws ToolBeanDataAccessException;
-
-    public boolean containsBeans(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException;
+    public boolean containsBean() throws ToolBeanDataAccessException;
 
     public boolean containsBean(Serializable beanIdValue) throws ToolBeanDataAccessException;
 
-    public T getFirstBean() throws ToolBeanDataAccessException;
+    public boolean containsBean(Criterion ... beanCriterions) throws ToolBeanDataAccessException;
 
-    public List<T> getAllBeans() throws ToolBeanDataAccessException;
+    public boolean containsBean(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException;
 
-    public List<T> getBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException;
+    public T getBean() throws ToolBeanDataAccessException;
 
-    public List<T> getBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException;
+    public List<T> getBeans() throws ToolBeanDataAccessException;
 
     public T getBeanById(Serializable beanIdValue) throws ToolBeanDataAccessException;
 
-    @SuppressWarnings({ "unchecked" })
-    public List<T> getBeans(Pair<String, ? extends Serializable> ... beanColumnPairs) throws ToolBeanDataAccessException;
+    public T getBeanBy(Criterion ... beanCriterions) throws ToolBeanDataAccessException;
 
-    public List<T> getBeans(Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException;
+    public T getBeanBy(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException;
 
-    @SuppressWarnings({ "unchecked" })
-    public T getBean(Pair<String, ? extends Serializable> ... beanColumnPairs) throws ToolBeanDataAccessException;
+    public List<T> getBeansBy(Criterion ... beanCriterions) throws ToolBeanDataAccessException;
 
-    public T getBean(Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException;
+    public List<T> getBeansBy(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException;
 
     @SuppressWarnings({ "unchecked" })
     public List<T> loadBeans(T ... beans) throws ToolBeanDataAccessException;
@@ -67,10 +62,6 @@ public interface ToolBeanDataAccessor<T extends ToolBean> extends ToolBean {
     public List<T> updateBeans(Iterable<T> beans) throws ToolBeanDataAccessException;
 
     public T updateBean(T bean) throws ToolBeanDataAccessException;
-
-    public List<T> removeBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException;
-
-    public List<T> removeBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException;
 
     public T removeBeanById(Serializable beanIdValue) throws ToolBeanDataAccessException;
 

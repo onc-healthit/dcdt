@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.data.impl;
+package gov.hhs.onc.dcdt.data.events.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;

@@ -3,22 +3,17 @@ package gov.hhs.onc.dcdt.config.impl;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
-import gov.hhs.onc.dcdt.config.InstanceDomainConfig;
-import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.dns.DnsNameException;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.io.utils.ToolFileUtils;
-import gov.hhs.onc.dcdt.utils.ToolInetAddressUtils;
+import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import java.io.File;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.List;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.NamedNativeQueries;
-import javax.persistence.NamedNativeQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
@@ -27,37 +22,22 @@ import org.xbill.DNS.Name;
 
 @Entity(name = "instance_config")
 @JsonTypeName("instanceConfig")
-@NamedNativeQueries({ @NamedNativeQuery(name = AbstractToolBean.QUERY_NAME_GET_ALL_BEANS, query = "select * from instance_configs",
-    resultClass = InstanceConfigImpl.class) })
 @Table(name = "instance_configs")
 public class InstanceConfigImpl extends AbstractToolBean implements InstanceConfig {
-    @Transient
     @Value("${dcdt.instance.dir}")
     private File dir;
 
-    @Transient
     @Value("${dcdt.instance.db.dir}")
     private File dbDir;
 
-    @Transient
     @Value("${dcdt.instance.db.user}")
     private String dbUser;
 
-    @Transient
     @Value("${dcdt.instance.db.pass}")
     private String dbPass;
 
-    @Transient
     private Name domainName;
-
-    @Transient
     private InetAddress ipAddr;
-
-    @Transient
-    private List<InstanceDomainConfig> domainConfigs;
-
-    @Transient
-    private List<InstanceLdapConfig> ldapConfigs;
 
     @Override
     public boolean hasDatabaseDirectory() {
@@ -128,9 +108,10 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
         return this.domainName != null;
     }
 
+    @Column(name = "domain_name", nullable = false)
+    @Id
     @Nullable
     @Override
-    @Transient
     public Name getDomainName() {
         return this.domainName;
     }
@@ -145,10 +126,9 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
         return !StringUtils.isBlank(this.getDomainNameString());
     }
 
-    @Column(name = "domain_name", nullable = false)
-    @Id
     @Nullable
     @Override
+    @Transient
     public String getDomainNameString() {
         return this.hasDomainName() ? this.domainName.toString() : null;
     }
@@ -163,9 +143,9 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
         return this.ipAddr != null;
     }
 
+    @Column(name = "ip_address", nullable = false)
     @Nullable
     @Override
-    @Transient
     public InetAddress getIpAddress() {
         return this.ipAddr;
     }
@@ -180,9 +160,9 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
         return !StringUtils.isBlank(this.getIpAddressString());
     }
 
-    @Column(name = "ip_address", nullable = false)
     @Nullable
     @Override
+    @Transient
     public String getIpAddressString() {
         return this.hasIpAddress() ? this.ipAddr.getHostAddress() : null;
     }

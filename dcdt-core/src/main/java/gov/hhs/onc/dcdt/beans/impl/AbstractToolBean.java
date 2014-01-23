@@ -5,17 +5,17 @@ import gov.hhs.onc.dcdt.utils.ToolBeanPropertyUtils;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import javax.annotation.Nullable;
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 import org.hibernate.annotations.Proxy;
 
+@Access(AccessType.PROPERTY)
 @MappedSuperclass
 @Proxy(lazy = false)
 public abstract class AbstractToolBean implements ToolBean {
-    public final static String QUERY_NAME_GET_ALL_BEANS = "getAllBeans";
-
-    @Transient
     protected String beanName;
 
     @Override

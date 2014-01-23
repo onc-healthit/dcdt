@@ -34,8 +34,9 @@ public abstract class ToolMessageUtils {
         return getMessage(msgSource, code, defaultMsg, msgLocale, (Object[]) null);
     }
 
-    public static String getMessage(MessageSource msgSource, String code, @Nullable String defaultMsg, @Nullable Locale msgLocale, @Nullable Object ... msgArgs)
-        throws NoSuchMessageException {
+    public static String
+        getMessage(MessageSource msgSource, String code, @Nullable String defaultMsg, @Nullable Locale msgLocale, @Nullable Object ... msgArgs)
+            throws NoSuchMessageException {
         return getMessage(msgSource, new DefaultMessageSourceResolvable(ArrayUtils.toArray(code), ToolArrayUtils.emptyToNull(msgArgs), defaultMsg), msgLocale);
     }
 

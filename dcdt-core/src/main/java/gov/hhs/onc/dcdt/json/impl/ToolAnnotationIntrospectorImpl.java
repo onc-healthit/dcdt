@@ -28,8 +28,9 @@ public class ToolAnnotationIntrospectorImpl extends JacksonAnnotationIntrospecto
 
         if (typeResolverBuilder != null) {
             String typePropName = typeResolverBuilder.getTypeProperty();
-            ToolTypeNameIdResolver typeNameIdResolver = (ToolTypeNameIdResolver) this.beanFactory.getBean(
-                ToolBeanFactoryUtils.getBeanNameOfType(this.beanFactory, ToolTypeNameIdResolver.class), (Object) annotatedClass.getAnnotated());
+            ToolTypeNameIdResolver typeNameIdResolver =
+                (ToolTypeNameIdResolver) this.beanFactory.getBean(ToolBeanFactoryUtils.getBeanNameOfType(this.beanFactory, ToolTypeNameIdResolver.class),
+                    (Object) annotatedClass.getAnnotated());
 
             typeResolverBuilder.init(typeNameIdResolver.getMechanism(), typeNameIdResolver).typeProperty(typePropName);
         }

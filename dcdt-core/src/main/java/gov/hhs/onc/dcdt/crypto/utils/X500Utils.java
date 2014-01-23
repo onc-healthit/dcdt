@@ -43,7 +43,7 @@ public abstract class X500Utils {
         return x500NameBuilder.build();
     }
 
-    public static Map<ASN1ObjectIdentifier, ASN1Encodable> mapAttributes(RDN... rdns) {
+    public static Map<ASN1ObjectIdentifier, ASN1Encodable> mapAttributes(RDN ... rdns) {
         return mapAttributes(ToolArrayUtils.asList(rdns));
     }
 

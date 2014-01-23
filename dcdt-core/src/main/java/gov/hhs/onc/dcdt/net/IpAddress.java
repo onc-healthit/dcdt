@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.net;
 
-
-import gov.hhs.onc.dcdt.utils.ToolInetAddressUtils;
+import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import gov.hhs.onc.dcdt.validation.constraints.NotBlank;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -35,7 +34,7 @@ public @interface IpAddress {
 
     String message() default "{dcdt.net.validation.constraints.IpAddress.msg}";
 
-    Class<?>[] groups() default { };
+    Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default { };
+    Class<? extends Payload>[] payload() default {};
 }

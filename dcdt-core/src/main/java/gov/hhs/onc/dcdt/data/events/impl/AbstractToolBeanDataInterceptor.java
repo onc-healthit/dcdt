@@ -1,6 +1,6 @@
-package gov.hhs.onc.dcdt.data.impl;
+package gov.hhs.onc.dcdt.data.events.impl;
 
-import gov.hhs.onc.dcdt.data.ToolBeanDataInterceptor;
+import gov.hhs.onc.dcdt.data.events.ToolBeanDataInterceptor;
 import org.hibernate.EmptyInterceptor;
 
 public abstract class AbstractToolBeanDataInterceptor extends EmptyInterceptor implements ToolBeanDataInterceptor {

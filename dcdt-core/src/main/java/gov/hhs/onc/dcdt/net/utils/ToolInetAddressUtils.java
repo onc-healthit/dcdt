@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.utils;
+package gov.hhs.onc.dcdt.net.utils;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;

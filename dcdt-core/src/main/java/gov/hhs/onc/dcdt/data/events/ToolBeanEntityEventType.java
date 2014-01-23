@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.data;
+package gov.hhs.onc.dcdt.data.events;
 
 public enum ToolBeanEntityEventType {
     DELETE("delete"), LOAD("load"), SAVE("save"), TX_BEGIN("tx_begin"), TX_COMPLETE("tx_complete");

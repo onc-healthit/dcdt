@@ -19,7 +19,7 @@ public class InstanceConfigFactoryBean extends AbstractToolFactoryBean<InstanceC
     @Override
     protected InstanceConfig createInstance() throws Exception {
         InstanceConfigService instanceConfigService = ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), InstanceConfigService.class);
-        InstanceConfig instanceConfig = new InstanceConfigImpl(), instanceConfigExisting = instanceConfigService.getFirstBean();
+        InstanceConfig instanceConfig = new InstanceConfigImpl(), instanceConfigExisting = instanceConfigService.getBean();
 
         if (instanceConfigExisting != null) {
             instanceConfig.setDomainName(instanceConfigExisting.getDomainName());

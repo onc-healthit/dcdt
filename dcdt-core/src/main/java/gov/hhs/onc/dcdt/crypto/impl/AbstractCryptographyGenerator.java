@@ -17,7 +17,7 @@ public abstract class AbstractCryptographyGenerator<T extends CryptographyConfig
     @Resource(name = "messageSourceValidation")
     protected MessageSource msgSourceValidation;
 
-    protected BindingResult validateConfig(T cryptoConfig, Class<?>... cryptoConfigValidationGroups) {
+    protected BindingResult validateConfig(T cryptoConfig, Class<?> ... cryptoConfigValidationGroups) {
         return ToolValidationUtils.bind(this.validator, cryptoConfig, (Object[]) cryptoConfigValidationGroups);
     }
 }

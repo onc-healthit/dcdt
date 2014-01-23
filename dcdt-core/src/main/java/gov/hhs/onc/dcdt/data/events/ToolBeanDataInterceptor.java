@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.data;
+package gov.hhs.onc.dcdt.data.events;
 
 import org.hibernate.Interceptor;
 
