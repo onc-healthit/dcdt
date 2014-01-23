@@ -8,10 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 
 @MappedSuperclass
 public abstract class AbstractToolNamedBean extends AbstractToolBean implements ToolNamedBean {
-    @Transient
     protected String name;
-
-    @Transient
     protected String nameDisplay;
 
     @Override

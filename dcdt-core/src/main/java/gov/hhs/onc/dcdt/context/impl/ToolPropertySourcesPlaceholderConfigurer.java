@@ -29,7 +29,7 @@ public class ToolPropertySourcesPlaceholderConfigurer extends PropertySourcesPla
         } catch (IOException e) {
             throw new BeanInitializationException("Unable to load properties.", e);
         }
-        
+
         if (this.env != null) {
             PropertySource<Environment> envPropSource = new PropertySource<Environment>(ENVIRONMENT_PROPERTIES_PROPERTY_SOURCE_NAME, this.env) {
                 @Override
@@ -44,7 +44,7 @@ public class ToolPropertySourcesPlaceholderConfigurer extends PropertySourcesPla
                 propSources.addLast(envPropSource);
             }
         }
-        
+
         this.setPropertySources(propSources);
 
         super.postProcessBeanFactory(beanFactory);
@@ -60,7 +60,7 @@ public class ToolPropertySourcesPlaceholderConfigurer extends PropertySourcesPla
     public boolean getEnvironmentOverride() {
         return this.envOverride;
     }
-    
+
     public void setEnvironmentOverride(boolean envOverride) {
         this.envOverride = envOverride;
     }

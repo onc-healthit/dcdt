@@ -116,12 +116,14 @@
     <beans:bean id="discoveryTestcaseCertConfigCa" parent="certConfigCa">
         <beans:property name="subject">
             <beans:bean parent="certNameImpl"
-                p:commonName="#{ instanceConfig.domainNameString }_ca"/>
+                p:commonName="#{ instanceConfig.domainName }_ca"/>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="discoveryTestcaseCredCa" parent="discoveryTestcaseCredImpl"
         p:bindingType="NONE"
+        p:name="#{ instanceConfig.domainName }_ca"
+        p:nameDisplay="#{ instanceConfig.domainName }_ca"
         p:type="CA">
         <beans:property name="credentialConfig">
             <beans:bean parent="credConfigCa"
@@ -132,6 +134,8 @@
     </beans:bean>
     
     <beans:bean id="discoveryTestcaseKeyConfigLeaf" parent="keyConfigImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseKeyConfigLeaf4kb" parent="discoveryTestcaseKeyConfigLeaf" abstract="true"
+        p:keySize="4096"/>
     
     <beans:bean id="discoveryTestcaseCertConfigLeaf" parent="certConfigImpl" abstract="true"/>
     <beans:bean id="discoveryTestcaseCertConfigLeafExpired" parent="discoveryTestcaseCertConfigLeaf" abstract="true"

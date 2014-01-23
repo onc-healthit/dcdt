@@ -1,15 +1,22 @@
-package gov.hhs.onc.dcdt.utils;
+package gov.hhs.onc.dcdt.mail.utils;
 
 import gov.hhs.onc.dcdt.dns.DnsNameException;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.xbill.DNS.Name;
 
 public abstract class ToolMailAddressUtils {
-    private final static String PART_DELIM = "@";
+    public final static String DELIM_ADDR = "@";
 
-    public static String getLocal(String mailAddr) {
+    public static boolean hasLocalPart(String mailAddr) {
+        return StringUtils.contains(mailAddr, DELIM_ADDR);
+    }
+
+    @Nullable
+    public static String getLocalPart(String mailAddr) {
         return ToolArrayUtils.getFirst(getParts(mailAddr));
     }
 
@@ -17,15 +24,12 @@ public abstract class ToolMailAddressUtils {
         return ToolDnsNameUtils.fromString(getDomainNameString(mailAddr));
     }
 
+    @Nullable
     public static String getDomainNameString(String mailAddr) {
         return ToolArrayUtils.getLast(getParts(mailAddr));
     }
 
     public static String[] getParts(String mailAddr) {
-        return hasLocal(mailAddr) ? StringUtils.split(mailAddr, PART_DELIM, 2) : ArrayUtils.toArray(null, mailAddr);
-    }
-
-    public static boolean hasLocal(String mailAddr) {
-        return StringUtils.contains(mailAddr, PART_DELIM);
+        return hasLocalPart(mailAddr) ? StringUtils.split(mailAddr, DELIM_ADDR, 2) : ArrayUtils.toArray(null, mailAddr);
     }
 }

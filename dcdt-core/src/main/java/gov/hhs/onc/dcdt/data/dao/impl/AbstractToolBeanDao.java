@@ -4,16 +4,21 @@ import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.data.ToolBeanDataAccessException;
 import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
+import gov.hhs.onc.dcdt.data.utils.ToolRestrictionsUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
+import javax.annotation.Nullable;
+import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.criterion.Criterion;
+import org.hibernate.criterion.DetachedCriteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -34,22 +39,8 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    @SuppressWarnings({ "varargs" })
-    public final boolean containsBeans(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
-        return this.containsBeans(ToolArrayUtils.asList(beanIdValues));
-    }
-
-    @Override
-    public boolean containsBeans(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
-        Session session = this.getCheckedSession();
-
-        for (Serializable beanIdValue : beanIdValues) {
-            if (!this.containsBean(session, beanIdValue)) {
-                return false;
-            }
-        }
-
-        return true;
+    public boolean containsBean() throws ToolBeanDataAccessException {
+        return this.getBean() != null;
     }
 
     @Override
@@ -58,34 +49,23 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    public T getFirstBean() throws ToolBeanDataAccessException {
-        return this.getFirstBean(this.getCheckedSession());
+    public boolean containsBean(Criterion ... beanCriterions) throws ToolBeanDataAccessException {
+        return this.containsBean(ToolArrayUtils.asList(beanCriterions));
     }
 
     @Override
-    public List<T> getAllBeans() throws ToolBeanDataAccessException {
-        return this.getAllBeans(this.getCheckedSession());
+    public boolean containsBean(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException {
+        return this.getBeanBy(beanCriterions) != null;
     }
 
     @Override
-    @SuppressWarnings({ "varargs" })
-    public final List<T> getBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
-        return this.getBeansById(ToolArrayUtils.asList(beanIdValues));
+    public T getBean() throws ToolBeanDataAccessException {
+        return this.getBeanBy(this.getCheckedSession(), null);
     }
 
     @Override
-    public List<T> getBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
-        Session session = this.getCheckedSession();
-        List<T> beans = new ArrayList<>();
-        T bean;
-
-        for (Serializable beanIdValue : beanIdValues) {
-            if ((bean = this.getBeanById(session, beanIdValue)) != null) {
-                beans.add(bean);
-            }
-        }
-
-        return beans;
+    public List<T> getBeans() throws ToolBeanDataAccessException {
+        return this.getBeansBy(this.getCheckedSession(), null);
     }
 
     @Override
@@ -94,33 +74,28 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public final List<T> getBeans(Pair<String, ? extends Serializable> ... beanColumnPairs) throws ToolBeanDataAccessException {
-        return this.getBeans(ToolArrayUtils.asList(beanColumnPairs));
+    public T getBeanBy(Criterion ... beanCriterions) throws ToolBeanDataAccessException {
+        return this.getBeanBy(ToolArrayUtils.asList(beanCriterions));
     }
 
     @Override
-    public List<T> getBeans(Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
-        return this.getBeans(this.getCheckedSession(), beanColumnPairs);
+    public T getBeanBy(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException {
+        return this.getBeanBy(this.getCheckedSession(), beanCriterions);
     }
 
     @Override
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public final T getBean(Pair<String, ? extends Serializable> ... beanColumnPairs) throws ToolBeanDataAccessException {
-        return this.getBean(ToolArrayUtils.asList(beanColumnPairs));
+    public List<T> getBeansBy(Criterion ... beanCriterions) throws ToolBeanDataAccessException {
+        return this.getBeansBy(ToolArrayUtils.asList(beanCriterions));
     }
 
     @Override
-    public T getBean(Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
-        return this.getBean(this.getCheckedSession(), beanColumnPairs);
+    public List<T> getBeansBy(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException {
+        return this.getBeansBy(this.getCheckedSession(), beanCriterions);
     }
 
     @Override
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public final List<T> loadBeans(T ... beans) throws ToolBeanDataAccessException {
+    @SuppressWarnings({ "unchecked" })
+    public List<T> loadBeans(T ... beans) throws ToolBeanDataAccessException {
         return this.loadBeans(ToolArrayUtils.asList(beans));
     }
 
@@ -142,9 +117,8 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public final List<T> refreshBeans(T ... beans) throws ToolBeanDataAccessException {
+    @SuppressWarnings({ "unchecked" })
+    public List<T> refreshBeans(T ... beans) throws ToolBeanDataAccessException {
         return this.refreshBeans(ToolArrayUtils.asList(beans));
     }
 
@@ -166,9 +140,8 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public final List<T> setBeans(T ... beans) throws ToolBeanDataAccessException {
+    @SuppressWarnings({ "unchecked" })
+    public List<T> setBeans(T ... beans) throws ToolBeanDataAccessException {
         return this.setBeans(ToolArrayUtils.asList(beans));
     }
 
@@ -190,9 +163,8 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public final List<T> addBeans(T ... beans) throws ToolBeanDataAccessException {
+    @SuppressWarnings({ "unchecked" })
+    public List<T> addBeans(T ... beans) throws ToolBeanDataAccessException {
         return this.addBeans(ToolArrayUtils.asList(beans));
     }
 
@@ -214,9 +186,8 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public final List<T> updateBeans(T ... beans) throws ToolBeanDataAccessException {
+    @SuppressWarnings({ "unchecked" })
+    public List<T> updateBeans(T ... beans) throws ToolBeanDataAccessException {
         return this.updateBeans(ToolArrayUtils.asList(beans));
     }
 
@@ -238,31 +209,13 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    public List<T> removeBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
-        return this.removeBeansById(ToolArrayUtils.asList(beanIdValues));
-    }
-
-    @Override
-    public List<T> removeBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
-        Session session = this.getCheckedSession();
-        List<T> beansRemoved = new ArrayList<>();
-
-        for (Serializable beanIdValue : beanIdValues) {
-            beansRemoved.add(this.removeBeanById(session, beanIdValue));
-        }
-
-        return beansRemoved;
-    }
-
-    @Override
     public T removeBeanById(Serializable beanIdValue) throws ToolBeanDataAccessException {
         return this.removeBeanById(this.getCheckedSession(), beanIdValue);
     }
 
     @Override
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public final List<T> removeBeans(T ... beans) throws ToolBeanDataAccessException {
+    @SuppressWarnings({ "unchecked" })
+    public List<T> removeBeans(T ... beans) throws ToolBeanDataAccessException {
         return this.removeBeans(ToolArrayUtils.asList(beans));
     }
 
@@ -288,45 +241,34 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
         return this.getSession() != null;
     }
 
-    protected boolean containsBean(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
+    protected boolean containsBean(Session session, @Nullable Serializable beanIdValue) throws ToolBeanDataAccessException {
         return this.getBeanById(session, beanIdValue) != null;
     }
 
-    @SuppressWarnings({ "unchecked" })
-    protected T getFirstBean(Session session) throws ToolBeanDataAccessException {
-        return ToolListUtils.getFirst((List<T>) session.getNamedQuery(AbstractToolBean.QUERY_NAME_GET_ALL_BEANS).setMaxResults(1).list());
+    protected T getBeanById(Session session, @Nullable Serializable beanIdValue) throws ToolBeanDataAccessException {
+        return (beanIdValue != null) ? this.getBeanBy(session, ToolArrayUtils.asList(Restrictions.idEq(beanIdValue))) : null;
+    }
+
+    protected T getBeanBy(Session session, @Nullable Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException {
+        return ToolListUtils.getFirst(this.getBeansBy(this.buildBeanCriteria(beanCriterions).getExecutableCriteria(session).setMaxResults(1)));
+    }
+
+    protected List<T> getBeansBy(Session session, @Nullable Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException {
+        return this.getBeansBy(this.buildBeanCriteria(beanCriterions).getExecutableCriteria(session));
     }
 
     @SuppressWarnings({ "unchecked" })
-    protected List<T> getAllBeans(Session session) throws ToolBeanDataAccessException {
-        return (List<T>) session.getNamedQuery(AbstractToolBean.QUERY_NAME_GET_ALL_BEANS).list();
-    }
-
-    protected T getBeanById(Session session, Serializable beanIdValue) throws ToolBeanDataAccessException {
-        return this.beanClass.cast(session.get(this.beanImplClass, beanIdValue));
-    }
-
-    protected List<T> getBeans(Session session, Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
-        // TODO: implement
-        return new ArrayList<>();
-    }
-
-    protected T getBean(Session session, Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
-        // TODO: implement
-        return null;
+    protected List<T> getBeansBy(Criteria beanCriteria) throws ToolBeanDataAccessException {
+        return (List<T>) beanCriteria.list();
     }
 
     @SuppressWarnings({ "unchecked" })
     protected T loadBean(Session session, T bean) throws ToolBeanDataAccessException {
         Serializable beanId = bean.getBeanId();
+        T beanPersistent = this.getBeanById(beanId);
 
-        if (this.containsBean(session, beanId)) {
-            T beanPersistent;
-
-            if ((beanPersistent = (T) session.get(bean.getClass(), beanId)) != null) {
-                session.evict(beanPersistent);
-            }
-
+        if (beanPersistent != null) {
+            session.evict(beanPersistent);
             session.load(bean, beanId);
         }
 
@@ -367,15 +309,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @SuppressWarnings({ "unchecked" })
     protected T removeBean(Session session, T bean) throws ToolBeanDataAccessException {
-        if (session.contains(bean)) {
-            session.delete(bean);
-        } else {
-            T beanPersistent;
-
-            if ((beanPersistent = (T) session.get(bean.getClass(), bean.getBeanId())) != null) {
-                session.delete(beanPersistent);
-            }
-        }
+        session.delete(bean);
 
         return bean;
     }
@@ -405,6 +339,10 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     protected synchronized boolean hasSessionFactory() {
         return (this.sessionFactory != null) && !this.sessionFactory.isClosed();
+    }
+
+    protected DetachedCriteria buildBeanCriteria(@Nullable Iterable<Criterion> beanCriterions) {
+        return ToolRestrictionsUtils.addAll(DetachedCriteria.forClass(this.beanImplClass), beanCriterions);
     }
 
     @Override

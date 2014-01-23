@@ -42,6 +42,7 @@ public interface InstanceConfig extends ToolBean {
 
     public boolean hasDomainName();
 
+    @JsonProperty("domainName")
     @Nullable
     public Name getDomainName();
 
@@ -50,7 +51,6 @@ public interface InstanceConfig extends ToolBean {
     public boolean hasDomainNameString();
 
     @Domain
-    @JsonProperty("domainName")
     @Nullable
     public String getDomainNameString();
 
@@ -58,6 +58,7 @@ public interface InstanceConfig extends ToolBean {
 
     public boolean hasIpAddress();
 
+    @JsonProperty("ipAddr")
     @Nullable
     public InetAddress getIpAddress();
 
@@ -66,7 +67,6 @@ public interface InstanceConfig extends ToolBean {
     public boolean hasIpAddressString();
 
     @IpAddress
-    @JsonProperty("ipAddr")
     @Nullable
     public String getIpAddressString();
 

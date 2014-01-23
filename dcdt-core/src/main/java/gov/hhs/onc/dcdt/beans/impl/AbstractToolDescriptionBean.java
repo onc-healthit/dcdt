@@ -8,7 +8,6 @@ import org.apache.commons.lang3.StringUtils;
 
 @MappedSuperclass
 public abstract class AbstractToolDescriptionBean extends AbstractToolBean implements ToolDescriptionBean {
-    @Transient
     protected String text;
 
     @Override

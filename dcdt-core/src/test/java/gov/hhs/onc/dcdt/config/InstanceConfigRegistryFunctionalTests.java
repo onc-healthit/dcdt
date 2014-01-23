@@ -4,7 +4,6 @@ import gov.hhs.onc.dcdt.config.impl.InstanceConfigImpl;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.utils.ToolInetAddressUtils;
 import java.net.InetAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +24,6 @@ public class InstanceConfigRegistryFunctionalTests extends ToolTestNgFunctionalT
     private Name testInstanceConfigDomainRmName;
 
     @Value("${dcdt.test.instance.ip.addr}")
-    private String testInstanceConfigIpAddrStr;
-
     private InetAddress testInstanceConfigIpAddr;
 
     @Test(dependsOnMethods = { "testRemoveBeans" })
@@ -54,13 +51,6 @@ public class InstanceConfigRegistryFunctionalTests extends ToolTestNgFunctionalT
         InstanceConfig instanceConfig = this.getInstanceConfig();
         Assert.assertNotEquals(instanceConfig.getDomainName(), this.testInstanceConfigDomainRmName, "Instance configuration domain names are equal.");
         Assert.assertNotEquals(instanceConfig.getIpAddress(), this.testInstanceConfigIpAddr, "Instance configuration IP addresses are equal.");
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        super.afterPropertiesSet();
-
-        this.testInstanceConfigIpAddr = ToolInetAddressUtils.getByAddress(null, this.testInstanceConfigIpAddrStr);
     }
 
     private InstanceConfigService getInstanceConfigService() {

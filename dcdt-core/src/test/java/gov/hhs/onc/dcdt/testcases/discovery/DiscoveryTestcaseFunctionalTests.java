@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.dns.DnsNameException;
 import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.utils.ToolMailAddressUtils;
+import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
 import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;

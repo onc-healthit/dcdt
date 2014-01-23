@@ -6,8 +6,8 @@ import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
 import gov.hhs.onc.dcdt.crypto.keys.KeyDescriptor;
 import javax.annotation.Nullable;
 
-public abstract class AbstractCredentialDescriptor<T extends KeyDescriptor, U extends CertificateDescriptor> extends AbstractCryptographyDescriptor
-    implements CredentialDescriptor<T, U> {
+public abstract class AbstractCredentialDescriptor<T extends KeyDescriptor, U extends CertificateDescriptor> extends AbstractCryptographyDescriptor implements
+    CredentialDescriptor<T, U> {
     protected T keyDesc;
     protected U certDesc;
 

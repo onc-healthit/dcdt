@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.net.impl;
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
-import gov.hhs.onc.dcdt.utils.ToolInetAddressUtils;
+import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import java.net.InetAddress;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;

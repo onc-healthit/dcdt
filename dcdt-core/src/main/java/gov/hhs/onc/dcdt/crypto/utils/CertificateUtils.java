@@ -5,7 +5,7 @@ import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.PemType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import gov.hhs.onc.dcdt.utils.ToolMailAddressUtils;
+import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -97,7 +97,7 @@ public abstract class CertificateUtils {
 
         GeneralName mailSubjAltName = new GeneralName(GeneralName.rfc822Name, mailAddr);
 
-        return ToolMailAddressUtils.hasLocal(mailAddr) ? new GeneralNames(mailSubjAltName) : new GeneralNames(ArrayUtils.toArray(mailSubjAltName,
+        return ToolMailAddressUtils.hasLocalPart(mailAddr) ? new GeneralNames(mailSubjAltName) : new GeneralNames(ArrayUtils.toArray(mailSubjAltName,
             new GeneralName(GeneralName.dNSName, mailAddr)));
     }
 

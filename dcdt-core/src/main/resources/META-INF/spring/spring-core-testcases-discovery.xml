@@ -31,13 +31,13 @@
     =====================================================================================================-->
     <dcdt:normalized-string id="discoveryTestcaseConstantStrVerifyEmail">
         You should have received an email indicating the test case results for your system. Examine the results
-        to see if your system passed the test case. If you do not receive a message for the test case\, then you
+        to see if your system passed the test case. If you do not receive a message for the test case, then you
         should assume that the test case failed.
     </dcdt:normalized-string>
 
     <dcdt:normalized-string id="discoveryTestcaseConstantStrVerifyNoEmail">
         Verify that your system did NOT send an email because it could not find a certificate for the Direct address.
-        To pass this test case\, you must NOT receive an email in response.
+        To pass this test case, you must NOT receive an email in response.
     </dcdt:normalized-string>
     
     <!--====================================================================================================
@@ -116,15 +116,12 @@
                     <beans:property name="credentialConfig">
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
-                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
                                     <beans:property name="subject">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D1_invB"/>
                                     </beans:property>
                                 </beans:bean>
-                            </beans:property>
-                            <beans:property name="keyDescriptor">
-                                <beans:bean parent="discoveryTestcaseKeyConfigLeaf"/>
                             </beans:property>
                         </beans:bean>
                     </beans:property>
@@ -146,7 +143,7 @@
                     <beans:property name="credentialConfig">
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
-                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
                                     <beans:property name="subject">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D1_invC"/>
@@ -204,30 +201,12 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail"
                 p:rtmSections="1,3">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>An invalid domain-bound certificate for the Direct address in a DNS CERT record.</dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Invalid address-bound and domain-bound certificates for the Direct address in an LDAP server
-                            with an associated SRV record.
-                        </dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Valid and invalid address-bound certificates for other Direct addresses in DNS CERT records.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="specifications">
                     <util:list>
                         <dcdt:normalized-string>RFC 4398: Section 2.1</dcdt:normalized-string>
                         <dcdt:normalized-string>Direct Applicability Statement for Secure Health Transport: Sections 4.0 and 5.3</dcdt:normalized-string>
                     </util:list>
                 </beans:property>
-                <!--<beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A valid domain-bound certificate in a DNS CERT record containing the Direct address' domain name
-                        in the dNSName of the SubjectAlternativeName extension.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for domain-bound CERT records and discover
@@ -238,7 +217,88 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="DOMAIN"
+                    p:location-ref="discoveryTestcaseCredLoc1Dns"
+                    p:name="D2_valB"
+                    p:nameDisplay="D2_valB">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D2_valB"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid domain-bound certificate in a DNS CERT record containing the Direct address' domain name
+                                    in the dNSName of the SubjectAlternativeName extension.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc1Ldap1"
+                    p:name="D2_invC"
+                    p:nameDisplay="D2_invC">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D2_invC"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Invalid address-bound certificate for the Direct address in an LDAP server with an associated SRV record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
+                    p:bindingType="DOMAIN"
+                    p:location-ref="discoveryTestcaseCredLoc1Ldap1"
+                    p:name="D2_invD"
+                    p:nameDisplay="D2_invD">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D2_invD"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Invalid domain-bound certificate for the Direct address in an LDAP server with an associated SRV record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -251,29 +311,11 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail"
                 p:rtmSections="2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>
-                            A valid and invalid domain-bound certificate for the Direct address in an LDAP server with
-                            an associated SRV record.
-                        </dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Valid and invalid address-bound certificates for other Direct addresses in an LDAP server
-                            with an associated SRV record.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="specifications">
                     <util:list>
                         <dcdt:normalized-string>RFC 2798: Section 9.1.2</dcdt:normalized-string>
                     </util:list>
                 </beans:property>
-                <!--<beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A valid address-bound certificate in an LDAP server with the appropriate mail attribute and
-                        InetOrgPerson schema. The associated SRV record has Priority = 0.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for SRV records and discover a valid
@@ -284,7 +326,62 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
+                    p:name="D3_valC"
+                    p:nameDisplay="D3_valC">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D3_valC"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
+                    p:bindingType="DOMAIN"
+                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
+                    p:name="D3_invD"
+                    p:nameDisplay="D3_invD">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D3_invD"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Invalid domain-bound certificate for the Direct address in an LDAP server with
+                                    an associated SRV record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -297,29 +394,11 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail"
                 p:rtmSections="2,3,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20,21,22">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>
-                            An invalid domain-bound certificate for the Direct address in an LDAP server with an
-                            associated SRV record.
-                        </dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Valid and invalid address-bound certificates for other Direct addresses in an LDAP server
-                            with an associated SRV record.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="specifications">
                     <util:list>
                         <dcdt:normalized-string>RFC 2798: Section 9.1.2</dcdt:normalized-string>
                     </util:list>
                 </beans:property>
-                <!--<beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A valid domain-bound certificate in an LDAP server with the appropriate mail attribute and
-                        InetOrgPerson schema. The associated SRV record has Priority = 0.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for SRV records and discover a valid
@@ -330,7 +409,34 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="DOMAIN"
+                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
+                    p:name="D4_valD"
+                    p:nameDisplay="D4_valD">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D4_valD"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid domain-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -343,26 +449,43 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail"
                 p:rtmSections="1,3">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>An invalid address-bound certificate for the Direct address in a DNS CERT record.</dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Valid and invalid address-bound and domain-bound certificates for other Direct addresses in
-                            DNS CERT records and an LDAP server with an associated SRV record.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
-                        This test case verifies that your system can query DNS for address-bound CERT records and does
-                        not select the associated invalid address-bound X.509 certificate.
+                        This test case verifies that your system can query DNS for address-bound CERT records and finds,
+                        but does not select the associated invalid address-bound X.509 certificate.
                     </dcdt:normalized-string>
                 </beans:property>
             </beans:bean>
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc1Dns"
+                    p:name="D5_invA"
+                    p:nameDisplay="D5_invA">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D5_invA"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    An invalid address-bound certificate for the Direct address in a DNS CERT record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -375,22 +498,43 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail"
                 p:rtmSections="1,3">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>An invalid domain-bound certificate for the Direct address in a DNS CERT record.</dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
-                        This test case verifies that your system can query DNS for domain-bound CERT records and does not
-                        select the associated invalid domain-bound X.509 certificate.
+                        This test case verifies that your system can query DNS for domain-bound CERT records and finds,
+                        but does not select the associated invalid domain-bound X.509 certificate.
                     </dcdt:normalized-string>
                 </beans:property>
             </beans:bean>
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
+                    p:bindingType="DOMAIN"
+                    p:location-ref="discoveryTestcaseCredLoc4Dns"
+                    p:name="D6_invB"
+                    p:nameDisplay="D6_invB">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D6_invB"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    An invalid domain-bound certificate for the Direct address in a DNS CERT record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -403,29 +547,44 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail"
                 p:rtmSections="3,22">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>
-                            An invalid address-bound certificate for the Direct address in an LDAP server with an
-                            associated SRV record.
-                        </dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Valid and invalid address-bound and domain-bound certificates for other Direct addresses in
-                            an LDAP server with an associated SRV record.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
-                        This test case verifies that your system can query DNS for SRV records and does not select the
-                        invalid address-bound X.509 certificate in the associated LDAP server.
+                        This test case verifies that your system can query DNS for SRV records and finds, but
+                        does not select the invalid address-bound X.509 certificate in the associated LDAP server.
                     </dcdt:normalized-string>
                 </beans:property>
             </beans:bean>
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
+                    p:name="D7_invC"
+                    p:nameDisplay="D7_invC">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D7_invC"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Invalid address-bound certificate for the Direct address in an LDAP server with
+                                    an associated SRV record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -438,29 +597,44 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyNoEmail"
                 p:rtmSections="3,22">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>
-                            An invalid domain-bound certificate for the Direct address in an LDAP server with an
-                            associated SRV record.
-                        </dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Valid and invalid address-bound certificates for other Direct addresses in an LDAP server
-                            with an associated SRV record.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
-                        This test case verifies that your system can query DNS for SRV records and does not select the
-                        invalid domain-bound X.509 certificate in the associated LDAP server.
+                        This test case verifies that your system can query DNS for SRV records and finds, but does not
+                        select the invalid domain-bound X.509 certificate in the associated LDAP server.
                     </dcdt:normalized-string>
                 </beans:property>
             </beans:bean>
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
+                    p:bindingType="DOMAIN"
+                    p:location-ref="discoveryTestcaseCredLoc5Ldap1"
+                    p:name="D8_invD"
+                    p:nameDisplay="D8_invD">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D8_invD"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Invalid domain-bound certificate for the Direct address in an LDAP server with
+                                    an associated SRV record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -473,21 +647,6 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail"
                 p:rtmSections="1,3">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>An invalid address-bound certificate for the Direct address in a DNS CERT record.</dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Valid and invalid address-bound and domain-bound certificates for other Direct addresses in
-                            DNS CERT records and an LDAP server with an associated SRV record.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>
-                <beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A valid address-bound certificate in a DNS CERT record containing the Direct address in the
-                        rfc822Name of the SubjectAlternativeName extension.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for address-bound CERT records and select
@@ -498,7 +657,61 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc1Dns"
+                    p:name="D9_valA"
+                    p:nameDisplay="D9_valA">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D9_valA"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate in a DNS CERT record containing the Direct address
+                                    in the rfc822Name of the SubjectAlternativeName extension.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc1Dns"
+                    p:name="D9_invA"
+                    p:nameDisplay="D9_invA">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D9_invA"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Invalid address-bound certificate for the Direct address in a DNS CERT record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -513,15 +726,9 @@
                 p:rtmSections="15,18">
                 <beans:property name="specifications">
                     <util:list>
-                        <dcdt:normalized-string>RFC 2782: Page 3\, Priority Section</dcdt:normalized-string>
+                        <dcdt:normalized-string>RFC 2782: Page 3, Priority Section</dcdt:normalized-string>
                     </util:list>
                 </beans:property>
-                <!--<beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A valid address-bound certificate in an LDAP server with the appropriate mail attribute and
-                        InetOrgPerson schema. The associated SRV record has Priority = 1.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for SRV records and attempts to connect
@@ -537,7 +744,34 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc3Ldap2"
+                    p:name="D10_valE"
+                    p:nameDisplay="D10_valE">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D10_valE"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 1.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -559,9 +793,7 @@
             </beans:bean>
         </beans:property>
         <beans:property name="credentials">
-            <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
-            </util:list>
+            <util:list/>
         </beans:property>
     </beans:bean>
 
@@ -584,9 +816,7 @@
             </beans:bean>
         </beans:property>
         <beans:property name="credentials">
-            <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
-            </util:list>
+            <util:list/>
         </beans:property>
     </beans:bean>
 
@@ -607,9 +837,7 @@
             </beans:bean>
         </beans:property>
         <beans:property name="credentials">
-            <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
-            </util:list>
+            <util:list/>
         </beans:property>
     </beans:bean>
 
@@ -621,12 +849,6 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail"
                 p:rtmSections="1,3,4">
-                <!--<beans:property name="backgroundCertificates">
-                    <dcdt:normalized-string>
-                        Valid and invalid address-bound and domain-bound certificates for other Direct addresses in
-                        DNS CERT records and an LDAP server with an associated SRV record.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="specifications">
                     <util:list>
                         <dcdt:normalized-string>Direct Applicability Statement for Secure Health Transport: Section 5.4</dcdt:normalized-string>
@@ -634,12 +856,6 @@
                         <dcdt:normalized-string>RFC 4298: Section 4</dcdt:normalized-string>
                     </util:list>
                 </beans:property>
-                <!--<beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A valid address-bound certificate that is larger than 512 bytes in a DNS CERT record containing
-                        the Direct address in the rfc822Name of the SubjectAlternativeName extension.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for address-bound CERT records and discover
@@ -650,7 +866,37 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc1Dns"
+                    p:name="D14_valA"
+                    p:nameDisplay="D14_valA">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D14_valA"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                            <beans:property name="keyDescriptor">
+                                <beans:bean parent="discoveryTestcaseKeyConfigLeaf4kb"/>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate that is larger than 512 bytes in a DNS CERT record containing
+                                    the Direct address in the rfc822Name of the SubjectAlternativeName extension.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -663,24 +909,12 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail"
                 p:rtmSections="1,3">
-                <!--<beans:property name="backgroundCertificates">
-                    <dcdt:normalized-string>
-                        Valid and invalid address-bound and domain-bound certificates for other Direct addresses in
-                        DNS CERT records and an LDAP server with an associated SRV record.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="specifications">
                     <util:list>
                         <dcdt:normalized-string>RFC 4398: Section 2.1</dcdt:normalized-string>
                         <dcdt:normalized-string>Direct Applicability Statement for Secure Health Transport: Section 5.3</dcdt:normalized-string>
                     </util:list>
                 </beans:property>
-                <!--<beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A representation of a valid address-bound certificate served as the result of an IPKIX URL
-                        redirect in DNS.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for address-bound CERT records and discover
@@ -691,7 +925,34 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc1Dns"
+                    p:name="D15_valA"
+                    p:nameDisplay="D15_valA">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D15_valA"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    A representation of a valid address-bound certificate served as the result of an IPKIX URL
+                                    redirect in DNS.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -704,29 +965,11 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail"
                 p:rtmSections="15,18">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>
-                            An invalid address-bound certificate for the Direct address in an LDAP server. The associated
-                            SRV record has Priority = 1.
-                        </dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            Valid and invalid address-bound and domain-bound certificates for other Direct addresses in
-                            an LDAP server with an associated SRV record.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="specifications">
                     <util:list>
-                        <dcdt:normalized-string>RFC 2782: Page 3\, Priority Section</dcdt:normalized-string>
+                        <dcdt:normalized-string>RFC 2782: Page 3, Priority Section</dcdt:normalized-string>
                     </util:list>
                 </beans:property>
-                <!--<beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A valid address-bound certificate in an LDAP server with the appropriate mail attribute and
-                        InetOrgPerson schema. The associated SRV record has Priority = 0.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for SRV records and discover a valid
@@ -738,7 +981,62 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
+                    p:name="D16_valC"
+                    p:nameDisplay="D16_valC">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D16_valC"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc2Ldap2"
+                    p:name="D16_invE"
+                    p:nameDisplay="D16_invE">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D16_invE"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Invalid address-bound certificate for the Direct address in an LDAP server. The associated
+                                    SRV record has Priority = 1.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -751,29 +1049,11 @@
             <beans:bean parent="discoveryTestcaseDescImpl"
                 p:instructions-ref="discoveryTestcaseConstantStrVerifyEmail"
                 p:rtmSections="16,18">
-                <!--<beans:property name="backgroundCertificates">
-                    <util:list>
-                        <dcdt:normalized-string>
-                            An invalid address-bound certificate in an LDAP server with the appropriate mail attribute and
-                            InetOrgPerson schema. The associated SRV record has Priority = 0 and Weight = 0.
-                        </dcdt:normalized-string>
-                        <dcdt:normalized-string>
-                            An invalid domain-bound certificate for another Direct address in an LDAP server associated
-                            with an SRV record that has Priority = 0 and Weight = 0.
-                        </dcdt:normalized-string>
-                    </util:list>
-                </beans:property>-->
                 <beans:property name="specifications">
                     <util:list>
-                        <dcdt:normalized-string>RFC 2782: Page 3\, Weight Section</dcdt:normalized-string>
+                        <dcdt:normalized-string>RFC 2782: Page 3, Weight Section</dcdt:normalized-string>
                     </util:list>
                 </beans:property>
-                <!--<beans:property name="targetCertificate">
-                    <dcdt:normalized-string>
-                        A valid address-bound certificate in an LDAP server with the appropriate mail attribute and
-                        InetOrgPerson schema. The associated SRV record has Priority = 0 and Weight = 100.
-                    </dcdt:normalized-string>
-                </beans:property>-->
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         This test case verifies that your system can query DNS for SRV records and discover a valid
@@ -786,7 +1066,62 @@
         </beans:property>
         <beans:property name="credentials">
             <util:list>
-                <!-- TODO: implement Discovery testcase credential configs -->
+                <beans:bean parent="discoveryTestcaseCredLeafTarget"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc5Ldap3"
+                    p:name="D17_valC"
+                    p:nameDisplay="D17_valC">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D17_valC"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0 and Weight = 100.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackground"
+                    p:bindingType="ADDRESS"
+                    p:location-ref="discoveryTestcaseCredLoc5Ldap1"
+                    p:name="D17_valE"
+                    p:nameDisplay="D17_valE">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subject">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D17_valE"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0 and Weight = 0.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>

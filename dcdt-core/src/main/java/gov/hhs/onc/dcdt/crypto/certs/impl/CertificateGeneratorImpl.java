@@ -55,14 +55,15 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
 
         boolean hasIssuerCredInfo = (issuerCredInfo != null);
         CertificateType certType = certConfig.getCertificateType();
-        X509v3CertificateBuilder certBuilder = this.generateCertificateBuilder((hasIssuerCredInfo ? issuerCredInfo.getKeyDescriptor() : keyPairInfo),
-            (hasIssuerCredInfo ? issuerCredInfo.getCertificateDescriptor() : certConfig), keyPairInfo, certConfig);
+        X509v3CertificateBuilder certBuilder =
+            this.generateCertificateBuilder((hasIssuerCredInfo ? issuerCredInfo.getKeyDescriptor() : keyPairInfo),
+                (hasIssuerCredInfo ? issuerCredInfo.getCertificateDescriptor() : certConfig), keyPairInfo, certConfig);
 
         try {
             SignatureAlgorithm certSigAlg = certConfig.getSignatureAlgorithm();
-            X509CertificateHolder certHolder = certBuilder.build(new BcRSAContentSignerBuilder(certSigAlg.getId(), certSigAlg.getDigestId())
-                .build(PrivateKeyFactory.createKey(certConfig.isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo.getKeyDescriptor()
-                    .getPrivateKeyInfo())));
+            X509CertificateHolder certHolder =
+                certBuilder.build(new BcRSAContentSignerBuilder(certSigAlg.getId(), certSigAlg.getDigestId()).build(PrivateKeyFactory.createKey(certConfig
+                    .isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo.getKeyDescriptor().getPrivateKeyInfo())));
 
             return new CertificateInfoImpl((X509Certificate) CertificateUtils.getCertificateFactory(certType).generateCertificate(
                 new ByteArrayInputStream(certHolder.getEncoded())));
@@ -77,9 +78,10 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
         CertificateName certSubj = certConfig.getSubject();
         CertificateValidInterval certValidInterval = certConfig.getValidInterval();
 
-        X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubject().toX500Name(),
-            (certConfig.hasSerialNumber() ? certConfig.getSerialNumber() : CertificateUtils.generateSerialNumber()), certValidInterval.getNotBefore(),
-            certValidInterval.getNotAfter(), certSubj.toX500Name(), keyPairInfo.getSubjectPublicKeyInfo());
+        X509v3CertificateBuilder certBuilder =
+            new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubject().toX500Name(), (certConfig.hasSerialNumber()
+                ? certConfig.getSerialNumber() : CertificateUtils.generateSerialNumber()), certValidInterval.getNotBefore(), certValidInterval.getNotAfter(),
+                certSubj.toX500Name(), keyPairInfo.getSubjectPublicKeyInfo());
 
         try {
             certBuilder.addExtension(Extension.basicConstraints, false, new BasicConstraints(certCa));

@@ -7,7 +7,7 @@ import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
 import gov.hhs.onc.dcdt.data.tx.services.ToolBeanService;
 import java.io.Serializable;
 import java.util.List;
-import org.apache.commons.lang3.tuple.Pair;
+import org.hibernate.criterion.Criterion;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
@@ -15,14 +15,8 @@ public abstract class AbstractToolBeanService<T extends ToolBean, U extends Tool
     protected U beanDao;
 
     @Override
-    @SuppressWarnings({ "unchecked" })
-    public boolean containsBeans(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
-        return this.beanDao.containsBeans(beanIdValues);
-    }
-
-    @Override
-    public boolean containsBeans(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
-        return this.beanDao.containsBeans(beanIdValues);
+    public boolean containsBean() throws ToolBeanDataAccessException {
+        return this.beanDao.containsBean();
     }
 
     @Override
@@ -31,23 +25,23 @@ public abstract class AbstractToolBeanService<T extends ToolBean, U extends Tool
     }
 
     @Override
-    public T getFirstBean() throws ToolBeanDataAccessException {
-        return this.beanDao.getFirstBean();
+    public boolean containsBean(Criterion ... beanCriterions) throws ToolBeanDataAccessException {
+        return this.beanDao.containsBean(beanCriterions);
     }
 
     @Override
-    public List<T> getAllBeans() throws ToolBeanDataAccessException {
-        return this.beanDao.getAllBeans();
+    public boolean containsBean(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException {
+        return this.beanDao.containsBean(beanCriterions);
     }
 
     @Override
-    public List<T> getBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
-        return this.beanDao.getBeansById(beanIdValues);
+    public T getBean() throws ToolBeanDataAccessException {
+        return this.beanDao.getBean();
     }
 
     @Override
-    public List<T> getBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
-        return this.beanDao.getBeansById(beanIdValues);
+    public List<T> getBeans() throws ToolBeanDataAccessException {
+        return this.beanDao.getBeans();
     }
 
     @Override
@@ -56,25 +50,23 @@ public abstract class AbstractToolBeanService<T extends ToolBean, U extends Tool
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
-    public List<T> getBeans(Pair<String, ? extends Serializable> ... beanColumnPairs) throws ToolBeanDataAccessException {
-        return this.beanDao.getBeans(beanColumnPairs);
+    public T getBeanBy(Criterion ... beanCriterions) throws ToolBeanDataAccessException {
+        return this.beanDao.getBeanBy(beanCriterions);
     }
 
     @Override
-    public List<T> getBeans(Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
-        return this.beanDao.getBeans(beanColumnPairs);
+    public T getBeanBy(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException {
+        return this.beanDao.getBeanBy(beanCriterions);
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
-    public T getBean(Pair<String, ? extends Serializable> ... beanColumnPairs) throws ToolBeanDataAccessException {
-        return this.beanDao.getBean(beanColumnPairs);
+    public List<T> getBeansBy(Criterion ... beanCriterions) throws ToolBeanDataAccessException {
+        return this.beanDao.getBeansBy(beanCriterions);
     }
 
     @Override
-    public T getBean(Iterable<Pair<String, ? extends Serializable>> beanColumnPairs) throws ToolBeanDataAccessException {
-        return this.beanDao.getBean(beanColumnPairs);
+    public List<T> getBeansBy(Iterable<Criterion> beanCriterions) throws ToolBeanDataAccessException {
+        return this.beanDao.getBeansBy(beanCriterions);
     }
 
     @Override
@@ -164,18 +156,6 @@ public abstract class AbstractToolBeanService<T extends ToolBean, U extends Tool
     @Transactional(readOnly = false)
     public T updateBean(T bean) throws ToolBeanDataAccessException {
         return this.beanDao.updateBean(bean);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public List<T> removeBeansById(Serializable ... beanIdValues) throws ToolBeanDataAccessException {
-        return this.beanDao.removeBeansById(beanIdValues);
-    }
-
-    @Override
-    @Transactional(readOnly = false)
-    public List<T> removeBeansById(Iterable<? extends Serializable> beanIdValues) throws ToolBeanDataAccessException {
-        return this.beanDao.removeBeansById(beanIdValues);
     }
 
     @Override

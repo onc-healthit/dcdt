@@ -1,8 +1,8 @@
-package gov.hhs.onc.dcdt.data.impl;
+package gov.hhs.onc.dcdt.data.events.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.data.ToolBeanEntityEventType;
-import gov.hhs.onc.dcdt.data.ToolBeanEntityInterceptor;
+import gov.hhs.onc.dcdt.data.events.ToolBeanEntityEventType;
+import gov.hhs.onc.dcdt.data.events.ToolBeanEntityInterceptor;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolOrderUtils;
 import java.io.Serializable;

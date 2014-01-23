@@ -12,8 +12,8 @@ import org.xbill.DNS.SRVRecord;
 import org.xbill.DNS.Type;
 
 public enum DnsRecordType {
-    A(Type.A, ARecord.class), CERT(Type.CERT, CERTRecord.class), CNAME(Type.CNAME, CNAMERecord.class), MX(Type.MX, MXRecord.class), NS(Type.NS, NSRecord.class), SOA(
-        Type.SOA, SOARecord.class), SRV(Type.SRV, SRVRecord.class);
+    A(Type.A, ARecord.class), CERT(Type.CERT, CERTRecord.class), CNAME(Type.CNAME, CNAMERecord.class), MX(Type.MX, MXRecord.class),
+    NS(Type.NS, NSRecord.class), SOA(Type.SOA, SOARecord.class), SRV(Type.SRV, SRVRecord.class);
 
     private final int type;
     private final String typeDisplay;

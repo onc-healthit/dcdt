@@ -1,7 +1,7 @@
-package gov.hhs.onc.dcdt.data.impl;
+package gov.hhs.onc.dcdt.data.events.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.data.ToolBeanEntityInterceptor;
+import gov.hhs.onc.dcdt.data.events.ToolBeanEntityInterceptor;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolOrderUtils.PriorityOrderedQueue;
 import java.io.Serializable;
@@ -66,7 +66,7 @@ public class CompositeBeanEntityInterceptor extends AbstractToolBeanDataIntercep
 
     @Autowired(required = false)
     private void setBeanEntityInterceptors(@Nullable List<ToolBeanEntityInterceptor<? extends ToolBean>> beanEntityInterceptors) {
-        this.beanEntityInterceptors = ToolCollectionUtils.addAll(new PriorityOrderedQueue<ToolBeanEntityInterceptor<? extends ToolBean>>(),
-            beanEntityInterceptors);
+        this.beanEntityInterceptors =
+            ToolCollectionUtils.addAll(new PriorityOrderedQueue<ToolBeanEntityInterceptor<? extends ToolBean>>(), beanEntityInterceptors);
     }
 }

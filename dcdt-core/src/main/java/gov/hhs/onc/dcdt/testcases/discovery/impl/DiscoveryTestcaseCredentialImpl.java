@@ -30,34 +30,18 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.apache.commons.lang3.StringUtils;
 
 @Entity(name = "discovery_testcase_cred")
 @JsonTypeName("discoveryTestcaseCred")
 @Table(name = "discovery_testcase_creds")
 public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean implements DiscoveryTestcaseCredential {
-    @Transient
     private BindingType bindingType;
-
-    @Transient
     private CredentialConfig credConfig;
-
-    @Transient
     private CredentialInfo credInfo;
-
-    @Transient
     private DiscoveryTestcaseCredentialDescription desc;
-
-    @Transient
     private DiscoveryTestcaseCredential issuerCred;
-
-    @Transient
     private DiscoveryTestcaseCredentialLocation loc;
-
-    @Transient
     private DiscoveryTestcaseCredentialType type;
-
-    @Transient
     private boolean valid = true;
 
     @Override
@@ -176,7 +160,7 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     }
 
     @JoinColumn(name = "issuer_name", referencedColumnName = "name")
-    @ManyToOne(targetEntity = DiscoveryTestcaseCredentialImpl.class, cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @Nullable
     @Override
     public DiscoveryTestcaseCredential getIssuerCredential() {
@@ -205,22 +189,12 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
         this.loc = loc;
     }
 
-    @Override
-    public boolean hasName() {
-        return !StringUtils.isBlank(this.getName());
-    }
-
-    @Column(name = "name", updatable = false, nullable = false)
+    @Column(name = "name", nullable = false)
     @Id
     @Nullable
     @Override
     public String getName() {
-        return (this.hasCredentialConfig() && this.credConfig.hasCertificateDescriptor() && this.credConfig.getCertificateDescriptor().hasSubject())
-            ? this.credConfig.getCertificateDescriptor().getSubject().toString() : null;
-    }
-
-    @Override
-    public void setName(@Nullable String name) {
+        return super.getName();
     }
 
     @Override

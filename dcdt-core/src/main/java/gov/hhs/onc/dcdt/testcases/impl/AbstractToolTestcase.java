@@ -13,16 +13,9 @@ import javax.persistence.Transient;
 @MappedSuperclass
 public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult> extends AbstractToolNamedBean implements
     ToolTestcase<T, U> {
-    @Transient
     protected T desc;
-
-    @Transient
     protected boolean neg;
-
-    @Transient
     protected boolean optional;
-
-    @Transient
     protected U result;
 
     @Override

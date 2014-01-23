@@ -63,12 +63,12 @@ public abstract class ToolResourceUtils {
 
     public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault, String baseResourcePath,
         boolean includeResourceRawLocs) {
-        String[] resourceLocParts = resourceLoc.contains(URL_PREFIX_DELIM) ? resourceLoc.split(URL_PREFIX_DELIM, 2) : ArrayUtils.toArray(urlPrefixDefault,
-            resourceLoc);
+        String[] resourceLocParts =
+            resourceLoc.contains(URL_PREFIX_DELIM) ? resourceLoc.split(URL_PREFIX_DELIM, 2) : ArrayUtils.toArray(urlPrefixDefault, resourceLoc);
         String resourceLocBaseRaw = baseResourcePath + SystemUtils.FILE_SEPARATOR + resourceLocParts[1], resourceLocRaw = resourceLocParts[1];
-        List<String> resourceLocs = ToolArrayUtils.asList(
-            ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocBaseRaw), URL_PREFIX_DELIM),
-            ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocRaw), URL_PREFIX_DELIM));
+        List<String> resourceLocs =
+            ToolArrayUtils.asList(ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocBaseRaw), URL_PREFIX_DELIM),
+                ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocRaw), URL_PREFIX_DELIM));
 
         if (includeResourceRawLocs) {
             resourceLocs.add(1, resourceLocBaseRaw);
