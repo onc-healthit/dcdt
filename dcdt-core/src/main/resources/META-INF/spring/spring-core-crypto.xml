@@ -24,9 +24,6 @@
     <beans:bean id="keyConfigImpl" class="gov.hhs.onc.dcdt.crypto.keys.impl.KeyConfigImpl" parent="keyConfig" abstract="true"
         p:keyAlgorithm="RSA"
         p:keySize="1024"/>
-    <beans:bean id="keyConfigImpl2" class="gov.hhs.onc.dcdt.crypto.keys.impl.KeyConfigImpl" parent="keyConfig" abstract="true"
-        p:keyAlgorithm="RSA"
-        p:keySize="4096"/>
 
     <beans:bean id="keyConfigCa" parent="keyConfigImpl" abstract="true">
         <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>

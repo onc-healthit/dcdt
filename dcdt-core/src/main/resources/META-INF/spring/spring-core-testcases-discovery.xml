@@ -882,7 +882,7 @@
                                 </beans:bean>
                             </beans:property>
                             <beans:property name="keyDescriptor">
-                                <beans:bean parent="discoveryTestcaseKeyConfigLeaf2"/>
+                                <beans:bean parent="discoveryTestcaseKeyConfigLeaf4kb"/>
                             </beans:property>
                         </beans:bean>
                     </beans:property>
