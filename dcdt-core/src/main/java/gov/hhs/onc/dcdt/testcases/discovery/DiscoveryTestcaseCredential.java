@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
-import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.testcases.BindingType;
@@ -41,13 +40,6 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
     public BindingType getBindingType();
 
     public void setBindingType(@Nullable BindingType bindingType);
-
-    public boolean hasCertificateData();
-
-    @Nullable
-    public byte[] getCertificateData() throws CryptographyException;
-
-    public void setCertificateData(@Nullable byte[] certData) throws CryptographyException;
 
     public boolean hasCredentialConfig();
 
@@ -86,13 +78,6 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
     public DiscoveryTestcaseCredentialLocation getLocation();
 
     public void setLocation(DiscoveryTestcaseCredentialLocation loc);
-
-    public boolean hasPrivateKeyData();
-
-    @Nullable
-    public byte[] getPrivateKeyData() throws CryptographyException;
-
-    public void setPrivateKeyData(@Nullable byte[] privateKeyData) throws CryptographyException;
 
     public boolean hasType();
 

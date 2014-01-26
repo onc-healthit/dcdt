@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.dns.impl;
 
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;
+import gov.hhs.onc.dcdt.convert.JsonConverts;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import java.util.Objects;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
 import org.xbill.DNS.Name;
 
 @Component("dnsNameConv")
+@JsonConverts(deserialize = @Converts(from = String.class, to = Name.class), serialize = @Converts(from = Name.class, to = String.class))
 @List({ @Converts(from = String[].class, to = Name.class), @Converts(from = String.class, to = Name.class), @Converts(from = Name[].class, to = Name.class),
     @Converts(from = Name.class, to = String[].class), @Converts(from = Name.class, to = String.class), @Converts(from = Name.class, to = Name[].class) })
 @Scope("singleton")

@@ -18,6 +18,35 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = INSTANCE MAIL ADDRESSES
+    =====================================================================================================-->
+    <beans:bean id="instanceMailAddr" parent="mailAddrImpl" abstract="true"/>
+    
+    <beans:bean id="instanceMailAddr1" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig1.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr2" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig2.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr3" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig3.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr4" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig4.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr5" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig5.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr6" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig6.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr7" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig7.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr8" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig8.domainName }"/>
+    
+    <!--====================================================================================================
     = INSTANCE MAIL CONFIG
     =====================================================================================================-->
     <beans:bean id="instanceMailAddrConfig" class="gov.hhs.onc.dcdt.config.InstanceMailAddressConfig" abstract="true"/>
@@ -25,87 +54,138 @@
         abstract="true"/>
     
     <beans:bean id="instanceMailAddrConfig1" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d1@#{ instanceDomainConfig1.domainName }"
         p:name="d1"
-        p:nameDisplay="D1"/>
+        p:nameDisplay="D1">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig2" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d2@#{ instanceDomainConfig1.domainName }"
         p:name="d2"
-        p:nameDisplay="D2"/>
+        p:nameDisplay="D2">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig3" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d3@#{ instanceDomainConfig2.domainName }"
         p:name="d3"
-        p:nameDisplay="D3"/>
+        p:nameDisplay="D3">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr2"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig4" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d4@#{ instanceDomainConfig2.domainName }"
         p:name="d4"
-        p:nameDisplay="D4"/>
+        p:nameDisplay="D4">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr2"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig5" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d5@#{ instanceDomainConfig1.domainName }"
         p:name="d5"
-        p:nameDisplay="D5"/>
+        p:nameDisplay="D5">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig6" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d6@#{ instanceDomainConfig4.domainName }"
         p:name="d6"
-        p:nameDisplay="D6"/>
+        p:nameDisplay="D6">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr4"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig7" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d7@#{ instanceDomainConfig2.domainName }"
         p:name="d7"
-        p:nameDisplay="D7"/>
+        p:nameDisplay="D7">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr2"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig8" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d8@#{ instanceDomainConfig5.domainName }"
         p:name="d8"
-        p:nameDisplay="D8"/>
+        p:nameDisplay="D8">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr5"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig9" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d9@#{ instanceDomainConfig1.domainName }"
         p:name="d9"
-        p:nameDisplay="D9"/>
+        p:nameDisplay="D9">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig10" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d10@#{ instanceDomainConfig3.domainName }"
         p:name="d10"
-        p:nameDisplay="D10"/>
+        p:nameDisplay="D10">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr3"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig11" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d11@#{ instanceDomainConfig6.domainName }"
         p:name="d11"
-        p:nameDisplay="D11"/>
+        p:nameDisplay="D11">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr6"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig12" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d12@#{ instanceDomainConfig7.domainName }"
         p:name="d12"
-        p:nameDisplay="D12"/>
+        p:nameDisplay="D12">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr7"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig13" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d13@#{ instanceDomainConfig8.domainName }"
         p:name="d13"
-        p:nameDisplay="D13"/>
+        p:nameDisplay="D13">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr8"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig14" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d14@#{ instanceDomainConfig1.domainName }"
         p:name="d14"
-        p:nameDisplay="D14"/>
+        p:nameDisplay="D14">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig15" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d15@#{ instanceDomainConfig1.domainName }"
         p:name="d15"
-        p:nameDisplay="D15"/>
+        p:nameDisplay="D15">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig16" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d16@#{ instanceDomainConfig2.domainName }"
         p:name="d16"
-        p:nameDisplay="D16"/>
+        p:nameDisplay="D16">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr2"/>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig17" parent="instanceMailAddrConfigImpl"
-        p:mailAddress="d17@#{ instanceDomainConfig5.domainName }"
         p:name="d17"
-        p:nameDisplay="D17"/>
+        p:nameDisplay="D17">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr5"/>
+        </beans:property>
+    </beans:bean>
 </beans:beans>

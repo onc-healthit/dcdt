@@ -5,6 +5,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 
 public abstract class ToolStringUtils {
+    public final static String QUOTE_SINGLE = "'";
+    public final static String QUOTE_DBL = "\"";
+
     public static <T> String joinDelimit(T[] items) {
         return joinDelimit(items, null);
     }
@@ -30,5 +33,13 @@ public abstract class ToolStringUtils {
         }
 
         return strBuilder.toString();
+    }
+
+    public static String quote(String str) {
+        return quote(str, QUOTE_DBL);
+    }
+
+    public static String quote(String str, String quoteStr) {
+        return StringUtils.appendIfMissing(StringUtils.prependIfMissing(str, quoteStr), quoteStr);
     }
 }

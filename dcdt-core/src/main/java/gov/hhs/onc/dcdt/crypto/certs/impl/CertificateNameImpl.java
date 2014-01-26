@@ -5,6 +5,8 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.X500Utils;
 import gov.hhs.onc.dcdt.crypto.utils.X500Utils.OrderedOidComparator;
+import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.List;
@@ -99,18 +101,18 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
 
     @Override
     public boolean hasMailAddress() {
-        return this.hasAttribute(BCStyle.EmailAddress);
+        return this.getMailAddress() != null;
     }
 
     @Nullable
     @Override
-    public String getMailAddress() {
-        return this.getAttributeValueString(BCStyle.EmailAddress);
+    public MailAddress getMailAddress() {
+        return this.hasAttribute(BCStyle.EmailAddress) ? new MailAddressImpl(this.getAttributeValueString(BCStyle.EmailAddress)) : null;
     }
 
     @Override
-    public void setMailAddress(@Nullable String mailAddr) {
-        this.putAttributeValueString(BCStyle.EmailAddress, mailAddr);
+    public void setMailAddress(@Nullable MailAddress mailAddr) {
+        this.putAttributeValueString(BCStyle.EmailAddress, ((mailAddr != null) ? mailAddr.toAddress() : null));
     }
 
     public boolean hasAttribute(ASN1ObjectIdentifier attrOid) {

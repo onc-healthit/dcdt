@@ -11,9 +11,14 @@ import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
 import java.math.BigInteger;
 import java.security.cert.X509Certificate;
 import javax.annotation.Nullable;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Lob;
+import javax.persistence.Transient;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 
+@Embeddable
 public class CertificateInfoImpl extends AbstractCryptographyDescriptor implements CertificateInfo {
     private X509Certificate cert;
 
@@ -30,6 +35,8 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
         return this.cert != null;
     }
 
+    @Column(name = "cert_data", nullable = false)
+    @Lob
     @Nullable
     @Override
     public X509Certificate getCertificate() {
@@ -42,6 +49,7 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
     }
 
     @Override
+    @Transient
     public boolean isCertificateAuthority() {
         return this.hasCertificate() && new BasicConstraints(this.cert.getBasicConstraints()).isCA();
     }
@@ -53,6 +61,7 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
 
     @Nullable
     @Override
+    @Transient
     public CertificateType getCertificateType() {
         return this.hasCertificate() ? CertificateType.X509 : null;
     }
@@ -64,6 +73,7 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
 
     @Nullable
     @Override
+    @Transient
     public BigInteger getSerialNumber() {
         return this.hasCertificate() ? this.cert.getSerialNumber() : null;
     }
@@ -75,6 +85,7 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
 
     @Nullable
     @Override
+    @Transient
     public SignatureAlgorithm getSignatureAlgorithm() {
         return this.hasCertificate() ? CryptographyUtils.findObjectId(SignatureAlgorithm.class, new ASN1ObjectIdentifier(this.cert.getSigAlgOID())) : null;
     }
@@ -86,6 +97,7 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
 
     @Nullable
     @Override
+    @Transient
     public CertificateName getSubject() {
         return this.hasCertificate() ? new CertificateNameImpl(this.cert.getSubjectDN().getName()) : null;
     }
@@ -97,6 +109,7 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
 
     @Nullable
     @Override
+    @Transient
     public CertificateValidInterval getValidInterval() {
         return this.hasCertificate() ? new CertificateValidIntervalImpl(this.cert.getNotBefore(), this.cert.getNotAfter()) : null;
     }

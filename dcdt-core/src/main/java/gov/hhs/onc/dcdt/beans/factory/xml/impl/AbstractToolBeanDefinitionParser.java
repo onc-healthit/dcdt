@@ -11,10 +11,10 @@ import org.springframework.beans.factory.xml.ParserContext;
 import org.w3c.dom.Element;
 
 public abstract class AbstractToolBeanDefinitionParser<T> extends AbstractSimpleBeanDefinitionParser implements ToolBeanDefinitionParser<T> {
-    protected Class<T> beanClass;
+    protected Class<? extends T> beanClass;
     protected String elemName;
 
-    protected AbstractToolBeanDefinitionParser(Class<T> beanClass, String elemName) {
+    protected AbstractToolBeanDefinitionParser(Class<? extends T> beanClass, String elemName) {
         this.beanClass = beanClass;
         this.elemName = elemName;
     }

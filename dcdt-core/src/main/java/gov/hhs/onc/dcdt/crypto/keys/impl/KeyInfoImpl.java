@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.keys.impl;
 
+
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
@@ -12,6 +13,10 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAKey;
 import javax.annotation.Nullable;
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Lob;
+import javax.persistence.Transient;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
@@ -19,6 +24,7 @@ import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 
+@Embeddable
 public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyInfo {
     private KeyPair keyPair;
 
@@ -41,6 +47,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
 
     @Nullable
     @Override
+    @Transient
     public AuthorityKeyIdentifier getAuthorityKeyId() {
         return this.hasSubjectPublicKeyInfo() ? new AuthorityKeyIdentifier(this.getSubjectPublicKeyInfo()) : null;
     }
@@ -52,6 +59,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
 
     @Nullable
     @Override
+    @Transient
     public KeyPair getKeyPair() {
         return this.keyPair;
     }
@@ -68,6 +76,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
 
     @Nullable
     @Override
+    @Transient
     public PublicKey getPublicKey() {
         return this.hasKeyPair() ? this.keyPair.getPublic() : null;
     }
@@ -82,6 +91,8 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
         return this.getPrivateKey() != null;
     }
 
+    @Column(name = "private_key_data", nullable = false)
+    @Lob
     @Nullable
     @Override
     public PrivateKey getPrivateKey() {
@@ -100,6 +111,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
 
     @Nullable
     @Override
+    @Transient
     public PrivateKeyInfo getPrivateKeyInfo() {
         PrivateKey privateKey = this.getPrivateKey();
 
@@ -113,6 +125,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
 
     @Nullable
     @Override
+    @Transient
     public KeyAlgorithm getKeyAlgorithm() {
         Key availKey = this.getAvailableKey();
 
@@ -126,6 +139,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
 
     @Nullable
     @Override
+    @Transient
     public Integer getKeySize() {
         Key availKey = this.getAvailableKey();
 
@@ -139,6 +153,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
 
     @Nullable
     @Override
+    @Transient
     public SubjectKeyIdentifier getSubjectKeyId() {
         return this.hasPublicKey() ? new SubjectKeyIdentifier(DigestUtils.getSha1Digest().digest(this.getPublicKey().getEncoded())) : null;
     }
@@ -150,6 +165,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
 
     @Nullable
     @Override
+    @Transient
     public SubjectPublicKeyInfo getSubjectPublicKeyInfo() {
         PublicKey publicKey = this.getPublicKey();
 
@@ -157,6 +173,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
     }
 
     @Nullable
+    @Transient
     protected Key getAvailableKey() {
         return ObjectUtils.defaultIfNull(this.getPublicKey(), this.getPrivateKey());
     }

@@ -1,100 +1,120 @@
 package gov.hhs.onc.dcdt.json.utils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.json.ToolJsonException;
-import gov.hhs.onc.dcdt.json.ToolObjectMapper;
+import gov.hhs.onc.dcdt.json.impl.ToolObjectMapper;
+import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
+import java.net.InetAddress;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+import org.xbill.DNS.Name;
 
 @Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.json.all", "dcdt.test.unit.json.utils.all", "dcdt.test.unit.json.utils.json" })
 public class ToolJsonUtilsUnitTests extends ToolTestNgUnitTests {
+    @JsonSubTypes({ @Type(MailAddressImpl.class) })
     private static interface ToolTestJsonBean extends ToolBean {
-        public String getProp1();
+        @JsonProperty(value = "domainName", required = true)
+        public Name getDomainName();
 
-        public void setProp1(String prop1);
+        public void setDomainName(Name domainName);
+
+        @JsonProperty(value = "ipAddr", required = true)
+        public InetAddress getIpAddress();
+
+        public void setIpAddress(InetAddress ipAddr);
+
+        @JsonProperty(value = "mailAddr", required = true)
+        public MailAddress getMailAddress();
+
+        public void setMailAddress(MailAddress mailAddr);
     }
 
-    private abstract static class AbstractToolTestJsonBean extends AbstractToolBean implements ToolTestJsonBean {
-        @JsonProperty(value = TEST_JSON_BEAN_PROP1_NAME, required = true)
-        protected String prop1;
+    @Component("toolTestJsonBeanImpl")
+    @JsonTypeName("testJsonBean")
+    @Scope("singleton")
+    private static class ToolTestJsonBeanImpl extends AbstractToolBean implements ToolTestJsonBean {
+        @Value("${dcdt.test.json.domain.name}")
+        private Name domainName;
+
+        @Value("${dcdt.test.json.ip.addr}")
+        private InetAddress ipAddr;
+
+        @Value("${dcdt.test.json.mail.addr}")
+        private MailAddress mailAddr;
 
         @Override
-        public String getProp1() {
-            return this.prop1;
+        public Name getDomainName() {
+            return this.domainName;
         }
 
         @Override
-        public void setProp1(String prop1) {
-            this.prop1 = prop1;
+        public void setDomainName(Name domainName) {
+            this.domainName = domainName;
+        }
+
+        @Override
+        public InetAddress getIpAddress() {
+            return this.ipAddr;
+        }
+
+        @Override
+        public void setIpAddress(InetAddress ipAddr) {
+            this.ipAddr = ipAddr;
+        }
+
+        @Override
+        public MailAddress getMailAddress() {
+            return this.mailAddr;
+        }
+
+        @Override
+        public void setMailAddress(MailAddress mailAddr) {
+            this.mailAddr = mailAddr;
         }
     }
-
-    @Component(TEST_JSON_BEAN1_NAME)
-    @JsonTypeName(TEST_JSON_BEAN1_TYPE_NAME)
-    @Scope("singleton")
-    private static class ToolTestJsonBeanOne extends AbstractToolTestJsonBean {
-    }
-
-    @Component(TEST_JSON_BEAN2_NAME)
-    @Scope("singleton")
-    private static class ToolTestJsonBeanTwo extends AbstractToolTestJsonBean {
-    }
-
-    private final static String TEST_JSON_BEAN_PROP1_NAME = "prop1";
-    private final static String TEST_JSON_BEAN_PROP1_JSON = "\"%s\"";
-    private final static String TEST_JSON_BEAN_JSON = "{ \"%s\": \"%s\", \"%s\": \"%s\" }";
-
-    private final static String TEST_JSON_BEAN1_NAME = "toolTestJsonBean1";
-    private final static String TEST_JSON_BEAN1_TYPE_NAME = "toolTestJsonBeanType1";
-    private final static String TEST_JSON_BEAN1_PROP1_VALUE = "prop1Value1";
-    private final static String TEST_JSON_BEAN1_JSON = String.format(TEST_JSON_BEAN_JSON, Id.NAME.getDefaultPropertyName(), TEST_JSON_BEAN1_TYPE_NAME,
-        TEST_JSON_BEAN_PROP1_NAME, TEST_JSON_BEAN1_PROP1_VALUE);
-
-    private final static String TEST_JSON_BEAN2_NAME = "toolTestJsonBean2";
-    private final static String TEST_JSON_BEAN2_PROP1_VALUE = "prop1Value2";
-    private final static String TEST_JSON_BEAN2_PROP1_JSON = String.format(TEST_JSON_BEAN_PROP1_JSON, TEST_JSON_BEAN2_PROP1_VALUE);
-    private final static String TEST_JSON_BEAN2_JSON = String.format(TEST_JSON_BEAN_JSON, Id.NAME.getDefaultPropertyName(), TEST_JSON_BEAN2_NAME,
-        TEST_JSON_BEAN_PROP1_NAME, TEST_JSON_BEAN2_PROP1_VALUE);
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private ToolObjectMapper objMapper;
 
+    @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private ToolTestJsonBean testJsonBean;
 
-    @Test
+    private String testJsonBeanJson;
+
+    @Test(dependsOnMethods = { "testToJson" })
     public void testFromJson() throws ToolJsonException {
-        this.testJsonBean = ToolJsonUtils.fromJson(this.objMapper.toObjectMapper(), TEST_JSON_BEAN1_JSON, ToolTestJsonBean.class);
-
-        Assert.assertNotNull(this.testJsonBean, String.format("Unable to create test bean 1 (class=%s) from JSON by type name:\n%s",
-            ToolClassUtils.getName(this.testJsonBean), TEST_JSON_BEAN1_JSON));
-        Assert.assertEquals(this.testJsonBean.getProp1(), TEST_JSON_BEAN1_PROP1_VALUE, String.format(
-            "Unable to deserialize test bean 1 (class=%s) property (name=%s).", ToolClassUtils.getName(this.testJsonBean), TEST_JSON_BEAN_PROP1_NAME));
-
-        this.testJsonBean = ToolJsonUtils.fromJson(this.objMapper.toObjectMapper(), TEST_JSON_BEAN2_JSON, ToolTestJsonBean.class);
-
-        Assert.assertNotNull(this.testJsonBean, String.format("Unable to create test bean 2 (class=%s) from JSON by bean name:\n%s",
-            ToolClassUtils.getName(this.testJsonBean), TEST_JSON_BEAN2_JSON));
-        Assert.assertEquals(this.testJsonBean.getProp1(), TEST_JSON_BEAN2_PROP1_VALUE, String.format(
-            "Unable to deserialize test bean 2 (class=%s) property (name=%s).", ToolClassUtils.getName(this.testJsonBean), TEST_JSON_BEAN_PROP1_NAME));
+        ToolTestJsonBean testJsonBeanDeserialized = ToolJsonUtils.fromJson(this.objMapper, this.testJsonBeanJson, ToolTestJsonBean.class);
+        Assert.assertEquals(testJsonBeanDeserialized.getDomainName(), this.testJsonBean.getDomainName(), "Domain names do not match.");
+        Assert.assertEquals(testJsonBeanDeserialized.getIpAddress(), this.testJsonBean.getIpAddress(), "IP addresses do not match.");
+        Assert.assertEquals(testJsonBeanDeserialized.getMailAddress(), this.testJsonBean.getMailAddress(), "Mail addresses do not match.");
     }
 
-    @Test(dependsOnMethods = { "testFromJson" })
+    @Test
     public void testToJson() throws ToolJsonException {
-        String testJson = ToolJsonUtils.toJson(this.objMapper.toObjectMapper(), this.testJsonBean);
+        this.testJsonBeanJson = ToolJsonUtils.toJson(this.objMapper, this.testJsonBean);
+        this.assertJsonContainsStringValue(this.testJsonBean.getDomainName().toString());
+        this.assertJsonContainsStringValue(this.testJsonBean.getIpAddress().getHostAddress());
+        this.assertJsonContainsStringValue(this.testJsonBean.getMailAddress().toAddress());
+    }
 
-        Assert.assertNotNull(testJson, String.format("Unable to create test bean (class=%s) JSON.", ToolClassUtils.getName(this.testJsonBean)));
-        Assert.assertTrue(testJson.contains(TEST_JSON_BEAN2_PROP1_JSON), String.format(
-            "Unable to serialize test bean (class=%s) property (name=%s, value=%s).", ToolClassUtils.getName(this.testJsonBean), TEST_JSON_BEAN_PROP1_NAME,
-            this.testJsonBean.getProp1()));
+    private void assertJsonContainsStringValue(String valueStr) {
+        valueStr = ToolStringUtils.quote(valueStr);
+        Assert.assertTrue(StringUtils.contains(this.testJsonBeanJson, valueStr),
+            String.format("JSON does not contain value string (%s):\n%s", valueStr, this.testJsonBeanJson));
     }
 }

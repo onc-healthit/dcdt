@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.testcases.discovery;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl;
 import java.util.Collection;
@@ -32,7 +33,7 @@ public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseDescrip
 
     @JsonProperty("mailAddr")
     @Nullable
-    public String getMailAddress();
+    public MailAddress getMailAddress();
 
-    public void setMailAddress(@Nullable String mailAddr);
+    public void setMailAddress(@Nullable MailAddress mailAddr);
 }

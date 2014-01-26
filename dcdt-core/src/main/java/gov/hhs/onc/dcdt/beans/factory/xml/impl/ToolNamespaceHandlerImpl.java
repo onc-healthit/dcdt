@@ -2,8 +2,11 @@ package gov.hhs.onc.dcdt.beans.factory.xml.impl;
 
 import gov.hhs.onc.dcdt.beans.factory.xml.ToolBeanDefinitionParser;
 import gov.hhs.onc.dcdt.beans.factory.xml.ToolNamespaceHandler;
+import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 import org.springframework.beans.factory.xml.ParserContext;
@@ -24,13 +27,12 @@ public class ToolNamespaceHandlerImpl extends NamespaceHandlerSupport implements
     }
 
     @SuppressWarnings({ "unchecked" })
-    private final static ToolBeanDefinitionParser<?>[] BEAN_DEF_PARSERS = ArrayUtils
-        .toArray((ToolBeanDefinitionParser<?>) new NormalizedStringBeanDefinitionParser());
+    private final static ToolBeanDefinitionParser<?>[] BEAN_DEF_PARSERS = ArrayUtils.toArray(new NormalizedStringBeanDefinitionParser());
 
     @Override
     public void init() {
         for (ToolBeanDefinitionParser<?> beanDefParser : BEAN_DEF_PARSERS) {
-            this.registerBeanDefinitionParser((beanDefParser = new NormalizedStringBeanDefinitionParser()).getElementName(), beanDefParser);
+            this.registerBeanDefinitionParser(beanDefParser.getElementName(), beanDefParser);
         }
     }
 }
