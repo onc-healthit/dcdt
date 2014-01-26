@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.crypto.certs.impl;
 
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;
+import gov.hhs.onc.dcdt.convert.ConvertsUserType;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
@@ -14,6 +15,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("certConv")
+@ConvertsUserType(CertificateUserType.class)
 @List({ @Converts(from = byte[].class, to = X509Certificate.class), @Converts(from = X509Certificate.class, to = byte[].class) })
 @Scope("singleton")
 public class CertificateConverter extends AbstractToolConverter {

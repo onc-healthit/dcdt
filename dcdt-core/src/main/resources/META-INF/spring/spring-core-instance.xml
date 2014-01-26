@@ -63,6 +63,7 @@
     </beans:bean>
     
     <beans:bean id="instanceConfigSessionFactory" class="gov.hhs.onc.dcdt.data.impl.ToolLocalSessionFactoryBean"
+        p:converters-ref="convs"
         p:dataSource-ref="instanceConfigDataSource"
         p:entityInterceptor-ref="compositeBeanInterceptor"
         p:packagesToScan="gov.hhs.onc.dcdt">
@@ -71,16 +72,6 @@
                 <beans:prop key="#{ T(org.hibernate.cfg.AvailableSettings).DIALECT }">org.hibernate.dialect.DerbyTenSevenDialect</beans:prop>
                 <!--<beans:prop key="#{ T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO }">create-drop</beans:prop>-->
             </util:properties>
-        </beans:property>
-        <beans:property name="userTypes">
-            <util:list>
-                <beans:ref bean="certUserType"/>
-                <beans:ref bean="dnsNameUserType"/>
-                <beans:ref bean="inetAddrUserType"/>
-                <beans:ref bean="keyUserType"/>
-                <beans:ref bean="mailAddrUserType"/>
-                <beans:ref bean="x500NameUserType"/>
-            </util:list>
         </beans:property>
     </beans:bean>
     

@@ -13,8 +13,10 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.convert.ConversionRuntimeException;
 import gov.hhs.onc.dcdt.convert.Converts;
-import gov.hhs.onc.dcdt.convert.JsonConverts;
+import gov.hhs.onc.dcdt.convert.ConvertsJson;
+import gov.hhs.onc.dcdt.convert.ConvertsUserType;
 import gov.hhs.onc.dcdt.convert.ToolConverter;
+import gov.hhs.onc.dcdt.data.types.ToolUserType;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -78,6 +80,7 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     protected Set<ConvertiblePair> convertPairs;
     protected JsonDeserializer<?> jsonDeserializer;
     protected JsonSerializer<?> jsonSerializer;
+    protected Class<? extends ToolUserType<?, ?, ?, ?>> userTypeClass;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolConverter.class);
 
@@ -117,6 +120,7 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })
     public void afterPropertiesSet() throws Exception {
         Class<?> convClass = this.getClass();
 
@@ -128,14 +132,16 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
         ConvertiblePair jsonConvertPair;
 
         if ((jsonConvertPair =
-            toConvertiblePair(ToolAnnotationUtils.getValue(JsonConverts.class, Converts.class, JsonConverts.ANNO_ATTR_NAME_DESERIALIZE, convClass))) != null) {
+            toConvertiblePair(ToolAnnotationUtils.getValue(ConvertsJson.class, Converts.class, ConvertsJson.ANNO_ATTR_NAME_DESERIALIZE, convClass))) != null) {
             this.jsonDeserializer = new ConvertingJsonDeserializer<>(this, jsonConvertPair.getSourceType(), jsonConvertPair.getTargetType());
         }
 
         if ((jsonConvertPair =
-            toConvertiblePair(ToolAnnotationUtils.getValue(JsonConverts.class, Converts.class, JsonConverts.ANNO_ATTR_NAME_SERIALIZE, convClass))) != null) {
+            toConvertiblePair(ToolAnnotationUtils.getValue(ConvertsJson.class, Converts.class, ConvertsJson.ANNO_ATTR_NAME_SERIALIZE, convClass))) != null) {
             this.jsonSerializer = new ConvertingJsonSerializer<>(this, jsonConvertPair.getSourceType(), jsonConvertPair.getTargetType());
         }
+
+        this.userTypeClass = (Class<? extends ToolUserType<?, ?, ?, ?>>) ToolAnnotationUtils.getValue(ConvertsUserType.class, Class.class, convClass);
     }
 
     protected static Set<ConvertiblePair> toConvertiblePairs(List<Converts> convertsAnnos) {
@@ -199,5 +205,16 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     @Override
     public JsonSerializer<?> getJsonSerializer() {
         return this.jsonSerializer;
+    }
+
+    @Override
+    public boolean hasUserTypeClass() {
+        return this.userTypeClass != null;
+    }
+
+    @Nullable
+    @Override
+    public Class<? extends ToolUserType<?, ?, ?, ?>> getUserTypeClass() {
+        return this.userTypeClass;
     }
 }
