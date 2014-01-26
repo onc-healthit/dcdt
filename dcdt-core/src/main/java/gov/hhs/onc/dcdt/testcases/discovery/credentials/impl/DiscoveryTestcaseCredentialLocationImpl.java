@@ -1,11 +1,11 @@
-package gov.hhs.onc.dcdt.testcases.discovery.impl;
+package gov.hhs.onc.dcdt.testcases.discovery.credentials.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.config.InstanceDomainConfig;
 import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.testcases.LocationType;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredentialLocation;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import javax.annotation.Nullable;
 
 @JsonTypeName("discoveryTestcaseCredLoc")

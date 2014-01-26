@@ -14,25 +14,35 @@ import org.xbill.DNS.Name;
 public class DiscoveryTestcaseFunctionalTests extends ToolTestNgFunctionalTests {
     private List<DiscoveryTestcase> discoveryTestcases;
 
+    @SuppressWarnings({ "ConstantConditions" })
     @Test(dependsOnMethods = { "testDiscoveryTestcaseConfigurations" })
     public void testDiscoveryTestcaseMailAddresses() throws ToolMailAddressException {
         Name instanceDomainName = ToolBeanFactoryUtils.getBeanOfType(this.applicationContext.getBeanFactory(), InstanceConfig.class).getDomainName(), discoveryTestcaseMailAddrDomainName;
 
         for (DiscoveryTestcase discoveryTestcase : this.discoveryTestcases) {
-            discoveryTestcaseMailAddrDomainName = discoveryTestcase.getMailAddress().getDomainName();
-
-            Assert.assertTrue(discoveryTestcaseMailAddrDomainName.subdomain(instanceDomainName), String.format(
-                "Discovery testcase (name=%s) mail address (%s) domain name is not a subdomain of the instance configuration domain name (%s).",
-                discoveryTestcase.getName(), discoveryTestcaseMailAddrDomainName, instanceDomainName));
+            Assert.assertTrue((discoveryTestcaseMailAddrDomainName = discoveryTestcase.getMailAddress().getDomainName()).subdomain(instanceDomainName), String
+                .format("Discovery testcase (name=%s) mail address (%s) domain name is not a subdomain of the instance configuration domain name (%s).",
+                    discoveryTestcase.getName(), discoveryTestcaseMailAddrDomainName, instanceDomainName));
         }
     }
 
     @Test
     public void testDiscoveryTestcaseConfigurations() {
+        String discoveryTestcaseName;
+
         for (DiscoveryTestcase discoveryTestcase : (this.discoveryTestcases =
             ToolBeanFactoryUtils.getBeansOfType(this.applicationContext.getBeanFactory(), DiscoveryTestcase.class))) {
-            Assert.assertNotNull(discoveryTestcase.getName(), "Discovery testcase does not have a name.");
-            Assert.assertNotNull(discoveryTestcase.getDescription(), "Discovery testcase does not have a description.");
+            Assert.assertTrue(discoveryTestcase.hasName(),
+                String.format("Discovery testcase (name=%s) does not have a name.", (discoveryTestcaseName = discoveryTestcase.getName())));
+            Assert.assertTrue(discoveryTestcase.hasDescription(),
+                String.format("Discovery testcase (name=%s) does not have a description.", discoveryTestcaseName));
+            Assert.assertTrue(discoveryTestcase.hasMailAddress(),
+                String.format("Discovery testcase (name=%s) does not have a mail address.", discoveryTestcaseName));
+
+            if (!discoveryTestcase.isNegative()) {
+                Assert.assertTrue(discoveryTestcase.hasCredentials(),
+                    String.format("Discovery testcase (name=%s) does not have any credentials.", discoveryTestcaseName));
+            }
         }
     }
 }

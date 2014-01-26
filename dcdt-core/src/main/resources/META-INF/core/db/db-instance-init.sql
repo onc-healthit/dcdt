@@ -8,7 +8,6 @@ create table discovery_testcases (
 );
 
 create table discovery_testcase_creds (
-    discovery_testcase_name varchar(100) references discovery_testcases(name),
     issuer_name varchar(100) references discovery_testcase_creds(name),
     name varchar(100) not null primary key,
     private_key_data blob(8192) not null,

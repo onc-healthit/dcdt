@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.testcases.discovery.impl;
 import gov.hhs.onc.dcdt.beans.factory.impl.AbstractToolFactoryBean;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseService;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
@@ -22,8 +22,10 @@ public class DiscoveryTestcaseFactoryBean extends AbstractToolFactoryBean<Discov
     }
 
     @Override
+    @SuppressWarnings({ "ConstantConditions" })
     protected DiscoveryTestcase createInstance() throws Exception {
-        ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseService.class).loadBean(this.discoveryTestcase);
+        ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseService.class).loadBean(this.discoveryTestcase)
+            .afterPropertiesSet();
 
         return this.discoveryTestcase;
     }

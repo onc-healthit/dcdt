@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.testcases.discovery;
+package gov.hhs.onc.dcdt.testcases.discovery.credentials;
 
 public enum DiscoveryTestcaseCredentialType {
     CA("ca"), BACKGROUND("background"), TARGET("target");

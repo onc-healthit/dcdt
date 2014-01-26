@@ -1055,6 +1055,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <reportNameSuffix>unit</reportNameSuffix>
+                                <skipTests>${skipTestsUnit}</skipTests>
                                 <suiteXmlFiles>
                                     <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-unit.xml</suiteXmlFile>
                                 </suiteXmlFiles>
@@ -1072,6 +1073,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <reportNameSuffix>func</reportNameSuffix>
+                                <skipTests>${skipTestsFunc}</skipTests>
                                 <suiteXmlFiles>
                                     <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-func.xml</suiteXmlFile>
                                 </suiteXmlFiles>
@@ -1090,6 +1092,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <reportNameSuffix>it</reportNameSuffix>
+                                <skipTests>${skipTestsIt}</skipTests>
                                 <suiteXmlFiles>
                                     <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-it.xml</suiteXmlFile>
                                 </suiteXmlFiles>
