@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.ldap;
 
 import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
 import java.util.List;
+import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
@@ -25,8 +26,11 @@ public class LdapLookupServiceUnitTests extends ToolTestNgUnitTests {
     @Value("${dcdt.test.ldap.lookup.port}")
     private int testLdapLookupPort;
 
-    @Value("${dcdt.test.ldap.lookup.search.1.filter.mail}")
-    private String testLdapLookupSearchFilterMail;
+    @Value("${dcdt.test.ldap.lookup.search.1.attr.mail}")
+    private Attribute testLdapLookupSearchAttrMail;
+
+    @Value("${dcdt.test.ldap.lookup.search.1.attr.user.cert}")
+    private Attribute testLdapLookupSearchAttrUserCert;
 
     @Value("${dcdt.test.ldap.lookup.search.1.filter.expr}")
     private ExprNode testLdapLookupSearchFilterExprNode;
@@ -36,16 +40,11 @@ public class LdapLookupServiceUnitTests extends ToolTestNgUnitTests {
     @Test(dependsOnMethods = { "testGetBaseDns" })
     public void testSearch() throws LdapException, LdapInvalidAttributeValueException {
         List<Entry> searchResults = this.ldapLookupService.search(this.testLdapLookupConnConfig, this.testLdapLookupSearchFilterExprNode);
-        Assert.assertFalse(searchResults.isEmpty(), "No LDAP search results found.");
-
-        String mailAttrName = LdapAttribute.MAIL.getName();
-        Dn searchResultDn;
+        Assert.assertFalse(searchResults.isEmpty(), String.format("No LDAP search (filter=%s) results found.", this.testLdapLookupSearchFilterExprNode));
 
         for (Entry searchResult : searchResults) {
-            Assert.assertTrue(searchResult.containsAttribute(mailAttrName),
-                String.format("LDAP search result (dn=%s) does not contain mail attribute (name=%s).", (searchResultDn = searchResult.getDn()), mailAttrName));
-            Assert.assertEquals(searchResult.get(mailAttrName).getString(), this.testLdapLookupSearchFilterMail,
-                String.format("LDAP search result (dn=%s) mail attribute (name=%s) does not match.", searchResultDn, mailAttrName));
+            assertSearchResultLdapAttributeMatches(searchResult, this.testLdapLookupSearchAttrMail);
+            assertSearchResultLdapAttributeMatches(searchResult, this.testLdapLookupSearchAttrUserCert);
         }
     }
 
@@ -62,5 +61,15 @@ public class LdapLookupServiceUnitTests extends ToolTestNgUnitTests {
         this.testLdapLookupConnConfig = new LdapConnectionConfig();
         this.testLdapLookupConnConfig.setLdapHost(this.testLdapLookupHost);
         this.testLdapLookupConnConfig.setLdapPort(this.testLdapLookupPort);
+    }
+
+    private static void assertSearchResultLdapAttributeMatches(Entry searchResult, Attribute ldapAttrSearch) {
+        Assert.assertTrue(searchResult.contains(ldapAttrSearch),
+            String.format("LDAP search result (dn=%s) does not contain LDAP attribute (id=%s).", searchResult.getDn(), ldapAttrSearch.getId()));
+
+        if (ldapAttrSearch.size() > 0) {
+            Assert.assertEquals(searchResult.get(ldapAttrSearch.getAttributeType()), ldapAttrSearch,
+                String.format("LDAP search result (dn=%s) attribute does not match.", searchResult.getDn()));
+        }
     }
 }

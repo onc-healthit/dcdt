@@ -1,19 +1,20 @@
 package gov.hhs.onc.dcdt.ldap;
 
-import gov.hhs.onc.dcdt.ldap.utils.ToolLdapUtils;
+import gov.hhs.onc.dcdt.ldap.utils.ToolLdapAttributeUtils;
 import java.util.regex.Pattern;
 import org.apache.directory.api.ldap.model.filter.AssertionType;
 
 public enum LdapAssertionType {
-    EQUALITY(AssertionType.EQUALITY, Pattern.compile("^\\(" + ToolLdapUtils.PATTERN_STR_ATTR + "=([^$]+)\\)$")), PRESENCE(AssertionType.PRESENCE, Pattern
-        .compile("^\\(" + ToolLdapUtils.PATTERN_STR_ATTR + "=\\*\\)$"));
+    PRESENCE(AssertionType.PRESENCE, "^" + ToolLdapAttributeUtils.PATTERN_STR_ATTR_ID + ToolLdapAttributeUtils.DELIM_VALUE + "\\s*\\*\\s*$"), EQUALITY(
+        AssertionType.EQUALITY, "^" + ToolLdapAttributeUtils.PATTERN_STR_ATTR_ID + ToolLdapAttributeUtils.DELIM_VALUE + "\\s*"
+            + ToolLdapAttributeUtils.PATTERN_STR_ATTR_VALUE + "\\s*$");
 
     private final AssertionType type;
     private final Pattern pattern;
 
-    private LdapAssertionType(AssertionType type, Pattern pattern) {
+    private LdapAssertionType(AssertionType type, String patternStr) {
         this.type = type;
-        this.pattern = pattern;
+        this.pattern = Pattern.compile(patternStr);
     }
 
     public Pattern getPattern() {
