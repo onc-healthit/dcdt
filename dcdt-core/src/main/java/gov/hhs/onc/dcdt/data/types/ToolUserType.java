@@ -9,10 +9,9 @@ import javax.annotation.Nullable;
 import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.AbstractSingleColumnStandardBasicType;
-import org.hibernate.type.DiscriminatorType;
 import org.hibernate.usertype.UserType;
 
-public interface ToolUserType<T, U, V extends AbstractSingleColumnStandardBasicType<U> & DiscriminatorType<U>> extends ToolBean, UserType {
+public interface ToolUserType<T, U, V, W extends AbstractSingleColumnStandardBasicType<V>> extends ToolBean, UserType {
     public String[] getKeys();
 
     @Override

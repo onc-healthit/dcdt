@@ -7,6 +7,12 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class ToolArrayUtils {
+    @Nullable
+    public static <T> T[] slice(@Nullable T[] arr, int index) {
+        return (arr != null) ? (ToolNumberUtils.isPositive(index) ? ArrayUtils.subarray(arr, index, arr.length) : ArrayUtils.subarray(arr, 0, arr.length
+            + index)) : null;
+    }
+
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T> List<T> unwrapElements(T[] ... elemsArrs) {

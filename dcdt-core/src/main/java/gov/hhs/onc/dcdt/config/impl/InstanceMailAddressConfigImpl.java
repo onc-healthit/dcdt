@@ -3,18 +3,26 @@ package gov.hhs.onc.dcdt.config.impl;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.config.InstanceMailAddressConfig;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 
 @JsonTypeName("instanceMailAddrConfig")
 public class InstanceMailAddressConfigImpl extends AbstractToolNamedBean implements InstanceMailAddressConfig {
-    private String mailAddr;
+    private MailAddress mailAddr;
 
     @Override
-    public String getMailAddress() {
+    public void afterPropertiesSet() throws Exception {
+        if (!this.mailAddr.hasLocalPart()) {
+            this.mailAddr.setLocalPart(this.name);
+        }
+    }
+
+    @Override
+    public MailAddress getMailAddress() {
         return this.mailAddr;
     }
 
     @Override
-    public void setMailAddress(String mailAddr) {
+    public void setMailAddress(MailAddress mailAddr) {
         this.mailAddr = mailAddr;
     }
 }

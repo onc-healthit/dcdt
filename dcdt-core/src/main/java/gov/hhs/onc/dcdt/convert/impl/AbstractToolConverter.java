@@ -1,35 +1,113 @@
 package gov.hhs.onc.dcdt.convert.impl;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
+import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.convert.ConversionRuntimeException;
 import gov.hhs.onc.dcdt.convert.Converts;
+import gov.hhs.onc.dcdt.convert.JsonConverts;
 import gov.hhs.onc.dcdt.convert.ToolConverter;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import java.io.IOException;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class AbstractToolConverter extends AbstractToolBean implements ToolConverter {
+    @SuppressWarnings({ "serial" })
+    protected static class ConvertingJsonDeserializer<T, U> extends StdDeserializer<U> {
+        private ToolConverter conv;
+        private Class<T> sourceClass;
+        private Class<U> targetClass;
+
+        public ConvertingJsonDeserializer(ToolConverter conv, Class<T> sourceClass, Class<U> targetClass) {
+            super(targetClass);
+
+            this.conv = conv;
+            this.sourceClass = sourceClass;
+            this.targetClass = targetClass;
+        }
+
+        @Nullable
+        @Override
+        public U deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
+            return this.conv.convert(jsonParser.readValueAs(this.sourceClass), this.sourceClass, this.targetClass);
+        }
+    }
+
+    @SuppressWarnings({ "serial" })
+    protected static class ConvertingJsonSerializer<T, U> extends StdSerializer<T> {
+        private ToolConverter conv;
+        private Class<T> sourceClass;
+        private Class<U> targetClass;
+
+        public ConvertingJsonSerializer(ToolConverter conv, Class<T> sourceClass, Class<U> targetClass) {
+            super(sourceClass);
+
+            this.conv = conv;
+            this.sourceClass = sourceClass;
+            this.targetClass = targetClass;
+        }
+
+        @Override
+        public void serialize(T source, JsonGenerator jsonGen, SerializerProvider serializerProvider) throws IOException, JsonGenerationException {
+            serializerProvider.defaultSerializeValue(this.conv.convert(source, this.sourceClass, this.targetClass), jsonGen);
+        }
+    }
+
+    protected final static TypeDescriptor TYPE_DESC_BYTE = TypeDescriptor.valueOf(byte.class);
+    protected final static TypeDescriptor TYPE_DESC_BYTE_ARR = TypeDescriptor.array(TYPE_DESC_BYTE);
     protected final static TypeDescriptor TYPE_DESC_STR = TypeDescriptor.valueOf(String.class);
     protected final static TypeDescriptor TYPE_DESC_STR_ARR = TypeDescriptor.array(TYPE_DESC_STR);
 
     protected Set<ConvertiblePair> convertPairs;
+    protected JsonDeserializer<?> jsonDeserializer;
+    protected JsonSerializer<?> jsonSerializer;
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolConverter.class);
 
     @Nullable
     @Override
-    public Object convert(Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
+    public <T, U> U convert(@Nullable T source, Class<T> sourceClass, Class<U> targetClass) {
+        return targetClass.cast(this.convert(source, TypeDescriptor.valueOf(sourceClass), TypeDescriptor.valueOf(targetClass)));
+    }
+
+    @Nullable
+    @Override
+    public Object convert(@Nullable Object source, TypeDescriptor sourceType, TypeDescriptor targetType) {
+        if (source == null) {
+            return null;
+        }
+
         ConvertiblePair convertPair = this.findConvertibleTypes(sourceType, targetType);
 
         try {
-            return this.convertInternal(source, sourceType, targetType, convertPair);
+            Object target = this.convertInternal(source, sourceType, targetType, convertPair);
+
+            LOGGER.trace(String.format("Converted (class=%s) source object (class=%s, sourceClass=%s) to target object (class=%s, targetClass=%s).",
+                ToolClassUtils.getName(this), ToolClassUtils.getName(source), ToolClassUtils.getName(sourceType), ToolClassUtils.getName(target),
+                ToolClassUtils.getName(targetType)));
+
+            return target;
         } catch (Exception e) {
-            throw new ConversionRuntimeException(String.format("Unable to convert source (sourceClass=%s, class=%s) to target (targetClass=%s).",
-                ToolClassUtils.getName(sourceType), ToolClassUtils.getName(source), ToolClassUtils.getName(targetType)), e);
+            throw new ConversionRuntimeException(String.format(
+                "Unable to convert (class=%s) source object (class=%s, sourceClass=%s) to target (targetClass=%s).", ToolClassUtils.getName(this),
+                ToolClassUtils.getName(source), ToolClassUtils.getName(sourceType), ToolClassUtils.getName(targetType)), e);
         }
     }
 
@@ -39,13 +117,40 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     }
 
     @Override
-    public Set<ConvertiblePair> getConvertibleTypes() {
-        return this.convertPairs;
+    public void afterPropertiesSet() throws Exception {
+        Class<?> convClass = this.getClass();
+
+        this.convertPairs =
+            toConvertiblePairs(ToolCollectionUtils.addAll(
+                ToolArrayUtils.unwrapElements(ToolAnnotationUtils.getValues(Converts.List.class, Converts[].class, convClass)),
+                ToolAnnotationUtils.findAnnotations(Converts.class, convClass)));
+
+        ConvertiblePair jsonConvertPair;
+
+        if ((jsonConvertPair =
+            toConvertiblePair(ToolAnnotationUtils.getValue(JsonConverts.class, Converts.class, JsonConverts.ANNO_ATTR_NAME_DESERIALIZE, convClass))) != null) {
+            this.jsonDeserializer = new ConvertingJsonDeserializer<>(this, jsonConvertPair.getSourceType(), jsonConvertPair.getTargetType());
+        }
+
+        if ((jsonConvertPair =
+            toConvertiblePair(ToolAnnotationUtils.getValue(JsonConverts.class, Converts.class, JsonConverts.ANNO_ATTR_NAME_SERIALIZE, convClass))) != null) {
+            this.jsonSerializer = new ConvertingJsonSerializer<>(this, jsonConvertPair.getSourceType(), jsonConvertPair.getTargetType());
+        }
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.initializeConvertibleTypesInternal();
+    protected static Set<ConvertiblePair> toConvertiblePairs(List<Converts> convertsAnnos) {
+        Set<ConvertiblePair> convertPairs = new LinkedHashSet<>(convertsAnnos.size());
+
+        for (Converts convertsAnno : convertsAnnos) {
+            convertPairs.add(toConvertiblePair(convertsAnno));
+        }
+
+        return convertPairs;
+    }
+
+    @Nullable
+    protected static ConvertiblePair toConvertiblePair(@Nullable Converts convertsAnno) {
+        return (convertsAnno != null) ? new ConvertiblePair(convertsAnno.from(), convertsAnno.to()) : null;
     }
 
     @Nullable
@@ -64,14 +169,35 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
         return null;
     }
 
-    protected void initializeConvertibleTypesInternal() {
-        List<Converts> convertsAnnos = ToolArrayUtils.unwrapElements(ToolAnnotationUtils.getValues(Converts.List.class, Converts[].class, this.getClass()));
-        ToolCollectionUtils.addAll(convertsAnnos, ToolAnnotationUtils.findAnnotations(Converts.class, this.getClass()));
+    @Override
+    public boolean canConvertJson() {
+        return this.hasJsonDeserializer() && this.hasJsonSerializer();
+    }
 
-        this.convertPairs = new LinkedHashSet<>(convertsAnnos.size());
+    @Override
+    public Set<ConvertiblePair> getConvertibleTypes() {
+        return this.convertPairs;
+    }
 
-        for (Converts convertsAnno : convertsAnnos) {
-            convertPairs.add(new ConvertiblePair(convertsAnno.from(), convertsAnno.to()));
-        }
+    @Override
+    public boolean hasJsonDeserializer() {
+        return this.jsonDeserializer != null;
+    }
+
+    @Nullable
+    @Override
+    public JsonDeserializer<?> getJsonDeserializer() {
+        return this.jsonDeserializer;
+    }
+
+    @Override
+    public boolean hasJsonSerializer() {
+        return this.jsonSerializer != null;
+    }
+
+    @Nullable
+    @Override
+    public JsonSerializer<?> getJsonSerializer() {
+        return this.jsonSerializer;
     }
 }

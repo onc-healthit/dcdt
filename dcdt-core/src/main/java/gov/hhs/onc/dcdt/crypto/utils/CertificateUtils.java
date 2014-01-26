@@ -4,8 +4,8 @@ import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.PemType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -90,15 +90,15 @@ public abstract class CertificateUtils {
     }
 
     @Nullable
-    public static GeneralNames buildSubjectAltNames(@Nullable String mailAddr) {
+    public static GeneralNames buildSubjectAltNames(@Nullable MailAddress mailAddr) {
         if (mailAddr == null) {
             return null;
         }
 
-        GeneralName mailSubjAltName = new GeneralName(GeneralName.rfc822Name, mailAddr);
+        GeneralName mailSubjAltName = new GeneralName(GeneralName.rfc822Name, mailAddr.toAddress());
 
-        return ToolMailAddressUtils.hasLocalPart(mailAddr) ? new GeneralNames(mailSubjAltName) : new GeneralNames(ArrayUtils.toArray(mailSubjAltName,
-            new GeneralName(GeneralName.dNSName, mailAddr)));
+        return mailAddr.hasLocalPart() ? new GeneralNames(mailSubjAltName) : new GeneralNames(ArrayUtils.toArray(mailSubjAltName, new GeneralName(
+            GeneralName.dNSName, mailAddr.getDomainNamePart())));
     }
 
     public static CertificateFactory getCertificateFactory(CertificateType certType) throws CryptographyException {

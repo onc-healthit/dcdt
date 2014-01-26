@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
@@ -13,22 +14,23 @@ import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 
 @Entity(name = "discovery_testcase")
 @JsonTypeName("discoveryTestcase")
 @Table(name = "discovery_testcases")
 public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseResult> implements DiscoveryTestcase {
     private List<DiscoveryTestcaseCredential> creds;
-    private String mailAddr;
+    private MailAddress mailAddr;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -74,8 +76,10 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
         return !CollectionUtils.isEmpty(this.creds);
     }
 
-    @JoinColumn(name = "discovery_testcase_name", referencedColumnName = "name", nullable = false)
-    @OneToMany(cascade = { CascadeType.ALL }, orphanRemoval = true)
+    @Cascade({ CascadeType.ALL })
+    @JoinColumns({ @JoinColumn(name = "discovery_testcase_name", referencedColumnName = "name", nullable = false) })
+    @Nullable
+    @OneToMany(targetEntity = DiscoveryTestcaseCredentialImpl.class, orphanRemoval = true)
     @OrderBy("name")
     @Override
     public List<DiscoveryTestcaseCredential> getCredentials() {
@@ -89,18 +93,18 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
 
     @Override
     public boolean hasMailAddress() {
-        return !StringUtils.isBlank(this.mailAddr);
+        return this.mailAddr != null;
     }
 
     @Nullable
     @Override
     @Transient
-    public String getMailAddress() {
+    public MailAddress getMailAddress() {
         return this.mailAddr;
     }
 
     @Override
-    public void setMailAddress(@Nullable String mailAddr) {
+    public void setMailAddress(@Nullable MailAddress mailAddr) {
         this.mailAddr = mailAddr;
     }
 }

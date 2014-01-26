@@ -9,12 +9,12 @@ import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
 
 public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean {
-    private List<ToolUserType<?, ?, ?>> userTypes;
+    private List<ToolUserType<?, ?, ?, ?>> userTypes;
 
     @Override
     protected SessionFactory buildSessionFactory(LocalSessionFactoryBuilder localSessionFactoryBuilder) {
         if (this.hasUserTypes()) {
-            for (ToolUserType<?, ?, ?> userType : this.userTypes) {
+            for (ToolUserType<?, ?, ?, ?> userType : this.userTypes) {
                 localSessionFactoryBuilder.registerTypeOverride(userType, userType.getKeys());
             }
         }
@@ -27,11 +27,11 @@ public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean {
     }
 
     @Nullable
-    public List<ToolUserType<?, ?, ?>> getUserTypes() {
+    public List<ToolUserType<?, ?, ?, ?>> getUserTypes() {
         return this.userTypes;
     }
 
-    public void setUserTypes(@Nullable List<ToolUserType<?, ?, ?>> userTypes) {
+    public void setUserTypes(@Nullable List<ToolUserType<?, ?, ?, ?>> userTypes) {
         this.userTypes = userTypes;
     }
 }

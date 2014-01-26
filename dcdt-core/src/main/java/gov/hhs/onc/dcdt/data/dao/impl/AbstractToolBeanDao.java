@@ -265,10 +265,14 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     @SuppressWarnings({ "unchecked" })
     protected T loadBean(Session session, T bean) throws ToolBeanDataAccessException {
         Serializable beanId = bean.getBeanId();
-        T beanPersistent = this.getBeanById(beanId);
 
-        if (beanPersistent != null) {
-            session.evict(beanPersistent);
+        if (this.containsBean(beanId)) {
+            T beanPersistent = this.getBeanById(beanId);
+
+            if (beanPersistent != null) {
+                session.evict(beanPersistent);
+            }
+
             session.load(bean, beanId);
         }
 
@@ -309,7 +313,15 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @SuppressWarnings({ "unchecked" })
     protected T removeBean(Session session, T bean) throws ToolBeanDataAccessException {
-        session.delete(bean);
+        if (session.contains(bean)) {
+            session.delete(bean);
+        } else {
+            T beanPersistent = this.getBeanById(bean.getBeanId());
+
+            if (beanPersistent != null) {
+                session.delete(beanPersistent);
+            }
+        }
 
         return bean;
     }

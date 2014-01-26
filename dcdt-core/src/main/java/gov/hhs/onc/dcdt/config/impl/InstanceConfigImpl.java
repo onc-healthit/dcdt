@@ -3,13 +3,11 @@ package gov.hhs.onc.dcdt.config.impl;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
-import gov.hhs.onc.dcdt.dns.DnsNameException;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.io.utils.ToolFileUtils;
-import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
+import gov.hhs.onc.dcdt.net.Domain;
+import gov.hhs.onc.dcdt.net.IpAddress;
 import java.io.File;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -122,23 +120,6 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
     }
 
     @Override
-    public boolean hasDomainNameString() {
-        return !StringUtils.isBlank(this.getDomainNameString());
-    }
-
-    @Nullable
-    @Override
-    @Transient
-    public String getDomainNameString() {
-        return this.hasDomainName() ? this.domainName.toString() : null;
-    }
-
-    @Override
-    public void setDomainNameString(@Nullable String domainNameStr) throws DnsNameException {
-        this.domainName = ToolDnsNameUtils.fromLabelStrings(domainNameStr);
-    }
-
-    @Override
     public boolean hasIpAddress() {
         return this.ipAddr != null;
     }
@@ -155,20 +136,17 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
         this.ipAddr = ipAddr;
     }
 
-    @Override
-    public boolean hasIpAddressString() {
-        return !StringUtils.isBlank(this.getIpAddressString());
-    }
-
+    @Domain
     @Nullable
-    @Override
     @Transient
-    public String getIpAddressString() {
-        return this.hasIpAddress() ? this.ipAddr.getHostAddress() : null;
+    private String getDomainNameString() {
+        return this.hasDomainName() ? this.domainName.toString() : null;
     }
 
-    @Override
-    public void setIpAddressString(@Nullable String ipAddrStr) throws UnknownHostException {
-        this.ipAddr = ToolInetAddressUtils.getByAddress(null, ipAddrStr);
+    @IpAddress
+    @Nullable
+    @Transient
+    private String getIpAddressString() {
+        return this.hasIpAddress() ? this.ipAddr.getHostAddress() : null;
     }
 }

@@ -184,6 +184,10 @@ public abstract class ToolFileUtils {
                 return (Path) obj;
             } else if (ToolClassUtils.isAssignable(File.class, objClass)) {
                 return ((File) obj).toPath();
+            } else if (ToolClassUtils.isAssignable(String[].class, objClass)) {
+                String[] objStrs = (String[]) obj;
+                
+                return Paths.get(ToolArrayUtils.getFirst(objStrs), ToolArrayUtils.slice(objStrs, 1));
             } else {
                 return Paths.get(Objects.toString(obj, null));
             }

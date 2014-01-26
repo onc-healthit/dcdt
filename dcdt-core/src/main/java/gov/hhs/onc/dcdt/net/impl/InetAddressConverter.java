@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.net.impl;
 
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;
+import gov.hhs.onc.dcdt.convert.JsonConverts;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import java.net.InetAddress;
@@ -12,6 +13,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("inetAddrConv")
+@JsonConverts(deserialize = @Converts(from = String.class, to = InetAddress.class), serialize = @Converts(from = InetAddress.class, to = String.class))
 @List({ @Converts(from = String[].class, to = InetAddress.class), @Converts(from = String.class, to = InetAddress.class),
     @Converts(from = InetAddress.class, to = String.class) })
 @Scope("singleton")
@@ -21,7 +23,7 @@ public class InetAddressConverter extends AbstractToolConverter {
     @Nullable
     @Override
     protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
-        if (targetType.isAssignableTo(TYPE_DESC_INET_ADDR)) {
+        if (sourceType.isAssignableTo(TYPE_DESC_INET_ADDR)) {
             return ((InetAddress) source).getHostAddress();
         } else {
             String[] sourceStrs;

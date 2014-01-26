@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.crypto.utils.X500Utils;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import java.security.Principal;
 import java.util.SortedMap;
 import javax.annotation.Nullable;
@@ -40,9 +40,9 @@ public interface CertificateName extends Principal, ToolBean {
     public boolean hasMailAddress();
 
     @Nullable
-    public String getMailAddress();
+    public MailAddress getMailAddress();
 
-    public void setMailAddress(@Nullable String mailAddr);
+    public void setMailAddress(@Nullable MailAddress mailAddr);
 
     public boolean hasAttribute(ASN1ObjectIdentifier attrOid);
 

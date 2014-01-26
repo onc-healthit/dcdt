@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
 import gov.hhs.onc.dcdt.beans.factory.impl.AbstractToolFactoryBean;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
@@ -40,7 +41,7 @@ public class DiscoveryTestcaseFactoryBean extends AbstractToolFactoryBean<Discov
         this.discoveryTestcase.setDescription(desc);
     }
 
-    public void setMailAddress(String mailAddr) {
+    public void setMailAddress(MailAddress mailAddr) {
         this.discoveryTestcase.setMailAddress(mailAddr);
     }
 

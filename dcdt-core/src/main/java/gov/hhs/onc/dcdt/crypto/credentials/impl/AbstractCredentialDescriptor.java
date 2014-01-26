@@ -5,7 +5,10 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateDescriptor;
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
 import gov.hhs.onc.dcdt.crypto.keys.KeyDescriptor;
 import javax.annotation.Nullable;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
+@MappedSuperclass
 public abstract class AbstractCredentialDescriptor<T extends KeyDescriptor, U extends CertificateDescriptor> extends AbstractCryptographyDescriptor implements
     CredentialDescriptor<T, U> {
     protected T keyDesc;
@@ -27,6 +30,7 @@ public abstract class AbstractCredentialDescriptor<T extends KeyDescriptor, U ex
 
     @Nullable
     @Override
+    @Transient
     public U getCertificateDescriptor() {
         return this.certDesc;
     }
@@ -43,6 +47,7 @@ public abstract class AbstractCredentialDescriptor<T extends KeyDescriptor, U ex
 
     @Nullable
     @Override
+    @Transient
     public T getKeyDescriptor() {
         return this.keyDesc;
     }
