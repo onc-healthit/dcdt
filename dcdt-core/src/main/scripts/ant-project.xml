@@ -26,6 +26,26 @@
             project.java.package.regex
         </dcdt:write-properties>
         
+        <if>
+            <isset property="skipTests"/>
+            <then>
+                <var name="skipTestsUnit" value="${skipTests}"/>
+                <var name="skipTestsFunc" value="${skipTests}"/>
+                <var name="skipTestsIt" value="${skipTests}"/>
+            </then>
+            <else>
+                <var name="skipTestsUnit" value="${skipTestsUnit:-false}"/>
+                <var name="skipTestsFunc" value="${skipTestsFunc:-false}"/>
+                <var name="skipTestsIt" value="${skipTestsIt:-false}"/>
+            </else>
+        </if>
+        <propertyset id="project-process-props.props.tests.skip">
+            <propertyref regex="^skipTests(Unit|Func|It)$"/>
+        </propertyset>
+        <dcdt:write-properties file="${project.build.pomPropertiesFile}" append="true">
+            ${toString:project-process-props.props.tests.skip}
+        </dcdt:write-properties>
+        
         <dcdt:timestamp property="project.build.timestamp"/>
         <dcdt-hg:properties path="${project.basedir}" pathBase="${project.basedir.all}"/>
         

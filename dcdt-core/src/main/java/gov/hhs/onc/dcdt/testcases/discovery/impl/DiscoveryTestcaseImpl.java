@@ -6,8 +6,8 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
@@ -15,15 +15,9 @@ import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.collections4.CollectionUtils;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 
 @Entity(name = "discovery_testcase")
 @JsonTypeName("discoveryTestcase")
@@ -33,6 +27,7 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     private MailAddress mailAddr;
 
     @Override
+    @SuppressWarnings({ "ConstantConditions" })
     public void afterPropertiesSet() throws Exception {
         if (this.hasCredentials()) {
             CredentialConfig credConfig;
@@ -76,12 +71,9 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
         return !CollectionUtils.isEmpty(this.creds);
     }
 
-    @Cascade({ CascadeType.ALL })
-    @JoinColumns({ @JoinColumn(name = "discovery_testcase_name", referencedColumnName = "name", nullable = false) })
     @Nullable
-    @OneToMany(targetEntity = DiscoveryTestcaseCredentialImpl.class, orphanRemoval = true)
-    @OrderBy("name")
     @Override
+    @Transient
     public List<DiscoveryTestcaseCredential> getCredentials() {
         return this.creds;
     }

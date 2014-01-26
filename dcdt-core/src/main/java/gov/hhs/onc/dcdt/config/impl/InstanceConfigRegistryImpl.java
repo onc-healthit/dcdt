@@ -20,16 +20,23 @@ public class InstanceConfigRegistryImpl extends AbstractToolBeanRegistry<Instanc
     }
 
     @Override
-    public void registerBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
-        super.registerBeans(beans);
-
-        ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseRegistry.class).registerAllBeans();
+    protected void preRemoveBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
+        this.getDiscoveryTestcaseRegistry().removeAllBeans();
     }
 
     @Override
-    public void removeBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
-        ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseRegistry.class).removeAllBeans();
+    protected void postRegisterBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
+        this.appContext.refresh();
 
-        super.removeBeans(beans);
+        this.getDiscoveryTestcaseRegistry().registerAllBeans();
+    }
+
+    @Override
+    protected void postRemoveBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
+        this.appContext.refresh();
+    }
+
+    protected DiscoveryTestcaseRegistry getDiscoveryTestcaseRegistry() {
+        return ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseRegistry.class);
     }
 }

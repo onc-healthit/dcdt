@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.testcases.discovery;
+package gov.hhs.onc.dcdt.testcases.discovery.credentials;
 
 import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
 

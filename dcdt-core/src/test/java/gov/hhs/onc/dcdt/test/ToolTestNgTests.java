@@ -22,15 +22,12 @@ import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
 import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
 
 @ContextConfiguration(loader = ToolTestNgContextLoader.class, locations = { "spring/spring-core.xml", "spring/spring-core-*.xml" })
-public abstract class ToolTestNgTests extends AbstractTestNGSpringContextTests implements BeanDefinitionRegistryAware, BeanFactoryAware, InitializingBean,
-    MessageSourceAware {
+public abstract class ToolTestNgTests extends AbstractTestNGSpringContextTests implements InitializingBean, MessageSourceAware {
     /**
      * @see org.springframework.test.context.testng.AbstractTestNGSpringContextTests.applicationContext
      */
     protected AbstractApplicationContext applicationContext;
 
-    protected BeanDefinitionRegistry beanDefReg;
-    protected ConfigurableListableBeanFactory beanFactory;
     protected MessageSource msgSource;
 
     @Override
@@ -60,7 +57,7 @@ public abstract class ToolTestNgTests extends AbstractTestNGSpringContextTests i
         List<Object> dataGroupBeans = new ArrayList<>();
 
         for (Class<?> dataGroupBeanClass : dataGroupBeanClasses) {
-            dataGroupBeans.add(ToolBeanFactoryUtils.getBeanOfType(this.beanFactory, dataGroupBeanClass));
+            dataGroupBeans.add(ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, dataGroupBeanClass));
         }
 
         return dataGroupBeans;
@@ -80,16 +77,6 @@ public abstract class ToolTestNgTests extends AbstractTestNGSpringContextTests i
 
     protected Iterator<Object[]> getDataGroups(Iterable<Object[]> dataGroups) {
         return ToolIterableUtils.wrapElements(dataGroups.iterator());
-    }
-
-    @Override
-    public void setBeanDefinitionRegistry(BeanDefinitionRegistry beanDefReg) {
-        this.beanDefReg = beanDefReg;
-    }
-
-    @Override
-    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
-        this.beanFactory = (ConfigurableListableBeanFactory) beanFactory;
     }
 
     @Override

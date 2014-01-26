@@ -41,13 +41,13 @@ public class ToolBeanFactoryUtilsUnitTests extends ToolTestNgUnitTests {
 
     @Test
     public void testGetBeanOfType() {
-        Assert.assertSame(ToolBeanFactoryUtils.getBeanOfType(this.beanFactory, ToolBeanFactoryUtilsTestBean.class), this.beanFactoryUtilsTestBean,
+        Assert.assertSame(ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, ToolBeanFactoryUtilsTestBean.class), this.beanFactoryUtilsTestBean,
             "Unable to get bean by type.");
     }
 
     @Test(dependsOnMethods = { "testGetBeanOfType" })
     public void testGetBeanNameOfType() {
-        Assert.assertEquals(ToolBeanFactoryUtils.getBeanNameOfType(this.beanFactory, ToolBeanFactoryUtilsTestBean.class), BEAN_FACTORY_TEST_BEAN_NAME,
+        Assert.assertEquals(ToolBeanFactoryUtils.getBeanNameOfType(this.applicationContext, ToolBeanFactoryUtilsTestBean.class), BEAN_FACTORY_TEST_BEAN_NAME,
             "Unable to get bean name by type.");
     }
 }

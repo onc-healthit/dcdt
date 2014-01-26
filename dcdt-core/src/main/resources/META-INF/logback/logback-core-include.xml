@@ -53,6 +53,10 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
+    <logger name="gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
     <logger name="org.apache" level="info" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>

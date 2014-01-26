@@ -18,8 +18,8 @@
     <!--====================================================================================================
     = DISCOVERY TESTCASE CREDENTIAL LOCATIONS
     =====================================================================================================-->
-    <beans:bean id="discoveryTestcaseCredLoc" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredentialLocation" abstract="true"/>
-    <beans:bean id="discoveryTestcaseCredLocImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCredentialLocationImpl"
+    <beans:bean id="discoveryTestcaseCredLoc" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLocImpl" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialLocationImpl"
         parent="discoveryTestcaseCredLoc" abstract="true"/>
     
     <beans:bean id="discoveryTestcaseCredLoc1" parent="discoveryTestcaseCredLocImpl" abstract="true"
@@ -103,12 +103,12 @@
     <!--====================================================================================================
     = DISCOVERY TESTCASE CREDENTIALS
     =====================================================================================================-->
-    <beans:bean id="discoveryTestcaseCred" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredential" abstract="true"/>
-    <beans:bean id="discoveryTestcaseCredImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCredentialImpl" parent="discoveryTestcaseCred"
-        abstract="true"/>
+    <beans:bean id="discoveryTestcaseCred" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredImpl" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialImpl"
+        parent="discoveryTestcaseCred" abstract="true"/>
     
-    <beans:bean id="discoveryTestcaseCredDesc" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseCredentialDescription" abstract="true"/>
-    <beans:bean id="discoveryTestcaseCredDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseCredentialDescriptionImpl"
+    <beans:bean id="discoveryTestcaseCredDesc" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDescription" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialDescriptionImpl"
         parent="discoveryTestcaseCredDesc" abstract="true"/>
     
     <beans:bean id="discoveryTestcaseKeyConfigCa" parent="keyConfigCa"/>

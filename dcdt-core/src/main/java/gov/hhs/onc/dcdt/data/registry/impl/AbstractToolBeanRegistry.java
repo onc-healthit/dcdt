@@ -57,8 +57,6 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
         }
 
         this.postRegisterBeans(beans);
-
-        this.appContext.refresh();
     }
 
     @Override
@@ -89,8 +87,6 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
         }
 
         this.postRemoveBeans(beans);
-
-        this.appContext.refresh();
     }
 
     protected void registerBean(T bean) throws ToolBeanRegistryException {
