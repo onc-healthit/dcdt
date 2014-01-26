@@ -2,7 +2,8 @@ package gov.hhs.onc.dcdt.net.impl;
 
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;
-import gov.hhs.onc.dcdt.convert.JsonConverts;
+import gov.hhs.onc.dcdt.convert.ConvertsJson;
+import gov.hhs.onc.dcdt.convert.ConvertsUserType;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import java.net.InetAddress;
@@ -13,7 +14,8 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("inetAddrConv")
-@JsonConverts(deserialize = @Converts(from = String.class, to = InetAddress.class), serialize = @Converts(from = InetAddress.class, to = String.class))
+@ConvertsJson(deserialize = @Converts(from = String.class, to = InetAddress.class), serialize = @Converts(from = InetAddress.class, to = String.class))
+@ConvertsUserType(InetAddressUserType.class)
 @List({ @Converts(from = String[].class, to = InetAddress.class), @Converts(from = String.class, to = InetAddress.class),
     @Converts(from = InetAddress.class, to = String.class) })
 @Scope("singleton")

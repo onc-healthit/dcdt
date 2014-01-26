@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface JsonConverts {
+public @interface ConvertsJson {
     public final static String ANNO_ATTR_NAME_DESERIALIZE = "deserialize";
     public final static String ANNO_ATTR_NAME_SERIALIZE = "serialize";
     

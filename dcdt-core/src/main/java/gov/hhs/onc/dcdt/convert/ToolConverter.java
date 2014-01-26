@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.convert;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.data.types.ToolUserType;
 import javax.annotation.Nullable;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
@@ -26,4 +27,9 @@ public interface ToolConverter extends ConditionalGenericConverter, ToolBean {
 
     @Nullable
     public JsonSerializer<?> getJsonSerializer();
+
+    public boolean hasUserTypeClass();
+
+    @Nullable
+    public Class<? extends ToolUserType<?, ?, ?, ?>> getUserTypeClass();
 }

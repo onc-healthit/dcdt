@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.crypto.keys.impl;
 
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;
+import gov.hhs.onc.dcdt.convert.ConvertsUserType;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
@@ -15,6 +16,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("keyConv")
+@ConvertsUserType(KeyUserType.class)
 @List({ @Converts(from = byte[].class, to = Key.class), @Converts(from = Key.class, to = byte[].class) })
 @Scope("singleton")
 public class KeyConverter extends AbstractToolConverter {
