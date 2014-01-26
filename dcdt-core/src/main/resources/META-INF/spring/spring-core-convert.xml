@@ -27,6 +27,8 @@
         <beans:ref bean="exprNodeConv"/>
         <beans:ref bean="inetAddrConv"/>
         <beans:ref bean="keyConv"/>
+        <beans:ref bean="ldapAttrConv"/>
+        <beans:ref bean="ldifConv"/>
         <beans:ref bean="mailAddrConv"/>
         <beans:ref bean="pathConv"/>
         <beans:ref bean="rdnConv"/>
