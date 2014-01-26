@@ -3,6 +3,8 @@ package gov.hhs.onc.dcdt.ldap.impl;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.ldap.LdapException;
 import gov.hhs.onc.dcdt.ldap.LdapLookupService;
+import gov.hhs.onc.dcdt.ldap.utils.ToolLdapAttributeUtils;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,55 +51,55 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
     }
 
     @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, Collection<String> searchAttrs) throws LdapException {
-        return this.search(ldapConnConfig, null, searchAttrs);
+    public List<Entry> search(LdapConnectionConfig ldapConnConfig, Attribute ... ldapAttrsSearch) throws LdapException {
+        return this.search(ldapConnConfig, ToolArrayUtils.asList(ldapAttrsSearch));
     }
 
     @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable ExprNode filterExpr, Collection<String> searchAttrs) throws LdapException {
-        return this.search(ldapConnConfig, null, filterExpr, searchAttrs);
+    public List<Entry> search(LdapConnectionConfig ldapConnConfig, Iterable<Attribute> ldapAttrsSearch) throws LdapException {
+        return this.search(ldapConnConfig, null, ldapAttrsSearch);
+    }
+
+    @Override
+    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable ExprNode filterExpr, Attribute ... ldapAttrsSearch) throws LdapException {
+        return this.search(ldapConnConfig, filterExpr, ToolArrayUtils.asList(ldapAttrsSearch));
+    }
+
+    @Override
+    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable ExprNode filterExpr, Iterable<Attribute> ldapAttrsSearch) throws LdapException {
+        return this.search(ldapConnConfig, null, filterExpr, ldapAttrsSearch);
     }
 
     @Override
     public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable SearchScope searchScope, @Nullable ExprNode filterExpr,
-        Collection<String> searchAttrs) throws LdapException {
-        return this.search(ldapConnConfig, null, searchScope, filterExpr, searchAttrs);
+        Attribute ... ldapAttrsSearch) throws LdapException {
+        return this.search(ldapConnConfig, searchScope, filterExpr, ToolArrayUtils.asList(ldapAttrsSearch));
+    }
+
+    @Override
+    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable SearchScope searchScope, @Nullable ExprNode filterExpr,
+        Iterable<Attribute> ldapAttrsSearch) throws LdapException {
+        return this.search(ldapConnConfig, null, searchScope, filterExpr, ldapAttrsSearch);
     }
 
     @Override
     public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable Dn baseDn, @Nullable SearchScope searchScope, @Nullable ExprNode filterExpr,
-        Collection<String> searchAttrs) throws LdapException {
-        return this.search(ldapConnConfig, baseDn, searchScope, filterExpr, searchAttrs.toArray(new String[searchAttrs.size()]));
-    }
-
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, String ... searchAttrs) throws LdapException {
-        return this.search(ldapConnConfig, null, searchAttrs);
-    }
-
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable ExprNode filterExpr, String ... searchAttrs) throws LdapException {
-        return this.search(ldapConnConfig, null, filterExpr, searchAttrs);
-    }
-
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable SearchScope searchScope, @Nullable ExprNode filterExpr, String ... searchAttrs)
-        throws LdapException {
-        return this.search(ldapConnConfig, null, searchScope, filterExpr, searchAttrs);
+        Attribute ... ldapAttrsSearch) throws LdapException {
+        return this.search(ldapConnConfig, baseDn, searchScope, filterExpr, ToolArrayUtils.asList(ldapAttrsSearch));
     }
 
     @Override
     public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable Dn baseDn, @Nullable SearchScope searchScope, @Nullable ExprNode filterExpr,
-        String ... searchAttrs) throws LdapException {
+        Iterable<Attribute> ldapAttrsSearch) throws LdapException {
         searchScope = (searchScope != null) ? searchScope : SearchScope.SUBTREE;
 
         if (baseDn != null) {
-            return this.searchInternal(ldapConnConfig, baseDn, searchScope, filterExpr, searchAttrs);
+            return this.searchInternal(ldapConnConfig, baseDn, searchScope, filterExpr, ldapAttrsSearch);
         } else {
             List<Entry> searchResults = new ArrayList<>();
 
             for (Dn baseDnFound : this.getBaseDns(ldapConnConfig)) {
-                searchResults.addAll(this.searchInternal(ldapConnConfig, baseDnFound, searchScope, filterExpr, searchAttrs));
+                searchResults.addAll(this.searchInternal(ldapConnConfig, baseDnFound, searchScope, filterExpr, ldapAttrsSearch));
             }
 
             return searchResults;
@@ -179,14 +181,15 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
     }
 
     private List<Entry> searchInternal(LdapConnectionConfig ldapConnConfig, Dn baseDn, SearchScope searchScope, @Nullable ExprNode filterExpr,
-        String ... searchAttrs) throws LdapException {
+        Iterable<Attribute> ldapAttrsSearch) throws LdapException {
         String filterStr = Objects.toString(filterExpr, null);
+        String[] ldapAttrSearchIds = ToolLdapAttributeUtils.buildCaseInsensitiveIds(ldapAttrsSearch);
         LdapConnection ldapConn;
 
         try (CloseableLdapConnectionWrapper ldapConnWrapper = new CloseableLdapConnectionWrapper(ldapConnConfig)) {
             ldapConnWrapper.setLdapConnection(ldapConn = bind(ldapConnConfig, connect(ldapConnConfig)));
 
-            EntryCursor searchResultsCursor = ldapConn.search(baseDn, filterStr, searchScope, searchAttrs);
+            EntryCursor searchResultsCursor = ldapConn.search(baseDn, filterStr, searchScope, ldapAttrSearchIds);
             List<Entry> searchResults = new ArrayList<>();
             Entry searchResult;
 
@@ -201,15 +204,15 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
             if ((searchResultCode = searchResultsCursor.getSearchResultDone().getLdapResult().getResultCode()) != ResultCodeEnum.SUCCESS) {
                 throw new LdapException(String.format(
                     "Unable to search (baseDn=%s, scope=%s, filter=%s, attrs=[%s]) LDAP server (host=%s, port=%d, ssl=%s): %s", baseDn, searchScope, filterStr,
-                    ToolStringUtils.joinDelimit(searchAttrs, ","), ldapConnConfig.getLdapHost(), ldapConnConfig.getLdapPort(), ldapConnConfig.isUseSsl(),
+                    ToolStringUtils.joinDelimit(ldapAttrSearchIds, ","), ldapConnConfig.getLdapHost(), ldapConnConfig.getLdapPort(), ldapConnConfig.isUseSsl(),
                     searchResultCode.name()));
             }
 
             return searchResults;
         } catch (Exception e) {
-            throw new LdapException(String.format("Unable to search (baseDn=%s, scope=%s, filter=%s, attrs=[%s]) LDAP server (host=%s, port=%d, ssl=%s).",
-                baseDn, searchScope, filterStr, ToolStringUtils.joinDelimit(searchAttrs, ","), ldapConnConfig.getLdapHost(), ldapConnConfig.getLdapPort(),
-                ldapConnConfig.isUseSsl()), e);
+            throw new LdapException(String.format("Unable to search (baseDn=%s, scope=%s, filter=%s, attrIds=[%s]) LDAP server (host=%s, port=%d, ssl=%s).",
+                baseDn, searchScope, filterStr, ToolStringUtils.joinDelimit(ldapAttrSearchIds, ","), ldapConnConfig.getLdapHost(),
+                ldapConnConfig.getLdapPort(), ldapConnConfig.isUseSsl()), e);
         }
     }
 }
