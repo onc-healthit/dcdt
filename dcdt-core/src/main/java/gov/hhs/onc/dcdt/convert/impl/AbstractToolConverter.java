@@ -120,7 +120,6 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public void afterPropertiesSet() throws Exception {
         Class<?> convClass = this.getClass();
 
@@ -141,7 +140,8 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
             this.jsonSerializer = new ConvertingJsonSerializer<>(this, jsonConvertPair.getSourceType(), jsonConvertPair.getTargetType());
         }
 
-        this.userTypeClass = (Class<? extends ToolUserType<?, ?, ?, ?>>) ToolAnnotationUtils.getValue(ConvertsUserType.class, Class.class, convClass);
+        ConvertsUserType convertsUserTypeAnno = ToolAnnotationUtils.findAnnotation(ConvertsUserType.class, convClass);
+        this.userTypeClass = (convertsUserTypeAnno != null) ? convertsUserTypeAnno.value() : null;
     }
 
     protected static Set<ConvertiblePair> toConvertiblePairs(List<Converts> convertsAnnos) {
