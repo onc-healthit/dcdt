@@ -35,12 +35,17 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceConfigDataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+    <beans:bean id="instanceConfigDataSource" class="gov.hhs.onc.dcdt.data.impl.ToolBasicDataSource"
         p:driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
+        p:initialSize="0"
+        p:maxActive="10"
+        p:maxIdle="10"
+        p:maxWait="#{ T(org.apache.commons.pool.impl.GenericObjectPool).DEFAULT_MAX_WAIT }"
+        p:minIdle="#{ T(org.apache.commons.pool.impl.GenericObjectPool).DEFAULT_MIN_IDLE }"
         p:password="${dcdt.instance.db.pass}"
         p:url="#{ T(org.apache.derby.iapi.reference.Attribute).PROTOCOL }${dcdt.instance.db.name}"
         p:username="${dcdt.instance.db.user}">
-        <beans:property name="connectionProperties">
+        <beans:property name="connectionPropertiesObject">
             <util:properties>
                 <beans:prop key="#{ T(org.apache.derby.iapi.reference.Attribute).CREATE_ATTR }">true</beans:prop>
             </util:properties>
@@ -70,7 +75,6 @@
         <beans:property name="hibernateProperties">
             <util:properties>
                 <beans:prop key="#{ T(org.hibernate.cfg.AvailableSettings).DIALECT }">org.hibernate.dialect.DerbyTenSevenDialect</beans:prop>
-                <!--<beans:prop key="#{ T(org.hibernate.cfg.AvailableSettings).HBM2DDL_AUTO }">create-drop</beans:prop>-->
             </util:properties>
         </beans:property>
     </beans:bean>
