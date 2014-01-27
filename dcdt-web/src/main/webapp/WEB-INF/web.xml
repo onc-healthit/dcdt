@@ -76,9 +76,6 @@
     <listener>
         <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
     </listener>
-    <listener>
-        <listener-class>gov.hhs.onc.dcdt.web.context.impl.DriverManagerServletContextListener</listener-class>
-    </listener>
     
     <filter>
         <filter-name>urlRewriteFilter</filter-name>
