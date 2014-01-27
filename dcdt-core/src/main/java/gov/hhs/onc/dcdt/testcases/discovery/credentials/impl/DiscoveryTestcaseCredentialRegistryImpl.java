@@ -108,7 +108,7 @@ public class DiscoveryTestcaseCredentialRegistryImpl extends
         this.discoveryTestcaseIssuerCred = null;
 
         for (DiscoveryTestcaseCredential bean : beans) {
-            if ((this.discoveryTestcaseIssuerCred == null) && bean.hasIssuerCredential()) {
+            if (bean.hasIssuerCredential()) {
                 this.discoveryTestcaseIssuerCred = bean.getIssuerCredential();
 
                 return;
