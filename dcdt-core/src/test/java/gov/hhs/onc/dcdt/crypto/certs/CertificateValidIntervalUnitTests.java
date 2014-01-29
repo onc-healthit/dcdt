@@ -1,14 +1,14 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import java.util.Date;
 import javax.annotation.Resource;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all",
-    "dcdt.test.unit.crypto.certs.all", "dcdt.test.unit.crypto.certs.valid" })
-public class CertificateValidIntervalUnitTests extends ToolTestNgUnitTests {
+@Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all" }, groups = { "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.certs.all",
+    "dcdt.test.unit.crypto.certs.valid" })
+public class CertificateValidIntervalUnitTests extends AbstractToolUnitTests {
     @Resource(name = "testCertConfigCa1")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private CertificateConfig testCertConfig;

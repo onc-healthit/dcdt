@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
-
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
@@ -12,8 +11,8 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.utils.all", "dcdt.test.unit.crypto.utils.x500" })
-public class X500UtilsUnitTests extends ToolTestNgUnitTests {
+@Test(groups = { "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.utils.all", "dcdt.test.unit.crypto.utils.x500" })
+public class X500UtilsUnitTests extends AbstractToolUnitTests {
     private final static ASN1ObjectIdentifier TEST_X500_NAME_MAIL_ADDR_OID = BCStyle.EmailAddress;
     private final static String TEST_X500_NAME_MAIL_ADDR_VALUE_STR = "x500@test.direct-test.com";
     private final static ASN1ObjectIdentifier TEST_X500_NAME_COMMON_NAME_OID = BCStyle.CN;

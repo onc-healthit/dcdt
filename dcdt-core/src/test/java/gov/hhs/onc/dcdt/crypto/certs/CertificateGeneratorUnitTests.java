@@ -7,15 +7,15 @@ import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
 import gov.hhs.onc.dcdt.crypto.keys.KeyConfig;
 import gov.hhs.onc.dcdt.crypto.keys.KeyGenerator;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all",
-    "dcdt.test.unit.crypto.certs.all", "dcdt.test.unit.crypto.certs.gen" })
-public class CertificateGeneratorUnitTests extends ToolTestNgUnitTests {
+@Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all" }, groups = { "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.certs.all",
+    "dcdt.test.unit.crypto.certs.gen" })
+public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private KeyGenerator keyGen;

@@ -35,17 +35,17 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceConfigDataSource" class="gov.hhs.onc.dcdt.data.impl.ToolBasicDataSource"
-        p:driverClassName="org.apache.derby.jdbc.EmbeddedDriver"
-        p:initialSize="0"
-        p:maxActive="10"
-        p:maxIdle="10"
-        p:maxWait="#{ T(org.apache.commons.pool.impl.GenericObjectPool).DEFAULT_MAX_WAIT }"
-        p:minIdle="#{ T(org.apache.commons.pool.impl.GenericObjectPool).DEFAULT_MIN_IDLE }"
+    <beans:bean id="instanceConfigDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"
+        p:acquireIncrement="1"
+        p:driverClass="org.apache.derby.jdbc.EmbeddedDriver"
+        p:initialPoolSize="0"
+        p:jdbcUrl="#{ T(org.apache.derby.iapi.reference.Attribute).PROTOCOL }${dcdt.instance.db.name}"
+        p:maxIdleTime="#{ T(com.mchange.v2.c3p0.impl.C3P0Defaults).maxIdleTime() }"
+        p:maxPoolSize="#{ T(com.mchange.v2.c3p0.impl.C3P0Defaults).maxPoolSize() }"
+        p:minPoolSize="1"
         p:password="${dcdt.instance.db.pass}"
-        p:url="#{ T(org.apache.derby.iapi.reference.Attribute).PROTOCOL }${dcdt.instance.db.name}"
-        p:username="${dcdt.instance.db.user}">
-        <beans:property name="connectionPropertiesObject">
+        p:user="${dcdt.instance.db.user}">
+        <beans:property name="properties">
             <util:properties>
                 <beans:prop key="#{ T(org.apache.derby.iapi.reference.Attribute).CREATE_ATTR }">true</beans:prop>
             </util:properties>
@@ -67,13 +67,14 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceConfigSessionFactory" class="gov.hhs.onc.dcdt.data.impl.ToolLocalSessionFactoryBean"
+    <beans:bean id="instanceConfigSessionFactory" class="gov.hhs.onc.dcdt.data.impl.ToolLocalSessionFactoryBean" destroy-method="destroy"
         p:converters-ref="convs"
         p:dataSource-ref="instanceConfigDataSource"
         p:entityInterceptor-ref="compositeBeanInterceptor"
         p:packagesToScan="gov.hhs.onc.dcdt">
         <beans:property name="hibernateProperties">
             <util:properties>
+                <beans:prop key="#{ T(org.hibernate.cfg.AvailableSettings).AUTO_CLOSE_SESSION }">true</beans:prop>
                 <beans:prop key="#{ T(org.hibernate.cfg.AvailableSettings).DIALECT }">org.hibernate.dialect.DerbyTenSevenDialect</beans:prop>
             </util:properties>
         </beans:property>

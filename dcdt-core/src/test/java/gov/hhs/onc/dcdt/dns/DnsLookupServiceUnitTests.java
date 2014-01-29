@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.dns;
 
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import java.util.List;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +18,8 @@ import org.xbill.DNS.Name;
 import org.xbill.DNS.SOARecord;
 import org.xbill.DNS.SRVRecord;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.dns.all", "dcdt.test.unit.dns.lookup" })
-public class DnsLookupServiceUnitTests extends ToolTestNgUnitTests {
+@Test(groups = { "dcdt.test.unit.dns.all", "dcdt.test.unit.dns.lookup" })
+public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
     @Autowired
     @DnsResolver(DnsResolverType.EXTERNAL)
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })

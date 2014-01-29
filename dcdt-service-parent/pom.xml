@@ -190,6 +190,7 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
+                                <appendAssemblyId>false</appendAssemblyId>
                                 <descriptors>
                                     <descriptor>${project.basedir.all}/dcdt-service-core/src/assembly/service.xml</descriptor>
                                 </descriptors>

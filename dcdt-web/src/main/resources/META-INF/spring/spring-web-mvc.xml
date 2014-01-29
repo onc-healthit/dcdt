@@ -49,7 +49,6 @@
     
     <beans:bean id="tilesConfigurer" class="org.springframework.web.servlet.view.tiles3.TilesConfigurer"
         p:checkRefresh="true"
-        p:completeAutoload="true"
         p:useMutableTilesContainer="true">
         <beans:property name="definitions">
             <util:list>

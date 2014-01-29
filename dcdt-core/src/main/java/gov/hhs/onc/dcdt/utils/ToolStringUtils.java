@@ -1,38 +1,67 @@
 package gov.hhs.onc.dcdt.utils;
 
+
 import java.util.Objects;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
 
 public abstract class ToolStringUtils {
+    @SuppressWarnings({ "serial" })
+    public static class ToolStrBuilder extends StrBuilder {
+        public ToolStrBuilder() {
+            super();
+        }
+
+        public ToolStrBuilder(int initialCapacity) {
+            super(initialCapacity);
+        }
+
+        public ToolStrBuilder(String str) {
+            super(str);
+        }
+
+        public <T> StrBuilder appendWithDelimiters(@Nullable T[] objs, @Nullable String delim) {
+            return this.appendWithDelimiters(ToolArrayUtils.asList(objs), delim);
+        }
+
+        public <T> StrBuilder appendWithDelimiters(@Nullable Iterable<T> objs, @Nullable String delim) {
+            if (objs != null) {
+                for (T obj : objs) {
+                    this.appendWithDelimiter(obj, delim);
+                }
+            }
+
+            return this;
+        }
+
+        public StrBuilder appendWithDelimiter(@Nullable Object obj, @Nullable String delim) {
+            String objStr = StringUtils.removeStart(Objects.toString(obj, this.getNullText()), delim);
+            
+            return (objStr != null) ? this.appendDelimiter(delim).append(objStr) : this;
+        }
+
+        public StrBuilder appendDelimiter(@Nullable String delim) {
+            return !this.endsWith(delim) ? this.appendSeparator(delim) : this;
+        }
+    }
+
     public final static String QUOTE_SINGLE = "'";
     public final static String QUOTE_DBL = "\"";
 
-    public static <T> String joinDelimit(T[] items) {
-        return joinDelimit(items, null);
+    @Nullable
+    public static <T> String joinDelimit(@Nullable T[] objs, @Nullable String delim) {
+        return joinDelimit(ToolArrayUtils.asList(objs), delim);
     }
 
-    public static <T> String joinDelimit(T[] items, String delim) {
-        return joinDelimit(ToolArrayUtils.asList(items), delim);
+    @Nullable
+    public static <T> String joinDelimit(@Nullable Iterable<T> objs) {
+        return joinDelimit(objs, null);
     }
 
-    public static <T> String joinDelimit(Iterable<T> items) {
-        return joinDelimit(items, null);
-    }
-
-    public static <T> String joinDelimit(Iterable<T> items, String delim) {
-        if (delim == null) {
-            return StringUtils.join(items, delim);
-        }
-
-        StrBuilder strBuilder = new StrBuilder();
-
-        for (T item : items) {
-            strBuilder.appendSeparator(delim);
-            strBuilder.append(StringUtils.stripEnd(Objects.toString(item), delim));
-        }
-
-        return strBuilder.toString();
+    @Nullable
+    public static <T> String joinDelimit(@Nullable Iterable<T> objs, @Nullable String delim) {
+        return (objs != null) ? new ToolStrBuilder().appendWithDelimiters(objs, delim).toString() : null;
     }
 
     public static String quote(String str) {

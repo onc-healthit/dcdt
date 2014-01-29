@@ -9,5 +9,5 @@
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <div class="page-header">
-    <h1><spring:message code="dcdt.web.heading.${templateName}"/></h1>
+    <h1><spring:message code="dcdt.web.heading.${templateNameProp}"/></h1>
 </div>

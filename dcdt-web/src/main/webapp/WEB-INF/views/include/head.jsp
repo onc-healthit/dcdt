@@ -31,6 +31,7 @@
 <spring:url var="urlDiscoveryMailMapping" value="/discovery/mail/mapping" scope="request"/>
 <spring:url var="urlDiscoveryTrustAnchor" value="/discovery/anchor" scope="request"/>
 <c:set var="templateName" scope="request"><tiles:getAsString name="name"/></c:set>
+<c:set var="templateNameProp" scope="request" value="${fn:replace(templateName, '-', '.')}"/>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
 <script type="text/javascript" src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 <script type="text/javascript" src="http://code.jquery.com/ui/1.10.3/jquery-ui.min.js"></script>
@@ -50,4 +51,4 @@
 <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap-theme.min.css"/>
 <link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
 <link rel="stylesheet" type="text/css" href="${urlStaticStyles}/web.css"/>
-<title><spring:message code="dcdt.web.title.${templateName}"/></title>
+<title><spring:message code="dcdt.web.title.${templateNameProp}"/></title>

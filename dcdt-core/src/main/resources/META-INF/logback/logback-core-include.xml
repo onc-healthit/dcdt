@@ -27,7 +27,7 @@
         <withJansi>true</withJansi>
     </appender>
     
-    <if condition='isDefined("dcdt.log.dir") &amp;&amp; !new java.io.File(p("dcdt.log.dir")).isFile()'>
+    <if condition='isDefined("dcdt.log.dir") &amp;&amp; new java.io.File(p("dcdt.log.dir")).isDirectory()'>
         <then>
             <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${dcdt.log.dir}/${dcdt.log.file.name}${dcdt.log.file.ext}</file>

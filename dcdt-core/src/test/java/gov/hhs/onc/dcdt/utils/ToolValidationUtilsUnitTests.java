@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.utils;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import gov.hhs.onc.dcdt.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +14,8 @@ import org.springframework.validation.Validator;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.utils.msgs" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.utils.all",
-    "dcdt.test.unit.utils.validation" })
-public class ToolValidationUtilsUnitTests extends ToolTestNgUnitTests {
+@Test(dependsOnGroups = { "dcdt.test.unit.utils.msgs" }, groups = { "dcdt.test.unit.utils.all", "dcdt.test.unit.utils.validation" })
+public class ToolValidationUtilsUnitTests extends AbstractToolUnitTests {
     private static interface ToolValidationUtilsTestBean extends ToolBean {
         @Pattern(regexp = "^propValue\\d+$")
         public String getProp1();

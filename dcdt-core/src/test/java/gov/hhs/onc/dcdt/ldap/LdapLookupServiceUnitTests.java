@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.ldap;
 
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import java.util.List;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
@@ -13,9 +13,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.ldap.utils.all" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.ldap.all",
-    "dcdt.test.unit.ldap.lookup" })
-public class LdapLookupServiceUnitTests extends ToolTestNgUnitTests {
+@Test(dependsOnGroups = { "dcdt.test.unit.ldap.utils.all" }, groups = { "dcdt.test.unit.ldap.all", "dcdt.test.unit.ldap.lookup" })
+public class LdapLookupServiceUnitTests extends AbstractToolUnitTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private LdapLookupService ldapLookupService;

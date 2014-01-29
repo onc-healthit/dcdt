@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.hosting;
 
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import gov.hhs.onc.dcdt.testcases.BindingType;
 import gov.hhs.onc.dcdt.testcases.LocationType;
 import javax.annotation.Resource;
@@ -9,8 +9,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.testcases.all", "dcdt.test.unit.testcases.hosting" })
-public class HostingTestcaseUnitTests extends ToolTestNgUnitTests {
+@Test(groups = { "dcdt.test.unit.testcases.all", "dcdt.test.unit.testcases.hosting" })
+public class HostingTestcaseUnitTests extends AbstractToolUnitTests {
     @Resource(name = "hostingTestcase1")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private HostingTestcase hostingTestcase1;

@@ -1,16 +1,16 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateNameImpl;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import javax.annotation.Resource;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all",
-    "dcdt.test.unit.crypto.certs.all", "dcdt.test.unit.crypto.certs.name" })
-public class CertificateNameUnitTests extends ToolTestNgUnitTests {
+@Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all" }, groups = { "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.certs.all",
+    "dcdt.test.unit.crypto.certs.name" })
+public class CertificateNameUnitTests extends AbstractToolUnitTests {
     @Value("${dcdt.test.crypto.subject.x500.name.ca.1}")
     private X500Name testCertSubjX500NameCa1;
 

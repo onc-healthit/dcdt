@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.io.utils.ToolFileUtils;
-import gov.hhs.onc.dcdt.net.Domain;
+import gov.hhs.onc.dcdt.net.DomainName;
 import gov.hhs.onc.dcdt.net.IpAddress;
 import java.io.File;
 import java.net.InetAddress;
@@ -136,7 +136,7 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
         this.ipAddr = ipAddr;
     }
 
-    @Domain
+    @DomainName
     @Nullable
     @Transient
     private String getDomainNameString() {

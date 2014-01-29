@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.config;
 
 import gov.hhs.onc.dcdt.config.impl.InstanceConfigImpl;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
-import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import java.net.InetAddress;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.xbill.DNS.Name;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.config.all", "dcdt.test.func.config.instance" })
-public class InstanceConfigRegistryFunctionalTests extends ToolTestNgFunctionalTests {
+@Test(groups = { "dcdt.test.func.config.all", "dcdt.test.func.config.instance" })
+public class InstanceConfigRegistryFunctionalTests extends AbstractToolFunctionalTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private InstanceConfigRegistry instanceConfigReg;

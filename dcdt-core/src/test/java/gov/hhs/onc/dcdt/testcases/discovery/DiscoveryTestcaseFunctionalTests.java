@@ -2,16 +2,15 @@ package gov.hhs.onc.dcdt.testcases.discovery;
 
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
-import gov.hhs.onc.dcdt.test.ToolTestNgFunctionalTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.xbill.DNS.Name;
 
-@Test(dependsOnGroups = { "dcdt.test.func.config.all" }, groups = { "dcdt.test.all", "dcdt.test.func.all", "dcdt.test.func.testcases.all",
-    "dcdt.test.func.testcases.discovery" })
-public class DiscoveryTestcaseFunctionalTests extends ToolTestNgFunctionalTests {
+@Test(dependsOnGroups = { "dcdt.test.func.config.all" }, groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.discovery" })
+public class DiscoveryTestcaseFunctionalTests extends AbstractToolFunctionalTests {
     private List<DiscoveryTestcase> discoveryTestcases;
 
     @SuppressWarnings({ "ConstantConditions" })
