@@ -2,14 +2,14 @@ package gov.hhs.onc.dcdt.utils;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.utils.all", "dcdt.test.unit.utils.beans.all", "dcdt.test.unit.utils.beans.factory" })
-public class ToolBeanFactoryUtilsUnitTests extends ToolTestNgUnitTests {
+@Test(groups = { "dcdt.test.unit.utils.all", "dcdt.test.unit.utils.beans.all", "dcdt.test.unit.utils.beans.factory" })
+public class ToolBeanFactoryUtilsUnitTests extends AbstractToolUnitTests {
     private static interface ToolBeanFactoryUtilsTestBean extends ToolBean {
         public String getProp1();
 

@@ -1,13 +1,13 @@
 package gov.hhs.onc.dcdt.version;
 
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.utils.all" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.version" })
-public class ToolVersionUnitTests extends ToolTestNgUnitTests {
+@Test(dependsOnGroups = { "dcdt.test.unit.utils.all" }, groups = { "dcdt.test.unit.version" })
+public class ToolVersionUnitTests extends AbstractToolUnitTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private ToolVersion version;

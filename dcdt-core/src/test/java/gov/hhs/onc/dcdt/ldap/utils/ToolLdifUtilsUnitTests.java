@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.ldap.utils;
 
 import gov.hhs.onc.dcdt.ldap.LdifException;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.entry.Attribute;
@@ -10,8 +10,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.ldap.all", "dcdt.test.unit.ldap.utils.all", "dcdt.test.unit.ldap.utils.ldif" })
-public class ToolLdifUtilsUnitTests extends ToolTestNgUnitTests {
+@Test(groups = { "dcdt.test.unit.ldap.all", "dcdt.test.unit.ldap.utils.all", "dcdt.test.unit.ldap.utils.ldif" })
+public class ToolLdifUtilsUnitTests extends AbstractToolUnitTests {
     @Value("${dcdt.test.ldap.ldif.entry.1.attr.cn}")
     private Attribute testLdifEntryAttrCn;
 

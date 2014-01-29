@@ -1,14 +1,14 @@
 package gov.hhs.onc.dcdt.crypto.keys;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.keys.all", "dcdt.test.unit.crypto.keys.gen" })
-public class KeyGeneratorUnitTests extends ToolTestNgUnitTests {
+@Test(groups = { "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.keys.all", "dcdt.test.unit.crypto.keys.gen" })
+public class KeyGeneratorUnitTests extends AbstractToolUnitTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private KeyGenerator keyGen;

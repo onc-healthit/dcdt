@@ -1,28 +1,24 @@
-package gov.hhs.onc.dcdt.test;
+package gov.hhs.onc.dcdt.test.impl;
 
-import gov.hhs.onc.dcdt.beans.factory.BeanDefinitionRegistryAware;
-import gov.hhs.onc.dcdt.context.ToolMessageSource;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolIterableUtils;
+import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
-import org.springframework.test.context.testng.AbstractTransactionalTestNGSpringContextTests;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
-@ContextConfiguration(loader = ToolTestNgContextLoader.class, locations = { "spring/spring-core.xml", "spring/spring-core-*.xml" })
-public abstract class ToolTestNgTests extends AbstractTestNGSpringContextTests implements InitializingBean, MessageSourceAware {
+@ContextConfiguration(loader = ToolContextLoaderImpl.class, locations = { "spring/spring-core.xml", "spring/spring-core-*.xml" })
+@Test(groups = { "dcdt.test.all" })
+public abstract class AbstractToolTests extends AbstractTestNGSpringContextTests implements InitializingBean, MessageSourceAware {
     /**
      * @see org.springframework.test.context.testng.AbstractTestNGSpringContextTests.applicationContext
      */
@@ -33,6 +29,10 @@ public abstract class ToolTestNgTests extends AbstractTestNGSpringContextTests i
     @Override
     public void afterPropertiesSet() throws Exception {
         this.applicationContext = (AbstractApplicationContext) super.applicationContext;
+    }
+
+    protected void assertMessageEquals(String str, String msgCode, String assertMsg) {
+        Assert.assertEquals(str, ToolMessageUtils.getMessage(this.msgSource, msgCode), assertMsg);
     }
 
     protected Iterator<Object[]> getDataGroupsBeans(Iterable<Class<?>[]> dataGroupsBeanClasses) {

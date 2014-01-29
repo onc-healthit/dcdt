@@ -24,16 +24,16 @@ import org.hibernate.validator.constraints.Length;
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
-public @interface Domain {
+public @interface DomainName {
     @Documented
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
     public @interface List {
-        Domain[] value();
+        DomainName[] value();
     }
 
-    String message() default "{dcdt.net.validation.constraints.Domain.msg}";
+    String message() default "{dcdt.net.validation.constraints.DomainName.msg}";
 
     Class<?>[] groups() default {};
 

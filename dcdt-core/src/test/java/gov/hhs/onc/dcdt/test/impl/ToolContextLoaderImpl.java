@@ -1,13 +1,13 @@
-package gov.hhs.onc.dcdt.test;
+package gov.hhs.onc.dcdt.test.impl;
 
+import gov.hhs.onc.dcdt.test.ToolContextLoader;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.test.context.ContextLoader;
 
-public class ToolTestNgContextLoader implements ContextLoader {
+public class ToolContextLoaderImpl implements ToolContextLoader {
     @Override
     public ApplicationContext loadContext(String ... configLocs) throws Exception {
         ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(configLocs);

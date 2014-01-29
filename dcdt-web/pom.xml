@@ -389,8 +389,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.seleniumhq.selenium.client-drivers</groupId>
-            <artifactId>selenium-java-client-driver</artifactId>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -566,6 +566,18 @@
                     </execution>
                     <execution>
                         <id>test-integration</id>
+                        <configuration>
+                            <systemPropertyVariables>
+                                <dcdt.test.web.selenium.host>${project.test.server.1.selenium.1.host}</dcdt.test.web.selenium.host>
+                                <dcdt.test.web.selenium.port>${project.test.server.1.selenium.1.port}</dcdt.test.web.selenium.port>
+                                <dcdt.test.web.selenium.web.driver.url.base>
+                                    ${project.test.server.1.selenium.1.web.driver.url.base}
+                                </dcdt.test.web.selenium.web.driver.url.base>
+                                <dcdt.test.web.selenium.web.driver.url.hub>
+                                    ${project.test.server.1.selenium.1.web.driver.url.hub}
+                                </dcdt.test.web.selenium.web.driver.url.hub>
+                            </systemPropertyVariables>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -580,6 +592,18 @@
                         <id>war-test</id>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <dependencies>
+                    <dependency>
+                        <groupId>${project.groupId}</groupId>
+                        <artifactId>dcdt-core</artifactId>
+                        <version>${project.version}</version>
+                        <classifier>tomcat</classifier>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.kuali.maven.plugins</groupId>

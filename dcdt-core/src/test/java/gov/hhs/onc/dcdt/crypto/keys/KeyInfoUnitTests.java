@@ -4,15 +4,15 @@ import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.keys.impl.KeyInfoImpl;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.keys.all", "dcdt.test.unit.crypto.keys.info" })
-public class KeyInfoUnitTests extends ToolTestNgUnitTests {
+@Test(groups = { "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.keys.all", "dcdt.test.unit.crypto.keys.info" })
+public class KeyInfoUnitTests extends AbstractToolUnitTests {
     @Value("${dcdt.test.crypto.keys.1.key.public}")
     private String testKeysPublicKeyStr;
 
@@ -43,8 +43,9 @@ public class KeyInfoUnitTests extends ToolTestNgUnitTests {
 
     @BeforeClass
     public void buildKeyInfo() throws CryptographyException {
-        this.testKeyInfo = new KeyInfoImpl(KeyUtils.readPublicKey(getKeyData(this.testKeysPublicKeyStr), KeyAlgorithm.RSA, DataEncoding.DER),
-            KeyUtils.readPrivateKey(getKeyData(this.testKeysPrivateKeyStr), KeyAlgorithm.RSA, DataEncoding.DER));
+        this.testKeyInfo =
+            new KeyInfoImpl(KeyUtils.readPublicKey(getKeyData(this.testKeysPublicKeyStr), KeyAlgorithm.RSA, DataEncoding.DER), KeyUtils.readPrivateKey(
+                getKeyData(this.testKeysPrivateKeyStr), KeyAlgorithm.RSA, DataEncoding.DER));
     }
 
     private static byte[] getKeyData(String testKeysKeyStr) {

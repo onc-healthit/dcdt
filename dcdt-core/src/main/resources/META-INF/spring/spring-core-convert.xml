@@ -32,6 +32,8 @@
         <beans:ref bean="mailAddrConv"/>
         <beans:ref bean="pathConv"/>
         <beans:ref bean="rdnConv"/>
+        <beans:ref bean="uriConv"/>
+        <beans:ref bean="urlConv"/>
         <beans:ref bean="x500NameConv"/>
     </util:set>
     

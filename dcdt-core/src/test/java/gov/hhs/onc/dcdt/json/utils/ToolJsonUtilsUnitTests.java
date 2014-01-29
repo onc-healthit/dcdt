@@ -10,7 +10,7 @@ import gov.hhs.onc.dcdt.json.ToolJsonException;
 import gov.hhs.onc.dcdt.json.impl.ToolObjectMapper;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.net.InetAddress;
 import org.apache.commons.lang3.StringUtils;
@@ -22,8 +22,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.xbill.DNS.Name;
 
-@Test(groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.json.all", "dcdt.test.unit.json.utils.all", "dcdt.test.unit.json.utils.json" })
-public class ToolJsonUtilsUnitTests extends ToolTestNgUnitTests {
+@Test(groups = { "dcdt.test.unit.json.all", "dcdt.test.unit.json.utils.all", "dcdt.test.unit.json.utils.json" })
+public class ToolJsonUtilsUnitTests extends AbstractToolUnitTests {
     @JsonSubTypes({ @Type(MailAddressImpl.class) })
     private static interface ToolTestJsonBean extends ToolBean {
         @JsonProperty(value = "domainName", required = true)

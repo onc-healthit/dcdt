@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.utils;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.factory.BeanDefinitionRegistryAware;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.test.ToolTestNgUnitTests;
+import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -12,9 +12,9 @@ import org.springframework.stereotype.Component;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.utils.beans.factory" }, groups = { "dcdt.test.all", "dcdt.test.unit.all", "dcdt.test.unit.utils.all",
-    "dcdt.test.unit.utils.beans.all", "dcdt.test.unit.utils.beans.def" })
-public class ToolBeanDefinitionUtilsUnitTests extends ToolTestNgUnitTests implements BeanDefinitionRegistryAware {
+@Test(dependsOnGroups = { "dcdt.test.unit.utils.beans.factory" }, groups = { "dcdt.test.unit.utils.all", "dcdt.test.unit.utils.beans.all",
+    "dcdt.test.unit.utils.beans.def" })
+public class ToolBeanDefinitionUtilsUnitTests extends AbstractToolUnitTests implements BeanDefinitionRegistryAware {
     private static interface ToolBeanDefinitionUtilsTestBean extends ToolBean {
         public String getProp1();
 
