@@ -14,11 +14,12 @@
         Notice that there are two options for storage of address-bound and domain-bound certificates.
         The Hosting tool provides tests that map to these options.
         <br/><br/>
-        <b>Step 2:</b> Select the option that reflects the SUT and then select the appropriate test case in the "Choose test case" dropdown.
+        <b>Step 2:</b> Select the option that reflects the SUT and then select the appropriate test case from the dropdown.
         <br/><br/>
         <b>Step 3:</b> Read the Description and Instructions for the selected test case. Then enter the Direct address and submit.
         Your SUT configuration may require that you select more than one test case. If so, then select one test case at a time,
-        following the instructions to execute the test after each selection.
+        following the instructions to execute the test after each selection. Note: The results for your testcase will be displayed
+        to the right of the test case description.
         <br/>
     </p>
     <table class="table table-striped">
@@ -44,7 +45,7 @@
     </table>
 </div>
 <form name="form-testcases-hosting">
-    <div class="input-group-sm">
+    <div id="testcase-info" class="input-group-sm">
         <div class="form-group">
             <div>
                 <span class="form-cell form-cell-label">
@@ -64,36 +65,49 @@
                 </span>
             </div>
         </div>
-    </div>
-    <div id="testcase-desc"></div>
-    <div class="input-group-sm">
-        <div class="form-group">
-            <div>
-                <span class="form-cell form-cell-label">
-                    <tiles:insertDefinition name="component-glyph-label">
-                        <tiles:putAttribute name="attrs">for="testcase-hosting-direct-addr"</tiles:putAttribute>
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-envelope glyphicon-type-info"/>
-                        <tiles:putAttribute name="content" value="Direct Address"/>
-                    </tiles:insertDefinition>:
-                </span>
-                <span class="form-cell form-cell-control">
-                    <input id="testcase-hosting-direct-addr" class="input-sm form-control" name="testcaseHostingDirectAddr" type="text"/>
+        <div id="testcase-desc"></div>
+        <div class="input-group-sm">
+            <div class="form-group">
+                <div>
+                    <span class="form-cell form-cell-label">
+                        <tiles:insertDefinition name="component-glyph-label">
+                            <tiles:putAttribute name="attrs">for="testcase-hosting-direct-addr"</tiles:putAttribute>
+                            <tiles:putAttribute name="glyph-classes" value="glyphicon-envelope glyphicon-type-info"/>
+                            <tiles:putAttribute name="content" value="Direct Address"/>
+                        </tiles:insertDefinition>:
+                    </span>
+                    <span class="form-cell form-cell-control">
+                        <input id="testcase-hosting-direct-addr" class="input-sm form-control" name="testcaseHostingDirectAddr" type="text"/>
+                    </span>
+                </div>
+            </div>
+            <div class="form-group form-group-buttons">
+                <span class="btn-group btn-group-sm">
+                    <tiles:insertDefinition name="component-glyph-button">
+                        <tiles:putAttribute name="attrs">id="testcase-hosting-submit"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-circle glyphicon-type-info"/>
+                        <tiles:putAttribute name="content" value="Submit"/>
+                    </tiles:insertDefinition>
+                    <tiles:insertDefinition name="component-glyph-button">
+                        <tiles:putAttribute name="attrs">id="testcase-hosting-reset"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-refresh glyphicon-type-info"/>
+                        <tiles:putAttribute name="content" value="Reset"/>
+                    </tiles:insertDefinition>
                 </span>
             </div>
         </div>
-        <div class="form-group form-group-buttons">
-            <span class="btn-group btn-group-sm">
-                <tiles:insertDefinition name="component-glyph-button">
-                    <tiles:putAttribute name="attrs">id="testcase-hosting-submit"</tiles:putAttribute>
-                    <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-circle glyphicon-type-info"/>
-                    <tiles:putAttribute name="content" value="Submit"/>
-                </tiles:insertDefinition>
-                <tiles:insertDefinition name="component-glyph-button">
-                    <tiles:putAttribute name="attrs">id="testcase-hosting-reset"</tiles:putAttribute>
-                    <tiles:putAttribute name="glyph-classes" value="glyphicon-refresh glyphicon-type-info"/>
-                    <tiles:putAttribute name="content" value="Reset"/>
-                </tiles:insertDefinition>
-            </span>
+    </div>
+    <div id="testcase-results" class="input-group-sm">
+        <div class="form-group">
+            <div id="testcase-results-header">
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-certificate glyphicon-type-info"/>
+                        <tiles:putAttribute name="content" value="Results"/>
+                    </tiles:insertDefinition>
+                </span>
+            </div>
         </div>
+        <div id="testcase-results-accordion"></div>
     </div>
 </form>

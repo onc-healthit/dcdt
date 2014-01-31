@@ -8,3 +8,6 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<script type="text/javascript">
+var URL_HOSTING_PROCESS = "${urlHostingProcess}";
+</script>

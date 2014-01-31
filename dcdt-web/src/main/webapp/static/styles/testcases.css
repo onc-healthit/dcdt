@@ -1,7 +1,21 @@
+div#testcase-info {
+    float: left;
+}
+
 div#testcase-desc {
     width: 695px;
 }
 
 div#testcase-desc div > div {
     margin: 15px;
+}
+
+div#testcase-results {
+    width: 430px;
+    margin-left: 15px;
+    float: left;
+}
+
+div#testcase-results-header {
+    margin-left: 70px;
 }
