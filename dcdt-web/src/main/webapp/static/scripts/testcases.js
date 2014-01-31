@@ -80,6 +80,9 @@
             },
             "testcaseSelect": function () {
                 return $(this).find("select#testcase-select");
+            },
+            "appendTestcaseResults": function (elem, testcaseLbl, testcaseValue) {
+                elem.append($("<b/>").text(testcaseLbl), testcaseValue + "<br/>");
             }
         })
     });

@@ -27,6 +27,7 @@
 <spring:url var="urlVersion" value="/version" scope="request"/>
 <c:set var="urlHome" value="${urlBase}" scope="request"/>
 <spring:url var="urlHosting" value="/hosting" scope="request"/>
+<spring:url var="urlHostingProcess" value="/hosting/process" scope="request"/>
 <spring:url var="urlDiscovery" value="/discovery" scope="request"/>
 <spring:url var="urlDiscoveryMailMapping" value="/discovery/mail/mapping" scope="request"/>
 <spring:url var="urlDiscoveryTrustAnchor" value="/discovery/anchor" scope="request"/>
