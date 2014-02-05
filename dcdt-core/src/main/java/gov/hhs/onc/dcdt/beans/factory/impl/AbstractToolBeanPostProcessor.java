@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.beans.factory.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.ToolBeanPostProcessor;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolOrderedBean;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,25 +10,18 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-public abstract class AbstractToolBeanPostProcessor<T> implements ToolBeanPostProcessor<T> {
+public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolOrderedBean implements ToolBeanPostProcessor<T> {
     protected ApplicationContext appContext;
     protected Class<T> beanClass;
+    protected boolean postProcBeforeInit;
+    protected boolean postProcAfterInit;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolBeanPostProcessor.class);
 
-    protected AbstractToolBeanPostProcessor(Class<T> beanClass) {
+    protected AbstractToolBeanPostProcessor(Class<T> beanClass, boolean postProcBeforeInit, boolean postProcAfterInit) {
         this.beanClass = beanClass;
-    }
-
-    @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        if (!this.beanClass.isAssignableFrom(bean.getClass())) {
-            return bean;
-        }
-
-        T beanCast = this.beanClass.cast(bean);
-
-        return this.canPostProcessBeforeInitialization(beanCast, beanName) ? this.postProcessBeforeInitializationInternal(beanCast, beanName) : bean;
+        this.postProcBeforeInit = postProcBeforeInit;
+        this.postProcAfterInit = postProcAfterInit;
     }
 
     @Override
@@ -38,36 +32,50 @@ public abstract class AbstractToolBeanPostProcessor<T> implements ToolBeanPostPr
 
         T beanCast = this.beanClass.cast(bean);
 
-        return this.canPostProcessAfterInitialization(beanCast, beanName) ? this.postProcessAfterInitializationInternal(beanCast, beanName) : bean;
+        if (this.canPostProcessAfterInitialization(beanCast, beanName)) {
+            bean = this.postProcessAfterInitializationInternal(beanCast, beanName);
+
+            LOGGER.debug(String.format("Post processed (class=%s) bean (name=%s, class=%s) after initialization.", ToolClassUtils.getName(this), beanName,
+                ToolClassUtils.getName(bean)));
+        }
+
+        return bean;
     }
 
     @Override
-    public boolean canPostProcessBeforeInitialization(T bean, String beanName) {
-        return false;
+    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if (!this.beanClass.isAssignableFrom(bean.getClass())) {
+            return bean;
+        }
+
+        T beanCast = this.beanClass.cast(bean);
+
+        if (this.canPostProcessBeforeInitialization(beanCast, beanName)) {
+            bean = this.postProcessBeforeInitializationInternal(beanCast, beanName);
+
+            LOGGER.debug(String.format("Post processed (class=%s) bean (name=%s, class=%s) before initialization.", ToolClassUtils.getName(this), beanName,
+                ToolClassUtils.getName(bean)));
+        }
+
+        return bean;
     }
 
     @Override
     public boolean canPostProcessAfterInitialization(T bean, String beanName) {
-        return false;
-    }
-
-    protected T postProcessBeforeInitializationInternal(T bean, String beanName) throws ToolBeanException {
-        LOGGER.debug(String.format("Post processed (class=%s) bean (name=%s, class=%s) before initialization.", ToolClassUtils.getName(this), beanName,
-            ToolClassUtils.getName(bean)));
-
-        return bean;
-    }
-
-    protected T postProcessAfterInitializationInternal(T bean, String beanName) throws ToolBeanException {
-        LOGGER.debug(String.format("Post processed (class=%s) bean (name=%s, class=%s) after initialization.", ToolClassUtils.getName(this), beanName,
-            ToolClassUtils.getName(bean)));
-
-        return bean;
+        return this.postProcAfterInit;
     }
 
     @Override
-    public int getOrder() {
-        return LOWEST_PRECEDENCE;
+    public boolean canPostProcessBeforeInitialization(T bean, String beanName) {
+        return this.postProcBeforeInit;
+    }
+
+    protected T postProcessAfterInitializationInternal(T bean, String beanName) throws ToolBeanException {
+        return bean;
+    }
+
+    protected T postProcessBeforeInitializationInternal(T bean, String beanName) throws ToolBeanException {
+        return bean;
     }
 
     @Override

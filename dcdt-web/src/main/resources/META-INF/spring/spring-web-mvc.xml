@@ -17,22 +17,6 @@
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <mvc:annotation-driven conversion-service="conversionService" validator="toolValidator">
-        <mvc:argument-resolvers>
-            <!--
-            Adding support for the @AuthenticationPrincipal annotation.
-            See: http://docs.spring.io/spring-security/site/docs/3.2.0.RELEASE/reference/htmlsingle/#mvc-authentication-principal
-            -->
-            <beans:bean class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver"/>
-        </mvc:argument-resolvers>
-        <mvc:message-converters>
-            <beans:bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter"
-                p:objectMapper-ref="toolObjMapper"/>
-        </mvc:message-converters>
-    </mvc:annotation-driven>
-    
-    <mvc:default-servlet-handler/>
-    
     <mvc:interceptors>
         <!-- Deactivating web content cache usage -->
         <beans:bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor"

@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.web.controller;
+package gov.hhs.onc.dcdt.web.view;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -10,7 +10,11 @@ import java.lang.annotation.Target;
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.TYPE })
-public @interface RequestViews {
-    RequestView[] value();
+@Target({ ElementType.METHOD })
+public @interface RequestView {
+    String value();
+
+    ViewDirectiveType directive() default ViewDirectiveType.NONE;
+
+    boolean override() default false;
 }

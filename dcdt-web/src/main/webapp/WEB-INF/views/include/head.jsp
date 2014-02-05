@@ -40,9 +40,9 @@
 <script type="text/javascript" src="${urlStaticScripts}/web.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/web-form.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/web-beans.js"></script>
-<c:if test="${googleAnalytics.enabled}">
+<c:if test="${googleAnalyticsConfig.enabled}">
     <script type="text/javascript">
-    var googleAnalyticsId = "${googleAnalytics.id}", googleAnalyticsUrl = "${googleAnalytics.url}";
+    var googleAnalyticsId = "${googleAnalyticsConfig.id}", googleAnalyticsUrl = "${googleAnalyticsConfig.url}";
     </script>
     <script type="text/javascript" src="${urlStaticScripts}/ga.js"></script>
 </c:if>

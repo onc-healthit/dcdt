@@ -12,12 +12,7 @@ import org.springframework.stereotype.Component;
 @Scope("singleton")
 public class BeanDefinitionRegistryAwareBeanPostProcessor extends AbstractToolBeanPostProcessor<BeanDefinitionRegistryAware> {
     public BeanDefinitionRegistryAwareBeanPostProcessor() {
-        super(BeanDefinitionRegistryAware.class);
-    }
-
-    @Override
-    public boolean canPostProcessBeforeInitialization(BeanDefinitionRegistryAware bean, String beanName) {
-        return true;
+        super(BeanDefinitionRegistryAware.class, true, false);
     }
 
     @Override

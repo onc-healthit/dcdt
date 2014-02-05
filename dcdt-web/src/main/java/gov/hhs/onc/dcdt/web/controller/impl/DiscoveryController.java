@@ -2,27 +2,28 @@ package gov.hhs.onc.dcdt.web.controller.impl;
 
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.web.ToolWebException;
-import gov.hhs.onc.dcdt.web.controller.RequestView;
-import gov.hhs.onc.dcdt.web.controller.RequestViews;
+import gov.hhs.onc.dcdt.web.controller.DisplayController;
+import gov.hhs.onc.dcdt.web.view.RequestView;
+import java.util.List;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller("discoveryController")
+@DisplayController
 @Scope("singleton")
 public class DiscoveryController extends AbstractToolController {
-    private final static String MODEL_ATTR_KEY_DISCOVERY_TESTCASES = "discoveryTestcases";
-
     @RequestMapping(value = { "/discovery" }, method = { RequestMethod.GET })
-    @RequestViews({ @RequestView("discovery") })
-    public ModelAndView displayDiscovery(ModelMap modelMap) throws ToolWebException {
-        modelMap.addAttribute(MODEL_ATTR_KEY_DISCOVERY_TESTCASES,
-            ToolBeanFactoryUtils.getBeansOfType(this.appContext.getBeanFactory(), DiscoveryTestcase.class));
+    @RequestView("discovery")
+    public ModelAndView displayDiscovery() {
+        return new ModelAndView();
+    }
 
-        return this.display(modelMap);
+    @ModelAttribute("discoveryTestcases")
+    private List<DiscoveryTestcase> getDiscoveryTestcasesModelAttribute() {
+        return ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class);
     }
 }

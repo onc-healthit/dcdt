@@ -50,7 +50,7 @@
                 classpath*:META-INF/spring/spring-service*.xml
                 /WEB-INF/spring/spring-service*.xml
                 /WEB-INF/spring/spring-web.xml
-                /WEB-INF/spring/spring-web-mvc.xml
+                /WEB-INF/spring/spring-web-mvc*.xml
                 /WEB-INF/spring/spring-web-version.xml
             </param-value>
         </init-param>
