@@ -15,6 +15,9 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <!--====================================================================================================
+    = MESSAGE SOURCES
+    =====================================================================================================-->
     <beans:bean id="messageSource" parent="messageSourceBase" primary="true">
         <beans:property name="basenames">
             <beans:array merge="true">

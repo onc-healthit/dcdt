@@ -4,21 +4,18 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.validation.constraints.ToolConstraintValidator;
 import java.lang.annotation.Annotation;
+import javax.annotation.Resource;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.ValidatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
+import org.springframework.validation.Validator;
 
 public abstract class AbstractToolConstraintValidator<T extends Annotation, U> extends AbstractToolBean implements ToolConstraintValidator<T, U> {
-    @Autowired
-    protected ValidatorFactory validatorFactory;
+    @Resource(name = "validator")
+    protected Validator validator;
 
-    @Autowired
-    @Qualifier("validation")
-    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    @Resource(name = "messageSourceValidation")
     protected MessageSource msgSourceValidation;
 
     protected T constraintAnno;

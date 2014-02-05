@@ -12,7 +12,7 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
         super(DnsService.class);
     }
 
-    @Test
+    @Test(enabled = false)
     public void testPlaceholder() throws TextParseException {
         // TODO: implement
     }

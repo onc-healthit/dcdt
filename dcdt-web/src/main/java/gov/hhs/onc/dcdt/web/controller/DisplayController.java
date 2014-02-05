@@ -6,17 +6,12 @@ import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import org.springframework.stereotype.Controller;
 
+@Controller
 @Documented
 @Inherited
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
-public @interface RequestView {
-    String value();
-
-    String[] contentTypes() default {};
-
-    boolean forward() default false;
-
-    boolean redirect() default false;
+public @interface DisplayController {
 }

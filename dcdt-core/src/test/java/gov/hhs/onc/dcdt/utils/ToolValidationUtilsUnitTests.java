@@ -4,9 +4,9 @@ import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import gov.hhs.onc.dcdt.validation.constraints.NotBlank;
+import javax.annotation.Resource;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
@@ -66,12 +66,11 @@ public class ToolValidationUtilsUnitTests extends AbstractToolUnitTests {
     private final static String VALIDATION_TEST_BEAN_PROP3_VALUE = null;
     private final static String VALIDATION_TEST_BEAN_PROP3_FIELD_ERROR_MSG_CODE = "dcdt.test.unit.utils.validation.constraints.NotBlank.msg";
 
-    @Autowired
+    @Resource(name = "validator")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private Validator validator;
 
-    @Autowired
-    @Qualifier("validation")
+    @Resource(name = "messageSourceValidation")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private MessageSource msgSourceValidation;
 

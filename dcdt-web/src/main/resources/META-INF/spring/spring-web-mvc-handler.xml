@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:mvc="http://www.springframework.org/schema/mvc"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <mvc:default-servlet-handler/>
+    
+    <!--====================================================================================================
+    = CONTENT NEGOTIATION
+    =====================================================================================================-->
+    <beans:bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean"
+        p:favorPathExtension="false">
+        <beans:property name="mediaTypes">
+            <util:properties>
+                <beans:prop key="json">#{ T(org.springframework.http.MediaType).APPLICATION_JSON_VALUE }</beans:prop>
+            </util:properties>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = HTTP MESSAGE CONVERTERS
+    =====================================================================================================-->
+    <beans:bean id="httpMsgConv" class="org.springframework.http.converter.HttpMessageConverter" abstract="true"/>
+    
+    <beans:bean id="mappingJackson2HttpMsgConv" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" parent="httpMsgConv"
+        p:objectMapper-ref="toolObjMapper"/>
+    
+    <!--====================================================================================================
+    = HANDLER METHOD ARGUMENT RESOLVERS
+    =====================================================================================================-->
+    <beans:bean id="handlerMethodArgResolver" class="org.springframework.web.method.support.HandlerMethodArgumentResolver" abstract="true"/>
+    
+    <beans:bean id="authPrincipalArgResolver" class="org.springframework.security.web.bind.support.AuthenticationPrincipalArgumentResolver"
+        parent="handlerMethodArgResolver"/>
+    
+    <!--====================================================================================================
+    = HANDLER METHOD RETURN VALUE HANDLERS
+    =====================================================================================================-->
+    <beans:bean id="handlerMethodReturnValueHandler" class="org.springframework.web.method.support.HandlerMethodReturnValueHandler" abstract="true"/>
+    
+    <!--====================================================================================================
+    = HANDLER EXCEPTION RESOLVERS
+    =====================================================================================================-->
+    <beans:bean id="#{ T(org.springframework.web.servlet.DispatcherServlet).HANDLER_EXCEPTION_RESOLVER_BEAN_NAME }"
+        class="gov.hhs.onc.dcdt.web.handler.impl.OrderedHandlerExceptionResolverComposite"
+        p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }">
+        <beans:property name="handlerComponents">
+            <util:list>
+                <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver"
+                    p:contentNegotiationManager-ref="contentNegotiationManager"
+                    p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }"/>
+                <beans:bean class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver"
+                    p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE + 1 }"/>
+                <beans:bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver"
+                    p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE + 2 }"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = HANDLER ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="#{ T(org.springframework.web.servlet.DispatcherServlet).HANDLER_ADAPTER_BEAN_NAME }"
+        class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"
+        p:contentNegotiationManager-ref="contentNegotiationManager"
+        p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }">
+        <beans:property name="webBindingInitializer">
+            <beans:bean class="org.springframework.web.bind.support.ConfigurableWebBindingInitializer"
+                p:conversionService-ref="conversionService"
+                p:validator-ref="validator"/>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = HANDLER MAPPINGS
+    =====================================================================================================-->
+    <beans:bean id="#{ T(org.springframework.web.servlet.DispatcherServlet).HANDLER_MAPPING_BEAN_NAME }"
+        class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"
+        p:contentNegotiationManager-ref="contentNegotiationManager"
+        p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }"/>
+</beans:beans>

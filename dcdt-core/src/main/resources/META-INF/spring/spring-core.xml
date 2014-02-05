@@ -22,6 +22,9 @@
     <context:component-scan base-package="gov.hhs.onc.dcdt"/>
     <context:spring-configured/>
     
+    <!--====================================================================================================
+    = PROPERTY SOURCES PLACEHOLDER CONFIGURER
+    =====================================================================================================-->
     <beans:bean id="propSourcesPlaceholderConfigurerBase" class="gov.hhs.onc.dcdt.context.impl.ToolPropertySourcesPlaceholderConfigurer" abstract="true"
         p:environmentOverride="true"
         p:ignoreResourceNotFound="true"
@@ -43,6 +46,9 @@
     </beans:bean>
     <beans:bean id="propSourcesPlaceholderConfigurer" parent="propSourcesPlaceholderConfigurerBase"/>
     
+    <!--====================================================================================================
+    = MESSAGE SOURCES
+    =====================================================================================================-->
     <beans:bean id="toolMsgSource" class="gov.hhs.onc.dcdt.context.ToolMessageSource" abstract="true"/>
     <beans:bean id="toolMsgSourceImpl" class="gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl" parent="toolMsgSource" abstract="true"
         p:cacheSeconds="300"
@@ -65,22 +71,32 @@
                 <beans:value>core/core-messages-validation</beans:value>
             </beans:array>
         </beans:property>
-        <beans:qualifier value="validation"/>
     </beans:bean>
     <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase"/>
     
-    <beans:bean id="messageSourceValidationLocator" class="org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator"
-        c:messageSource-ref="messageSourceValidation"/>
+    <!--====================================================================================================
+    = VALIDATION
+    =====================================================================================================-->
+    <beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+        <beans:property name="messageInterpolator">
+            <beans:bean class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator">
+                <beans:constructor-arg name="userResourceBundleLocator">
+                    <beans:bean class="org.springframework.validation.beanvalidation.MessageSourceResourceBundleLocator"
+                        c:messageSource-ref="messageSourceValidation"/>
+                </beans:constructor-arg>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
     
-    <beans:bean id="messageInterpolatorValidation" class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator"
-        c:userResourceBundleLocator-ref="messageSourceValidationLocator"/>
-    
-    <beans:bean id="toolValidator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean"
-        p:messageInterpolator-ref="messageInterpolatorValidation"/>
-    
+    <!--====================================================================================================
+    = TASK EXECUTION
+    =====================================================================================================-->
     <beans:bean id="toolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
         p:daemon="true"/>
     
+    <!--====================================================================================================
+    = METHOD INVOCATIONS
+    =====================================================================================================-->
     <beans:bean id="setSysProps" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"
         p:targetObject="#{ systemProperties }"
         p:targetMethod="putAll">

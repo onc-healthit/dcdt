@@ -66,7 +66,7 @@
         formTestcasesHosting.submit(function (event) {
             hostingTestcase = {
                 "@type": "hostingTestcaseSubmission",
-                "hostingTestcaseName": testcasesHostingSelect.find('option:selected').text(),
+                "hostingTestcaseName": testcasesHostingSelect.val(),
                 "directAddr": testcaseHostingDirectAddr.val()
             };
             $.dcdt.hosting.processHostingTestcase();
