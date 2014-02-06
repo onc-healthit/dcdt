@@ -6,14 +6,14 @@ import gov.hhs.onc.dcdt.validation.constraints.ToolConstraintValidator;
 import java.lang.annotation.Annotation;
 import javax.annotation.Resource;
 import javax.validation.ConstraintValidatorContext;
+import javax.validation.ValidatorFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.MessageSource;
-import org.springframework.validation.Validator;
 
 public abstract class AbstractToolConstraintValidator<T extends Annotation, U> extends AbstractToolBean implements ToolConstraintValidator<T, U> {
-    @Resource(name = "validator")
-    protected Validator validator;
+    @Resource(name = "validatorFactory")
+    protected ValidatorFactory validatorFactory;
 
     @Resource(name = "messageSourceValidation")
     protected MessageSource msgSourceValidation;

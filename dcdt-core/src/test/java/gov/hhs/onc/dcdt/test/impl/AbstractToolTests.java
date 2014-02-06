@@ -12,12 +12,18 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
+import org.springframework.test.context.support.DirtiesContextTestExecutionListener;
 import org.springframework.test.context.testng.AbstractTestNGSpringContextTests;
+import org.springframework.test.context.transaction.TransactionalTestExecutionListener;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 @ContextConfiguration(loader = ToolContextLoaderImpl.class, locations = { "spring/spring-core.xml", "spring/spring-core-*.xml" })
 @Test(groups = { "dcdt.test.all" })
+@TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
+    TransactionalTestExecutionListener.class }, inheritListeners = false)
 public abstract class AbstractToolTests extends AbstractTestNGSpringContextTests implements InitializingBean, MessageSourceAware {
     /**
      * @see org.springframework.test.context.testng.AbstractTestNGSpringContextTests.applicationContext

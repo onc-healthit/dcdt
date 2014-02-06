@@ -22,8 +22,7 @@
     <!--====================================================================================================
     = CONTENT NEGOTIATION
     =====================================================================================================-->
-    <beans:bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean"
-        p:favorPathExtension="false">
+    <beans:bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <beans:property name="mediaTypes">
             <util:properties>
                 <beans:prop key="json">#{ T(org.springframework.http.MediaType).APPLICATION_JSON_VALUE }</beans:prop>
@@ -55,8 +54,7 @@
     <!--====================================================================================================
     = HANDLER EXCEPTION RESOLVERS
     =====================================================================================================-->
-    <beans:bean id="#{ T(org.springframework.web.servlet.DispatcherServlet).HANDLER_EXCEPTION_RESOLVER_BEAN_NAME }"
-        class="gov.hhs.onc.dcdt.web.handler.impl.OrderedHandlerExceptionResolverComposite"
+    <beans:bean id="handlerExceptionResolver" class="gov.hhs.onc.dcdt.web.handler.impl.OrderedHandlerExceptionResolverComposite"
         p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }">
         <beans:property name="handlerComponents">
             <util:list>
@@ -74,8 +72,7 @@
     <!--====================================================================================================
     = HANDLER ADAPTERS
     =====================================================================================================-->
-    <beans:bean id="#{ T(org.springframework.web.servlet.DispatcherServlet).HANDLER_ADAPTER_BEAN_NAME }"
-        class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"
+    <beans:bean id="handlerAdapter" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter"
         p:contentNegotiationManager-ref="contentNegotiationManager"
         p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }">
         <beans:property name="webBindingInitializer">
@@ -88,8 +85,7 @@
     <!--====================================================================================================
     = HANDLER MAPPINGS
     =====================================================================================================-->
-    <beans:bean id="#{ T(org.springframework.web.servlet.DispatcherServlet).HANDLER_MAPPING_BEAN_NAME }"
-        class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"
+    <beans:bean id="handlerMapping" class="org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping"
         p:contentNegotiationManager-ref="contentNegotiationManager"
         p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }"/>
 </beans:beans>

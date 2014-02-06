@@ -5,12 +5,13 @@ import gov.hhs.onc.dcdt.config.InstanceConfigRegistry;
 import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
+import gov.hhs.onc.dcdt.web.controller.JsonRequest;
+import gov.hhs.onc.dcdt.web.controller.JsonResponse;
 import gov.hhs.onc.dcdt.web.json.RequestJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.impl.ResponseJsonWrapperBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -20,12 +21,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller("adminJsonController")
 @JsonController
+@JsonResponse
 @Scope("singleton")
 public class AdminJsonController extends AbstractToolController {
     @Autowired
     private InstanceConfigRegistry instanceConfigRegistry;
 
-    @RequestMapping(value = { "/admin/instance/set" }, method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    @JsonRequest
+    @RequestMapping({ "/admin/instance/set" })
     public ResponseJsonWrapper<InstanceConfig> setInstanceConfig(@RequestBody @Validated RequestJsonWrapper<InstanceConfig> reqJsonWrapper,
         BindingResult bindingResult) {
         ResponseJsonWrapperBuilder<InstanceConfig> respJsonWrapperBuilder = new ResponseJsonWrapperBuilder<>();
