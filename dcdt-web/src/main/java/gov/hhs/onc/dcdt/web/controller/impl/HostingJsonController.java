@@ -5,23 +5,25 @@ import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseResultImpl;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
+import gov.hhs.onc.dcdt.web.controller.JsonRequest;
+import gov.hhs.onc.dcdt.web.controller.JsonResponse;
 import gov.hhs.onc.dcdt.web.json.RequestJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.impl.ResponseJsonWrapperBuilder;
 import org.springframework.context.annotation.Scope;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller("hostingJsonController")
 @JsonController
+@JsonResponse
 @Scope("singleton")
 public class HostingJsonController extends AbstractToolController {
-    @RequestMapping(value = { "/hosting/process" }, method = { RequestMethod.POST }, consumes = { MediaType.APPLICATION_JSON_VALUE })
+    @JsonRequest
+    @RequestMapping({ "/hosting/process" })
     public ResponseJsonWrapper<HostingTestcaseResult> processHostingTestcase(
         @RequestBody @Validated RequestJsonWrapper<HostingTestcaseSubmission> reqJsonWrapper, BindingResult bindingResult) {
         ResponseJsonWrapperBuilder<HostingTestcaseResult> respJsonWrapperBuilder = new ResponseJsonWrapperBuilder<>();

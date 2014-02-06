@@ -15,4 +15,9 @@
             <property name="dcdt.log.dir" value="${jetty.logs}" scope="context"/>
         </then>
     </if>
+    
+    <logger name="gov.hhs.onc.dcdt.web.filter" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
 </included>
