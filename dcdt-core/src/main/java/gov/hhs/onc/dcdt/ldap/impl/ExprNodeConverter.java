@@ -14,13 +14,11 @@ import org.apache.directory.api.ldap.model.filter.AndNode;
 import org.apache.directory.api.ldap.model.filter.EqualityNode;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
 import org.apache.directory.api.ldap.model.filter.PresenceNode;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("exprNodeConv")
 @List({ @Converts(from = String.class, to = ExprNode.class) })
-@Scope("singleton")
 public class ExprNodeConverter extends AbstractToolConverter {
     @Nullable
     @Override

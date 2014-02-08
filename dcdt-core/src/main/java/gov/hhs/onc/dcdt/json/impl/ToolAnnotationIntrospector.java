@@ -8,21 +8,19 @@ import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.json.ToolTypeNameIdResolver;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.stereotype.Component;
 
 @Component("toolAnnoInspector")
-@Scope("singleton")
 @SuppressWarnings({ "serial" })
 public class ToolAnnotationIntrospector extends JacksonAnnotationIntrospector implements ApplicationContextAware {
     private final static String ANNO_ATTR_NAME_USE = "use";

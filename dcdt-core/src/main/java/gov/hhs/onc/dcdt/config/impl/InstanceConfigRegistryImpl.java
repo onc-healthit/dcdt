@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.config.impl;
 
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.config.InstanceConfigDao;
 import gov.hhs.onc.dcdt.config.InstanceConfigRegistry;
@@ -7,12 +8,9 @@ import gov.hhs.onc.dcdt.config.InstanceConfigService;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.data.registry.impl.AbstractToolBeanRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseRegistry;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("instanceConfigRegistryImpl")
-@Scope("singleton")
 public class InstanceConfigRegistryImpl extends AbstractToolBeanRegistry<InstanceConfig, InstanceConfigDao, InstanceConfigService> implements
     InstanceConfigRegistry {
     public InstanceConfigRegistryImpl() {

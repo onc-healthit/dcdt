@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.discovery.credentials.impl;
 
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateGenerator;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
@@ -13,16 +14,13 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDao;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialService;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("discoveryTestcaseCredRegistryImpl")
-@Scope("singleton")
 public class DiscoveryTestcaseCredentialRegistryImpl extends
     AbstractToolBeanRegistry<DiscoveryTestcaseCredential, DiscoveryTestcaseCredentialDao, DiscoveryTestcaseCredentialService> implements
     DiscoveryTestcaseCredentialRegistry {

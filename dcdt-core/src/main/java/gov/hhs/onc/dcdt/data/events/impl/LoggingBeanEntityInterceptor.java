@@ -8,14 +8,12 @@ import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component("loggingBeanEntityInterceptor")
 @Order(Ordered.LOWEST_PRECEDENCE)
-@Scope("singleton")
 public class LoggingBeanEntityInterceptor extends AbstractToolBeanEntityInterceptor<ToolBean> {
     private final static String EVENT_ITEM_DELIM = ",";
 

@@ -10,7 +10,6 @@ import javax.annotation.Nullable;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Scope;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 @Component("namedBeanConv")
 @ConvertsJson(deserialize = { @Converts(from = String.class, to = ToolNamedBean.class) })
 @List({ @Converts(from = String.class, to = ToolNamedBean.class) })
-@Scope("singleton")
 public class NamedBeanConverter extends AbstractToolConverter implements ApplicationContextAware {
     private final static TypeDescriptor TYPE_DESC_NAMED_BEAN = TypeDescriptor.valueOf(ToolNamedBean.class);
 

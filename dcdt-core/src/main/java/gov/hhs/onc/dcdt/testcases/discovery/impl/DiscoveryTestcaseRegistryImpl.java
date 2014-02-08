@@ -1,22 +1,20 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.data.registry.impl.AbstractToolBeanRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDao;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseService;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialRegistry;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("discoveryTestcaseRegistryImpl")
-@Scope("singleton")
 public class DiscoveryTestcaseRegistryImpl extends AbstractToolBeanRegistry<DiscoveryTestcase, DiscoveryTestcaseDao, DiscoveryTestcaseService> implements
     DiscoveryTestcaseRegistry {
     public DiscoveryTestcaseRegistryImpl() {

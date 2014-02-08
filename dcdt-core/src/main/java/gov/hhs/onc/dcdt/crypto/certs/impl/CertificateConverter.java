@@ -10,14 +10,12 @@ import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import java.security.cert.X509Certificate;
 import javax.annotation.Nullable;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("certConv")
 @ConvertsUserType(CertificateUserType.class)
 @List({ @Converts(from = byte[].class, to = X509Certificate.class), @Converts(from = X509Certificate.class, to = byte[].class) })
-@Scope("singleton")
 public class CertificateConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_CERT = TypeDescriptor.valueOf(X509Certificate.class);
 

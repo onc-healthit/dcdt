@@ -2,11 +2,9 @@ package gov.hhs.onc.dcdt.web.config.impl;
 
 import gov.hhs.onc.dcdt.web.config.GoogleAnalyticsConfig;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("googleAnalyticsConfigImpl")
-@Scope("singleton")
 public class GoogleAnalyticsConfigImpl implements GoogleAnalyticsConfig {
     @Value("${dcdt.web.google.analytics.enabled}")
     private boolean enabled;

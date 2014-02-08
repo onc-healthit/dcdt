@@ -13,7 +13,6 @@ import gov.hhs.onc.dcdt.web.controller.JsonResponse;
 import gov.hhs.onc.dcdt.web.json.RequestJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.impl.ResponseJsonWrapperBuilder;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller("hostingJsonController")
 @JsonController
 @JsonResponse
-@Scope("singleton")
 public class HostingJsonController extends AbstractToolController {
     @JsonRequest
     @RequestMapping({ "/hosting/process" })

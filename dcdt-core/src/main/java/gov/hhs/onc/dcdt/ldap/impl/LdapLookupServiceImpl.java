@@ -24,11 +24,9 @@ import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("ldapLookupServiceImpl")
-@Scope("singleton")
 public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLookupService {
     private final static class CloseableLdapConnectionWrapper implements AutoCloseable {
         private LdapConnectionConfig ldapConnConfig;

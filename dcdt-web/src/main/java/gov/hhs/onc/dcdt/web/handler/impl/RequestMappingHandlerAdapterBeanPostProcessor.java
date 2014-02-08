@@ -5,7 +5,6 @@ import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,7 +12,6 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 
 @Component("reqMappingHandlerAdapterBeanPostProc")
-@Scope("singleton")
 public class RequestMappingHandlerAdapterBeanPostProcessor extends AbstractHandlerComponentBeanPostProcessor<RequestMappingHandlerAdapter> {
     public RequestMappingHandlerAdapterBeanPostProcessor() {
         super(RequestMappingHandlerAdapter.class);

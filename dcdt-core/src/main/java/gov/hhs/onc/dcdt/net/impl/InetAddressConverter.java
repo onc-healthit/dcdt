@@ -9,7 +9,6 @@ import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import java.net.InetAddress;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -18,7 +17,6 @@ import org.springframework.stereotype.Component;
 @ConvertsUserType(InetAddressUserType.class)
 @List({ @Converts(from = String[].class, to = InetAddress.class), @Converts(from = String.class, to = InetAddress.class),
     @Converts(from = InetAddress.class, to = String.class) })
-@Scope("singleton")
 public class InetAddressConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_INET_ADDR = TypeDescriptor.valueOf(InetAddress.class);
 

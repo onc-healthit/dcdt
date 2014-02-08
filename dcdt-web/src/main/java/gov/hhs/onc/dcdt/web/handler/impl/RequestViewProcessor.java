@@ -5,7 +5,6 @@ import gov.hhs.onc.dcdt.web.utils.ToolViewUtils;
 import gov.hhs.onc.dcdt.web.view.RequestView;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ObjectUtils;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -16,7 +15,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Component("reqViewProc")
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@Scope("singleton")
 public class RequestViewProcessor extends AbstractToolHandlerMethodProcessor<Object, ModelAndView> {
     public RequestViewProcessor() {
         super(Object.class, ModelAndView.class, false, true);
