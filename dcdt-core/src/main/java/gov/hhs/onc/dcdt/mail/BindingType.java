@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.testcases;
+package gov.hhs.onc.dcdt.mail;
 
 public enum BindingType {
     NONE("none"), ANY("any"), ADDRESS("address"), DOMAIN("domain");

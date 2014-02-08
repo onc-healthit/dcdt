@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.json.impl;
 
 import com.fasterxml.jackson.core.JsonGenerator.Feature;
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.databind.AnnotationIntrospector;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -30,7 +29,6 @@ public class ToolObjectMapper extends ObjectMapper implements InitializingBean {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolObjectMapper.class);
 
-    private AnnotationIntrospector annoIntrospector;
     private Map<? extends ConfigFeature, Boolean> configFeatures = new LinkedHashMap<>();
     private Map<? extends Feature, Boolean> jsonGenFeatures = new LinkedHashMap<>();
     private Map<? extends JsonParser.Feature, Boolean> jsonParserFeatures = new LinkedHashMap<>();
@@ -87,17 +85,6 @@ public class ToolObjectMapper extends ObjectMapper implements InitializingBean {
         }
 
         this.registerModule(convsModule);
-    }
-
-    public AnnotationIntrospector getAnnotationIntrospector() {
-        return this.annoIntrospector;
-    }
-
-    @Override
-    public ObjectMapper setAnnotationIntrospector(AnnotationIntrospector annoIntrospector) {
-        this.annoIntrospector = annoIntrospector;
-
-        return super.setAnnotationIntrospector(annoIntrospector);
     }
 
     public Map<? extends ConfigFeature, Boolean> getConfigFeatures() {

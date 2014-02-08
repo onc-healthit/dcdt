@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
-import gov.hhs.onc.dcdt.testcases.BindingType;
+import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialImpl;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.Predicate;

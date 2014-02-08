@@ -5,7 +5,7 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
-import gov.hhs.onc.dcdt.testcases.BindingType;
+import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;

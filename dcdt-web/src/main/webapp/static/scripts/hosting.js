@@ -54,7 +54,7 @@
     $(document).ready(function () {
         formTestcasesHosting = $("form[name=\"form-testcases-hosting\"]");
         testcasesHostingSelect = $("select#testcase-select", formTestcasesHosting);
-        testcaseHostingDirectAddr = $("input[name=\"testcaseHostingDirectAddr\"]", formTestcasesHosting);
+        testcaseHostingDirectAddr = $("input[name=\"directAddress\"]", formTestcasesHosting);
         testcaseHostingSubmit = $("button#testcase-hosting-submit");
         testcaseHostingReset = $("button#testcase-hosting-reset");
         hostingTestcaseResults = $("div#testcase-results-accordion");

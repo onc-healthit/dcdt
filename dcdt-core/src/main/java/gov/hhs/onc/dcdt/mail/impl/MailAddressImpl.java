@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.mail.impl;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.dns.DnsNameException;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
+import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
@@ -60,6 +61,11 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     @Override
     public String[] toAddressParts() {
         return ArrayUtils.toArray(this.getLocalPart(), this.getDomainNamePart());
+    }
+
+    @Override
+    public BindingType getBindingType() {
+        return this.hasLocalPart() ? BindingType.ADDRESS : (this.hasDomainNamePart() ? BindingType.DOMAIN : BindingType.NONE);
     }
 
     @Override
