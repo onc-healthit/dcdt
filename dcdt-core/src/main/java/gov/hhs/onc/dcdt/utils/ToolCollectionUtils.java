@@ -1,51 +1,42 @@
 package gov.hhs.onc.dcdt.utils;
 
-import java.util.ArrayList;
+import java.lang.reflect.Array;
 import java.util.Collection;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class ToolCollectionUtils {
-    public final static int SIZE_UNKNOWN = -1;
-
-    public static <T> Collection<T> selectAssignable(Class<T> clazz, @Nullable Collection<?> ... collsSelect) {
-        return selectAssignable(clazz, ToolArrayUtils.asList(collsSelect));
+    @Nullable
+    public static <T> Object[] toArray(@Nullable Collection<? extends T> coll) {
+        return (coll != null) ? coll.toArray() : null;
     }
 
-    public static <T> Collection<T> selectAssignable(Class<T> clazz, @Nullable Iterable<? extends Collection<?>> collsSelect) {
-        Collection<T> coll = new ArrayList<>();
+    @Nullable
+    public static <T> Object[] toArray(@Nullable Collection<? extends T> coll, @Nullable Object[] defaultIfNull) {
+        return (coll != null) ? coll.toArray() : defaultIfNull;
+    }
 
-        if (collsSelect != null) {
-            for (Collection<?> collSelect : collsSelect) {
-                if (!CollectionUtils.isEmpty(collSelect)) {
-                    for (Object obj : collSelect) {
-                        if (ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), clazz)) {
-                            coll.add(clazz.cast(obj));
-                        }
-                    }
-                }
-            }
-        }
+    @Nullable
+    public static <T> T[] toArray(@Nullable Collection<? extends T> coll, Class<T> itemClass) {
+        return toArray(coll, itemClass, null);
+    }
 
-        return coll;
+    @Nullable
+    @SuppressWarnings({ "unchecked" })
+    public static <T> T[] toArray(@Nullable Collection<? extends T> coll, Class<T> itemClass, @Nullable T[] defaultIfNull) {
+        return (coll != null) ? coll.toArray((T[]) Array.newInstance(itemClass, coll.size())) : defaultIfNull;
     }
 
     @Nullable
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T, U extends Collection<T>> U addAll(@Nullable U coll, Collection<? extends T> ... collsAdd) {
-        return addAll(coll, ToolArrayUtils.asList(collsAdd));
+    public static <T, U extends Collection<T>> U addAll(@Nullable U coll, Iterable<? extends T> ... iterables) {
+        return addAll(coll, ToolArrayUtils.asList(iterables));
     }
 
     @Nullable
-    public static <T, U extends Collection<T>> U addAll(@Nullable U coll, @Nullable Iterable<? extends Collection<? extends T>> collsAdd) {
-        if ((coll != null) && (collsAdd != null)) {
-            for (Collection<? extends T> collAdd : collsAdd) {
-                if (!CollectionUtils.isEmpty(collAdd)) {
-                    coll.addAll(collAdd);
-                }
-            }
-        }
+    public static <T, U extends Collection<T>> U addAll(@Nullable U coll, @Nullable Iterable<? extends Iterable<? extends T>> iterables) {
+        CollectionUtils.addAll(coll, ToolIteratorUtils.chainedIterator(iterables));
 
         return coll;
     }
@@ -57,13 +48,5 @@ public abstract class ToolCollectionUtils {
         }
 
         return coll;
-    }
-
-    public static <T> boolean isEmpty(@Nullable Collection<T> coll) {
-        return (coll == null) || coll.isEmpty();
-    }
-
-    public static <T> int size(@Nullable Collection<T> coll) {
-        return (coll != null) ? coll.size() : SIZE_UNKNOWN;
     }
 }

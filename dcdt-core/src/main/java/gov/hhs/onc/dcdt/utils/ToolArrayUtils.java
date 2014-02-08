@@ -13,37 +13,6 @@ public abstract class ToolArrayUtils {
             + index)) : null;
     }
 
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public static <T> List<T> unwrapElements(T[] ... elemsArrs) {
-        return unwrapElements(asList(elemsArrs));
-    }
-
-    public static <T> List<T> unwrapElements(Iterable<T[]> elemsArrs) {
-        List<T> elems = new ArrayList<>();
-
-        for (T[] elemsArr : elemsArrs) {
-            ToolCollectionUtils.addAll(elems, asList(elemsArr));
-        }
-
-        return elems;
-    }
-
-    @SuppressWarnings({ "varargs" })
-    public static Object[][] wrapElements(Object ... elems) {
-        return wrapElements(asList(elems));
-    }
-
-    public static Object[][] wrapElements(Iterable<?> elems) {
-        List<Object[]> objsArrs = new ArrayList<>();
-
-        for (Object elem : elems) {
-            objsArrs.add(ArrayUtils.toArray(elem));
-        }
-
-        return objsArrs.toArray(new Object[objsArrs.size()][]);
-    }
-
     @Nullable
     public static <T> T[] emptyToNull(@Nullable T[] arr) {
         return ArrayUtils.isEmpty(arr) ? null : arr;
@@ -55,6 +24,7 @@ public abstract class ToolArrayUtils {
     }
 
     @Nullable
+    @SuppressWarnings({ "ConstantConditions" })
     public static <T> T getFirst(@Nullable T[] arr, @Nullable T defaultIfEmpty) {
         return !ArrayUtils.isEmpty(arr) ? arr[0] : defaultIfEmpty;
     }
@@ -70,17 +40,19 @@ public abstract class ToolArrayUtils {
     }
 
     @Nullable
+    @SuppressWarnings({ "ConstantConditions" })
     public static <T> T getLast(@Nullable T[] arr, @Nullable T defaultIfEmpty) {
         return !ArrayUtils.isEmpty(arr) ? arr[arr.length - 1] : defaultIfEmpty;
     }
 
+    @SuppressWarnings({ "ConstantConditions" })
     public static <T> T[] removeLast(@Nullable T[] arr) {
         return !ArrayUtils.isEmpty(arr) ? ArrayUtils.remove(arr, arr.length - 1) : arr;
     }
 
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T> List<T> asList(@Nullable T ... elems) {
-        return (elems != null) ? new ArrayList<>(Arrays.asList(elems)) : new ArrayList<T>();
+    public static <T> List<T> asList(@Nullable T ... items) {
+        return (items != null) ? new ArrayList<>(Arrays.asList(items)) : new ArrayList<T>();
     }
 }

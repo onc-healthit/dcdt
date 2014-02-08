@@ -14,7 +14,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("inetAddrConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = InetAddress.class), serialize = @Converts(from = InetAddress.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = InetAddress.class) }, serialize = { @Converts(from = InetAddress.class, to = String.class) })
 @ConvertsUserType(InetAddressUserType.class)
 @List({ @Converts(from = String[].class, to = InetAddress.class), @Converts(from = String.class, to = InetAddress.class),
     @Converts(from = InetAddress.class, to = String.class) })

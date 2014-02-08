@@ -1,15 +1,14 @@
 package gov.hhs.onc.dcdt.utils;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class ToolListUtils {
-    public final static int INDEX_UNKNOWN = -1;
-
     @Nullable
     public static <T extends Comparable<T>> List<T> sort(@Nullable List<T> list) {
         if (list == null) {
@@ -22,7 +21,7 @@ public abstract class ToolListUtils {
     }
 
     @Nullable
-    public static <T> List<T> sort(@Nullable List<T> list, Comparator<T> comparator) {
+    public static <T> List<T> sort(@Nullable List<T> list, Comparator<? super T> comparator) {
         if (list == null) {
             return null;
         }
@@ -32,7 +31,7 @@ public abstract class ToolListUtils {
         return list;
     }
 
-    public static <T> boolean startsWith(@Nullable List<T> list1, @Nullable List<T> list2) {
+    public static boolean startsWith(@Nullable List<?> list1, @Nullable List<?> list2) {
         if ((list1 == null) || (list2 == null) || (list2.size() > list1.size())) {
             return false;
         }
@@ -46,7 +45,7 @@ public abstract class ToolListUtils {
         return true;
     }
 
-    public static <T> boolean endsWith(@Nullable List<T> list1, @Nullable List<T> list2) {
+    public static boolean endsWith(@Nullable List<?> list1, @Nullable List<?> list2) {
         if ((list1 == null) || (list2 == null) || (list2.size() > list1.size())) {
             return false;
         }
@@ -65,18 +64,18 @@ public abstract class ToolListUtils {
     @Nullable
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T> List<T> addAllFirst(@Nullable List<T> list, @Nullable Collection<T> ... colls) {
-        return addAllFirst(list, ToolArrayUtils.asList(colls));
+    public static <T> List<T> addAllFirst(@Nullable List<T> list, @Nullable Iterable<? extends T> ... iterables) {
+        return addAllFirst(list, ToolArrayUtils.asList(iterables));
     }
 
     @Nullable
-    public static <T> List<T> addAllFirst(@Nullable List<T> list, @Nullable Iterable<? extends Collection<T>> colls) {
-        return addAll(list, ToolNumberUtils.defaultIfNegative(getFirstIndex(list), 0), colls);
+    public static <T> List<T> addAllFirst(@Nullable List<T> list, @Nullable Iterable<? extends Iterable<? extends T>> iterables) {
+        return addAll(list, 0, iterables);
     }
 
     @Nullable
     public static <T> List<T> addFirst(@Nullable List<T> list, @Nullable T elem) {
-        return add(list, ToolNumberUtils.defaultIfNegative(getFirstIndex(list), 0), elem);
+        return add(list, 0, elem);
     }
 
     @Nullable
@@ -85,34 +84,13 @@ public abstract class ToolListUtils {
     }
 
     @Nullable
-    public static <T> T getFirst(@Nullable List<T> list, @Nullable T defaultElem) {
-        return item(list, getFirstIndex(list), defaultElem);
+    public static <T> T getFirst(@Nullable List<T> list, @Nullable T defaultItem) {
+        return get(list, 0, defaultItem);
     }
 
     @Nullable
     public static <T> List<T> removeFirst(@Nullable List<T> list) {
-        return remove(list, getFirstIndex(list));
-    }
-
-    public static <T> int getFirstIndex(@Nullable List<T> list) {
-        return ToolNumberUtils.defaultIfPositive(ToolCollectionUtils.size(list), 0);
-    }
-
-    @Nullable
-    @SafeVarargs
-    @SuppressWarnings({ "varargs" })
-    public static <T> List<T> addAllLast(@Nullable List<T> list, @Nullable Collection<T> ... colls) {
-        return addAllLast(list, ToolArrayUtils.asList(colls));
-    }
-
-    @Nullable
-    public static <T> List<T> addAllLast(@Nullable List<T> list, @Nullable Iterable<? extends Collection<T>> colls) {
-        return addAll(list, ToolNumberUtils.defaultIfNegative(getLastIndex(list), 0), colls);
-    }
-
-    @Nullable
-    public static <T> List<T> addLast(@Nullable List<T> list, @Nullable T elem) {
-        return add(list, ToolNumberUtils.defaultIfNegative(getLastIndex(list), 0), elem);
+        return remove(list, 0);
     }
 
     @Nullable
@@ -121,8 +99,8 @@ public abstract class ToolListUtils {
     }
 
     @Nullable
-    public static <T> T getLast(@Nullable List<T> list, @Nullable T defaultElem) {
-        return item(list, getLastIndex(list), defaultElem);
+    public static <T> T getLast(@Nullable List<T> list, @Nullable T defaultItem) {
+        return get(list, getLastIndex(list), defaultItem);
     }
 
     @Nullable
@@ -130,22 +108,25 @@ public abstract class ToolListUtils {
         return remove(list, getLastIndex(list));
     }
 
+    @Nonnegative
     public static <T> int getLastIndex(@Nullable List<T> list) {
-        return ToolNumberUtils.defaultIfNegative(ToolCollectionUtils.size(list), INDEX_UNKNOWN + 1) - 1;
+        return Math.max((CollectionUtils.size(list) - 1), 0);
     }
 
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
-    public static <T> List<T> addAll(@Nullable List<T> list, int index, @Nullable Collection<T> ... collsAdd) {
-        return addAll(list, index, ToolArrayUtils.asList(collsAdd));
+    public static <T> List<T> addAll(@Nullable List<T> list, @Nonnegative int index, @Nullable Iterable<? extends T> ... iterables) {
+        return addAll(list, index, ToolArrayUtils.asList(iterables));
     }
 
     @Nullable
-    public static <T> List<T> addAll(@Nullable List<T> list, int index, @Nullable Iterable<? extends Collection<T>> collsAdd) {
-        if ((list != null) && (collsAdd != null) && !ToolNumberUtils.isNegative(index)) {
-            for (Collection<T> collAdd : collsAdd) {
-                if (collAdd != null) {
-                    list.addAll(index, collAdd);
+    public static <T> List<T> addAll(@Nullable List<T> list, @Nonnegative int index, @Nullable Iterable<? extends Iterable<? extends T>> iterables) {
+        if ((list != null) && (iterables != null)) {
+            for (Iterable<? extends T> iterable : iterables) {
+                if (iterable != null) {
+                    for (T item : iterable) {
+                        list.add(index, item);
+                    }
                 }
             }
         }
@@ -154,8 +135,8 @@ public abstract class ToolListUtils {
     }
 
     @Nullable
-    public static <T> List<T> add(@Nullable List<T> list, int index, @Nullable T elem) {
-        if ((list != null) && !ToolNumberUtils.isNegative(index)) {
+    public static <T> List<T> add(@Nullable List<T> list, @Nonnegative int index, @Nullable T elem) {
+        if (list != null) {
             list.add(index, elem);
         }
 
@@ -163,13 +144,15 @@ public abstract class ToolListUtils {
     }
 
     @Nullable
-    public static <T> T item(@Nullable List<T> list, int index, @Nullable T defaultElem) {
-        return (!ToolNumberUtils.isNegative(index) && (ToolCollectionUtils.size(list) > index)) ? list.get(index) : defaultElem;
+    @SuppressWarnings({ "ConstantConditions" })
+    public static <T> T get(@Nullable List<T> list, @Nonnegative int index, @Nullable T defaultElem) {
+        return (!CollectionUtils.sizeIsEmpty(list) && (CollectionUtils.size(list) > index)) ? list.get(index) : defaultElem;
     }
 
     @Nullable
-    public static <T> List<T> remove(@Nullable List<T> list, int index) {
-        if (!ToolNumberUtils.isNegative(index) && (ToolCollectionUtils.size(list) > index)) {
+    @SuppressWarnings({ "ConstantConditions" })
+    public static <T> List<T> remove(@Nullable List<T> list, @Nonnegative int index) {
+        if (!CollectionUtils.sizeIsEmpty(list) && (CollectionUtils.size(list) > index)) {
             list.remove(index);
         }
 

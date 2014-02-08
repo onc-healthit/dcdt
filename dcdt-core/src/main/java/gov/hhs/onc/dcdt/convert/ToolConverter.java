@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.data.types.ToolUserType;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
@@ -16,17 +17,13 @@ public interface ToolConverter extends ConditionalGenericConverter, ToolBean {
     @Override
     public Object convert(@Nullable Object source, TypeDescriptor sourceType, TypeDescriptor targetType);
 
-    public boolean canConvertJson();
+    public boolean hasJsonDeserializers();
 
-    public boolean hasJsonDeserializer();
+    public Set<JsonDeserializer<?>> getJsonDeserializers();
 
-    @Nullable
-    public JsonDeserializer<?> getJsonDeserializer();
+    public boolean hasJsonSerializers();
 
-    public boolean hasJsonSerializer();
-
-    @Nullable
-    public JsonSerializer<?> getJsonSerializer();
+    public Set<JsonSerializer<?>> getJsonSerializers();
 
     public boolean hasUserTypeClass();
 

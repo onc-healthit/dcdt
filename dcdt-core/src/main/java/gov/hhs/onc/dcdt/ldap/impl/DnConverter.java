@@ -12,7 +12,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("dnConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = Dn.class), serialize = @Converts(from = Dn.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = Dn.class) }, serialize = { @Converts(from = Dn.class, to = String.class) })
 @List({ @Converts(from = String.class, to = Dn.class), @Converts(from = String[].class, to = Dn.class), @Converts(from = Rdn[].class, to = Dn.class),
     @Converts(from = Dn.class, to = Rdn[].class), @Converts(from = Dn.class, to = String[].class), @Converts(from = Dn.class, to = String.class) })
 @Scope("singleton")

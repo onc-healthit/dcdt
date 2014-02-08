@@ -12,7 +12,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("ldifConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = LdifEntry.class), serialize = @Converts(from = LdifEntry.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = LdifEntry.class) }, serialize = { @Converts(from = LdifEntry.class, to = String.class) })
 @List({ @Converts(from = String.class, to = LdifEntry[].class), @Converts(from = String.class, to = LdifEntry.class),
     @Converts(from = LdifEntry[].class, to = String.class), @Converts(from = LdifEntry.class, to = String.class) })
 @Scope("singleton")

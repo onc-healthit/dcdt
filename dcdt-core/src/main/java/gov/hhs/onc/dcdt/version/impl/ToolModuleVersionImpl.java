@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
 public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModuleVersion {
@@ -70,13 +71,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return this.buildTimestamp != null;
     }
 
+    @Nullable
     @Override
     public Date getBuildTimestamp() {
         return this.buildTimestamp;
     }
 
     @Override
-    public void setBuildTimestamp(Date buildTimestamp) {
+    public void setBuildTimestamp(@Nullable Date buildTimestamp) {
         this.buildTimestamp = buildTimestamp;
     }
 
@@ -85,14 +87,15 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return this.getBuildTimestampString() != null;
     }
 
+    @Nullable
     @Override
     public String getBuildTimestampString() {
         return this.hasBuildTimestamp() ? BUILD_TIMESTAMP_DATE_FORMAT.format(this.buildTimestamp) : null;
     }
 
     @Override
-    public void setBuildTimestampString(String buildTimestampStr) throws ParseException {
-        this.buildTimestamp = BUILD_TIMESTAMP_DATE_FORMAT.parse(buildTimestampStr);
+    public void setBuildTimestampString(@Nullable String buildTimestampStr) throws ParseException {
+        this.buildTimestamp = (buildTimestampStr != null) ? BUILD_TIMESTAMP_DATE_FORMAT.parse(buildTimestampStr) : null;
     }
 
     @Override
@@ -100,13 +103,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return !StringUtils.isBlank(this.hgAuthor);
     }
 
+    @Nullable
     @Override
     public String getHgAuthor() {
         return this.hgAuthor;
     }
 
     @Override
-    public void setHgAuthor(String hgAuthor) {
+    public void setHgAuthor(@Nullable String hgAuthor) {
         this.hgAuthor = hgAuthor;
     }
 
@@ -115,13 +119,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return !StringUtils.isBlank(this.hgAuthorMail);
     }
 
+    @Nullable
     @Override
     public String getHgAuthorMail() {
         return this.hgAuthorMail;
     }
 
     @Override
-    public void setHgAuthorMail(String hgAuthorMail) {
+    public void setHgAuthorMail(@Nullable String hgAuthorMail) {
         this.hgAuthorMail = hgAuthorMail;
     }
 
@@ -130,13 +135,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return !StringUtils.isBlank(this.hgAuthorPerson);
     }
 
+    @Nullable
     @Override
     public String getHgAuthorPerson() {
         return this.hgAuthorPerson;
     }
 
     @Override
-    public void setHgAuthorPerson(String hgAuthorPerson) {
+    public void setHgAuthorPerson(@Nullable String hgAuthorPerson) {
         this.hgAuthorPerson = hgAuthorPerson;
     }
 
@@ -145,13 +151,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return !StringUtils.isBlank(this.hgBranch);
     }
 
+    @Nullable
     @Override
     public String getHgBranch() {
         return this.hgBranch;
     }
 
     @Override
-    public void setHgBranch(String hgBranch) {
+    public void setHgBranch(@Nullable String hgBranch) {
         this.hgBranch = hgBranch;
     }
 
@@ -160,13 +167,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return this.hgDate != null;
     }
 
+    @Nullable
     @Override
     public Date getHgDate() {
         return this.hgDate;
     }
 
     @Override
-    public void setHgDate(Date hgDate) {
+    public void setHgDate(@Nullable Date hgDate) {
         this.hgDate = hgDate;
     }
 
@@ -175,14 +183,15 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return this.getHgDateString() != null;
     }
 
+    @Nullable
     @Override
     public String getHgDateString() {
         return this.hasHgDate() ? HG_DATE_FORMAT.format(this.hgDate) : null;
     }
 
     @Override
-    public void setHgDateString(String hgDateStr) throws ParseException {
-        this.hgDate = HG_DATE_FORMAT.parse(hgDateStr);
+    public void setHgDateString(@Nullable String hgDateStr) throws ParseException {
+        this.hgDate = (hgDateStr != null) ? HG_DATE_FORMAT.parse(hgDateStr) : null;
     }
 
     @Override
@@ -190,13 +199,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return !StringUtils.isBlank(this.hgNode);
     }
 
+    @Nullable
     @Override
     public String getHgNode() {
         return this.hgNode;
     }
 
     @Override
-    public void setHgNode(String hgNode) {
+    public void setHgNode(@Nullable String hgNode) {
         this.hgNode = hgNode;
     }
 
@@ -205,13 +215,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return !StringUtils.isBlank(this.hgNodeShort);
     }
 
+    @Nullable
     @Override
     public String getHgNodeShort() {
         return this.hgNodeShort;
     }
 
     @Override
-    public void setHgNodeShort(String hgNodeShort) {
+    public void setHgNodeShort(@Nullable String hgNodeShort) {
         this.hgNodeShort = hgNodeShort;
     }
 
@@ -220,13 +231,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return !StringUtils.isBlank(this.hgPath);
     }
 
+    @Nullable
     @Override
     public String getHgPath() {
         return this.hgPath;
     }
 
     @Override
-    public void setHgPath(String hgPath) {
+    public void setHgPath(@Nullable String hgPath) {
         this.hgPath = hgPath;
     }
 
@@ -250,13 +262,14 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
         return !StringUtils.isBlank(this.hgTag);
     }
 
+    @Nullable
     @Override
     public String getHgTag() {
         return this.hgTag;
     }
 
     @Override
-    public void setHgTag(String hgTag) {
+    public void setHgTag(@Nullable String hgTag) {
         this.hgTag = hgTag;
     }
 }

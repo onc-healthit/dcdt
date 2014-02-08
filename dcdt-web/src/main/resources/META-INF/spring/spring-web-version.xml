@@ -15,21 +15,22 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <!--suppress SpringModelInspection -->
     <beans:bean id="toolModuleVersionWeb" parent="toolModuleVersionImpl"
-        c:groupId="${dcdt.module.dcdt-web.groupId}"
-        c:artifactId="${dcdt.module.dcdt-web.artifactId}"
-        c:version="${dcdt.module.dcdt-web.version}"
-        c:name="${dcdt.module.dcdt-web.name}"
-        c:description="${dcdt.module.dcdt-web.description}"
-        p:buildTimestampString="${dcdt.module.dcdt-web.build.timestamp}"
-        p:hgAuthor="${dcdt.module.dcdt-web.hg.author}"
-        p:hgAuthorMail="${dcdt.module.dcdt-web.hg.author.email}"
-        p:hgAuthorPerson="${dcdt.module.dcdt-web.hg.author.person}"
-        p:hgBranch="${dcdt.module.dcdt-web.hg.branch}"
-        p:hgDateString="${dcdt.module.dcdt-web.hg.date}"
-        p:hgNode="${dcdt.module.dcdt-web.hg.node}"
-        p:hgNodeShort="${dcdt.module.dcdt-web.hg.node.short}"
-        p:hgPath="${dcdt.module.dcdt-web.hg.path}"
-        p:hgRevision="${dcdt.module.dcdt-web.hg.rev}"
-        p:hgTag="${dcdt.module.dcdt-web.hg.tag}"/>
+        c:groupId="${dcdt.module.dcdt-web.groupId:}"
+        c:artifactId="${dcdt.module.dcdt-web.artifactId:}"
+        c:version="${dcdt.module.dcdt-web.version:}"
+        c:name="${dcdt.module.dcdt-web.name:}"
+        c:description="${dcdt.module.dcdt-web.description:}"
+        p:buildTimestampString="${dcdt.module.dcdt-web.build.timestamp:}"
+        p:hgAuthor="${dcdt.module.dcdt-web.hg.author:}"
+        p:hgAuthorMail="${dcdt.module.dcdt-web.hg.author.email:}"
+        p:hgAuthorPerson="${dcdt.module.dcdt-web.hg.author.person:}"
+        p:hgBranch="${dcdt.module.dcdt-web.hg.branch:}"
+        p:hgDateString="${dcdt.module.dcdt-web.hg.date:}"
+        p:hgNode="${dcdt.module.dcdt-web.hg.node:}"
+        p:hgNodeShort="${dcdt.module.dcdt-web.hg.node.short:}"
+        p:hgPath="${dcdt.module.dcdt-web.hg.path:}"
+        p:hgRevision="${dcdt.module.dcdt-web.hg.rev:-1}"
+        p:hgTag="${dcdt.module.dcdt-web.hg.tag:}"/>
 </beans:beans>

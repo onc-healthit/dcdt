@@ -69,18 +69,21 @@ public class ToolObjectMapper extends ObjectMapper implements InitializingBean {
         this.registerModules(this.modules);
 
         SimpleModule convsModule = new SimpleModule();
-        JsonDeserializer<?> convJsonDeserializer;
-        JsonSerializer<?> convJsonSerializer;
-        Class<?> convJsonValueClass;
 
         for (ToolConverter conv : this.convs) {
-            if (conv.canConvertJson()) {
-                convsModule.addDeserializer((Class<Object>) (convJsonValueClass = (convJsonDeserializer = conv.getJsonDeserializer()).handledType()),
-                    (JsonDeserializer<Object>) convJsonDeserializer);
-                convsModule.addSerializer((convJsonSerializer = conv.getJsonSerializer()));
+            for (JsonDeserializer<?> convJsonDeserializer : conv.getJsonDeserializers()) {
+                // noinspection RedundantCast
+                convsModule.addDeserializer(((Class<Object>) convJsonDeserializer.handledType()), ((JsonDeserializer<Object>) convJsonDeserializer));
 
-                LOGGER.debug(String.format("Added JSON deserializer and serializer for converter (class=%s, valueClass=%s, objClass=%s).",
-                    ToolClassUtils.getName(this), ToolClassUtils.getName(convJsonValueClass), ToolClassUtils.getName(convJsonSerializer.handledType())));
+                LOGGER.debug(String.format("Added JSON deserializer (class=%s) for converter (class=%s, valueClass=%s).",
+                    ToolClassUtils.getName(convJsonDeserializer), ToolClassUtils.getName(this), ToolClassUtils.getName(convJsonDeserializer.handledType())));
+            }
+
+            for (JsonSerializer<?> convJsonSerializer : conv.getJsonSerializers()) {
+                convsModule.addSerializer(convJsonSerializer);
+
+                LOGGER.debug(String.format("Added JSON serializer (class=%s) for converter (class=%s, objClass=%s).",
+                    ToolClassUtils.getName(convJsonSerializer), ToolClassUtils.getName(this), ToolClassUtils.getName(convJsonSerializer.handledType())));
             }
         }
 

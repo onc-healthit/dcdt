@@ -14,8 +14,8 @@ import java.lang.annotation.Target;
 public @interface ConvertsJson {
     public final static String ANNO_ATTR_NAME_DESERIALIZE = "deserialize";
     public final static String ANNO_ATTR_NAME_SERIALIZE = "serialize";
-    
-    Converts deserialize();
 
-    Converts serialize();
+    Converts[] deserialize() default {};
+
+    Converts[] serialize() default {};
 }

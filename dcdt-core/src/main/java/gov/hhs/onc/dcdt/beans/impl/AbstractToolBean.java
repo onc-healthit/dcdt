@@ -15,7 +15,7 @@ import org.hibernate.annotations.Proxy;
 @MappedSuperclass
 @Proxy(lazy = false)
 public abstract class AbstractToolBean implements ToolBean {
-    protected transient String beanName;
+    protected String beanName;
 
     @Override
     public void afterPropertiesSet() throws Exception {

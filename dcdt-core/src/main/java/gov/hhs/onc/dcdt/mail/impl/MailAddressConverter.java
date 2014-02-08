@@ -13,7 +13,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("mailAddrConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = MailAddress.class), serialize = @Converts(from = MailAddress.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = MailAddress.class) }, serialize = { @Converts(from = MailAddress.class, to = String.class) })
 @ConvertsUserType(MailAddressUserType.class)
 @List({ @Converts(from = String[].class, to = MailAddress.class), @Converts(from = String.class, to = MailAddress.class),
     @Converts(from = MailAddress.class, to = String[].class), @Converts(from = MailAddress.class, to = String.class) })
