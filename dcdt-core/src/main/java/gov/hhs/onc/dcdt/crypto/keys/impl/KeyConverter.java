@@ -11,14 +11,12 @@ import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import java.security.Key;
 import javax.annotation.Nullable;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("keyConv")
 @ConvertsUserType(KeyUserType.class)
 @List({ @Converts(from = byte[].class, to = Key.class), @Converts(from = Key.class, to = byte[].class) })
-@Scope("singleton")
 public class KeyConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_KEY = TypeDescriptor.valueOf(Key.class);
 

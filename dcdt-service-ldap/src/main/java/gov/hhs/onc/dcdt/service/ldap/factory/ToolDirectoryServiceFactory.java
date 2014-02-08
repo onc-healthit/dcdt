@@ -36,7 +36,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("toolDirServiceFactory")
-@Scope("singleton")
 public class ToolDirectoryServiceFactory implements DirectoryServiceFactory {
     @Autowired
     private DirectoryServiceConfig dirServiceConfig;

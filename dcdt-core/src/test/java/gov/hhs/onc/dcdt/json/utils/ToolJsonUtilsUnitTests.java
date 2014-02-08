@@ -16,7 +16,6 @@ import java.net.InetAddress;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -44,7 +43,6 @@ public class ToolJsonUtilsUnitTests extends AbstractToolUnitTests {
 
     @Component("toolTestJsonBeanImpl")
     @JsonTypeName("testJsonBean")
-    @Scope("singleton")
     private static class ToolTestJsonBeanImpl extends AbstractToolBean implements ToolTestJsonBean {
         @Value("${dcdt.test.json.domain.name}")
         private Name domainName;

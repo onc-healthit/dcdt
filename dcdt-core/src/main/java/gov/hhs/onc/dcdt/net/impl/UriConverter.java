@@ -8,7 +8,6 @@ import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import java.net.URI;
 import java.util.Objects;
 import javax.annotation.Nullable;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 @ConvertsJson(deserialize = { @Converts(from = String.class, to = URI.class) }, serialize = { @Converts(from = URI.class, to = String.class) })
 @ConvertsUserType(UriUserType.class)
 @List({ @Converts(from = String.class, to = URI.class), @Converts(from = URI.class, to = String.class) })
-@Scope("singleton")
 public class UriConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_URI = TypeDescriptor.valueOf(URI.class);
 

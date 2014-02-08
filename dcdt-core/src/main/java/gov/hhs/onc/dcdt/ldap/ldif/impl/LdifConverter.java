@@ -7,7 +7,6 @@ import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.ldap.utils.ToolLdifUtils;
 import javax.annotation.Nullable;
 import org.apache.directory.api.ldap.model.ldif.LdifEntry;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 @ConvertsJson(deserialize = { @Converts(from = String.class, to = LdifEntry.class) }, serialize = { @Converts(from = LdifEntry.class, to = String.class) })
 @List({ @Converts(from = String.class, to = LdifEntry[].class), @Converts(from = String.class, to = LdifEntry.class),
     @Converts(from = LdifEntry[].class, to = String.class), @Converts(from = LdifEntry.class, to = String.class) })
-@Scope("singleton")
 public class LdifConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_LDIF_ENTRY = TypeDescriptor.valueOf(LdifEntry.class);
     private final static TypeDescriptor TYPE_DESC_LDIF_ENTRY_ARR = TypeDescriptor.array(TYPE_DESC_LDIF_ENTRY);

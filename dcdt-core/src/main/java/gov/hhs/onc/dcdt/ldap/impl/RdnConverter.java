@@ -8,14 +8,12 @@ import gov.hhs.onc.dcdt.ldap.utils.ToolLdapUtils;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.directory.api.ldap.model.name.Rdn;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("rdnConv")
 @ConvertsJson(deserialize = { @Converts(from = String.class, to = Rdn.class) }, serialize = { @Converts(from = Rdn.class, to = String.class) })
 @List({ @Converts(from = String.class, to = Rdn.class), @Converts(from = Rdn.class, to = String[].class), @Converts(from = Rdn.class, to = String.class) })
-@Scope("singleton")
 public class RdnConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_RDN = TypeDescriptor.valueOf(Rdn.class);
 

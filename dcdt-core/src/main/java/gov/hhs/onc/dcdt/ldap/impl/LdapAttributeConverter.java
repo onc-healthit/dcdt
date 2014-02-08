@@ -12,7 +12,6 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.DefaultAttribute;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 @ConvertsJson(deserialize = { @Converts(from = String.class, to = Attribute.class) }, serialize = { @Converts(from = Attribute.class, to = String.class) })
 @List({ @Converts(from = String[].class, to = Attribute.class), @Converts(from = String.class, to = Attribute.class),
     @Converts(from = Attribute.class, to = String[].class), @Converts(from = Attribute.class, to = String.class) })
-@Scope("singleton")
 public class LdapAttributeConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_LDAP_ATTR = TypeDescriptor.valueOf(Attribute.class);
 

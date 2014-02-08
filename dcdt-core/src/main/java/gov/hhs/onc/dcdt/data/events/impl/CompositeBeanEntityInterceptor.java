@@ -11,11 +11,9 @@ import javax.annotation.Nullable;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("compositeBeanInterceptor")
-@Scope("singleton")
 public class CompositeBeanEntityInterceptor extends AbstractToolBeanDataInterceptor {
     private final static long serialVersionUID = 0L;
 

@@ -12,7 +12,6 @@ import gov.hhs.onc.dcdt.web.json.RequestJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.impl.ResponseJsonWrapperBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller("adminJsonController")
 @JsonController
 @JsonResponse
-@Scope("singleton")
 public class AdminJsonController extends AbstractToolController {
     @Autowired
     private InstanceConfigRegistry instanceConfigRegistry;

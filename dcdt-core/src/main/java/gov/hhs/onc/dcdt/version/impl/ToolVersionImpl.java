@@ -6,11 +6,9 @@ import gov.hhs.onc.dcdt.version.ToolVersion;
 import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("toolVersionImpl")
-@Scope("singleton")
 public class ToolVersionImpl extends AbstractToolBean implements ToolVersion {
     private final static String MODULE_NAME_DEFAULT = "dcdt-parent";
 

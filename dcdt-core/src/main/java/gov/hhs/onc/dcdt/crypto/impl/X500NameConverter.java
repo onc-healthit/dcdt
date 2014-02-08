@@ -8,7 +8,6 @@ import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import org.bouncycastle.asn1.x500.X500Name;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -16,7 +15,6 @@ import org.springframework.stereotype.Component;
 @ConvertsJson(deserialize = { @Converts(from = String.class, to = X500Name.class) }, serialize = { @Converts(from = X500Name.class, to = String.class) })
 @ConvertsUserType(X500NameUserType.class)
 @List({ @Converts(from = String.class, to = X500Name.class), @Converts(from = X500Name.class, to = String.class) })
-@Scope("singleton")
 public class X500NameConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_X500_NAME = TypeDescriptor.valueOf(X500Name.class);
 

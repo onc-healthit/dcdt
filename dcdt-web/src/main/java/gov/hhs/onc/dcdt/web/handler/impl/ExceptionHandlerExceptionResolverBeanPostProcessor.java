@@ -5,7 +5,6 @@ import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.util.ArrayList;
 import java.util.List;
-import org.springframework.context.annotation.Scope;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -13,7 +12,6 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 
 @Component("exceptionHandlerExceptionResolverBeanPostProc")
-@Scope("singleton")
 public class ExceptionHandlerExceptionResolverBeanPostProcessor extends AbstractHandlerComponentBeanPostProcessor<ExceptionHandlerExceptionResolver> {
     public ExceptionHandlerExceptionResolverBeanPostProcessor() {
         super(ExceptionHandlerExceptionResolver.class);

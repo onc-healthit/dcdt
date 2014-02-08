@@ -8,7 +8,6 @@ import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Component;
 @ConvertsUserType(MailAddressUserType.class)
 @List({ @Converts(from = String[].class, to = MailAddress.class), @Converts(from = String.class, to = MailAddress.class),
     @Converts(from = MailAddress.class, to = String[].class), @Converts(from = MailAddress.class, to = String.class) })
-@Scope("singleton")
 public class MailAddressConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_MAIL_ADDR = TypeDescriptor.valueOf(MailAddress.class);
 

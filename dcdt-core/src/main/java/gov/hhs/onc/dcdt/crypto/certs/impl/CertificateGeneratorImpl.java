@@ -30,12 +30,10 @@ import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.BindingResult;
 
 @Component("certGenImpl")
-@Scope("singleton")
 public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<CertificateConfig, CertificateInfo> implements CertificateGenerator {
     @Override
     public CertificateInfo generateCertificate(KeyInfo keyPairInfo, CertificateConfig certConfig) throws CryptographyException {

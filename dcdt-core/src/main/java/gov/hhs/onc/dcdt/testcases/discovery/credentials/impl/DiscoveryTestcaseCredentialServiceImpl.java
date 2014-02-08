@@ -5,10 +5,8 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDao;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-@Scope("singleton")
 @Service("discoveryTestcaseCredServiceImpl")
 public class DiscoveryTestcaseCredentialServiceImpl extends AbstractToolBeanService<DiscoveryTestcaseCredential, DiscoveryTestcaseCredentialDao> implements
     DiscoveryTestcaseCredentialService {
