@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.dns;
 
-import gov.hhs.onc.dcdt.validation.constraints.NotBlank;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -10,17 +10,16 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.ConstraintComposition;
-import org.hibernate.validator.constraints.Length;
 
 @Constraint(validatedBy = {})
 @ConstraintComposition
 @Documented
 @Inherited
-@Length(min = 1, max = 253)
-@NotBlank
-@Pattern(regexp = "^[\\w\\-\\.]+$")
+@NotNull
+@Pattern(regexp = ToolDnsNameUtils.PATTERN_STR_DNS_NAME)
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })

@@ -13,6 +13,26 @@ import org.xbill.DNS.NameTooLongException;
 import org.xbill.DNS.TextParseException;
 
 public abstract class ToolDnsNameUtils {
+    public final static String PATTERN_STR_DNS_NAME_LBL_LEN = "(?<=.*{1,252})";
+    public final static String PATTERN_STR_DNS_NAME_LBL = "(?:(?i:\\w{1,62}|\\w[\\w\\-]{1,60}\\w)" + PATTERN_STR_DNS_NAME_LBL_LEN + ")";
+    public final static String PATTERN_STR_DNS_NAME_DELIM = "\\.";
+
+    /**
+     * Derived from the rules defined in:
+     * <ul>
+     * <li><a href="http://tools.ietf.org/html/rfc1034">RFC 1034 - Domain Concepts and Facilities</a></li>
+     * <li><a href="http://tools.ietf.org/html/rfc1035">RFC 1035 - Domain Implementation and Specification</a></li>
+     * </ul>
+     * 
+     * A summary of the rules is available here: <a
+     * href="http://en.wikipedia.org/wiki/Domain_Name_System#Domain_name_syntax">Domain_Name_System#Domain_name_syntax</a>
+     */
+    public final static String PATTERN_STR_DNS_NAME = PATTERN_STR_DNS_NAME_LBL + "(?:" + PATTERN_STR_DNS_NAME_DELIM + PATTERN_STR_DNS_NAME_LBL + ")*"
+        + PATTERN_STR_DNS_NAME_DELIM + "?";
+
+    public final static String PATTERN_STR_DNS_NAME_ABS = PATTERN_STR_DNS_NAME + "(?<=" + PATTERN_STR_DNS_NAME_DELIM + ")";
+    public final static String PATTERN_STR_DNS_NAME_NOT_ABS = PATTERN_STR_DNS_NAME + "(?<!" + PATTERN_STR_DNS_NAME_DELIM + ")";
+
     @Nullable
     public static <T extends Enum<T> & DnsNameLabel> T findByLabel(Class<T> nameLblEnumClass, Name nameLbl) {
         return findByLabelString(nameLblEnumClass, nameLbl.toString());

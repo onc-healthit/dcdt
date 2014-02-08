@@ -41,7 +41,7 @@
                     <tiles:insertDefinition name="component-glyph">
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
-                    <strong>Invalid instance configuration domain name.</strong>:
+                    <strong>Invalid instance configuration domain name</strong>:
                     <ul></ul>
                 </div>
             </div>
@@ -66,7 +66,7 @@
                     <tiles:insertDefinition name="component-glyph">
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
-                    <strong>Invalid instance configuration IP address.</strong>:
+                    <strong>Invalid instance configuration IP address</strong>:
                     <ul></ul>
                 </div>
             </div>

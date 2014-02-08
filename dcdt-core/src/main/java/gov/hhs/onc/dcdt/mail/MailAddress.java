@@ -17,6 +17,8 @@ public interface MailAddress extends ToolBean {
 
     public String[] toAddressParts();
 
+    public BindingType getBindingType();
+
     public boolean hasDomainName();
 
     @Nullable

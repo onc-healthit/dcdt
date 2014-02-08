@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.testcases.hosting.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import gov.hhs.onc.dcdt.testcases.BindingType;
+import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseDescription;

@@ -67,7 +67,7 @@
                 var errorsAddonsFields = $(this).dcdt.form.errorsAddons(":not(.input-group-addon-errors-global)");
                 
                 return fieldName ? errorsAddonsFields.filter(function () {
-                    return $(this).parent().parent().prev().find("div:first-child span.form-cell.form-cell-control input[name=\"" + fieldName +"\"]")
+                    return $(this).parent().parent().prev().find("div:first-child span.form-cell.form-cell-control *.form-control[name=\"" + fieldName +"\"]")
                         .length > 0;
                 }) : errorsAddonsFields;
             },
@@ -85,7 +85,7 @@
             "formGroupsFields": function (fieldName) {
                 var formGroupsFields = $(this).dcdt.form.formGroups(":not(.form-group-addons)");
                 
-                return fieldName ? formGroupsFields.has("div:first-child span.form-cell.form-cell-control input[name=\"" + fieldName +"\"]") : 
+                return fieldName ? formGroupsFields.has("div:first-child span.form-cell.form-cell-control *.form-control[name=\"" + fieldName +"\"]") : 
                     formGroupsFields;
             },
             "formGroupsAddons": function (selector) {

@@ -8,4 +8,5 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
-<code id="error-stack-trace"><spring:eval expression="T(org.apache.commons.lang3.exception.ExceptionUtils).getStackTrace(requestScope.error)"/></code>
+<spring:eval expression="T(org.apache.commons.lang3.exception.ExceptionUtils).getRootCauseStackTrace(exception)" var="exceptionStackTrace" scope="request"/>
+<code id="error-stack-trace"><c:out value="${fn:join(exceptionStackTrace, '\n')}"/></code>
