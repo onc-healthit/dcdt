@@ -13,7 +13,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("rdnConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = Rdn.class), serialize = @Converts(from = Rdn.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = Rdn.class) }, serialize = { @Converts(from = Rdn.class, to = String.class) })
 @List({ @Converts(from = String.class, to = Rdn.class), @Converts(from = Rdn.class, to = String[].class), @Converts(from = Rdn.class, to = String.class) })
 @Scope("singleton")
 public class RdnConverter extends AbstractToolConverter {

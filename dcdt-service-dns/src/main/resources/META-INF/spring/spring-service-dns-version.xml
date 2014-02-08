@@ -15,21 +15,22 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <!--suppress SpringModelInspection -->
     <beans:bean id="toolModuleVersionServiceDns" parent="toolModuleVersionImpl"
-        c:groupId="${dcdt.module.dcdt-service-dns.groupId}"
-        c:artifactId="${dcdt.module.dcdt-service-dns.artifactId}"
-        c:version="${dcdt.module.dcdt-service-dns.version}"
-        c:name="${dcdt.module.dcdt-service-dns.name}"
-        c:description="${dcdt.module.dcdt-service-dns.description}"
-        p:buildTimestampString="${dcdt.module.dcdt-service-dns.build.timestamp}"
-        p:hgAuthor="${dcdt.module.dcdt-service-dns.hg.author}"
-        p:hgAuthorMail="${dcdt.module.dcdt-service-dns.hg.author.email}"
-        p:hgAuthorPerson="${dcdt.module.dcdt-service-dns.hg.author.person}"
-        p:hgBranch="${dcdt.module.dcdt-service-dns.hg.branch}"
-        p:hgDateString="${dcdt.module.dcdt-service-dns.hg.date}"
-        p:hgNode="${dcdt.module.dcdt-service-dns.hg.node}"
-        p:hgNodeShort="${dcdt.module.dcdt-service-dns.hg.node.short}"
-        p:hgPath="${dcdt.module.dcdt-service-dns.hg.path}"
-        p:hgRevision="${dcdt.module.dcdt-service-dns.hg.rev}"
-        p:hgTag="${dcdt.module.dcdt-service-dns.hg.tag}"/>
+        c:groupId="${dcdt.module.dcdt-service-dns.groupId:}"
+        c:artifactId="${dcdt.module.dcdt-service-dns.artifactId:}"
+        c:version="${dcdt.module.dcdt-service-dns.version:}"
+        c:name="${dcdt.module.dcdt-service-dns.name:}"
+        c:description="${dcdt.module.dcdt-service-dns.description:}"
+        p:buildTimestampString="${dcdt.module.dcdt-service-dns.build.timestamp:}"
+        p:hgAuthor="${dcdt.module.dcdt-service-dns.hg.author:}"
+        p:hgAuthorMail="${dcdt.module.dcdt-service-dns.hg.author.email:}"
+        p:hgAuthorPerson="${dcdt.module.dcdt-service-dns.hg.author.person:}"
+        p:hgBranch="${dcdt.module.dcdt-service-dns.hg.branch:}"
+        p:hgDateString="${dcdt.module.dcdt-service-dns.hg.date:}"
+        p:hgNode="${dcdt.module.dcdt-service-dns.hg.node:}"
+        p:hgNodeShort="${dcdt.module.dcdt-service-dns.hg.node.short:}"
+        p:hgPath="${dcdt.module.dcdt-service-dns.hg.path:}"
+        p:hgRevision="${dcdt.module.dcdt-service-dns.hg.rev:-1}"
+        p:hgTag="${dcdt.module.dcdt-service-dns.hg.tag:}"/>
 </beans:beans>

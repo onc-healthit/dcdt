@@ -13,7 +13,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("x500NameConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = X500Name.class), serialize = @Converts(from = X500Name.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = X500Name.class) }, serialize = { @Converts(from = X500Name.class, to = String.class) })
 @ConvertsUserType(X500NameUserType.class)
 @List({ @Converts(from = String.class, to = X500Name.class), @Converts(from = X500Name.class, to = String.class) })
 @Scope("singleton")

@@ -17,7 +17,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("ldapAttrConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = Attribute.class), serialize = @Converts(from = Attribute.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = Attribute.class) }, serialize = { @Converts(from = Attribute.class, to = String.class) })
 @List({ @Converts(from = String[].class, to = Attribute.class), @Converts(from = String.class, to = Attribute.class),
     @Converts(from = Attribute.class, to = String[].class), @Converts(from = Attribute.class, to = String.class) })
 @Scope("singleton")

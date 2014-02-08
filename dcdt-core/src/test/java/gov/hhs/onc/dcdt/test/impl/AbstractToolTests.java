@@ -2,18 +2,17 @@ package gov.hhs.onc.dcdt.test.impl;
 
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.utils.ToolIterableUtils;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.InitializingBean;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.core.convert.ConversionService;
 import org.springframework.format.support.FormattingConversionService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
@@ -47,50 +46,6 @@ public abstract class AbstractToolTests extends AbstractTestNGSpringContextTests
 
     protected void assertMessageEquals(String str, String msgCode, String assertMsg) {
         Assert.assertEquals(str, ToolMessageUtils.getMessage(this.msgSource, msgCode), assertMsg);
-    }
-
-    protected Iterator<Object[]> getDataGroupsBeans(Iterable<Class<?>[]> dataGroupsBeanClasses) {
-        List<Object[]> dataGroupsBeans = new ArrayList<>();
-
-        for (Class<?>[] dataGroupBeanClasses : dataGroupsBeanClasses) {
-            dataGroupsBeans.add(this.getDataGroupBeansList(ToolArrayUtils.asList(dataGroupBeanClasses)).toArray());
-        }
-
-        return this.getDataGroups(dataGroupsBeans);
-    }
-
-    protected Iterator<Object[]> getDataGroupBeans(Class<?> ... dataGroupBeanClasses) {
-        return this.getDataGroupBeans(ToolArrayUtils.asList(dataGroupBeanClasses));
-    }
-
-    protected Iterator<Object[]> getDataGroupBeans(Iterable<Class<?>> dataGroupBeanClasses) {
-        return this.getDataGroup(this.getDataGroupBeansList(dataGroupBeanClasses));
-    }
-
-    protected List<Object> getDataGroupBeansList(Iterable<Class<?>> dataGroupBeanClasses) {
-        List<Object> dataGroupBeans = new ArrayList<>();
-
-        for (Class<?> dataGroupBeanClass : dataGroupBeanClasses) {
-            dataGroupBeans.add(ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, dataGroupBeanClass));
-        }
-
-        return dataGroupBeans;
-    }
-
-    protected Iterator<Object[]> getDataGroup(Object ... dataGroup) {
-        return this.getDataGroup(ToolArrayUtils.asList(dataGroup));
-    }
-
-    protected Iterator<Object[]> getDataGroup(Iterable<Object> dataGroup) {
-        return ToolIterableUtils.wrapElements(dataGroup.iterator());
-    }
-
-    protected Iterator<Object[]> getDataGroups(Object[] ... dataGroups) {
-        return this.getDataGroups(ToolArrayUtils.asList(dataGroups));
-    }
-
-    protected Iterator<Object[]> getDataGroups(Iterable<Object[]> dataGroups) {
-        return ToolIterableUtils.wrapElements(dataGroups.iterator());
     }
 
     @Override

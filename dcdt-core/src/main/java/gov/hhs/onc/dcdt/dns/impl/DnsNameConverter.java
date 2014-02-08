@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 import org.xbill.DNS.Name;
 
 @Component("dnsNameConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = Name.class), serialize = @Converts(from = Name.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = Name.class) }, serialize = { @Converts(from = Name.class, to = String.class) })
 @ConvertsUserType(DnsNameUserType.class)
 @List({ @Converts(from = String[].class, to = Name.class), @Converts(from = String.class, to = Name.class), @Converts(from = Name[].class, to = Name.class),
     @Converts(from = Name.class, to = String[].class), @Converts(from = Name.class, to = String.class), @Converts(from = Name.class, to = Name[].class) })

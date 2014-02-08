@@ -13,7 +13,7 @@ import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
 @Component("uriConv")
-@ConvertsJson(deserialize = @Converts(from = String.class, to = URI.class), serialize = @Converts(from = URI.class, to = String.class))
+@ConvertsJson(deserialize = { @Converts(from = String.class, to = URI.class) }, serialize = { @Converts(from = URI.class, to = String.class) })
 @ConvertsUserType(UriUserType.class)
 @List({ @Converts(from = String.class, to = URI.class), @Converts(from = URI.class, to = String.class) })
 @Scope("singleton")

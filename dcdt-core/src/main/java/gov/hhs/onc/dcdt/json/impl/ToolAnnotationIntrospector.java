@@ -31,6 +31,7 @@ public class ToolAnnotationIntrospector extends JacksonAnnotationIntrospector im
 
     @Nullable
     @Override
+    @SuppressWarnings({ "ConstantConditions" })
     public TypeResolverBuilder<?> findTypeResolver(MapperConfig<?> mapperConfig, AnnotatedClass annotatedClassObj, JavaType baseType) {
         TypeResolverBuilder<?> typeResolverBuilder = super.findTypeResolver(mapperConfig, annotatedClassObj, baseType);
         Class<?> annotatedClass;
@@ -39,9 +40,7 @@ public class ToolAnnotationIntrospector extends JacksonAnnotationIntrospector im
             && !Objects.equals(
                 ToolAnnotationUtils.getValue(JsonTypeInfo.class, Id.class, ANNO_ATTR_NAME_USE, (annotatedClass = annotatedClassObj.getAnnotated())), Id.NONE)) {
             String typePropName = ((StdTypeResolverBuilder) typeResolverBuilder).getTypeProperty();
-            ToolTypeNameIdResolver typeNameIdResolver =
-                (ToolTypeNameIdResolver) this.appContext.getBean(ToolBeanFactoryUtils.getBeanNameOfType(this.appContext, ToolTypeNameIdResolver.class),
-                    (Object) annotatedClass);
+            ToolTypeNameIdResolver typeNameIdResolver = ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolTypeNameIdResolver.class, annotatedClass);
 
             typeResolverBuilder.init(typeNameIdResolver.getMechanism(), typeNameIdResolver).typeProperty(typePropName);
         }

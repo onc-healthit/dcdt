@@ -3,12 +3,12 @@ package gov.hhs.onc.dcdt.web.json.impl;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import gov.hhs.onc.dcdt.web.json.ErrorJsonWrapper;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
@@ -51,7 +51,7 @@ public class ErrorJsonWrapperImpl extends AbstractToolBean implements ErrorJsonW
 
     @Override
     public boolean hasMessages() {
-        return !ToolCollectionUtils.isEmpty(this.msgs);
+        return !CollectionUtils.isEmpty(this.msgs);
     }
 
     @Override

@@ -1,15 +1,38 @@
 package gov.hhs.onc.dcdt.beans.utils;
 
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import javax.annotation.Nullable;
+import org.apache.commons.lang3.ArrayUtils;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 public abstract class ToolBeanFactoryUtils {
+    @Nullable
+    public static <T> T createBeanOfType(ListableBeanFactory beanFactory, Class<T> beanClass, @Nullable Collection<?> beanCreationArgs) {
+        return createBeanOfType(beanFactory, beanClass, ToolCollectionUtils.toArray(beanCreationArgs));
+    }
+
+    @Nullable
+    public static <T> T createBeanOfType(ListableBeanFactory beanFactory, Class<T> beanClass, @Nullable Object ... beanCreationArgs) {
+        String beanName = getBeanNameOfType(beanFactory, beanClass);
+
+        return (beanName != null) ? createBean(beanFactory, beanName, beanClass, beanCreationArgs) : null;
+    }
+
+    public static <T> T createBean(BeanFactory beanFactory, String beanName, Class<T> beanClass, @Nullable Collection<?> beanCreationArgs) {
+        return createBean(beanFactory, beanName, beanClass, ToolCollectionUtils.toArray(beanCreationArgs));
+    }
+
+    public static <T> T createBean(BeanFactory beanFactory, String beanName, Class<T> beanClass, @Nullable Object ... beanCreationArgs) {
+        return beanClass.cast(beanFactory.getBean(beanName, ArrayUtils.nullToEmpty(beanCreationArgs)));
+    }
+
     public static <T> boolean containsBeanOfType(ListableBeanFactory beanFactory, Class<T> beanClass) {
         return containsBeanOfType(beanFactory, beanClass, true, true, true);
     }
@@ -44,22 +67,6 @@ public abstract class ToolBeanFactoryUtils {
         }
 
         return beans;
-    }
-
-    public static <T> Map<String, T> mapBeansOfType(ListableBeanFactory beanFactory, Class<T> beanClass) {
-        return mapBeansOfType(beanFactory, beanClass, true, true, true);
-    }
-
-    public static <T> Map<String, T> mapBeansOfType(ListableBeanFactory beanFactory, Class<T> beanClass, boolean includeAncestors,
-        boolean includeNonSingletons, boolean allowEagerInit) {
-        List<String> beanNames = getBeanNamesOfType(beanFactory, beanClass, includeAncestors, includeNonSingletons, allowEagerInit);
-        Map<String, T> beansMap = new LinkedHashMap<>(beanNames.size());
-
-        for (String beanName : beanNames) {
-            beansMap.put(beanName, beanFactory.getBean(beanName, beanClass));
-        }
-
-        return beansMap;
     }
 
     public static <T> String getBeanNameOfType(ListableBeanFactory beanFactory, Class<T> beanClass) {
