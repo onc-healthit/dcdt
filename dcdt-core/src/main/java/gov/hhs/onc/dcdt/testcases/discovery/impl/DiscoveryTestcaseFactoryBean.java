@@ -6,7 +6,7 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseService;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import java.util.List;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;

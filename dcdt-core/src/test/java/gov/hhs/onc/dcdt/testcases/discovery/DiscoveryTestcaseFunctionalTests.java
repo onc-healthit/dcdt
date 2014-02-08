@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.testcases.discovery;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import java.util.List;
 import org.testng.Assert;
 import org.testng.annotations.Test;

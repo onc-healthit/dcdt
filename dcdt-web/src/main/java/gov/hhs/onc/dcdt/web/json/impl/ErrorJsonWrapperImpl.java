@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.web.json.impl;
 
-
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import gov.hhs.onc.dcdt.web.json.ErrorJsonWrapper;
 import java.util.ArrayList;
 import java.util.List;
@@ -27,9 +27,9 @@ public class ErrorJsonWrapperImpl extends AbstractToolBean implements ErrorJsonW
     public ErrorJsonWrapperImpl() {
         this(ArrayUtils.EMPTY_STRING_ARRAY);
     }
-    
+
     public ErrorJsonWrapperImpl(Throwable error) {
-        this(error.getMessage(), ExceptionUtils.getStackTrace(error));
+        this(error.getMessage(), ToolStringUtils.joinDelimit(ExceptionUtils.getRootCauseStackTrace(error), "\n"));
     }
 
     public ErrorJsonWrapperImpl(String ... msgs) {

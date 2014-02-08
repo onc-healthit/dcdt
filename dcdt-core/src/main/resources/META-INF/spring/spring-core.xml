@@ -78,12 +78,6 @@
     = VALIDATION
     =====================================================================================================-->
     <beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
-        <beans:property name="mappingLocations">
-            <beans:array>
-                <!--suppress SpringModelInspection -->
-                <beans:value>classpath*:core/validation/core-validation.xml</beans:value>
-            </beans:array>
-        </beans:property>
         <beans:property name="messageInterpolator">
             <beans:bean class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator">
                 <beans:constructor-arg name="userResourceBundleLocator">

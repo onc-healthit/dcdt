@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.web.tags.impl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import gov.hhs.onc.dcdt.json.ToolJsonException;
 import gov.hhs.onc.dcdt.json.utils.ToolJsonUtils;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.IOException;
 import javax.servlet.jsp.JspException;

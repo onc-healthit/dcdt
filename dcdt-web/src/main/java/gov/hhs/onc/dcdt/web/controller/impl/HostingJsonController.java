@@ -1,7 +1,10 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResultJsonDto;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmission;
+import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmissionJsonDto;
 import gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseResultImpl;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
@@ -24,20 +27,32 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class HostingJsonController extends AbstractToolController {
     @JsonRequest
     @RequestMapping({ "/hosting/process" })
-    public ResponseJsonWrapper<HostingTestcaseResult> processHostingTestcase(
-        @RequestBody @Validated RequestJsonWrapper<HostingTestcaseSubmission> reqJsonWrapper, BindingResult bindingResult) {
-        ResponseJsonWrapperBuilder<HostingTestcaseResult> respJsonWrapperBuilder = new ResponseJsonWrapperBuilder<>();
+    public ResponseJsonWrapper<HostingTestcaseResult, HostingTestcaseResultJsonDto> processHostingTestcase(
+        @RequestBody @Validated RequestJsonWrapper<HostingTestcaseSubmission, HostingTestcaseSubmissionJsonDto> reqJsonWrapper, BindingResult bindingResult)
+        throws Exception {
+        ResponseJsonWrapperBuilder<HostingTestcaseResult, HostingTestcaseResultJsonDto> respJsonWrapperBuilder = new ResponseJsonWrapperBuilder<>();
         respJsonWrapperBuilder.addBindingErrors(this.msgSourceValidation, bindingResult);
 
         if (!bindingResult.hasErrors()) {
-            HostingTestcaseSubmission reqHostingTestcaseSubmission = ToolListUtils.getFirst(reqJsonWrapper.getItems());
+            HostingTestcaseSubmissionJsonDto reqHostingTestcaseSubmissionJsonDto = ToolListUtils.getFirst(reqJsonWrapper.getItems());
 
-            if (reqHostingTestcaseSubmission != null) {
+            if (reqHostingTestcaseSubmissionJsonDto != null) {
+                HostingTestcaseSubmission reqHostingTestcaseSubmission = reqHostingTestcaseSubmissionJsonDto.toBean(this.convService);
+
                 // TODO: implement
-                respJsonWrapperBuilder.addItems(new HostingTestcaseResultImpl());
+                respJsonWrapperBuilder.addItems(this.getHostingTestcaseResultJsonDto(new HostingTestcaseResultImpl()));
             }
         }
 
         return respJsonWrapperBuilder.build();
+    }
+
+    private HostingTestcaseResultJsonDto getHostingTestcaseResultJsonDto(HostingTestcaseResult hostingTestcaseResult) throws Exception {
+        HostingTestcaseResultJsonDto hostingTestcaseResultJsonDto =
+            this.appContext.getBean(ToolBeanFactoryUtils.getBeanNameOfType(this.appContext, HostingTestcaseResultJsonDto.class),
+                HostingTestcaseResultJsonDto.class);
+        hostingTestcaseResultJsonDto.fromBean(this.convService, hostingTestcaseResult);
+
+        return hostingTestcaseResultJsonDto;
     }
 }

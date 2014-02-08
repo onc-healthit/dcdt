@@ -7,8 +7,12 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.core.convert.ConversionService;
 
 public abstract class AbstractToolController extends AbstractToolBean implements ToolController {
+    @Resource(name = "conversionService")
+    protected ConversionService convService;
+
     @Resource(name = "messageSourceValidation")
     protected MessageSource msgSourceValidation;
 

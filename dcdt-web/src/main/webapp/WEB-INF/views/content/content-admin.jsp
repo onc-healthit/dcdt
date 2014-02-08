@@ -56,7 +56,7 @@
                     </tiles:insertDefinition>:
                 </span>
                 <span class="form-cell form-cell-control">
-                    <input id="admin-instance-config-ip-addr" class="input-sm form-control" name="ipAddr" type="text"/>
+                    <input id="admin-instance-config-ip-addr" class="input-sm form-control" name="ipAddress" type="text"/>
                 </span>
             </div>
         </div>

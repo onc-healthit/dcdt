@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.web.json.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.json.ToolBeanJsonDto;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.web.json.ErrorJsonWrapper;
@@ -18,16 +19,16 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
 
-public class ResponseJsonWrapperBuilder<T extends ToolBean> implements Builder<ResponseJsonWrapper<T>> {
-    private ResponseJsonWrapper<T> respJsonWrapper = new ResponseJsonWrapperImpl<>();
+public class ResponseJsonWrapperBuilder<T extends ToolBean, U extends ToolBeanJsonDto<T>> implements Builder<ResponseJsonWrapper<T, U>> {
+    private ResponseJsonWrapper<T, U> respJsonWrapper = new ResponseJsonWrapperImpl<>();
 
     @SuppressWarnings({ "unchecked" })
-    public ResponseJsonWrapperBuilder<T> addItems(T ... itemsAdd) {
+    public ResponseJsonWrapperBuilder<T, U> addItems(U ... itemsAdd) {
         return this.addItems(ToolArrayUtils.asList(itemsAdd));
     }
 
-    public ResponseJsonWrapperBuilder<T> addItems(Collection<T> itemsAdd) {
-        List<T> items;
+    public ResponseJsonWrapperBuilder<T, U> addItems(Collection<U> itemsAdd) {
+        List<U> items;
 
         if ((items = this.respJsonWrapper.getItems()) == null) {
             this.respJsonWrapper.setItems(new ArrayList<>(itemsAdd));
@@ -38,7 +39,7 @@ public class ResponseJsonWrapperBuilder<T extends ToolBean> implements Builder<R
         return this;
     }
 
-    public ResponseJsonWrapperBuilder<T> addBindingErrors(MessageSource msgSource, BindingResult bindingResult) {
+    public ResponseJsonWrapperBuilder<T, U> addBindingErrors(MessageSource msgSource, BindingResult bindingResult) {
         if (bindingResult.hasGlobalErrors()) {
             for (ObjectError globalErrorObj : bindingResult.getGlobalErrors()) {
                 this.addGlobalErrors(new ErrorJsonWrapperImpl(ToolMessageUtils.getMessage(msgSource, globalErrorObj)));
@@ -54,21 +55,21 @@ public class ResponseJsonWrapperBuilder<T extends ToolBean> implements Builder<R
         return this;
     }
 
-    public ResponseJsonWrapperBuilder<T> addFieldErrors(String fieldName, ErrorJsonWrapper ... fieldErrorJsonWrappers) {
+    public ResponseJsonWrapperBuilder<T, U> addFieldErrors(String fieldName, ErrorJsonWrapper ... fieldErrorJsonWrappers) {
         return this.addFieldErrors(fieldName, ToolArrayUtils.asList(fieldErrorJsonWrappers));
     }
 
-    public ResponseJsonWrapperBuilder<T> addFieldErrors(String fieldName, Collection<ErrorJsonWrapper> fieldErrorJsonWrappers) {
+    public ResponseJsonWrapperBuilder<T, U> addFieldErrors(String fieldName, Collection<ErrorJsonWrapper> fieldErrorJsonWrappers) {
         this.getFieldErrorJsonWrappers(fieldName).addAll(fieldErrorJsonWrappers);
 
         return this.setStatus(ResponseStatus.ERROR);
     }
 
-    public ResponseJsonWrapperBuilder<T> addGlobalErrorExceptions(Exception ... globalErrorExceptions) {
+    public ResponseJsonWrapperBuilder<T, U> addGlobalErrorExceptions(Exception ... globalErrorExceptions) {
         return this.addGlobalErrorExceptions(ToolArrayUtils.asList(globalErrorExceptions));
     }
 
-    public ResponseJsonWrapperBuilder<T> addGlobalErrorExceptions(Collection<Exception> globalErrorExceptions) {
+    public ResponseJsonWrapperBuilder<T, U> addGlobalErrorExceptions(Collection<Exception> globalErrorExceptions) {
         List<ErrorJsonWrapper> globalErrorJsonWrappers = new ArrayList<>(globalErrorExceptions.size());
 
         for (Exception globalErrorException : globalErrorExceptions) {
@@ -78,17 +79,17 @@ public class ResponseJsonWrapperBuilder<T extends ToolBean> implements Builder<R
         return this.addGlobalErrors(globalErrorJsonWrappers);
     }
 
-    public ResponseJsonWrapperBuilder<T> addGlobalErrors(ErrorJsonWrapper ... globalErrorJsonWrappers) {
+    public ResponseJsonWrapperBuilder<T, U> addGlobalErrors(ErrorJsonWrapper ... globalErrorJsonWrappers) {
         return this.addGlobalErrors(ToolArrayUtils.asList(globalErrorJsonWrappers));
     }
 
-    public ResponseJsonWrapperBuilder<T> addGlobalErrors(Collection<ErrorJsonWrapper> globalErrorJsonWrappers) {
+    public ResponseJsonWrapperBuilder<T, U> addGlobalErrors(Collection<ErrorJsonWrapper> globalErrorJsonWrappers) {
         this.getGlobalErrorJsonWrappers().addAll(globalErrorJsonWrappers);
 
         return this.setStatus(ResponseStatus.ERROR);
     }
 
-    public ResponseJsonWrapperBuilder<T> setStatus(ResponseStatus status) {
+    public ResponseJsonWrapperBuilder<T, U> setStatus(ResponseStatus status) {
         this.respJsonWrapper.setStatus(status);
 
         return this;
@@ -137,7 +138,7 @@ public class ResponseJsonWrapperBuilder<T extends ToolBean> implements Builder<R
     }
 
     @Override
-    public ResponseJsonWrapper<T> build() {
+    public ResponseJsonWrapper<T, U> build() {
         return this.respJsonWrapper;
     }
 }

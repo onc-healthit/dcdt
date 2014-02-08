@@ -1,16 +1,20 @@
 package gov.hhs.onc.dcdt.test.impl;
 
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolIterableUtils;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import javax.annotation.Resource;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.format.support.FormattingConversionService;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestExecutionListeners;
 import org.springframework.test.context.support.DependencyInjectionTestExecutionListener;
@@ -25,6 +29,10 @@ import org.testng.annotations.Test;
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class }, inheritListeners = false)
 public abstract class AbstractToolTests extends AbstractTestNGSpringContextTests implements InitializingBean, MessageSourceAware {
+    @Resource(name = "conversionService")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    protected FormattingConversionService convService;
+
     /**
      * @see org.springframework.test.context.testng.AbstractTestNGSpringContextTests.applicationContext
      */

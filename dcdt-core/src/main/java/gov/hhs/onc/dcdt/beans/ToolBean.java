@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
-import java.io.Serializable;
 import javax.annotation.Nullable;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.InitializingBean;
@@ -13,10 +12,14 @@ import org.springframework.beans.factory.InitializingBean;
     creatorVisibility = Visibility.NONE, fieldVisibility = Visibility.NONE)
 @JsonTypeInfo(use = Id.NAME)
 public interface ToolBean extends BeanNameAware, InitializingBean {
-    public boolean hasBeanId();
+    @Override
+    public boolean equals(@Nullable Object obj);
 
-    @Nullable
-    public Serializable getBeanId();
+    @Override
+    public int hashCode();
+
+    @Override
+    public String toString();
 
     public String getBeanName();
 }

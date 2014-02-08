@@ -89,7 +89,7 @@
     $(document).ready(function () {
         instanceConfigForm = $("form[name=\"admin-instance-config\"]");
         instanceConfigInputDomainName = instanceConfigForm.dcdt.form.formInputs("domainName");
-        instanceConfigInputIpAddr = instanceConfigForm.dcdt.form.formInputs("ipAddr");
+        instanceConfigInputIpAddr = instanceConfigForm.dcdt.form.formInputs("ipAddress");
         instanceConfigButtons = instanceConfigForm.dcdt.form.formButtons();
         instanceConfigButtonRm = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-rm");
         instanceConfigButtonSet = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-set");

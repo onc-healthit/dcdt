@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.config.impl;
 import gov.hhs.onc.dcdt.beans.factory.impl.AbstractToolFactoryBean;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.config.InstanceConfigService;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;

@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.config;
 import gov.hhs.onc.dcdt.config.impl.InstanceConfigImpl;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import java.net.InetAddress;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

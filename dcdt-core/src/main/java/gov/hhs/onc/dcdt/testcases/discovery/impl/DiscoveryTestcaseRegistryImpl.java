@@ -8,7 +8,7 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDao;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseService;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.util.ArrayList;
 import java.util.List;

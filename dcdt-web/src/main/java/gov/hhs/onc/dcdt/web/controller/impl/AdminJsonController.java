@@ -1,8 +1,9 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
+import gov.hhs.onc.dcdt.config.InstanceConfigJsonDto;
 import gov.hhs.onc.dcdt.config.InstanceConfigRegistry;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
 import gov.hhs.onc.dcdt.web.controller.JsonRequest;
@@ -29,22 +30,24 @@ public class AdminJsonController extends AbstractToolController {
 
     @JsonRequest
     @RequestMapping({ "/admin/instance/set" })
-    public ResponseJsonWrapper<InstanceConfig> setInstanceConfig(@RequestBody @Validated RequestJsonWrapper<InstanceConfig> reqJsonWrapper,
-        BindingResult bindingResult) {
-        ResponseJsonWrapperBuilder<InstanceConfig> respJsonWrapperBuilder = new ResponseJsonWrapperBuilder<>();
+    public ResponseJsonWrapper<InstanceConfig, InstanceConfigJsonDto> setInstanceConfig(
+        @RequestBody @Validated RequestJsonWrapper<InstanceConfig, InstanceConfigJsonDto> reqJsonWrapper, BindingResult bindingResult) throws Exception {
+        ResponseJsonWrapperBuilder<InstanceConfig, InstanceConfigJsonDto> respJsonWrapperBuilder = new ResponseJsonWrapperBuilder<>();
         respJsonWrapperBuilder.addBindingErrors(this.msgSourceValidation, bindingResult);
 
         if (!bindingResult.hasErrors()) {
-            InstanceConfig reqInstanceConfig = ToolListUtils.getFirst(reqJsonWrapper.getItems());
+            InstanceConfigJsonDto reqInstanceConfigJsonDto = ToolListUtils.getFirst(reqJsonWrapper.getItems());
 
-            if (reqInstanceConfig != null) {
+            if (reqInstanceConfigJsonDto != null) {
+                InstanceConfig reqInstanceConfig = reqInstanceConfigJsonDto.toBean(this.convService);
+
                 InstanceConfig instanceConfig = this.getInstanceConfigBean();
                 instanceConfig.setDomainName(reqInstanceConfig.getDomainName());
                 instanceConfig.setIpAddress(reqInstanceConfig.getIpAddress());
 
                 this.instanceConfigRegistry.registerBeans(instanceConfig);
 
-                respJsonWrapperBuilder.addItems(this.getInstanceConfigBean());
+                respJsonWrapperBuilder.addItems(this.getInstanceConfigJsonDto(this.getInstanceConfigBean()));
             }
         }
 
@@ -52,19 +55,24 @@ public class AdminJsonController extends AbstractToolController {
     }
 
     @RequestMapping(value = { "/admin/instance/rm" }, method = { RequestMethod.POST })
-    public ResponseJsonWrapper<InstanceConfig> removeInstanceConfig() {
-        ResponseJsonWrapperBuilder<InstanceConfig> respJsonWrapperBuilder = new ResponseJsonWrapperBuilder<>();
-
+    public ResponseJsonWrapper<InstanceConfig, InstanceConfigJsonDto> removeInstanceConfig() throws Exception {
         this.instanceConfigRegistry.removeAllBeans();
 
-        respJsonWrapperBuilder.addItems(this.getInstanceConfigBean());
-
-        return respJsonWrapperBuilder.build();
+        return this.getInstanceConfig();
     }
 
     @RequestMapping(value = { "/admin/instance" }, method = { RequestMethod.GET })
-    public ResponseJsonWrapper<InstanceConfig> getInstanceConfig() {
-        return new ResponseJsonWrapperBuilder<InstanceConfig>().addItems(this.getInstanceConfigBean()).build();
+    public ResponseJsonWrapper<InstanceConfig, InstanceConfigJsonDto> getInstanceConfig() throws Exception {
+        return new ResponseJsonWrapperBuilder<InstanceConfig, InstanceConfigJsonDto>().addItems(this.getInstanceConfigJsonDto(this.getInstanceConfigBean()))
+            .build();
+    }
+
+    private InstanceConfigJsonDto getInstanceConfigJsonDto(InstanceConfig instanceConfig) throws Exception {
+        InstanceConfigJsonDto instanceConfigJsonDto =
+            this.appContext.getBean(ToolBeanFactoryUtils.getBeanNameOfType(this.appContext, InstanceConfigJsonDto.class), InstanceConfigJsonDto.class);
+        instanceConfigJsonDto.fromBean(this.convService, instanceConfig);
+
+        return instanceConfigJsonDto;
     }
 
     private InstanceConfig getInstanceConfigBean() {

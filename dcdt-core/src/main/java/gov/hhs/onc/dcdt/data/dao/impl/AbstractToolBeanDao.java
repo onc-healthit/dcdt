@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.data.dao.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanUtils;
 import gov.hhs.onc.dcdt.data.ToolBeanDataAccessException;
 import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
 import gov.hhs.onc.dcdt.data.utils.ToolRestrictionsUtils;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import javax.annotation.Resource;
 import org.hibernate.Criteria;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -23,9 +25,13 @@ import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.format.support.FormattingConversionService;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractToolBean implements ToolBeanDao<T> {
+    @Resource(name = "conversionService")
+    protected FormattingConversionService convService;
+
     @Autowired
     protected SessionFactory sessionFactory;
 
@@ -264,7 +270,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @SuppressWarnings({ "unchecked" })
     protected T loadBean(Session session, T bean) throws ToolBeanDataAccessException {
-        Serializable beanId = bean.getBeanId();
+        Serializable beanId = ToolBeanUtils.getId(ToolBeanUtils.wrap(bean, this.convService));
 
         if (this.containsBean(beanId)) {
             T beanPersistent = this.getBeanById(beanId);
@@ -280,7 +286,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     protected T refreshBean(Session session, T bean) throws ToolBeanDataAccessException {
-        if (this.containsBean(session, bean.getBeanId())) {
+        if (this.containsBean(session, ToolBeanUtils.getId(ToolBeanUtils.wrap(bean, this.convService)))) {
             session.refresh(bean);
         }
 
@@ -316,7 +322,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
         if (session.contains(bean)) {
             session.delete(bean);
         } else {
-            T beanPersistent = this.getBeanById(bean.getBeanId());
+            T beanPersistent = this.getBeanById(ToolBeanUtils.getId(ToolBeanUtils.wrap(bean, this.convService)));
 
             if (beanPersistent != null) {
                 session.delete(beanPersistent);

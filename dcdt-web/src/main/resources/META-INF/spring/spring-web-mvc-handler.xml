@@ -36,7 +36,7 @@
     <beans:bean id="httpMsgConv" class="org.springframework.http.converter.HttpMessageConverter" abstract="true"/>
     
     <beans:bean id="mappingJackson2HttpMsgConv" class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter" parent="httpMsgConv"
-        p:objectMapper-ref="toolObjMapper"/>
+        p:objectMapper-ref="objMapper"/>
     
     <!--====================================================================================================
     = HANDLER METHOD ARGUMENT RESOLVERS

@@ -5,7 +5,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.PooledDataSource;
 import gov.hhs.onc.dcdt.convert.ToolConverter;
 import gov.hhs.onc.dcdt.data.types.ToolUserType;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;

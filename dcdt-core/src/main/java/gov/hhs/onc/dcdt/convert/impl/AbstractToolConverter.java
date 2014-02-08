@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.convert.ConversionRuntimeException;
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.ConvertsJson;
 import gov.hhs.onc.dcdt.convert.ConvertsUserType;
@@ -28,6 +27,7 @@ import java.util.Set;
 import javax.annotation.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class AbstractToolConverter extends AbstractToolBean implements ToolConverter {
@@ -108,7 +108,7 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
 
             return target;
         } catch (Exception e) {
-            throw new ConversionRuntimeException(String.format(
+            throw new ConversionFailedException(sourceType, targetType, String.format(
                 "Unable to convert (class=%s) source object (class=%s, sourceClass=%s) to target (targetClass=%s).", ToolClassUtils.getName(this),
                 ToolClassUtils.getName(source), ToolClassUtils.getName(sourceType), ToolClassUtils.getName(targetType)), e);
         }
