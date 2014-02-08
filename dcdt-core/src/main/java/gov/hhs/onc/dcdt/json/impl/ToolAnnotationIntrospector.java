@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.jsontype.TypeResolverBuilder;
 import com.fasterxml.jackson.databind.jsontype.impl.StdTypeResolverBuilder;
 import gov.hhs.onc.dcdt.json.ToolTypeNameIdResolver;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.Objects;
 import javax.annotation.Nullable;

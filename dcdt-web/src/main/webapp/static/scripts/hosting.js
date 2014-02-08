@@ -8,7 +8,7 @@
                     "data": $.encodeJson({
                         "@type": "request",
                         "items": [
-                            hostingTestcase
+                            hostingTestcaseSub
                         ]
                     }),
                     "queryBeanSuccess": function (data, status, jqXhr) {
@@ -31,11 +31,11 @@
                 var passed = hostingTestcaseResult["passed"];
                 var message = hostingTestcaseResult["msg"];
 
-                var hostingTestcaseName = hostingTestcase["hostingTestcaseName"];
-                var directAddr = hostingTestcase["directAddr"];
+                var hostingTestcase = hostingTestcaseSub["hostingTestcase"];
+                var directAddr = hostingTestcaseSub["directAddr"];
 
                 var header = $("<h3/>");
-                $.fn.dcdt.testcases.appendTestcaseResults(header, "Testcase: ", hostingTestcaseName);
+                $.fn.dcdt.testcases.appendTestcaseResults(header, "Testcase: ", hostingTestcase);
                 $.fn.dcdt.testcases.appendTestcaseResults(header, "Direct Address: ", directAddr);
                 var result = $("<div/>");
                 $.fn.dcdt.testcases.appendTestcaseResults(result, "Passed: ", passed);
@@ -49,7 +49,7 @@
     });
 
     var formTestcasesHosting, testcasesHostingSelect, testcaseHostingDirectAddr,testcaseHostingSubmit, testcaseHostingReset,
-        hostingTestcase, hostingTestcaseResults;
+        hostingTestcaseSub, hostingTestcaseResults;
 
     $(document).ready(function () {
         formTestcasesHosting = $("form[name=\"form-testcases-hosting\"]");
@@ -64,9 +64,9 @@
         });
 
         formTestcasesHosting.submit(function (event) {
-            hostingTestcase = {
-                "@type": "hostingTestcaseSubmission",
-                "hostingTestcaseName": testcasesHostingSelect.val(),
+            hostingTestcaseSub = {
+                "@type": "hostingTestcaseSub",
+                "hostingTestcase": testcasesHostingSelect.val(),
                 "directAddr": testcaseHostingDirectAddr.val()
             };
             $.dcdt.hosting.processHostingTestcase();

@@ -1,6 +1,7 @@
-package gov.hhs.onc.dcdt.net;
+package gov.hhs.onc.dcdt.beans;
 
-import gov.hhs.onc.dcdt.validation.constraints.NotBlank;
+
+import gov.hhs.onc.dcdt.beans.impl.NamedBeanNameConstraintValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -10,32 +11,29 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
-import javax.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.ConstraintComposition;
-import org.hibernate.validator.constraints.Length;
 
-@Constraint(validatedBy = {})
+@Constraint(validatedBy = { NamedBeanNameConstraintValidator.class })
 @ConstraintComposition
 @Documented
 @Inherited
-@Length(min = 1, max = 253)
-@NotBlank
-@Pattern(regexp = "^[\\w\\-\\.]+$")
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
-public @interface DomainName {
+public @interface NamedBeanName {
     @Documented
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })
     public @interface List {
-        DomainName[] value();
+        NamedBeanName[] value();
     }
 
-    String message() default "{dcdt.net.validation.constraints.DomainName.msg}";
+    Class<? extends ToolNamedBean> value();
+    
+    String message() default "{dcdt.beans.validation.constraints.NamedBeanName.msg}";
 
-    Class<?>[] groups() default {};
+    Class<?>[] groups() default { };
 
-    Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default { };
 }

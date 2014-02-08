@@ -153,6 +153,22 @@ public abstract class ToolClassUtils {
         return classesFiltered;
     }
 
+    public static boolean isImplementation(Class<?> baseClass, Class<?> clazz) {
+        return isImplementation(baseClass, clazz, true);
+    }
+
+    public static boolean isImplementation(Class<?> baseClass, Class<?> clazz, boolean onlyConcrete) {
+        return isAssignable(clazz, baseClass) && (!onlyConcrete || isConcrete(clazz));
+    }
+
+    public static boolean isConcrete(Class<?> clazz) {
+        return !clazz.isInterface() && !isAbstract(clazz);
+    }
+
+    public static boolean isAbstract(Class<?> clazz) {
+        return hasModifiers(clazz, Modifier.ABSTRACT);
+    }
+
     public static boolean hasPrivateAccess(Class<?> clazz) {
         return hasModifiers(clazz, Modifier.PRIVATE);
     }

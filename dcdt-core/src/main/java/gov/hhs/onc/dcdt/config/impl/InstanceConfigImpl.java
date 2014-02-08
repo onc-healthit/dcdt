@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.config.impl;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.config.InstanceConfig;
 import java.net.InetAddress;
@@ -9,11 +8,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.validation.Valid;
 import org.xbill.DNS.Name;
 
 @Entity(name = "instance_config")
-@JsonTypeName("instanceConfig")
 @Table(name = "instance_configs")
 public class InstanceConfigImpl extends AbstractToolBean implements InstanceConfig {
     private Name domainName;
@@ -28,7 +25,6 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
     @Id
     @Nullable
     @Override
-    @Valid
     public Name getDomainName() {
         return this.domainName;
     }
@@ -46,7 +42,6 @@ public class InstanceConfigImpl extends AbstractToolBean implements InstanceConf
     @Column(name = "ip_address", nullable = false)
     @Nullable
     @Override
-    @Valid
     public InetAddress getIpAddress() {
         return this.ipAddr;
     }

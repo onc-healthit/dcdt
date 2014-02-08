@@ -1,5 +1,7 @@
-package gov.hhs.onc.dcdt.utils;
+package gov.hhs.onc.dcdt.beans.utils;
 
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;

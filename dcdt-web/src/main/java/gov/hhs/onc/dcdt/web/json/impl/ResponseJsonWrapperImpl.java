@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.web.json.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.json.ToolBeanJsonDto;
 import gov.hhs.onc.dcdt.web.json.ErrorsJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseStatus;
@@ -14,7 +15,7 @@ import org.springframework.stereotype.Component;
 @JsonTypeName("response")
 @Lazy
 @Scope("prototype")
-public class ResponseJsonWrapperImpl<T extends ToolBean> extends AbstractJsonWrapper<T> implements ResponseJsonWrapper<T> {
+public class ResponseJsonWrapperImpl<T extends ToolBean, U extends ToolBeanJsonDto<T>> extends AbstractJsonWrapper<T, U> implements ResponseJsonWrapper<T, U> {
     private ResponseStatus status = ResponseStatus.SUCCESS;
     private ErrorsJsonWrapper errors;
 

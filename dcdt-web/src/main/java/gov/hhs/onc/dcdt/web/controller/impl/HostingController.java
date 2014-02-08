@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase;
-import gov.hhs.onc.dcdt.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.web.controller.DisplayController;
 import gov.hhs.onc.dcdt.web.view.RequestView;
 import java.util.List;

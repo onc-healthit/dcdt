@@ -18,7 +18,7 @@
     <!--====================================================================================================
     = OBJECT MAPPER
     =====================================================================================================-->
-    <beans:bean id="toolObjMapper" class="gov.hhs.onc.dcdt.json.impl.ToolObjectMapper"
+    <beans:bean id="objMapper" class="gov.hhs.onc.dcdt.json.impl.ToolObjectMapper"
         p:annotationIntrospector-ref="toolAnnoInspector"
         p:converters-ref="convs">
         <beans:property name="configFeatures">
