@@ -17,13 +17,13 @@
     
     <beans:bean id="discoveryTestcase" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" parent="toolTestcase" abstract="true"/>
     <beans:bean id="discoveryTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription" parent="toolTestcaseDesc" abstract="true"/>
-    <beans:bean id="discoveryTestcaseResult" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
+    <beans:bean id="discoveryTestcaseResult" class="gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
     
     <beans:bean id="discoveryTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseFactoryBean" parent="discoveryTestcase"
         abstract="true"/>
     <beans:bean id="discoveryTestcaseDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDescriptionImpl" parent="discoveryTestcaseDesc"
         abstract="true"/>
-    <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseResultImpl" parent="toolTestcaseResult"
+    <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.results.impl.DiscoveryTestcaseResultImpl" parent="toolTestcaseResult"
         abstract="true"/>
     
     <!--====================================================================================================
@@ -39,16 +39,6 @@
         Verify that your system did NOT send an email because it could not find a certificate for the Direct address.
         To pass this test case, you must NOT receive an email in response.
     </dcdt:normalized-string>
-    
-    <!--====================================================================================================
-    = DISCOVERY TESTCASE RESULTS
-    =====================================================================================================-->
-    <beans:bean id="discoveryTestcaseResultPassed" parent="discoveryTestcaseResultImpl"
-        p:passed="true"
-        p:message="This test case passed. Your system discovered the expected certificate."/>
-
-    <beans:bean id="discoveryTestcaseResultFailed" parent="discoveryTestcaseResultImpl"
-        p:message="This test case failed. Your system discovered the wrong certificate."/>
     
     <!--====================================================================================================
     = DISCOVERY TESTCASES
@@ -685,7 +675,7 @@
                         </beans:bean>
                     </beans:property>
                 </beans:bean>
-                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
+                <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
                     p:bindingType="ADDRESS"
                     p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D9_invA"

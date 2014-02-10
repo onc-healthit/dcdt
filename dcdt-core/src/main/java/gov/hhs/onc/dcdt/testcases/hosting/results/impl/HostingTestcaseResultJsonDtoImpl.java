@@ -1,9 +1,9 @@
-package gov.hhs.onc.dcdt.testcases.hosting.impl;
+package gov.hhs.onc.dcdt.testcases.hosting.results.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResultJsonDto;
-import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcaseResultJsonDto;
+import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultJsonDto;
+import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResultJsonDto;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;

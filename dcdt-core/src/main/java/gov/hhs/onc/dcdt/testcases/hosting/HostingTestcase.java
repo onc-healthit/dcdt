@@ -7,6 +7,7 @@ import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseImpl;
+import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
 
 @JsonSubTypes({ @Type(HostingTestcaseImpl.class) })
 public interface HostingTestcase extends ToolTestcase<HostingTestcaseDescription, HostingTestcaseResult> {

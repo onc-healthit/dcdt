@@ -2,9 +2,10 @@ package gov.hhs.onc.dcdt.testcases;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 import javax.annotation.Nullable;
 
-public interface ToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult> extends ToolNamedBean {
+public interface ToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult<?, ?>> extends ToolNamedBean {
     public boolean hasDescription();
 
     @JsonProperty("desc")
