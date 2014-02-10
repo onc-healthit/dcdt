@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.testcases.impl;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
-import gov.hhs.onc.dcdt.testcases.ToolTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -11,7 +11,7 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 @MappedSuperclass
-public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult> extends AbstractToolNamedBean implements
+public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult<?, ?>> extends AbstractToolNamedBean implements
     ToolTestcase<T, U> {
     protected T desc;
     protected boolean neg;

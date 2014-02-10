@@ -28,7 +28,7 @@
             },
             "displayHostingTestcaseResults": function (data) {
                 var hostingTestcaseResult = data["items"][0];
-                var passed = hostingTestcaseResult["passed"];
+                var successful = hostingTestcaseResult["successful"];
                 var message = hostingTestcaseResult["msg"];
 
                 var hostingTestcase = hostingTestcaseSub["hostingTestcase"];
@@ -38,7 +38,7 @@
                 $.fn.dcdt.testcases.appendTestcaseResults(header, "Testcase: ", hostingTestcase);
                 $.fn.dcdt.testcases.appendTestcaseResults(header, "Direct Address: ", directAddr);
                 var result = $("<div/>");
-                $.fn.dcdt.testcases.appendTestcaseResults(result, "Passed: ", passed);
+                $.fn.dcdt.testcases.appendTestcaseResults(result, "Successful: ", successful);
                 $.fn.dcdt.testcases.appendTestcaseResults(result, "Message: ", message);
 
                 hostingTestcaseResults.append(header);

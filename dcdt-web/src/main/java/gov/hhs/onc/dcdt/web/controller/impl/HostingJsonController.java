@@ -1,11 +1,11 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResultJsonDto;
+import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultJsonDto;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmissionJsonDto;
-import gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseResultImpl;
+import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
 import gov.hhs.onc.dcdt.web.controller.JsonRequest;

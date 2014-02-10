@@ -17,96 +17,22 @@
     
     <beans:bean id="hostingTestcase" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase" parent="toolTestcase" abstract="true"/>
     <beans:bean id="hostingTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseDescription" parent="toolTestcaseDesc" abstract="true"/>
-    <beans:bean id="hostingTestcaseResult" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
+    <beans:bean id="hostingTestcaseResult" class="gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
+    <beans:bean id="hostingTestcaseResultConfig" class="gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultConfig" parent="toolTestcaseResultConfig" abstract="true"/>
 
     <beans:bean id="hostingTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseImpl" parent="hostingTestcase" abstract="true"/>
     <beans:bean id="hostingTestcaseDescImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseDescriptionImpl" parent="hostingTestcaseDesc"
         abstract="true"/>
-    <beans:bean id="hostingTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseResultImpl" parent="hostingTestcaseResult"
+    <beans:bean id="hostingTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl" parent="hostingTestcaseResult"
         abstract="true"/>
+    <beans:bean id="hostingTestcaseResultConfigImpl" class="gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultConfigImpl" parent="hostingTestcaseResultConfig" abstract="true"/>
 
-    <!--====================================================================================================
-    = HOSTING TESTCASE RESULTS
-    =====================================================================================================-->
-    <beans:bean id="hostingTestcaseResultPassedAddrBound" parent="hostingTestcaseResultImpl"
-        p:passed="true">
-        <beans:property name="message">
-            <dcdt:normalized-string>
-                This test case passed. Verify that the discovered certificate is the intended certificate for the Direct
-                address provided and that the rfc822Name of the SubjectAlternativeName extension contains the Direct address.
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
-    
-    <beans:bean id="hostingTestcaseResultPassedDomainBound" parent="hostingTestcaseResultImpl"
-        p:passed="true">
-        <beans:property name="message">
-            <dcdt:normalized-string>
-                This test case passed. Verify that the discovered certificate is the intended certificate for the Direct
-                address provided and that the rfc822Name of the SubjectAlternativeName extension contains the Direct
-                address' domain.
-            </dcdt:normalized-string>
-         </beans:property>
-    </beans:bean>
-
-    <beans:bean id="hostingTestcaseResultPassedAnyBound" parent="hostingTestcaseResultImpl"
-        p:passed="true">
-        <beans:property name="message">
-            <dcdt:normalized-string>
-                This test case passed. Verify that the discovered certificate is the intended certificate for the Direct
-                address provided and that the rfc822Name of the SubjectAlternativeName extension contains the Direct
-                address\, for an address-bound certificate\, or its domain\, for a domain-bound certificate.
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
-    
-    <beans:bean id="hostingTestcaseResultPassedNoneBound" parent="hostingTestcaseResultImpl"
-        p:passed="true">
-        <beans:property name="message">
-            <dcdt:normalized-string>
-                This test case failed. Neither an address-bound nor a domain-bound certificate was found for the Direct address provided.
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
-
-    <beans:bean id="hostingTestcaseResultFailedAddrBound" parent="hostingTestcaseResultImpl">
-        <beans:property name="message">
-            <dcdt:normalized-string>
-                This test case failed. An address-bound certificate was not found for the Direct address provided.
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
-
-    <beans:bean id="hostingTestcaseResultFailedDomainBound" parent="hostingTestcaseResultImpl">
-        <beans:property name="message">
-            <dcdt:normalized-string>
-                This test case failed. A domain-bound certificate was not found for the Direct address provided.
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
-
-    <beans:bean id="hostingTestcaseResultFailedNoneBound" parent="hostingTestcaseResultImpl">
-        <beans:property name="message">
-            <dcdt:normalized-string>
-                This test case failed. Neither an address-bound nor a domain-bound certificate was found for the Direct address provided.
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
-
-    <beans:bean id="hostingTestcaseResultFailedNotBound" parent="hostingTestcaseResultImpl">
-        <beans:property name="message">
-            <dcdt:normalized-string>
-                This test case failed. A certificate should not have been found for the Direct address provided.
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
-    
     <!--====================================================================================================
     = HOSTING TESTCASES
     =====================================================================================================-->
     <beans:bean id="hostingTestcaseNeg" parent="hostingTestcaseImpl" abstract="true"
         p:negative="true"/>
-    
+
     <beans:bean id="hostingTestcase1" parent="hostingTestcaseImpl"
         p:name="H1_DNS_AB_Normal"
         p:nameDisplay="H1 - Normal address-bound certificate search in DNS"
@@ -127,6 +53,18 @@
                     <dcdt:normalized-string>
                         This test case verifies that your system's DNS can host and return the expected address-bound X.509 certificate.
                     </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
                 </beans:property>
             </beans:bean>
         </beans:property>
@@ -155,6 +93,18 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
     </beans:bean>
 
     <beans:bean id="hostingTestcase3" parent="hostingTestcaseImpl"
@@ -177,6 +127,18 @@
                     <dcdt:normalized-string>
                         This test case verifies that your system's LDAP server can host and return the expected address-bound X.509 certificate.
                     </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
                 </beans:property>
             </beans:bean>
         </beans:property>
@@ -209,6 +171,18 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
     </beans:bean>
 
     <beans:bean id="hostingTestcase5" parent="hostingTestcaseNeg"
@@ -223,7 +197,7 @@
                     <dcdt:normalized-string>
                         Enter a Direct address that is not associated with a X.509 certificate hosted by your system's
                         LDAP server and then click Submit. DCDT will attempt to discover the certificate but should not
-                        be able to find it\, so the server may take up to 15 seconds to display the result on the screen.
+                        be able to find it, so the server may take up to 15 seconds to display the result on the screen.
                     </dcdt:normalized-string>
                 </beans:property>
                 <beans:property name="specifications">
@@ -237,6 +211,18 @@
                         This test case verifies that your system's LDAP server does not return any X.509 certificates in response
                         to a query for certificates associated with a Direct address that your system does not support.
                     </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
                 </beans:property>
             </beans:bean>
         </beans:property>
@@ -270,6 +256,18 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
     </beans:bean>
 
     <beans:bean id="hostingTestcase7" parent="hostingTestcaseImpl"
@@ -293,6 +291,18 @@
                         This test case verifies that your system's DNS can host and return the expected address-bound or
                         domain-bound certificate corresponding to the content served as a result of an IPKIX URL redirect.
                     </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
                 </beans:property>
             </beans:bean>
         </beans:property>
@@ -320,6 +330,18 @@
                         domain-bound X.509 certificate in response to a query that contains a mixture of upper and lower
                         case letters in the Direct address.
                     </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
                 </beans:property>
             </beans:bean>
         </beans:property>
@@ -351,6 +373,18 @@
                         domain-bound X.509 certificate in response to a query that contains a mixture of upper and lower case
                         letters in the Direct address.
                     </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+        <beans:property name="result">
+            <beans:bean parent="hostingTestcaseResultImpl">
+                <beans:property name="resultConfig">
+                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                        <beans:property name="results">
+                            <!-- TODO: implement -->
+                            <beans:list/>
+                        </beans:property>
+                    </beans:bean>
                 </beans:property>
             </beans:bean>
         </beans:property>

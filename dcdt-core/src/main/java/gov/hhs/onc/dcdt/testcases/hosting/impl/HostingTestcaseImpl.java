@@ -5,7 +5,7 @@ import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseDescription;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 
 @JsonTypeName("hostingTestcase")

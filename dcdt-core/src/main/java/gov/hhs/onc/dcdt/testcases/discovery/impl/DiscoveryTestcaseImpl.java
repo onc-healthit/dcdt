@@ -9,7 +9,7 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 import java.util.Collection;
 import java.util.List;

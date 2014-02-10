@@ -17,8 +17,9 @@
     
     <beans:bean id="toolTestcase" class="gov.hhs.onc.dcdt.testcases.ToolTestcase" abstract="true"/>
     <beans:bean id="toolTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription" abstract="true"/>
-    <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseResult" abstract="true"/>
-    
+    <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult" abstract="true"/>
+    <beans:bean id="toolTestcaseResultConfig" class="gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultConfig" abstract="true"/>
+
     <!--====================================================================================================
     = TESTCASE SPECIFICATIONS
     =====================================================================================================-->
