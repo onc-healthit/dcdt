@@ -3,11 +3,11 @@ package gov.hhs.onc.dcdt.testcases.hosting.results.impl;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultInfo;
-import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResultDescription;
+import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResultDescriptor;
 import javax.annotation.Nullable;
 
 @JsonTypeName("hostingTestcaseResultInfo")
-public class HostingTestcaseResultInfoImpl extends AbstractToolTestcaseResultDescription implements HostingTestcaseResultInfo {
+public class HostingTestcaseResultInfoImpl extends AbstractToolTestcaseResultDescriptor implements HostingTestcaseResultInfo {
     private CertificateInfo certificateInfo;
 
     @Override

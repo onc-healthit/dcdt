@@ -2,14 +2,32 @@ package gov.hhs.onc.dcdt.testcases.results.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStep;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStepDescription;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultType;
 import org.apache.commons.lang3.StringUtils;
 import javax.annotation.Nullable;
 
 public abstract class AbstractToolTestcaseResultStep extends AbstractToolBean implements ToolTestcaseResultStep {
+    protected ToolTestcaseResultStepDescription description;
     protected ToolTestcaseResultType resultType;
     protected boolean successful;
     protected String message;
+
+    @Override
+    public boolean hasDescription() {
+        return this.description != null;
+    }
+
+    @Nullable
+    @Override
+    public ToolTestcaseResultStepDescription getDescription() {
+        return this.description;
+    }
+
+    @Override
+    public void setDescription(@Nullable ToolTestcaseResultStepDescription description) {
+        this.description = description;
+    }
 
     @Override
     public ToolTestcaseResultType getResultType() {

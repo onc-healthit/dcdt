@@ -4,6 +4,13 @@ import gov.hhs.onc.dcdt.beans.ToolBean;
 import javax.annotation.Nullable;
 
 public interface ToolTestcaseResultStep extends ToolBean {
+    public boolean hasDescription();
+
+    @Nullable
+    public ToolTestcaseResultStepDescription getDescription();
+
+    public void setDescription(@Nullable ToolTestcaseResultStepDescription description);
+
     public ToolTestcaseResultType getResultType();
 
     public void setResultType(ToolTestcaseResultType resultType);

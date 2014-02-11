@@ -5,10 +5,11 @@ import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultConfig;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultGenerator;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultInfo;
 
-public abstract class AbstractToolTestcaseResultGenerator<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo> implements ToolTestcaseResultGenerator<T, U> {
+public abstract class AbstractToolTestcaseResultGenerator<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo> implements
+    ToolTestcaseResultGenerator<T, U> {
     @Override
     public boolean generateResultStatus(ToolTestcaseResult<T, U> testcaseResult) {
-        //TODO: implement
+        // TODO: implement
         return false;
     }
 }

@@ -1,12 +1,9 @@
 package gov.hhs.onc.dcdt.testcases.results;
 
 public enum ToolTestcaseCertificateResultType {
-    VALID_CERT("A valid X.509 certificate was found."),
-    INCORRECT_CERT_TYPE("A certificate with the incorrect certificate type was found."),
-    MISSING_CERT_ATTR("The X.509 certificate that was found has a missing attribute."),
-    EXPIRED_CERT("An expired X.509 certificate was found."),
-    UNEXPECTED_CERT("A certificate should not have been found for the Direct address provided."),
-    NO_CERT("A X.509 certificate was not found.");
+    VALID_CERT("dcdt.testcase.result.cert.ValidCert.msg"), INCORRECT_CERT_TYPE("dcdt.testcase.result.cert.IncorrectCertType.msg"), MISSING_CERT_ATTR(
+        "dcdt.testcase.result.cert.MissingCertAttr.msg"), EXPIRED_CERT("dcdt.testcase.result.cert.ExpiredCert.msg"), UNEXPECTED_CERT(
+        "dcdt.testcase.result.cert.UnexpectedCert.msg"), NO_CERT("dcdt.testcase.result.cert.NoCert.msg");
 
     private final String message;
 
