@@ -7,7 +7,8 @@ import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultInfo;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
-public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo> extends AbstractToolNamedBean implements ToolTestcaseResult<T, U> {
+public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo> extends AbstractToolNamedBean implements
+    ToolTestcaseResult<T, U> {
     protected T resultConfig;
     protected U resultInfo;
     protected boolean successful;

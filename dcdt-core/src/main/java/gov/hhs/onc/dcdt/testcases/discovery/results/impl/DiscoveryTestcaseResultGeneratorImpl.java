@@ -5,5 +5,6 @@ import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultGener
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
 import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResultGenerator;
 
-public class DiscoveryTestcaseResultGeneratorImpl extends AbstractToolTestcaseResultGenerator<DiscoveryTestcaseResultConfig, DiscoveryTestcaseResultInfo> implements DiscoveryTestcaseResultGenerator {
+public class DiscoveryTestcaseResultGeneratorImpl extends AbstractToolTestcaseResultGenerator<DiscoveryTestcaseResultConfig, DiscoveryTestcaseResultInfo>
+    implements DiscoveryTestcaseResultGenerator {
 }

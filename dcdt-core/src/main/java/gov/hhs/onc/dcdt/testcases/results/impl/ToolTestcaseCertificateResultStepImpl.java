@@ -30,12 +30,12 @@ public class ToolTestcaseCertificateResultStepImpl extends AbstractToolTestcaseR
     }
 
     @Override
-    public ToolTestcaseCertificateResultType getCertStatus() {
+    public ToolTestcaseCertificateResultType getCertificateStatus() {
         return this.certStatus;
     }
 
     @Override
-    public void setCertStatus(ToolTestcaseCertificateResultType certStatus) {
+    public void setCertificateStatus(ToolTestcaseCertificateResultType certStatus) {
         this.certStatus = certStatus;
     }
 

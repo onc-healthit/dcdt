@@ -11,8 +11,9 @@ public class HostingTestcaseUnitTests extends AbstractToolUnitTests {
     public void testHostingTestcaseConfiguration() {
         String hostingTestcaseName;
 
-        for (HostingTestcase hostingTestcase : ToolBeanFactoryUtils.getBeansOfType(this.applicationContext.getBeanFactory(), HostingTestcase.class)) {
-            Assert.assertTrue(hostingTestcase.hasName(), String.format("Hosting testcase (name=%s) does not have a name.", hostingTestcaseName = hostingTestcase.getName()));
+        for (HostingTestcase hostingTestcase : ToolBeanFactoryUtils.getBeansOfType(this.applicationContext, HostingTestcase.class)) {
+            Assert.assertTrue(hostingTestcase.hasName(),
+                String.format("Hosting testcase (name=%s) does not have a name.", hostingTestcaseName = hostingTestcase.getName()));
             Assert.assertTrue(hostingTestcase.hasDescription(), String.format("Hosting testcase (name=%s) does not have a description.", hostingTestcaseName));
             Assert.assertTrue(hostingTestcase.hasResult(), String.format("Hosting testcase (name=%s) does not have a result.", hostingTestcaseName));
         }

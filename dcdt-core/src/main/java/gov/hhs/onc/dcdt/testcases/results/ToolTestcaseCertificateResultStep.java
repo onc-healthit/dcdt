@@ -13,9 +13,9 @@ public interface ToolTestcaseCertificateResultStep extends ToolTestcaseResultSte
 
     public void setCertificateInfo(@Nullable CertificateInfo certificateInfo);
 
-    public ToolTestcaseCertificateResultType getCertStatus();
+    public ToolTestcaseCertificateResultType getCertificateStatus();
 
-    public void setCertStatus(ToolTestcaseCertificateResultType certStatus);
+    public void setCertificateStatus(ToolTestcaseCertificateResultType certStatus);
 
     public LocationType getLocationType();
 

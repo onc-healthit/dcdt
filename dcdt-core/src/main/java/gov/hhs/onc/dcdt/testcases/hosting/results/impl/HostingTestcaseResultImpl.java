@@ -7,5 +7,6 @@ import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultInfo;
 import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResult;
 
 @JsonTypeName("hostingTestcaseResult")
-public class HostingTestcaseResultImpl extends AbstractToolTestcaseResult<HostingTestcaseResultConfig, HostingTestcaseResultInfo> implements HostingTestcaseResult {
+public class HostingTestcaseResultImpl extends AbstractToolTestcaseResult<HostingTestcaseResultConfig, HostingTestcaseResultInfo> implements
+    HostingTestcaseResult {
 }

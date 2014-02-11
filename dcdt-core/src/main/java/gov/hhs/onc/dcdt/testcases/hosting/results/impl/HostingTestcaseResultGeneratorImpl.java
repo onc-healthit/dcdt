@@ -5,5 +5,6 @@ import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultGenerator
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultInfo;
 import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResultGenerator;
 
-public class HostingTestcaseResultGeneratorImpl extends AbstractToolTestcaseResultGenerator<HostingTestcaseResultConfig, HostingTestcaseResultInfo> implements HostingTestcaseResultGenerator {
+public class HostingTestcaseResultGeneratorImpl extends AbstractToolTestcaseResultGenerator<HostingTestcaseResultConfig, HostingTestcaseResultInfo> implements
+    HostingTestcaseResultGenerator {
 }
