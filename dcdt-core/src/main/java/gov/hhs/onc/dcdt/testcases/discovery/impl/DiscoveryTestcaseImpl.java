@@ -10,6 +10,8 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultConfig;
+import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +24,9 @@ import org.apache.commons.collections4.CollectionUtils;
 @Entity(name = "discovery_testcase")
 @JsonTypeName("discoveryTestcase")
 @Table(name = "discovery_testcases")
-public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseResult> implements DiscoveryTestcase {
+public class DiscoveryTestcaseImpl extends
+    AbstractToolTestcase<DiscoveryTestcaseResultConfig, DiscoveryTestcaseResultInfo, DiscoveryTestcaseDescription, DiscoveryTestcaseResult> implements
+    DiscoveryTestcase {
     private List<DiscoveryTestcaseCredential> creds;
     private MailAddress mailAddr;
 

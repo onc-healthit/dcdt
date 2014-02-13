@@ -3,16 +3,19 @@ package gov.hhs.onc.dcdt.testcases;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultConfig;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultInfo;
 import javax.annotation.Nullable;
 
-public interface ToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult<?, ?>> extends ToolNamedBean {
+public interface ToolTestcase<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo, V extends ToolTestcaseDescription, W extends ToolTestcaseResult<T, U>>
+    extends ToolNamedBean {
     public boolean hasDescription();
 
     @JsonProperty("desc")
     @Nullable
-    public T getDescription();
+    public V getDescription();
 
-    public void setDescription(@Nullable T desc);
+    public void setDescription(@Nullable V desc);
 
     @JsonProperty("neg")
     public boolean isNegative();
@@ -28,7 +31,7 @@ public interface ToolTestcase<T extends ToolTestcaseDescription, U extends ToolT
 
     @JsonProperty("result")
     @Nullable
-    public U getResult();
+    public W getResult();
 
-    public void setResult(@Nullable U result);
+    public void setResult(@Nullable W result);
 }

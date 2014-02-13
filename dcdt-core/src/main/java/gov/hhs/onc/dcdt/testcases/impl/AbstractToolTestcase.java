@@ -4,6 +4,8 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultConfig;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultInfo;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -11,12 +13,12 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 @MappedSuperclass
-public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseResult<?, ?>> extends AbstractToolNamedBean implements
-    ToolTestcase<T, U> {
-    protected T desc;
+public abstract class AbstractToolTestcase<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo, V extends ToolTestcaseDescription, W extends ToolTestcaseResult<T, U>>
+    extends AbstractToolNamedBean implements ToolTestcase<T, U, V, W> {
+    protected V desc;
     protected boolean neg;
     protected boolean optional;
-    protected U result;
+    protected W result;
 
     @Override
     public boolean hasDescription() {
@@ -26,12 +28,12 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
     @Nullable
     @Override
     @Transient
-    public T getDescription() {
+    public V getDescription() {
         return this.desc;
     }
 
     @Override
-    public void setDescription(@Nullable T desc) {
+    public void setDescription(@Nullable V desc) {
         this.desc = desc;
     }
 
@@ -73,12 +75,12 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
     @Override
     @Nullable
     @Transient
-    public U getResult() {
+    public W getResult() {
         return this.result;
     }
 
     @Override
-    public void setResult(@Nullable U result) {
+    public void setResult(@Nullable W result) {
         this.result = result;
     }
 }

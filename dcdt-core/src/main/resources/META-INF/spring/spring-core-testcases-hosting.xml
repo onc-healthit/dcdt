@@ -14,7 +14,7 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-    
+
     <beans:bean id="hostingTestcase" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase" parent="toolTestcase" abstract="true"/>
     <beans:bean id="hostingTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseDescription" parent="toolTestcaseDesc" abstract="true"/>
     <beans:bean id="hostingTestcaseResult" class="gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
@@ -62,7 +62,12 @@
                     <beans:bean parent="hostingTestcaseResultConfigImpl">
                         <beans:property name="results">
                             <util:list>
-                                <!-- TODO: implement -->
+                                <beans:bean parent="dnsCertRecordLookup"
+                                    p:description-ref="dnsAddrBoundCertRecordLookupDesc"
+                                    p:successful="true"/>
+                                <beans:bean parent="dnsAddrBoundCertLookup"
+                                    p:certificateStatus="VALID_CERT"
+                                    p:successful="true"/>
                             </util:list>
                         </beans:property>
                     </beans:bean>
@@ -100,7 +105,16 @@
                     <beans:bean parent="hostingTestcaseResultConfigImpl">
                         <beans:property name="results">
                             <util:list>
-                                <!-- TODO: implement -->
+                                <beans:bean parent="dnsCertRecordLookup"
+                                    p:description-ref="dnsAddrBoundCertRecordLookupDesc"/>
+                                <beans:bean parent="dnsAddrBoundCertLookup"
+                                    p:certificateStatus="NO_CERT"/>
+                                <beans:bean parent="dnsCertRecordLookup"
+                                    p:description-ref="dnsDomainBoundCertRecordLookupDesc"
+                                    p:successful="true"/>
+                                <beans:bean parent="dnsDomainBoundCertLookup"
+                                    p:certificateStatus="VALID_CERT"
+                                    p:successful="true"/>
                             </util:list>
                         </beans:property>
                     </beans:bean>
@@ -135,11 +149,20 @@
         <beans:property name="result">
             <beans:bean parent="hostingTestcaseResultImpl">
                 <beans:property name="resultConfig">
-                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                    <beans:bean parent="noCertsFoundInDns">
                         <beans:property name="results">
-                            <util:list>
-                                <!-- TODO: implement -->
-                            </util:list>
+                            <beans:list merge="true">
+                                <beans:bean parent="dnsSrvRecordLookup"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapConnection"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapLookup"
+                                    p:description-ref="ldapAddrBoundCertLookupDesc"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapAddrBoundCertLookup"
+                                    p:certificateStatus="VALID_CERT"
+                                    p:successful="true"/>
+                            </beans:list>
                         </beans:property>
                     </beans:bean>
                 </beans:property>
@@ -177,11 +200,24 @@
         <beans:property name="result">
             <beans:bean parent="hostingTestcaseResultImpl">
                 <beans:property name="resultConfig">
-                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                    <beans:bean parent="noCertsFoundInDns">
                         <beans:property name="results">
-                            <util:list>
-                                <!-- TODO: implement -->
-                            </util:list>
+                            <beans:list merge="true">
+                                <beans:bean parent="dnsSrvRecordLookup"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapConnection"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapLookup"
+                                    p:description-ref="ldapAddrBoundCertLookupDesc"/>
+                                <beans:bean parent="ldapAddrBoundCertLookup"
+                                    p:certificateStatus="NO_CERT"/>
+                                <beans:bean parent="ldapLookup"
+                                    p:description-ref="ldapDomainBoundCertLookupDesc"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapDomainBoundCertLookup"
+                                    p:certificateStatus="VALID_CERT"
+                                    p:successful="true"/>
+                            </beans:list>
                         </beans:property>
                     </beans:bean>
                 </beans:property>
@@ -221,11 +257,22 @@
         <beans:property name="result">
             <beans:bean parent="hostingTestcaseResultImpl">
                 <beans:property name="resultConfig">
-                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                    <beans:bean parent="noCertsFoundInDns">
                         <beans:property name="results">
-                            <util:list>
-                                <!-- TODO: implement -->
-                            </util:list>
+                            <beans:list merge="true">
+                                <beans:bean parent="dnsSrvRecordLookup"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapConnection"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapLookup"
+                                    p:description-ref="ldapAddrBoundCertLookupDesc"/>
+                                <beans:bean parent="ldapAddrBoundCertLookup"
+                                    p:certificateStatus="NO_CERT"/>
+                                <beans:bean parent="ldapLookup"
+                                    p:description-ref="ldapDomainBoundCertLookupDesc"/>
+                                <beans:bean parent="ldapDomainBoundCertLookup"
+                                    p:certificateStatus="NO_CERT"/>
+                            </beans:list>
                         </beans:property>
                     </beans:bean>
                 </beans:property>
@@ -267,7 +314,12 @@
                     <beans:bean parent="hostingTestcaseResultConfigImpl">
                         <beans:property name="results">
                             <util:list>
-                                <!-- TODO: implement -->
+                                <beans:bean parent="dnsCertRecordLookup"
+                                    p:description-ref="dnsAnyBoundCertRecordLookupDesc"
+                                    p:successful="true"/>
+                                <beans:bean parent="dnsAnyBoundCertLookup"
+                                    p:certificateStatus="VALID_CERT"
+                                    p:successful="true"/>
                             </util:list>
                         </beans:property>
                     </beans:bean>
@@ -306,7 +358,12 @@
                     <beans:bean parent="hostingTestcaseResultConfigImpl">
                         <beans:property name="results">
                             <util:list>
-                                <!-- TODO: implement -->
+                                <beans:bean parent="dnsCertRecordLookup"
+                                    p:description-ref="dnsAnyBoundCertRecordLookupDesc"
+                                    p:successful="true"/>
+                                <beans:bean parent="dnsAnyBoundCertLookup"
+                                    p:certificateStatus="VALID_CERT"
+                                    p:successful="true"/>
                             </util:list>
                         </beans:property>
                     </beans:bean>
@@ -346,7 +403,12 @@
                     <beans:bean parent="hostingTestcaseResultConfigImpl">
                         <beans:property name="results">
                             <util:list>
-                                <!-- TODO: implement -->
+                                <beans:bean parent="dnsCertRecordLookup"
+                                    p:description-ref="dnsAnyBoundCertRecordLookupDesc"
+                                    p:successful="true"/>
+                                <beans:bean parent="dnsAnyBoundCertLookup"
+                                    p:certificateStatus="VALID_CERT"
+                                    p:successful="true"/>
                             </util:list>
                         </beans:property>
                     </beans:bean>
@@ -387,11 +449,20 @@
         <beans:property name="result">
             <beans:bean parent="hostingTestcaseResultImpl">
                 <beans:property name="resultConfig">
-                    <beans:bean parent="hostingTestcaseResultConfigImpl">
+                    <beans:bean parent="noCertsFoundInDns">
                         <beans:property name="results">
-                            <util:list>
-                                <!-- TODO: implement -->
-                            </util:list>
+                            <beans:list merge="true">
+                                <beans:bean parent="dnsSrvRecordLookup"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapConnection"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapLookup"
+                                    p:description-ref="ldapAnyBoundCertLookupDesc"
+                                    p:successful="true"/>
+                                <beans:bean parent="ldapAnyBoundCertLookup"
+                                    p:certificateStatus="VALID_CERT"
+                                    p:successful="true"/>
+                            </beans:list>
                         </beans:property>
                     </beans:bean>
                 </beans:property>
