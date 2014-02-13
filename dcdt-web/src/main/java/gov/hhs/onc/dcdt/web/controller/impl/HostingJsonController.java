@@ -1,10 +1,12 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultJsonDto;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmissionJsonDto;
+import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultGeneratorImpl;
 import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
@@ -36,9 +38,15 @@ public class HostingJsonController extends AbstractToolController {
 
             if (reqHostingTestcaseSubmissionJsonDto != null) {
                 HostingTestcaseSubmission reqHostingTestcaseSubmission = reqHostingTestcaseSubmissionJsonDto.toBean(this.convService);
+                HostingTestcase hostingTestcase = reqHostingTestcaseSubmission.getHostingTestcase();
+                HostingTestcaseResult hostingTestcaseResult = new HostingTestcaseResultImpl();
 
+                if(hostingTestcase != null && hostingTestcase.hasResult()) {
+                    hostingTestcaseResult = hostingTestcase.getResult();
+                    hostingTestcaseResult.setSuccessful(new HostingTestcaseResultGeneratorImpl().generateResultStatus(hostingTestcaseResult));
+                }
                 // TODO: implement
-                respJsonWrapperBuilder.addItems(this.getHostingTestcaseResultJsonDto(new HostingTestcaseResultImpl()));
+                respJsonWrapperBuilder.addItems(this.getHostingTestcaseResultJsonDto(hostingTestcaseResult));
             }
         }
 

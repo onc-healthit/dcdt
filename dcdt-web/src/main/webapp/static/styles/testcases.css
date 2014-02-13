@@ -19,3 +19,12 @@ div#testcase-results {
 div#testcase-results-header {
     margin-left: 70px;
 }
+
+.ui-accordion-content {
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
+}
+
+.has-error {
+    width: 640px;
+}

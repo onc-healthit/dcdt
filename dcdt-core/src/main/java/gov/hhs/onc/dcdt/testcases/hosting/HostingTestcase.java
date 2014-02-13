@@ -8,9 +8,12 @@ import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseImpl;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultConfig;
+import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultInfo;
 
 @JsonSubTypes({ @Type(HostingTestcaseImpl.class) })
-public interface HostingTestcase extends ToolTestcase<HostingTestcaseDescription, HostingTestcaseResult> {
+public interface HostingTestcase extends
+    ToolTestcase<HostingTestcaseResultConfig, HostingTestcaseResultInfo, HostingTestcaseDescription, HostingTestcaseResult> {
     @JsonProperty("bindingType")
     public BindingType getBindingType();
 

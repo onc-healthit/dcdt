@@ -30,6 +30,8 @@
                 var hostingTestcaseResult = data["items"][0];
                 var successful = hostingTestcaseResult["successful"];
                 var message = hostingTestcaseResult["msg"];
+                var resultConfig = hostingTestcaseResult["resultConfig"];
+                var resultSteps = resultConfig["results"];
 
                 var hostingTestcase = hostingTestcaseSub["hostingTestcase"];
                 var directAddr = hostingTestcaseSub["directAddr"];
@@ -40,6 +42,8 @@
                 var result = $("<div/>");
                 $.fn.dcdt.testcases.appendTestcaseResults(result, "Successful: ", successful);
                 $.fn.dcdt.testcases.appendTestcaseResults(result, "Message: ", message);
+                $.fn.dcdt.testcases.appendTestcaseResults(result, "Expected Results: ", "<br/>");
+                $.fn.dcdt.testcases.buildTestcaseResultSteps(result, resultSteps);
 
                 hostingTestcaseResults.append(header);
                 hostingTestcaseResults.append(result);
@@ -60,7 +64,8 @@
         hostingTestcaseResults = $("div#testcase-results-accordion");
 
         $("#testcase-results-accordion").accordion({
-            collapsible: true
+            collapsible: true,
+            heightStyle: "content"
         });
 
         formTestcasesHosting.submit(function (event) {
@@ -95,6 +100,7 @@
             testcasesHostingSelect.val("");
             hostingTestcaseResults.empty();
             $.fn.dcdt.testcases.clearTestcaseDescription();
+            $.fn.dcdt.form.clearErrors();
         });
     });
 })(jQuery);
