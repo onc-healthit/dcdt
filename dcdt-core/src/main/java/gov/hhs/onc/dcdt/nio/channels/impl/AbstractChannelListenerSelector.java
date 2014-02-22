@@ -1,14 +1,12 @@
 package gov.hhs.onc.dcdt.nio.channels.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLifecycleBean;
-import gov.hhs.onc.dcdt.nio.ToolNioRuntimeException;
 import gov.hhs.onc.dcdt.nio.channels.ChannelListener;
 import gov.hhs.onc.dcdt.nio.channels.ChannelListenerSelector;
 import gov.hhs.onc.dcdt.nio.channels.SelectionOperationType;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import java.io.IOException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.util.ArrayList;
@@ -67,40 +65,33 @@ public abstract class AbstractChannelListenerSelector extends AbstractToolLifecy
 
     protected List<ChannelListener<?, ?, ?, ?, ?, ?>> channelListeners = new ArrayList<>();
     protected Selector selector;
+    protected FutureTask<Void> selectorDaemonTask;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractChannelListenerSelector.class);
 
     @Override
-    public synchronized void stop() {
-        if (this.isRunning()) {
-            try {
-                this.selector.close();
-            } catch (IOException e) {
-                throw new ToolNioRuntimeException(String.format("Unable to close channel listener selector (class=%s).", ToolClassUtils.getName(this)), e);
-            }
-        }
-    }
-
-    @Override
-    public synchronized void start() {
-        if (!this.isRunning()) {
-            try {
-                this.selector = Selector.open();
-
-                for (ChannelListener<?, ?, ?, ?, ?, ?> channelListener : this.channelListeners) {
-                    channelListener.register(this.selector);
-                }
-            } catch (IOException e) {
-                throw new ToolNioRuntimeException(String.format("Unable to start channel listener selector (class=%s).", ToolClassUtils.getName(this)), e);
-            }
-
-            this.taskExec.execute(new FutureTask<>(new ChannelListenerSelectorDaemon()));
-        }
-    }
-
-    @Override
     public boolean isRunning() {
-        return (this.selector != null) && this.selector.isOpen();
+        return super.isRunning() && (this.selector != null) && this.selector.isOpen();
+    }
+
+    @Override
+    protected synchronized void stopInternal() throws Exception {
+        if ((this.selectorDaemonTask != null) && !this.selectorDaemonTask.isDone()) {
+            this.selectorDaemonTask.cancel(true);
+        }
+
+        this.selector.close();
+    }
+
+    @Override
+    protected synchronized void startInternal() throws Exception {
+        this.selector = Selector.open();
+
+        for (ChannelListener<?, ?, ?, ?, ?, ?> channelListener : this.channelListeners) {
+            channelListener.register(this.selector);
+        }
+
+        this.taskExec.execute((this.selectorDaemonTask = new FutureTask<>(new ChannelListenerSelectorDaemon())));
     }
 
     @Override

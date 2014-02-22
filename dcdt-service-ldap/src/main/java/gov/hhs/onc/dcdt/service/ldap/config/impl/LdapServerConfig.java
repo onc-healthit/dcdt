@@ -1,6 +1,6 @@
-package gov.hhs.onc.dcdt.service.ldap.conf;
+package gov.hhs.onc.dcdt.service.ldap.config.impl;
 
-import gov.hhs.onc.dcdt.service.ldap.factory.ToolLdapServerFactory;
+import gov.hhs.onc.dcdt.service.ldap.factory.impl.ToolLdapServerFactory;
 import org.apache.directory.server.factory.LdapServerFactory;
 
 /**

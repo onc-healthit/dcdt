@@ -11,6 +11,6 @@ public class DnsServiceWrapperImpl extends AbstractToolServiceWrapper<DnsService
     }
 
     public static void main(String ... args) {
-        new DnsServiceWrapperImpl(args).start();
+        new DnsServiceWrapperImpl(args).run();
     }
 }

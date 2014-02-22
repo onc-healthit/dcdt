@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.beans;
+package gov.hhs.onc.dcdt.context;
 
 public interface OverrideableAutoStartup {
     public boolean isAutoStartup();

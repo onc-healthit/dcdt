@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.beans;
+package gov.hhs.onc.dcdt.context;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

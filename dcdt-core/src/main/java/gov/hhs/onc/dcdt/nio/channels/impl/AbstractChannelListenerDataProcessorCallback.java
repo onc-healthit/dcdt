@@ -1,13 +1,11 @@
 package gov.hhs.onc.dcdt.nio.channels.impl;
 
 import gov.hhs.onc.dcdt.net.InetProtocol;
-import gov.hhs.onc.dcdt.nio.ToolNioRuntimeException;
 import gov.hhs.onc.dcdt.nio.channels.ChannelListenerDataProcessor;
 import gov.hhs.onc.dcdt.nio.channels.ChannelListenerDataProcessorCallback;
 import gov.hhs.onc.dcdt.nio.channels.SelectionAttachment;
 import gov.hhs.onc.dcdt.nio.channels.SelectionOperationType;
 import gov.hhs.onc.dcdt.nio.utils.ToolBufferUtils;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.nio.channels.SelectionKey;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -37,7 +35,6 @@ public abstract class AbstractChannelListenerDataProcessorCallback<T extends Cha
 
     @Override
     public void onFailure(Throwable th) {
-        throw new ToolNioRuntimeException(String.format("Unable to process (class=%s) channel listener data.", ToolClassUtils.getName(this.dataProcClass)), th);
     }
 
     protected void setResponseData(byte[] respData) {

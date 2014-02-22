@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.service.dns.server.impl;
 
-import gov.hhs.onc.dcdt.beans.AutoStartup;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.nio.channels.impl.AbstractChannelListenerSelector;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;

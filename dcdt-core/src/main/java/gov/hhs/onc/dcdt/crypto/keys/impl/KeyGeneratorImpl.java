@@ -36,6 +36,7 @@ public class KeyGeneratorImpl extends AbstractCryptographyGenerator<KeyConfig, K
         }
 
         KeyPairGenerator keyPairGen = KeyUtils.getKeyPairGenerator(keyConfig.getKeyAlgorithm());
+        // noinspection ConstantConditions
         keyPairGen.initialize(keyConfig.getKeySize(), secureRandom);
 
         return new KeyInfoImpl(keyPairGen.generateKeyPair());

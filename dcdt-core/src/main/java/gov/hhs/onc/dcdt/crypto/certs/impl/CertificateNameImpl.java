@@ -67,9 +67,10 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
     }
 
     @Override
+    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
     public boolean equals(Object obj) {
         return (this == obj)
-            || (ToolClassUtils.isAssignable(CertificateName.class, ToolClassUtils.getClass(obj)) && Objects.equals(this.getName(),
+            || (ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), CertificateName.class) && Objects.equals(this.getName(),
                 ((CertificateName) obj).getName()));
     }
 

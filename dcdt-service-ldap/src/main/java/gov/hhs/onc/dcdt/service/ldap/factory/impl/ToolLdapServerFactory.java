@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.service.ldap.factory;
+package gov.hhs.onc.dcdt.service.ldap.factory.impl;
 
 import org.apache.directory.server.factory.DefaultLdapServerFactory;
 import org.apache.directory.server.ldap.LdapServer;

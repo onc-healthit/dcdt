@@ -15,17 +15,24 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean id="ldapServerDefault" class="gov.hhs.onc.dcdt.service.ldap.conf.LdapServerConfig">
+    <!--====================================================================================================
+    = TASK EXECUTION
+    =====================================================================================================-->
+    <beans:bean id="taskExecServiceLdap" parent="taskExecService"
+        p:corePoolSize="1"
+        p:maxPoolSize="5"/>
+    
+    <beans:bean id="ldapServerDefault" class="gov.hhs.onc.dcdt.service.ldap.config.impl.LdapServerConfig">
         <beans:property name="transports">
             <beans:array>
-                <beans:bean class="gov.hhs.onc.dcdt.service.ldap.conf.TransportConfig"
+                <beans:bean class="gov.hhs.onc.dcdt.service.ldap.config.impl.TransportConfig"
                     p:address="${dcdt.ldap.server.1.host}"
                     p:port="${dcdt.ldap.server.1.port}"/>
             </beans:array>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="dirServiceDefault" class="gov.hhs.onc.dcdt.service.ldap.conf.DirectoryServiceConfig"
+    <beans:bean id="dirServiceDefault" class="gov.hhs.onc.dcdt.service.ldap.config.impl.DirectoryServiceConfig"
         p:instanceDir="var/apacheds/default">
         <beans:property name="ldapServers">
             <beans:array>
@@ -39,7 +46,7 @@
         </beans:property>
         <beans:property name="partitions">
             <beans:array>
-                <beans:bean class="gov.hhs.onc.dcdt.service.ldap.conf.PartitionConfig"
+                <beans:bean class="gov.hhs.onc.dcdt.service.ldap.config.impl.PartitionConfig"
                     p:name="dcdt-mail"
                     p:suffix="dc=mail,dc=direct-test,dc=com"/>
             </beans:array>
