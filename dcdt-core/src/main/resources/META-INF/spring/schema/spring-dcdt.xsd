@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema
+    attributeFormDefault="unqualified"
+    elementFormDefault="qualified"
+    targetNamespace="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:tool="http://www.springframework.org/schema/tool"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    
+    <xsd:import namespace="http://www.springframework.org/schema/beans" schemaLocation="http://www.springframework.org/schema/beans/spring-beans.xsd"/>
+    <xsd:import namespace="http://www.springframework.org/schema/tool" schemaLocation="http://www.springframework.org/schema/tool/spring-tool.xsd"/>
+    <xsd:import namespace="http://www.springframework.org/schema/util" schemaLocation="http://www.springframework.org/schema/util/spring-util.xsd"/>
+    
+    <xsd:element name="normalized-string">
+        <xsd:annotation>
+            <xsd:documentation source="java:org.springframework.beans.factory.config.BeanDefinition"/>
+            <xsd:appinfo>
+                <tool:annotation>
+                    <tool:exports type="java.lang.String"/>
+                </tool:annotation>
+            </xsd:appinfo>
+        </xsd:annotation>
+        <xsd:complexType>
+            <xsd:complexContent mixed="true">
+                <xsd:extension base="beans:identifiedType"/>
+            </xsd:complexContent>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>
