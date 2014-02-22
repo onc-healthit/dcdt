@@ -30,10 +30,10 @@
     <context-param>
         <param-name>spring.profiles.active</param-name>
         <param-value>
-            toolServiceEmbedded
-            toolDnsServiceEmbedded
-            toolLdapServiceEmbedded
-            toolMailServiceEmbedded
+            serviceEmbedded
+            serviceDnsEmbedded
+            serviceLdapEmbedded
+            serviceMailEmbedded
         </param-value>
     </context-param>
     

@@ -22,7 +22,7 @@
     =====================================================================================================-->
     <beans:bean id="instanceLdapConfig" class="gov.hhs.onc.dcdt.config.InstanceLdapConfig" abstract="true"/>
     <beans:bean id="instanceLdapConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceLdapConfigImpl" parent="instanceLdapConfig" abstract="true"
-        p:host="#{ instanceDomainConfigLdap.domainName }"
+        p:bindAddress="#{ ipAddrLocalAny }"
         p:sslType="NONE">
         <beans:property name="bindConfigAnonymous">
             <beans:bean parent="ldapBindConfigAnon"/>
@@ -30,9 +30,9 @@
     </beans:bean>
     
     <beans:bean id="instanceLdapConfig1" parent="instanceLdapConfigImpl"
+        p:bindPort="10389"
         p:name="ldap1"
-        p:nameDisplay="LDAP 1"
-        p:port="10389">
+        p:nameDisplay="LDAP 1">
         <beans:property name="bindConfigAdmin">
             <beans:bean parent="ldapBindConfigImpl"
                 p:bindDn="${dcdt.instance.ldap.1.bind.admin.dn}"
@@ -41,9 +41,9 @@
     </beans:bean>
     
     <beans:bean id="instanceLdapConfig2" parent="instanceLdapConfigImpl"
+        p:bindPort="11389"
         p:name="ldap2"
-        p:nameDisplay="LDAP 2"
-        p:port="11389">
+        p:nameDisplay="LDAP 2">
         <beans:property name="bindConfigAdmin">
             <beans:bean parent="ldapBindConfigImpl"
                 p:bindDn="${dcdt.instance.ldap.2.bind.admin.dn}"
@@ -52,9 +52,9 @@
     </beans:bean>
     
     <beans:bean id="instanceLdapConfig3" parent="instanceLdapConfigImpl"
+        p:bindPort="12389"
         p:name="ldap3"
-        p:nameDisplay="LDAP 3"
-        p:port="12389">
+        p:nameDisplay="LDAP 3">
         <beans:property name="bindConfigAdmin">
             <beans:bean parent="ldapBindConfigImpl"
                 p:bindDn="${dcdt.instance.ldap.3.bind.admin.dn}"

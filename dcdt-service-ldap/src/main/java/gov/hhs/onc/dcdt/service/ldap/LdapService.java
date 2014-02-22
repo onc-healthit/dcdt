@@ -1,26 +1,11 @@
 package gov.hhs.onc.dcdt.service.ldap;
 
-import gov.hhs.onc.dcdt.service.ToolService;
-import gov.hhs.onc.dcdt.service.ldap.conf.DirectoryServiceConfig;
-import gov.hhs.onc.dcdt.service.ldap.conf.LdapServerConfig;
-import gov.hhs.onc.dcdt.service.ldap.conf.TransportConfig;
-import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.directory.server.annotations.TransportType;
-import org.apache.directory.server.core.api.DirectoryService;
-import org.apache.directory.server.core.factory.DirectoryServiceFactory;
-import org.apache.directory.server.factory.LdapServerFactory;
-import org.apache.directory.server.ldap.LdapServer;
-import org.apache.directory.server.protocol.shared.transport.TcpTransport;
-import org.apache.directory.server.protocol.shared.transport.Transport;
-import org.apache.directory.server.protocol.shared.transport.UdpTransport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
+public class LdapService {
+}
 
-public class LdapService extends ToolService {
+// @formatter:off
+/*
+public class LdapService extends AbstractToolService {
     private final static List<String> CONTEXT_CONFIG_LOCS_LDAP = ToolResourceUtils.getOverrideableResourceLocation("spring/spring-service-ldap.xml",
         "spring/spring-service-ldap*.xml");
 
@@ -99,3 +84,5 @@ public class LdapService extends ToolService {
         super.initializeContext();
     }
 }
+*/
+// @formatter:on

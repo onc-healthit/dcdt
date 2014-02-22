@@ -29,7 +29,7 @@ public class InetAddressConverter extends AbstractToolConverter {
             String[] sourceStrs;
 
             return (sourceType.isArray() && (ArrayUtils.getLength(source) == 2)) ? ToolInetAddressUtils.getByAddress((sourceStrs = (String[]) source)[0],
-                sourceStrs[1]) : ToolInetAddressUtils.getByAddress(null, (String) source);
+                sourceStrs[1]) : ToolInetAddressUtils.getByAddress((String) source);
         }
     }
 }

@@ -1,20 +1,17 @@
 package gov.hhs.onc.dcdt.config.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
-import gov.hhs.onc.dcdt.ldap.LdapBindConfig;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolBoundBean;
 import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
+import gov.hhs.onc.dcdt.ldap.LdapBindConfig;
 import gov.hhs.onc.dcdt.ldap.LdapSslType;
 import java.util.Objects;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
-import org.xbill.DNS.Name;
 
 @JsonTypeName("instanceLdapConfig")
-public class InstanceLdapConfigImpl extends AbstractToolNamedBean implements InstanceLdapConfig {
+public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements InstanceLdapConfig {
     private LdapBindConfig bindConfigAdmin;
     private LdapBindConfig bindConfigAnon;
-    private Name host;
-    private int port;
     private LdapSslType sslType;
 
     @Override
@@ -29,8 +26,8 @@ public class InstanceLdapConfigImpl extends AbstractToolNamedBean implements Ins
 
     private LdapConnectionConfig toConnectionConfig(LdapBindConfig bindConfig) {
         LdapConnectionConfig ldapConnConfig = new LdapConnectionConfig();
-        ldapConnConfig.setLdapHost(this.host.toString());
-        ldapConnConfig.setLdapPort(this.port);
+        ldapConnConfig.setLdapHost(this.bindAddr.getHostAddress());
+        ldapConnConfig.setLdapPort(this.bindPort);
         ldapConnConfig.setUseSsl(this.sslType.isSsl());
         ldapConnConfig.setUseTls(this.sslType == LdapSslType.TLS);
         ldapConnConfig.setName(Objects.toString(bindConfig.getBindDn(), null));
@@ -57,26 +54,6 @@ public class InstanceLdapConfigImpl extends AbstractToolNamedBean implements Ins
     @Override
     public void setBindConfigAnonymous(LdapBindConfig bindConfigAnon) {
         this.bindConfigAnon = bindConfigAnon;
-    }
-
-    @Override
-    public Name getHost() {
-        return this.host;
-    }
-
-    @Override
-    public void setHost(Name host) {
-        this.host = host;
-    }
-
-    @Override
-    public int getPort() {
-        return this.port;
-    }
-
-    @Override
-    public void setPort(int port) {
-        this.port = port;
     }
 
     @Override

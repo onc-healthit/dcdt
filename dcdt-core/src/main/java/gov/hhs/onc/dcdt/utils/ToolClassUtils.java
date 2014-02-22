@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.utils;
 
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,40 +11,16 @@ import org.apache.commons.lang3.ClassUtils;
 import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class ToolClassUtils {
-    public static boolean isAssignable(@Nullable Class<?>[] classes1, @Nullable Class<?>[] classes2) {
-        return isAssignable(classes1, classes2, false);
+    public static boolean isAssignable(@Nullable Collection<Class<?>> classes1, @Nullable Collection<Class<?>> classes2) {
+        return isAssignable(ToolCollectionUtils.toArray(classes1, Class.class), ToolCollectionUtils.toArray(classes2, Class.class));
     }
 
-    public static boolean isAssignable(@Nullable Class<?>[] classes1, @Nullable Class<?>[] classes2, boolean defaultIfNull) {
-        return isAssignable(ToolArrayUtils.asList(classes1), ToolArrayUtils.asList(classes2), defaultIfNull);
-    }
-
-    public static boolean isAssignable(@Nullable Iterable<Class<?>> classes1, @Nullable Iterable<Class<?>> classes2) {
-        return isAssignable(classes1, classes2, false);
-    }
-
-    public static boolean isAssignable(@Nullable Iterable<Class<?>> classes1, @Nullable Iterable<Class<?>> classes2, boolean defaultIfNull) {
-        if ((classes1 == null) || (classes2 == null)) {
-            return defaultIfNull;
-        }
-
-        Iterator<Class<?>> classesIter1 = classes1.iterator(), classesIter2 = classes2.iterator();
-
-        do {
-            if (!isAssignable((classesIter1.hasNext() ? classesIter1.next() : null), (classesIter2.hasNext() ? classesIter2.next() : null))) {
-                return false;
-            }
-        } while (classesIter1.hasNext() && classesIter2.hasNext());
-
-        return true;
+    public static boolean isAssignable(@Nullable Class<?>[] classes1, @Nullable Class<?> ... classes2) {
+        return ClassUtils.isAssignable(classes1, classes2);
     }
 
     public static boolean isAssignable(@Nullable Class<?> class1, @Nullable Class<?> class2) {
-        return isAssignable(class1, class2, false);
-    }
-
-    public static boolean isAssignable(@Nullable Class<?> class1, @Nullable Class<?> class2, boolean defaultIfNull) {
-        return ((class1 != null) && (class2 != null)) ? class1.isAssignableFrom(class2) : defaultIfNull;
+        return ClassUtils.isAssignable(class1, class2);
     }
 
     @Nullable

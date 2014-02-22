@@ -1,13 +1,6 @@
 package gov.hhs.onc.dcdt.test.impl;
 
-import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
 import javax.annotation.Resource;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
@@ -23,7 +16,8 @@ import org.springframework.test.context.transaction.TransactionalTestExecutionLi
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@ContextConfiguration(loader = ToolContextLoaderImpl.class, locations = { "spring/spring-core.xml", "spring/spring-core-*.xml" })
+@ContextConfiguration(loader = ToolTestContextLoaderImpl.class, locations = { "spring/spring-core.xml", "spring/spring-core-*.xml" })
+@SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.all" })
 @TestExecutionListeners(listeners = { DependencyInjectionTestExecutionListener.class, DirtiesContextTestExecutionListener.class,
     TransactionalTestExecutionListener.class }, inheritListeners = false)

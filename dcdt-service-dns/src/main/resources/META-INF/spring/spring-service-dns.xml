@@ -17,20 +17,46 @@
         http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean id="dnsServerTaskExecutor" parent="toolServiceTaskExecutor"
+    <!--====================================================================================================
+    = TASK EXECUTION
+    =====================================================================================================-->
+    <beans:bean id="taskExecServiceDns" parent="taskExecService"
         p:corePoolSize="1"
         p:maxPoolSize="5"/>
     
-    <beans:bean id="dnsSocketServerTaskExecutor" parent="toolServiceTaskExecutor"
-        p:corePoolSize="#{ dnsServerTaskExecutor.corePoolSize * 2 }"
-        p:maxPoolSize="#{ dnsServerTaskExecutor.maxPoolSize * 2 }"/>
+    <beans:bean id="taskExecServiceDnsServer" parent="taskExecService"
+        p:corePoolSize="#{ taskExecServiceDns.corePoolSize }"
+        p:maxPoolSize="#{ taskExecServiceDns.maxPoolSize }"/>
     
-    <beans:bean id="dnsQueryTaskExecutor" parent="toolServiceTaskExecutor"
-        p:corePoolSize="#{ dnsServerTaskExecutor.corePoolSize * 10 }"
-        p:maxPoolSize="#{ dnsServerTaskExecutor.maxPoolSize * 20 }"
-        p:queueCapacity="#{ dnsServerTaskExecutor.maxPoolSize * 50 }"/>
+    <beans:bean id="taskExecServiceDnsServerChannel" parent="taskExecService"
+        p:corePoolSize="#{ taskExecServiceDnsServer.corePoolSize * 2 }"
+        p:maxPoolSize="#{ taskExecServiceDnsServer.maxPoolSize * 2 }"/>
     
-    <beans:bean id="dnsServerDefault" class="gov.hhs.onc.dcdt.service.dns.conf.DnsServerConfig"
-        p:host="${dcdt.dns.server.1.host}"
-        p:port="${dcdt.dns.server.1.port}"/>
+    <beans:bean id="taskExecServiceDnsServerChannelQuery" parent="taskExecService"
+        p:corePoolSize="#{ taskExecServiceDnsServer.corePoolSize * 10 }"
+        p:maxPoolSize="#{ taskExecServiceDnsServer.maxPoolSize * 20 }"
+        p:queueCapacity="#{ taskExecServiceDnsServer.maxPoolSize * 50 }"/>
+    
+    <!--====================================================================================================
+    = DNS SERVER CONFIG
+    =====================================================================================================-->
+    <beans:bean id="dnsServerConfig" class="gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig" abstract="true"/>
+    <beans:bean id="dnsServerConfigImpl" class="gov.hhs.onc.dcdt.service.dns.config.impl.DnsServerConfigImpl" parent="dnsServerConfig" abstract="true"/>
+    
+    <!--====================================================================================================
+    = DNS SERVER
+    =====================================================================================================-->
+    <beans:bean id="dnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServer" abstract="true"/>
+    <beans:bean id="dnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerImpl" parent="dnsServer" abstract="true"/>
+    
+    <beans:bean id="dnsServer1" parent="dnsServerImpl">
+        <beans:constructor-arg name="config">
+            <!--suppress SpringPlaceholdersInspection -->
+            <beans:bean parent="dnsServerConfigImpl"
+                p:bindAddress="${dcdt.service.dns.server.1.bind.addr}"
+                p:bindPort="${dcdt.service.dns.server.1.bind.port}"
+                p:name="dnsServer1"
+                p:nameDisplay="DNS Server 1"/>
+        </beans:constructor-arg>
+    </beans:bean>
 </beans:beans>

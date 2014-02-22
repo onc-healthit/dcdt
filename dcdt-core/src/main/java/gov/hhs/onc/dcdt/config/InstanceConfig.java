@@ -1,18 +1,10 @@
 package gov.hhs.onc.dcdt.config;
 
-import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.beans.ToolDomainBean;
 import java.net.InetAddress;
 import javax.annotation.Nullable;
-import org.xbill.DNS.Name;
 
-public interface InstanceConfig extends ToolBean {
-    public boolean hasDomainName();
-
-    @Nullable
-    public Name getDomainName();
-
-    public void setDomainName(@Nullable Name domainName);
-
+public interface InstanceConfig extends ToolDomainBean {
     public boolean hasIpAddress();
 
     @Nullable

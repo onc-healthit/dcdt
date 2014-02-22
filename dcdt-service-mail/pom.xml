@@ -72,6 +72,10 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <scope>provided</scope>
@@ -330,7 +334,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <additionalClasspathElements>
-                        <additionalClasspathElement>${project.build.directory}/${project.artifactId}/conf/service/mail/james</additionalClasspathElement>
+                        <additionalClasspathElement>${project.build.serviceConfDirectory}/service/mail/james</additionalClasspathElement>
                     </additionalClasspathElements>
                 </configuration>
                 <executions>
@@ -350,7 +354,7 @@
                 <artifactId>appassembler-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>daemons-service</id>
+                        <id>generate-daemons-service</id>
                         <configuration>
                                 <daemons>
                                     <daemon>

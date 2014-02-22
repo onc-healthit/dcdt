@@ -5,11 +5,12 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="ch.qos.logback /META-INF/logback/logback.xsd">
     
-    <conversionRule conversionWord="toolp" converterClass="gov.hhs.onc.dcdt.logback.pattern.color.ToolPriorityConverter"/>
+    <conversionRule conversionWord="toolEx" converterClass="gov.hhs.onc.dcdt.logback.pattern.ToolThrowableProxyConverter"/>
+    <conversionRule conversionWord="toolP" converterClass="gov.hhs.onc.dcdt.logback.pattern.color.ToolPriorityConverter"/>
     
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%toolp(%p) - %m%n</pattern>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%toolP(%p) - %m%n%toolEx</pattern>
         </encoder>
         <target>System.out</target>
         <withJansi>true</withJansi>

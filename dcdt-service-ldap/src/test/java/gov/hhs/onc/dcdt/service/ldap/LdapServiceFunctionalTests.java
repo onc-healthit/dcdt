@@ -1,9 +1,10 @@
 package gov.hhs.onc.dcdt.service.ldap;
 
-import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
-import org.springframework.test.context.ContextConfiguration;
-import org.testng.annotations.Test;
+public class LdapServiceFunctionalTests {
+}
 
+// @formatter:off
+/*
 @ContextConfiguration({ "spring/spring-service-ldap.xml", "spring/spring-service-ldap*.xml" })
 @Test(groups = { "dcdt.test.func.service.ldap" })
 public class LdapServiceFunctionalTests extends AbstractToolServiceFunctionalTests<LdapService> {
@@ -16,3 +17,5 @@ public class LdapServiceFunctionalTests extends AbstractToolServiceFunctionalTes
         return new LdapService(this.applicationContext);
     }
 }
+*/
+// @formatter:on

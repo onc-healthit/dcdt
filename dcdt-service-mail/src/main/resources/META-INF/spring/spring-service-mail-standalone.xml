@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    profile="toolMailServiceStandalone"
+    profile="serviceMailStandalone"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
@@ -22,11 +22,14 @@
     <beans:bean id="propSourcesPlaceholderConfigurer" parent="propSourcesPlaceholderConfigurerBase">
         <beans:property name="locations">
             <beans:array merge="true">
+                <beans:value>classpath*:META-INF/service/service*.properties</beans:value>
+                <!--suppress SpringModelInspection -->
+                <beans:value>classpath*:service/service*.properties</beans:value>
                 <beans:value>classpath*:james-database.properties</beans:value>
                 <beans:value>classpath*:mailbox-maildir.properties</beans:value>
-                <beans:value>classpath*:META-INF/service/mail/service-mail.properties</beans:value>
+                <beans:value>classpath*:META-INF/service/**/service-*.properties</beans:value>
                 <!--suppress SpringModelInspection -->
-                <beans:value>classpath*:service/mail/service-mail.properties</beans:value>
+                <beans:value>classpath*:service/**/service-*.properties</beans:value>
             </beans:array>
         </beans:property>
     </beans:bean>

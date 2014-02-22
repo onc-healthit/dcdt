@@ -10,6 +10,15 @@ import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class ToolListUtils {
     @Nullable
+    public static <T> List<T> reverse(@Nullable List<T> list) {
+        if (list != null) {
+            Collections.reverse(list);
+        }
+
+        return list;
+    }
+
+    @Nullable
     public static <T extends Comparable<T>> List<T> sort(@Nullable List<T> list) {
         if (list == null) {
             return null;

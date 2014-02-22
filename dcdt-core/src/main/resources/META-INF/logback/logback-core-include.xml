@@ -5,22 +5,25 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="ch.qos.logback /META-INF/logback/logback.xsd">
     
-    <!--<statusListener class="ch.qos.logback.core.status.NopStatusListener"/>-->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
+    
+    <conversionRule conversionWord="toolEx" converterClass="gov.hhs.onc.dcdt.logback.pattern.ToolThrowableProxyConverter"/>
     
     <if condition='isDefined("dcdt.log.console.term") &amp;&amp; org.apache.commons.lang3.BooleanUtils.toBoolean(p("dcdt.log.console.term"))'>
         <then>
-            <conversionRule conversionWord="toolp" converterClass="gov.hhs.onc.dcdt.logback.pattern.color.ToolPriorityConverter"/>
+            <conversionRule conversionWord="toolP" converterClass="gov.hhs.onc.dcdt.logback.pattern.color.ToolPriorityConverter"/>
             
-            <property name="dcdt.log.console.pattern" value="%toolp(%p) - %m%n" scope="context"/>
+            <property name="dcdt.log.console.pattern" value="%toolP(%p) - %m%n%toolEx" scope="context"/>
         </then>
     </if>
     
-    <property name="dcdt.log.console.pattern" value="${dcdt.log.console.pattern:-%p - %m%n}" scope="context"/>
+    <property name="dcdt.log.console.pattern" value="${dcdt.log.console.pattern:-%p - %m%n%toolEx}" scope="context"/>
     <property name="dcdt.log.file.name" value="${dcdt.log.file.name:-${CONTEXT_NAME}}" scope="context"/>
     <property name="dcdt.log.file.ext" value="${dcdt.log.file.ext:-.log}" scope="context"/>
+    <property name="dcdt.log.file.pattern" value="${dcdt.log.file.pattern:-%d{yyyy-MM-dd HH:mm:ss z} [%C:%L %t] %p - %m%n%toolEx}" scope="context"/>
     
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${dcdt.log.console.pattern}</pattern>
         </encoder>
         <target>System.err</target>
@@ -39,8 +42,8 @@
                     </timeBasedFileNamingAndTriggeringPolicy>
                     <cleanHistoryOnStart>true</cleanHistoryOnStart>
                 </rollingPolicy>
-                <encoder>
-                    <pattern>%d{yyyy-MM-dd HH:mm:ss z} [%C:%L %t] %p - %m%n</pattern>
+                <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+                    <pattern>${dcdt.log.file.pattern}</pattern>
                 </encoder>
             </appender>
         </then>

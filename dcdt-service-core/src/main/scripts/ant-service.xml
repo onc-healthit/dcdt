@@ -9,38 +9,26 @@
     
     <taskdef file="${project.basedir.all}/dcdt-service-core/src/main/scripts/antlib-service.xml" uri="antlib:gov.hhs.onc.dcdt.ant.service"/>
     
-    <target name="service-process-exec-files" description="Processes service executable file(s)." depends="core-init,service-init">
-        <!-- Making service build directories, if they do not exist -->
-        <mkdir dir="${project.build.serviceBinDirectory}"/>
+    <target name="service-process-exec-files" description="Processes service executable file(s)." depends="core-init">
         <mkdir dir="${project.build.serviceLogDirectory}"/>
         <mkdir dir="${project.build.serviceVarDirectory}"/>
         
-        <for param="binFile">
+        <for param="execBinFile">
             <fileset dir="${project.build.serviceBinDirectory}">
                 <include name="**/wrapper-*"/>
             </fileset>
             <sequential>
-                <dcdt-service:process-exec-file file="@{binFile}" binary="true"/>
+                <dcdt-service:process-exec-file file="@{execBinFile}" binary="true"/>
             </sequential>
         </for>
         <for param="execFile">
             <fileset dir="${project.build.serviceBinDirectory}">
                 <include name="**/*.bat"/>
-                <include name="**/*.sh"/>
                 <include name="**/${project.artifactId}"/>
             </fileset>
             <sequential>
-                <dcdt-service:process-exec-file file="@{execFile}"/>
+                <dcdt-service:process-exec-file file="@{execFile}" binary="false"/>
             </sequential>
         </for>
-    </target>
-    
-    <target name="service-init" description="Initializes service variable(s).">
-        <!-- Project service-core module build service directory variable(s) -->
-        <var name="project.module.service-core.build.serviceBinSourceDirectory" value="${project.basedir.all}/dcdt-service-core/src/bin"/>
-        
-        <!-- Project service-core module build service file variable(s) -->
-        <var name="project.module.service-core.build.serviceBinSourceFile"
-            value="${project.module.service-core.build.serviceBinSourceDirectory}/dcdt-service.sh"/>
     </target>
 </project>

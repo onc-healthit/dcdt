@@ -92,7 +92,7 @@
     <!--====================================================================================================
     = TASK EXECUTION
     =====================================================================================================-->
-    <beans:bean id="toolTaskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
+    <beans:bean id="taskExec" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
         p:daemon="true"/>
     
     <!--====================================================================================================

@@ -14,7 +14,10 @@ import org.xbill.DNS.TextParseException;
 
 public abstract class ToolDnsNameUtils {
     public final static String PATTERN_STR_DNS_NAME_LBL_LEN = "(?<=.*{1,252})";
-    public final static String PATTERN_STR_DNS_NAME_LBL = "(?:(?i:\\w{1,62}|\\w[\\w\\-]{1,60}\\w)" + PATTERN_STR_DNS_NAME_LBL_LEN + ")";
+    public final static String PATTERN_STR_DNS_NAME_LBL_CHAR = "[\\w&&[^_]]";
+    public final static String PATTERN_STR_DNS_NAME_LBL_CHAR_INNER = "[" + PATTERN_STR_DNS_NAME_LBL_CHAR + "&&[\\-]]";
+    public final static String PATTERN_STR_DNS_NAME_LBL = "(?:(?i:" + PATTERN_STR_DNS_NAME_LBL_CHAR + "{1,62}|" + PATTERN_STR_DNS_NAME_LBL_CHAR
+        + PATTERN_STR_DNS_NAME_LBL_CHAR_INNER + "{1,60}" + PATTERN_STR_DNS_NAME_LBL_CHAR + ")" + PATTERN_STR_DNS_NAME_LBL_LEN + ")";
     public final static String PATTERN_STR_DNS_NAME_DELIM = "\\.";
 
     /**

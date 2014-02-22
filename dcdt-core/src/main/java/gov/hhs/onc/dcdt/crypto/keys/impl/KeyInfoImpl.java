@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.crypto.keys.impl;
 
-
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;

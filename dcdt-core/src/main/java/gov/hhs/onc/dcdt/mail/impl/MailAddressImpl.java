@@ -8,6 +8,7 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.mail.internet.AddressException;
@@ -54,6 +55,19 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
 
     @Nullable
     @Override
+    public Name toDnsName() throws ToolMailAddressException {
+        String[] addrParts = this.toAddressParts();
+
+        try {
+            return ToolDnsNameUtils.fromLabelStrings(addrParts);
+        } catch (DnsNameException e) {
+            throw new ToolMailAddressException(String.format("Unable to get mail address DNS name from strings: [%s]",
+                ToolStringUtils.joinDelimit(addrParts, ", ")), e);
+        }
+    }
+
+    @Nullable
+    @Override
     public String toAddress() {
         return ToolMailAddressUtils.joinParts(this.toAddressParts());
     }
@@ -65,7 +79,7 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
 
     @Override
     public BindingType getBindingType() {
-        return this.hasLocalPart() ? BindingType.ADDRESS : (this.hasDomainNamePart() ? BindingType.DOMAIN : BindingType.NONE);
+        return this.hasDomainNamePart() ? (this.hasLocalPart() ? BindingType.ADDRESS : BindingType.DOMAIN) : BindingType.NONE;
     }
 
     @Override

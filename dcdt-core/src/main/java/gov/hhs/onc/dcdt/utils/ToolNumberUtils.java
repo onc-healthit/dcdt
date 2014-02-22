@@ -4,6 +4,11 @@ import javax.annotation.Nullable;
 
 public abstract class ToolNumberUtils {
     @Nullable
+    public static <T extends Number> T defaultIfZero(@Nullable T num, @Nullable T defaultIfZero) {
+        return ((num != null) && (num.doubleValue() == 0)) ? num : defaultIfZero;
+    }
+
+    @Nullable
     public static <T extends Number> T defaultIfNegative(@Nullable T num, @Nullable T defaultIfNeg) {
         return !isNegative(num) ? num : defaultIfNeg;
     }

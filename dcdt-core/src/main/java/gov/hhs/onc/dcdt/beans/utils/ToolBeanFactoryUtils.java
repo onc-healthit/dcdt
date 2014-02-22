@@ -13,6 +13,21 @@ import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 
 public abstract class ToolBeanFactoryUtils {
+    public static <T> List<T> createBeansOfType(ListableBeanFactory beanFactory, Class<T> beanClass, @Nullable Collection<?> beanCreationArgs) {
+        return createBeansOfType(beanFactory, beanClass, ToolCollectionUtils.toArray(beanCreationArgs));
+    }
+
+    public static <T> List<T> createBeansOfType(ListableBeanFactory beanFactory, Class<T> beanClass, @Nullable Object ... beanCreationArgs) {
+        List<String> beanNames = getBeanNamesOfType(beanFactory, beanClass);
+        List<T> beans = new ArrayList<>(beanNames.size());
+
+        for (String beanName : beanNames) {
+            beans.add(createBean(beanFactory, beanName, beanClass, beanCreationArgs));
+        }
+
+        return beans;
+    }
+
     @Nullable
     public static <T> T createBeanOfType(ListableBeanFactory beanFactory, Class<T> beanClass, @Nullable Collection<?> beanCreationArgs) {
         return createBeanOfType(beanFactory, beanClass, ToolCollectionUtils.toArray(beanCreationArgs));

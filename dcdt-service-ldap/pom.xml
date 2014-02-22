@@ -72,6 +72,10 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <scope>provided</scope>
@@ -355,7 +359,7 @@
                 <artifactId>appassembler-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>daemons-service</id>
+                        <id>generate-daemons-service</id>
                     </execution>
                 </executions>
             </plugin>

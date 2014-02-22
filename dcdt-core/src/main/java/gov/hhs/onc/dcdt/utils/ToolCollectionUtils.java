@@ -7,6 +7,11 @@ import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class ToolCollectionUtils {
     @Nullable
+    public static <T, U extends Collection<T>> U nullIfEmpty(@Nullable U coll) {
+        return !CollectionUtils.isEmpty(coll) ? coll : null;
+    }
+
+    @Nullable
     public static <T> Object[] toArray(@Nullable Collection<? extends T> coll) {
         return (coll != null) ? coll.toArray() : null;
     }

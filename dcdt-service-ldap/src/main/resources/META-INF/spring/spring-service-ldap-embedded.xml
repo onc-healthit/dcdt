@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    profile="toolLdapServiceEmbedded"
+    profile="serviceLdapEmbedded"
     xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"

@@ -1,9 +1,11 @@
 package gov.hhs.onc.dcdt.service.mail.wrapper;
 
-import gov.hhs.onc.dcdt.service.mail.MailService;
-import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapper;
+public class MailServiceWrapper {
+}
 
-public class MailServiceWrapper extends ToolServiceWrapper<MailService> {
+// @formatter:off
+/*
+public class MailServiceWrapper extends AbstractToolServiceWrapper<MailService> {
     public MailServiceWrapper() {
         super();
     }
@@ -21,3 +23,5 @@ public class MailServiceWrapper extends ToolServiceWrapper<MailService> {
         return new MailService();
     }
 }
+*/
+// @formatter:on

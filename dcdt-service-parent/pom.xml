@@ -26,13 +26,22 @@
         <project.build.resourcesDirectory>${project.build.directory}/${project.artifactId}/conf</project.build.resourcesDirectory>
         <project.build.resourcesDependencyDirectory>${project.build.directory}/resources-dependency</project.build.resourcesDependencyDirectory>
         <!-- Project build service properties -->
-        <project.build.serviceAssemblyDirectory>${project.build.directory}/${project.artifactId}</project.build.serviceAssemblyDirectory>
-        <project.build.serviceBinDirectory>${project.build.serviceAssemblyDirectory}/bin</project.build.serviceBinDirectory>
-        <project.build.serviceLogDirectory>${project.build.serviceAssemblyDirectory}/log</project.build.serviceLogDirectory>
-        <project.build.serviceVarDirectory>${project.build.serviceAssemblyDirectory}/var</project.build.serviceVarDirectory>
+        <project.build.serviceDirectory>${project.build.directory}/${project.artifactId}</project.build.serviceDirectory>
+        <project.build.serviceBinDirectory>${project.build.serviceDirectory}/bin</project.build.serviceBinDirectory>
+        <project.build.serviceConfDirectory>${project.build.serviceDirectory}/conf</project.build.serviceConfDirectory>
+        <project.build.serviceLibDirectory>${project.build.serviceDirectory}/lib</project.build.serviceLibDirectory>
+        <project.build.serviceLogDirectory>${project.build.serviceDirectory}/log</project.build.serviceLogDirectory>
+        <project.build.serviceVarDirectory>${project.build.serviceDirectory}/var</project.build.serviceVarDirectory>
         <!-- Project build test resources properties -->
         <project.build.testResourcesDirectory>${project.build.directory}/${project.artifactId}-test/conf</project.build.testResourcesDirectory>
         <project.build.testResourcesDependencyDirectory>${project.build.directory}/test-resources-dependency</project.build.testResourcesDependencyDirectory>
+        <!-- Project build service test properties -->
+        <project.build.testServiceDirectory>${project.build.serviceDirectory}-test</project.build.testServiceDirectory>
+        <project.build.testServiceBinDirectory>${project.build.testServiceDirectory}/bin</project.build.testServiceBinDirectory>
+        <project.build.testServiceConfDirectory>${project.build.testServiceDirectory}/conf</project.build.testServiceConfDirectory>
+        <project.build.testServiceLibDirectory>${project.build.testServiceDirectory}/lib</project.build.testServiceLibDirectory>
+        <project.build.testServiceLogDirectory>${project.build.testServiceDirectory}/log</project.build.testServiceLogDirectory>
+        <project.build.testServiceVarDirectory>${project.build.testServiceDirectory}/var</project.build.testServiceVarDirectory>
     </properties>
     
     <dependencyManagement>
@@ -217,7 +226,7 @@
                             <configuration>
                                 <excludeClassifiers>sources</excludeClassifiers>
                                 <includeScope>runtime</includeScope>
-                                <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
+                                <outputDirectory>${project.build.serviceLibDirectory}</outputDirectory>
                             </configuration>
                         </execution>
                         <execution>
@@ -234,7 +243,7 @@
                             <configuration>
                                 <excludeClassifiers>test-sources</excludeClassifiers>
                                 <includeScope>test</includeScope>
-                                <outputDirectory>${project.build.directory}/${project.artifactId}-test/lib</outputDirectory>
+                                <outputDirectory>${project.build.testServiceLibDirectory}</outputDirectory>
                             </configuration>
                         </execution>
                         <execution>
@@ -249,7 +258,7 @@
                         <execution>
                             <id>default-jar</id>
                             <configuration>
-                                <outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
+                                <outputDirectory>${project.build.serviceLibDirectory}</outputDirectory>
                             </configuration>
                         </execution>
                         <execution>
@@ -270,14 +279,13 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <outputDirectory>${project.build.directory}/${project.artifactId}</outputDirectory>
+                                <outputDirectory>${project.build.serviceDirectory}</outputDirectory>
                                 <resources>
                                     <resource>
                                         <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/bin</directory>
                                         <filtering>true</filtering>
                                         <includes>
                                             <include>**/*.bat</include>
-                                            <include>**/*.sh</include>
                                             <include>**/${project.artifactId}</include>
                                         </includes>
                                         <targetPath>bin</targetPath>
@@ -286,13 +294,12 @@
                                         <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/bin</directory>
                                         <excludes>
                                             <exclude>**/*.bat</exclude>
-                                            <exclude>**/*.sh</exclude>
                                             <exclude>**/${project.artifactId}</exclude>
                                         </excludes>
                                         <targetPath>bin</targetPath>
                                     </resource>
                                     <resource>
-                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/conf</directory>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/etc</directory>
                                         <filtering>true</filtering>
                                         <includes>
                                             <include>**/*.conf</include>
@@ -302,7 +309,7 @@
                                         <targetPath>conf</targetPath>
                                     </resource>
                                     <resource>
-                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/conf</directory>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/etc</directory>
                                         <excludes>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
@@ -314,23 +321,6 @@
                                         <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/lib</directory>
                                         <targetPath>lib</targetPath>
                                     </resource>
-                                    <resource>
-                                        <directory>${project.basedir}/src/bin</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>**/*.bat</include>
-                                            <include>**/*.sh</include>
-                                        </includes>
-                                        <targetPath>bin</targetPath>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.basedir}/src/bin</directory>
-                                        <excludes>
-                                            <exclude>**/*.bat</exclude>
-                                            <exclude>**/*.sh</exclude>
-                                        </excludes>
-                                        <targetPath>bin</targetPath>
-                                    </resource>
                                 </resources>
                             </configuration>
                         </execution>
@@ -341,10 +331,9 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <configuration>
                         <systemPropertyVariables>
-                            <dcdt.log.dir>log</dcdt.log.dir>
                             <spring.profiles.active>${project.service.standalone.spring.profiles.active}</spring.profiles.active>
                         </systemPropertyVariables>
-                        <workingDirectory>${project.build.directory}/${project.artifactId}</workingDirectory>
+                        <workingDirectory>${project.build.serviceDirectory}</workingDirectory>
                     </configuration>
                     <executions>
                         <execution>
@@ -364,7 +353,7 @@
                     <executions>
                         <!-- Building service daemons -->
                         <execution>
-                            <id>daemons-service</id>
+                            <id>generate-daemons-service</id>
                             <phase>generate-resources</phase>
                             <goals>
                                 <goal>generate-daemons</goal>
@@ -374,22 +363,11 @@
                                 <daemons>
                                     <daemon>
                                         <id>${project.artifactId}</id>
-                                        <mainClass>${project.service.standalone.java.class.main}</mainClass>
                                         <commandLineArguments>
                                             <commandLineArgument>start</commandLineArgument>
                                         </commandLineArguments>
-                                        <platforms>
-                                            <platform>jsw</platform>
-                                        </platforms>
                                         <generatorConfigurations>
                                             <generatorConfiguration>
-                                                <generator>jsw</generator>
-                                                <includes>
-                                                    <include>linux-x86-32</include>
-                                                    <include>linux-x86-64</include>
-                                                    <include>windows-x86-32</include>
-                                                    <include>windows-x86-64</include>
-                                                </includes>
                                                 <configuration combine.children="append">
                                                     <property>
                                                         <name>configuration.directory.in.classpath.first</name>
@@ -428,50 +406,6 @@
                                                         <value>${project.service.name.display}</value>
                                                     </property>
                                                     <property>
-                                                        <name>wrapper.java.additional.1</name>
-                                                        <value>-XX:PermSize=64m</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.2</name>
-                                                        <value>-XX:MaxPermSize=128m</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.3</name>
-                                                        <value>-XX:+UseConcMarkSweepGC</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.4</name>
-                                                        <value>-XX:+CMSClassUnloadingEnabled</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.5</name>
-                                                        <value>-Djava.net.preferIPv4Stack=true</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.6</name>
-                                                        <value>-Djava.security.manager</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.7</name>
-                                                        <value>-Djava.security.policy=conf/service/wrapper-service.policy</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.8</name>
-                                                        <value>-Dlogback.configurationFile=${project.logback.config.file}</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.9</name>
-                                                        <value>-Dspring.profiles.active=${project.service.standalone.spring.profiles.active}</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.10</name>
-                                                        <value>-Ddcdt.data.dir=var</value>
-                                                    </property>
-                                                    <property>
-                                                        <name>wrapper.java.additional.11</name>
-                                                        <value>-Ddcdt.log.dir=log</value>
-                                                    </property>
-                                                    <property>
                                                         <name>wrapper.logfile</name>
                                                         <value>log/wrapper-${project.service.name}.log</value>
                                                     </property>
@@ -504,14 +438,39 @@
                                                         <value>var/${project.service.name}.status</value>
                                                     </property>
                                                 </configuration>
+                                                <generator>jsw</generator>
+                                                <includes>
+                                                    <include>linux-x86-32</include>
+                                                    <include>linux-x86-64</include>
+                                                    <include>windows-x86-32</include>
+                                                    <include>windows-x86-64</include>
+                                                </includes>
                                             </generatorConfiguration>
                                         </generatorConfigurations>
+                                        <jvmSettings>
+                                            <initialMemorySize>128M</initialMemorySize>
+                                            <maxMemorySize>256M</maxMemorySize>
+                                            <maxStackSize>128M</maxStackSize>
+                                            <extraArguments>
+                                                <extraArgument>-XX:+CMSClassUnloadingEnabled</extraArgument>
+                                                <extraArgument>-XX:+UseConcMarkSweepGC</extraArgument>
+                                                <extraArgument>-Djava.net.preferIPv4Stack=true</extraArgument>
+                                                <extraArgument>-Djava.security.manager</extraArgument>
+                                                <extraArgument>-Djava.security.policy=conf/service/wrapper-service.policy</extraArgument>
+                                            </extraArguments>
+                                            <systemProperties>
+                                                <systemProperty>dcdt.data.dir=var</systemProperty>
+                                                <systemProperty>dcdt.log.dir=log</systemProperty>
+                                                <systemProperty>logback.configurationFile=${project.logback.config.file}</systemProperty>
+                                                <systemProperty>spring.profiles.active=${project.service.standalone.spring.profiles.active}</systemProperty>
+                                            </systemProperties>
+                                        </jvmSettings>
+                                        <mainClass>${project.service.standalone.java.class.main}</mainClass>
+                                        <platforms>
+                                            <platform>jsw</platform>
+                                        </platforms>
                                     </daemon>
                                 </daemons>
-                                <defaultJvmSettings>
-                                    <initialMemorySize>128M</initialMemorySize>
-                                    <maxMemorySize>256M</maxMemorySize>
-                                </defaultJvmSettings>
                                 <target>${project.build.directory}/${project.artifactId}-daemons</target>
                                 <useWildcardClassPath>true</useWildcardClassPath>
                             </configuration>
@@ -548,6 +507,11 @@
                 <executions>
                     <execution>
                         <id>process-properties</id>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>process-executables-service</id>
+                        <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>
                 </executions>

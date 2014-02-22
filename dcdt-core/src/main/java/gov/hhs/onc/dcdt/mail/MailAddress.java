@@ -13,6 +13,9 @@ public interface MailAddress extends ToolBean {
     public InternetAddress toInternetAddress() throws ToolMailAddressException;
 
     @Nullable
+    public Name toDnsName() throws ToolMailAddressException;
+
+    @Nullable
     public String toAddress();
 
     public String[] toAddressParts();

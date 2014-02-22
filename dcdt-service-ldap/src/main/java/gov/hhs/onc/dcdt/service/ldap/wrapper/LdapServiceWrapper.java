@@ -1,9 +1,11 @@
 package gov.hhs.onc.dcdt.service.ldap.wrapper;
 
-import gov.hhs.onc.dcdt.service.ldap.LdapService;
-import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapper;
+public class LdapServiceWrapper {
+}
 
-public class LdapServiceWrapper extends ToolServiceWrapper<LdapService> {
+// @formatter:off
+/*
+public class LdapServiceWrapper extends AbstractToolServiceWrapper<LdapService> {
     public LdapServiceWrapper() {
         super();
     }
@@ -21,3 +23,5 @@ public class LdapServiceWrapper extends ToolServiceWrapper<LdapService> {
         return new LdapService();
     }
 }
+*/
+// @formatter:on

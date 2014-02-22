@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.ConstraintComposition;
 @Documented
 @Inherited
 @NotBlank
-@Pattern(regexp = ToolInetAddressUtils.IPV4_ADDR_PATTERN_STR)
+@Pattern(regexp = ToolInetAddressUtils.PATTERN_STR_IPV4_ADDR)
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })

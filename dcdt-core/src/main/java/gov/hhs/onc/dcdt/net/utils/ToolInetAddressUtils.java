@@ -4,14 +4,21 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.commons.lang3.StringUtils;
+import javax.annotation.Nullable;
 
 public abstract class ToolInetAddressUtils {
-    public final static String IPV4_ADDR_DELIM = ".";
-    public final static String IPV4_ADDR_PATTERN_STR = "^(?:(?:25[0-5]|2[0-4]\\d|[0-1]\\d{0,2})\\.){3}(?:25[0-5]|2[0-4]\\d|[0-1]\\d{0,2})$";
-    public final static Pattern IPV4_ADDR_PATTERN = Pattern.compile(IPV4_ADDR_PATTERN_STR);
+    public final static String PATTERN_STR_IPV4_ADDR_DELIM = "\\.";
+    public final static String PATTERN_STR_IPV4_ADDR_GROUP = "(?:25[0-5]|2[0-4]\\d|[0-1]\\d{2}|\\d{1,2})";
+    public final static String PATTERN_STR_IPV4_ADDR = "^(?:" + PATTERN_STR_IPV4_ADDR_GROUP + PATTERN_STR_IPV4_ADDR_DELIM + "){3}"
+        + PATTERN_STR_IPV4_ADDR_GROUP + "$";
 
-    public static InetAddress getByAddress(String hostName, String hostAddrStr) throws UnknownHostException {
+    public final static Pattern PATTERN_IPV4_ADDR = Pattern.compile(PATTERN_STR_IPV4_ADDR);
+
+    public static InetAddress getByAddress(String hostAddrStr) throws UnknownHostException {
+        return getByAddress(null, hostAddrStr);
+    }
+
+    public static InetAddress getByAddress(@Nullable String hostName, String hostAddrStr) throws UnknownHostException {
         return InetAddress.getByAddress(hostName, addressStringToBytes(hostAddrStr));
     }
 
@@ -20,7 +27,7 @@ public abstract class ToolInetAddressUtils {
             throw new UnknownHostException(String.format("Invalid address string: %s", addrStr));
         }
 
-        String[] addrPartStrs = StringUtils.split(addrStr, IPV4_ADDR_DELIM, 4);
+        String[] addrPartStrs = addrStr.split(PATTERN_STR_IPV4_ADDR_DELIM, 4);
         byte[] addrBytes = new byte[4];
 
         for (int a = 0; a < addrPartStrs.length; a++) {
@@ -35,6 +42,6 @@ public abstract class ToolInetAddressUtils {
     }
 
     public static Matcher getIpv4AddressMatcher(String addrStr) {
-        return IPV4_ADDR_PATTERN.matcher(addrStr);
+        return PATTERN_IPV4_ADDR.matcher(addrStr);
     }
 }

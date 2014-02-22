@@ -11,7 +11,44 @@ Based on:
     
     <xsd:element name="configuration" type="Configuration"/>
     <xsd:element name="included" type="Configuration"/>
-
+    
+    <xsd:attributeGroup name="attrGroupClass">
+        <xsd:attribute name="class" type="xsd:token"/>
+    </xsd:attributeGroup>
+    <xsd:attributeGroup name="attrGroupClassReq">
+        <xsd:attribute name="class" type="xsd:token" use="required"/>
+    </xsd:attributeGroup>
+    
+    <xsd:attributeGroup name="attrGroupName">
+        <xsd:attribute name="name" type="xsd:token"/>
+    </xsd:attributeGroup>
+    <xsd:attributeGroup name="attrGroupNameReq">
+        <xsd:attribute name="name" type="xsd:token" use="required"/>
+    </xsd:attributeGroup>
+    
+    <xsd:simpleType name="LoggerLevels">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="off"/>
+            <xsd:enumeration value="OFF"/>
+            <xsd:enumeration value="all"/>
+            <xsd:enumeration value="ALL"/>
+            <xsd:enumeration value="inherited"/>
+            <xsd:enumeration value="INHERITED"/>
+            <xsd:enumeration value="null"/>
+            <xsd:enumeration value="NULL"/>
+            <xsd:enumeration value="error"/>
+            <xsd:enumeration value="ERROR"/>
+            <xsd:enumeration value="warn"/>
+            <xsd:enumeration value="WARN"/>
+            <xsd:enumeration value="info"/>
+            <xsd:enumeration value="INFO"/>
+            <xsd:enumeration value="debug"/>
+            <xsd:enumeration value="DEBUG"/>
+            <xsd:enumeration value="trace"/>
+            <xsd:enumeration value="TRACE"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
     <xsd:complexType name="Configuration">
         <xsd:sequence>
             <xsd:element name="statusListener" minOccurs="0" maxOccurs="unbounded" type="StatusListener"/>
@@ -28,13 +65,13 @@ Based on:
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
         <xsd:attribute name="debug" type="xsd:boolean" use="optional"/>
-        <xsd:attribute name="scan" type="xsd:string" use="optional"/>
-        <xsd:attribute name="scanPeriod" type="xsd:string" use="optional"/>
+        <xsd:attribute name="scan" type="xsd:token" use="optional"/>
+        <xsd:attribute name="scanPeriod" type="xsd:token" use="optional"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
     <xsd:complexType name="StatusListener">
-        <xsd:attribute name="class" type="xsd:string" use="optional"/>
+        <xsd:attributeGroup ref="attrGroupClassReq"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
@@ -43,14 +80,14 @@ Based on:
             <xsd:element name="resetJUL" type="xsd:boolean"/>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
-        <xsd:attribute name="class" type="xsd:string"/>
+        <xsd:attributeGroup ref="attrGroupClassReq"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
     <xsd:complexType name="Include">
-        <xsd:attribute name="file" use="optional" type="xsd:string"/>
-        <xsd:attribute name="resource" use="optional" type="xsd:string"/>
-        <xsd:attribute name="url" use="optional" type="xsd:string"/>
+        <xsd:attribute name="file" use="optional" type="xsd:token"/>
+        <xsd:attribute name="resource" use="optional" type="xsd:token"/>
+        <xsd:attribute name="url" use="optional" type="xsd:token"/>
         <xsd:attribute name="optional" use="optional" type="xsd:boolean"/>
     </xsd:complexType>
 
@@ -58,8 +95,8 @@ Based on:
         <xsd:sequence>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string"/>
-        <xsd:attribute name="class" type="xsd:string"/>
+        <xsd:attributeGroup ref="attrGroupNameReq"/>
+        <xsd:attributeGroup ref="attrGroupClassReq"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
@@ -75,20 +112,20 @@ Based on:
 
     <xsd:complexType name="RollingPolicy">
         <xsd:sequence>
-            <xsd:element name="fileNamePattern" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+            <xsd:element name="fileNamePattern" type="xsd:token" minOccurs="1" maxOccurs="1"/>
             <xsd:element name="maxHistory" type="xsd:int" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="minIndex" type="xsd:int" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="maxIndex" type="xsd:int" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="timeBasedFileNamingAndTriggeringPolicy" type="TriggeringPolicy" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="cleanHistoryOnStart" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
-        <xsd:attribute name="class" type="xsd:string" use="required"/>
+        <xsd:attributeGroup ref="attrGroupClass"/>
     </xsd:complexType>
     <xsd:complexType name="TriggeringPolicy">
         <xsd:sequence>
-            <xsd:element name="maxFileSize" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="maxFileSize" type="xsd:token" minOccurs="0" maxOccurs="1"/>
         </xsd:sequence>
-        <xsd:attribute name="class" type="xsd:string" use="required"/>
+        <xsd:attributeGroup ref="attrGroupClass"/>
     </xsd:complexType>
 
     <xsd:complexType name="If">
@@ -97,7 +134,7 @@ Based on:
             <xsd:element type="Configuration" name="else" minOccurs="0"/>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
-        <xsd:attribute name="condition" type="xsd:string"/>
+        <xsd:attribute name="condition" type="xsd:token"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
@@ -113,17 +150,17 @@ Based on:
         <xsd:sequence>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string" use="optional"/>
-        <xsd:attribute name="value" type="xsd:string" use="optional"/>
-        <xsd:attribute name="file" type="xsd:string" use="optional"/>
-        <xsd:attribute name="resource" type="xsd:string" use="optional"/>
+        <xsd:attributeGroup ref="attrGroupName"/>
+        <xsd:attribute name="value" type="xsd:token" use="optional"/>
+        <xsd:attribute name="file" type="xsd:token" use="optional"/>
+        <xsd:attribute name="resource" type="xsd:token" use="optional"/>
         <xsd:attribute name="scope" type="PropertyScope" use="optional" default="local"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
     <xsd:complexType name="Appender">
         <xsd:sequence>
-            <xsd:element name="file" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="file" type="xsd:token" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="encoder" type="Encoder" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="filter" type="Filter" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="append" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
@@ -132,26 +169,34 @@ Based on:
             <xsd:element name="rollingPolicy" type="RollingPolicy" minOccurs="0" maxOccurs="1"/>
             <xsd:any processContents="skip" maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
-        <xsd:attribute name="class" type="xsd:string" use="required"/>
+        <xsd:attributeGroup ref="attrGroupNameReq"/>
+        <xsd:attributeGroup ref="attrGroupClassReq"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
     <xsd:complexType name="Filter">
         <xsd:sequence>
-            <xsd:element name="level" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="level" type="xsd:token" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:any minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
-        <xsd:attribute name="class" type="xsd:string" use="optional"/>
+        <xsd:attributeGroup ref="attrGroupClass"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
+    <xsd:complexType name="Pattern">
+        <xsd:simpleContent>
+            <xsd:restriction base="xsd:token">
+                <xsd:attributeGroup ref="attrGroupClass"/>
+            </xsd:restriction>
+        </xsd:simpleContent>
+    </xsd:complexType>
+    
     <xsd:complexType name="Layout">
         <xsd:sequence>
-            <xsd:element name="pattern" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="pattern" type="Pattern" minOccurs="0" maxOccurs="1"/>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
-        <xsd:attribute name="class" type="xsd:string" use="optional"/>
+        <xsd:attributeGroup ref="attrGroupClass"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
@@ -160,7 +205,8 @@ Based on:
             <xsd:element name="appender-ref" maxOccurs="unbounded" minOccurs="0" type="AppenderRef"/>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
-        <xsd:attribute name="name" type="xsd:string" use="required"/>
+        <xsd:attribute name="name" type="xsd:token" use="required"/>
+        <xsd:attributeGroup ref="attrGroupClass"/>
         <xsd:attribute name="level" type="LoggerLevels" use="optional"/>
         <xsd:attribute name="additivity" type="xsd:boolean" use="optional"/>
         <xsd:anyAttribute/>
@@ -168,8 +214,9 @@ Based on:
 
     <xsd:complexType name="Encoder">
         <xsd:sequence>
-            <xsd:element name="pattern" type="xsd:string"/>
+            <xsd:element name="pattern" type="Pattern"/>
         </xsd:sequence>
+        <xsd:attributeGroup ref="attrGroupClass"/>
     </xsd:complexType>
 
     <xsd:complexType name="Root">
@@ -181,12 +228,6 @@ Based on:
     </xsd:complexType>
 
     <xsd:complexType name="AppenderRef">
-        <xsd:attribute name="ref" type="xsd:string"/>
+        <xsd:attribute name="ref" type="xsd:token"/>
     </xsd:complexType>
-
-    <xsd:simpleType name="LoggerLevels">
-        <xsd:restriction base="xsd:string">
-            <xsd:pattern value="off|OFF|all|ALL|inherited|INHERITED|null|NULL|error|ERROR|warn|WARN|info|INFO|debug|DEBUG|trace|TRACE"/>
-        </xsd:restriction>
-    </xsd:simpleType>
 </xsd:schema>

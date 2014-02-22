@@ -72,6 +72,10 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+        </dependency>
+        <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
         </dependency>
@@ -337,7 +341,7 @@
                 <artifactId>appassembler-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>daemons-service</id>
+                        <id>generate-daemons-service</id>
                     </execution>
                 </executions>
             </plugin>

@@ -127,6 +127,10 @@
             <artifactId>commons-io</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+        </dependency>
+        <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
         </dependency>

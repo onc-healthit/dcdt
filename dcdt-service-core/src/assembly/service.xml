@@ -14,18 +14,28 @@
     <fileSets>
         <!-- Executable file(s) (project) -->
         <fileSet>
-            <directory>${project.build.directory}/${project.artifactId}/bin</directory>
+            <directory>${project.build.serviceBinDirectory}</directory>
             <outputDirectory>/bin</outputDirectory>
         </fileSet>
         <!-- Configuration file(s) (project) -->
         <fileSet>
-            <directory>${project.build.directory}/${project.artifactId}/conf</directory>
+            <directory>${project.build.serviceConfDirectory}</directory>
             <outputDirectory>/conf</outputDirectory>
         </fileSet>
         <!-- Library file(s) (project) -->
         <fileSet>
-            <directory>${project.build.directory}/${project.artifactId}/lib</directory>
+            <directory>${project.build.serviceLibDirectory}</directory>
             <outputDirectory>/lib</outputDirectory>
+        </fileSet>
+        <!-- Log file(s) (project) -->
+        <fileSet>
+            <directory>${project.build.serviceLogDirectory}</directory>
+            <outputDirectory>/log</outputDirectory>
+        </fileSet>
+        <!-- Runtime file(s) (project) -->
+        <fileSet>
+            <directory>${project.build.serviceVarDirectory}</directory>
+            <outputDirectory>/var</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>

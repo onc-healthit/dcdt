@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.utils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,19 +27,19 @@ public abstract class ToolResourceUtils {
     public final static String RESOURCE_LOC_DELIMS = ",; \t\n";
     public final static String META_INF_RESOURCE_PATH = "META-INF";
 
-    public static List<String> getOverrideableResourceLocations(List<String> resourceLocs) {
+    public static List<String> getOverrideableResourceLocations(Collection<String> resourceLocs) {
         return getOverrideableResourceLocations(resourceLocs, CLASSPATH_ALL_URL_PREFIX);
     }
 
-    public static List<String> getOverrideableResourceLocations(List<String> resourceLocs, String urlPrefixDefault) {
+    public static List<String> getOverrideableResourceLocations(Collection<String> resourceLocs, String urlPrefixDefault) {
         return getOverrideableResourceLocations(resourceLocs, urlPrefixDefault, META_INF_RESOURCE_PATH);
     }
 
-    public static List<String> getOverrideableResourceLocations(List<String> resourceLocs, String urlPrefixDefault, String baseResourcePath) {
+    public static List<String> getOverrideableResourceLocations(Collection<String> resourceLocs, String urlPrefixDefault, String baseResourcePath) {
         return getOverrideableResourceLocations(resourceLocs, urlPrefixDefault, baseResourcePath, false);
     }
 
-    public static List<String> getOverrideableResourceLocations(List<String> resourceLocs, String urlPrefixDefault, String baseResourcePath,
+    public static List<String> getOverrideableResourceLocations(Collection<String> resourceLocs, String urlPrefixDefault, String baseResourcePath,
         boolean includeResourceRawLocs) {
         List<String> overrideableResourceLocs = new ArrayList<>(resourceLocs.size() * (includeResourceRawLocs ? 4 : 2));
 
