@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.service.ToolService;
 import org.tanukisoftware.wrapper.event.WrapperEventListener;
 
 public interface ToolServiceWrapper<T extends ToolService> extends Runnable, WrapperEventListener {
-    public void stop();
+    public void stop() throws Exception;
 
-    public void start();
+    public void start() throws Exception;
 }

@@ -1,27 +1,7 @@
 package gov.hhs.onc.dcdt.service.mail.wrapper;
 
-public class MailServiceWrapper {
+import gov.hhs.onc.dcdt.service.mail.MailService;
+import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapper;
+
+public interface MailServiceWrapper extends ToolServiceWrapper<MailService> {
 }
-
-// @formatter:off
-/*
-public class MailServiceWrapper extends AbstractToolServiceWrapper<MailService> {
-    public MailServiceWrapper() {
-        super();
-    }
-
-    public MailServiceWrapper(String ... args) {
-        super(args);
-    }
-
-    public static void main(String ... args) {
-        new MailServiceWrapper(args).start();
-    }
-
-    @Override
-    protected MailService createService() {
-        return new MailService();
-    }
-}
-*/
-// @formatter:on

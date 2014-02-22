@@ -16,7 +16,7 @@ public abstract class ToolDnsMessageUtils {
     public static Message createErrorResponse(@Nullable Message reqMsg, DnsMessageRcode rcode) {
         return setRcode(((reqMsg != null) ? createResponse(reqMsg) : new Message()), rcode);
     }
-    
+
     public static Message createResponse(Message reqMsg) {
         Message respMsg = new Message(reqMsg.getHeader().getID());
 
@@ -62,12 +62,6 @@ public abstract class ToolDnsMessageUtils {
         }
 
         return msg;
-    }
-
-    public static boolean isError(Message msg) {
-        DnsMessageRcode rcode = getRcode(msg);
-
-        return (rcode != null) && rcode.isError();
     }
 
     @Nullable

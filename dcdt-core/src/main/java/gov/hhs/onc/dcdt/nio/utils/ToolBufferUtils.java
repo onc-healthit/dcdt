@@ -3,39 +3,10 @@ package gov.hhs.onc.dcdt.nio.utils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.util.Collection;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
 
 public abstract class ToolBufferUtils {
-    public static class ByteBufferDataTransformer implements Transformer<ByteBuffer, byte[]> {
-        public final static ByteBufferDataTransformer INSTANCE = new ByteBufferDataTransformer();
-
-        @Override
-        public byte[] transform(ByteBuffer buffer) {
-            return get(buffer);
-        }
-    }
-
-    public static class ByteBufferWrappingTransformer implements Transformer<byte[], ByteBuffer> {
-        public final static ByteBufferWrappingTransformer INSTANCE = new ByteBufferWrappingTransformer();
-
-        @Override
-        public ByteBuffer transform(byte[] data) {
-            return ByteBuffer.wrap(data);
-        }
-    }
-
-    public static Collection<byte[]> getAll(@Nullable ByteBuffer ... buffers) {
-        return getAll(ToolArrayUtils.asList(buffers));
-    }
-
-    public static Collection<byte[]> getAll(@Nullable Iterable<? extends ByteBuffer> buffers) {
-        return CollectionUtils.collect(buffers, ByteBufferDataTransformer.INSTANCE);
-    }
-
     public static byte[] get(ByteBuffer buffer) {
         byte[] data = new byte[buffer.limit()];
 
@@ -62,32 +33,6 @@ public abstract class ToolBufferUtils {
         }
 
         return resultBuffer;
-    }
-
-    public static Collection<ByteBuffer> wrapAll(@Nullable byte[] ... dataItems) {
-        return wrapAll(ToolArrayUtils.asList(dataItems));
-    }
-
-    public static Collection<ByteBuffer> wrapAll(@Nullable Iterable<byte[]> dataItems) {
-        return CollectionUtils.collect(dataItems, ByteBufferWrappingTransformer.INSTANCE);
-    }
-
-    @Nonnegative
-    public static int remaining(@Nullable Buffer ... buffers) {
-        return remaining(ToolArrayUtils.asList(buffers));
-    }
-
-    @Nonnegative
-    public static int remaining(@Nullable Iterable<? extends Buffer> buffers) {
-        int remainingTotal = 0;
-
-        if (buffers != null) {
-            for (Buffer buffer : buffers) {
-                remainingTotal += buffer.remaining();
-            }
-        }
-
-        return remainingTotal;
     }
 
     public static ByteBuffer compact(ByteBuffer buffer) {

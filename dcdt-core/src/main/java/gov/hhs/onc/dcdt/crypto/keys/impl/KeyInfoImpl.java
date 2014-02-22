@@ -142,7 +142,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
     public Integer getKeySize() {
         Key availKey = this.getAvailableKey();
 
-        return ((availKey != null) && ToolClassUtils.isAssignable(RSAKey.class, availKey.getClass())) ? ((RSAKey) availKey).getModulus().bitLength() : null;
+        return ((availKey != null) && ToolClassUtils.isAssignable(availKey.getClass(), RSAKey.class)) ? ((RSAKey) availKey).getModulus().bitLength() : null;
     }
 
     @Override
@@ -154,6 +154,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
     @Override
     @Transient
     public SubjectKeyIdentifier getSubjectKeyId() {
+        // noinspection ConstantConditions
         return this.hasPublicKey() ? new SubjectKeyIdentifier(DigestUtils.getSha1Digest().digest(this.getPublicKey().getEncoded())) : null;
     }
 

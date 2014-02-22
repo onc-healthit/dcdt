@@ -15,9 +15,11 @@
     <suppress files="\.java$" checks="LeftCurlyCheck"/>
     <suppress files="\.java$" checks="LineLengthCheck"/>
     <suppress files="\.java$" checks="MagicNumberCheck"/>
+    <suppress files="\.java$" checks="MissingSwitchDefaultCheck"/>
     <suppress files="\.java$" checks="ModifierOrderCheck"/>
     <suppress files="\.java$" checks="NewlineAtEndOfFileCheck"/>
     <suppress files="\.java$" checks="NoWhitespaceAfterCheck"/>
+    <suppress files="\.java$" checks="ParameterNumberCheck"/>
     <suppress files="\.java$" checks="RedundantModifierCheck"/>
     <suppress files="\.java$" checks="RedundantThrowsCheck"/>
     <suppress files="\.java$" checks="RegexpSinglelineCheck"/>

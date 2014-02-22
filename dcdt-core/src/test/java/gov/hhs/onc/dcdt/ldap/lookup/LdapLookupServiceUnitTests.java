@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.ldap.lookup;
 
 import gov.hhs.onc.dcdt.ldap.LdapException;
-import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import java.util.List;
 import org.apache.directory.api.ldap.model.entry.Attribute;

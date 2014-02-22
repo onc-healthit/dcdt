@@ -1,8 +1,8 @@
-package gov.hhs.onc.dcdt.service.ldap.factory;
+package gov.hhs.onc.dcdt.service.ldap.factory.impl;
 
-import gov.hhs.onc.dcdt.service.ldap.conf.DirectoryServiceConfig;
-import gov.hhs.onc.dcdt.service.ldap.conf.PartitionConfig;
-import gov.hhs.onc.dcdt.service.ldap.conf.SchemaConfig;
+import gov.hhs.onc.dcdt.service.ldap.config.impl.DirectoryServiceConfig;
+import gov.hhs.onc.dcdt.service.ldap.config.impl.PartitionConfig;
+import gov.hhs.onc.dcdt.service.ldap.config.impl.SchemaConfig;
 import java.io.File;
 import java.util.List;
 import org.apache.commons.io.FileUtils;
@@ -32,7 +32,6 @@ import org.apache.directory.server.core.factory.PartitionFactory;
 import org.apache.directory.server.core.partition.ldif.LdifPartition;
 import org.apache.directory.server.i18n.I18n;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 @Component("toolDirServiceFactory")

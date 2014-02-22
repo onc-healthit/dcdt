@@ -5,7 +5,7 @@ import gov.hhs.onc.dcdt.context.ToolContextLoader;
 import gov.hhs.onc.dcdt.context.impl.ToolContextLoaderImpl;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.ToolService;
-import gov.hhs.onc.dcdt.service.ToolServiceRuntimeException;
+import gov.hhs.onc.dcdt.service.ToolServiceException;
 import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapper;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -15,6 +15,9 @@ import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
+import javax.annotation.Nullable;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.time.DateUtils;
 import org.slf4j.Logger;
@@ -26,15 +29,20 @@ import org.tanukisoftware.wrapper.event.WrapperEvent;
 import org.tanukisoftware.wrapper.event.WrapperEventListener;
 
 public abstract class AbstractToolServiceWrapper<T extends ToolService> implements ToolServiceWrapper<T> {
-    protected class ToolServiceWrapperShutdownHook implements Runnable {
+    protected class ToolServiceWrapperShutdownHook implements Callable<Void> {
+        @Nullable
         @Override
-        public void run() {
-            AbstractToolServiceWrapper.this.stop();
-
+        public Void call() throws Exception {
             try {
-                Runtime.getRuntime().removeShutdownHook(AbstractToolServiceWrapper.this.shutdownHookThread);
-            } catch (IllegalStateException ignored) {
+                AbstractToolServiceWrapper.this.stop();
+            } finally {
+                try {
+                    Runtime.getRuntime().removeShutdownHook(AbstractToolServiceWrapper.this.shutdownHookThread);
+                } catch (IllegalStateException ignored) {
+                }
             }
+
+            return null;
         }
     }
 
@@ -42,6 +50,7 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
     protected Class<T> serviceClass;
     protected Class<? extends T> serviceImplClass;
     protected String[] args;
+    protected FutureTask<Void> task;
     protected Thread shutdownHookThread;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolServiceWrapper.class);
@@ -53,7 +62,7 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
     }
 
     @Override
-    public void stop() {
+    public void stop() throws Exception {
         if (this.appContext != null) {
             this.stopInternal();
 
@@ -66,23 +75,12 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
     }
 
     @Override
-    public void start() {
+    public void start() throws Exception {
         if (this.appContext == null) {
             this.startInternal();
 
             LOGGER.info(String.format("Service (class=%s, implClass=%s) wrapper (class=%s) started.", ToolClassUtils.getName(this.serviceClass),
                 ToolClassUtils.getName(this.serviceImplClass), ToolClassUtils.getName(this)));
-
-            while (this.appContext.isRunning()) {
-                try {
-                    Thread.sleep(DateUtils.MILLIS_PER_SECOND);
-                } catch (InterruptedException e) {
-                    LOGGER.debug(String.format("Service (class=%s, implClass=%s) wrapper (class=%s) start thread interrupted.",
-                        ToolClassUtils.getName(this.serviceClass), ToolClassUtils.getName(this.serviceImplClass), ToolClassUtils.getName(this)));
-
-                    break;
-                }
-            }
         } else {
             LOGGER.warn(String.format("Attempted to start service (class=%s, implClass=%s) wrapper (class=%s) that is already running.",
                 ToolClassUtils.getName(this.serviceClass), ToolClassUtils.getName(this.serviceImplClass), ToolClassUtils.getName(this)));
@@ -91,7 +89,25 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
 
     @Override
     public void run() {
-        this.start();
+        (this.task = new FutureTask<>(new Callable<Void>() {
+            @Nullable
+            @Override
+            public Void call() throws Exception {
+                AbstractToolServiceWrapper.this.start();
+
+                while (AbstractToolServiceWrapper.this.appContext.isRunning()) {
+                    try {
+                        Thread.sleep(DateUtils.MILLIS_PER_SECOND);
+                    } catch (InterruptedException ignored) {
+                        AbstractToolServiceWrapper.this.stop();
+
+                        break;
+                    }
+                }
+
+                return null;
+            }
+        })).run();
     }
 
     @Override
@@ -104,22 +120,28 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
                 wrapperControlEvent.getControlEventName()));
 
             if ((wrapperControlEvent.getControlEvent() != WrapperManager.WRAPPER_CTRL_LOGOFF_EVENT) || WrapperManager.isLaunchedAsService()) {
-                this.stop();
+                synchronized (this) {
+                    if (this.task != null) {
+                        this.task.cancel(true);
+                    } else {
+                        WrapperManager.stop(0);
+                    }
+                }
             }
         }
     }
 
-    protected void stopInternal() {
+    protected void stopInternal() throws Exception {
         this.appContext.stop();
     }
 
-    @SuppressWarnings({ "ConstantConditions" })
-    protected void startInternal() {
+    protected void startInternal() throws Exception {
         WrapperManager.addWrapperEventListener(this, WrapperEventListener.EVENT_FLAG_CONTROL);
 
-        Runtime.getRuntime().addShutdownHook((this.shutdownHookThread = new Thread(new ToolServiceWrapperShutdownHook())));
+        Runtime.getRuntime().addShutdownHook((this.shutdownHookThread = new Thread(new FutureTask<>(new ToolServiceWrapperShutdownHook()))));
 
         ToolContextLoader contextLoader = new ToolContextLoaderImpl();
+        // noinspection ConstantConditions
         List<String> contextConfigLocs =
             contextLoader.processLocations(ToolCollectionUtils.addAll(new ArrayList<String>(), IteratorUtils.asIterable(ToolIteratorUtils
                 .chainedArrayIterator(ToolAnnotationUtils.getValues(ServiceContextConfiguration.class, String[].class,
@@ -132,7 +154,7 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
                 ToolClassUtils.getName(this.serviceClass), ToolClassUtils.getName(this.serviceImplClass), ToolClassUtils.getName(this),
                 ToolClassUtils.getName(this.appContext), ToolStringUtils.joinDelimit(contextConfigLocs, ", ")));
         } catch (Exception e) {
-            throw new ToolServiceRuntimeException(String.format(
+            throw new ToolServiceException(String.format(
                 "Unable to load service (class=%s, implClass=%s) wrapper (class=%s) Spring application context (class=%s): [%s]",
                 ToolClassUtils.getName(this.serviceClass), ToolClassUtils.getName(this.serviceImplClass), ToolClassUtils.getName(this),
                 ToolClassUtils.getName(this.appContext), ToolStringUtils.joinDelimit(contextConfigLocs, ", ")), e);

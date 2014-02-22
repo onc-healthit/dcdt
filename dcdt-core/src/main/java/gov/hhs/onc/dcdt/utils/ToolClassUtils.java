@@ -16,11 +16,11 @@ public abstract class ToolClassUtils {
     }
 
     public static boolean isAssignable(@Nullable Class<?>[] classes1, @Nullable Class<?> ... classes2) {
-        return ClassUtils.isAssignable(classes1, classes2);
+        return (classes1 != null) && ClassUtils.isAssignable(classes1, classes2);
     }
 
     public static boolean isAssignable(@Nullable Class<?> class1, @Nullable Class<?> class2) {
-        return ClassUtils.isAssignable(class1, class2);
+        return (class1 != null) && ClassUtils.isAssignable(class1, class2);
     }
 
     @Nullable

@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.service.ldap.conf;
+package gov.hhs.onc.dcdt.service.ldap.config.impl;
 
 import org.apache.directory.server.xdbm.Index;
 

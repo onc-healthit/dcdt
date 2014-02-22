@@ -15,4 +15,10 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <!--====================================================================================================
+    = TASK EXECUTION
+    =====================================================================================================-->
+    <beans:bean id="taskExecServiceMail" parent="taskExecService"
+        p:corePoolSize="1"
+        p:maxPoolSize="5"/>
 </beans:beans>

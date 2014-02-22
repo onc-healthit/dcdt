@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.service.dns.impl;
 
-import gov.hhs.onc.dcdt.beans.AutoStartup;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.dns.DnsService;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServer;
@@ -21,8 +21,16 @@ public class DnsServiceImpl extends AbstractToolService implements DnsService {
     private List<DnsServer> servers;
 
     @Override
-    @SuppressWarnings({ "ConstantConditions" })
-    protected synchronized void startInternal() {
+    protected synchronized void stopInternal() throws Exception {
+        if (this.hasServers()) {
+            for (DnsServer server : this.servers) {
+                server.stop();
+            }
+        }
+    }
+
+    @Override
+    protected synchronized void startInternal() throws Exception {
         if (this.hasServers()) {
             for (DnsServer server : this.servers) {
                 server.start();
