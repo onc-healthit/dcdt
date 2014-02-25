@@ -1,23 +1,17 @@
 package gov.hhs.onc.dcdt.mail;
 
 public enum BindingType {
-    NONE("none"), ANY("any"), ADDRESS("address"), DOMAIN("domain");
+    NONE, ANY, ADDRESS, DOMAIN;
 
-    private final String binding;
-
-    private BindingType(String binding) {
-        this.binding = binding;
-    }
-
-    public String getBinding() {
-        return this.binding;
+    public boolean isBound() {
+        return (this.isAddressBound() || this.isDomainBound());
     }
 
     public boolean isAddressBound() {
-        return (this == ANY) || (this == ADDRESS);
+        return (this == ADDRESS);
     }
 
     public boolean isDomainBound() {
-        return (this == ANY) || (this == DOMAIN);
+        return (this == DOMAIN);
     }
 }

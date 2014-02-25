@@ -15,7 +15,7 @@ public class ARecordConfigImpl extends AbstractDnsRecordConfig<ARecord> implemen
 
     @Override
     public ARecord toRecord() throws DnsException {
-        return new ARecord(this.name, this.recordType.getDclass(), this.ttl, this.addr);
+        return new ARecord(this.name, this.recordType.getDclassType().getType(), this.ttl, this.addr);
     }
 
     @Override

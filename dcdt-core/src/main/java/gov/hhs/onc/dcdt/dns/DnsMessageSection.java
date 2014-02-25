@@ -6,8 +6,7 @@ import org.xbill.DNS.Section;
  * @see org.xbill.DNS.Section
  */
 public enum DnsMessageSection {
-    QUESTION(Section.QUESTION), ANSWER(Section.ANSWER), AUTHORITY(Section.AUTHORITY), ADDITIONAL(Section.ADDITIONAL), ZONE(Section.ZONE),
-    PREREQ(Section.PREREQ), UPDATE(Section.UPDATE);
+    QUESTION(Section.QUESTION), ANSWER(Section.ANSWER), AUTHORITY(Section.AUTHORITY), ADDITIONAL(Section.ADDITIONAL);
 
     private final int section;
 

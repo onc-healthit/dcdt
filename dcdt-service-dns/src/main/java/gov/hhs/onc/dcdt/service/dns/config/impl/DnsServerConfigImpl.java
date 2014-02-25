@@ -16,15 +16,19 @@ public class DnsServerConfigImpl extends AbstractToolBoundBean implements DnsSer
     @Nullable
     @Override
     public InstanceDnsConfig findAuthoritativeDnsConfig(Record questionRecord) {
+        InstanceDnsConfig dnsConfigAuthoritative = null;
+
         if (this.hasDnsConfigs()) {
             for (InstanceDnsConfig dnsConfig : this.dnsConfigs) {
-                if (dnsConfig.isAuthoritative(questionRecord)) {
-                    return dnsConfig;
+                // noinspection ConstantConditions
+                if (dnsConfig.isAuthoritative(questionRecord)
+                    && ((dnsConfigAuthoritative == null) || dnsConfig.getDomainName().subdomain(dnsConfigAuthoritative.getDomainName()))) {
+                    dnsConfigAuthoritative = dnsConfig;
                 }
             }
         }
 
-        return null;
+        return dnsConfigAuthoritative;
     }
 
     @Override

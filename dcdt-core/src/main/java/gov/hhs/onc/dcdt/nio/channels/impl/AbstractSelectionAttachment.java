@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.nio.channels.impl;
 
+import gov.hhs.onc.dcdt.net.InetProtocol;
 import gov.hhs.onc.dcdt.nio.channels.SelectionAttachment;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
@@ -8,13 +9,25 @@ import javax.annotation.Nullable;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractSelectionAttachment implements SelectionAttachment {
+    protected InetProtocol protocol;
     protected ByteBuffer reqBuffer;
     protected ByteBuffer respBuffer;
     protected SocketAddress socketAddr;
 
-    protected AbstractSelectionAttachment(@Nonnegative int reqBufferSize, @Nonnegative int respBufferSize) {
+    protected AbstractSelectionAttachment(InetProtocol protocol, @Nonnegative int reqBufferSize, @Nonnegative int respBufferSize) {
+        this.protocol = protocol;
         this.reqBuffer = ByteBuffer.allocate(reqBufferSize);
         this.respBuffer = ByteBuffer.allocate(respBufferSize);
+    }
+
+    @Override
+    public InetProtocol getProtocol() {
+        return this.protocol;
+    }
+
+    @Override
+    public void setProtocol(InetProtocol protocol) {
+        this.protocol = protocol;
     }
 
     @Override

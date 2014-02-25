@@ -7,7 +7,6 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -62,30 +61,29 @@ public abstract class CertificateUtils {
         }
     }
 
-    public static byte[] writeCertificate(X509Certificate cert, DataEncoding dataEnc) throws CryptographyException {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-        writeCertificate(outStream, cert, dataEnc);
-
-        return outStream.toByteArray();
-    }
-
     public static void writeCertificate(OutputStream outStream, X509Certificate cert, DataEncoding dataEnc) throws CryptographyException {
         writeCertificate(new OutputStreamWriter(outStream), cert, dataEnc);
     }
 
     public static void writeCertificate(Writer writer, X509Certificate cert, DataEncoding dataEnc) throws CryptographyException {
         try {
-            byte[] data = cert.getEncoded();
+            IOUtils.write(writeCertificate(cert, dataEnc), writer);
 
-            if (dataEnc == DataEncoding.PEM) {
-                PemUtils.writePemContent(writer, PemType.X509_CERTIFICATE, data);
-            } else {
-                IOUtils.write(data, writer);
-            }
-        } catch (CertificateEncodingException | IOException e) {
+            writer.flush();
+        } catch (IOException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format("Unable to write certificate instance (class=%s) to writer (class=%s).",
                 ToolClassUtils.getClass(cert), ToolClassUtils.getName(writer)), e);
+        }
+    }
+
+    public static byte[] writeCertificate(X509Certificate cert, DataEncoding dataEnc) throws CryptographyException {
+        try {
+            byte[] data = cert.getEncoded();
+
+            return ((dataEnc == DataEncoding.DER) ? data : PemUtils.writePemContent(PemType.X509_CERTIFICATE, data));
+        } catch (CertificateEncodingException e) {
+            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format("Unable to write certificate instance (class=%s) to data.",
+                ToolClassUtils.getClass(cert)), e);
         }
     }
 

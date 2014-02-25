@@ -12,6 +12,6 @@ public class CnameRecordConfigImpl extends AbstractTargetedDnsRecordConfig<CNAME
 
     @Override
     public CNAMERecord toRecord() throws DnsException {
-        return new CNAMERecord(this.name, this.recordType.getDclass(), this.ttl, this.target);
+        return new CNAMERecord(this.name, this.recordType.getDclassType().getType(), this.ttl, this.target);
     }
 }

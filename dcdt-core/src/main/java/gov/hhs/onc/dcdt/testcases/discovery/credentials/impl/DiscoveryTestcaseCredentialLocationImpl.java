@@ -2,42 +2,48 @@ package gov.hhs.onc.dcdt.testcases.discovery.credentials.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.config.InstanceDomainConfig;
 import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import javax.annotation.Nullable;
 
 @JsonTypeName("discoveryTestcaseCredLoc")
 public class DiscoveryTestcaseCredentialLocationImpl extends AbstractToolBean implements DiscoveryTestcaseCredentialLocation {
-    private InstanceDomainConfig instanceDomainConfig;
-    private InstanceLdapConfig instanceLdapConfig;
+    private InstanceLdapConfig ldapConfig;
+    private MailAddress mailAddr;
     private LocationType locType;
 
     @Override
-    public InstanceDomainConfig getInstanceDomainConfig() {
-        return this.instanceDomainConfig;
-    }
-
-    @Override
-    public void setInstanceDomainConfig(InstanceDomainConfig instanceDomainConfig) {
-        this.instanceDomainConfig = instanceDomainConfig;
-    }
-
-    @Override
-    public boolean hasInstanceLdapConfig() {
-        return this.instanceLdapConfig != null;
+    public boolean hasLdapConfig() {
+        return this.ldapConfig != null;
     }
 
     @Nullable
     @Override
-    public InstanceLdapConfig getInstanceLdapConfig() {
-        return this.instanceLdapConfig;
+    public InstanceLdapConfig getLdapConfig() {
+        return this.ldapConfig;
     }
 
     @Override
-    public void setInstanceLdapConfig(@Nullable InstanceLdapConfig instanceLdapConfig) {
-        this.instanceLdapConfig = instanceLdapConfig;
+    public void setLdapConfig(@Nullable InstanceLdapConfig ldapConfig) {
+        this.ldapConfig = ldapConfig;
+    }
+
+    @Override
+    public boolean hasMailAddress() {
+        return this.mailAddr != null;
+    }
+
+    @Nullable
+    @Override
+    public MailAddress getMailAddress() {
+        return this.mailAddr;
+    }
+
+    @Override
+    public void setMailAddress(@Nullable MailAddress mailAddr) {
+        this.mailAddr = mailAddr;
     }
 
     @Override

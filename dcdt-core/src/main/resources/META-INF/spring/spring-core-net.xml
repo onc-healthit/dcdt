@@ -22,7 +22,7 @@
     =====================================================================================================-->
     <beans:bean id="ipAddr" class="java.net.InetAddress" abstract="true"/>
     
-    <beans:bean id="ipAddrLocalAny" class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" factory-method="getByAddress">
+    <beans:bean id="ipAddrLocalAny" class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress">
         <beans:constructor-arg index="0" value="0.0.0.0"/>
     </beans:bean>
     

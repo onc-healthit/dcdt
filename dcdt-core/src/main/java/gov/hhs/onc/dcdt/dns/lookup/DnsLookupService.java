@@ -4,7 +4,6 @@ import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
 import gov.hhs.onc.dcdt.dns.DnsServiceType;
-import java.util.List;
 import javax.annotation.Nullable;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CERTRecord;
@@ -19,33 +18,33 @@ import org.xbill.DNS.SOARecord;
 import org.xbill.DNS.SRVRecord;
 
 public interface DnsLookupService {
-    public List<ARecord> getARecords(Name dnsName) throws DnsException;
+    public DnsLookupResult<ARecord> lookupARecords(Name name) throws DnsException;
 
-    public List<CERTRecord> getCertRecords(Name dnsName) throws DnsException;
+    public DnsLookupResult<CERTRecord> lookupCertRecords(Name name) throws DnsException;
 
-    public List<CNAMERecord> getCnameRecords(Name dnsName) throws DnsException;
+    public DnsLookupResult<CNAMERecord> lookupCnameRecords(Name name) throws DnsException;
 
-    public List<MXRecord> getMxRecords(Name dnsName) throws DnsException;
+    public DnsLookupResult<MXRecord> lookupMxRecords(Name name) throws DnsException;
 
-    public List<NSRecord> getNsRecords(Name dnsName) throws DnsException;
+    public DnsLookupResult<NSRecord> lookupNsRecords(Name name) throws DnsException;
 
-    public List<SOARecord> getSoaRecords(Name dnsName) throws DnsException;
+    public DnsLookupResult<SOARecord> lookupSoaRecords(Name name) throws DnsException;
 
-    public List<SRVRecord> getSrvRecords(DnsServiceType dnsServiceType, DnsServiceProtocol dnsServiceProtocol, Name dnsName) throws DnsException;
+    public DnsLookupResult<SRVRecord> lookupSrvRecords(DnsServiceType serviceType, DnsServiceProtocol serviceProtocol, Name name) throws DnsException;
 
-    @SuppressWarnings({ "unchecked" })
-    public <T extends Record> List<T> getRecords(Class<T> dnsRecordClass, DnsRecordType dnsRecordType, Name dnsName) throws DnsException;
+    public <T extends Record> DnsLookupResult<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name) throws DnsException;
 
-    public boolean hasDnsCache();
+    public boolean hasCache();
 
     @Nullable
-    public Cache getDnsCache();
+    public Cache getCache();
 
-    public void setDnsCache(@Nullable Cache dnsCache);
+    public void setCache(@Nullable Cache cache);
 
-    public boolean hasDnsResolvers();
+    public boolean hasResolver();
 
-    public List<Resolver> getDnsResolvers();
+    @Nullable
+    public Resolver getResolver();
 
-    public void setDnsResolvers(@Nullable Iterable<? extends Resolver> dnsResolvers);
+    public void setResolver(@Nullable Resolver resolver);
 }

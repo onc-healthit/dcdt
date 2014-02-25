@@ -27,17 +27,15 @@
     = INSTANCE DNS CERT RECORD CONFIG
     =====================================================================================================-->
     <beans:bean id="instanceDnsCertRecordConfig" parent="certRecordConfigImpl" abstract="true"/>
-    <beans:bean id="instanceDnsCertRecordConfigIpkix" parent="instanceDnsCertRecordConfig" abstract="true"
-        p:keyAlgorithm="INDIRECT"
-        p:certificateType="IPKIX"/>
-    <beans:bean id="instanceDnsCertRecordConfigPkix" parent="instanceDnsCertRecordConfig" abstract="true"
-        p:keyAlgorithm="RSASHA1"
+    
+    <beans:bean id="instanceDnsCertRecordConfigPkix" parent="instanceDnsCertRecordConfig" lazy-init="true" scope="prototype"
         p:certificateType="PKIX"/>
     
     <!--====================================================================================================
     = INSTANCE DNS CNAME RECORD CONFIG
     =====================================================================================================-->
     <beans:bean id="instanceDnsCnameRecordConfig" parent="cnameRecordConfigImpl" abstract="true"/>
+    
     <beans:bean id="instanceDnsCnameRecordConfigWww" parent="instanceDnsCnameRecordConfig" abstract="true"
         p:name="www"/>
     
@@ -51,6 +49,7 @@
     =====================================================================================================-->
     <beans:bean id="instanceDnsNsRecordConfig1" parent="nsRecordConfigImpl" abstract="true"
         p:target="ns1.#{ instanceConfig.domainName }"/>
+    
     <beans:bean id="instanceDnsNsRecordConfig2" parent="nsRecordConfigImpl" abstract="true"
         p:target="ns2.#{ instanceConfig.domainName }"/>
     
@@ -58,162 +57,319 @@
     = INSTANCE DNS SOA RECORD CONFIG
     =====================================================================================================-->
     <beans:bean id="instanceDnsSoaRecordConfig" parent="soaRecordConfigImpl" abstract="true"
-        p:admin="hostmaster.#{ instanceConfig.domainName }"/>
+        p:admin="hostmaster.#{ instanceConfig.domainName }"
+        p:host="ns1.#{ instanceConfig.domainName }"/>
     
     <!--====================================================================================================
     = INSTANCE DNS SRV RECORD CONFIG
     =====================================================================================================-->
-    <beans:bean id="instanceDnsSrvLdapRecordConfig" parent="ldapSrvRecordConfig" abstract="true"
+    <beans:bean id="instanceDnsSrvRecordConfigLdap" parent="srvRecordConfigLdap" abstract="true"
         p:target="#{ instanceDomainConfigLdap.domainName }"/>
-    <beans:bean id="instanceDnsSrvLdapRecordConfig1" parent="instanceDnsSrvLdapRecordConfig" abstract="true"
+    
+    <beans:bean id="instanceDnsSrvRecordConfigLdap1" parent="instanceDnsSrvRecordConfigLdap" abstract="true"
         p:port="#{ instanceLdapConfig1.bindPort }"/>
-    <beans:bean id="instanceDnsSrvLdapRecordConfig2" parent="instanceDnsSrvLdapRecordConfig" abstract="true"
+    
+    <beans:bean id="instanceDnsSrvRecordConfigLdap2" parent="instanceDnsSrvRecordConfigLdap" abstract="true"
         p:port="#{ instanceLdapConfig2.bindPort }"
         p:priority="1"/>
-    <beans:bean id="instanceDnsSrvLdapRecordConfig3" parent="instanceDnsSrvLdapRecordConfig" abstract="true"
+    
+    <beans:bean id="instanceDnsSrvRecordConfigLdap3" parent="instanceDnsSrvRecordConfigLdap" abstract="true"
         p:port="#{ instanceLdapConfig3.bindPort }"
         p:weight="100"/>
-    <beans:bean id="instanceDnsSrvLdapRecordConfigUnavailable" parent="instanceDnsSrvLdapRecordConfig1" abstract="true"
+    
+    <beans:bean id="instanceDnsSrvRecordConfigLdapUnavailable" parent="instanceDnsSrvRecordConfigLdap1" abstract="true"
         p:target="ldap-unavailable.#{ instanceConfig.domainName }"/>
     
     <!--====================================================================================================
     = INSTANCE DNS CONFIG
     =====================================================================================================-->
     <beans:bean id="instanceDnsConfig" class="gov.hhs.onc.dcdt.config.InstanceDnsConfig" abstract="true"/>
-    <beans:bean id="instanceDnsConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceDnsConfigImpl" parent="instanceDnsConfig" abstract="true">
-        <beans:property name="ARecordConfigs">
-            <beans:list>
-                <beans:bean parent="instanceDnsARecordConfig"/>
-            </beans:list>
-        </beans:property>
-        <beans:property name="certRecordConfigTemplate">
-            <beans:bean parent="instanceDnsCertRecordConfigPkix"/>
-        </beans:property>
-        <beans:property name="nsRecordConfigs">
-            <beans:list>
-                <beans:bean parent="instanceDnsNsRecordConfig1"/>
-                <beans:bean parent="instanceDnsNsRecordConfig2"/>
-            </beans:list>
-        </beans:property>
-        <beans:property name="soaRecordConfig">
-            <beans:bean parent="instanceDnsSoaRecordConfig"/>
-        </beans:property>
-    </beans:bean>
-    
-    <beans:bean id="instanceDnsConfigLeaf" parent="instanceDnsConfigImpl" abstract="true">
-        <beans:property name="mxRecordConfigs">
-            <beans:list>
-                <beans:bean parent="instanceDnsMxRecordConfig"/>
-            </beans:list>
-        </beans:property>
-    </beans:bean>
+    <beans:bean id="instanceDnsConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceDnsConfigImpl" parent="instanceDnsConfig" abstract="true"/>
     
     <beans:bean id="instanceDnsConfigBase" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfigBase.domainName }"
         p:name="#{ instanceDomainConfigBase.name }Dns"
         p:nameDisplay="#{ instanceDomainConfigBase.nameDisplay } DNS">
         <beans:property name="ARecordConfigs">
-            <beans:list merge="true">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
                 <beans:bean parent="instanceDnsARecordConfig"
                     p:name="ns1"/>
                 <beans:bean parent="instanceDnsARecordConfig"
                     p:name="ns2"/>
-            </beans:list>
+            </util:list>
         </beans:property>
         <beans:property name="cnameRecordConfigs">
-            <beans:list merge="true">
+            <util:list>
                 <beans:bean parent="instanceDnsCnameRecordConfigWww"/>
-            </beans:list>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="instanceDnsConfigLdap" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfigLdap.domainName }"
         p:name="#{ instanceDomainConfigLdap.name }Dns"
-        p:nameDisplay="#{ instanceDomainConfigLdap.nameDisplay } DNS"/>
+        p:nameDisplay="#{ instanceDomainConfigLdap.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
+    </beans:bean>
     
-    <beans:bean id="instanceDnsConfig1" parent="instanceDnsConfigLeaf"
+    <beans:bean id="instanceDnsConfig1" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig1.domainName }"
         p:name="#{ instanceDomainConfig1.name }Dns"
         p:nameDisplay="#{ instanceDomainConfig1.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
         <beans:property name="srvRecordConfigs">
-            <beans:list merge="true">
-                <beans:bean parent="instanceDnsSrvLdapRecordConfig1"/>
-            </beans:list>
+            <util:list>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdap1"/>
+            </util:list>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceDnsConfig2" parent="instanceDnsConfigLeaf"
+    <beans:bean id="instanceDnsConfig2" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig2.domainName }"
         p:name="#{ instanceDomainConfig2.name }Dns"
         p:nameDisplay="#{ instanceDomainConfig2.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
         <beans:property name="srvRecordConfigs">
-            <beans:list merge="true">
-                <beans:bean parent="instanceDnsSrvLdapRecordConfig1"/>
-                <beans:bean parent="instanceDnsSrvLdapRecordConfig2"/>
-            </beans:list>
+            <util:list>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdap1"/>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdap2"/>
+            </util:list>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceDnsConfig3" parent="instanceDnsConfigLeaf"
+    <beans:bean id="instanceDnsConfig3" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig3.domainName }"
         p:name="#{ instanceDomainConfig3.name }Dns"
         p:nameDisplay="#{ instanceDomainConfig3.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
         <beans:property name="srvRecordConfigs">
-            <beans:list merge="true">
-                <beans:bean parent="instanceDnsSrvLdapRecordConfigUnavailable"/>
-                <beans:bean parent="instanceDnsSrvLdapRecordConfig2"/>
-            </beans:list>
+            <util:list>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdapUnavailable"/>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdap2"/>
+            </util:list>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceDnsConfig4" parent="instanceDnsConfigLeaf"
+    <beans:bean id="instanceDnsConfig4" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig4.domainName }"
         p:name="#{ instanceDomainConfig4.name }Dns"
         p:nameDisplay="#{ instanceDomainConfig4.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
         <beans:property name="srvRecordConfigs">
-            <beans:list merge="true">
-                <beans:bean parent="instanceDnsSrvLdapRecordConfig1"/>
-            </beans:list>
+            <util:list>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdap1"/>
+            </util:list>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceDnsConfig5" parent="instanceDnsConfigLeaf"
+    <beans:bean id="instanceDnsConfig5" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig5.domainName }"
         p:name="#{ instanceDomainConfig5.name }Dns"
         p:nameDisplay="#{ instanceDomainConfig5.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
         <beans:property name="srvRecordConfigs">
-            <beans:list merge="true">
-                <beans:bean parent="instanceDnsSrvLdapRecordConfig1"/>
-                <beans:bean parent="instanceDnsSrvLdapRecordConfig3"/>
-            </beans:list>
+            <util:list>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdap1"/>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdap3"/>
+            </util:list>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceDnsConfig6" parent="instanceDnsConfigLeaf"
+    <beans:bean id="instanceDnsConfig6" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig6.domainName }"
         p:name="#{ instanceDomainConfig6.name }Dns"
-        p:nameDisplay="#{ instanceDomainConfig6.nameDisplay } DNS"/>
+        p:nameDisplay="#{ instanceDomainConfig6.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
+    </beans:bean>
     
-    <beans:bean id="instanceDnsConfig7" parent="instanceDnsConfigLeaf"
+    <beans:bean id="instanceDnsConfig7" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig7.domainName }"
         p:name="#{ instanceDomainConfig7.name }Dns"
         p:nameDisplay="#{ instanceDomainConfig7.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
         <beans:property name="srvRecordConfigs">
-            <beans:list merge="true">
-                <beans:bean parent="instanceDnsSrvLdapRecordConfigUnavailable"/>
-            </beans:list>
+            <util:list>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdapUnavailable"/>
+            </util:list>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceDnsConfig8" parent="instanceDnsConfigLeaf"
+    <beans:bean id="instanceDnsConfig8" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig8.domainName }"
         p:name="#{ instanceDomainConfig8.name }Dns"
         p:nameDisplay="#{ instanceDomainConfig8.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
         <beans:property name="srvRecordConfigs">
-            <beans:list merge="true">
-                <beans:bean parent="instanceDnsSrvLdapRecordConfig1"/>
-            </beans:list>
+            <util:list>
+                <beans:bean parent="instanceDnsSrvRecordConfigLdap1"/>
+            </util:list>
         </beans:property>
     </beans:bean>
 </beans:beans>

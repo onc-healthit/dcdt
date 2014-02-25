@@ -11,6 +11,6 @@ public class MailServiceWrapperImpl extends AbstractToolServiceWrapper<MailServi
     }
 
     public static void main(String ... args) {
-        new MailServiceWrapperImpl(args).run();
+        new MailServiceWrapperImpl(args).start();
     }
 }

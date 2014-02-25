@@ -8,7 +8,7 @@ import javax.annotation.Nonnegative;
 public interface ToolBoundBean extends ToolNamedBean {
     public InetSocketAddress getBindSocketAddress();
 
-    @JsonProperty("bindSocketAddr")
+    @JsonProperty("bindAddr")
     public InetAddress getBindAddress();
 
     public void setBindAddress(InetAddress bindAddr);

@@ -5,8 +5,8 @@ import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.config.InstanceConfigRegistry;
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
+import gov.hhs.onc.dcdt.utils.ToolDateUtils;
 import java.net.InetAddress;
-import org.apache.commons.lang3.time.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
@@ -38,7 +38,7 @@ public abstract class AbstractToolServiceFunctionalTests<T extends ToolService> 
         this.serviceClass = serviceClass;
     }
 
-    @AfterGroups(groups = { "dcdt.test.func.service.all" }, alwaysRun = true, timeOut = DateUtils.MILLIS_PER_SECOND * 30)
+    @AfterGroups(groups = { "dcdt.test.func.service.all" }, alwaysRun = true, timeOut = ToolDateUtils.MS_IN_SEC * 30)
     public void stopService() {
         if (this.service != null) {
             this.service.stop();

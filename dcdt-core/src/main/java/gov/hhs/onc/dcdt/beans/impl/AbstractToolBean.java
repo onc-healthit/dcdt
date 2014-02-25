@@ -18,6 +18,10 @@ public abstract class AbstractToolBean implements ToolBean {
     protected String beanName;
 
     @Override
+    public void destroy() throws Exception {
+    }
+
+    @Override
     public void afterPropertiesSet() throws Exception {
     }
 

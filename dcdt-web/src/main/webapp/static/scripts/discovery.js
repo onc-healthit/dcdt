@@ -35,17 +35,15 @@ $(document).ready(function () {
                     testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Binding Type", testcaseDiscoveryCred["bindingType"]));
                     
                     testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Type", testcaseDiscoveryCredLocType));
+                    testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Mail Address", testcaseDiscoveryCredLoc["mailAddr"]));
                     
-                    if (testcaseDiscoveryCredLocType == "DNS") {
-                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Domain",
-                            settings["buildDiscoveryTestcaseDnsName"](testcaseDiscoveryCredLoc["instanceDomainConfig"]["domainName"])));
-                    } else if (testcaseDiscoveryCredLocType == "LDAP") {
-                        var testcaseDiscoveryCredLocInstanceLdapConfig = testcaseDiscoveryCredLoc["instanceLdapConfig"];
+                    if (testcaseDiscoveryCredLocType == "LDAP") {
+                        var testcaseDiscoveryCredLocLdapConfig = testcaseDiscoveryCredLoc["ldapConfig"];
                         
-                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Host",
-                            settings["buildDiscoveryTestcaseDnsName"](testcaseDiscoveryCredLocInstanceLdapConfig["host"])));
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Bind Address",
+                            testcaseDiscoveryCredLocLdapConfig["bindAddr"]));
                         testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Port",
-                            testcaseDiscoveryCredLocInstanceLdapConfig["port"]));
+                            testcaseDiscoveryCredLocLdapConfig["bindPort"]));
                     }
                     
                     testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Location", testcaseDiscoveryCredLocElems));

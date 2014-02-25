@@ -125,7 +125,7 @@ public abstract class AbstractChannelListener<T extends SelectableChannel & Netw
         selKey.attach(this.createAttachment());
         selKey.interestOps(this.readOpType.getOperation());
         selKey.selector().wakeup();
-        
+
         return true;
     }
 
@@ -171,7 +171,7 @@ public abstract class AbstractChannelListener<T extends SelectableChannel & Netw
     }
 
     protected W createAttachment() {
-        return ToolBeanFactoryUtils.createBeanOfType(this.appContext, this.attachmentClass);
+        return ToolBeanFactoryUtils.createBeanOfType(this.appContext, this.attachmentClass, this.protocol);
     }
 
     protected T createListenChannel() throws IOException {

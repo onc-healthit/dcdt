@@ -10,17 +10,20 @@ import org.xbill.DNS.Name;
 @JsonTypeInfo(use = Id.NONE)
 public interface MailAddress extends ToolBean {
     @Nullable
+    public MailAddress forBindingType(BindingType bindingType);
+
+    public BindingType getBindingType();
+
+    @Nullable
     public InternetAddress toInternetAddress() throws ToolMailAddressException;
 
     @Nullable
-    public Name toDnsName() throws ToolMailAddressException;
+    public Name toAddressName() throws ToolMailAddressException;
 
     @Nullable
     public String toAddress();
 
     public String[] toAddressParts();
-
-    public BindingType getBindingType();
 
     public boolean hasDomainName();
 

@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.dns.config.impl;
 
-import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithm;
+import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsCertificateType;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
@@ -11,7 +11,7 @@ import org.xbill.DNS.CERTRecord;
 public class CertRecordConfigImpl extends AbstractDnsRecordConfig<CERTRecord> implements CertRecordConfig {
     private byte[] certData;
     private DnsCertificateType certType;
-    private DnsKeyAlgorithm keyAlg;
+    private DnsKeyAlgorithmType keyAlgType;
     private int keyTag;
 
     public CertRecordConfigImpl() {
@@ -20,7 +20,8 @@ public class CertRecordConfigImpl extends AbstractDnsRecordConfig<CERTRecord> im
 
     @Override
     public CERTRecord toRecord() throws DnsException {
-        return new CERTRecord(this.name, this.recordType.getDclass(), this.ttl, this.certType.getType(), this.keyTag, this.keyAlg.getAlgorithm(), this.certData);
+        return new CERTRecord(this.name, this.recordType.getDclassType().getType(), this.ttl, this.certType.getType(), this.keyTag, this.keyAlgType.getType(),
+            this.certData);
     }
 
     @Override
@@ -44,13 +45,13 @@ public class CertRecordConfigImpl extends AbstractDnsRecordConfig<CERTRecord> im
     }
 
     @Override
-    public DnsKeyAlgorithm getKeyAlgorithm() {
-        return this.keyAlg;
+    public DnsKeyAlgorithmType getKeyAlgorithmType() {
+        return this.keyAlgType;
     }
 
     @Override
-    public void setKeyAlgorithm(DnsKeyAlgorithm keyAlg) {
-        this.keyAlg = keyAlg;
+    public void setKeyAlgorithmType(DnsKeyAlgorithmType keyAlgType) {
+        this.keyAlgType = keyAlgType;
     }
 
     @Nonnegative

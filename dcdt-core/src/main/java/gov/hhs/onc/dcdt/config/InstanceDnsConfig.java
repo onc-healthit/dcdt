@@ -37,10 +37,6 @@ public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainBe
 
     public void setARecordConfigs(@Nullable List<ARecordConfig> aRecordConfigs);
 
-    public CertRecordConfig getCertRecordConfigTemplate();
-
-    public void setCertRecordConfigTemplate(CertRecordConfig certRecordConfigTemplate);
-
     public boolean hasCertRecordConfigs();
 
     @Nullable
