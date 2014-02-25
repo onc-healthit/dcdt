@@ -44,24 +44,11 @@ public abstract class AbstractTcpChannelListener<T extends SelectionAttachment, 
     protected boolean processReadOperation(SelectionKey selKey, SocketChannel readChannel, T selAttachment) throws IOException {
         ByteBuffer reqBuffer = selAttachment.getRequestBuffer();
 
-        if (reqBuffer.limit() == 0) {
-            reqBuffer.limit(2);
-        }
-
         if (readChannel.read(reqBuffer) == -1) {
             readChannel.close();
             selKey.cancel();
-
-            return false;
-        }
-
-        if (!reqBuffer.hasRemaining()) {
-            if (reqBuffer.limit() != 2) {
-                return super.processReadOperation(selKey, readChannel, selAttachment);
-            } else {
-                reqBuffer.limit((((reqBuffer.get(0) & 0xFF) << 8) + (reqBuffer.get(1) & 0xFF)));
-                reqBuffer.position(0);
-            }
+        } else if (!reqBuffer.hasRemaining()) {
+            return super.processReadOperation(selKey, readChannel, selAttachment);
         }
 
         selKey.selector().wakeup();
@@ -81,13 +68,5 @@ public abstract class AbstractTcpChannelListener<T extends SelectionAttachment, 
         } else {
             return false;
         }
-    }
-
-    @Override
-    protected T createAttachment() {
-        T attachment = super.createAttachment();
-        attachment.getRequestBuffer().limit(0);
-
-        return attachment;
     }
 }

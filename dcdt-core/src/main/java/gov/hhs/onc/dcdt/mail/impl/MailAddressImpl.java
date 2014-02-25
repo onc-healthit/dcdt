@@ -39,6 +39,20 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
 
     @Nullable
     @Override
+    public MailAddress forBindingType(BindingType bindingType) {
+        BindingType bindingTypeSelf = this.getBindingType();
+
+        return ((bindingTypeSelf.isBound() && bindingType.isBound()) ? ((bindingType == bindingTypeSelf) ? new MailAddressImpl(this.getLocalPart(),
+            this.getDomainNamePart()) : (bindingType.isDomainBound() ? new MailAddressImpl(null, this.getDomainNamePart()) : null)) : null);
+    }
+
+    @Override
+    public BindingType getBindingType() {
+        return (this.hasDomainNamePart() ? (this.hasLocalPart() ? BindingType.ADDRESS : BindingType.DOMAIN) : BindingType.NONE);
+    }
+
+    @Nullable
+    @Override
     public InternetAddress toInternetAddress() throws ToolMailAddressException {
         String addr = this.toAddress();
 
@@ -55,7 +69,11 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
 
     @Nullable
     @Override
-    public Name toDnsName() throws ToolMailAddressException {
+    public Name toAddressName() throws ToolMailAddressException {
+        if (!this.getBindingType().isBound()) {
+            return null;
+        }
+
         String[] addrParts = this.toAddressParts();
 
         try {
@@ -75,11 +93,6 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     @Override
     public String[] toAddressParts() {
         return ArrayUtils.toArray(this.getLocalPart(), this.getDomainNamePart());
-    }
-
-    @Override
-    public BindingType getBindingType() {
-        return this.hasDomainNamePart() ? (this.hasLocalPart() ? BindingType.ADDRESS : BindingType.DOMAIN) : BindingType.NONE;
     }
 
     @Override

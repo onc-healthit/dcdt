@@ -7,6 +7,7 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseService;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialService;
 import java.util.List;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -22,17 +23,27 @@ public class DiscoveryTestcaseFactoryBean extends AbstractToolFactoryBean<Discov
     }
 
     @Override
-    @SuppressWarnings({ "ConstantConditions" })
     protected DiscoveryTestcase createInstance() throws Exception {
-        ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseService.class).loadBean(this.discoveryTestcase)
-            .afterPropertiesSet();
+        // noinspection ConstantConditions
+        ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseService.class).loadBean(this.discoveryTestcase).afterPropertiesSet();
+
+        if (this.discoveryTestcase.hasCredentials()) {
+            DiscoveryTestcaseCredentialService discoveryTestcaseCredService =
+                ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseCredentialService.class);
+
+            // noinspection ConstantConditions
+            for (DiscoveryTestcaseCredential discoveryTestcaseCred : this.discoveryTestcase.getCredentials()) {
+                // noinspection ConstantConditions
+                discoveryTestcaseCredService.loadBean(discoveryTestcaseCred).afterPropertiesSet();
+            }
+        }
 
         return this.discoveryTestcase;
     }
 
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
-        this.appContext = (AbstractApplicationContext) appContext;
+        this.appContext = ((AbstractApplicationContext) appContext);
     }
 
     public void setCredentials(List<DiscoveryTestcaseCredential> creds) {

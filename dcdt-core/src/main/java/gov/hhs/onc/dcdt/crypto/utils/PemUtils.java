@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.PemType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -44,12 +45,20 @@ public abstract class PemUtils {
         }
     }
 
-    public static void writePemContent(OutputStream outStream, PemType pemType, byte[] pemContent) throws CryptographyException {
-        writePemContent(new OutputStreamWriter(outStream), pemType, pemContent);
+    public static byte[] writePemContent(PemType pemType, byte[] data) throws CryptographyException {
+        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+
+        writePemContent(outStream, pemType, data);
+
+        return outStream.toByteArray();
     }
 
-    public static void writePemContent(Writer writer, PemType pemType, byte[] pemContent) throws CryptographyException {
-        writePemObject(writer, new PemObject(pemType.getName(), pemContent));
+    public static void writePemContent(OutputStream outStream, PemType pemType, byte[] data) throws CryptographyException {
+        writePemContent(new OutputStreamWriter(outStream), pemType, data);
+    }
+
+    public static void writePemContent(Writer writer, PemType pemType, byte[] data) throws CryptographyException {
+        writePemObject(writer, new PemObject(pemType.getName(), data));
     }
 
     public static void writePemObject(OutputStream outStream, PemObject pemObj) throws CryptographyException {

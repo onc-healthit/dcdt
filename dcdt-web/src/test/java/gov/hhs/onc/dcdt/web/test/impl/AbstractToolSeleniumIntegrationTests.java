@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.web.test.impl;
 
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolDateUtils;
 import java.net.URL;
-import org.apache.commons.lang3.time.DateUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
@@ -28,7 +28,7 @@ public abstract class AbstractToolSeleniumIntegrationTests extends AbstractToolW
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolSeleniumIntegrationTests.class);
 
-    @BeforeClass(groups = { "dcdt.test.it.web.all" }, timeOut = DateUtils.MILLIS_PER_SECOND * 30)
+    @BeforeClass(groups = { "dcdt.test.it.web.all" }, timeOut = ToolDateUtils.MS_IN_SEC * 30)
     public void buildSeleniumWebDriver() throws Exception {
         if (seleniumWebDriver == null) {
             seleniumWebDriver = new RemoteWebDriver(this.seleniumWebDriverUrlHub, this.seleniumWebDriverDesiredCapabilities);
@@ -37,7 +37,7 @@ public abstract class AbstractToolSeleniumIntegrationTests extends AbstractToolW
         }
     }
 
-    @AfterGroups(groups = { "dcdt.test.it.web.all" }, alwaysRun = true, timeOut = DateUtils.MILLIS_PER_SECOND * 30)
+    @AfterGroups(groups = { "dcdt.test.it.web.all" }, alwaysRun = true, timeOut = ToolDateUtils.MS_IN_SEC * 30)
     public void closeSeleniumWebDriver() throws Exception {
         if (seleniumWebDriver != null) {
             seleniumWebDriver.close();

@@ -15,6 +15,7 @@
         <fileSet>
             <directory>${project.build.outputDirectory}</directory>
             <includes>
+                <include>gov/hhs/onc/dcdt/logback/pattern/ToolThrowableProxyConverter.class</include>
                 <include>gov/hhs/onc/dcdt/logback/pattern/color/ToolPriorityConverter.class</include>
             </includes>
             <outputDirectory>/</outputDirectory>

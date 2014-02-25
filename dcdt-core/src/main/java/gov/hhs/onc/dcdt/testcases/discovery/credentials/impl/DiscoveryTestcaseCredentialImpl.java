@@ -2,9 +2,11 @@ package gov.hhs.onc.dcdt.testcases.discovery.credentials.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
+import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDescription;
@@ -38,6 +40,19 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     private DiscoveryTestcaseCredentialLocation loc;
     private DiscoveryTestcaseCredentialType type;
     private boolean valid = true;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        KeyInfo credKeyInfo;
+        CertificateInfo credCertInfo;
+
+        // noinspection ConstantConditions
+        if (this.hasCredentialInfo() && this.credInfo.hasKeyDescriptor() && !(credKeyInfo = this.credInfo.getKeyDescriptor()).hasPublicKey()
+            && this.credInfo.hasCertificateDescriptor() && (credCertInfo = this.credInfo.getCertificateDescriptor()).hasCertificate()) {
+            // noinspection ConstantConditions
+            credKeyInfo.setPublicKey(credCertInfo.getCertificate().getPublicKey());
+        }
+    }
 
     @Override
     public boolean hasBindingType() {

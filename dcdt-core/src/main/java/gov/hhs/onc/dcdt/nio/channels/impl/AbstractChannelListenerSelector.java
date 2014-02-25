@@ -75,16 +75,26 @@ public abstract class AbstractChannelListenerSelector extends AbstractToolLifecy
     }
 
     @Override
-    protected synchronized void stopInternal() throws Exception {
+    protected void stopInternal() throws Exception {
         if ((this.selectorDaemonTask != null) && !this.selectorDaemonTask.isDone()) {
             this.selectorDaemonTask.cancel(true);
         }
 
-        this.selector.close();
+        for (SelectionKey selKey : this.selector.keys()) {
+            try {
+                selKey.channel().close();
+            } catch (Exception ignored) {
+            }
+        }
+
+        try {
+            this.selector.close();
+        } catch (Exception ignored) {
+        }
     }
 
     @Override
-    protected synchronized void startInternal() throws Exception {
+    protected void startInternal() throws Exception {
         this.selector = Selector.open();
 
         for (ChannelListener<?, ?, ?, ?, ?, ?> channelListener : this.channelListeners) {

@@ -13,7 +13,7 @@ import org.apache.commons.collections4.Predicate;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
 public interface DiscoveryTestcaseCredential extends ToolNamedBean {
-    final static class DiscoveryTestcaseCredentialTypePredicate implements Predicate<DiscoveryTestcaseCredential> {
+    public final static class DiscoveryTestcaseCredentialTypePredicate implements Predicate<DiscoveryTestcaseCredential> {
         public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_CA = new DiscoveryTestcaseCredentialTypePredicate(
             DiscoveryTestcaseCredentialType.CA);
         public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_BACKGROUND = new DiscoveryTestcaseCredentialTypePredicate(
@@ -29,6 +29,7 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
 
         @Override
         public boolean evaluate(DiscoveryTestcaseCredential cred) {
+            // noinspection ConstantConditions
             return cred.hasType() && cred.getType().equals(this.credType);
         }
     }

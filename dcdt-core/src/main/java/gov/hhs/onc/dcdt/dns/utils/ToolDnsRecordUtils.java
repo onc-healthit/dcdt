@@ -1,7 +1,8 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
+import gov.hhs.onc.dcdt.dns.DnsDclassType;
 import gov.hhs.onc.dcdt.dns.DnsException;
-import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithm;
+import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsRuntimeException;
 import gov.hhs.onc.dcdt.dns.config.DnsRecordConfig;
@@ -9,14 +10,18 @@ import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import java.security.PublicKey;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.Date;
 import java.util.EnumSet;
+import java.util.Objects;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.collections4.Transformer;
-import org.xbill.DNS.DClass;
+import org.apache.commons.lang3.StringUtils;
 import org.xbill.DNS.DNSKEYRecord;
 import org.xbill.DNS.DNSKEYRecord.Protocol;
 import org.xbill.DNS.DNSSEC.DNSSECException;
@@ -38,7 +43,9 @@ public abstract class ToolDnsRecordUtils {
         @Override
         @SuppressWarnings({ "unchecked" })
         public T transform(DnsRecordConfig<? extends Record> recordConfig) {
-            return recordConfig.getName().equals(this.record.getName()) ? super.transform(recordConfig) : null;
+            T recordTransformed = super.transform(recordConfig);
+
+            return (((recordTransformed != null) && Objects.equals(recordTransformed.getName(), this.record.getName())) ? recordTransformed : null);
         }
     }
 
@@ -65,31 +72,43 @@ public abstract class ToolDnsRecordUtils {
         }
     }
 
+    public final static DateFormat DATE_FORMAT_SERIAL = new SimpleDateFormat("yyyyMMdd");
+
     @Nonnegative
-    public static int getKeyTag(DnsKeyAlgorithm dnsKeyAlg, PublicKey publicKey) throws DnsException {
+    public static int generateSerial() {
+        return generateSerial(0);
+    }
+
+    @Nonnegative
+    public static int generateSerial(@Nonnegative int seqNum) {
+        return Integer.parseInt(DATE_FORMAT_SERIAL.format(new Date()) + StringUtils.leftPad(Integer.toString(seqNum), 2, Integer.toString(0)));
+    }
+
+    @Nonnegative
+    public static int getKeyTag(DnsKeyAlgorithmType keyAlgType, PublicKey publicKey) throws DnsException {
         try {
-            return new DNSKEYRecord(Name.root, DClass.IN, 0, 0, Protocol.DNSSEC, dnsKeyAlg.getAlgorithm(), publicKey).getFootprint();
+            return new DNSKEYRecord(Name.root, DnsDclassType.IN.getType(), 0, 0, Protocol.DNSSEC, keyAlgType.getType(), publicKey).getFootprint();
         } catch (DNSSECException e) {
-            throw new DnsException(String.format("Unable to get key tag for public key (dnsAlg=%s, class=%s).", dnsKeyAlg.name(),
-                ToolClassUtils.getName(publicKey)), e);
+            throw new DnsException(String.format("Unable to get key tag for public key (class=%s, algType=%s).", ToolClassUtils.getName(publicKey),
+                keyAlgType.name()), e);
         }
     }
 
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T extends Record> Collection<T> findAnswers(T questionRecord,
-        @Nullable Iterable<? extends DnsRecordConfig<? extends Record>> ... recordConfigIterables) {
-        return findAnswers(questionRecord, ToolArrayUtils.asList(recordConfigIterables));
+        @Nullable Iterable<? extends DnsRecordConfig<? extends Record>> ... recordConfigs) {
+        return findAnswers(questionRecord, ToolArrayUtils.asList(recordConfigs));
     }
 
     @SuppressWarnings({ "unchecked" })
     public static <T extends Record> Collection<T> findAnswers(T questionRecord,
-        @Nullable Iterable<? extends Iterable<? extends DnsRecordConfig<? extends Record>>> recordConfigIterables) {
+        @Nullable Iterable<? extends Iterable<? extends DnsRecordConfig<? extends Record>>> recordConfigs) {
         DnsRecordType questionRecordType = ToolDnsRecordUtils.findByType(questionRecord.getType());
 
         return CollectionUtils.emptyIfNull(((questionRecordType != null) ? CollectionUtils.select(CollectionUtils.collect(
-            ToolIteratorUtils.chainedIterator(recordConfigIterables),
-            new DnsRecordConfigAnswerTransformer<>(questionRecordType, (Class<T>) questionRecordType.getRecordClass(), questionRecord)), PredicateUtils
+            ToolIteratorUtils.chainedIterator(recordConfigs),
+            new DnsRecordConfigAnswerTransformer<>(questionRecordType, ((Class<T>) questionRecordType.getRecordClass()), questionRecord)), PredicateUtils
             .notNullPredicate()) : null));
     }
 

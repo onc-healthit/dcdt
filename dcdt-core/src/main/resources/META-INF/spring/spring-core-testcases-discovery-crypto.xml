@@ -22,83 +22,75 @@
     <beans:bean id="discoveryTestcaseCredLocImpl" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialLocationImpl"
         parent="discoveryTestcaseCredLoc" abstract="true"/>
     
-    <beans:bean id="discoveryTestcaseCredLoc1" parent="discoveryTestcaseCredLocImpl" abstract="true"
-        p:instanceDomainConfig-ref="instanceDomainConfig1"/>
-    <beans:bean id="discoveryTestcaseCredLoc1Dns" parent="discoveryTestcaseCredLoc1"
+    <beans:bean id="discoveryTestcaseCredLoc1" parent="discoveryTestcaseCredLocImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLoc1Dns" parent="discoveryTestcaseCredLoc1" abstract="true"
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc1Ldap" parent="discoveryTestcaseCredLoc1" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc1Ldap1" parent="discoveryTestcaseCredLoc1Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig1"/>
+    <beans:bean id="discoveryTestcaseCredLoc1Ldap1" parent="discoveryTestcaseCredLoc1Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig1"/>
     
-    <beans:bean id="discoveryTestcaseCredLoc2" parent="discoveryTestcaseCredLocImpl" abstract="true"
-        p:instanceDomainConfig-ref="instanceDomainConfig2"/>
-    <beans:bean id="discoveryTestcaseCredLoc2Dns" parent="discoveryTestcaseCredLoc2"
+    <beans:bean id="discoveryTestcaseCredLoc2" parent="discoveryTestcaseCredLocImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLoc2Dns" parent="discoveryTestcaseCredLoc2" abstract="true"
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc2Ldap" parent="discoveryTestcaseCredLoc2" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc2Ldap1" parent="discoveryTestcaseCredLoc2Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig1"/>
-    <beans:bean id="discoveryTestcaseCredLoc2Ldap2" parent="discoveryTestcaseCredLoc2Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig2"/>
+    <beans:bean id="discoveryTestcaseCredLoc2Ldap1" parent="discoveryTestcaseCredLoc2Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig1"/>
+    <beans:bean id="discoveryTestcaseCredLoc2Ldap2" parent="discoveryTestcaseCredLoc2Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig2"/>
     
-    <beans:bean id="discoveryTestcaseCredLoc3" parent="discoveryTestcaseCredLocImpl" abstract="true"
-        p:instanceDomainConfig-ref="instanceDomainConfig3"/>
-    <beans:bean id="discoveryTestcaseCredLoc3Dns" parent="discoveryTestcaseCredLoc3"
+    <beans:bean id="discoveryTestcaseCredLoc3" parent="discoveryTestcaseCredLocImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLoc3Dns" parent="discoveryTestcaseCredLoc3" abstract="true"
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc3Ldap" parent="discoveryTestcaseCredLoc3" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc3Ldap1" parent="discoveryTestcaseCredLoc3Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig1"/>
-    <beans:bean id="discoveryTestcaseCredLoc3Ldap2" parent="discoveryTestcaseCredLoc3Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig2"/>
+    <beans:bean id="discoveryTestcaseCredLoc3Ldap1" parent="discoveryTestcaseCredLoc3Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig1"/>
+    <beans:bean id="discoveryTestcaseCredLoc3Ldap2" parent="discoveryTestcaseCredLoc3Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig2"/>
     
-    <beans:bean id="discoveryTestcaseCredLoc4" parent="discoveryTestcaseCredLocImpl" abstract="true"
-        p:instanceDomainConfig-ref="instanceDomainConfig4"/>
-    <beans:bean id="discoveryTestcaseCredLoc4Dns" parent="discoveryTestcaseCredLoc4"
+    <beans:bean id="discoveryTestcaseCredLoc4" parent="discoveryTestcaseCredLocImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLoc4Dns" parent="discoveryTestcaseCredLoc4" abstract="true"
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc4Ldap" parent="discoveryTestcaseCredLoc4" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc4Ldap1" parent="discoveryTestcaseCredLoc4Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig1"/>
+    <beans:bean id="discoveryTestcaseCredLoc4Ldap1" parent="discoveryTestcaseCredLoc4Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig1"/>
     
-    <beans:bean id="discoveryTestcaseCredLoc5" parent="discoveryTestcaseCredLocImpl" abstract="true"
-        p:instanceDomainConfig-ref="instanceDomainConfig5"/>
-    <beans:bean id="discoveryTestcaseCredLoc5Dns" parent="discoveryTestcaseCredLoc5"
+    <beans:bean id="discoveryTestcaseCredLoc5" parent="discoveryTestcaseCredLocImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLoc5Dns" parent="discoveryTestcaseCredLoc5" abstract="true"
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc5Ldap" parent="discoveryTestcaseCredLoc5" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc5Ldap1" parent="discoveryTestcaseCredLoc5Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig1"/>
-    <beans:bean id="discoveryTestcaseCredLoc5Ldap3" parent="discoveryTestcaseCredLoc5Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig3"/>
+    <beans:bean id="discoveryTestcaseCredLoc5Ldap1" parent="discoveryTestcaseCredLoc5Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig1"/>
+    <beans:bean id="discoveryTestcaseCredLoc5Ldap3" parent="discoveryTestcaseCredLoc5Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig3"/>
     
-    <beans:bean id="discoveryTestcaseCredLoc6" parent="discoveryTestcaseCredLocImpl" abstract="true"
-        p:instanceDomainConfig-ref="instanceDomainConfig6"/>
-    <beans:bean id="discoveryTestcaseCredLoc6Dns" parent="discoveryTestcaseCredLoc6"
+    <beans:bean id="discoveryTestcaseCredLoc6" parent="discoveryTestcaseCredLocImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLoc6Dns" parent="discoveryTestcaseCredLoc6" abstract="true"
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc6Ldap" parent="discoveryTestcaseCredLoc6" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc6Ldap1" parent="discoveryTestcaseCredLoc6Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig1"/>
+    <beans:bean id="discoveryTestcaseCredLoc6Ldap1" parent="discoveryTestcaseCredLoc6Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig1"/>
     
-    <beans:bean id="discoveryTestcaseCredLoc7" parent="discoveryTestcaseCredLocImpl" abstract="true"
-        p:instanceDomainConfig-ref="instanceDomainConfig7"/>
-    <beans:bean id="discoveryTestcaseCredLoc7Dns" parent="discoveryTestcaseCredLoc7"
+    <beans:bean id="discoveryTestcaseCredLoc7" parent="discoveryTestcaseCredLocImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLoc7Dns" parent="discoveryTestcaseCredLoc7" abstract="true"
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc7Ldap" parent="discoveryTestcaseCredLoc7" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc7Ldap1" parent="discoveryTestcaseCredLoc7Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig1"/>
+    <beans:bean id="discoveryTestcaseCredLoc7Ldap1" parent="discoveryTestcaseCredLoc7Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig1"/>
     
-    <beans:bean id="discoveryTestcaseCredLoc8" parent="discoveryTestcaseCredLocImpl" abstract="true"
-        p:instanceDomainConfig-ref="instanceDomainConfig8"/>
-    <beans:bean id="discoveryTestcaseCredLoc8Dns" parent="discoveryTestcaseCredLoc8"
+    <beans:bean id="discoveryTestcaseCredLoc8" parent="discoveryTestcaseCredLocImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredLoc8Dns" parent="discoveryTestcaseCredLoc8" abstract="true"
         p:type="DNS"/>
     <beans:bean id="discoveryTestcaseCredLoc8Ldap" parent="discoveryTestcaseCredLoc8" abstract="true"
         p:type="LDAP"/>
-    <beans:bean id="discoveryTestcaseCredLoc8Ldap1" parent="discoveryTestcaseCredLoc8Ldap"
-        p:instanceLdapConfig-ref="instanceLdapConfig1"/>
+    <beans:bean id="discoveryTestcaseCredLoc8Ldap1" parent="discoveryTestcaseCredLoc8Ldap" abstract="true"
+        p:ldapConfig-ref="instanceLdapConfig1"/>
     
     <!--====================================================================================================
     = DISCOVERY TESTCASE CREDENTIALS
@@ -135,7 +127,7 @@
     
     <beans:bean id="discoveryTestcaseKeyConfigLeaf" parent="keyConfigImpl" abstract="true"/>
     <beans:bean id="discoveryTestcaseKeyConfigLeaf4kb" parent="discoveryTestcaseKeyConfigLeaf" abstract="true"
-        p:keySize="4096"/>
+        p:keySize="#{ T(gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm).RSA.keySizeMin * 8 }"/>
     
     <beans:bean id="discoveryTestcaseCertConfigLeaf" parent="certConfigImpl" abstract="true"/>
     <beans:bean id="discoveryTestcaseCertConfigLeafExpired" parent="discoveryTestcaseCertConfigLeaf" abstract="true"

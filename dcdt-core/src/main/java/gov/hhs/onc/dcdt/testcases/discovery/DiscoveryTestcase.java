@@ -13,10 +13,21 @@ import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.Transformer;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseImpl.class) })
 public interface DiscoveryTestcase extends
     ToolTestcase<DiscoveryTestcaseResultConfig, DiscoveryTestcaseResultInfo, DiscoveryTestcaseDescription, DiscoveryTestcaseResult> {
+    public final static class DiscoveryTestcaseCredentialsExtractor implements Transformer<DiscoveryTestcase, List<DiscoveryTestcaseCredential>> {
+        public final static DiscoveryTestcaseCredentialsExtractor INSTANCE = new DiscoveryTestcaseCredentialsExtractor();
+
+        @Nullable
+        @Override
+        public List<DiscoveryTestcaseCredential> transform(DiscoveryTestcase discoveryTestcase) {
+            return discoveryTestcase.getCredentials();
+        }
+    }
+
     public boolean hasTargetCredentials();
 
     @JsonProperty("targetCreds")

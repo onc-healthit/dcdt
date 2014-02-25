@@ -7,13 +7,11 @@ import gov.hhs.onc.dcdt.context.LifecycleStatusType;
 import gov.hhs.onc.dcdt.context.ToolLifecycleException;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import java.util.concurrent.Executors;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
-import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 
 public abstract class AbstractToolLifecycleBean extends AbstractToolBean implements ToolLifecycleBean {
     protected AsyncListenableTaskExecutor taskExec;
@@ -24,12 +22,12 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolLifecycleBean.class);
 
     @Override
-    public synchronized void stop() {
+    public void stop() {
         this.stop(null);
     }
 
     @Override
-    public synchronized void stop(@Nullable Runnable stopCallback) {
+    public void stop(@Nullable Runnable stopCallback) {
         if (this.isRunning()) {
             LifecycleStatusType lifecycleStatusPrev = this.lifecycleStatus;
 
@@ -45,6 +43,11 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
                     this.getBeanName(), this.isAutoStartup(), this.getPhase(), this.lifecycleStatus.name()), e);
             }
 
+            this.lifecycleStatus = LifecycleStatusType.STOPPED;
+
+            LOGGER.debug(String.format("Stopped lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d).", ToolClassUtils.getName(this),
+                this.getBeanName(), this.isAutoStartup(), this.getPhase()));
+
             if (stopCallback != null) {
                 try {
                     this.executeStopCallback(stopCallback);
@@ -57,16 +60,11 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
                         ToolClassUtils.getName(stopCallback)), e);
                 }
             }
-
-            this.lifecycleStatus = LifecycleStatusType.STOPPED;
-
-            LOGGER.debug(String.format("Stopped lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d).", ToolClassUtils.getName(this),
-                this.getBeanName(), this.isAutoStartup(), this.getPhase()));
         }
     }
 
     @Override
-    public synchronized void start() {
+    public void start() {
         if (!this.isRunning()) {
             LifecycleStatusType lifecycleStatusPrev = this.lifecycleStatus;
 
@@ -95,20 +93,18 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        if (this.taskExec == null) {
-            this.taskExec = new ConcurrentTaskExecutor(Executors.newSingleThreadExecutor());
-        }
+    public void destroy() throws Exception {
+        this.stop();
     }
 
-    protected synchronized void executeStopCallback(Runnable stopCallback) throws Exception {
-        this.taskExec.execute(stopCallback);
+    protected void executeStopCallback(Runnable stopCallback) throws Exception {
+        stopCallback.run();
     }
 
-    protected synchronized void stopInternal() throws Exception {
+    protected void stopInternal() throws Exception {
     }
 
-    protected synchronized void startInternal() throws Exception {
+    protected void startInternal() throws Exception {
     }
 
     @Override

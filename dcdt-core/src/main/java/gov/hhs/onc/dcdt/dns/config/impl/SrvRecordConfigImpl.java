@@ -21,7 +21,7 @@ public class SrvRecordConfigImpl extends AbstractPriorityTargetedDnsRecordConfig
     @Override
     public SRVRecord toRecord() throws DnsException {
         return new SRVRecord(ToolDnsNameUtils.fromLabels(this.serviceType.getDnsNameLabel(), this.serviceProtocol.getDnsNameLabel(), this.name),
-            this.recordType.getDclass(), this.ttl, this.priority, this.weight, this.port, this.target);
+            this.recordType.getDclassType().getType(), this.ttl, this.priority, this.weight, this.port, this.target);
     }
 
     @Override

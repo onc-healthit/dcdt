@@ -11,6 +11,6 @@ public class LdapServiceWrapperImpl extends AbstractToolServiceWrapper<LdapServi
     }
 
     public static void main(String ... args) {
-        new LdapServiceWrapperImpl(args).run();
+        new LdapServiceWrapperImpl(args).start();
     }
 }

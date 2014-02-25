@@ -72,7 +72,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D1_valA"
                     p:nameDisplay="D1_valA">
                     <beans:property name="credentialConfig">
@@ -97,10 +96,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="DOMAIN"
-                    p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D1_invB"
                     p:nameDisplay="D1_invB">
                     <beans:property name="credentialConfig">
@@ -124,10 +125,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc1Ldap1"
                     p:name="D1_invC"
                     p:nameDisplay="D1_invC">
                     <beans:property name="credentialConfig">
@@ -151,10 +154,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Ldap1"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="DOMAIN"
-                    p:location-ref="discoveryTestcaseCredLoc1Ldap1"
                     p:name="D1_invD"
                     p:nameDisplay="D1_invD">
                     <beans:property name="credentialConfig">
@@ -177,6 +182,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Ldap1"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -209,7 +217,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="DOMAIN"
-                    p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D2_valB"
                     p:nameDisplay="D2_valB">
                     <beans:property name="credentialConfig">
@@ -234,10 +241,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc1Ldap1"
                     p:name="D2_invC"
                     p:nameDisplay="D2_invC">
                     <beans:property name="credentialConfig">
@@ -261,10 +270,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Ldap1"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="DOMAIN"
-                    p:location-ref="discoveryTestcaseCredLoc1Ldap1"
                     p:name="D2_invD"
                     p:nameDisplay="D2_invD">
                     <beans:property name="credentialConfig">
@@ -287,6 +298,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Ldap1"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -318,7 +332,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
                     p:name="D3_valC"
                     p:nameDisplay="D3_valC">
                     <beans:property name="credentialConfig">
@@ -343,10 +356,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc2Ldap1"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="DOMAIN"
-                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
                     p:name="D3_invD"
                     p:nameDisplay="D3_invD">
                     <beans:property name="credentialConfig">
@@ -370,6 +385,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc2Ldap1"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -401,7 +419,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="DOMAIN"
-                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
                     p:name="D4_valD"
                     p:nameDisplay="D4_valD">
                     <beans:property name="credentialConfig">
@@ -425,6 +442,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc2Ldap1"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -451,7 +471,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D5_invA"
                     p:nameDisplay="D5_invA">
                     <beans:property name="credentialConfig">
@@ -474,6 +493,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -500,7 +522,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
                     p:bindingType="DOMAIN"
-                    p:location-ref="discoveryTestcaseCredLoc4Dns"
                     p:name="D6_invB"
                     p:nameDisplay="D6_invB">
                     <beans:property name="credentialConfig">
@@ -523,6 +544,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc4Dns"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -549,7 +573,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
                     p:name="D7_invC"
                     p:nameDisplay="D7_invC">
                     <beans:property name="credentialConfig">
@@ -573,6 +596,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc2Ldap1"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -599,7 +625,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
                     p:bindingType="DOMAIN"
-                    p:location-ref="discoveryTestcaseCredLoc5Ldap1"
                     p:name="D8_invD"
                     p:nameDisplay="D8_invD">
                     <beans:property name="credentialConfig">
@@ -623,6 +648,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc5Ldap1"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -649,7 +677,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D9_valA"
                     p:nameDisplay="D9_valA">
                     <beans:property name="credentialConfig">
@@ -674,10 +701,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafTargetInvalid"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D9_invA"
                     p:nameDisplay="D9_invA">
                     <beans:property name="credentialConfig">
@@ -700,6 +729,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -736,7 +768,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc3Ldap2"
                     p:name="D10_valE"
                     p:nameDisplay="D10_valE">
                     <beans:property name="credentialConfig">
@@ -760,6 +791,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc3Ldap2"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -858,7 +892,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D14_valA"
                     p:nameDisplay="D14_valA">
                     <beans:property name="credentialConfig">
@@ -885,6 +918,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -917,7 +953,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc1Dns"
                     p:name="D15_valA"
                     p:nameDisplay="D15_valA">
                     <beans:property name="credentialConfig">
@@ -941,6 +976,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -973,7 +1011,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc2Ldap1"
                     p:name="D16_valC"
                     p:nameDisplay="D16_valC">
                     <beans:property name="credentialConfig">
@@ -998,10 +1035,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc2Ldap1"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc2Ldap2"
                     p:name="D16_invE"
                     p:nameDisplay="D16_invE">
                     <beans:property name="credentialConfig">
@@ -1025,6 +1064,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc2Ldap2"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
@@ -1058,7 +1100,6 @@
             <util:list>
                 <beans:bean parent="discoveryTestcaseCredLeafTarget"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc5Ldap3"
                     p:name="D17_valC"
                     p:nameDisplay="D17_valC">
                     <beans:property name="credentialConfig">
@@ -1083,10 +1124,12 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc5Ldap3"/>
+                    </beans:property>
                 </beans:bean>
                 <beans:bean parent="discoveryTestcaseCredLeafBackground"
                     p:bindingType="ADDRESS"
-                    p:location-ref="discoveryTestcaseCredLoc5Ldap1"
                     p:name="D17_valE"
                     p:nameDisplay="D17_valE">
                     <beans:property name="credentialConfig">
@@ -1110,6 +1153,9 @@
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc5Ldap1"/>
                     </beans:property>
                 </beans:bean>
             </util:list>

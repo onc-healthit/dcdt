@@ -14,6 +14,10 @@ public abstract class ToolInetAddressUtils {
 
     public final static Pattern PATTERN_IPV4_ADDR = Pattern.compile(PATTERN_STR_IPV4_ADDR);
 
+    public static InetAddress getConnectionAddress(InetAddress addr) {
+        return addr.isAnyLocalAddress() ? InetAddress.getLoopbackAddress() : addr;
+    }
+
     public static InetAddress getByAddress(String hostAddrStr) throws UnknownHostException {
         return getByAddress(null, hostAddrStr);
     }

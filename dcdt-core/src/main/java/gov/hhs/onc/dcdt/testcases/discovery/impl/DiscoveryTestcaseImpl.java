@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
+import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultConfig;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
@@ -31,18 +33,30 @@ public class DiscoveryTestcaseImpl extends
     private MailAddress mailAddr;
 
     @Override
-    @SuppressWarnings({ "ConstantConditions" })
     public void afterPropertiesSet() throws Exception {
-        if (this.hasCredentials()) {
+        if (this.hasCredentials() && this.hasMailAddress()) {
+            BindingType credBindingType;
+            MailAddress credMailAddrBound;
             CredentialConfig credConfig;
             CertificateConfig credCertConfig;
             CertificateName credCertConfigSubj;
+            DiscoveryTestcaseCredentialLocation credLoc;
 
             for (DiscoveryTestcaseCredential cred : this.creds) {
-                if (cred.hasCredentialConfig() && (credConfig = cred.getCredentialConfig()).hasCertificateDescriptor()
-                    && (credCertConfig = credConfig.getCertificateDescriptor()).hasSubject()
-                    && !(credCertConfigSubj = credCertConfig.getSubject()).hasMailAddress()) {
-                    credCertConfigSubj.setMailAddress(this.mailAddr);
+                // noinspection ConstantConditions
+                if (cred.hasBindingType() && (credBindingType = cred.getBindingType()).isBound()
+                    && ((credMailAddrBound = this.mailAddr.forBindingType(credBindingType)) != null)) {
+                    // noinspection ConstantConditions
+                    if (cred.hasCredentialConfig() && (credConfig = cred.getCredentialConfig()).hasCertificateDescriptor()
+                        && (credCertConfig = credConfig.getCertificateDescriptor()).hasSubject()
+                        && !(credCertConfigSubj = credCertConfig.getSubject()).hasMailAddress()) {
+                        credCertConfigSubj.setMailAddress(credMailAddrBound);
+                    }
+
+                    // noinspection ConstantConditions
+                    if (cred.hasLocation() && !(credLoc = cred.getLocation()).hasMailAddress()) {
+                        credLoc.setMailAddress(credMailAddrBound);
+                    }
                 }
             }
         }
