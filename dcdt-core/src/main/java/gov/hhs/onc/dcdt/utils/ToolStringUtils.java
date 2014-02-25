@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.utils;
 
-
 import java.util.Objects;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
@@ -37,7 +36,7 @@ public abstract class ToolStringUtils {
 
         public StrBuilder appendWithDelimiter(@Nullable Object obj, @Nullable String delim) {
             String objStr = StringUtils.removeStart(Objects.toString(obj, this.getNullText()), delim);
-            
+
             return (objStr != null) ? this.appendDelimiter(delim).append(objStr) : this;
         }
 
@@ -48,6 +47,7 @@ public abstract class ToolStringUtils {
 
     public final static String QUOTE_SINGLE = "'";
     public final static String QUOTE_DBL = "\"";
+    public final static String DELIM_NEW_LINE = "\n";
 
     @Nullable
     public static <T> String joinDelimit(@Nullable T[] objs, @Nullable String delim) {

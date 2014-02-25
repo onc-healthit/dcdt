@@ -16,6 +16,9 @@ public abstract class AbstractToolController extends AbstractToolBean implements
     @Resource(name = "messageSourceValidation")
     protected MessageSource msgSourceValidation;
 
+    @Resource(name = "messageSource")
+    protected MessageSource msgSource;
+
     protected AbstractApplicationContext appContext;
 
     @Override

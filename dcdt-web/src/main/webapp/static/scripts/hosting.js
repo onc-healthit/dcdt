@@ -28,10 +28,12 @@
             },
             "displayHostingTestcaseResults": function (data) {
                 var hostingTestcaseResult = data["items"][0];
-                var successful = hostingTestcaseResult["successful"];
-                var message = hostingTestcaseResult["msg"];
                 var resultConfig = hostingTestcaseResult["resultConfig"];
                 var resultSteps = resultConfig["results"];
+                var resultInfo = hostingTestcaseResult["resultInfo"];
+                var successful = resultInfo["successful"];
+                var message = resultInfo["msg"];
+                var certStr = resultInfo["certStr"];
 
                 var hostingTestcase = hostingTestcaseSub["hostingTestcase"];
                 var directAddr = hostingTestcaseSub["directAddr"];
@@ -40,8 +42,9 @@
                 $.fn.dcdt.testcases.appendTestcaseResults(header, "Testcase: ", hostingTestcase);
                 $.fn.dcdt.testcases.appendTestcaseResults(header, "Direct Address: ", directAddr);
                 var result = $("<div/>");
-                $.fn.dcdt.testcases.appendTestcaseResults(result, "Successful: ", successful);
-                $.fn.dcdt.testcases.appendTestcaseResults(result, "Message: ", message);
+                $.fn.dcdt.testcases.appendTestcaseResults(result, "Successful: ", successful, true);
+                $.fn.dcdt.testcases.appendTestcaseResults(result, "Message: ", message, true);
+                $.fn.dcdt.testcases.appendTestcaseResults(result, "Certificate Found: ", certStr, true);
                 $.fn.dcdt.testcases.appendTestcaseResults(result, "Expected Results: ", "<br/>");
                 $.fn.dcdt.testcases.buildTestcaseResultSteps(result, resultSteps);
 

@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.mail.BindingType;
+import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStep;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStepDescription;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultType;
@@ -10,6 +12,8 @@ import javax.annotation.Nullable;
 public abstract class AbstractToolTestcaseResultStep extends AbstractToolBean implements ToolTestcaseResultStep {
     protected ToolTestcaseResultStepDescription description;
     protected ToolTestcaseResultType resultType;
+    protected BindingType bindingType;
+    protected LocationType locationType;
     protected boolean successful;
     protected String message;
 
@@ -37,6 +41,26 @@ public abstract class AbstractToolTestcaseResultStep extends AbstractToolBean im
     @Override
     public void setResultType(ToolTestcaseResultType resultType) {
         this.resultType = resultType;
+    }
+
+    @Override
+    public BindingType getBindingType() {
+        return this.bindingType;
+    }
+
+    @Override
+    public void setBindingType(BindingType bindingType) {
+        this.bindingType = bindingType;
+    }
+
+    @Override
+    public LocationType getLocationType() {
+        return this.locationType;
+    }
+
+    @Override
+    public void setLocationType(LocationType locationType) {
+        this.locationType = locationType;
     }
 
     @Override

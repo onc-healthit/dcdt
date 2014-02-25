@@ -15,18 +15,22 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <!--====================================================================================================
-    = LDAP LOOKUP
-    =====================================================================================================-->
-    <beans:bean id="ldapLookupService" class="gov.hhs.onc.dcdt.ldap.LdapLookupService" abstract="true"/>
-    <beans:bean id="ldapLookupServiceImpl" class="gov.hhs.onc.dcdt.ldap.impl.LdapLookupServiceImpl" parent="ldapLookupService"/>
+    <beans:bean id="testSrvRecordConfig" parent="ldapSrvRecordConfig" abstract="true"
+        p:name="${dcdt.test.lookup.domain.1.name}."
+        p:port="${dcdt.test.ldap.lookup.port}"
+        p:target="${dcdt.test.ldap.lookup.host}."/>
+    <beans:bean id="testSrvRecordConfig1" parent="testSrvRecordConfig"
+        p:priority="${dcdt.test.ldap.lookup.priority.1}"
+        p:weight="${dcdt.test.ldap.lookup.weight.1}"/>
+    <beans:bean id="testSrvRecordConfig2" parent="testSrvRecordConfig"
+        p:priority="${dcdt.test.ldap.lookup.priority.1}"/>
+    <beans:bean id="testSrvRecordConfig3" parent="testSrvRecordConfig"
+        p:priority="${dcdt.test.ldap.lookup.priority.2}"
+        p:weight="${dcdt.test.ldap.lookup.weight.1}"/>
 
-    <!--====================================================================================================
-    = LDAP BIND CONFIG
-    =====================================================================================================-->
-    <beans:bean id="ldapBindConfig" class="gov.hhs.onc.dcdt.ldap.LdapBindConfig" abstract="true"/>
-    <beans:bean id="ldapBindConfigImpl" class="gov.hhs.onc.dcdt.ldap.impl.LdapBindConfigImpl" parent="ldapBindConfig" abstract="true"/>
-    
-    <beans:bean id="ldapBindConfigAnon" parent="ldapBindConfigImpl" abstract="true"
-        p:anonymous="true"/>
+    <util:list id="testSrvRecordConfigs">
+        <beans:ref bean="testSrvRecordConfig1"/>
+        <beans:ref bean="testSrvRecordConfig2"/>
+        <beans:ref bean="testSrvRecordConfig3"/>
+    </util:list>
 </beans:beans>
