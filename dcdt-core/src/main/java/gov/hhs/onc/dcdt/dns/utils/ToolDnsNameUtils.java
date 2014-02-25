@@ -16,6 +16,7 @@ public abstract class ToolDnsNameUtils {
     public final static String PATTERN_STR_DNS_NAME_LBL_LEN = "(?<=.*{1,252})";
     public final static String PATTERN_STR_DNS_NAME_LBL = "(?:(?i:\\w{1,62}|\\w[\\w\\-]{1,60}\\w)" + PATTERN_STR_DNS_NAME_LBL_LEN + ")";
     public final static String PATTERN_STR_DNS_NAME_DELIM = "\\.";
+    public final static String DNS_NAME_DELIM = ".";
 
     /**
      * Derived from the rules defined in:

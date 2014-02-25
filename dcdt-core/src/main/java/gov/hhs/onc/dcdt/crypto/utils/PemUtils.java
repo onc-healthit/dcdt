@@ -16,6 +16,14 @@ import org.bouncycastle.util.io.pem.PemObject;
 import org.bouncycastle.util.io.pem.PemWriter;
 
 public abstract class PemUtils {
+    public static byte[] readPemContent(byte[] data, String pemType) throws CryptographyException {
+        return readPemObject(data, pemType).getContent();
+    }
+
+    public static PemObject readPemObject(byte[] data, String pemType) {
+        return new PemObject(pemType, data);
+    }
+
     public static byte[] readPemContent(byte[] data) throws CryptographyException {
         return readPemContent(new ByteArrayInputStream(data));
     }

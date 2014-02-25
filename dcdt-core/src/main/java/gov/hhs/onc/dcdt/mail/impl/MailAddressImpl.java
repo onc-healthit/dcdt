@@ -58,6 +58,24 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
         return ToolMailAddressUtils.joinParts(this.toAddressParts());
     }
 
+    @Nullable
+    @Override
+    public String toAddress(BindingType bindingType) {
+        String addrStr = null;
+
+        switch (bindingType) {
+            case ADDRESS:
+                addrStr = this.toAddress();
+                break;
+            case DOMAIN:
+                addrStr = this.getDomainNamePart();
+                break;
+            default:
+                break;
+        }
+        return addrStr;
+    }
+
     @Override
     public String[] toAddressParts() {
         return ArrayUtils.toArray(this.getLocalPart(), this.getDomainNamePart());
@@ -66,6 +84,48 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     @Override
     public BindingType getBindingType() {
         return this.hasLocalPart() ? BindingType.ADDRESS : (this.hasDomainNamePart() ? BindingType.DOMAIN : BindingType.NONE);
+    }
+
+    @Override
+    public boolean hasAddressName() {
+        try {
+            return this.getAddressName() != null;
+        } catch (ToolMailAddressException ignored) {
+        }
+
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public Name getAddressName() throws ToolMailAddressException {
+        if (this.toAddress() != null) {
+            try {
+                return ToolDnsNameUtils.fromString(this.toAddress().replace(ToolMailAddressUtils.DELIM_MAIL_ADDR_PARTS, ToolDnsNameUtils.DNS_NAME_DELIM));
+            } catch (DnsNameException e) {
+                throw new ToolMailAddressException(String.format("Unable to get mail address from string: %s", this.toAddress()), e);
+            }
+        }
+        return Name.empty;
+    }
+
+    @Nullable
+    @Override
+    public Name toAddressName(BindingType bindingType) throws ToolMailAddressException {
+        Name addrName = null;
+
+        switch (bindingType) {
+            case ADDRESS:
+                addrName = this.getAddressName();
+                break;
+            case DOMAIN:
+                addrName = this.getDomainName();
+                break;
+            default:
+                break;
+        }
+
+        return addrName;
     }
 
     @Override

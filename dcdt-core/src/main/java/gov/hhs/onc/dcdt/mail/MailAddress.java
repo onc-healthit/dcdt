@@ -15,9 +15,20 @@ public interface MailAddress extends ToolBean {
     @Nullable
     public String toAddress();
 
+    @Nullable
+    public String toAddress(BindingType bindingType);
+
     public String[] toAddressParts();
 
     public BindingType getBindingType();
+
+    public boolean hasAddressName();
+
+    @Nullable
+    public Name getAddressName() throws ToolMailAddressException;
+
+    @Nullable
+    public Name toAddressName(BindingType bindingType) throws ToolMailAddressException;
 
     public boolean hasDomainName();
 

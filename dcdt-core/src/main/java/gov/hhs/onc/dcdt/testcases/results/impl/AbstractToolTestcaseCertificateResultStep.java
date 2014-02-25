@@ -1,17 +1,15 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
+import javax.annotation.Nullable;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
-import gov.hhs.onc.dcdt.mail.BindingType;
-import gov.hhs.onc.dcdt.testcases.LocationType;
+import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
+import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultStep;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
-import javax.annotation.Nullable;
 
-public class ToolTestcaseCertificateResultStepImpl extends AbstractToolTestcaseResultStep implements ToolTestcaseCertificateResultStep {
+public abstract class AbstractToolTestcaseCertificateResultStep extends AbstractToolTestcaseResultStep implements ToolTestcaseCertificateResultStep {
     private CertificateInfo certificateInfo;
     private ToolTestcaseCertificateResultType certStatus;
-    private LocationType locationType;
-    private BindingType bindingType;
 
     @Override
     public boolean hasCertificateInfo() {
@@ -40,22 +38,12 @@ public class ToolTestcaseCertificateResultStepImpl extends AbstractToolTestcaseR
     }
 
     @Override
-    public LocationType getLocationType() {
-        return this.locationType;
-    }
+    public void updateCertificateStatus(byte[] certData) {
+        CertificateInfo certificateInfo = new CertificateInfoImpl();
+        this.setCertificateStatus(CertificateUtils.processCertificateData(certData, certificateInfo));
 
-    @Override
-    public void setLocationType(LocationType locationType) {
-        this.locationType = locationType;
-    }
-
-    @Override
-    public BindingType getBindingType() {
-        return this.bindingType;
-    }
-
-    @Override
-    public void setBindingType(BindingType bindingType) {
-        this.bindingType = bindingType;
+        if (this.certStatus == ToolTestcaseCertificateResultType.VALID_CERT) {
+            this.certificateInfo = certificateInfo;
+        }
     }
 }
