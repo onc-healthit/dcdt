@@ -3,8 +3,10 @@ package gov.hhs.onc.dcdt.crypto.utils;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.PemType;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -21,6 +23,7 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Date;
 import javax.annotation.Nullable;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -51,7 +54,7 @@ public abstract class CertificateUtils {
     public static X509Certificate readCertificate(byte[] data, CertificateType certType, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.readPemContent(data);
+                data = PemUtils.writePemContent(certType.getName(), data);
             }
 
             return (X509Certificate) getCertificateFactory(certType).generateCertificate(new ByteArrayInputStream(data));
@@ -107,5 +110,19 @@ public abstract class CertificateUtils {
                 "Unable to get certificate factory instance for certificate type (name=%s, providerName=%s).", certType.getName(),
                 CryptographyUtils.PROVIDER_NAME), e);
         }
+    }
+
+    public static ToolTestcaseCertificateResultType processCertificateData(byte[] certData, CertificateInfo certInfo) {
+        try {
+            certInfo.setCertificate(CertificateUtils.readCertificate(certData, CertificateType.X509, DataEncoding.PEM));
+            return validateCertificate(certInfo);
+        } catch (CryptographyException e) {
+            return ToolTestcaseCertificateResultType.UNREADABLE_CERT_DATA;
+        }
+    }
+
+    public static ToolTestcaseCertificateResultType validateCertificate(CertificateInfo certInfo) {
+        // TODO: add more validations
+        return certInfo.getValidInterval().isValid(new Date()) ? ToolTestcaseCertificateResultType.VALID_CERT : ToolTestcaseCertificateResultType.EXPIRED_CERT;
     }
 }

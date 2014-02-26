@@ -92,7 +92,7 @@ public abstract class KeyUtils {
     public static Key readKey(KeyType keyType, byte[] data, KeyAlgorithm keyAlg, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.readPemContent(data);
+                data = PemUtils.writePemContent(keyType.getName(), data);
             }
 
             return (Key) SerializationUtils.deserialize(SerializationUtils.serialize(new KeyRep(keyType.getKeyRepType(), keyAlg.getName(), keyAlg

@@ -50,7 +50,7 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     public BindingType getBindingType() {
         return (this.hasDomainNamePart() ? (this.hasLocalPart() ? BindingType.ADDRESS : BindingType.DOMAIN) : BindingType.NONE);
     }
-
+    
     @Nullable
     @Override
     public InternetAddress toInternetAddress() throws ToolMailAddressException {
@@ -65,6 +65,29 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
         } catch (AddressException e) {
             throw new ToolMailAddressException(String.format("Unable to get Internet mail address from mail address string: %s", addr), e);
         }
+    }
+
+    @Override
+    public boolean hasAddressName() {
+        try {
+            return this.getAddressName() != null;
+        } catch (ToolMailAddressException ignored) {
+        }
+
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public Name getAddressName() throws ToolMailAddressException {
+        if (this.toAddress() != null) {
+            try {
+                return ToolDnsNameUtils.fromString(this.toAddress().replace(ToolMailAddressUtils.DELIM_MAIL_ADDR_PARTS, ToolDnsNameUtils.DNS_NAME_DELIM));
+            } catch (DnsNameException e) {
+                throw new ToolMailAddressException(String.format("Unable to get mail address from string: %s", this.toAddress()), e);
+            }
+        }
+        return Name.empty;
     }
 
     @Nullable
@@ -86,8 +109,45 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
 
     @Nullable
     @Override
+    public Name toAddressName(BindingType bindingType) throws ToolMailAddressException {
+        Name addrName = null;
+
+        switch (bindingType) {
+            case ADDRESS:
+                addrName = this.getAddressName();
+                break;
+            case DOMAIN:
+                addrName = this.getDomainName();
+                break;
+            default:
+                break;
+        }
+
+        return addrName;
+    }
+    
+    @Nullable
+    @Override
     public String toAddress() {
         return ToolMailAddressUtils.joinParts(this.toAddressParts());
+    }
+
+    @Nullable
+    @Override
+    public String toAddress(BindingType bindingType) {
+        String addrStr = null;
+
+        switch (bindingType) {
+            case ADDRESS:
+                addrStr = this.toAddress();
+                break;
+            case DOMAIN:
+                addrStr = this.getDomainNamePart();
+                break;
+            default:
+                break;
+        }
+        return addrStr;
     }
 
     @Override

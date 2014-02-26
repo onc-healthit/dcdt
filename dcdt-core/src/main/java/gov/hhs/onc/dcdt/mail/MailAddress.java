@@ -17,12 +17,23 @@ public interface MailAddress extends ToolBean {
     @Nullable
     public InternetAddress toInternetAddress() throws ToolMailAddressException;
 
+    public boolean hasAddressName();
+
+    @Nullable
+    public Name getAddressName() throws ToolMailAddressException;
+    
     @Nullable
     public Name toAddressName() throws ToolMailAddressException;
 
     @Nullable
     public String toAddress();
 
+    @Nullable
+    public String toAddress(BindingType bindingType);
+
+    @Nullable
+    public Name toAddressName(BindingType bindingType) throws ToolMailAddressException;
+    
     public String[] toAddressParts();
 
     public boolean hasDomainName();

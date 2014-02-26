@@ -33,13 +33,13 @@
         <tbody>
             <tr>
                 <td><b>My system stores address-bound certificates</b></td>
-                <td>H1, H6, H7, H8</td>
-                <td>H3, H5, H9</td>
+                <td>H1</td>
+                <td>H3, H5</td>
             </tr>
             <tr>
                 <td><b>My system stores domain-bound certificates</b></td>
-                <td>H2, H6, H7, H8</td>
-                <td>H4, H5, H9</td>
+                <td>H2</td>
+                <td>H4, H5</td>
             </tr>
         </tbody>
     </table>
