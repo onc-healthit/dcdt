@@ -17,15 +17,4 @@ public interface ToolTestcaseResult<T extends ToolTestcaseResultConfig, U extend
     public U getResultInfo();
 
     public void setResultInfo(@Nullable U resultInfo);
-
-    public boolean isSuccessful();
-
-    public void setSuccessful(boolean successful);
-
-    public boolean hasMessage();
-
-    @Nullable
-    public String getMessage();
-
-    public void setMessage(@Nullable String message);
 }

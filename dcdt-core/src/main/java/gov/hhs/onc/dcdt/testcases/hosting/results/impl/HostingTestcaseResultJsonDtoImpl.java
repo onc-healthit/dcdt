@@ -25,11 +25,6 @@ public class HostingTestcaseResultJsonDtoImpl extends
         super(HostingTestcaseResult.class, HostingTestcaseResultImpl.class);
     }
 
-    @Override
-    public boolean hasResultConfig() {
-        return this.resultConfig != null;
-    }
-
     @Nullable
     @Override
     public HostingTestcaseResultConfig getResultConfig() {
@@ -39,11 +34,6 @@ public class HostingTestcaseResultJsonDtoImpl extends
     @Override
     public void setResultConfig(@Nullable HostingTestcaseResultConfig resultConfig) {
         this.resultConfig = resultConfig;
-    }
-
-    @Override
-    public boolean hasResultInfo() {
-        return this.resultInfo != null;
     }
 
     @Nullable

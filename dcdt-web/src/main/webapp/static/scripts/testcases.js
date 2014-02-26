@@ -68,13 +68,13 @@
                     stepElem.append($("<li/>").append($("<b/>").append(testcaseResultStep["desc"]["text"])));
                     stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Successful: ", testcaseResultStep["successful"]));
                     stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Result Type: ", resultType));
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Binding Type: ", testcaseResultStep["bindingType"]));
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Location Type: ", testcaseResultStep["locationType"]));
                     switch(resultType){
                         case "DNS_LOOKUP":
                             stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "DNS Record Type: ", testcaseResultStep["dnsRecordType"]));
                             break;
                         case "CERT_LOOKUP":
-                            stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Location Type: ", testcaseResultStep["locationType"]));
-                            stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Binding Type: ", testcaseResultStep["bindingType"]));
                             stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Certificate Status: ", testcaseResultStep["certStatus"]));
                             break;
                         default: break;
@@ -102,8 +102,14 @@
             "testcaseSelect": function () {
                 return $(this).find("select#testcase-select");
             },
-            "appendTestcaseResults": function (elem, testcaseLbl, testcaseValue) {
-                elem.append($("<b/>").text(testcaseLbl), testcaseValue + "<br/>");
+            "appendTestcaseResults": function (elem, testcaseLbl, testcaseValue, hasLineBreak) {
+                elem.append($("<b/>").text(testcaseLbl));
+                $.isNull(testcaseValue) ? elem.append($("<i/>").text("None")) :
+                    ($.isBoolean(testcaseValue) ? elem.append(testcaseValue.toString()) : elem.append(testcaseValue));
+                if(!$.isUndefined(hasLineBreak)) {
+                    elem.append("<br/>");
+                }
+                elem.append(("<br/>"));
             }
         })
     });

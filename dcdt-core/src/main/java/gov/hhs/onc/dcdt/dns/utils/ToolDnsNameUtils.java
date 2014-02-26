@@ -13,12 +13,14 @@ import org.xbill.DNS.NameTooLongException;
 import org.xbill.DNS.TextParseException;
 
 public abstract class ToolDnsNameUtils {
-    public final static String PATTERN_STR_DNS_NAME_LBL_LEN = "(?<=.*{1,252})";
     public final static String PATTERN_STR_DNS_NAME_LBL_CHAR = "[\\w&&[^_]]";
-    public final static String PATTERN_STR_DNS_NAME_LBL_CHAR_INNER = "[" + PATTERN_STR_DNS_NAME_LBL_CHAR + "&&[\\-]]";
-    public final static String PATTERN_STR_DNS_NAME_LBL = "(?:(?i:" + PATTERN_STR_DNS_NAME_LBL_CHAR + "{1,62}|" + PATTERN_STR_DNS_NAME_LBL_CHAR
-        + PATTERN_STR_DNS_NAME_LBL_CHAR_INNER + "{1,60}" + PATTERN_STR_DNS_NAME_LBL_CHAR + ")" + PATTERN_STR_DNS_NAME_LBL_LEN + ")";
+    public final static String PATTERN_STR_DNS_NAME_LBL_CHAR_INNER = "[\\w\\-&&[^_]]";
+    public final static String PATTERN_STR_DNS_NAME_LBL = "(?i:" + PATTERN_STR_DNS_NAME_LBL_CHAR + "{1,62}|" + PATTERN_STR_DNS_NAME_LBL_CHAR
+        + PATTERN_STR_DNS_NAME_LBL_CHAR_INNER + "{1,60}" + PATTERN_STR_DNS_NAME_LBL_CHAR + ")";
     public final static String PATTERN_STR_DNS_NAME_DELIM = "\\.";
+    public final static String DNS_NAME_DELIM = ".";
+
+    public final static String PATTERN_STR_DNS_NAME_LEN = "(?<=.+{1,252})";
 
     /**
      * Derived from the rules defined in:
@@ -30,11 +32,11 @@ public abstract class ToolDnsNameUtils {
      * A summary of the rules is available here: <a
      * href="http://en.wikipedia.org/wiki/Domain_Name_System#Domain_name_syntax">Domain_Name_System#Domain_name_syntax</a>
      */
-    public final static String PATTERN_STR_DNS_NAME = PATTERN_STR_DNS_NAME_LBL + "(?:" + PATTERN_STR_DNS_NAME_DELIM + PATTERN_STR_DNS_NAME_LBL + ")*"
-        + PATTERN_STR_DNS_NAME_DELIM + "?";
+    public final static String PATTERN_STR_DNS_NAME = "(?:(?:\\G(?<=" + PATTERN_STR_DNS_NAME_DELIM + "))?(?:" + PATTERN_STR_DNS_NAME_LBL
+        + PATTERN_STR_DNS_NAME_DELIM + "?){1,127}" + PATTERN_STR_DNS_NAME_LEN + ")";
 
-    public final static String PATTERN_STR_DNS_NAME_ABS = PATTERN_STR_DNS_NAME + "(?<=" + PATTERN_STR_DNS_NAME_DELIM + ")";
-    public final static String PATTERN_STR_DNS_NAME_NOT_ABS = PATTERN_STR_DNS_NAME + "(?<!" + PATTERN_STR_DNS_NAME_DELIM + ")";
+    public final static String PATTERN_STR_DNS_NAME_ABS = "(?:" + PATTERN_STR_DNS_NAME + "(?<=" + PATTERN_STR_DNS_NAME_DELIM + "))";
+    public final static String PATTERN_STR_DNS_NAME_NOT_ABS = "(?:" + PATTERN_STR_DNS_NAME + "(?<!" + PATTERN_STR_DNS_NAME_DELIM + "))";
 
     @Nullable
     public static <T extends Enum<T> & DnsNameLabel> T findByLabel(Class<T> nameLblEnumClass, Name nameLbl) {

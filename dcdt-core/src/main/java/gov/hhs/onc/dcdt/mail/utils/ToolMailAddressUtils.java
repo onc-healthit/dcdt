@@ -29,8 +29,7 @@ public abstract class ToolMailAddressUtils {
      */
     public final static String PATTERN_STR_MAIL_ADDR = PATTERN_STR_MAIL_ADDR_LOCAL_PART + DELIM_MAIL_ADDR_PARTS + PATTERN_STR_MAIL_ADDR_DOMAIN_PART
         + PATTERN_STR_MAIL_ADDR_LEN;
-
-    public final static String PATTERN_STR_DIRECT_ADDR = "(?:" + PATTERN_STR_MAIL_ADDR_DOMAIN_PART + "|" + PATTERN_STR_MAIL_ADDR + ")";
+    public final static String PATTERN_STR_DIRECT_ADDR = PATTERN_STR_MAIL_ADDR;
 
     @Nullable
     public static String joinParts(String[] mailAddrParts) {

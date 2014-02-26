@@ -45,6 +45,14 @@ public abstract class PemUtils {
         }
     }
 
+    public static byte[] writePemContent(String pemType, byte[] data) throws CryptographyException {
+        return writePemObject(pemType, data).getContent();
+    }
+
+    public static PemObject writePemObject(String pemType, byte[] data) {
+        return new PemObject(pemType, data);
+    }
+
     public static byte[] writePemContent(PemType pemType, byte[] data) throws CryptographyException {
         ByteArrayOutputStream outStream = new ByteArrayOutputStream();
 
