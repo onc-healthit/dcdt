@@ -23,13 +23,13 @@
     <beans:bean id="toolTestcaseResultStepDesc" class="gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStepDescription" abstract="true"/>
 
     <beans:bean id="toolTestcaseDnsResultStep" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseDnsResultStepImpl"
-        parent="toolTestcaseResultStep" abstract="true"/>
+        parent="toolTestcaseResultStep" abstract="true" lazy-init="true" scope="prototype"/>
     <beans:bean id="toolTestcaseDnsCertificateLookupResultStep" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseDnsCertificateLookupResultStepImpl"
-        parent="toolTestcaseResultStep" abstract="true"/>
+        parent="toolTestcaseResultStep" abstract="true" lazy-init="true" scope="prototype"/>
     <beans:bean id="toolTestcaseLdapConnectionResultStep" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseLdapConnectionResultStepImpl"
-        parent="toolTestcaseResultStep" abstract="true"/>
+        parent="toolTestcaseResultStep" abstract="true" lazy-init="true" scope="prototype"/>
     <beans:bean id="toolTestcaseLdapCertificateLookupResultStep" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseLdapCertificateLookupResultStepImpl"
-        parent="toolTestcaseResultStep" abstract="true"/>
+        parent="toolTestcaseResultStep" abstract="true" lazy-init="true" scope="prototype"/>
     <beans:bean id="toolTestcaseResultStepDescriptionImpl" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseResultStepDescriptionImpl"
         parent="toolTestcaseResultStepDesc" abstract="true"/>
 
@@ -47,8 +47,7 @@
     <beans:bean id="dnsCertRecordLookup" parent="toolTestcaseDnsResultStep"
         p:resultType="DNS_LOOKUP"
         p:dnsRecordType="CERT"
-        p:locationType="DNS"
-        p:dnsLookupService-ref="dnsLookupServiceExternal"/>
+        p:locationType="DNS"/>
 
     <beans:bean id="dnsAddrBoundCertRecordLookup" parent="dnsCertRecordLookup"
         p:bindingType="ADDRESS">
@@ -80,8 +79,7 @@
         p:resultType="DNS_LOOKUP"
         p:dnsRecordType="SRV"
         p:bindingType="DOMAIN"
-        p:locationType="DNS"
-        p:dnsLookupService-ref="dnsLookupServiceExternal">
+        p:locationType="DNS">
         <beans:property name="description">
             <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
                 <beans:property name="text">
@@ -100,8 +98,7 @@
         p:resultType="LDAP_CONNECTION"
         p:bindingType="NONE"
         p:locationType="LDAP"
-        p:ldapStatus="LDAP_CONNECTION_SUCCESS"
-        p:ldapLookupService-ref="ldapLookupServiceImpl">
+        p:ldapStatus="LDAP_CONNECTION_SUCCESS">
         <beans:property name="description">
             <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
                 <beans:property name="text">
@@ -124,8 +121,7 @@
     <beans:bean id="ldapCertLookup" parent="toolTestcaseLdapCertificateLookupResultStep"
         p:resultType="CERT_LOOKUP"
         p:locationType="LDAP"
-        p:certificateStatus="NO_CERT"
-        p:ldapLookupService-ref="ldapLookupServiceImpl"/>
+        p:certificateStatus="NO_CERT"/>
 
     <beans:bean id="dnsAddrBoundCertLookup" parent="dnsCertLookup"
         p:bindingType="ADDRESS">

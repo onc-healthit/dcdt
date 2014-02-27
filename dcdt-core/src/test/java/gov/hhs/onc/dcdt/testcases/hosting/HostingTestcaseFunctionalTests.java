@@ -8,11 +8,11 @@ import gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseSubmissionImpl;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultGenerator;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultInfo;
-import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultGeneratorImpl;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultStep;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultException;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStep;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -23,9 +23,13 @@ import java.util.List;
 
 @Test(groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.hosting" })
 public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests {
-    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     @Resource(name = "certDiscoverySteps")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private List<ToolTestcaseResultStep> certDiscoverySteps;
+
+    @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private HostingTestcaseResultGenerator resultGenerator;
 
     @Value("${dcdt.test.hosting.dns.addr.bound.direct.addr.1}")
     private MailAddress testDnsAddrBoundDirectAddr1;
@@ -145,15 +149,15 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
         HostingTestcaseSubmission hostingTestcaseSubmission = new HostingTestcaseSubmissionImpl();
         hostingTestcaseSubmission.setHostingTestcase(hostingTestcase);
         hostingTestcaseSubmission.setDirectAddress(directAddress);
-        HostingTestcaseResultGenerator resultGenerator = new HostingTestcaseResultGeneratorImpl(hostingTestcaseSubmission);
-        resultGenerator.generateTestcaseResult(this.certDiscoverySteps);
+        this.resultGenerator.setSubmission(hostingTestcaseSubmission);
+        this.resultGenerator.generateTestcaseResult(this.certDiscoverySteps);
 
         HostingTestcaseResult hostingTestcaseResult = hostingTestcase.getResult();
         HostingTestcaseResultInfo resultInfo = hostingTestcaseResult.getResultInfo();
         Assert.assertEquals(resultInfo.isSuccessful(), successExpected);
 
         assertCertificateProperties(ToolListUtils.getLast(resultInfo.getResults()), certCommonName);
-        Assert.assertEquals(resultGenerator.getErrorStepPosition(hostingTestcaseResult), errorStepPos);
+        Assert.assertEquals(this.resultGenerator.getErrorStepPosition(hostingTestcaseResult), errorStepPos);
     }
 
     private void assertCertificateProperties(ToolTestcaseResultStep lastStep, @Nullable String certCommonName) {

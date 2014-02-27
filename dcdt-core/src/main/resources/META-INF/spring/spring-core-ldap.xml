@@ -16,12 +16,6 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!--====================================================================================================
-    = LDAP LOOKUP
-    =====================================================================================================-->
-    <beans:bean id="ldapLookupService" class="gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService" abstract="true"/>
-    <beans:bean id="ldapLookupServiceImpl" class="gov.hhs.onc.dcdt.ldap.lookup.impl.LdapLookupServiceImpl" parent="ldapLookupService"/>
-
-    <!--====================================================================================================
     = LDAP BIND CONFIG
     =====================================================================================================-->
     <beans:bean id="ldapBindConfig" class="gov.hhs.onc.dcdt.ldap.LdapBindConfig" abstract="true"/>
