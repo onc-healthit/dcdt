@@ -11,19 +11,27 @@ import gov.hhs.onc.dcdt.testcases.results.CertificateDiscoveryService;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultStep;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultException;
-import gov.hhs.onc.dcdt.testcases.results.impl.CertificateDiscoveryServiceImpl;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStep;
 import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResultGenerator;
 import gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseResultHolderImpl;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import java.util.List;
 
+@Component("hostingTestcaseResultGeneratorImpl")
 public class HostingTestcaseResultGeneratorImpl extends AbstractToolTestcaseResultGenerator<HostingTestcaseResultConfig, HostingTestcaseResultInfo> implements
     HostingTestcaseResultGenerator {
-    private HostingTestcaseSubmission submission;
-    private CertificateDiscoveryService certDiscoveryService = new CertificateDiscoveryServiceImpl();
+    @Autowired
+    private CertificateDiscoveryService certDiscoveryService;
 
-    public HostingTestcaseResultGeneratorImpl(HostingTestcaseSubmission submission) {
+    private HostingTestcaseSubmission submission;
+
+    public HostingTestcaseSubmission getSubmission() {
+        return this.submission;
+    }
+
+    public void setSubmission(HostingTestcaseSubmission submission) {
         this.submission = submission;
     }
 

@@ -18,12 +18,15 @@ import org.apache.directory.api.ldap.model.filter.PresenceNode;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ToolTestcaseLdapCertificateLookupResultStepImpl extends AbstractToolTestcaseCertificateResultStep implements
     ToolTestcaseLdapCertificateLookupResultStep {
+    @Autowired
     private LdapLookupService ldapLookupService;
+
     private LdapConnectionConfig ldapLookupConnConfig;
 
     @Override
@@ -64,15 +67,5 @@ public class ToolTestcaseLdapCertificateLookupResultStepImpl extends AbstractToo
             }
         }
         return searchResults;
-    }
-
-    @Override
-    public LdapLookupService getLdapLookupService() {
-        return this.ldapLookupService;
-    }
-
-    @Override
-    public void setLdapLookupService(LdapLookupService ldapLookupService) {
-        this.ldapLookupService = ldapLookupService;
     }
 }

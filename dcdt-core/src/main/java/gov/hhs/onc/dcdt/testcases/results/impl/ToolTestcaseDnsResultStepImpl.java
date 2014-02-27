@@ -6,12 +6,13 @@ import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
 import gov.hhs.onc.dcdt.dns.DnsServiceType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
-import gov.hhs.onc.dcdt.dns.utils.SrvRecordUtils;
+import gov.hhs.onc.dcdt.dns.utils.DnsRecordSortingUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseDnsResultStep;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultException;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xbill.DNS.CERTRecord;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,7 +21,9 @@ import org.xbill.DNS.Record;
 import org.xbill.DNS.SRVRecord;
 
 public class ToolTestcaseDnsResultStepImpl extends AbstractToolTestcaseResultStep implements ToolTestcaseDnsResultStep {
+    @Autowired
     private DnsLookupService dnsLookupService;
+
     private DnsRecordType dnsRecordType;
 
     @Override
@@ -31,16 +34,6 @@ public class ToolTestcaseDnsResultStepImpl extends AbstractToolTestcaseResultSte
     @Override
     public void setDnsRecordType(DnsRecordType dnsRecordType) {
         this.dnsRecordType = dnsRecordType;
-    }
-
-    @Override
-    public DnsLookupService getDnsLookupService() {
-        return this.dnsLookupService;
-    }
-
-    @Override
-    public void setDnsLookupService(DnsLookupService dnsLookupService) {
-        this.dnsLookupService = dnsLookupService;
     }
 
     @Override
@@ -73,9 +66,10 @@ public class ToolTestcaseDnsResultStepImpl extends AbstractToolTestcaseResultSte
         try {
             dnsLookupResult = this.dnsLookupService.lookupSrvRecords(DnsServiceType.LDAP, DnsServiceProtocol.TCP, directAddrName);
             records = dnsLookupResult.getAnswers();
-            if(records != null) {
-                resultHolder.setSortedSrvRecords(SrvRecordUtils.sortSrvRecords(records));
+            if (records != null) {
+                resultHolder.setSortedSrvRecords(DnsRecordSortingUtils.SrvRecordSortingUtils.sortSrvRecords(records));
             }
+            this.setMessage(dnsLookupResult.getErrorString());
         } catch (DnsException e) {
             this.setMessage(e.getMessage());
         }
@@ -88,6 +82,7 @@ public class ToolTestcaseDnsResultStepImpl extends AbstractToolTestcaseResultSte
         try {
             dnsLookupResult = this.dnsLookupService.lookupCertRecords(directAddrName);
             resultHolder.setCertRecords(records = dnsLookupResult.getAnswers());
+            this.setMessage(dnsLookupResult.getErrorString());
         } catch (DnsException e) {
             this.setMessage(e.getMessage());
         }

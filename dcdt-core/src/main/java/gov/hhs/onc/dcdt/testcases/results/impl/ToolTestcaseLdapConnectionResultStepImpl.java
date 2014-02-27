@@ -10,18 +10,21 @@ import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultHolder;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.xbill.DNS.SRVRecord;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
 
 public class ToolTestcaseLdapConnectionResultStepImpl extends AbstractToolTestcaseResultStep implements ToolTestcaseLdapConnectionResultStep {
+    @Autowired
     private LdapLookupService ldapLookupService;
+
     private LdapConnectionConfig ldapLookupConnConfig;
     private ToolTestcaseLdapResultType ldapStatus;
 
     @Override
     public boolean execute(ToolTestcaseResultHolder resultHolder, MailAddress directAddr) {
-        TreeMap<Integer, List<SRVRecord>> srvRecords = resultHolder.getSortedSrvRecords();
+        Map<Integer, List<SRVRecord>> srvRecords = resultHolder.getSortedSrvRecords();
         for (int priority : srvRecords.keySet()) {
             List<SRVRecord> srvRecordsSamePriority = srvRecords.get(priority);
             for (SRVRecord srvRecord : srvRecordsSamePriority) {
@@ -58,16 +61,6 @@ public class ToolTestcaseLdapConnectionResultStepImpl extends AbstractToolTestca
             this.setMessage(e.getMessage());
         }
         return baseDns;
-    }
-
-    @Override
-    public LdapLookupService getLdapLookupService() {
-        return this.ldapLookupService;
-    }
-
-    @Override
-    public void setLdapLookupService(LdapLookupService ldapLookupService) {
-        this.ldapLookupService = ldapLookupService;
     }
 
     @Override

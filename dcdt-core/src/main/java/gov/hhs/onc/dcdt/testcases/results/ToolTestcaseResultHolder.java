@@ -6,7 +6,7 @@ import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.SRVRecord;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
 
 public interface ToolTestcaseResultHolder {
     public boolean hasCertRecords();
@@ -15,9 +15,9 @@ public interface ToolTestcaseResultHolder {
 
     public void setCertRecords(List<CERTRecord> certRecords);
 
-    public TreeMap<Integer, List<SRVRecord>> getSortedSrvRecords();
+    public Map<Integer, List<SRVRecord>> getSortedSrvRecords();
 
-    public void setSortedSrvRecords(TreeMap<Integer, List<SRVRecord>> sortedSrvRecords);
+    public void setSortedSrvRecords(Map<Integer, List<SRVRecord>> sortedSrvRecords);
 
     public boolean hasBaseDns();
 

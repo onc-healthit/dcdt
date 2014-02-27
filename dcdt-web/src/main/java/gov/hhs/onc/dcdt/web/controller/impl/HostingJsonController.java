@@ -8,7 +8,6 @@ import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultInfo;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultJsonDto;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmissionJsonDto;
-import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultGeneratorImpl;
 import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl;
 import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultInfoImpl;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultStep;
@@ -26,6 +25,7 @@ import gov.hhs.onc.dcdt.web.controller.JsonResponse;
 import gov.hhs.onc.dcdt.web.json.RequestJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.impl.ResponseJsonWrapperBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -38,9 +38,13 @@ import java.util.List;
 @JsonController
 @JsonResponse
 public class HostingJsonController extends AbstractToolController {
-    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     @Resource(name = "certDiscoverySteps")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private List<ToolTestcaseResultStep> certDiscoverySteps;
+
+    @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private HostingTestcaseResultGenerator resultGenerator;
 
     @JsonRequest
     @RequestMapping({ "/hosting/process" })
@@ -61,9 +65,9 @@ public class HostingJsonController extends AbstractToolController {
                 if (hostingTestcase != null && hostingTestcase.hasResult()) {
                     hostingTestcaseResult = hostingTestcase.getResult();
                     hostingTestcaseResult.setResultInfo(new HostingTestcaseResultInfoImpl());
-                    HostingTestcaseResultGenerator resultGenerator = new HostingTestcaseResultGeneratorImpl(reqHostingTestcaseSubmission);
-                    resultGenerator.generateTestcaseResult(this.certDiscoverySteps);
-                    updateResultDisplayMessage(hostingTestcase, resultGenerator.getErrorStepPosition(hostingTestcaseResult));
+                    this.resultGenerator.setSubmission(reqHostingTestcaseSubmission);
+                    this.resultGenerator.generateTestcaseResult(this.certDiscoverySteps);
+                    updateResultDisplayMessage(hostingTestcase, this.resultGenerator.getErrorStepPosition(hostingTestcaseResult));
                 }
                 respJsonWrapperBuilder.addItems(this.getHostingTestcaseResultJsonDto(hostingTestcaseResult));
             }
@@ -133,8 +137,8 @@ public class HostingJsonController extends AbstractToolController {
                     ToolStringUtils.DELIM_NEW_LINE);
             } else {
                 certStrBuilder.appendWithDelimiter(
-                    ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.INCORRECT_CERT.getMessage(), new Object[] {
-                        hostingTestcase.getBindingType(), hostingTestcase.getLocationType() }), ToolStringUtils.DELIM_NEW_LINE);
+                    ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.INCORRECT_CERT.getMessage(),
+                        new Object[] { hostingTestcase.getBindingType(), hostingTestcase.getLocationType() }), ToolStringUtils.DELIM_NEW_LINE);
             }
         }
         return certStrBuilder.build();

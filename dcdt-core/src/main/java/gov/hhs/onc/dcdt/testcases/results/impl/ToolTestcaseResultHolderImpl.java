@@ -7,11 +7,11 @@ import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.SRVRecord;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.TreeMap;
+import java.util.Map;
 
 public class ToolTestcaseResultHolderImpl implements ToolTestcaseResultHolder {
     private List<CERTRecord> certRecords;
-    private TreeMap<Integer, List<SRVRecord>> sortedSrvRecords;
+    private Map<Integer, List<SRVRecord>> sortedSrvRecords;
     private List<Dn> baseDns;
     private LdapConnectionConfig ldapConnectionConfig;
 
@@ -32,12 +32,12 @@ public class ToolTestcaseResultHolderImpl implements ToolTestcaseResultHolder {
     }
 
     @Override
-    public TreeMap<Integer, List<SRVRecord>> getSortedSrvRecords() {
+    public Map<Integer, List<SRVRecord>> getSortedSrvRecords() {
         return this.sortedSrvRecords;
     }
 
     @Override
-    public void setSortedSrvRecords(TreeMap<Integer, List<SRVRecord>> sortedSrvRecords) {
+    public void setSortedSrvRecords(Map<Integer, List<SRVRecord>> sortedSrvRecords) {
         this.sortedSrvRecords = sortedSrvRecords;
     }
 
