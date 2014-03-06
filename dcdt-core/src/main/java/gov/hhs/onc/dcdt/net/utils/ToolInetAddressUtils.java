@@ -35,7 +35,7 @@ public abstract class ToolInetAddressUtils {
         byte[] addrBytes = new byte[4];
 
         for (int a = 0; a < addrPartStrs.length; a++) {
-            addrBytes[a] = Byte.valueOf(addrPartStrs[a]);
+            addrBytes[a] = ((byte) Integer.parseInt(addrPartStrs[a]));
         }
 
         return addrBytes;
