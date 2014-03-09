@@ -98,7 +98,15 @@
         </dependency>
         <dependency>
             <groupId>org.apache.directory.api</groupId>
-            <artifactId>api-ldap-client-all</artifactId>
+            <artifactId>api-ldap-client-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-ldap-codec-standalone</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-ldap-schema-data</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.directory.jdbm</groupId>
@@ -115,6 +123,14 @@
         <dependency>
             <groupId>org.apache.directory.server</groupId>
             <artifactId>apacheds-server-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-server-config</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-service-builder</artifactId>
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
@@ -227,12 +243,6 @@
         <dependency>
             <groupId>com.cenqua.clover</groupId>
             <artifactId>clover</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <!-- TODO: Remove on development completion -->
-        <dependency>
-            <groupId>org.apache.directory.server</groupId>
-            <artifactId>apacheds-test-framework</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>

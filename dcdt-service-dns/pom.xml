@@ -101,10 +101,6 @@
             <artifactId>derby</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.directory.api</groupId>
-            <artifactId>api-ldap-client-all</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.janino</groupId>
             <artifactId>janino</artifactId>
         </dependency>

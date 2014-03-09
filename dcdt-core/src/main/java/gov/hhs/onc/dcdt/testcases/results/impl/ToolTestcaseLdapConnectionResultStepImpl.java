@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
-import gov.hhs.onc.dcdt.ldap.LdapException;
+import gov.hhs.onc.dcdt.ldap.ToolLdapException;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseLdapConnectionResultStep;
@@ -57,7 +57,7 @@ public class ToolTestcaseLdapConnectionResultStepImpl extends AbstractToolTestca
             if (resultHolder.hasBaseDns()) {
                 resultHolder.setLdapConnectionConfig(this.ldapLookupConnConfig);
             }
-        } catch (LdapException e) {
+        } catch (ToolLdapException e) {
             this.setMessage(e.getMessage());
         }
         return baseDns;

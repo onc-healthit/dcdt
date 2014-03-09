@@ -1,74 +1,61 @@
 package gov.hhs.onc.dcdt.ldap.utils;
 
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import gov.hhs.onc.dcdt.ldap.ToolLdapException;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
+import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.directory.api.ldap.model.entry.Attribute;
-import org.apache.directory.api.ldap.model.entry.Value;
+import org.apache.directory.api.ldap.model.exception.LdapException;
+import org.apache.directory.api.ldap.model.ldif.LdifEntry;
+import org.apache.directory.api.ldap.model.ldif.LdifReader;
+import org.apache.directory.api.ldap.model.ldif.LdifUtils;
 
 public abstract class ToolLdapAttributeUtils {
-    public final static String DELIM = ":";
-    public final static String DELIM_BINARY = StringUtils.repeat(DELIM, 2);
-    public final static String DELIM_VALUE = "=";
-    public final static String DELIM_LINES = ToolLdifUtils.DELIM_LDIF_ENTRY;
-    public final static String VALUE_EMPTY = "''";
-    public final static String VALUE_EMPTY_BINARY = StringUtils.EMPTY;
+    public static class LdapAttributeIdTransformer implements Transformer<Attribute, String> {
+        public final static LdapAttributeIdTransformer INSTANCE = new LdapAttributeIdTransformer();
+        public final static LdapAttributeIdTransformer INSTANCE_USER_PROVIDED = new LdapAttributeIdTransformer(true);
 
-    public final static String PATTERN_STR_ATTR_ID = "((?:(?:\\d|[1-9]\\d*)(?:\\.(?:\\d|[1-9]\\d*))+)|(?:[a-zA-Z][a-zA-Z0-9-]*))";
-    public final static String PATTERN_STR_ATTR_VALUE = "([^$]+)";
-    public final static String PATTERN_STR_ATTR_BEFORE = "^(\\()?\\s*";
-    public final static String PATTERN_STR_ATTR_AFTER = "\\s*(\\))?$";
-    public final static Pattern PATTERN_ATTR_DELIM = Pattern.compile(",\\s*");
-    public final static Pattern PATTERN_ATTR_LINE = Pattern.compile("^" + PATTERN_STR_ATTR_ID + "\\s*(?:" + DELIM_BINARY + "\\s*(?:" + PATTERN_STR_ATTR_VALUE
-        + "|" + VALUE_EMPTY_BINARY + ")|" + DELIM + "\\s*(?:" + PATTERN_STR_ATTR_VALUE + "|" + VALUE_EMPTY + "))\\s*$");
+        private boolean userProvided;
 
-    public static String[] buildCaseInsensitiveIds(Iterable<Attribute> ldapAttrs) {
-        Set<String> ldapAttrIds = new LinkedHashSet<>();
-        String ldapAttrId;
-
-        for (Attribute ldapAttr : ldapAttrs) {
-            ldapAttrIds.add((ldapAttrId = ldapAttr.getUpId()));
-            ldapAttrIds.add(ldapAttrId.toLowerCase());
+        public LdapAttributeIdTransformer() {
+            this(false);
         }
 
-        return ldapAttrIds.toArray(new String[ldapAttrIds.size()]);
+        public LdapAttributeIdTransformer(boolean userProvided) {
+            this.userProvided = userProvided;
+        }
+
+        @Override
+        public String transform(Attribute attr) {
+            return (this.userProvided ? attr.getUpId() : attr.getId());
+        }
     }
 
-    public static MutablePair<String, String[]> getStringParts(String ldapAttrStr) {
-        String[] ldapAttrStrLines = getStringLines(ldapAttrStr);
-        String ldapAttrStrId = null;
-        List<String> ldapAttrStrValues = new ArrayList<>(ldapAttrStrLines.length);
-        Matcher ldapAttrStrLineMatcher;
+    public final static String DELIM_ATTR = ":";
+    public final static String DELIM_ATTR_BINARY = StringUtils.repeat(DELIM_ATTR, 2);
 
-        for (String ldapAttrStrLine : ldapAttrStrLines) {
-            if ((ldapAttrStrLineMatcher = PATTERN_ATTR_LINE.matcher(ldapAttrStrLine)).matches()) {
-                ldapAttrStrId = StringUtils.defaultIfEmpty(ldapAttrStrId, ldapAttrStrLineMatcher.group(1));
+    public static Attribute readAttribute(String str) throws ToolLdapException {
+        LdifReader attrLdifReader = new LdifReader();
+        LdifEntry attrLdifEntry = new LdifEntry();
 
-                if (ldapAttrStrLineMatcher.groupCount() == 2) {
-                    ldapAttrStrValues.add(ldapAttrStrLineMatcher.group(2));
-                }
+        // noinspection ConstantConditions
+        for (String strLine : ToolStringUtils.splitLines(str)) {
+            try {
+                attrLdifReader.parseAttributeValue(attrLdifEntry, strLine, strLine.toLowerCase());
+            } catch (LdapException e) {
+                throw new ToolLdapException(String.format("Unable to read LDAP attribute from LDIF string line: %s", strLine), e);
             }
         }
 
-        return new MutablePair<>(ldapAttrStrId, ldapAttrStrValues.toArray(new String[ldapAttrStrValues.size()]));
+        return attrLdifEntry.getEntry().iterator().next();
     }
 
-    public static String[] getStringLines(String ldapAttrStr) {
-        return StringUtils.split(ldapAttrStr, DELIM_LINES);
-    }
-
-    public static List<String> getValueStrings(Attribute ldapAttr) {
-        List<String> ldapAttrValueStrs = new ArrayList<>(ldapAttr.size());
-
-        for (Value<?> ldapAttrValue : ldapAttr) {
-            ldapAttrValueStrs.add(ldapAttrValue.getString());
+    public static String writeAttribute(Attribute attr) throws ToolLdapException {
+        try {
+            return LdifUtils.convertToLdif(attr);
+        } catch (LdapException e) {
+            throw new ToolLdapException(String.format("Unable to write LDAP attribute (upId={%s}, values=[%s]) to LDIF string.", attr.getUpId(),
+                ToolStringUtils.joinDelimit(attr, ", ")), e);
         }
-
-        return ldapAttrValueStrs;
     }
 }

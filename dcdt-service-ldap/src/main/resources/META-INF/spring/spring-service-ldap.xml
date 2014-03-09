@@ -22,34 +22,210 @@
         p:corePoolSize="1"
         p:maxPoolSize="5"/>
     
-    <beans:bean id="ldapServerDefault" class="gov.hhs.onc.dcdt.service.ldap.config.impl.LdapServerConfig">
-        <beans:property name="transports">
-            <beans:array>
-                <beans:bean class="gov.hhs.onc.dcdt.service.ldap.config.impl.TransportConfig"
-                    p:address="${dcdt.ldap.server.1.host}"
-                    p:port="${dcdt.ldap.server.1.port}"/>
-            </beans:array>
+    <!--====================================================================================================
+    = SCHEMA MANAGER
+    =====================================================================================================-->
+    <beans:bean id="schemaManager" class="org.apache.directory.api.ldap.model.schema.SchemaManager" abstract="true"/>
+    <beans:bean id="schemaManagerDefault" class="org.apache.directory.api.ldap.schemamanager.impl.DefaultSchemaManager" parent="schemaManager" abstract="true"/>
+    
+    <beans:bean id="schemaManager1" parent="schemaManagerDefault"/>
+    
+    <!--====================================================================================================
+    = INSTANCE LAYOUT
+    =====================================================================================================-->
+    <beans:bean id="instanceLayout" class="gov.hhs.onc.dcdt.service.ldap.config.impl.ToolInstanceLayout" abstract="true"/>
+    
+    <beans:bean id="instanceLayout1" parent="instanceLayout"
+        c:instanceDirPath="${dcdt.instance.ldap.dir}"/>
+    
+    <!--====================================================================================================
+    = APACHEDS CONFIG
+    =====================================================================================================-->
+    <beans:bean id="adsBean" class="org.apache.directory.server.config.beans.AdsBaseBean" abstract="true"/>
+    
+    <!--====================================================================================================
+    = TRANSPORT CONFIG
+    =====================================================================================================-->
+    <beans:bean id="transportBean" class="org.apache.directory.server.config.beans.TransportBean" parent="adsBean" abstract="true"/>
+    <beans:bean id="transportBeanTcp" class="org.apache.directory.server.config.beans.TcpTransportBean" parent="transportBean" abstract="true"/>
+    
+    <!--====================================================================================================
+    = SERVER CONFIG
+    =====================================================================================================-->
+    <beans:bean id="serverBean" class="org.apache.directory.server.config.beans.ServerBean" parent="adsBean" abstract="true"/>
+    <beans:bean id="serverBeanDs" class="org.apache.directory.server.config.beans.DSBasedServerBean" parent="serverBean" abstract="true"/>
+    
+    <beans:bean id="serverBeanLdap" class="gov.hhs.onc.dcdt.service.ldap.config.impl.ToolLdapServerBean" parent="serverBeanDs" abstract="true"
+        p:searchBaseDn="#{ T(org.apache.directory.server.constants.ServerDNConstants).USERS_SYSTEM_DN }"/>
+    
+    <!--====================================================================================================
+    = AUTHENTICATOR CONFIG
+    =====================================================================================================-->
+    <beans:bean id="authenticatorBean" class="org.apache.directory.server.config.beans.AuthenticatorBean" abstract="true"/>
+    <beans:bean id="authenticatorBeanImpl" class="org.apache.directory.server.config.beans.AuthenticatorImplBean" parent="authenticatorBean" abstract="true"/>
+    
+    <beans:bean id="authenticatorBeanAnon" parent="authenticatorBeanImpl" abstract="true"
+        p:authenticatorClass="org.apache.directory.server.core.authn.AnonymousAuthenticator"
+        p:authenticatorId="anonymousAuthenticator"/>
+    
+    <beans:bean id="authenticatorBeanSimple" parent="authenticatorBeanImpl" abstract="true"
+        p:authenticatorClass="org.apache.directory.server.core.authn.SimpleAuthenticator"
+        p:authenticatorId="simpleAuthenticator"/>
+    
+    <beans:bean id="authenticatorBeanStrong" parent="authenticatorBeanImpl" abstract="true"
+        p:authenticatorClass="org.apache.directory.server.core.authn.StrongAuthenticator"
+        p:authenticatorId="strongAuthenticator"/>
+    
+    <!--====================================================================================================
+    = PASSWORD POLICY CONFIG
+    =====================================================================================================-->
+    <beans:bean id="passPolicyBean" class="org.apache.directory.server.config.beans.PasswordPolicyBean" abstract="true"/>
+    
+    <beans:bean id="passPolicyBeanDisabled" parent="passPolicyBean"
+        p:enabled="false"/>
+    
+    <!--====================================================================================================
+    = INTERCEPTOR CONFIG
+    =====================================================================================================-->
+    <beans:bean id="interceptorBean" class="org.apache.directory.server.config.beans.InterceptorBean" parent="adsBean" abstract="true"/>
+    
+    <beans:bean id="interceptorBeanNormalization" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.normalization.NormalizationInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).NORMALIZATION_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).NORMALIZATION_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanAuth" class="org.apache.directory.server.config.beans.AuthenticationInterceptorBean" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.authn.AuthenticationInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).AUTHENTICATION_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).AUTHENTICATION_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanReferral" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.referral.ReferralInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).REFERRAL_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).REFERRAL_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanAuthAci" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.authz.AciAuthorizationInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).ACI_AUTHORIZATION_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).ACI_AUTHORIZATION_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanAuthDefault" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.authz.DefaultAuthorizationInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).DEFAULT_AUTHORIZATION_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).DEFAULT_AUTHORIZATION_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanAdminPoint" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.admin.AdministrativePointInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).ADMINISTRATIVE_POINT_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).ADMINISTRATIVE_POINT_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanException" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.exception.ExceptionInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).EXCEPTION_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).EXCEPTION_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanSchema" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.schema.SchemaInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).SCHEMA_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).SCHEMA_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanAttrOperational" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.operational.OperationalAttributeInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).OPERATIONAL_ATTRIBUTE_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).OPERATIONAL_ATTRIBUTE_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanSubentry" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.subtree.SubentryInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).SUBENTRY_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).SUBENTRY_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanEvent" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.event.EventInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).EVENT_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).EVENT_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanTrigger" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.trigger.TriggerInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).TRIGGER_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).TRIGGER_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanChangeLog" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.changelog.ChangeLogInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).CHANGE_LOG_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).CHANGE_LOG_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <beans:bean id="interceptorBeanJournal" parent="interceptorBean" abstract="true"
+        p:interceptorClassName="org.apache.directory.server.core.journal.JournalInterceptor"
+        p:interceptorId="#{ T(org.apache.directory.server.core.api.InterceptorEnum).JOURNAL_INTERCEPTOR.name }"
+        p:interceptorOrder="#{ T(org.apache.directory.server.core.api.InterceptorEnum).JOURNAL_INTERCEPTOR.ordinal() + 1 }"/>
+    
+    <!--====================================================================================================
+    = PARTITION CONFIG
+    =====================================================================================================-->
+    <beans:bean id="partitionBean" class="org.apache.directory.server.config.beans.PartitionBean" parent="adsBean" abstract="true"/>
+    <beans:bean id="partitionBeanAvl" class="gov.hhs.onc.dcdt.service.ldap.config.impl.AvlPartitionBean" parent="partitionBean" abstract="true"/>
+    
+    <beans:bean id="partitionBeanSys" parent="partitionBeanAvl" abstract="true"
+        p:partitionId="#{ T(org.apache.directory.server.constants.SystemSchemaConstants).SCHEMA_NAME }"
+        p:partitionSuffix="#{ T(org.apache.directory.server.constants.ServerDNConstants).SYSTEM_DN }"/>
+    
+    <!--====================================================================================================
+    = DIRECTORY SERVICE CONFIG
+    =====================================================================================================-->
+    <beans:bean id="dirServiceBean" class="gov.hhs.onc.dcdt.service.ldap.config.impl.ToolDirectoryServiceBean" parent="adsBean" abstract="true"
+        p:dsAccessControlEnabled="false"
+        p:dsAllowAnonymousAccess="true">
+        <beans:property name="interceptors">
+            <util:list>
+                <beans:bean parent="interceptorBeanNormalization"/>
+                <beans:bean parent="interceptorBeanAuth">
+                    <beans:property name="authenticators">
+                        <util:list>
+                            <beans:bean parent="authenticatorBeanAnon"/>
+                            <beans:bean parent="authenticatorBeanSimple"/>
+                            <beans:bean parent="authenticatorBeanStrong"/>
+                        </util:list>
+                    </beans:property>
+                    <beans:property name="passwordPolicies">
+                        <util:list>
+                            <beans:bean parent="passPolicyBeanDisabled"/>
+                        </util:list>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="interceptorBeanReferral"/>
+                <beans:bean parent="interceptorBeanAuthAci"/>
+                <beans:bean parent="interceptorBeanAuthDefault"/>
+                <beans:bean parent="interceptorBeanAdminPoint"/>
+                <beans:bean parent="interceptorBeanException"/>
+                <beans:bean parent="interceptorBeanSchema"/>
+                <beans:bean parent="interceptorBeanAttrOperational"/>
+                <beans:bean parent="interceptorBeanSubentry"/>
+                <beans:bean parent="interceptorBeanEvent"/>
+                <beans:bean parent="interceptorBeanTrigger"/>
+                <beans:bean parent="interceptorBeanChangeLog"/>
+                <beans:bean parent="interceptorBeanJournal"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="partitions">
+            <util:list>
+                <beans:bean parent="partitionBeanSys"/>
+            </util:list>
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="dirServiceDefault" class="gov.hhs.onc.dcdt.service.ldap.config.impl.DirectoryServiceConfig"
-        p:instanceDir="var/apacheds/default">
-        <beans:property name="ldapServers">
-            <beans:array>
-                <beans:ref bean="ldapServerDefault"/>
-            </beans:array>
-        </beans:property>
-        <beans:property name="ldifFiles">
-            <beans:array>
-                <beans:value>conf/service/ldap/service-mail.ldif</beans:value>
-            </beans:array>
-        </beans:property>
-        <beans:property name="partitions">
-            <beans:array>
-                <beans:bean class="gov.hhs.onc.dcdt.service.ldap.config.impl.PartitionConfig"
-                    p:name="dcdt-mail"
-                    p:suffix="dc=mail,dc=direct-test,dc=com"/>
-            </beans:array>
+    <beans:bean id="dirServiceBean1" parent="dirServiceBean"
+        p:directoryServiceId="ds1"
+        p:instanceLayout-ref="instanceLayout1"
+        p:schemaManager-ref="schemaManager1">
+        <beans:property name="servers">
+            <util:list>
+                <beans:bean parent="serverBeanLdap"
+                    p:ldapConfig-ref="instanceLdapConfig1"/>
+                <beans:bean parent="serverBeanLdap"
+                    p:ldapConfig-ref="instanceLdapConfig2"/>
+                <beans:bean parent="serverBeanLdap"
+                    p:ldapConfig-ref="instanceLdapConfig3"/>
+            </util:list>
         </beans:property>
     </beans:bean>
 </beans:beans>

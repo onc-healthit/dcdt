@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.service.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLifecycleBean;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.config.InstanceConfig;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.ToolService;
 import org.springframework.beans.BeansException;
@@ -17,6 +19,14 @@ public abstract class AbstractToolService extends AbstractToolLifecycleBean impl
         super.afterPropertiesSet();
 
         this.appContext.registerShutdownHook();
+    }
+
+    @Override
+    protected boolean canStart() {
+        InstanceConfig instanceConfig = ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfig.class);
+
+        // noinspection ConstantConditions
+        return super.canStart() && instanceConfig.hasDomainName() && instanceConfig.hasIpAddress();
     }
 
     @Override

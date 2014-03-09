@@ -47,7 +47,18 @@ public abstract class ToolStringUtils {
 
     public final static String QUOTE_SINGLE = "'";
     public final static String QUOTE_DBL = "\"";
-    public final static String DELIM_NEW_LINE = StringUtils.LF;
+
+    public final static String DELIM_CHARS_NEWLINE = StringUtils.CR + StringUtils.LF;
+
+    @Nullable
+    public static String[] splitLines(@Nullable String str) {
+        return splitLines(str, -1);
+    }
+
+    @Nullable
+    public static String[] splitLines(@Nullable String str, int limit) {
+        return StringUtils.split(str, DELIM_CHARS_NEWLINE, limit);
+    }
 
     @Nullable
     public static <T> String joinDelimit(@Nullable T[] objs, @Nullable String delim) {
