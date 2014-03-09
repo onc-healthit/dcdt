@@ -14,6 +14,7 @@ import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
+import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.ldif.LdifEntry;
 import org.apache.directory.api.ldap.model.ldif.LdifReader;
@@ -112,6 +113,14 @@ public abstract class ToolLdifUtils {
             return LdifUtils.convertToLdif(ldifEntry);
         } catch (LdapException e) {
             throw new ToolLdapException(String.format("Unable to write LDIF entry (dn={%s}) to LDIF string.", ldifEntry.getDn().getName()), e);
+        }
+    }
+
+    public static String writeEntry(Entry entry) throws ToolLdapException {
+        try {
+            return LdifUtils.convertToLdif(entry);
+        } catch (LdapException e) {
+            throw new ToolLdapException(String.format("Unable to write LDIF entry (dn={%s}) to LDIF string.", entry.getDn().getName()), e);
         }
     }
 }

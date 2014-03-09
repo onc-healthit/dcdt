@@ -18,9 +18,12 @@
     <!--====================================================================================================
     = LDAP BIND CONFIG
     =====================================================================================================-->
-    <beans:bean id="ldapBindConfig" class="gov.hhs.onc.dcdt.ldap.LdapBindConfig" abstract="true"/>
-    <beans:bean id="ldapBindConfigImpl" class="gov.hhs.onc.dcdt.ldap.impl.LdapBindConfigImpl" parent="ldapBindConfig" abstract="true"/>
+    <beans:bean id="ldapBindCredConfig" class="gov.hhs.onc.dcdt.ldap.LdapBindCredentialConfig" abstract="true"/>
+    <beans:bean id="ldapBindCredConfigImpl" class="gov.hhs.onc.dcdt.ldap.impl.LdapBindCredentialConfigImpl" parent="ldapBindCredConfig" abstract="true"/>
     
-    <beans:bean id="ldapBindConfigAnon" parent="ldapBindConfigImpl" abstract="true"
+    <beans:bean id="ldapBindCredConfigAnon" parent="ldapBindCredConfigImpl" abstract="true"
         p:anonymous="true"/>
+    
+    <beans:bean id="ldapBindCredConfigAdmin" parent="ldapBindCredConfigImpl" abstract="true"
+        p:bindDn="#{ T(org.apache.directory.server.constants.ServerDNConstants).ADMIN_SYSTEM_DN }"/>
 </beans:beans>

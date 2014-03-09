@@ -28,35 +28,24 @@
     <beans:bean id="schemaManager" class="org.apache.directory.api.ldap.model.schema.SchemaManager" abstract="true"/>
     <beans:bean id="schemaManagerDefault" class="org.apache.directory.api.ldap.schemamanager.impl.DefaultSchemaManager" parent="schemaManager" abstract="true"/>
     
-    <beans:bean id="schemaManager1" parent="schemaManagerDefault"/>
-    
     <!--====================================================================================================
     = INSTANCE LAYOUT
     =====================================================================================================-->
     <beans:bean id="instanceLayout" class="gov.hhs.onc.dcdt.service.ldap.config.impl.ToolInstanceLayout" abstract="true"/>
     
     <beans:bean id="instanceLayout1" parent="instanceLayout"
-        c:instanceDirPath="${dcdt.instance.ldap.dir}"/>
+        c:instanceDirPath="${dcdt.service.ldap.1.dir}"/>
+    
+    <beans:bean id="instanceLayout2" parent="instanceLayout"
+        c:instanceDirPath="${dcdt.service.ldap.2.dir}"/>
+    
+    <beans:bean id="instanceLayout3" parent="instanceLayout"
+        c:instanceDirPath="${dcdt.service.ldap.2.dir}"/>
     
     <!--====================================================================================================
     = APACHEDS CONFIG
     =====================================================================================================-->
     <beans:bean id="adsBean" class="org.apache.directory.server.config.beans.AdsBaseBean" abstract="true"/>
-    
-    <!--====================================================================================================
-    = TRANSPORT CONFIG
-    =====================================================================================================-->
-    <beans:bean id="transportBean" class="org.apache.directory.server.config.beans.TransportBean" parent="adsBean" abstract="true"/>
-    <beans:bean id="transportBeanTcp" class="org.apache.directory.server.config.beans.TcpTransportBean" parent="transportBean" abstract="true"/>
-    
-    <!--====================================================================================================
-    = SERVER CONFIG
-    =====================================================================================================-->
-    <beans:bean id="serverBean" class="org.apache.directory.server.config.beans.ServerBean" parent="adsBean" abstract="true"/>
-    <beans:bean id="serverBeanDs" class="org.apache.directory.server.config.beans.DSBasedServerBean" parent="serverBean" abstract="true"/>
-    
-    <beans:bean id="serverBeanLdap" class="gov.hhs.onc.dcdt.service.ldap.config.impl.ToolLdapServerBean" parent="serverBeanDs" abstract="true"
-        p:searchBaseDn="#{ T(org.apache.directory.server.constants.ServerDNConstants).USERS_SYSTEM_DN }"/>
     
     <!--====================================================================================================
     = AUTHENTICATOR CONFIG
@@ -211,21 +200,35 @@
                 <beans:bean parent="partitionBeanSys"/>
             </util:list>
         </beans:property>
+        <beans:property name="schemaManager">
+            <beans:bean parent="schemaManagerDefault"/>
+        </beans:property>
     </beans:bean>
     
     <beans:bean id="dirServiceBean1" parent="dirServiceBean"
         p:directoryServiceId="ds1"
-        p:instanceLayout-ref="instanceLayout1"
-        p:schemaManager-ref="schemaManager1">
-        <beans:property name="servers">
-            <util:list>
-                <beans:bean parent="serverBeanLdap"
-                    p:ldapConfig-ref="instanceLdapConfig1"/>
-                <beans:bean parent="serverBeanLdap"
-                    p:ldapConfig-ref="instanceLdapConfig2"/>
-                <beans:bean parent="serverBeanLdap"
-                    p:ldapConfig-ref="instanceLdapConfig3"/>
-            </util:list>
+        p:ldapConfig-ref="instanceLdapConfig1">
+        <beans:property name="instanceLayout">
+            <beans:bean parent="instanceLayout"
+                c:instanceDirPath="${dcdt.service.ldap.1.dir}"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="dirServiceBean2" parent="dirServiceBean"
+        p:directoryServiceId="ds2"
+        p:ldapConfig-ref="instanceLdapConfig2">
+        <beans:property name="instanceLayout">
+            <beans:bean parent="instanceLayout"
+                c:instanceDirPath="${dcdt.service.ldap.2.dir}"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="dirServiceBean3" parent="dirServiceBean"
+        p:directoryServiceId="ds3"
+        p:ldapConfig-ref="instanceLdapConfig3">
+        <beans:property name="instanceLayout">
+            <beans:bean parent="instanceLayout"
+                c:instanceDirPath="${dcdt.service.ldap.3.dir}"/>
         </beans:property>
     </beans:bean>
 </beans:beans>

@@ -5,8 +5,10 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolBoundBean;
 import gov.hhs.onc.dcdt.config.impl.InstanceLdapConfigImpl;
-import gov.hhs.onc.dcdt.ldap.LdapBindConfig;
+import gov.hhs.onc.dcdt.ldap.LdapBindCredentialConfig;
 import gov.hhs.onc.dcdt.ldap.LdapSslType;
+import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
 @JsonSubTypes({ @Type(InstanceLdapConfigImpl.class) })
@@ -15,17 +17,25 @@ public interface InstanceLdapConfig extends ToolBoundBean {
 
     public LdapConnectionConfig toConnectionConfigAnonymous();
 
-    public LdapBindConfig getBindConfigAdmin();
+    public LdapBindCredentialConfig getBindCredentialConfigAdmin();
 
-    public void setBindConfigAdmin(LdapBindConfig bindConfigAdmin);
+    public void setBindCredentialConfigAdmin(LdapBindCredentialConfig bindCredConfigAdmin);
 
-    public LdapBindConfig getBindConfigAnonymous();
+    public LdapBindCredentialConfig getBindCredentialConfigAnonymous();
 
-    public void setBindConfigAnonymous(LdapBindConfig bindConfigAnon);
+    public void setBindCredentialConfigAnonymous(LdapBindCredentialConfig bindCredConfigAnon);
+
+    public Entry getPartitionContextEntry();
+
+    public void setPartitionContextEntry(Entry partitionContextEntry);
 
     public String getPartitionId();
 
     public void setPartitionId(String partitionId);
+
+    public Dn getPartitionSuffix();
+
+    public void setPartitionSuffix(Dn partitionSuffix);
 
     public String getServerId();
 

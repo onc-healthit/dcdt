@@ -1,12 +1,12 @@
 package gov.hhs.onc.dcdt.ldap.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.ldap.LdapBindConfig;
+import gov.hhs.onc.dcdt.ldap.LdapBindCredentialConfig;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.name.Dn;
 
-public class LdapBindConfigImpl extends AbstractToolBean implements LdapBindConfig {
+public class LdapBindCredentialConfigImpl extends AbstractToolBean implements LdapBindCredentialConfig {
     private boolean anon;
     private Dn bindDn;
     private String bindPass;

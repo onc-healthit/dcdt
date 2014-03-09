@@ -12,6 +12,7 @@ import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.api.ldap.model.schema.SchemaManager;
 import org.apache.directory.api.util.exception.Exceptions;
 import org.apache.directory.server.config.beans.IndexBean;
+import org.apache.directory.server.config.beans.LdapServerBean;
 import org.apache.directory.server.config.beans.PartitionBean;
 import org.apache.directory.server.config.builder.ServiceBuilder;
 import org.apache.directory.server.constants.SystemSchemaConstants;
@@ -31,10 +32,10 @@ import org.springframework.context.annotation.Scope;
 
 @Configuration("ldapServiceConfiguration")
 public class LdapServiceConfiguration {
-    @Bean(name = "ldapServer")
+    @Bean(name = "serverLdap")
     @Lazy
     @Scope("prototype")
-    public LdapServer createLdapServer(DirectoryService dirService, ToolLdapServerBean ldapServerBean) throws Exception {
+    public LdapServer createLdapServer(DirectoryService dirService, LdapServerBean ldapServerBean) throws Exception {
         return ServiceBuilder.createLdapServer(ldapServerBean, dirService);
     }
 
@@ -49,7 +50,7 @@ public class LdapServiceConfiguration {
 
         for (PartitionBean partitionBean : dirServiceBean.getPartitions()) {
             if (ToolClassUtils.isAssignable(partitionBean.getClass(), AvlPartitionBean.class)) {
-                partition = this.createAvlPartition(dirService, ((AvlPartitionBean) partitionBean));
+                partition = createAvlPartitionInternal(schemaManager, ((AvlPartitionBean) partitionBean));
 
                 if (partitionBean.getPartitionId().equals(SystemSchemaConstants.SCHEMA_NAME)) {
                     dirService.setSystemPartition(partition);
@@ -59,7 +60,7 @@ public class LdapServiceConfiguration {
             }
         }
 
-        Partition schemaPartitionWrapped = this.createAvlPartition(dirService, new AvlPartitionBean());
+        Partition schemaPartitionWrapped = createAvlPartitionInternal(schemaManager);
         SchemaPartition schemaPartition = new SchemaPartition(schemaManager);
         schemaPartition.setWrappedPartition(schemaPartitionWrapped);
         dirService.setSchemaPartition(schemaPartition);
@@ -76,8 +77,15 @@ public class LdapServiceConfiguration {
         return dirService;
     }
 
-    public AvlPartition createAvlPartition(DirectoryService dirService, AvlPartitionBean avlPartitionBean) throws Exception {
-        AvlPartition avlPartition = new AvlPartition(dirService.getSchemaManager());
+    @Bean(name = "partitionAvl")
+    @Lazy
+    @Scope("prototype")
+    public AvlPartition createAvlPartition(SchemaManager schemaManager, AvlPartitionBean avlPartitionBean) throws Exception {
+        return createAvlPartitionInternal(schemaManager, avlPartitionBean);
+    }
+
+    private static AvlPartition createAvlPartitionInternal(SchemaManager schemaManager, AvlPartitionBean avlPartitionBean) throws Exception {
+        AvlPartition avlPartition = createAvlPartitionInternal(schemaManager);
         avlPartition.setCacheSize(avlPartitionBean.getPartitionCacheSize());
         avlPartition.setId(avlPartitionBean.getPartitionId());
         avlPartition.setSyncOnWrite(avlPartitionBean.isPartitionSyncOnWrite());
@@ -88,7 +96,7 @@ public class LdapServiceConfiguration {
             avlPartition.setContextEntry(ToolLdifUtils.readEntry(StringUtils.replace(contextEntry, "\\\\n", "\n")).getEntry());
         }
 
-        avlPartition.setIndexedAttributes(this.createAvlIndexes(avlPartitionBean.getIndexes()));
+        avlPartition.setIndexedAttributes(createAvlIndexes(avlPartitionBean.getIndexes()));
 
         Dn suffixDn = avlPartitionBean.getPartitionSuffix();
 
@@ -99,19 +107,23 @@ public class LdapServiceConfiguration {
         return avlPartition;
     }
 
-    public Set<Index<?, ?, String>> createAvlIndexes(List<IndexBean> indexBeans) throws Exception {
+    private static AvlPartition createAvlPartitionInternal(SchemaManager schemaManager) throws Exception {
+        return new AvlPartition(schemaManager);
+    }
+
+    private static Set<Index<?, ?, String>> createAvlIndexes(List<IndexBean> indexBeans) throws Exception {
         Set<Index<?, ?, String>> indexes = new HashSet<>(indexBeans.size());
 
         for (IndexBean indexBean : indexBeans) {
             if (indexBean.isEnabled() && ToolClassUtils.isAssignable(indexBean.getClass(), AvlIndexBean.class)) {
-                indexes.add(this.createAvlIndex(((AvlIndexBean) indexBean)));
+                indexes.add(createAvlIndex(((AvlIndexBean) indexBean)));
             }
         }
 
         return indexes;
     }
 
-    public AvlIndex<?, ?> createAvlIndex(AvlIndexBean avlIndexBean) throws Exception {
+    private static AvlIndex<?, ?> createAvlIndex(AvlIndexBean avlIndexBean) throws Exception {
         AvlIndex<String, Entry> avlIndex = new AvlIndex<>(avlIndexBean.getIndexAttributeId(), avlIndexBean.getIndexHasReverse());
         avlIndex.setCacheSize(avlIndexBean.getIndexCacheSize());
 
