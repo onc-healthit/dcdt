@@ -15,6 +15,7 @@
     <suppress files="\.java$" checks="LeftCurlyCheck"/>
     <suppress files="\.java$" checks="LineLengthCheck"/>
     <suppress files="\.java$" checks="MagicNumberCheck"/>
+    <suppress files="\.java$" checks="MemberNameCheck"/>
     <suppress files="\.java$" checks="MissingSwitchDefaultCheck"/>
     <suppress files="\.java$" checks="ModifierOrderCheck"/>
     <suppress files="\.java$" checks="NewlineAtEndOfFileCheck"/>

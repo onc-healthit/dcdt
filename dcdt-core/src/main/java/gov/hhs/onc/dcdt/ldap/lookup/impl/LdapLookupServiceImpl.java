@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.ldap.ToolLdapException;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
 import gov.hhs.onc.dcdt.ldap.lookup.ToolLdapLookupException;
 import gov.hhs.onc.dcdt.ldap.utils.ToolLdapAttributeUtils.LdapAttributeIdTransformer;
+import gov.hhs.onc.dcdt.ldap.utils.ToolLdapFilterUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
@@ -12,9 +13,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
@@ -22,6 +23,7 @@ import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
+import org.apache.directory.api.ldap.model.filter.ObjectClassNode;
 import org.apache.directory.api.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
@@ -184,7 +186,7 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
 
     private List<Entry> searchInternal(LdapConnectionConfig ldapConnConfig, Dn baseDn, SearchScope searchScope, @Nullable ExprNode searchFilter,
         Iterable<Attribute> searchAttrs) throws ToolLdapException {
-        String searchFilterExpr = Objects.toString(searchFilter, null);
+        String searchFilterExpr = ToolLdapFilterUtils.writeFilter(ObjectUtils.defaultIfNull(searchFilter, ObjectClassNode.OBJECT_CLASS_NODE));
         String[] searchAttrIds = ToolCollectionUtils.toArray(CollectionUtils.collect(searchAttrs, LdapAttributeIdTransformer.INSTANCE), String.class);
         LdapConnection ldapConn;
 

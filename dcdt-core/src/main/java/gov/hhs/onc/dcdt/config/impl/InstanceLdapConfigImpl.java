@@ -10,18 +10,15 @@ import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.name.Dn;
-import org.apache.directory.api.ldap.model.name.Rdn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
 @JsonTypeName("instanceLdapConfig")
 public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements InstanceLdapConfig {
-    private final static String ATTR_VALUE_OU_DCDT = "dcdt";
-
     private LdapBindCredentialConfig bindCredConfigAdmin;
     private LdapBindCredentialConfig bindCredConfigAnon;
-    private Entry partitionContextEntry;
-    private String partitionId;
-    private Dn partitionSuffix;
+    private Entry dataPartitionContextEntry;
+    private String dataPartitionId;
+    private Dn dataPartitionSuffix;
     private String serverId;
     private LdapSslType sslType;
 
@@ -49,16 +46,10 @@ public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements Ins
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        this.serverId = ((this.serverId != null) ? serverId : this.name);
-        this.partitionId = ((this.partitionId != null) ? partitionId : this.name);
-        this.partitionSuffix =
-            ((this.partitionSuffix != null) ? partitionSuffix : new Dn(new Rdn(SchemaConstants.OU_AT, this.serverId), new Rdn(SchemaConstants.OU_AT,
-                ATTR_VALUE_OU_DCDT)));
-
-        if (this.partitionContextEntry == null) {
-            this.partitionContextEntry = new DefaultEntry(this.partitionSuffix);
-            this.partitionContextEntry.add(SchemaConstants.OBJECT_CLASS_AT, SchemaConstants.TOP_OC, SchemaConstants.ORGANIZATIONAL_UNIT_OC);
-            this.partitionContextEntry.add(this.partitionSuffix.getRdn().getType(), this.partitionSuffix.getRdn().getValue());
+        if (this.dataPartitionContextEntry == null) {
+            this.dataPartitionContextEntry = new DefaultEntry(this.dataPartitionSuffix);
+            this.dataPartitionContextEntry.add(SchemaConstants.OBJECT_CLASS_AT, SchemaConstants.ORGANIZATIONAL_UNIT_OC, SchemaConstants.TOP_OC);
+            this.dataPartitionContextEntry.add(this.dataPartitionSuffix.getRdn().getType(), this.dataPartitionSuffix.getRdn().getValue());
         }
     }
 
@@ -83,31 +74,31 @@ public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements Ins
     }
 
     @Override
-    public Entry getPartitionContextEntry() {
-        return this.partitionContextEntry;
+    public Entry getDataPartitionContextEntry() {
+        return this.dataPartitionContextEntry;
     }
 
     @Override
-    public void setPartitionContextEntry(Entry partitionContextEntry) {
-        this.partitionContextEntry = partitionContextEntry;
+    public void setDataPartitionContextEntry(Entry dataPartitionContextEntry) {
+        this.dataPartitionContextEntry = dataPartitionContextEntry;
     }
 
     @Override
-    public String getPartitionId() {
-        return this.partitionId;
+    public String getDataPartitionId() {
+        return this.dataPartitionId;
     }
 
     @Override
-    public void setPartitionId(String partitionId) {
-        this.partitionId = partitionId;
+    public void setDataPartitionId(String dataPartitionId) {
+        this.dataPartitionId = dataPartitionId;
     }
 
-    public Dn getPartitionSuffix() {
-        return this.partitionSuffix;
+    public Dn getDataPartitionSuffix() {
+        return this.dataPartitionSuffix;
     }
 
-    public void setPartitionSuffix(Dn partitionSuffix) {
-        this.partitionSuffix = partitionSuffix;
+    public void setDataPartitionSuffix(Dn dataPartitionSuffix) {
+        this.dataPartitionSuffix = dataPartitionSuffix;
     }
 
     @Override
