@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.beans.ToolBean;
 import javax.annotation.Nullable;
 import org.apache.directory.api.ldap.model.name.Dn;
 
-public interface LdapBindConfig extends ToolBean {
+public interface LdapBindCredentialConfig extends ToolBean {
     public boolean isAnonymous();
 
     public void setAnonymous(boolean anon);
