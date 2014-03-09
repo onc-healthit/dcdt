@@ -178,10 +178,6 @@
             <artifactId>derby</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.directory.api</groupId>
-            <artifactId>api-ldap-client-all</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.tiles</groupId>
             <artifactId>tiles-api</artifactId>
         </dependency>

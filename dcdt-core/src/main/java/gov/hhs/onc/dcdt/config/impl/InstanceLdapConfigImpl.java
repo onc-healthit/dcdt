@@ -12,6 +12,8 @@ import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements InstanceLdapConfig {
     private LdapBindConfig bindConfigAdmin;
     private LdapBindConfig bindConfigAnon;
+    private String partitionId;
+    private String serverId;
     private LdapSslType sslType;
 
     @Override
@@ -54,6 +56,26 @@ public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements Ins
     @Override
     public void setBindConfigAnonymous(LdapBindConfig bindConfigAnon) {
         this.bindConfigAnon = bindConfigAnon;
+    }
+
+    @Override
+    public String getPartitionId() {
+        return this.partitionId;
+    }
+
+    @Override
+    public void setPartitionId(String partitionId) {
+        this.partitionId = partitionId;
+    }
+
+    @Override
+    public String getServerId() {
+        return this.serverId;
+    }
+
+    @Override
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
     }
 
     @Override

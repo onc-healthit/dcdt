@@ -297,13 +297,18 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.directory.api</groupId>
-                <artifactId>api-ldap-client-all</artifactId>
+                <artifactId>api-ldap-client-api</artifactId>
                 <version>1.0.0-M20</version>
             </dependency>
             <dependency>
-                <groupId>org.apache.directory.jdbm</groupId>
-                <artifactId>apacheds-jdbm2</artifactId>
-                <version>2.0.0-M2</version>
+                <groupId>org.apache.directory.api</groupId>
+                <artifactId>api-ldap-codec-standalone</artifactId>
+                <version>1.0.0-M20</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.directory.api</groupId>
+                <artifactId>api-ldap-schema-data</artifactId>
+                <version>1.0.0-M20</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.tiles</groupId>
@@ -472,22 +477,6 @@
                 <artifactId>clover</artifactId>
                 <version>3.2.0</version>
                 <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.directory.server</groupId>
-                <artifactId>apacheds-test-framework</artifactId>
-                <version>2.0.0-M15</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.directory.api</groupId>
-                        <artifactId>api-ldap-schema-data</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.directory.jdbm</groupId>
-                        <artifactId>apacheds-jdbm1</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
             <dependency>
                 <groupId>org.mockito</groupId>

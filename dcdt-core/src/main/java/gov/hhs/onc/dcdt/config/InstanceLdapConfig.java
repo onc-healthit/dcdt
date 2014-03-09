@@ -23,6 +23,14 @@ public interface InstanceLdapConfig extends ToolBoundBean {
 
     public void setBindConfigAnonymous(LdapBindConfig bindConfigAnon);
 
+    public String getPartitionId();
+
+    public void setPartitionId(String partitionId);
+
+    public String getServerId();
+
+    public void setServerId(String serverId);
+
     @JsonProperty("sslType")
     public LdapSslType getSslType();
 

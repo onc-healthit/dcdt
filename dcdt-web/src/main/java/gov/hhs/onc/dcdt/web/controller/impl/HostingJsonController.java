@@ -2,12 +2,12 @@ package gov.hhs.onc.dcdt.web.controller.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase;
+import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmission;
+import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmissionJsonDto;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultGenerator;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultInfo;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultJsonDto;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmission;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmissionJsonDto;
 import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl;
 import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultInfoImpl;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultStep;
@@ -17,7 +17,6 @@ import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseLdapResultType;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStep;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
-import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
 import gov.hhs.onc.dcdt.web.controller.JsonRequest;
@@ -25,14 +24,15 @@ import gov.hhs.onc.dcdt.web.controller.JsonResponse;
 import gov.hhs.onc.dcdt.web.json.RequestJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.impl.ResponseJsonWrapperBuilder;
+import java.util.List;
+import javax.annotation.Resource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import javax.annotation.Resource;
-import java.util.List;
 
 @Controller("hostingJsonController")
 @JsonController
@@ -84,13 +84,13 @@ public class HostingJsonController extends AbstractToolController {
 
         if (lastStep instanceof ToolTestcaseCertificateResultStep) {
             msgStrBuilder.appendWithDelimiter(getCertMessage(hostingTestcase, (ToolTestcaseCertificateResultStep) lastStep, resultInfo.isSuccessful()),
-                ToolStringUtils.DELIM_NEW_LINE);
+                StringUtils.LF);
         } else if (lastStep instanceof ToolTestcaseLdapConnectionResultStep) {
-            msgStrBuilder.appendWithDelimiter(getLdapMessage((ToolTestcaseLdapConnectionResultStep) lastStep), ToolStringUtils.DELIM_NEW_LINE);
+            msgStrBuilder.appendWithDelimiter(getLdapMessage((ToolTestcaseLdapConnectionResultStep) lastStep), StringUtils.LF);
         }
 
         if (!resultInfo.isSuccessful()) {
-            msgStrBuilder.appendWithDelimiter(getErrorMessage(hostingTestcase, errorStepPosition, lastStep), ToolStringUtils.DELIM_NEW_LINE);
+            msgStrBuilder.appendWithDelimiter(getErrorMessage(hostingTestcase, errorStepPosition, lastStep), StringUtils.LF);
         }
         resultInfo.setMessage(msgStrBuilder.build());
     }
@@ -106,18 +106,17 @@ public class HostingJsonController extends AbstractToolController {
 
         errorMsgStrBuilder.appendWithDelimiter(
             ToolMessageUtils.getMessage(this.msgSource, errorCode, errorStepPosition, resultConfigErrorStep.getDescription().getText(),
-                resultConfigErrorStep.isSuccessful(), resultInfoErrorStep.isSuccessful()), ToolStringUtils.DELIM_NEW_LINE);
+                resultConfigErrorStep.isSuccessful(), resultInfoErrorStep.isSuccessful()), StringUtils.LF);
 
         Object[] msgParams = new Object[] { hostingTestcase.getBindingType(), hostingTestcase.getLocationType() };
 
         if (!hostingTestcase.isNegative() && !(lastStep instanceof ToolTestcaseCertificateResultStep)) {
             errorMsgStrBuilder.appendWithDelimiter(
-                ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.MISSING_CERT.getMessage(), msgParams),
-                ToolStringUtils.DELIM_NEW_LINE);
+                ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.MISSING_CERT.getMessage(), msgParams), StringUtils.LF);
         }
 
         if (resultInfoErrorStep.hasMessage()) {
-            errorMsgStrBuilder.appendWithDelimiter(resultInfoErrorStep.getMessage(), ToolStringUtils.DELIM_NEW_LINE);
+            errorMsgStrBuilder.appendWithDelimiter(resultInfoErrorStep.getMessage(), StringUtils.LF);
         }
 
         return errorMsgStrBuilder.build();
@@ -128,17 +127,16 @@ public class HostingJsonController extends AbstractToolController {
         Object[] msgParams = new Object[] { certResultStep.getBindingType(), certResultStep.getLocationType() };
         ToolStrBuilder certStrBuilder = new ToolStrBuilder();
 
-        certStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, certResultType.getMessage(), msgParams), ToolStringUtils.DELIM_NEW_LINE);
+        certStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, certResultType.getMessage(), msgParams), StringUtils.LF);
 
         if (certResultStep.hasCertificateInfo() && !successful) {
             if (hostingTestcase.isNegative()) {
                 certStrBuilder.appendWithDelimiter(
-                    ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.UNEXPECTED_CERT.getMessage(), msgParams),
-                    ToolStringUtils.DELIM_NEW_LINE);
+                    ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.UNEXPECTED_CERT.getMessage(), msgParams), StringUtils.LF);
             } else {
                 certStrBuilder.appendWithDelimiter(
                     ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.INCORRECT_CERT.getMessage(),
-                        new Object[] { hostingTestcase.getBindingType(), hostingTestcase.getLocationType() }), ToolStringUtils.DELIM_NEW_LINE);
+                        new Object[] { hostingTestcase.getBindingType(), hostingTestcase.getLocationType() }), StringUtils.LF);
             }
         }
         return certStrBuilder.build();

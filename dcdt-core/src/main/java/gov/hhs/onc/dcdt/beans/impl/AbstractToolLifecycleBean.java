@@ -28,7 +28,7 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
 
     @Override
     public void stop(@Nullable Runnable stopCallback) {
-        if (this.isRunning()) {
+        if (this.canStop()) {
             LifecycleStatusType lifecycleStatusPrev = this.lifecycleStatus;
 
             this.lifecycleStatus = LifecycleStatusType.STOPPING;
@@ -65,7 +65,7 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
 
     @Override
     public void start() {
-        if (!this.isRunning()) {
+        if (this.canStart()) {
             LifecycleStatusType lifecycleStatusPrev = this.lifecycleStatus;
 
             this.lifecycleStatus = LifecycleStatusType.STARTING;
@@ -105,6 +105,14 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
     }
 
     protected void startInternal() throws Exception {
+    }
+
+    protected boolean canStop() {
+        return this.isRunning();
+    }
+
+    protected boolean canStart() {
+        return !this.isRunning();
     }
 
     @Override

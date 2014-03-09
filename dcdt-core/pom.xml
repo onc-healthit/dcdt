@@ -109,7 +109,15 @@
         </dependency>
         <dependency>
             <groupId>org.apache.directory.api</groupId>
-            <artifactId>api-ldap-client-all</artifactId>
+            <artifactId>api-ldap-client-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-ldap-codec-standalone</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-ldap-schema-data</artifactId>
         </dependency>
         <dependency>
             <groupId>org.bouncycastle</groupId>
