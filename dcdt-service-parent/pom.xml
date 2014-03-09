@@ -69,40 +69,6 @@
             </dependency>
             <dependency>
                 <groupId>org.apache.directory.server</groupId>
-                <artifactId>apacheds-core-annotations</artifactId>
-                <version>2.0.0-M15</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.directory.jdbm</groupId>
-                        <artifactId>apacheds-jdbm1</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.directory.mavibot</groupId>
-                        <artifactId>mavibot</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.directory.server</groupId>
-                        <artifactId>apacheds-mavibot-partition</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.directory.server</groupId>
-                <artifactId>apacheds-server-annotations</artifactId>
-                <version>2.0.0-M15</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>bouncycastle</groupId>
-                        <artifactId>bcprov-jdk15</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.directory.jdbm</groupId>
-                        <artifactId>apacheds-jdbm1</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.directory.server</groupId>
                 <artifactId>apacheds-server-config</artifactId>
                 <version>2.0.0-M15</version>
             </dependency>

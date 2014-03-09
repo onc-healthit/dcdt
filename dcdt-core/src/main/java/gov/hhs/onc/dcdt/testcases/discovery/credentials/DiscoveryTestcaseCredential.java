@@ -4,16 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialImpl;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.Predicate;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
 public interface DiscoveryTestcaseCredential extends ToolNamedBean {
-    public final static class DiscoveryTestcaseCredentialTypePredicate implements Predicate<DiscoveryTestcaseCredential> {
+    public final static class DiscoveryTestcaseCredentialTypePredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
         public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_CA = new DiscoveryTestcaseCredentialTypePredicate(
             DiscoveryTestcaseCredentialType.CA);
         public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_BACKGROUND = new DiscoveryTestcaseCredentialTypePredicate(
@@ -28,7 +28,7 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
         }
 
         @Override
-        public boolean evaluate(DiscoveryTestcaseCredential cred) {
+        protected boolean evaluateInternal(DiscoveryTestcaseCredential cred) throws Exception {
             // noinspection ConstantConditions
             return cred.hasType() && cred.getType().equals(this.credType);
         }

@@ -3,16 +3,15 @@ package gov.hhs.onc.dcdt.config.impl;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolDomainBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.config.InstanceDnsConfig;
-import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
-import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
-import gov.hhs.onc.dcdt.dns.DnsRuntimeException;
 import gov.hhs.onc.dcdt.dns.config.ARecordConfig;
 import gov.hhs.onc.dcdt.dns.config.CertRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.CnameRecordConfig;
@@ -25,7 +24,6 @@ import gov.hhs.onc.dcdt.dns.config.TargetedDnsRecordConfig;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
@@ -42,8 +40,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.Predicate;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -53,56 +49,46 @@ import org.xbill.DNS.Record;
 
 @JsonTypeName("instanceDnsConfig")
 public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements InstanceDnsConfig {
-    private class DiscoveryTestcaseCredentialCertRecordConfigTransformer implements Transformer<DiscoveryTestcaseCredential, CertRecordConfig> {
+    private class DiscoveryTestcaseCredentialCertRecordConfigTransformer extends AbstractToolTransformer<DiscoveryTestcaseCredential, CertRecordConfig> {
         @Override
-        public CertRecordConfig transform(DiscoveryTestcaseCredential discoveryTestcaseCred) {
-            try {
-                CertRecordConfig certRecordConfig = ToolBeanFactoryUtils.createBeanOfType(InstanceDnsConfigImpl.this.appContext, CertRecordConfig.class);
-                // noinspection ConstantConditions
-                certRecordConfig.setName(ToolDnsNameUtils.toAbsolute(discoveryTestcaseCred.getLocation().getMailAddress().toAddressName()));
+        protected CertRecordConfig transformInternal(DiscoveryTestcaseCredential discoveryTestcaseCred) throws Exception {
+            CertRecordConfig certRecordConfig = ToolBeanFactoryUtils.createBeanOfType(InstanceDnsConfigImpl.this.appContext, CertRecordConfig.class);
+            // noinspection ConstantConditions
+            certRecordConfig.setName(ToolDnsNameUtils.toAbsolute(discoveryTestcaseCred.getLocation().getMailAddress().toAddressName()));
 
-                // noinspection ConstantConditions
-                KeyInfo discoveryTestcaseCredKeyInfo = discoveryTestcaseCred.getCredentialInfo().getKeyDescriptor();
-                // noinspection ConstantConditions
-                DnsKeyAlgorithmType discoveryTestcaseCredKeyAlgType = discoveryTestcaseCredKeyInfo.getKeyAlgorithm().getDnsAlgorithmType();
-                certRecordConfig.setKeyAlgorithmType(discoveryTestcaseCredKeyAlgType);
-                // noinspection ConstantConditions
-                certRecordConfig.setKeyTag(ToolDnsRecordUtils.getKeyTag(discoveryTestcaseCredKeyAlgType, discoveryTestcaseCredKeyInfo.getPublicKey()));
+            // noinspection ConstantConditions
+            KeyInfo discoveryTestcaseCredKeyInfo = discoveryTestcaseCred.getCredentialInfo().getKeyDescriptor();
+            // noinspection ConstantConditions
+            DnsKeyAlgorithmType discoveryTestcaseCredKeyAlgType = discoveryTestcaseCredKeyInfo.getKeyAlgorithm().getDnsAlgorithmType();
+            certRecordConfig.setKeyAlgorithmType(discoveryTestcaseCredKeyAlgType);
+            // noinspection ConstantConditions
+            certRecordConfig.setKeyTag(ToolDnsRecordUtils.getKeyTag(discoveryTestcaseCredKeyAlgType, discoveryTestcaseCredKeyInfo.getPublicKey()));
 
-                // noinspection ConstantConditions
-                certRecordConfig.setCertificateData(CertificateUtils.writeCertificate(discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor()
-                    .getCertificate(), DataEncoding.DER));
+            // noinspection ConstantConditions
+            certRecordConfig.setCertificateData(CertificateUtils.writeCertificate(discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor()
+                .getCertificate(), DataEncoding.DER));
 
-                return certRecordConfig;
-            } catch (CryptographyException | DnsException | ToolMailAddressException e) {
-                throw new DnsRuntimeException(String.format("Unable to transform Discovery testcase credential (name=%s) into DNS CERT record configuration.",
-                    discoveryTestcaseCred.getName()), e);
-            }
+            return certRecordConfig;
         }
     }
 
-    private class DiscoveryTestcaseCredentialCertRecordPredicate implements Predicate<DiscoveryTestcaseCredential> {
+    private class DiscoveryTestcaseCredentialCertRecordPredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
         @Override
-        public boolean evaluate(DiscoveryTestcaseCredential discoveryTestcaseCred) {
+        protected boolean evaluateInternal(DiscoveryTestcaseCredential discoveryTestcaseCred) throws Exception {
             DiscoveryTestcaseCredentialLocation discoveryTestcaseCredLoc;
             MailAddress discoveryTestcaseCredLocMailAddr;
             CredentialInfo discoveryTestcaseCredInfo;
             KeyInfo discoveryTestcaseCredKeyInfo;
 
-            try {
-                // noinspection ConstantConditions
-                return discoveryTestcaseCred.hasLocation() && (discoveryTestcaseCredLoc = discoveryTestcaseCred.getLocation()).getType().isDns()
-                    && discoveryTestcaseCredLoc.hasMailAddress()
-                    && (discoveryTestcaseCredLocMailAddr = discoveryTestcaseCredLoc.getMailAddress()).getBindingType().isBound()
-                    && ToolDnsNameUtils.toAbsolute(discoveryTestcaseCredLocMailAddr.getDomainName()).equals(InstanceDnsConfigImpl.this.domainName)
-                    && discoveryTestcaseCred.hasCredentialInfo() && (discoveryTestcaseCredInfo = discoveryTestcaseCred.getCredentialInfo()).hasKeyDescriptor()
-                    && (discoveryTestcaseCredKeyInfo = discoveryTestcaseCredInfo.getKeyDescriptor()).hasKeyAlgorithm()
-                    && discoveryTestcaseCredKeyInfo.hasPublicKey() && discoveryTestcaseCredInfo.hasCertificateDescriptor()
-                    && discoveryTestcaseCredInfo.getCertificateDescriptor().hasCertificate();
-            } catch (DnsException | ToolMailAddressException e) {
-                throw new DnsRuntimeException(String.format("Unable to evaluate whether Discovery testcase credential (name=%s) can be a DNS CERT record.",
-                    discoveryTestcaseCred.getName()), e);
-            }
+            // noinspection ConstantConditions
+            return discoveryTestcaseCred.hasLocation() && (discoveryTestcaseCredLoc = discoveryTestcaseCred.getLocation()).getType().isDns()
+                && discoveryTestcaseCredLoc.hasMailAddress()
+                && (discoveryTestcaseCredLocMailAddr = discoveryTestcaseCredLoc.getMailAddress()).getBindingType().isBound()
+                && ToolDnsNameUtils.toAbsolute(discoveryTestcaseCredLocMailAddr.getDomainName()).equals(InstanceDnsConfigImpl.this.domainName)
+                && discoveryTestcaseCred.hasCredentialInfo() && (discoveryTestcaseCredInfo = discoveryTestcaseCred.getCredentialInfo()).hasKeyDescriptor()
+                && (discoveryTestcaseCredKeyInfo = discoveryTestcaseCredInfo.getKeyDescriptor()).hasKeyAlgorithm()
+                && discoveryTestcaseCredKeyInfo.hasPublicKey() && discoveryTestcaseCredInfo.hasCertificateDescriptor()
+                && discoveryTestcaseCredInfo.getCertificateDescriptor().hasCertificate();
         }
     }
 

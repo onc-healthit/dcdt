@@ -1,13 +1,14 @@
 package gov.hhs.onc.dcdt.service.ldap.config.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.server.config.ConfigurationElement;
 import org.apache.directory.server.config.beans.PartitionBean;
 
 public class AvlPartitionBean extends PartitionBean {
-    @ConfigurationElement(attributeType = "ads-partitionCacheSize", isOptional = true, defaultValue = "-1")
+    @ConfigurationElement(attributeType = "ads-partitionCacheSize", isOptional = true, defaultValue = StringUtils.EMPTY + -1)
     private int partitionCacheSize = -1;
-    
-    @ConfigurationElement(attributeType = "ads-partitionSyncOnWrite", isOptional = true, defaultValue = "true")
+
+    @ConfigurationElement(attributeType = "ads-partitionSyncOnWrite", isOptional = true, defaultValue = StringUtils.EMPTY + true)
     private boolean partitionSyncOnWrite = true;
 
     public int getPartitionCacheSize() {
