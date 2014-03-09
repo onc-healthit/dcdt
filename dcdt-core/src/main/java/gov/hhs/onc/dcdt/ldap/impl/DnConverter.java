@@ -24,10 +24,10 @@ public class DnConverter extends AbstractToolConverter {
     @Override
     protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
         if (sourceType.isAssignableTo(TYPE_DESC_DN)) {
-            return ToolCollectionUtils.toArray(((Dn) source).getRdns(), Rdn.class);
+            return (targetType.isAssignableTo(TYPE_DESC_RDN_ARR) ? ToolCollectionUtils.toArray(((Dn) source).getRdns(), Rdn.class) : source.toString());
         } else if (sourceType.isAssignableTo(TYPE_DESC_RDN_ARR)) {
             return ToolDnUtils.fromRdns(((Rdn[]) source));
-        } else if (sourceType.isAssignableTo(TYPE_DESC_RDN_ARR)) {
+        } else if (sourceType.isAssignableTo(TYPE_DESC_STR_ARR)) {
             return ToolDnUtils.fromStrings(((String[]) source));
         } else {
             return ToolDnUtils.fromStrings(((String) source));
