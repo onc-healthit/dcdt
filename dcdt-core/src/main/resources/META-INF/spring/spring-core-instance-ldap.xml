@@ -31,8 +31,11 @@
     
     <beans:bean id="instanceLdapConfig1" parent="instanceLdapConfigImpl"
         p:bindPort="${dcdt.instance.ldap.1.bind.port}"
+        p:dataPartitionId="ldapPartition1"
+        p:dataPartitionSuffix="${dcdt.instance.ldap.1.data.partition.suffix}"
         p:name="ldap1"
-        p:nameDisplay="LDAP 1">
+        p:nameDisplay="LDAP 1"
+        p:serverId="ldapServer1">
         <beans:property name="bindCredentialConfigAdmin">
             <beans:bean parent="ldapBindCredConfigAdmin"
                 p:bindPassword="${dcdt.instance.ldap.1.bind.cred.admin.pass}"/>
@@ -41,8 +44,11 @@
     
     <beans:bean id="instanceLdapConfig2" parent="instanceLdapConfigImpl"
         p:bindPort="${dcdt.instance.ldap.2.bind.port}"
+        p:dataPartitionId="ldapPartition2"
+        p:dataPartitionSuffix="${dcdt.instance.ldap.2.data.partition.suffix}"
         p:name="ldap2"
-        p:nameDisplay="LDAP 2">
+        p:nameDisplay="LDAP 2"
+        p:serverId="ldapServer2">
         <beans:property name="bindCredentialConfigAdmin">
             <beans:bean parent="ldapBindCredConfigAdmin"
                 p:bindPassword="${dcdt.instance.ldap.2.bind.cred.admin.pass}"/>
@@ -51,8 +57,11 @@
     
     <beans:bean id="instanceLdapConfig3" parent="instanceLdapConfigImpl"
         p:bindPort="${dcdt.instance.ldap.3.bind.port}"
+        p:dataPartitionId="ldapPartition3"
+        p:dataPartitionSuffix="${dcdt.instance.ldap.3.data.partition.suffix}"
         p:name="ldap3"
-        p:nameDisplay="LDAP 3">
+        p:nameDisplay="LDAP 3"
+        p:serverId="ldapServer3">
         <beans:property name="bindCredentialConfigAdmin">
             <beans:bean parent="ldapBindCredConfigAdmin"
                 p:bindPassword="${dcdt.instance.ldap.3.bind.cred.admin.pass}"/>

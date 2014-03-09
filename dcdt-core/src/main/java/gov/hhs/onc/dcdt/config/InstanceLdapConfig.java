@@ -25,17 +25,17 @@ public interface InstanceLdapConfig extends ToolBoundBean {
 
     public void setBindCredentialConfigAnonymous(LdapBindCredentialConfig bindCredConfigAnon);
 
-    public Entry getPartitionContextEntry();
+    public Entry getDataPartitionContextEntry();
 
-    public void setPartitionContextEntry(Entry partitionContextEntry);
+    public void setDataPartitionContextEntry(Entry dataPartitionContextEntry);
 
-    public String getPartitionId();
+    public String getDataPartitionId();
 
-    public void setPartitionId(String partitionId);
+    public void setDataPartitionId(String dataPartitionId);
 
-    public Dn getPartitionSuffix();
+    public Dn getDataPartitionSuffix();
 
-    public void setPartitionSuffix(Dn partitionSuffix);
+    public void setDataPartitionSuffix(Dn dataPartitionSuffix);
 
     public String getServerId();
 

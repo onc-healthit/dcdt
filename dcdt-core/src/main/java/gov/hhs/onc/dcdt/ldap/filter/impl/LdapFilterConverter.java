@@ -3,9 +3,9 @@ package gov.hhs.onc.dcdt.ldap.filter.impl;
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
+import gov.hhs.onc.dcdt.ldap.utils.ToolLdapFilterUtils;
 import javax.annotation.Nullable;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
-import org.apache.directory.api.ldap.model.filter.FilterParser;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +17,7 @@ public class LdapFilterConverter extends AbstractToolConverter {
     @Nullable
     @Override
     protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
-        return (sourceType.isAssignableTo(TYPE_DESC_EXPR_NODE) ? source.toString() : FilterParser.parse(((String) source)));
+        return (sourceType.isAssignableTo(TYPE_DESC_EXPR_NODE) ? ToolLdapFilterUtils.writeFilter(((ExprNode) source)) : ToolLdapFilterUtils
+            .readFilter(((String) source)));
     }
 }
