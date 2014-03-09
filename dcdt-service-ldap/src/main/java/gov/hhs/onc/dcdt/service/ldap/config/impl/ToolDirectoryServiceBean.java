@@ -11,8 +11,8 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseC
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
-import gov.hhs.onc.dcdt.utils.ToolPredicateUtils.ToolPredicate;
-import gov.hhs.onc.dcdt.utils.ToolTransformerUtils.ToolTransformer;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import java.util.Collection;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -27,6 +27,7 @@ import org.apache.directory.server.config.beans.DirectoryServiceBean;
 import org.apache.directory.server.config.beans.LdapServerBean;
 import org.apache.directory.server.config.beans.TcpTransportBean;
 import org.apache.directory.server.constants.ServerDNConstants;
+import org.apache.directory.server.core.api.InstanceLayout;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +35,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.AbstractApplicationContext;
 
 public class ToolDirectoryServiceBean extends DirectoryServiceBean implements ApplicationContextAware, InitializingBean {
-    private class DiscoveryTestcaseCredentialEntryTransformer extends ToolTransformer<DiscoveryTestcaseCredential, Entry> {
+    private class DiscoveryTestcaseCredentialEntryTransformer extends AbstractToolTransformer<DiscoveryTestcaseCredential, Entry> {
         private SchemaManager schemaManager;
         private Dn dataPartitionSuffix;
 
@@ -63,7 +64,7 @@ public class ToolDirectoryServiceBean extends DirectoryServiceBean implements Ap
         }
     }
 
-    private class DiscoveryTestcaseCredentialEntryPredicate extends ToolPredicate<DiscoveryTestcaseCredential> {
+    private class DiscoveryTestcaseCredentialEntryPredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
         private String dataPartitionId;
 
         public DiscoveryTestcaseCredentialEntryPredicate(String dataPartitionId) {
@@ -87,7 +88,7 @@ public class ToolDirectoryServiceBean extends DirectoryServiceBean implements Ap
 
     private AbstractApplicationContext appContext;
     private Collection<Entry> dataEntries;
-    private ToolInstanceLayout instanceLayout;
+    private InstanceLayout instanceLayout;
     private InstanceLdapConfig ldapConfig;
     private SchemaManager schemaManager;
 
@@ -134,11 +135,11 @@ public class ToolDirectoryServiceBean extends DirectoryServiceBean implements Ap
         return this.dataEntries;
     }
 
-    public ToolInstanceLayout getInstanceLayout() {
+    public InstanceLayout getInstanceLayout() {
         return this.instanceLayout;
     }
 
-    public void setInstanceLayout(ToolInstanceLayout instanceLayout) {
+    public void setInstanceLayout(InstanceLayout instanceLayout) {
         this.instanceLayout = instanceLayout;
     }
 

@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.ldap.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.ldap.ToolLdapException;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.exception.LdapException;
@@ -11,7 +11,7 @@ import org.apache.directory.api.ldap.model.ldif.LdifReader;
 import org.apache.directory.api.ldap.model.ldif.LdifUtils;
 
 public abstract class ToolLdapAttributeUtils {
-    public static class LdapAttributeIdTransformer implements Transformer<Attribute, String> {
+    public static class LdapAttributeIdTransformer extends AbstractToolTransformer<Attribute, String> {
         public final static LdapAttributeIdTransformer INSTANCE = new LdapAttributeIdTransformer();
         public final static LdapAttributeIdTransformer INSTANCE_USER_PROVIDED = new LdapAttributeIdTransformer(true);
 
@@ -26,7 +26,7 @@ public abstract class ToolLdapAttributeUtils {
         }
 
         @Override
-        public String transform(Attribute attr) {
+        protected String transformInternal(Attribute attr) throws Exception {
             return (this.userProvided ? attr.getUpId() : attr.getId());
         }
     }

@@ -1,13 +1,13 @@
 package gov.hhs.onc.dcdt.web.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.util.Collection;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
 import org.springframework.http.MediaType;
 
 public abstract class ToolContentTypeUtils {
-    public static class CompatibleContentTypePredicate implements Predicate<MediaType> {
+    public static class CompatibleContentTypePredicate extends AbstractToolPredicate<MediaType> {
         private Iterable<MediaType> contentTypes;
 
         public CompatibleContentTypePredicate(Iterable<MediaType> contentTypes) {
@@ -15,7 +15,7 @@ public abstract class ToolContentTypeUtils {
         }
 
         @Override
-        public boolean evaluate(MediaType contentTypeEval) {
+        protected boolean evaluateInternal(MediaType contentTypeEval) throws Exception {
             for (MediaType contentType : this.contentTypes) {
                 if (contentTypeEval.isCompatibleWith(contentType)) {
                     return true;
@@ -26,7 +26,7 @@ public abstract class ToolContentTypeUtils {
         }
     }
 
-    public static class IncludesContentTypePredicate implements Predicate<MediaType> {
+    public static class IncludesContentTypePredicate extends AbstractToolPredicate<MediaType> {
         private Iterable<MediaType> contentTypes;
 
         public IncludesContentTypePredicate(Iterable<MediaType> contentTypes) {
@@ -34,7 +34,7 @@ public abstract class ToolContentTypeUtils {
         }
 
         @Override
-        public boolean evaluate(MediaType contentTypeEval) {
+        protected boolean evaluateInternal(MediaType contentTypeEval) throws Exception {
             for (MediaType contentType : this.contentTypes) {
                 if (contentType.includes(contentTypeEval)) {
                     return true;

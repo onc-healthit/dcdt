@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsResultType;
 import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
@@ -14,17 +15,16 @@ import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Transformer;
 import org.xbill.DNS.ExtendedResolver;
 import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SimpleResolver;
 
 public abstract class ToolDnsResolverUtils {
-    public static class ResolverSocketAddressTransformer implements Transformer<InetAddress, InetSocketAddress> {
+    public static class ResolverSocketAddressTransformer extends AbstractToolTransformer<InetAddress, InetSocketAddress> {
         public final static ResolverSocketAddressTransformer INSTANCE = new ResolverSocketAddressTransformer();
 
         @Override
-        public InetSocketAddress transform(InetAddress addr) {
+        protected InetSocketAddress transformInternal(InetAddress addr) throws Exception {
             return new InetSocketAddress(addr, SimpleResolver.DEFAULT_PORT);
         }
     }

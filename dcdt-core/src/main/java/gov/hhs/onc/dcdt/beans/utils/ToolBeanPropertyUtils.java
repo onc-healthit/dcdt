@@ -1,16 +1,13 @@
 package gov.hhs.onc.dcdt.beans.utils;
 
-import gov.hhs.onc.dcdt.beans.ToolNamedBean;
-import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.beans.PropertyDescriptor;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nullable;
-import javax.persistence.Id;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.apache.commons.collections4.PredicateUtils;
@@ -28,8 +25,9 @@ public abstract class ToolBeanPropertyUtils {
         }
 
         @Override
-        public boolean evaluate(@Nullable Object bean) {
-            return super.evaluate(bean) && Objects.equals(getValue(ToolBeanUtils.wrap(bean), this.beanPropName, this.beanPropValueClass), this.beanPropValue);
+        protected boolean evaluateInternal(@Nullable Object bean) throws Exception {
+            return super.evaluateInternal(bean)
+                && Objects.equals(getValue(ToolBeanUtils.wrap(bean), this.beanPropName, this.beanPropValueClass), this.beanPropValue);
         }
     }
 
@@ -43,7 +41,7 @@ public abstract class ToolBeanPropertyUtils {
         }
 
         @Override
-        public boolean evaluate(@Nullable Object bean) {
+        protected boolean evaluateInternal(@Nullable Object bean) throws Exception {
             return isReadable(ToolBeanUtils.wrap(bean), this.beanPropName, beanPropValueClass);
         }
     }
@@ -58,7 +56,7 @@ public abstract class ToolBeanPropertyUtils {
         }
 
         @Override
-        public boolean evaluate(@Nullable Object bean) {
+        protected boolean evaluateInternal(@Nullable Object bean) throws Exception {
             return isWriteable(ToolBeanUtils.wrap(bean), this.beanPropName, beanPropValueClass);
         }
     }
@@ -73,7 +71,7 @@ public abstract class ToolBeanPropertyUtils {
         }
 
         @Override
-        public boolean evaluate(PropertyDescriptor beanPropDesc) {
+        protected boolean evaluateInternal(PropertyDescriptor beanPropDesc) throws Exception {
             return isReadable(this.beanWrapper, beanPropDesc.getName(), this.beanPropValueClass);
         }
     }
@@ -88,7 +86,7 @@ public abstract class ToolBeanPropertyUtils {
         }
 
         @Override
-        public boolean evaluate(PropertyDescriptor beanPropDesc) {
+        protected boolean evaluateInternal(PropertyDescriptor beanPropDesc) throws Exception {
             return isWriteable(this.beanWrapper, beanPropDesc.getName(), this.beanPropValueClass);
         }
     }
@@ -121,7 +119,7 @@ public abstract class ToolBeanPropertyUtils {
         }
     }
 
-    private static abstract class AbstractBeanPropertyPredicate<T> implements Predicate<T> {
+    private static abstract class AbstractBeanPropertyPredicate<T> extends AbstractToolPredicate<T> {
         protected Class<?> beanPropValueClass;
 
         protected AbstractBeanPropertyPredicate() {

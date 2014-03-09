@@ -46,6 +46,7 @@ public abstract class AbstractToolServiceFunctionalTests<T extends ToolService> 
     }
 
     public void startService() {
+        // noinspection ConstantConditions
         (this.service = ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, this.serviceClass)).start();
     }
 
@@ -53,6 +54,7 @@ public abstract class AbstractToolServiceFunctionalTests<T extends ToolService> 
     public void registerInstanceConfig() {
         if (!testServiceInstanceConfigRegistered) {
             InstanceConfig instanceConfig = ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, InstanceConfig.class);
+            // noinspection ConstantConditions
             instanceConfig.setDomainName(this.testServiceInstanceConfigDomainName);
             instanceConfig.setIpAddress(this.testServiceInstanceConfigIpAddr);
 

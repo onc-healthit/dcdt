@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.beans.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
@@ -11,7 +12,6 @@ import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
@@ -27,7 +27,7 @@ public abstract class ToolBeanFactoryUtils {
         }
 
         @Override
-        public boolean evaluate(@Nullable String beanName) {
+        protected boolean evaluateInternal(@Nullable String beanName) throws Exception {
             return Objects.equals(getRegisteredBeanScope(this.beanFactory, beanName), this.beanScopeName);
         }
     }
@@ -44,27 +44,24 @@ public abstract class ToolBeanFactoryUtils {
         }
     }
 
-    public static abstract class AbstractScopedBeanNamePredicate<T extends ListableBeanFactory> implements Predicate<String> {
-        protected T beanFactory;
-        protected String beanScopeName;
-
-        protected AbstractScopedBeanNamePredicate(T beanFactory, String beanScopeName) {
-            this.beanFactory = beanFactory;
-            this.beanScopeName = beanScopeName;
-        }
-
-        @Override
-        public abstract boolean evaluate(@Nullable String beanName);
-    }
-
     private abstract static class AbstractBuiltinScopedBeanNamePredicate extends AbstractScopedBeanNamePredicate<ListableBeanFactory> {
         protected AbstractBuiltinScopedBeanNamePredicate(ListableBeanFactory beanFactory, String beanScopeName) {
             super(beanFactory, beanScopeName);
         }
 
         @Override
-        public boolean evaluate(@Nullable String beanName) {
+        protected boolean evaluateInternal(@Nullable String beanName) throws Exception {
             return Objects.equals(getBuiltinBeanScope(this.beanFactory, beanName), this.beanScopeName);
+        }
+    }
+
+    public static abstract class AbstractScopedBeanNamePredicate<T extends ListableBeanFactory> extends AbstractToolPredicate<String> {
+        protected T beanFactory;
+        protected String beanScopeName;
+
+        protected AbstractScopedBeanNamePredicate(T beanFactory, String beanScopeName) {
+            this.beanFactory = beanFactory;
+            this.beanScopeName = beanScopeName;
         }
     }
 

@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.dns.DnsDclassType;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
-import gov.hhs.onc.dcdt.dns.DnsRuntimeException;
 import gov.hhs.onc.dcdt.dns.config.DnsRecordConfig;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -20,7 +20,6 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.PredicateUtils;
-import org.apache.commons.collections4.Transformer;
 import org.apache.commons.lang3.StringUtils;
 import org.xbill.DNS.DNSKEYRecord;
 import org.xbill.DNS.DNSKEYRecord.Protocol;
@@ -42,14 +41,14 @@ public abstract class ToolDnsRecordUtils {
         @Nullable
         @Override
         @SuppressWarnings({ "unchecked" })
-        public T transform(DnsRecordConfig<? extends Record> recordConfig) {
-            T recordTransformed = super.transform(recordConfig);
+        protected T transformInternal(DnsRecordConfig<? extends Record> recordConfig) throws Exception {
+            T recordTransformed = super.transformInternal(recordConfig);
 
             return (((recordTransformed != null) && Objects.equals(recordTransformed.getName(), this.record.getName())) ? recordTransformed : null);
         }
     }
 
-    public static class DnsRecordConfigTransformer<T extends Record> implements Transformer<DnsRecordConfig<? extends Record>, T> {
+    public static class DnsRecordConfigTransformer<T extends Record> extends AbstractToolTransformer<DnsRecordConfig<? extends Record>, T> {
         protected DnsRecordType recordType;
         protected Class<T> recordClass;
 
@@ -61,14 +60,8 @@ public abstract class ToolDnsRecordUtils {
         @Nullable
         @Override
         @SuppressWarnings({ "unchecked" })
-        public T transform(DnsRecordConfig<? extends Record> recordConfig) {
-            try {
-                return (recordConfig.getRecordType() == this.recordType) ? this.recordClass.cast(recordConfig.toRecord()) : null;
-            } catch (DnsException e) {
-                throw new DnsRuntimeException(String.format("Unable to transform DNS record configuration (class=%s, type=%s) into DNS record (class=%s).",
-                    ToolClassUtils.getName(recordConfig), recordConfig.getRecordType().getTypeDisplay(),
-                    ToolClassUtils.getName(recordConfig.getRecordType().getRecordClass())), e);
-            }
+        protected T transformInternal(DnsRecordConfig<? extends Record> recordConfig) throws Exception {
+            return (recordConfig.getRecordType() == this.recordType) ? this.recordClass.cast(recordConfig.toRecord()) : null;
         }
     }
 

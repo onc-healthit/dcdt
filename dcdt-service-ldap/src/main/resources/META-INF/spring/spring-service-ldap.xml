@@ -26,21 +26,14 @@
     = SCHEMA MANAGER
     =====================================================================================================-->
     <beans:bean id="schemaManager" class="org.apache.directory.api.ldap.model.schema.SchemaManager" abstract="true"/>
-    <beans:bean id="schemaManagerDefault" class="org.apache.directory.api.ldap.schemamanager.impl.DefaultSchemaManager" parent="schemaManager" abstract="true"/>
+    <beans:bean id="schemaManagerDefault" class="org.apache.directory.api.ldap.schemamanager.impl.DefaultSchemaManager" parent="schemaManager" abstract="true"
+        init-method="loadAllEnabled"
+        c:loader-ref="toolJarLdifSchemaLoaderImpl"/>
     
     <!--====================================================================================================
     = INSTANCE LAYOUT
     =====================================================================================================-->
-    <beans:bean id="instanceLayout" class="gov.hhs.onc.dcdt.service.ldap.config.impl.ToolInstanceLayout" abstract="true"/>
-    
-    <beans:bean id="instanceLayout1" parent="instanceLayout"
-        c:instanceDirPath="${dcdt.service.ldap.1.dir}"/>
-    
-    <beans:bean id="instanceLayout2" parent="instanceLayout"
-        c:instanceDirPath="${dcdt.service.ldap.2.dir}"/>
-    
-    <beans:bean id="instanceLayout3" parent="instanceLayout"
-        c:instanceDirPath="${dcdt.service.ldap.2.dir}"/>
+    <beans:bean id="instanceLayout" class="org.apache.directory.server.core.api.InstanceLayout" abstract="true"/>
     
     <!--====================================================================================================
     = APACHEDS CONFIG
@@ -210,7 +203,7 @@
         p:ldapConfig-ref="instanceLdapConfig1">
         <beans:property name="instanceLayout">
             <beans:bean parent="instanceLayout"
-                c:instanceDirPath="${dcdt.service.ldap.1.dir}"/>
+                c:instanceDirectory="${dcdt.service.ldap.1.dir}"/>
         </beans:property>
     </beans:bean>
     
@@ -219,7 +212,7 @@
         p:ldapConfig-ref="instanceLdapConfig2">
         <beans:property name="instanceLayout">
             <beans:bean parent="instanceLayout"
-                c:instanceDirPath="${dcdt.service.ldap.2.dir}"/>
+                c:instanceDirectory="${dcdt.service.ldap.2.dir}"/>
         </beans:property>
     </beans:bean>
     
@@ -228,7 +221,7 @@
         p:ldapConfig-ref="instanceLdapConfig3">
         <beans:property name="instanceLayout">
             <beans:bean parent="instanceLayout"
-                c:instanceDirPath="${dcdt.service.ldap.3.dir}"/>
+                c:instanceDirectory="${dcdt.service.ldap.3.dir}"/>
         </beans:property>
     </beans:bean>
 </beans:beans>

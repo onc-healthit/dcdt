@@ -118,11 +118,7 @@
         </dependency>
         <dependency>
             <groupId>org.apache.directory.server</groupId>
-            <artifactId>apacheds-core-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.directory.server</groupId>
-            <artifactId>apacheds-server-annotations</artifactId>
+            <artifactId>apacheds-core-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.directory.server</groupId>
