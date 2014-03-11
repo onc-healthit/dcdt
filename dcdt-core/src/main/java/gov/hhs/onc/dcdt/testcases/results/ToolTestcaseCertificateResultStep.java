@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.testcases.results;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import javax.annotation.Nullable;
 
 public interface ToolTestcaseCertificateResultStep extends ToolTestcaseResultStep {
@@ -17,5 +18,5 @@ public interface ToolTestcaseCertificateResultStep extends ToolTestcaseResultSte
 
     public void setCertificateStatus(ToolTestcaseCertificateResultType certStatus);
 
-    public void updateCertificateStatus(byte[] certData);
+    public void updateCertificateStatus(byte[] certData, MailAddress mailAddr);
 }

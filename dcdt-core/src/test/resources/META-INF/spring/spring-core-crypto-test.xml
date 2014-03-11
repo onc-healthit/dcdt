@@ -14,7 +14,7 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-    
+
     <beans:bean id="testKeyConfig" parent="keyConfigImpl" abstract="true" autowire-candidate="false"/>
     <beans:bean id="testKeyConfigCa" parent="keyConfigCa" abstract="true" autowire-candidate="false"/>
     
@@ -59,4 +59,13 @@
     <beans:bean id="testCredConfigDomain1" parent="credConfigImpl"
         p:certificateDescriptor-ref="testCertConfigDomain1"
         p:keyDescriptor-ref="testKeyConfigDomain1"/>
+
+    <!--====================================================================================================
+    = MAIL CRYPTO
+    =====================================================================================================-->
+    <util:list id="testDiscoveryTestcases">
+        <beans:bean parent="discoveryTestcase1"
+            p:mailAddress="${dcdt.test.lookup.domain.1.mail.addr.1}"/>
+        <beans:bean parent="discoveryTestcase1"/>
+    </util:list>
 </beans:beans>

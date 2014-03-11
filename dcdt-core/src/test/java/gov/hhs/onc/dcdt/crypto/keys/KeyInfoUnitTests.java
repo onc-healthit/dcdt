@@ -3,9 +3,9 @@ package gov.hhs.onc.dcdt.crypto.keys;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.keys.impl.KeyInfoImpl;
+import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
-import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -44,11 +44,7 @@ public class KeyInfoUnitTests extends AbstractToolUnitTests {
     @BeforeClass
     public void buildKeyInfo() throws CryptographyException {
         this.testKeyInfo =
-            new KeyInfoImpl(KeyUtils.readPublicKey(getKeyData(this.testKeysPublicKeyStr), KeyAlgorithm.RSA, DataEncoding.DER), KeyUtils.readPrivateKey(
-                getKeyData(this.testKeysPrivateKeyStr), KeyAlgorithm.RSA, DataEncoding.DER));
-    }
-
-    private static byte[] getKeyData(String testKeysKeyStr) {
-        return Base64.decodeBase64(testKeysKeyStr);
+            new KeyInfoImpl(KeyUtils.readPublicKey(CryptographyUtils.getDerEncodedData(this.testKeysPublicKeyStr), KeyAlgorithm.RSA, DataEncoding.DER),
+                KeyUtils.readPrivateKey(CryptographyUtils.getDerEncodedData(this.testKeysPrivateKeyStr), KeyAlgorithm.RSA, DataEncoding.DER));
     }
 }

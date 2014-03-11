@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.utils;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -130,5 +131,24 @@ public abstract class ToolResourceUtils {
         }
 
         return resourceLocs;
+    }
+
+    public static InputStream getResourceInputStream(String resourceLoc) {
+        Resource resource = getFirstResource(resourceLoc);
+
+        if (resource != null) {
+            try {
+                return resource.getInputStream();
+            } catch (IOException ignored) {
+            }
+        }
+
+        return null;
+    }
+
+    public static Resource getFirstResource(String resourceLoc) {
+        List<Resource> resources = resolveResourceLocations(resourceLoc);
+
+        return !resources.isEmpty() ? resources.get(0) : null;
     }
 }

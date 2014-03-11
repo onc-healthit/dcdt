@@ -71,4 +71,23 @@
     <beans:bean id="credConfigCa" parent="credConfigImpl" abstract="true">
         <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
     </beans:bean>
+
+    <!--====================================================================================================
+    = CERTIFICATE VALIDATORS
+    =====================================================================================================-->
+    <beans:bean id="certValidator" class="gov.hhs.onc.dcdt.crypto.certs.CertificateValidator" abstract="true"/>
+    <beans:bean id="certValidIntervalValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateValidIntervalValidator" parent="certValidator" abstract="true"/>
+    <beans:bean id="certSubjValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectValidator" parent="certValidator" abstract="true"/>
+    <beans:bean id="certSubjAltNamesValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectAltNamesValidator" parent="certValidator" abstract="true"/>
+
+    <util:set id="certificateValidators">
+        <beans:bean parent="certValidIntervalValidator"
+            p:errorCode="EXPIRED_CERT"/>
+        <beans:bean parent="certSubjValidator"
+            p:errorCode="INVALID_SUBJ_DN"/>
+        <beans:bean parent="certSubjAltNamesValidator"
+            p:errorCode="INVALID_SUBJ_ALT_NAME"
+            p:optional="true"/>
+        <!-- TODO: add more validators -->
+    </util:set>
 </beans:beans>

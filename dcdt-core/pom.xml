@@ -75,6 +75,10 @@
             <artifactId>commons-net</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+        </dependency>
+        <dependency>
             <groupId>dnsjava</groupId>
             <artifactId>dnsjava</artifactId>
         </dependency>

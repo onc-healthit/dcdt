@@ -44,7 +44,7 @@ public class ToolTestcaseLdapCertificateLookupResultStepImpl extends AbstractToo
             Attribute userCertAttr = entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT);
             if (userCertAttr != null) {
                 try {
-                    updateCertificateStatus(userCertAttr.getBytes());
+                    updateCertificateStatus(userCertAttr.getBytes(), directAddr.forBindingType(this.bindingType));
                 } catch (LdapInvalidAttributeValueException e) {
                     this.setMessage(e.getMessage());
                 }
