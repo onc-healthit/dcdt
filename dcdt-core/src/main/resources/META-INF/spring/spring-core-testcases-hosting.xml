@@ -104,8 +104,8 @@
                     <beans:bean parent="hostingTestcaseResultConfigImpl">
                         <beans:property name="results">
                             <util:list>
-                                <beans:ref bean="dnsAddrBoundCertRecordLookup"/>
-                                <beans:ref bean="dnsAddrBoundCertLookup"/>
+                                <beans:bean parent="dnsAddrBoundCertRecordLookup"/>
+                                <beans:bean parent="dnsAddrBoundCertLookup"/>
                                 <beans:bean parent="dnsDomainBoundCertRecordLookup"
                                     p:successful="true"/>
                                 <beans:bean parent="dnsDomainBoundCertLookup"
@@ -200,7 +200,7 @@
                                     p:successful="true"/>
                                 <beans:bean parent="ldapConnection"
                                     p:successful="true"/>
-                                <beans:ref bean="ldapAddrBoundCertLookup"/>
+                                <beans:bean parent="ldapAddrBoundCertLookup"/>
                                 <beans:bean parent="ldapDomainBoundCertLookup"
                                     p:certificateStatus="VALID_CERT"
                                     p:successful="true"/>
@@ -251,8 +251,8 @@
                                     p:successful="true"/>
                                 <beans:bean parent="ldapConnection"
                                     p:successful="true"/>
-                                <beans:ref bean="ldapAddrBoundCertLookup"/>
-                                <beans:ref bean="ldapDomainBoundCertLookup"/>
+                                <beans:bean parent="ldapAddrBoundCertLookup"/>
+                                <beans:bean parent="ldapDomainBoundCertLookup"/>
                             </beans:list>
                         </beans:property>
                     </beans:bean>

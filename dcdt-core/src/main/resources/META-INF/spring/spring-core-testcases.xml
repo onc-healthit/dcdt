@@ -181,10 +181,10 @@
     <beans:bean id="noCertsFoundInDns" parent="hostingTestcaseResultConfigImpl">
         <beans:property name="results">
             <beans:list>
-                <beans:ref bean="dnsAddrBoundCertRecordLookup"/>
-                <beans:ref bean="dnsAddrBoundCertLookup"/>
-                <beans:ref bean="dnsDomainBoundCertRecordLookup"/>
-                <beans:ref bean="dnsDomainBoundCertLookup"/>
+                <beans:bean parent="dnsAddrBoundCertRecordLookup"/>
+                <beans:bean parent="dnsAddrBoundCertLookup"/>
+                <beans:bean parent="dnsDomainBoundCertRecordLookup"/>
+                <beans:bean parent="dnsDomainBoundCertLookup"/>
             </beans:list>
         </beans:property>
     </beans:bean>
@@ -193,13 +193,13 @@
      = CERTIFICATE DISCOVERY STEPS
      =====================================================================================================-->
     <util:list id="certDiscoverySteps">
-        <beans:ref bean="dnsAddrBoundCertRecordLookup"/>
-        <beans:ref bean="dnsAddrBoundCertLookup"/>
-        <beans:ref bean="dnsDomainBoundCertRecordLookup"/>
-        <beans:ref bean="dnsDomainBoundCertLookup"/>
-        <beans:ref bean="dnsSrvRecordLookup"/>
-        <beans:ref bean="ldapConnection"/>
-        <beans:ref bean="ldapAddrBoundCertLookup"/>
-        <beans:ref bean="ldapDomainBoundCertLookup"/>
+        <beans:bean parent="dnsAddrBoundCertRecordLookup"/>
+        <beans:bean parent="dnsAddrBoundCertLookup"/>
+        <beans:bean parent="dnsDomainBoundCertRecordLookup"/>
+        <beans:bean parent="dnsDomainBoundCertLookup"/>
+        <beans:bean parent="dnsSrvRecordLookup"/>
+        <beans:bean parent="ldapConnection"/>
+        <beans:bean parent="ldapAddrBoundCertLookup"/>
+        <beans:bean parent="ldapDomainBoundCertLookup"/>
     </util:list>
 </beans:beans>

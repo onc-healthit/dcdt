@@ -64,6 +64,7 @@ public class HostingJsonController extends AbstractToolController {
 
                 if (hostingTestcase != null && hostingTestcase.hasResult()) {
                     hostingTestcaseResult = hostingTestcase.getResult();
+                    // noinspection ConstantConditions
                     hostingTestcaseResult.setResultInfo(new HostingTestcaseResultInfoImpl());
                     this.resultGenerator.setSubmission(reqHostingTestcaseSubmission);
                     this.resultGenerator.generateTestcaseResult(this.certDiscoverySteps);
@@ -76,6 +77,7 @@ public class HostingJsonController extends AbstractToolController {
         return respJsonWrapperBuilder.build();
     }
 
+    @SuppressWarnings({ "ConstantConditions" })
     private void updateResultDisplayMessage(HostingTestcase hostingTestcase, int errorStepPosition) {
         HostingTestcaseResult result = hostingTestcase.getResult();
         HostingTestcaseResultInfo resultInfo = result.getResultInfo();
@@ -95,6 +97,7 @@ public class HostingJsonController extends AbstractToolController {
         resultInfo.setMessage(msgStrBuilder.build());
     }
 
+    @SuppressWarnings({ "ConstantConditions" })
     private String getErrorMessage(HostingTestcase hostingTestcase, int errorStepPosition, ToolTestcaseResultStep lastStep) {
         String errorCode = "dcdt.testcase.result.error.step.msg";
         ToolStrBuilder errorMsgStrBuilder = new ToolStrBuilder();
@@ -124,19 +127,25 @@ public class HostingJsonController extends AbstractToolController {
 
     private String getCertMessage(HostingTestcase hostingTestcase, ToolTestcaseCertificateResultStep certResultStep, boolean successful) {
         ToolTestcaseCertificateResultType certResultType = certResultStep.getCertificateStatus();
-        Object[] msgParams = new Object[] { certResultStep.getBindingType(), certResultStep.getLocationType() };
+        Object[] certStepMsgParams = new Object[] { certResultStep.getBindingType(), certResultStep.getLocationType() };
+        Object[] testcaseMsgParams = new Object[] { hostingTestcase.getBindingType(), hostingTestcase.getLocationType() };
         ToolStrBuilder certStrBuilder = new ToolStrBuilder();
 
-        certStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, certResultType.getMessage(), msgParams), StringUtils.LF);
+        if (certResultType == ToolTestcaseCertificateResultType.NO_CERT) {
+            certStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, certResultType.getMessage(), testcaseMsgParams), StringUtils.LF);
+        } else {
+            certStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, certResultType.getMessage(), certStepMsgParams), StringUtils.LF);
+        }
 
         if (certResultStep.hasCertificateInfo() && !successful) {
             if (hostingTestcase.isNegative()) {
                 certStrBuilder.appendWithDelimiter(
-                    ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.UNEXPECTED_CERT.getMessage(), msgParams), StringUtils.LF);
+                    ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.UNEXPECTED_CERT.getMessage(), certStepMsgParams),
+                    StringUtils.LF);
             } else {
                 certStrBuilder.appendWithDelimiter(
-                    ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.INCORRECT_CERT.getMessage(),
-                        new Object[] { hostingTestcase.getBindingType(), hostingTestcase.getLocationType() }), StringUtils.LF);
+                    ToolMessageUtils.getMessage(this.msgSource, ToolTestcaseCertificateResultType.INCORRECT_CERT.getMessage(), testcaseMsgParams),
+                    StringUtils.LF);
             }
         }
         return certStrBuilder.build();

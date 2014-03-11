@@ -11,7 +11,7 @@ public class ToolTestcaseDnsCertificateLookupResultStepImpl extends AbstractTool
     @Override
     public boolean execute(ToolTestcaseResultHolder resultHolder, MailAddress directAddr) {
         if (resultHolder.hasCertRecords()) {
-            parseCertRecords(resultHolder);
+            parseCertRecords(resultHolder, directAddr.forBindingType(this.bindingType));
         } else {
             this.setCertificateStatus(ToolTestcaseCertificateResultType.NO_CERT);
         }
@@ -19,11 +19,11 @@ public class ToolTestcaseDnsCertificateLookupResultStepImpl extends AbstractTool
     }
 
     @Override
-    public void parseCertRecords(ToolTestcaseResultHolder resultHolder) {
+    public void parseCertRecords(ToolTestcaseResultHolder resultHolder, MailAddress mailAddr) {
         for (CERTRecord certRecord : resultHolder.getCertRecords()) {
             switch (certRecord.getCertType()) {
                 case CERTRecord.CertificateType.PKIX:
-                    updateCertificateStatus(certRecord.getCert());
+                    updateCertificateStatus(certRecord.getCert(), mailAddr);
                     break;
                 default:
                     this.setCertificateStatus(ToolTestcaseCertificateResultType.INCORRECT_CERT_TYPE);
