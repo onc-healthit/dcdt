@@ -40,9 +40,12 @@ public interface EmailInfo extends ToolBean {
 
     public void setDecryptedMessage(@Nullable MimeMessage decryptedMsg);
 
+    public boolean hasResultInfo();
+
+    @Nullable
     public DiscoveryTestcaseResultInfo getResultInfo();
 
-    public void setResultInfo(DiscoveryTestcaseResultInfo resultInfo);
+    public void setResultInfo(@Nullable DiscoveryTestcaseResultInfo resultInfo);
 
     public boolean hasTestcase();
 

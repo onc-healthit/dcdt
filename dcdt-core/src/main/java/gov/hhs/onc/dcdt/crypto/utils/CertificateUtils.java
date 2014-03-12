@@ -3,11 +3,8 @@ package gov.hhs.onc.dcdt.crypto.utils;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.PemType;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,7 +21,6 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
-import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -111,26 +107,5 @@ public abstract class CertificateUtils {
                 "Unable to get certificate factory instance for certificate type (name=%s, providerName=%s).", certType.getName(),
                 CryptographyUtils.PROVIDER_NAME), e);
         }
-    }
-
-    public static ToolTestcaseCertificateResultType processCertificateData(byte[] certData, CertificateInfo certInfo, MailAddress mailAddr,
-        Set<CertificateValidator> certValidators) {
-        try {
-            certInfo.setCertificate(CertificateUtils.readCertificate(certData, CertificateType.X509, DataEncoding.PEM));
-            return validateCertificate(certInfo, mailAddr, certValidators);
-        } catch (CryptographyException e) {
-            return ToolTestcaseCertificateResultType.UNREADABLE_CERT_DATA;
-        }
-    }
-
-    public static ToolTestcaseCertificateResultType
-        validateCertificate(CertificateInfo certInfo, MailAddress mailAddr, Set<CertificateValidator> certValidators) {
-        for (CertificateValidator validator : certValidators) {
-            if (!validator.validate(mailAddr, certInfo) && !validator.isOptional()) {
-                return validator.getErrorCode();
-            }
-        }
-
-        return ToolTestcaseCertificateResultType.VALID_CERT;
     }
 }

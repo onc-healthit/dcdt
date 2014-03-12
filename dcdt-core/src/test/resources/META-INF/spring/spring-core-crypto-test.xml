@@ -59,13 +59,4 @@
     <beans:bean id="testCredConfigDomain1" parent="credConfigImpl"
         p:certificateDescriptor-ref="testCertConfigDomain1"
         p:keyDescriptor-ref="testKeyConfigDomain1"/>
-
-    <!--====================================================================================================
-    = MAIL CRYPTO
-    =====================================================================================================-->
-    <util:list id="testDiscoveryTestcases">
-        <beans:bean parent="discoveryTestcase1"
-            p:mailAddress="${dcdt.test.lookup.domain.1.mail.addr.1}"/>
-        <beans:bean parent="discoveryTestcase1"/>
-    </util:list>
 </beans:beans>

@@ -2,12 +2,23 @@ package gov.hhs.onc.dcdt.mail.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.mail.EmailInfo;
+import gov.hhs.onc.dcdt.mail.utils.ToolMailResultStringUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
+import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import javax.annotation.Nullable;
+import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+@Component("emailInfoImpl")
+@Lazy
+@Scope("prototype")
 public class EmailInfoImpl extends AbstractToolBean implements EmailInfo {
     private String fromAddr;
     private String toAddr;
@@ -17,6 +28,9 @@ public class EmailInfoImpl extends AbstractToolBean implements EmailInfo {
     private MimeMessage decryptedMsg;
     private DiscoveryTestcaseResultInfo resultInfo;
     private DiscoveryTestcase testcase;
+
+    @Resource(name = "messageSource")
+    private MessageSource msgSource;
 
     @Override
     public String getFromAddress() {
@@ -97,6 +111,11 @@ public class EmailInfoImpl extends AbstractToolBean implements EmailInfo {
     }
 
     @Override
+    public boolean hasResultInfo() {
+        return this.resultInfo != null;
+    }
+
+    @Override
     public DiscoveryTestcaseResultInfo getResultInfo() {
         return this.resultInfo;
     }
@@ -120,5 +139,37 @@ public class EmailInfoImpl extends AbstractToolBean implements EmailInfo {
     @Override
     public void setTestcase(@Nullable DiscoveryTestcase testcase) {
         this.testcase = testcase;
+    }
+
+    @Override
+    public String toString() {
+        ToolStrBuilder resultStrBuilder = new ToolStrBuilder();
+
+        if (hasTestcase()) {
+            resultStrBuilder.appendWithDelimiter(
+                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.result.title.msg", new Object[] { this.testcase.getNameDisplay() }),
+                StringUtils.LF);
+            resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
+        }
+
+        if (hasResultInfo()) {
+            resultStrBuilder.appendWithDelimiter(
+                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.result.status.msg", this.resultInfo.isSuccessful()), StringUtils.LF);
+            resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
+
+            ToolMailResultStringUtils.appendCredentialInfo(this.resultInfo, resultStrBuilder, this.msgSource);
+
+            if (this.resultInfo.hasDecryptionErrorMessage()) {
+                ToolMailResultStringUtils.appendDecryptionErrorMessage(resultStrBuilder, this.resultInfo.getDecryptionErrorMessage(), this.msgSource);
+            }
+
+            if (this.hasDecryptedMessage()) {
+                ToolMailResultStringUtils.appendDecryptedMessage(resultStrBuilder, this.decryptedMsg, this.msgSource);
+            }
+        } else {
+            resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.result.noResults.msg"), StringUtils.LF);
+        }
+
+        return resultStrBuilder.build();
     }
 }

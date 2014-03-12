@@ -77,10 +77,11 @@ public class HostingJsonController extends AbstractToolController {
         return respJsonWrapperBuilder.build();
     }
 
-    @SuppressWarnings({ "ConstantConditions" })
     private void updateResultDisplayMessage(HostingTestcase hostingTestcase, int errorStepPosition) {
         HostingTestcaseResult result = hostingTestcase.getResult();
+        // noinspection ConstantConditions
         HostingTestcaseResultInfo resultInfo = result.getResultInfo();
+        // noinspection ConstantConditions
         ToolTestcaseResultStep lastStep = ToolListUtils.getLast(resultInfo.getResults());
         ToolStrBuilder msgStrBuilder = new ToolStrBuilder();
 
@@ -97,16 +98,19 @@ public class HostingJsonController extends AbstractToolController {
         resultInfo.setMessage(msgStrBuilder.build());
     }
 
-    @SuppressWarnings({ "ConstantConditions" })
     private String getErrorMessage(HostingTestcase hostingTestcase, int errorStepPosition, ToolTestcaseResultStep lastStep) {
         String errorCode = "dcdt.testcase.result.error.step.msg";
         ToolStrBuilder errorMsgStrBuilder = new ToolStrBuilder();
 
         HostingTestcaseResult result = hostingTestcase.getResult();
+        // noinspection ConstantConditions
         HostingTestcaseResultInfo resultInfo = result.getResultInfo();
+        // noinspection ConstantConditions
         ToolTestcaseResultStep resultConfigErrorStep = result.getResultConfig().getResults().get(errorStepPosition - 1);
+        // noinspection ConstantConditions
         ToolTestcaseResultStep resultInfoErrorStep = resultInfo.getResults().get(errorStepPosition - 1);
 
+        // noinspection ConstantConditions
         errorMsgStrBuilder.appendWithDelimiter(
             ToolMessageUtils.getMessage(this.msgSource, errorCode, errorStepPosition, resultConfigErrorStep.getDescription().getText(),
                 resultConfigErrorStep.isSuccessful(), resultInfoErrorStep.isSuccessful()), StringUtils.LF);
