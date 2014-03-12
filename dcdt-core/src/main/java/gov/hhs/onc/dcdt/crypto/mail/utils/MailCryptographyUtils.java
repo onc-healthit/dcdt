@@ -4,8 +4,9 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
 import gov.hhs.onc.dcdt.crypto.mail.MimeMessageWrapper;
-import gov.hhs.onc.dcdt.crypto.mail.MimeType;
 import gov.hhs.onc.dcdt.mail.EmailInfo;
+import gov.hhs.onc.dcdt.mail.MailContentTypes;
+import gov.hhs.onc.dcdt.mail.utils.ToolMailContentTypeUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -19,9 +20,11 @@ import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
+import javax.mail.internet.ContentType;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.mail.internet.ParseException;
 import org.apache.log4j.Logger;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
@@ -65,13 +68,19 @@ public abstract class MailCryptographyUtils {
     public static MimeMessage getMimeMessage(InputStream msgInStream) throws MailCryptographyException {
         try {
             MimeMessage mimeMessage = new MimeMessage(MailCryptographyUtils.getMailSession(), msgInStream);
+            String contentTypeStr = mimeMessage.getContentType();
 
-            if (!mimeMessage.isMimeType(MimeType.PKCS7.getType()) && !mimeMessage.isMimeType(MimeType.X_PKCS7.getType())) {
-                throw new MailCryptographyException(String.format("Invalid Content-Type (%s), expected %s or %s.", mimeMessage.getContentType(),
-                    MimeType.PKCS7.getType(), MimeType.X_PKCS7.getType()));
+            try {
+                if (!ToolMailContentTypeUtils.isEnvelopedData(new ContentType(contentTypeStr))) {
+                    throw new MailCryptographyException(String.format("Invalid Content-Type (%s), expected %s or %s.", contentTypeStr,
+                        MailContentTypes.APP_PKCS7_MIME_ENV, MailContentTypes.APP_X_PKCS7_MIME_ENV));
+                }
+
+                return mimeMessage;
+            } catch (ParseException e) {
+                throw new MailCryptographyException(String.format("Unable to parse content type string (%s) into class=%s.", contentTypeStr,
+                    ToolClassUtils.getName(ContentType.class)));
             }
-
-            return mimeMessage;
         } catch (MessagingException e) {
             throw new MailCryptographyException(String.format("Unable to convert input stream (class=%s) to message (class=%s).",
                 ToolClassUtils.getName(msgInStream), ToolClassUtils.getName(MimeMessage.class)), e);
@@ -105,10 +114,15 @@ public abstract class MailCryptographyUtils {
         try {
             for (int a = 0; a < msgMultiPart.getCount(); a++) {
                 try {
-                    String contentType = msgMultiPart.getBodyPart(a).getContentType();
+                    String contentTypeStr = msgMultiPart.getBodyPart(a).getContentType();
 
-                    if (!contentType.contains(MimeType.PKCS7_SIGNATURE.getType()) && !contentType.contains(MimeType.X_PKCS7_SIGNATURE.getType())) {
-                        return createMimeMessage(msgMultiPart, origMimeMsg, a, contentType);
+                    try {
+                        if (!ToolMailContentTypeUtils.isSignature(new ContentType(contentTypeStr))) {
+                            return createMimeMessage(msgMultiPart, origMimeMsg, a, contentTypeStr);
+                        }
+                    } catch (ParseException e) {
+                        throw new MailCryptographyException(String.format("Unable to parse content type string (%s) into class=%s.", contentTypeStr,
+                            ToolClassUtils.getName(ContentType.class)));
                     }
                 } catch (IOException e) {
                     throw new MailCryptographyException(String.format("Unable to get message part (index=%d) body content.", a), e);
@@ -142,18 +156,24 @@ public abstract class MailCryptographyUtils {
     }
 
     public static SMIMESigned findMailSignature(Multipart msgMultiPart) throws MailCryptographyException {
-        String contentType = msgMultiPart.getContentType();
+        String contentTypeStr = msgMultiPart.getContentType();
 
-        if (contentType.contains(MimeType.MULTIPART_SIGNED.getType())
-            && (contentType.contains(MimeType.PKCS7_SIGNATURE.getType()) || contentType.contains(MimeType.X_PKCS7_SIGNATURE.getType()))) {
-            try {
-                return new SMIMESigned((MimeMultipart) msgMultiPart);
-            } catch (CMSException | MessagingException e) {
-                throw new MailCryptographyException("Unable to find mail signature.", e);
+        try {
+            ContentType contentType = new ContentType(contentTypeStr);
+
+            if (ToolMailContentTypeUtils.isMultipartSignature(contentType) && ToolMailContentTypeUtils.containsDetachedSignature(contentType)) {
+                try {
+                    return new SMIMESigned((MimeMultipart) msgMultiPart);
+                } catch (CMSException | MessagingException e) {
+                    throw new MailCryptographyException("Unable to find mail signature.", e);
+                }
+            } else {
+                throw new MailCryptographyException("Unable to find detached mail signature for message.");
             }
+        } catch (ParseException e) {
+            throw new MailCryptographyException(String.format("Unable to parse content type string (%s) into class=%s.", contentTypeStr,
+                ToolClassUtils.getName(ContentType.class)));
         }
-
-        return null;
     }
 
     @SuppressWarnings("unchecked")

@@ -12,7 +12,9 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -136,7 +138,7 @@ public abstract class ToolResourceUtils {
     public static InputStream getResourceInputStream(String resourceLoc) {
         Resource resource = getFirstResource(resourceLoc);
 
-        if (resource != null) {
+        if (resource instanceof ClassPathResource || resource instanceof InputStreamResource) {
             try {
                 return resource.getInputStream();
             } catch (IOException ignored) {
@@ -147,8 +149,6 @@ public abstract class ToolResourceUtils {
     }
 
     public static Resource getFirstResource(String resourceLoc) {
-        List<Resource> resources = resolveResourceLocations(resourceLoc);
-
-        return !resources.isEmpty() ? resources.get(0) : null;
+        return ToolListUtils.getFirst(resolveResourceLocations(resourceLoc));
     }
 }

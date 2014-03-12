@@ -7,10 +7,10 @@ import gov.hhs.onc.dcdt.crypto.mail.utils.ToolMailCryptographyStringUtils;
 import gov.hhs.onc.dcdt.mail.EmailInfo;
 import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
 import gov.hhs.onc.dcdt.crypto.mail.utils.MailCryptographyUtils;
-import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
+import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import java.io.IOException;
 import java.security.PrivateKey;
@@ -74,6 +74,8 @@ public abstract class MailDecryptor {
 
             return msgMultiPart;
         } catch (CMSException | IOException | MessagingException | SMIMEException e) {
+            LOGGER.debug(String.format("Unable to decrypt enveloped message for mail recipient (%s) using private key for subject (dn=%s).",
+                ToolMailCryptographyStringUtils.recipientsToString(recipient), cert.getSubjectX500Principal()));
             throw new MailDecryptionException(errorMsg);
         }
     }
@@ -92,6 +94,7 @@ public abstract class MailDecryptor {
             }
 
             if (multipartMsg != null) {
+                // noinspection ConstantConditions
                 emailInfo.getResultInfo().setCredentialFound(cred);
                 processDecryptedMessage(emailInfo, multipartMsg, decryptionErrorBuilder, certValidators);
                 return true;
@@ -116,7 +119,7 @@ public abstract class MailDecryptor {
         try {
             CertificateInfo certInfo = MailCryptographyUtils.validateSignature(MailCryptographyUtils.findMailSignature(multipartMsg));
             ToolTestcaseCertificateResultType certStatus =
-                CertificateUtils.validateCertificate(certInfo, new MailAddressImpl(emailInfo.getFromAddress()), certValidators);
+                ToolTestcaseCertificateUtils.validateCertificate(certInfo, new MailAddressImpl(emailInfo.getFromAddress()), certValidators);
 
             if (certStatus != ToolTestcaseCertificateResultType.VALID_CERT) {
                 decryptionErrorBuilder.appendWithDelimiter(String.format("Signer certificate in message signature was invalid (error: %s).", certStatus),

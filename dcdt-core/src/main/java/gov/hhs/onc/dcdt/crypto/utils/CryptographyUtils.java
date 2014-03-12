@@ -9,7 +9,6 @@ import java.security.Security;
 import java.util.EnumSet;
 import java.util.Objects;
 import javax.annotation.Nullable;
-import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -69,9 +68,5 @@ public abstract class CryptographyUtils {
         }
 
         return null;
-    }
-
-    public static byte[] getDerEncodedData(String data) {
-        return Base64.decodeBase64(data);
     }
 }
