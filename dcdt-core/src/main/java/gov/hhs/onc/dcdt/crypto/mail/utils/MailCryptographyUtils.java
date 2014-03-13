@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
 import gov.hhs.onc.dcdt.crypto.mail.MimeMessageWrapper;
-import gov.hhs.onc.dcdt.mail.EmailInfo;
+import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailContentTypeUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -87,15 +87,15 @@ public abstract class MailCryptographyUtils {
         }
     }
 
-    public static void parseMessageHeaders(MimeMessage mimeMsg, EmailInfo emailInfo) throws MailCryptographyException {
+    public static void parseMessageHeaders(MimeMessage mimeMsg, MailInfo mailInfo) throws MailCryptographyException {
         try {
             Address[] fromAddrs = mimeMsg.getFrom();
-            emailInfo.setFromAddress(((InternetAddress) fromAddrs[0]).getAddress());
+            mailInfo.setFromAddress(((InternetAddress) fromAddrs[0]).getAddress());
 
             Address[] toAddrs = mimeMsg.getAllRecipients();
-            emailInfo.setToAddress(((InternetAddress) toAddrs[0]).getAddress());
+            mailInfo.setToAddress(((InternetAddress) toAddrs[0]).getAddress());
 
-            emailInfo.setSubject(mimeMsg.getSubject());
+            mailInfo.setSubject(mimeMsg.getSubject());
         } catch (MessagingException e) {
             throw new MailCryptographyException("Unable to parse headers from message.", e);
         }

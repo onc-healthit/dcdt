@@ -12,7 +12,7 @@ import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.keys.impl.KeyInfoImpl;
-import gov.hhs.onc.dcdt.mail.EmailInfo;
+import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
@@ -82,70 +82,70 @@ public class MailDecryptorFunctionalTests extends AbstractToolFunctionalTests {
 
     @Test
     public void testDecryptMailPkcs7MimeValid() throws IOException {
-        EmailInfo emailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_valid.eml");
-        assertEmailInfoProperties(emailInfo, true, true);
+        MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_valid.eml");
+        assertmailInfoProperties(mailInfo, true, true);
     }
 
     @Test
     public void testDecryptMailPkcs7MimeEncryptedWithWrongKey() throws IOException {
-        EmailInfo emailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_encryptedWithWrongKey.eml");
-        assertEmailInfoProperties(emailInfo, true, false);
+        MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_encryptedWithWrongKey.eml");
+        assertmailInfoProperties(mailInfo, true, false);
     }
 
     @Test
     public void testDecryptMailPkcs7MimeDiffMimeTypeParamOrder() throws IOException {
-        EmailInfo emailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_diffMimeTypeParamOrder.eml");
-        assertEmailInfoProperties(emailInfo, true, true);
+        MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_diffMimeTypeParamOrder.eml");
+        assertmailInfoProperties(mailInfo, true, true);
     }
 
     @Test
     public void testDecryptMailXPkcs7MimeValid() throws IOException {
-        EmailInfo emailInfo = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_valid.eml");
-        assertEmailInfoProperties(emailInfo, true, true);
+        MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_valid.eml");
+        assertmailInfoProperties(mailInfo, true, true);
     }
 
     @Test
     public void testDecryptMailXPkcsMimeNoMatchingKeys() throws IOException {
-        EmailInfo emailInfo = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_noMatchingKeys.eml");
-        assertEmailInfoProperties(emailInfo, true, false);
-        Assert.assertFalse(emailInfo.hasDecryptedMessage());
-        Assert.assertNotEquals(emailInfo.getToAddress(), this.testToAddr);
+        MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_noMatchingKeys.eml");
+        assertmailInfoProperties(mailInfo, true, false);
+        Assert.assertFalse(mailInfo.hasDecryptedMessage());
+        Assert.assertNotEquals(mailInfo.getToAddress(), this.testToAddr);
     }
 
     @Test
     public void testDecryptMailInvalidMimeType() throws IOException {
-        EmailInfo emailInfo = decryptAndParseEmail("core/mail/testDecryptMail_invalidMimeType.eml");
-        assertEmailInfoProperties(emailInfo, false, false);
-        Assert.assertNull(emailInfo.getFromAddress());
-        Assert.assertNull(emailInfo.getToAddress());
-        Assert.assertFalse(emailInfo.hasTestcase());
-        Assert.assertFalse(emailInfo.hasDecryptedMessage());
+        MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_invalidMimeType.eml");
+        assertmailInfoProperties(mailInfo, false, false);
+        Assert.assertNull(mailInfo.getFromAddress());
+        Assert.assertNull(mailInfo.getToAddress());
+        Assert.assertFalse(mailInfo.hasTestcase());
+        Assert.assertFalse(mailInfo.hasDecryptedMessage());
     }
 
-    private EmailInfo decryptAndParseEmail(String emailLoc) throws IOException {
+    private MailInfo decryptAndParseEmail(String emailLoc) throws IOException {
         try (InputStream emailInStream = ToolResourceUtils.getResourceInputStream(emailLoc)) {
             return this.resultGenerator.generateTestcaseResult(emailInStream, this.testDiscoveryTestcases);
         }
     }
 
-    private void assertEmailInfoProperties(EmailInfo emailInfo, boolean hasEncryptedMsg, boolean successful) {
-        Assert.assertNotNull(emailInfo);
-        Assert.assertTrue(emailInfo.hasResultInfo());
-        Assert.assertTrue(emailInfo.hasMessage());
-        Assert.assertEquals(emailInfo.hasEncryptedMessage(), hasEncryptedMsg);
+    private void assertmailInfoProperties(MailInfo mailInfo, boolean hasEncryptedMsg, boolean successful) {
+        Assert.assertNotNull(mailInfo);
+        Assert.assertTrue(mailInfo.hasResultInfo());
+        Assert.assertTrue(mailInfo.hasMessage());
+        Assert.assertEquals(mailInfo.hasEncryptedMessage(), hasEncryptedMsg);
         // noinspection ConstantConditions
-        Assert.assertEquals(emailInfo.getResultInfo().isSuccessful(), successful);
+        Assert.assertEquals(mailInfo.getResultInfo().isSuccessful(), successful);
 
-        if (emailInfo.hasEncryptedMessage()) {
-            if (emailInfo.getToAddress().equals(this.testToAddr)) {
-                Assert.assertTrue(emailInfo.hasTestcase());
+        if (mailInfo.hasEncryptedMessage()) {
+            if (mailInfo.getToAddress().equals(this.testToAddr)) {
+                Assert.assertTrue(mailInfo.hasTestcase());
             } else {
-                Assert.assertFalse(emailInfo.hasTestcase());
+                Assert.assertFalse(mailInfo.hasTestcase());
             }
         }
 
         if (successful) {
-            Assert.assertTrue(emailInfo.hasDecryptedMessage());
+            Assert.assertTrue(mailInfo.hasDecryptedMessage());
         }
     }
 }

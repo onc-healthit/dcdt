@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.testcases.discovery.results.impl;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator;
-import gov.hhs.onc.dcdt.mail.EmailInfo;
+import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
 import gov.hhs.onc.dcdt.crypto.mail.utils.MailCryptographyUtils;
 import gov.hhs.onc.dcdt.crypto.mail.decrypt.MailDecryptor;
@@ -42,21 +42,22 @@ public class DiscoveryTestcaseResultGeneratorImpl extends AbstractToolTestcaseRe
     private AbstractApplicationContext appContext;
 
     @Override
-    public EmailInfo generateTestcaseResult(InputStream emailInStream, List<DiscoveryTestcase> discoveryTestcases) {
-        EmailInfo emailInfo = runDiscoveryTestcase(emailInStream, discoveryTestcases);
-        DiscoveryTestcaseResultInfo resultInfo = emailInfo.getResultInfo();
-        resultInfo.setSuccessful(emailInfo.hasTestcase() && resultInfo.getCredentialFound() == resultInfo.getCredentialExpected());
-        emailInfo.setMessage(emailInfo.toString());
+    public MailInfo generateTestcaseResult(InputStream emailInStream, List<DiscoveryTestcase> discoveryTestcases) {
+        MailInfo mailInfo = runDiscoveryTestcase(emailInStream, discoveryTestcases);
+        DiscoveryTestcaseResultInfo resultInfo = mailInfo.getResultInfo();
+        // noinspection ConstantConditions
+        resultInfo.setSuccessful(mailInfo.hasTestcase() && resultInfo.getCredentialFound() == resultInfo.getCredentialExpected());
+        mailInfo.setMessage(mailInfo.toString());
 
-        return emailInfo;
+        return mailInfo;
     }
 
     @Override
-    public EmailInfo runDiscoveryTestcase(InputStream emailInStream, List<DiscoveryTestcase> discoveryTestcases) {
-        EmailInfo emailInfo = ToolBeanFactoryUtils.createBeanOfType(this.appContext, EmailInfo.class);
+    public MailInfo runDiscoveryTestcase(InputStream emailInStream, List<DiscoveryTestcase> discoveryTestcases) {
+        MailInfo mailInfo = ToolBeanFactoryUtils.createBeanOfType(this.appContext, MailInfo.class);
         DiscoveryTestcaseResultInfo resultInfo = new DiscoveryTestcaseResultInfoImpl();
         // noinspection ConstantConditions
-        emailInfo.setResultInfo(resultInfo);
+        mailInfo.setResultInfo(resultInfo);
 
         Map<String, DiscoveryTestcase> discoveryTestcaseMap =
             ToolMapUtils.putAll(new LinkedHashMap<String, DiscoveryTestcase>(),
@@ -66,19 +67,19 @@ public class DiscoveryTestcaseResultGeneratorImpl extends AbstractToolTestcaseRe
 
         try {
             MimeMessage origMimeMessage = MailCryptographyUtils.getMimeMessage(emailInStream);
-            emailInfo.setEncryptedMessage(origMimeMessage);
-            MailCryptographyUtils.parseMessageHeaders(origMimeMessage, emailInfo);
-            String testcaseAddr = emailInfo.getToAddress();
+            mailInfo.setEncryptedMessage(origMimeMessage);
+            MailCryptographyUtils.parseMessageHeaders(origMimeMessage, mailInfo);
+            String testcaseAddr = mailInfo.getToAddress();
 
             // noinspection ConstantConditions
             if (discoveryTestcaseMap.containsKey(testcaseAddr)) {
                 DiscoveryTestcase discoveryTestcase = discoveryTestcaseMap.get(testcaseAddr);
-                emailInfo.setTestcase(discoveryTestcase);
+                mailInfo.setTestcase(discoveryTestcase);
                 resultInfo.setCredentialExpected(getCredentialExpected(discoveryTestcase));
 
                 // noinspection ConstantConditions
                 for (DiscoveryTestcaseCredential cred : discoveryTestcase.getCredentials()) {
-                    if (MailDecryptor.decryptMail(emailInfo, decryptionErrorBuilder, origMimeMessage, cred, this.certificateValidators)) {
+                    if (MailDecryptor.decryptMail(mailInfo, decryptionErrorBuilder, origMimeMessage, cred, this.certificateValidators)) {
                         break;
                     }
                 }
@@ -92,7 +93,7 @@ public class DiscoveryTestcaseResultGeneratorImpl extends AbstractToolTestcaseRe
 
         resultInfo.setDecryptionErrorMessage(decryptionErrorBuilder.build());
 
-        return emailInfo;
+        return mailInfo;
     }
 
     private class DiscoveryTestcaseMailAddressTestcasePairTransformer extends AbstractToolTransformer<DiscoveryTestcase, Pair<String, DiscoveryTestcase>> {
