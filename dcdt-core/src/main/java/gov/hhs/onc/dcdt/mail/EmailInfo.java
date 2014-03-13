@@ -5,8 +5,9 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
 import javax.annotation.Nullable;
 import javax.mail.internet.MimeMessage;
+import org.springframework.context.MessageSourceAware;
 
-public interface EmailInfo extends ToolBean {
+public interface EmailInfo extends ToolBean, MessageSourceAware {
     public String getFromAddress();
 
     public void setFromAddress(String fromAddr);

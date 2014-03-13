@@ -8,6 +8,9 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.MimeTypeUtils;
 
 public final class MailContentTypes {
+    /**
+     * See MIME media type details in: <a href="http://tools.ietf.org/html/rfc5751#section-5.1">5.1. Media Type for application/pkcs7-mime</a>
+     */
     public final static String DELIM_TYPE = "/";
     public final static String DELIM_PARAM = "; ";
     public final static String DELIM_PARAM_VALUE = "=";

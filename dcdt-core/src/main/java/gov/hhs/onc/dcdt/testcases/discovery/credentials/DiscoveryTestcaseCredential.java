@@ -10,9 +10,10 @@ import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialImpl;
 import javax.annotation.Nullable;
+import org.springframework.context.MessageSourceAware;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
-public interface DiscoveryTestcaseCredential extends ToolNamedBean {
+public interface DiscoveryTestcaseCredential extends ToolNamedBean, MessageSourceAware {
     public final static class DiscoveryTestcaseCredentialTypePredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
         public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_CA = new DiscoveryTestcaseCredentialTypePredicate(
             DiscoveryTestcaseCredentialType.CA);
