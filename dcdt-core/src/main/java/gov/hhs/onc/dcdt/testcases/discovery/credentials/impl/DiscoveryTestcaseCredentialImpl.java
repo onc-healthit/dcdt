@@ -16,7 +16,6 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import javax.annotation.Nullable;
-import javax.annotation.Resource;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
@@ -46,8 +45,6 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     private DiscoveryTestcaseCredentialLocation loc;
     private DiscoveryTestcaseCredentialType type;
     private boolean valid = true;
-
-    @Resource(name = "messageSource")
     private MessageSource msgSource;
 
     @Override
@@ -237,5 +234,10 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     @Override
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.msgSource = messageSource;
     }
 }

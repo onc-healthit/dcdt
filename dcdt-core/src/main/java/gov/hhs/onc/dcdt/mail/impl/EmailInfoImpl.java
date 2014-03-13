@@ -8,7 +8,6 @@ import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import javax.annotation.Nullable;
-import javax.annotation.Resource;
 import javax.mail.internet.MimeMessage;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
@@ -28,8 +27,6 @@ public class EmailInfoImpl extends AbstractToolBean implements EmailInfo {
     private MimeMessage decryptedMsg;
     private DiscoveryTestcaseResultInfo resultInfo;
     private DiscoveryTestcase testcase;
-
-    @Resource(name = "messageSource")
     private MessageSource msgSource;
 
     @Override
@@ -171,5 +168,10 @@ public class EmailInfoImpl extends AbstractToolBean implements EmailInfo {
         }
 
         return resultStrBuilder.build();
+    }
+
+    @Override
+    public void setMessageSource(MessageSource messageSource) {
+        this.msgSource = messageSource;
     }
 }

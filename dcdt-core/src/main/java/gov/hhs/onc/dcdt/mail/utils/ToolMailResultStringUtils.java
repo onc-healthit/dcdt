@@ -14,7 +14,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 
 public abstract class ToolMailResultStringUtils {
-    public final static String DELIM_SECTION = StringUtils.repeat("-", 100);
+    private final static String DELIM_SECTION = StringUtils.repeat("-", 100);
+    private final static String NONE = "dcdt.testcase.discovery.cred.none.msg";
+    private final static String CERT_FOUND = "dcdt.testcase.discovery.cred.certFound.msg";
+    private final static String CERT_EXPECTED = "dcdt.testcase.discovery.cred.certExpected.msg";
+    private final static String FOUND_EXPECTED_CERT = "dcdt.testcase.discovery.cred.foundExpectedCert.msg";
+    private final static String DECRYPTION_ERROR = "dcdt.testcase.discovery.result.decryption.error.msg";
+    private final static String DECRYPTED_MSG = "dcdt.testcase.discovery.result.decrypted.msg";
 
     public static String messageToString(MimeMessage mimeMessage) throws MailCryptographyException {
         try {
@@ -25,13 +31,13 @@ public abstract class ToolMailResultStringUtils {
     }
 
     public static void appendCredentialInfo(DiscoveryTestcaseResultInfo resultInfo, ToolStrBuilder resultStrBuilder, MessageSource msgSource) {
-        appendCredentialDescription("dcdt.testcase.discovery.cred.certFound.msg", resultInfo.getCredentialFound(), resultStrBuilder, msgSource);
+        appendCredentialDescription(CERT_FOUND, resultInfo.getCredentialFound(), resultStrBuilder, msgSource);
         resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
 
         if (resultInfo.isSuccessful()) {
-            resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, "dcdt.testcase.discovery.cred.foundExpectedCert.msg"), StringUtils.LF);
+            resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, FOUND_EXPECTED_CERT), StringUtils.LF);
         } else {
-            appendCredentialDescription("dcdt.testcase.discovery.cred.certExpected.msg", resultInfo.getCredentialExpected(), resultStrBuilder, msgSource);
+            appendCredentialDescription(CERT_EXPECTED, resultInfo.getCredentialExpected(), resultStrBuilder, msgSource);
         }
     }
 
@@ -41,19 +47,19 @@ public abstract class ToolMailResultStringUtils {
         if (cred != null) {
             strBuilder.appendWithDelimiter(cred.toString(), StringUtils.LF);
         } else {
-            strBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, "dcdt.testcase.discovery.cred.none.msg"), StringUtils.LF);
+            strBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, NONE), StringUtils.LF);
         }
     }
 
     public static void appendDecryptionErrorMessage(ToolStrBuilder resultStrBuilder, String errorMsg, MessageSource msgSource) {
         resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
-        resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, "dcdt.testcase.discovery.result.decryption.error.msg"), StringUtils.LF);
+        resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, DECRYPTION_ERROR), StringUtils.LF);
         resultStrBuilder.appendWithDelimiter(errorMsg, StringUtils.LF);
     }
 
     public static void appendDecryptedMessage(ToolStrBuilder resultStrBuilder, MimeMessage decryptedMsg, MessageSource msgSource) {
         appendResultInfo(ToolMailResultStringUtils.DELIM_SECTION, resultStrBuilder);
-        resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, "dcdt.testcase.discovery.result.decrypted.msg"), StringUtils.LF);
+        resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, DECRYPTED_MSG), StringUtils.LF);
 
         try {
             ToolMailResultStringUtils.appendResultInfo(ToolMailResultStringUtils.messageToString(decryptedMsg), resultStrBuilder);
