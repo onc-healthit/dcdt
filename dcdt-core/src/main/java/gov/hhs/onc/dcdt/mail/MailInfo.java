@@ -7,7 +7,7 @@ import javax.annotation.Nullable;
 import javax.mail.internet.MimeMessage;
 import org.springframework.context.MessageSourceAware;
 
-public interface EmailInfo extends ToolBean, MessageSourceAware {
+public interface MailInfo extends MessageSourceAware, ToolBean {
     public String getFromAddress();
 
     public void setFromAddress(String fromAddr);

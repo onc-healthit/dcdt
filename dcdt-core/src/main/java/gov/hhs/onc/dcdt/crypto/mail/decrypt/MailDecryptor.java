@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.mail.utils.ToolMailCryptographyStringUtils;
-import gov.hhs.onc.dcdt.mail.EmailInfo;
+import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
 import gov.hhs.onc.dcdt.crypto.mail.utils.MailCryptographyUtils;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
@@ -80,7 +80,7 @@ public abstract class MailDecryptor {
         }
     }
 
-    public static boolean decryptMail(EmailInfo emailInfo, ToolStrBuilder decryptionErrorBuilder, MimeMessage origMimeMessage,
+    public static boolean decryptMail(MailInfo mailInfo, ToolStrBuilder decryptionErrorBuilder, MimeMessage origMimeMessage,
         DiscoveryTestcaseCredential cred, Set<CertificateValidator> certValidators) {
         CredentialInfo credInfo = cred.getCredentialInfo();
 
@@ -95,8 +95,8 @@ public abstract class MailDecryptor {
 
             if (multipartMsg != null) {
                 // noinspection ConstantConditions
-                emailInfo.getResultInfo().setCredentialFound(cred);
-                processDecryptedMessage(emailInfo, multipartMsg, decryptionErrorBuilder, certValidators);
+                mailInfo.getResultInfo().setCredentialFound(cred);
+                processDecryptedMessage(mailInfo, multipartMsg, decryptionErrorBuilder, certValidators);
                 return true;
             }
         }
@@ -104,22 +104,22 @@ public abstract class MailDecryptor {
         return false;
     }
 
-    public static void processDecryptedMessage(EmailInfo emailInfo, MimeMultipart multipartMsg, ToolStrBuilder decryptionErrorBuilder,
+    public static void processDecryptedMessage(MailInfo mailInfo, MimeMultipart multipartMsg, ToolStrBuilder decryptionErrorBuilder,
         Set<CertificateValidator> certValidators) {
         MimeMessage decryptedMsg = null;
 
         try {
-            decryptedMsg = MailCryptographyUtils.findMessagePart(multipartMsg, emailInfo.getEncryptedMessage());
-            emailInfo.setDecryptedMessage(decryptedMsg);
+            decryptedMsg = MailCryptographyUtils.findMessagePart(multipartMsg, mailInfo.getEncryptedMessage());
+            mailInfo.setDecryptedMessage(decryptedMsg);
         } catch (MailCryptographyException e) {
             decryptionErrorBuilder.appendWithDelimiter(e.getMessage(), StringUtils.LF);
         }
-        emailInfo.setDecryptedMessage(decryptedMsg);
+        mailInfo.setDecryptedMessage(decryptedMsg);
 
         try {
             CertificateInfo certInfo = MailCryptographyUtils.validateSignature(MailCryptographyUtils.findMailSignature(multipartMsg));
             ToolTestcaseCertificateResultType certStatus =
-                ToolTestcaseCertificateUtils.validateCertificate(certInfo, new MailAddressImpl(emailInfo.getFromAddress()), certValidators);
+                ToolTestcaseCertificateUtils.validateCertificate(certInfo, new MailAddressImpl(mailInfo.getFromAddress()), certValidators);
 
             if (certStatus != ToolTestcaseCertificateResultType.VALID_CERT) {
                 decryptionErrorBuilder.appendWithDelimiter(String.format("Signer certificate in message signature was invalid (error: %s).", certStatus),

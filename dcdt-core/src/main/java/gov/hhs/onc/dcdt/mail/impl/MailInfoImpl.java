@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.mail.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.mail.EmailInfo;
+import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailResultStringUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
@@ -15,10 +15,10 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-@Component("emailInfoImpl")
+@Component("mailInfoImpl")
 @Lazy
 @Scope("prototype")
-public class EmailInfoImpl extends AbstractToolBean implements EmailInfo {
+public class MailInfoImpl extends AbstractToolBean implements MailInfo {
     private String fromAddr;
     private String toAddr;
     private String subj;

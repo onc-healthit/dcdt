@@ -13,7 +13,7 @@ import javax.annotation.Nullable;
 import org.springframework.context.MessageSourceAware;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
-public interface DiscoveryTestcaseCredential extends ToolNamedBean, MessageSourceAware {
+public interface DiscoveryTestcaseCredential extends MessageSourceAware, ToolNamedBean {
     public final static class DiscoveryTestcaseCredentialTypePredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
         public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_CA = new DiscoveryTestcaseCredentialTypePredicate(
             DiscoveryTestcaseCredentialType.CA);
