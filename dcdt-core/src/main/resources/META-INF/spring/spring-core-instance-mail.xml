@@ -65,7 +65,7 @@
     
     <beans:bean id="instanceMailAddrConfigResults" parent="instanceMailAddrConfigImpl"
         p:name="results"
-        p:nameDisplay="Results">
+        p:nameDisplay="DCDT Results">
         <beans:property name="mailAddress">
             <beans:bean parent="instanceMailAddrBase"/>
         </beans:property>

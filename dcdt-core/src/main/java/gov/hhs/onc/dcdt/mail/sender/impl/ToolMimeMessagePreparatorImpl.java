@@ -2,9 +2,11 @@ package gov.hhs.onc.dcdt.mail.sender.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.impl.MimeAttachmentResource;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.sender.ToolMimeMailMessage;
 import gov.hhs.onc.dcdt.mail.sender.ToolMimeMessagePreparator;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.velocity.utils.ToolVelocityUtils;
 import javax.annotation.Nullable;
 import javax.mail.internet.MimeMessage;
@@ -24,11 +26,19 @@ public class ToolMimeMessagePreparatorImpl extends AbstractToolBean implements T
     private VelocityEngine velocityEngine;
     private ToolMimeMailMessage mimeMailMsg;
     private MailAddress to;
+    private Iterable<MimeAttachmentResource> attachments;
 
-    public ToolMimeMessagePreparatorImpl(VelocityEngine velocityEngine, ToolMimeMailMessage mimeMailMsg, MailAddress to) {
+    public ToolMimeMessagePreparatorImpl(VelocityEngine velocityEngine, ToolMimeMailMessage mimeMailMsg, MailAddress to,
+        @Nullable MimeAttachmentResource ... attachments) {
+        this(velocityEngine, mimeMailMsg, to, ToolArrayUtils.asList(attachments));
+    }
+
+    public ToolMimeMessagePreparatorImpl(VelocityEngine velocityEngine, ToolMimeMailMessage mimeMailMsg, MailAddress to,
+        @Nullable Iterable<MimeAttachmentResource> attachments) {
         this.velocityEngine = velocityEngine;
         this.mimeMailMsg = mimeMailMsg;
         this.to = to;
+        this.attachments = attachments;
     }
 
     @Override
@@ -49,9 +59,10 @@ public class ToolMimeMessagePreparatorImpl extends AbstractToolBean implements T
         }
 
         if (this.mimeMailMsg.hasTextTemplateLocation()) {
-            this.mimeMailMsg.getMimeMessageHelperExtended().setText(
-                this.prepareTemplate(encName, this.mimeMailMsg.getTextTemplateLocation(), this.mimeMailMsg.getTextModelMap()), true);
+            mimeMsgHelper.setText(this.prepareTemplate(encName, this.mimeMailMsg.getTextTemplateLocation(), this.mimeMailMsg.getTextModelMap()), true);
         }
+
+        mimeMsgHelper.setAttachments(this.attachments);
     }
 
     private String prepareTemplate(String encName, String templateLoc, @Nullable ModelMap modelMap) {

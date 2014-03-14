@@ -20,8 +20,9 @@
     <!--====================================================================================================
     = TEST MAIL ADDRESS
     =====================================================================================================-->
+    <!--suppress SpringModelInspection -->
     <beans:bean id="testMailAddrResults" parent="mailAddrImpl" autowire-candidate="false"
-        c:addr="${dcdt.test.mail.addr.results}"/>
+        c:addr="${dcdt.test.mail.addr.results:}"/>
     
     <!--====================================================================================================
     = TEST INSTANCE MAIL CONFIG

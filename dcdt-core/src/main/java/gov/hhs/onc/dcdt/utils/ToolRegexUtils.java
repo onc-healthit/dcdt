@@ -5,13 +5,13 @@ import javax.annotation.Nullable;
 
 public abstract class ToolRegexUtils {
     @Nullable
-    public static String[] groups(Matcher matcher) {
+    public static String[] groups(@Nullable Matcher matcher) {
         return groups(matcher, false);
     }
 
     @Nullable
-    public static String[] groups(Matcher matcher, boolean includeEntireMatch) {
-        if (!matcher.matches()) {
+    public static String[] groups(@Nullable Matcher matcher, boolean includeEntireMatch) {
+        if ((matcher == null) || !matcher.matches()) {
             return null;
         }
 

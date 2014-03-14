@@ -17,7 +17,7 @@ public abstract class ToolInetAddressUtils {
         + PATTERN_STR_IPV4_ADDR_DELIM + PATTERN_STR_IPV4_ADDR_OCTET + PATTERN_STR_IPV4_ADDR_DELIM + PATTERN_STR_IPV4_ADDR_OCTET + "$";
 
     public final static Pattern PATTERN_IPV4_ADDR = Pattern.compile(PATTERN_STR_IPV4_ADDR);
-    
+
     public static InetAddress getConnectionAddress(InetAddress addr) {
         return addr.isAnyLocalAddress() ? InetAddress.getLoopbackAddress() : addr;
     }
@@ -56,11 +56,11 @@ public abstract class ToolInetAddressUtils {
 
     @Nullable
     public static String[] getOctets(@Nullable String addr) {
-        return ((addr != null) ? ToolRegexUtils.groups(getMatcher(addr)) : null);
+        return ToolRegexUtils.groups(getMatcher(addr));
     }
 
-    public static boolean isAddress(String addr) {
-        return getMatcher(addr).matches();
+    public static boolean isAddress(@Nullable String addr) {
+        return ((addr != null) && getMatcher(addr).matches());
     }
 
     public static Matcher getMatcher(String addr) {
