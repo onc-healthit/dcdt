@@ -6,5 +6,5 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 
 public interface DiscoveryTestcaseResultSenderService extends ToolMailSenderService {
-    public void send(MailAddress to, DiscoveryTestcase discoveryTestcase, DiscoveryTestcaseResult discoveryTestcaseResult) throws Exception;
+    public void send(DiscoveryTestcase discoveryTestcase, DiscoveryTestcaseResult discoveryTestcaseResult, MailAddress to) throws Exception;
 }

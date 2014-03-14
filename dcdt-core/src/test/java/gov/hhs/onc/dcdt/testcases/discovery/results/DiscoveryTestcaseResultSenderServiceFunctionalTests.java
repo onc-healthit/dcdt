@@ -50,6 +50,6 @@ public class DiscoveryTestcaseResultSenderServiceFunctionalTests extends Abstrac
         DiscoveryTestcaseResult testDiscoveryTestcaseResult = new DiscoveryTestcaseResultImpl();
         testDiscoveryTestcaseResult.setResultInfo(testDiscoveryTestcaseResultInfo);
 
-        this.testDiscoveryTestcaseResultSenderService.send(testFromConfig.getMailAddress(), this.testDiscoveryTestcase, testDiscoveryTestcaseResult);
+        this.testDiscoveryTestcaseResultSenderService.send(this.testDiscoveryTestcase, testDiscoveryTestcaseResult, testFromConfig.getMailAddress());
     }
 }

@@ -68,4 +68,10 @@ public abstract class AbstractToolConnectionBean extends AbstractToolNamedBean i
     public void setPort(int port) {
         this.port = port;
     }
+
+    @Override
+    @Transient
+    public boolean isSsl() {
+        return false;
+    }
 }

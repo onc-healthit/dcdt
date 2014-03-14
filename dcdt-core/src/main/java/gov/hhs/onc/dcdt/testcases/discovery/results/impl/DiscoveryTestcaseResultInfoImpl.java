@@ -9,39 +9,41 @@ import org.apache.commons.lang3.StringUtils;
 
 @JsonTypeName("discoveryTestcaseResultInfo")
 public class DiscoveryTestcaseResultInfoImpl extends AbstractToolTestcaseResultDescriptor implements DiscoveryTestcaseResultInfo {
-    private boolean successful;
-    private DiscoveryTestcaseCredential credFound;
     private DiscoveryTestcaseCredential credExpected;
+    private DiscoveryTestcaseCredential credFound;
     private String decryptionErrorMsg;
+    private boolean successful;
 
     @Override
-    public boolean isSuccessful() {
-        return this.successful;
+    public boolean hasCredentialExcepted() {
+        return (this.credExpected != null);
     }
 
-    @Override
-    public void setSuccessful(boolean successful) {
-        this.successful = successful;
-    }
-
-    @Override
-    public DiscoveryTestcaseCredential getCredentialFound() {
-        return this.credFound;
-    }
-
-    @Override
-    public void setCredentialFound(DiscoveryTestcaseCredential credFound) {
-        this.credFound = credFound;
-    }
-
+    @Nullable
     @Override
     public DiscoveryTestcaseCredential getCredentialExpected() {
         return this.credExpected;
     }
 
     @Override
-    public void setCredentialExpected(DiscoveryTestcaseCredential credExpected) {
+    public void setCredentialExpected(@Nullable DiscoveryTestcaseCredential credExpected) {
         this.credExpected = credExpected;
+    }
+
+    @Override
+    public boolean hasCredentialFound() {
+        return (this.credFound != null);
+    }
+
+    @Nullable
+    @Override
+    public DiscoveryTestcaseCredential getCredentialFound() {
+        return this.credFound;
+    }
+
+    @Override
+    public void setCredentialFound(@Nullable DiscoveryTestcaseCredential credFound) {
+        this.credFound = credFound;
     }
 
     @Override
@@ -58,5 +60,15 @@ public class DiscoveryTestcaseResultInfoImpl extends AbstractToolTestcaseResultD
     @Override
     public void setDecryptionErrorMessage(@Nullable String decryptionErrorMsg) {
         this.decryptionErrorMsg = decryptionErrorMsg;
+    }
+
+    @Override
+    public boolean isSuccessful() {
+        return this.successful;
+    }
+
+    @Override
+    public void setSuccessful(boolean successful) {
+        this.successful = successful;
     }
 }

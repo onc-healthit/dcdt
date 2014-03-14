@@ -9,17 +9,19 @@ import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseResultInfoImpl.class) })
 public interface DiscoveryTestcaseResultInfo extends ToolTestcaseResultInfo {
-    public boolean isSuccessful();
+    public boolean hasCredentialExcepted();
 
-    public void setSuccessful(boolean successful);
-
-    public DiscoveryTestcaseCredential getCredentialFound();
-
-    public void setCredentialFound(DiscoveryTestcaseCredential credFound);
-
+    @Nullable
     public DiscoveryTestcaseCredential getCredentialExpected();
 
-    public void setCredentialExpected(DiscoveryTestcaseCredential credExpected);
+    public void setCredentialExpected(@Nullable DiscoveryTestcaseCredential credExpected);
+
+    public boolean hasCredentialFound();
+
+    @Nullable
+    public DiscoveryTestcaseCredential getCredentialFound();
+
+    public void setCredentialFound(@Nullable DiscoveryTestcaseCredential credFound);
 
     public boolean hasDecryptionErrorMessage();
 
@@ -27,4 +29,8 @@ public interface DiscoveryTestcaseResultInfo extends ToolTestcaseResultInfo {
     public String getDecryptionErrorMessage();
 
     public void setDecryptionErrorMessage(@Nullable String decryptionErrorMsg);
+
+    public boolean isSuccessful();
+
+    public void setSuccessful(boolean successful);
 }

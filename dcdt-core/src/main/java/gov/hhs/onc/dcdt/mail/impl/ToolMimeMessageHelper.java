@@ -1,13 +1,16 @@
 package gov.hhs.onc.dcdt.mail.impl;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
-import gov.hhs.onc.dcdt.mail.utils.ToolMailContentTypeUtils;
-import gov.hhs.onc.dcdt.mail.utils.ToolMailContentTypeUtils.MailContentTypeComparator;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolMimeTypeUtils;
+import gov.hhs.onc.dcdt.utils.ToolMimeTypeUtils.MimeTypeComparator;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -21,16 +24,59 @@ import javax.mail.Header;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import javax.mail.internet.ContentType;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.mail.internet.MimePart;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.EnumerationUtils;
+import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.util.MimeType;
+import org.springframework.util.MimeTypeUtils;
 
 public class ToolMimeMessageHelper extends MimeMessageHelper {
+    public static class MimeAttachmentTransformer extends AbstractToolTransformer<MimeBodyPart, MimeAttachmentResource> {
+        public final static MimeAttachmentTransformer INSTANCE = new MimeAttachmentTransformer();
+
+        @Override
+        protected MimeAttachmentResource transformInternal(MimeBodyPart bodyPart) throws Exception {
+            return new MimeAttachmentResource(bodyPart);
+        }
+    }
+
+    public static class MimeAttachmentPartFilenamePredicate extends AbstractToolPredicate<MimeBodyPart> {
+        private String filename;
+
+        public MimeAttachmentPartFilenamePredicate(String filename) {
+            this.filename = filename;
+        }
+
+        @Override
+        protected boolean evaluateInternal(MimeBodyPart bodyPart) throws Exception {
+            return (MimeAttachmentPartPredicate.INSTANCE.evaluateInternal(bodyPart) && Objects.equals(bodyPart.getFileName(), this.filename));
+        }
+    }
+
+    public static class MimeAttachmentPartPredicate extends AbstractToolPredicate<MimeBodyPart> {
+        public final static MimeAttachmentPartPredicate INSTANCE = new MimeAttachmentPartPredicate();
+
+        @Override
+        protected boolean evaluateInternal(MimeBodyPart bodyPart) throws Exception {
+            return Objects.equals(bodyPart.getDisposition(), MimeBodyPart.ATTACHMENT);
+        }
+    }
+
+    public static class MimeBodyPartTransformer extends AbstractToolTransformer<MimePart, MimeBodyPart> {
+        public final static MimeBodyPartTransformer INSTANCE = new MimeBodyPartTransformer();
+
+        @Override
+        protected MimeBodyPart transformInternal(MimePart part) throws Exception {
+            return ((MimeBodyPart) part);
+        }
+    }
+
     public ToolMimeMessageHelper(Session mailSession, Charset mailEnc) throws MessagingException {
         this(new MimeMessage(mailSession), MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, mailEnc);
     }
@@ -45,29 +91,28 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
         super(mimeMsg, multipartMode, mailEnc.name());
     }
 
-    public Map<ContentType, MimePart> mapRootParts() throws MessagingException {
+    public Map<MimeType, MimePart> mapRootParts() throws MessagingException {
         return this.mapRootParts(false);
     }
 
-    public Map<ContentType, MimePart> mapRootParts(boolean matchParams) throws MessagingException {
+    public Map<MimeType, MimePart> mapRootParts(boolean matchParams) throws MessagingException {
         return this.mapParts(true, matchParams);
     }
 
-    public Map<ContentType, MimePart> mapParts() throws MessagingException {
+    public Map<MimeType, MimePart> mapParts() throws MessagingException {
         return this.mapParts(false);
     }
 
-    public Map<ContentType, MimePart> mapParts(boolean matchParams) throws MessagingException {
+    public Map<MimeType, MimePart> mapParts(boolean matchParams) throws MessagingException {
         return this.mapParts(false, matchParams);
     }
 
-    public Map<ContentType, MimePart> mapParts(boolean fromRoot, boolean matchParams) throws MessagingException {
+    public Map<MimeType, MimePart> mapParts(boolean fromRoot, boolean matchParams) throws MessagingException {
         List<MimePart> parts = this.getParts(fromRoot);
-        Map<ContentType, MimePart> partMap =
-            new TreeMap<>((matchParams ? MailContentTypeComparator.INSTANCE_MATCH_PARAMS : MailContentTypeComparator.INSTANCE));
+        Map<MimeType, MimePart> partMap = new TreeMap<>((matchParams ? MimeTypeComparator.INSTANCE : MimeTypeComparator.INSTANCE_BASE_TYPE));
 
         for (MimePart part : parts) {
-            partMap.put(new ContentType(part.getContentType()), part);
+            partMap.put(MimeTypeUtils.parseMimeType(part.getContentType()), part);
         }
 
         return partMap;
@@ -76,18 +121,64 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     private void initializeMimeMultiparts() throws IOException, MessagingException {
         MimeMessage mimeMsg = this.getMimeMessage();
 
-        if (!ToolMailContentTypeUtils.isMultipartMixed(new ContentType(mimeMsg.getContentType()))) {
+        if (!ToolMimeTypeUtils.equals(false, MimeTypeUtils.parseMimeType(mimeMsg.getContentType()), MailContentTypes.MULTIPART_MIXED)) {
             return;
         }
 
         MimeMultipart rootMimeMultipart = ((MimeMultipart) this.getMimeMessage().getContent());
         this.setMimeMultiparts(rootMimeMultipart, null);
 
-        Map<ContentType, MimePart> rootPartMap = this.mapRootParts();
+        Map<MimeType, MimePart> rootPartMap = this.mapRootParts();
 
         if (rootPartMap.containsKey(MailContentTypes.MULTIPART_RELATED)) {
             this.setMimeMultiparts(rootMimeMultipart, ((MimeMultipart) rootPartMap.get(MailContentTypes.MULTIPART_RELATED).getContent()));
         }
+    }
+
+    public boolean hasAttachments() throws MessagingException {
+        return !this.getAttachments().isEmpty();
+    }
+
+    public Collection<MimeAttachmentResource> getAttachments() throws MessagingException {
+        return CollectionUtils.collect(this.getAttachmentParts(), MimeAttachmentTransformer.INSTANCE);
+    }
+
+    public void setAttachments(@Nullable Iterable<MimeAttachmentResource> attachments) throws MessagingException {
+        for (MimeBodyPart attachmentPart : this.getAttachmentParts()) {
+            attachmentPart.getParent().removeBodyPart(attachmentPart);
+        }
+
+        if (attachments != null) {
+            String attachmentFilename;
+
+            for (MimeAttachmentResource attachment : attachments) {
+                this.addAttachment((attachmentFilename = attachment.getFilename()), attachment, Objects.toString(attachment.getContentType(), null));
+                
+                if (attachment.hasDescription()) {
+                    // noinspection ConstantConditions
+                    this.getAttachmentPart(attachmentFilename).setDescription(attachment.getDescription());
+                }
+            }
+        }
+    }
+
+    public boolean hasAttachmentPart(String filename) throws MessagingException {
+        return (this.getAttachmentPart(filename) != null);
+    }
+
+    @Nullable
+    public MimeBodyPart getAttachmentPart(String filename) throws MessagingException {
+        return CollectionUtils.find(this.getAttachmentParts(), new MimeAttachmentPartFilenamePredicate(filename));
+    }
+
+    public boolean hasAttachmentParts() throws MessagingException {
+        return !this.getAttachmentParts().isEmpty();
+    }
+
+    public Collection<MimeBodyPart> getAttachmentParts() throws MessagingException {
+        return CollectionUtils.select(CollectionUtils.collect(
+            CollectionUtils.select(this.getRootParts(), PredicateUtils.instanceofPredicate(MimeBodyPart.class)), MimeBodyPartTransformer.INSTANCE),
+            MimeAttachmentPartPredicate.INSTANCE);
     }
 
     public boolean hasFrom() throws MessagingException {
@@ -166,11 +257,11 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
 
     @Nullable
     public String getText() throws IOException, MessagingException {
-        Map<ContentType, MimePart> partMap = this.mapParts();
+        Map<MimeType, MimePart> partMap = this.mapParts();
 
         return Objects.toString(
-            (partMap.containsKey(MailContentTypes.TEXT_HTML) ? partMap.get(MailContentTypes.TEXT_HTML).getContent() : (partMap
-                .containsKey(MailContentTypes.TEXT_PLAIN) ? partMap.get(MailContentTypes.TEXT_PLAIN).getContent() : null)), null);
+            (partMap.containsKey(MimeTypeUtils.TEXT_HTML) ? partMap.get(MimeTypeUtils.TEXT_HTML).getContent() : (partMap.containsKey(MimeTypeUtils.TEXT_PLAIN)
+                ? partMap.get(MimeTypeUtils.TEXT_PLAIN).getContent() : null)), null);
     }
 
     public boolean hasTo() throws MessagingException {

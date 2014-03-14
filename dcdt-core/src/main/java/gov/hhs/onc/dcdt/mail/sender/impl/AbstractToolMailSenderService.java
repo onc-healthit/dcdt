@@ -7,10 +7,12 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailTransportListener;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
+import gov.hhs.onc.dcdt.mail.impl.MimeAttachmentResource;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.sender.ToolMailSenderService;
 import gov.hhs.onc.dcdt.mail.sender.ToolMimeMailMessage;
 import gov.hhs.onc.dcdt.mail.sender.ToolMimeMessagePreparator;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.nio.charset.Charset;
 import java.util.List;
@@ -73,7 +75,14 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
         this.mimeMailMsgBeanName = mimeMailMsgBeanName;
     }
 
-    protected void send(MailAddress to, @Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap) throws Exception {
+    protected void send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable MimeAttachmentResource ... attachments)
+        throws Exception {
+        this.send(subjModelMap, textModelMap, to, ToolArrayUtils.asList(attachments));
+    }
+
+    protected void
+        send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable Iterable<MimeAttachmentResource> attachments)
+            throws Exception {
         MailGatewayConfig mailGatewayConfig = fromConfig.getGatewayConfig();
         MailGatewayCredentialConfig mailGatewayCredConfig = fromConfig.getGatewayCredentialConfig();
         Session mailSession = mailGatewayConfig.getSession();
@@ -93,7 +102,7 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
                 this.mailEnc), this.fromConfig, subjModelMap, textModelMap);
 
         mailSender.send(mimeMailMsg,
-            ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolMimeMessagePreparator.class, this.velocityEngine, mimeMailMsg, to));
+            ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolMimeMessagePreparator.class, this.velocityEngine, mimeMailMsg, to, attachments));
     }
 
     @Override

@@ -17,6 +17,9 @@ import org.bouncycastle.jcajce.ProviderJcaJceHelper;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public abstract class CryptographyUtils {
+    public final static String FILE_EXT_DER = ".der";
+    public final static String FILE_EXT_PEM = ".pem";
+
     public final static Provider PROVIDER = new BouncyCastleProvider();
 
     public final static String PROVIDER_NAME = PROVIDER.getName();

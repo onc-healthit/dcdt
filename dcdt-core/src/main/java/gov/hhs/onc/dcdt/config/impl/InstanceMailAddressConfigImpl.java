@@ -27,18 +27,22 @@ public class InstanceMailAddressConfigImpl extends AbstractToolNamedBean impleme
             this.mailAddr.setLocalPart(this.name);
         }
 
-        // noinspection ConstantConditions
-        InetAddress gatewayHost = null;
-        String gatewayHostName;
-
-        // noinspection ConstantConditions
-        if (!this.gatewayConfig.hasHost() || (gatewayHost = this.gatewayConfig.getHost()).isAnyLocalAddress()
-            || StringUtils.isBlank((gatewayHostName = gatewayHost.getHostName())) || Objects.equals(gatewayHostName, InetAddress.getLocalHost().getHostName())) {
-            String gatewayHostAddr = ((gatewayHost != null) ? gatewayHost.getHostAddress() : null), mailAddrDomainNamePart = this.mailAddr.getDomainNamePart();
+        if (this.mailAddr.hasDomainName()) {
+            // noinspection ConstantConditions
+            InetAddress gatewayHost = null;
+            String gatewayHostName;
 
             // noinspection ConstantConditions
-            this.gatewayConfig.setHost((ToolInetAddressUtils.isAddress(gatewayHostAddr) ? ToolInetAddressUtils.getByAddress(mailAddrDomainNamePart,
-                gatewayHostAddr) : ToolInetAddressUtils.getByName(mailAddrDomainNamePart)));
+            if (!this.gatewayConfig.hasHost() || (gatewayHost = this.gatewayConfig.getHost()).isAnyLocalAddress()
+                || StringUtils.isBlank((gatewayHostName = gatewayHost.getHostName()))
+                || Objects.equals(gatewayHostName, InetAddress.getLocalHost().getHostName())) {
+                String gatewayHostAddr = ((gatewayHost != null) ? gatewayHost.getHostAddress() : null), mailAddrDomainNamePart =
+                    this.mailAddr.getDomainNamePart();
+
+                // noinspection ConstantConditions
+                this.gatewayConfig.setHost((ToolInetAddressUtils.isAddress(gatewayHostAddr) ? ToolInetAddressUtils.getByAddress(mailAddrDomainNamePart,
+                    gatewayHostAddr) : ToolInetAddressUtils.getByName(mailAddrDomainNamePart)));
+            }
         }
 
         if (!this.gatewayCredConfig.hasId()) {
