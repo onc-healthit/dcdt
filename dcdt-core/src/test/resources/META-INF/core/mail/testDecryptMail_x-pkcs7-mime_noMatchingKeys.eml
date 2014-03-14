@@ -1,0 +1,23 @@
+Date: Sat, 27 Jul 2013 06:25:42 -0400
+From: test@test.example.com
+Message-Id: <201307271025.415892580@test>
+To: dts501@direct1.demo.direct-test.com
+Subject: Test  Message
+MIME-Version: 1.0
+Content-Disposition: attachment; filename="smime.p7m"
+Content-Type: application/x-pkcs7-mime; smime-type=enveloped-data; name="smime.p7m"
+Content-Transfer-Encoding: base64
+
+MIICAAYJKoZIhvcNAQcDoIIB8TCCAe0CAQAxgeowgecCAQAwUDBEMSAwHgYDVQQD
+DBdkZW1vLmRpcmVjdC10ZXN0LmNvbV9jYTEgMB4GA1UECgwXZGVtby5kaXJlY3Qt
+dGVzdC5jb21fY2ECCFyIf9f2Eu3mMA0GCSqGSIb3DQEBAQUABIGAOqgVqiO3MkHU
+u5VFsKHp2elx4qKF5f1yxbTyHAma3qIeqHZwxcEhikr26elvdQqhWrWrkyEedXdw
+r24chmcq/CacqbRVzvJtedFCrf3Oz8qIHQ2f4M8vvW//XSJ3r1aSmSF+32m3Hs+X
+SwzMSxG+bCULmIcY/Q+O3h7UKKGYp78wgfoGCSqGSIb3DQEHATAaBggqhkiG9w0D
+AjAOAgIAoAQIB831SZhjOcqAgdAIwHUfAAtNGjIDVDgXhJXiDl3IdTrjQhHlMtfF
+B1lOVL6HIBfpFNVytyEN0LMzH+geJyXqzhT1fOHg3SNqTE8i197crgApv6mI4j7k
+ShzvzA9/GHCDTvf8JQjeEg3VtkDnLUOXFwjpftOYGmuK06KBxSt0xiSrcsdbE41l
+pswymGAG5rCu+7fqf1wwb+GHfOTkJBF6DdAkj0XSL4PAm62fl2xcw/4W+UOjDRbi
+frW8x3GFc/DH6cM+CC4YRznE1ZXZ87EPv10fQx5C8IdwRO0w
+
+

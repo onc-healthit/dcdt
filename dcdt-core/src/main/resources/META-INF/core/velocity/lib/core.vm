@@ -1,0 +1,5 @@
+#macro(includeStyle $path)
+<style type="text/css">
+#include($path)
+</style>
+#end
