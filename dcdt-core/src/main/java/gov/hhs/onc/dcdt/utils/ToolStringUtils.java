@@ -51,6 +51,16 @@ public abstract class ToolStringUtils {
     public final static String DELIM_CHARS_NEWLINE = StringUtils.CR + StringUtils.LF;
 
     @Nullable
+    public static String joinLines(@Nullable String ... lines) {
+        return joinLines(ToolArrayUtils.asList(lines));
+    }
+
+    @Nullable
+    public static String joinLines(@Nullable Iterable<String> lines) {
+        return joinDelimit(lines, StringUtils.LF);
+    }
+
+    @Nullable
     public static String[] splitLines(@Nullable String str) {
         return splitLines(str, -1);
     }

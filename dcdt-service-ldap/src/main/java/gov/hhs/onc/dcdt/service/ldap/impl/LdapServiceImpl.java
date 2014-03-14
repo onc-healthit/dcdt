@@ -2,8 +2,8 @@ package gov.hhs.onc.dcdt.service.ldap.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
+import gov.hhs.onc.dcdt.config.InstanceLdapCredentialConfig;
 import gov.hhs.onc.dcdt.context.AutoStartup;
-import gov.hhs.onc.dcdt.ldap.LdapBindCredentialConfig;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.impl.AbstractToolService;
 import gov.hhs.onc.dcdt.service.ldap.LdapService;
@@ -153,25 +153,24 @@ public class LdapServiceImpl extends AbstractToolService implements LdapService 
         String dataPartitionId = ldapConfig.getDataPartitionId();
         Dn dataPartitionSuffix = ldapConfig.getDataPartitionSuffix();
         Entry dataPartitionContextEntry = ldapConfig.getDataPartitionContextEntry();
-        LdapBindCredentialConfig ldapBindCredConfigAdmin = dirServiceBean.getLdapConfig().getBindCredentialConfigAdmin();
-        Dn ldapBindAdminDn = ldapBindCredConfigAdmin.getBindDn();
-        String ldapBindAdminPass = ldapBindCredConfigAdmin.getBindPassword();
+        InstanceLdapCredentialConfig ldapCredConfigAdmin = dirServiceBean.getLdapConfig().getCredentialConfigAdmin();
+        Dn ldapAdminDn = ldapCredConfigAdmin.getId();
+        String ldapAdminPass = ldapCredConfigAdmin.getSecret();
         // noinspection ConstantConditions
         CoreSession adminSession = dirService.getAdminSession();
 
-        if (StringUtils.isBlank(ldapBindAdminPass)) {
-            ldapBindAdminPass = RandomStringUtils.randomAscii(LEN_LDAP_BIND_ADMIN_PASS_GEN);
+        if (StringUtils.isBlank(ldapAdminPass)) {
+            ldapAdminPass = RandomStringUtils.randomAscii(LEN_LDAP_BIND_ADMIN_PASS_GEN);
         }
 
         try {
-            adminSession.modify(ldapBindAdminDn, new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, SchemaConstants.USER_PASSWORD_AT,
-                ldapBindAdminPass));
+            adminSession.modify(ldapAdminDn, new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, SchemaConstants.USER_PASSWORD_AT, ldapAdminPass));
 
             LOGGER.debug(String.format("Modified ApacheDS directory service (id=%s, class=%s) admin entry (dn={%s}) password: %s", dirService.getInstanceId(),
-                ToolClassUtils.getName(dirService), ldapBindAdminDn, ldapBindAdminPass));
+                ToolClassUtils.getName(dirService), ldapAdminDn, ldapAdminPass));
         } catch (LdapException e) {
             throw new LdapServiceException(String.format("Unable to modify ApacheDS directory service (id=%s, class=%s) admin entry (dn={%s}) password.",
-                dirService.getInstanceId(), ToolClassUtils.getName(dirService), ldapBindAdminDn), e);
+                dirService.getInstanceId(), ToolClassUtils.getName(dirService), ldapAdminPass), e);
         }
 
         try {

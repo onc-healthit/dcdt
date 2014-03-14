@@ -1,51 +1,69 @@
 package gov.hhs.onc.dcdt.net.utils;
 
+import gov.hhs.onc.dcdt.utils.ToolRegexUtils;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class ToolInetAddressUtils {
-    public final static String PATTERN_STR_IPV4_ADDR_DELIM = "\\.";
-    public final static String PATTERN_STR_IPV4_ADDR_GROUP = "(?:25[0-5]|2[0-4]\\d|[0-1]\\d{2}|\\d{1,2})";
-    public final static String PATTERN_STR_IPV4_ADDR = "^(?:" + PATTERN_STR_IPV4_ADDR_GROUP + PATTERN_STR_IPV4_ADDR_DELIM + "){3}"
-        + PATTERN_STR_IPV4_ADDR_GROUP + "$";
+    public final static String IPV4_ADDR_DELIM = ".";
+
+    public final static String PATTERN_STR_IPV4_ADDR_DELIM = "\\" + IPV4_ADDR_DELIM;
+    public final static String PATTERN_STR_IPV4_ADDR_OCTET = "(25[0-5]|2[0-4]\\d|[0-1]\\d{2}|\\d{1,2})";
+    public final static String PATTERN_STR_IPV4_ADDR = "^" + PATTERN_STR_IPV4_ADDR_OCTET + PATTERN_STR_IPV4_ADDR_DELIM + PATTERN_STR_IPV4_ADDR_OCTET
+        + PATTERN_STR_IPV4_ADDR_DELIM + PATTERN_STR_IPV4_ADDR_OCTET + PATTERN_STR_IPV4_ADDR_DELIM + PATTERN_STR_IPV4_ADDR_OCTET + "$";
 
     public final static Pattern PATTERN_IPV4_ADDR = Pattern.compile(PATTERN_STR_IPV4_ADDR);
-
+    
     public static InetAddress getConnectionAddress(InetAddress addr) {
         return addr.isAnyLocalAddress() ? InetAddress.getLoopbackAddress() : addr;
     }
 
-    public static InetAddress getByAddress(String hostAddrStr) throws UnknownHostException {
-        return getByAddress(null, hostAddrStr);
+    @Nullable
+    public static InetAddress getByAddress(@Nullable String str) throws UnknownHostException {
+        return (!StringUtils.isBlank(str) ? (isAddress(str) ? getByAddress(null, str) : getByName(str)) : null);
     }
 
-    public static InetAddress getByAddress(@Nullable String hostName, String hostAddrStr) throws UnknownHostException {
-        return InetAddress.getByAddress(hostName, addressStringToBytes(hostAddrStr));
+    @Nullable
+    public static InetAddress getByAddress(@Nullable String hostName, String addr) throws UnknownHostException {
+        return (isAddress(addr) ? InetAddress.getByAddress(hostName, getOctetBytes(addr)) : null);
     }
 
-    public static byte[] addressStringToBytes(String addrStr) throws UnknownHostException {
-        if (!isIpv4Address(addrStr)) {
-            throw new UnknownHostException(String.format("Invalid address string: %s", addrStr));
+    @Nullable
+    public static InetAddress getByName(@Nullable String hostName) throws UnknownHostException {
+        return (!StringUtils.isBlank(hostName) ? InetAddress.getByName(hostName) : null);
+    }
+
+    @Nullable
+    public static byte[] getOctetBytes(@Nullable String addr) {
+        String[] octets = getOctets(addr);
+
+        if (octets == null) {
+            return null;
         }
 
-        String[] addrPartStrs = addrStr.split(PATTERN_STR_IPV4_ADDR_DELIM, 4);
-        byte[] addrBytes = new byte[4];
+        byte[] octetBytes = new byte[octets.length];
 
-        for (int a = 0; a < addrPartStrs.length; a++) {
-            addrBytes[a] = ((byte) Integer.parseInt(addrPartStrs[a]));
+        for (int a = 0; a < octetBytes.length; a++) {
+            octetBytes[a] = ((byte) Integer.parseInt(octets[a]));
         }
 
-        return addrBytes;
+        return octetBytes;
     }
 
-    public static boolean isIpv4Address(String addrStr) {
-        return getIpv4AddressMatcher(addrStr).matches();
+    @Nullable
+    public static String[] getOctets(@Nullable String addr) {
+        return ((addr != null) ? ToolRegexUtils.groups(getMatcher(addr)) : null);
     }
 
-    public static Matcher getIpv4AddressMatcher(String addrStr) {
-        return PATTERN_IPV4_ADDR.matcher(addrStr);
+    public static boolean isAddress(String addr) {
+        return getMatcher(addr).matches();
+    }
+
+    public static Matcher getMatcher(String addr) {
+        return PATTERN_IPV4_ADDR.matcher(addr);
     }
 }

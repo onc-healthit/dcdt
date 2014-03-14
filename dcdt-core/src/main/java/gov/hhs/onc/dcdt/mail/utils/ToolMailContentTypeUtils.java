@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.mail.utils;
 
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import java.util.Comparator;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import javax.mail.internet.ContentType;
@@ -10,8 +11,25 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.util.MimeType;
 
 public abstract class ToolMailContentTypeUtils {
-    public static boolean isMultipart(ContentType contentType) {
-        return (contentType.match(MailContentTypes.MULTIPART) || contentType.match(MailContentTypes.MULTIPART_MIXED));
+    public static class MailContentTypeComparator implements Comparator<ContentType> {
+        public final static MailContentTypeComparator INSTANCE = new MailContentTypeComparator(false);
+        public final static MailContentTypeComparator INSTANCE_MATCH_PARAMS = new MailContentTypeComparator(true);
+
+        private boolean matchParams;
+
+        public MailContentTypeComparator(boolean matchParams) {
+            this.matchParams = matchParams;
+        }
+
+        @Override
+        public int compare(ContentType contentType1, ContentType contentType2) {
+            return (this.matchParams ? contentType1.toString().compareTo(contentType2.toString()) : (contentType1.match(contentType2) ? 0 : contentType1
+                .getBaseType().compareTo(contentType2.getBaseType())));
+        }
+    }
+
+    public static boolean isMultipartMixed(ContentType contentType) {
+        return contentType.match(MailContentTypes.MULTIPART_MIXED);
     }
 
     public static boolean isSignature(ContentType contentType) {

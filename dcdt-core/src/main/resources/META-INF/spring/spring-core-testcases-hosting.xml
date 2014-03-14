@@ -14,22 +14,20 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-
-    <beans:bean id="hostingTestcase" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase" parent="toolTestcase" abstract="true"/>
+    
+    <!--====================================================================================================
+    = HOSTING TESTCASE DESCRIPTIONS
+    =====================================================================================================-->
     <beans:bean id="hostingTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseDescription" parent="toolTestcaseDesc" abstract="true"/>
-    <beans:bean id="hostingTestcaseResult" class="gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
-    <beans:bean id="hostingTestcaseResultConfig" class="gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultConfig" parent="toolTestcaseResultConfig" abstract="true"/>
-
-    <beans:bean id="hostingTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseImpl" parent="hostingTestcase" abstract="true"/>
     <beans:bean id="hostingTestcaseDescImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseDescriptionImpl" parent="hostingTestcaseDesc"
         abstract="true"/>
-    <beans:bean id="hostingTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl" parent="hostingTestcaseResult"
-        abstract="true"/>
-    <beans:bean id="hostingTestcaseResultConfigImpl" class="gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultConfigImpl" parent="hostingTestcaseResultConfig" abstract="true"/>
 
     <!--====================================================================================================
     = HOSTING TESTCASES
     =====================================================================================================-->
+    <beans:bean id="hostingTestcase" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase" parent="toolTestcase" abstract="true"/>
+    <beans:bean id="hostingTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseImpl" parent="hostingTestcase" abstract="true"/>
+    
     <beans:bean id="hostingTestcaseNeg" parent="hostingTestcaseImpl" abstract="true"
         p:negative="true"/>
 

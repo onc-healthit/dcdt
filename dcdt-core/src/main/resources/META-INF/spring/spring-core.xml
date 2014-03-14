@@ -23,10 +23,20 @@
     <context:spring-configured/>
     
     <!--====================================================================================================
+    = CHARACTER SET
+    =====================================================================================================-->
+    <beans:bean id="charset" class="java.nio.charset.Charset" abstract="true"/>
+    
+    <beans:bean id="charsetUtf8" parent="charset" factory-method="forName">
+        <beans:constructor-arg index="0" value="UTF-8"/>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = PROPERTY SOURCES PLACEHOLDER CONFIGURER
     =====================================================================================================-->
     <beans:bean id="propSourcesPlaceholderConfigurerBase" class="gov.hhs.onc.dcdt.context.impl.ToolPropertySourcesPlaceholderConfigurer" abstract="true"
         p:environmentOverride="true"
+        p:fileEncoding="#{ charsetUtf8.name() }"
         p:ignoreResourceNotFound="true"
         p:localOverride="true">
         <beans:property name="locations">
@@ -52,7 +62,7 @@
     <beans:bean id="toolMsgSource" class="gov.hhs.onc.dcdt.context.ToolMessageSource" abstract="true"/>
     <beans:bean id="toolMsgSourceImpl" class="gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl" parent="toolMsgSource" abstract="true"
         p:cacheSeconds="300"
-        p:defaultEncoding="UTF-8"
+        p:defaultEncoding="#{ charsetUtf8.name() }"
         p:fallbackToSystemLocale="false"/>
     
     <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true">
@@ -96,13 +106,22 @@
         p:daemon="true"/>
     
     <!--====================================================================================================
+    = VELOCITY ENGINE
+    =====================================================================================================-->
+    <beans:bean id="velocityEngine" class="gov.hhs.onc.dcdt.velocity.impl.ToolVelocityEngineFactoryBean" abstract="true"
+        p:preferFileSystemAccess="false"
+        p:resourceLoaderPath="core/velocity">
+        <beans:property name="velocimacroLibraries">
+            <beans:list>
+                <beans:value>lib/core</beans:value>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = METHOD INVOCATIONS
     =====================================================================================================-->
     <beans:bean id="setSysProps" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"
         p:targetObject="#{ systemProperties }"
-        p:targetMethod="putAll">
-        <beans:property name="arguments">
-            <util:properties/>
-        </beans:property>
-    </beans:bean>
+        p:targetMethod="putAll"/>
 </beans:beans>

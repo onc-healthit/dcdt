@@ -80,10 +80,11 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
         if (this.loc.hasLdapConfig()) {
             InstanceLdapConfig ldapConfig = this.loc.getLdapConfig();
             // noinspection ConstantConditions
-            credStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.bindAddr.msg",
-                new Object[] { ldapConfig.getBindAddress().toString() }), StringUtils.LF);
             credStrBuilder.appendWithDelimiter(
-                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.bindPort.msg", ldapConfig.getBindPort()), StringUtils.LF);
+                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.host.msg", new Object[] { ldapConfig.getHost().toString() }),
+                StringUtils.LF);
+            credStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.port.msg", ldapConfig.getPort()),
+                StringUtils.LF);
         }
 
         credStrBuilder.appendWithDelimiter(

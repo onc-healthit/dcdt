@@ -21,7 +21,7 @@ import javax.annotation.Resource;
 import java.util.Date;
 import java.util.List;
 
-@Test(groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.hosting" })
+@Test(groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.hosting.all", "dcdt.test.func.testcases.hosting.testcases" })
 public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests {
     @Resource(name = "certDiscoverySteps")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })

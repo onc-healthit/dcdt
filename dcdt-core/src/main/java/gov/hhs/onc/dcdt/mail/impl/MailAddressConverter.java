@@ -6,8 +6,8 @@ import gov.hhs.onc.dcdt.convert.ConvertsJson;
 import gov.hhs.onc.dcdt.convert.ConvertsUserType;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
@@ -23,19 +23,13 @@ public class MailAddressConverter extends AbstractToolConverter {
     @Override
     protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
         if (sourceType.isAssignableTo(TYPE_DESC_MAIL_ADDR)) {
-            MailAddress sourceMailAddr = (MailAddress) source;
+            MailAddress sourceMailAddr = ((MailAddress) source);
 
-            if (targetType.isAssignableTo(TYPE_DESC_STR_ARR)) {
-                return sourceMailAddr.toAddressParts();
-            } else {
-                return sourceMailAddr.toAddress();
-            }
-        } else if (sourceType.isAssignableTo(TYPE_DESC_STR_ARR) && (ArrayUtils.getLength(source) == 2)) {
-            String[] sourceStrs = (String[]) source;
-
-            return new MailAddressImpl(sourceStrs[0], sourceStrs[1]);
+            return (targetType.isAssignableTo(TYPE_DESC_STR_ARR) ? sourceMailAddr.toAddressParts() : sourceMailAddr.toAddress());
         } else {
-            return new MailAddressImpl((String) source);
+            String[] sourceStrs = (sourceType.isAssignableTo(TYPE_DESC_STR_ARR) ? ((String[]) source) : ToolMailAddressUtils.splitParts(((String) source)));
+
+            return ((sourceStrs != null) ? new MailAddressImpl(sourceStrs) : null);
         }
     }
 }

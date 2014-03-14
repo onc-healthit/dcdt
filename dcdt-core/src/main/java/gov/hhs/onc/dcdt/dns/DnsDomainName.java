@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.ConstraintComposition;
 @Documented
 @Inherited
 @NotNull
-@Pattern(regexp = ToolDnsNameUtils.PATTERN_STR_DNS_NAME)
+@Pattern(regexp = ToolDnsNameUtils.PATTERN_STR_DNS_NAME_REL)
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })

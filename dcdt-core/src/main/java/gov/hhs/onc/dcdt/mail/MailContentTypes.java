@@ -5,7 +5,6 @@ import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import javax.mail.internet.ContentType;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.util.MimeTypeUtils;
 
 /**
  * See MIME media type details in: <a href="http://tools.ietf.org/html/rfc5751#section-5.1">5.1. Media Type for application/pkcs7-mime</a>
@@ -53,6 +52,9 @@ public final class MailContentTypes {
     public final static String MULTIPART_MIXED_SUBTYPE = "mixed";
     public final static ContentType MULTIPART_MIXED = ToolMailContentTypeUtils.getContentType(MULTIPART_TYPE, MULTIPART_MIXED_SUBTYPE);
 
+    public final static String MULTIPART_RELATED_SUBTYPE = "related";
+    public final static ContentType MULTIPART_RELATED = ToolMailContentTypeUtils.getContentType(MULTIPART_TYPE, MULTIPART_RELATED_SUBTYPE);
+
     public final static String MULTIPART_SIGNED_SUBTYPE = "signed";
     public final static String MULTIPART_SIGNED_PROTOCOL_PARAM_NAME = "protocol";
     public final static String MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG_PARAM_VALUE = ToolStringUtils.quote(APP_X_PKCS7_SIG.getBaseType());
@@ -62,9 +64,13 @@ public final class MailContentTypes {
         MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG_PARAM);
     public final static String MULTIPART_SIGNED_MSG_DIGEST_ALG_PARAM_NAME = "micalg";
 
-    public final static ContentType TEXT_HTML = ToolMailContentTypeUtils.getContentType(MimeTypeUtils.TEXT_HTML);
+    public final static String TEXT_TYPE = "text";
 
-    public final static ContentType TEXT_PLAIN = ToolMailContentTypeUtils.getContentType(MimeTypeUtils.TEXT_PLAIN);
+    public final static String TEXT_HTML_SUBTYPE = "html";
+    public final static ContentType TEXT_HTML = ToolMailContentTypeUtils.getContentType(TEXT_TYPE, TEXT_HTML_SUBTYPE);
+
+    public final static String TEXT_PLAIN_SUBTYPE = "plain";
+    public final static ContentType TEXT_PLAIN = ToolMailContentTypeUtils.getContentType(TEXT_TYPE, TEXT_PLAIN_SUBTYPE);
 
     private MailContentTypes() {
     }

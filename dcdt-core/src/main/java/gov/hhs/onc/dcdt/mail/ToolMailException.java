@@ -1,12 +1,12 @@
 package gov.hhs.onc.dcdt.mail;
 
-import gov.hhs.onc.dcdt.ToolException;
+import org.springframework.mail.MailException;
 
-public class ToolMailException extends ToolException {
+public class ToolMailException extends MailException {
     private final static long serialVersionUID = 0L;
 
     public ToolMailException() {
-        super();
+        super(null, null);
     }
 
     public ToolMailException(String msg) {
@@ -14,7 +14,7 @@ public class ToolMailException extends ToolException {
     }
 
     public ToolMailException(Throwable cause) {
-        super(cause);
+        super(null, cause);
     }
 
     public ToolMailException(String msg, Throwable cause) {

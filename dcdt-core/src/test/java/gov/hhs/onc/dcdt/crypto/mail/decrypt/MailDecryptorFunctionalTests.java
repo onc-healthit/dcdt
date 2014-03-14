@@ -123,7 +123,7 @@ public class MailDecryptorFunctionalTests extends AbstractToolFunctionalTests {
     }
 
     private MailInfo decryptAndParseEmail(String emailLoc) throws IOException {
-        try (InputStream emailInStream = ToolResourceUtils.getResourceInputStream(emailLoc)) {
+        try (InputStream emailInStream = ToolResourceUtils.getInputStream(emailLoc)) {
             return this.resultGenerator.generateTestcaseResult(emailInStream, this.testDiscoveryTestcases);
         }
     }

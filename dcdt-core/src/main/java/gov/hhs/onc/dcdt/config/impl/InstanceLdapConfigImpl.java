@@ -1,9 +1,9 @@
 package gov.hhs.onc.dcdt.config.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolBoundBean;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
 import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
-import gov.hhs.onc.dcdt.ldap.LdapBindCredentialConfig;
+import gov.hhs.onc.dcdt.config.InstanceLdapCredentialConfig;
 import gov.hhs.onc.dcdt.ldap.LdapSslType;
 import java.util.Objects;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
@@ -13,35 +13,23 @@ import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
 @JsonTypeName("instanceLdapConfig")
-public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements InstanceLdapConfig {
-    private LdapBindCredentialConfig bindCredConfigAdmin;
-    private LdapBindCredentialConfig bindCredConfigAnon;
+public class InstanceLdapConfigImpl extends AbstractToolConnectionBean implements InstanceLdapConfig {
+    private InstanceLdapCredentialConfig credConfigAdmin;
+    private InstanceLdapCredentialConfig credConfigAnon;
     private Entry dataPartitionContextEntry;
     private String dataPartitionId;
     private Dn dataPartitionSuffix;
     private String serverId;
-    private LdapSslType sslType;
+    private LdapSslType sslType = LdapSslType.NONE;
 
     @Override
     public LdapConnectionConfig toConnectionConfigAdmin() {
-        return this.toConnectionConfig(this.bindCredConfigAdmin);
+        return this.toConnectionConfig(this.credConfigAdmin);
     }
 
     @Override
     public LdapConnectionConfig toConnectionConfigAnonymous() {
-        return this.toConnectionConfig(this.bindCredConfigAnon);
-    }
-
-    private LdapConnectionConfig toConnectionConfig(LdapBindCredentialConfig bindCredConfig) {
-        LdapConnectionConfig ldapConnConfig = new LdapConnectionConfig();
-        ldapConnConfig.setLdapHost(this.bindAddr.getHostAddress());
-        ldapConnConfig.setLdapPort(this.bindPort);
-        ldapConnConfig.setUseSsl(this.sslType.isSsl());
-        ldapConnConfig.setUseTls(this.sslType == LdapSslType.TLS);
-        ldapConnConfig.setName(Objects.toString(bindCredConfig.getBindDn(), null));
-        ldapConnConfig.setCredentials(bindCredConfig.getBindPassword());
-
-        return ldapConnConfig;
+        return this.toConnectionConfig(this.credConfigAnon);
     }
 
     @Override
@@ -53,24 +41,36 @@ public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements Ins
         }
     }
 
-    @Override
-    public LdapBindCredentialConfig getBindCredentialConfigAdmin() {
-        return this.bindCredConfigAdmin;
+    private LdapConnectionConfig toConnectionConfig(InstanceLdapCredentialConfig credConfig) {
+        LdapConnectionConfig ldapConnConfig = new LdapConnectionConfig();
+        ldapConnConfig.setLdapHost(this.host.getHostAddress());
+        ldapConnConfig.setLdapPort(this.port);
+        ldapConnConfig.setUseSsl(this.isSsl());
+        ldapConnConfig.setUseTls((this.sslType == LdapSslType.TLS));
+        ldapConnConfig.setName(Objects.toString(credConfig.getId(), null));
+        ldapConnConfig.setCredentials(credConfig.getSecret());
+
+        return ldapConnConfig;
     }
 
     @Override
-    public void setBindCredentialConfigAdmin(LdapBindCredentialConfig bindCredConfigAdmin) {
-        this.bindCredConfigAdmin = bindCredConfigAdmin;
+    public InstanceLdapCredentialConfig getCredentialConfigAdmin() {
+        return this.credConfigAdmin;
     }
 
     @Override
-    public LdapBindCredentialConfig getBindCredentialConfigAnonymous() {
-        return this.bindCredConfigAnon;
+    public void setCredentialConfigAdmin(InstanceLdapCredentialConfig credConfigAdmin) {
+        this.credConfigAdmin = credConfigAdmin;
     }
 
     @Override
-    public void setBindCredentialConfigAnonymous(LdapBindCredentialConfig bindCredConfigAnon) {
-        this.bindCredConfigAnon = bindCredConfigAnon;
+    public InstanceLdapCredentialConfig getCredentialConfigAnonymous() {
+        return this.credConfigAnon;
+    }
+
+    @Override
+    public void setCredentialConfigAnonymous(InstanceLdapCredentialConfig credConfigAnon) {
+        this.credConfigAnon = credConfigAnon;
     }
 
     @Override
@@ -109,6 +109,11 @@ public class InstanceLdapConfigImpl extends AbstractToolBoundBean implements Ins
     @Override
     public void setServerId(String serverId) {
         this.serverId = serverId;
+    }
+
+    @Override
+    public boolean isSsl() {
+        return this.sslType.isSsl();
     }
 
     @Override

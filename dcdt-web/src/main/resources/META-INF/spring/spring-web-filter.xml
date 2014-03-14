@@ -21,7 +21,7 @@
         p:statusPath="/urlrewrite/status"/>
     
     <beans:bean id="charEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter"
-        p:encoding="UTF-8"
+        p:encoding="#{ charsetUtf8.name() }"
         p:forceEncoding="true"/>
     
     <beans:bean id="jTidyFilter" class="gov.hhs.onc.dcdt.web.filter.impl.ToolJTidyFilter">

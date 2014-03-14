@@ -23,7 +23,7 @@ public class DiscoveryTestcaseFactoryBean extends AbstractToolFactoryBean<Discov
     }
 
     @Override
-    protected DiscoveryTestcase createInstance() throws Exception {
+    protected DiscoveryTestcase createInstanceInternal() throws Exception {
         // noinspection ConstantConditions
         ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseService.class).loadBean(this.discoveryTestcase).afterPropertiesSet();
 

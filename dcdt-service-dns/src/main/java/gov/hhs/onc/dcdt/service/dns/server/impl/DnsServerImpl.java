@@ -37,8 +37,8 @@ public class DnsServerImpl extends AbstractToolLifecycleBean implements DnsServe
     protected void stopInternal() throws Exception {
         this.channelListenerSelector.stop();
 
-        LOGGER.info(String.format("Stopped DNS server (class=%s, name=%s, bindAddr=%s, bindPort=%d).", ToolClassUtils.getName(this), this.config.getName(),
-            this.config.getBindAddress().getHostAddress(), this.config.getBindPort()));
+        LOGGER.info(String.format("Stopped DNS server (class=%s, name=%s, host=%s, port=%d).", ToolClassUtils.getName(this), this.config.getName(),
+            this.config.getHost(), this.config.getPort()));
     }
 
     @Override
@@ -47,8 +47,8 @@ public class DnsServerImpl extends AbstractToolLifecycleBean implements DnsServe
         // noinspection ConstantConditions
         this.channelListenerSelector.start();
 
-        LOGGER.info(String.format("Started DNS server (class=%s, name=%s, bindAddr=%s, bindPort=%d).", ToolClassUtils.getName(this), this.config.getName(),
-            this.config.getBindAddress().getHostAddress(), this.config.getBindPort()));
+        LOGGER.info(String.format("Started DNS server (class=%s, name=%s, host=%s, port=%d).", ToolClassUtils.getName(this), this.config.getName(),
+            this.config.getHost(), this.config.getPort()));
     }
 
     @Override

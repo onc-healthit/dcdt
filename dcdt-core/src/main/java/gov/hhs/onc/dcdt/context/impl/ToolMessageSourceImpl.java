@@ -34,8 +34,8 @@ public class ToolMessageSourceImpl extends ReloadableResourceBundleMessageSource
     @Override
     public void setBasenames(String ... basenames) {
         List<String> overrideableBasenames =
-            ToolResourceUtils.getOverrideableResourceLocations(ToolArrayUtils.asList(basenames), ResourceUtils.CLASSPATH_URL_PREFIX,
-                ToolResourceUtils.META_INF_RESOURCE_PATH, true);
+            ToolResourceUtils.getOverrideableLocations(ToolArrayUtils.asList(basenames), ResourceUtils.CLASSPATH_URL_PREFIX,
+                ToolResourceUtils.RESOURCE_LOC_PATH_META_INF, true);
 
         super.setBasenames(overrideableBasenames.toArray(new String[overrideableBasenames.size()]));
     }

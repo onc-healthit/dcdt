@@ -14,16 +14,5 @@
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-
-    <!--====================================================================================================
-    = LDAP BIND CONFIG
-    =====================================================================================================-->
-    <beans:bean id="ldapBindCredConfig" class="gov.hhs.onc.dcdt.ldap.LdapBindCredentialConfig" abstract="true"/>
-    <beans:bean id="ldapBindCredConfigImpl" class="gov.hhs.onc.dcdt.ldap.impl.LdapBindCredentialConfigImpl" parent="ldapBindCredConfig" abstract="true"/>
     
-    <beans:bean id="ldapBindCredConfigAnon" parent="ldapBindCredConfigImpl" abstract="true"
-        p:anonymous="true"/>
-    
-    <beans:bean id="ldapBindCredConfigAdmin" parent="ldapBindCredConfigImpl" abstract="true"
-        p:bindDn="#{ T(org.apache.directory.server.constants.ServerDNConstants).ADMIN_SYSTEM_DN }"/>
 </beans:beans>

@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.service.dns.config.impl;
 
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolBoundBean;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
 import gov.hhs.onc.dcdt.config.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import java.util.List;
@@ -9,7 +9,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xbill.DNS.Record;
 
-public class DnsServerConfigImpl extends AbstractToolBoundBean implements DnsServerConfig {
+public class DnsServerConfigImpl extends AbstractToolConnectionBean implements DnsServerConfig {
     @Autowired(required = false)
     private List<InstanceDnsConfig> dnsConfigs;
 

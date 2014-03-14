@@ -47,6 +47,10 @@ public abstract class AbstractToolFactoryBean<T> extends AbstractFactoryBean<T> 
 
     @Override
     protected T createInstance() throws Exception {
+        return this.createInstanceInternal();
+    }
+
+    protected T createInstanceInternal() throws Exception {
         return BeanUtils.instantiateClass(this.beanImplClass, this.beanClass);
     }
 

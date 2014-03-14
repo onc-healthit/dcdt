@@ -67,14 +67,14 @@
         p:target="#{ instanceDomainConfigLdap.domainName }"/>
     
     <beans:bean id="instanceDnsSrvRecordConfigLdap1" parent="instanceDnsSrvRecordConfigLdap" abstract="true"
-        p:port="#{ instanceLdapConfig1.bindPort }"/>
+        p:port="#{ instanceLdapConfig1.port }"/>
     
     <beans:bean id="instanceDnsSrvRecordConfigLdap2" parent="instanceDnsSrvRecordConfigLdap" abstract="true"
-        p:port="#{ instanceLdapConfig2.bindPort }"
+        p:port="#{ instanceLdapConfig2.port }"
         p:priority="1"/>
     
     <beans:bean id="instanceDnsSrvRecordConfigLdap3" parent="instanceDnsSrvRecordConfigLdap" abstract="true"
-        p:port="#{ instanceLdapConfig3.bindPort }"
+        p:port="#{ instanceLdapConfig3.port }"
         p:weight="100"/>
     
     <beans:bean id="instanceDnsSrvRecordConfigLdapUnavailable" parent="instanceDnsSrvRecordConfigLdap1" abstract="true"
@@ -102,6 +102,11 @@
         <beans:property name="cnameRecordConfigs">
             <util:list>
                 <beans:bean parent="instanceDnsCnameRecordConfigWww"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
             </util:list>
         </beans:property>
         <beans:property name="nsRecordConfigs">

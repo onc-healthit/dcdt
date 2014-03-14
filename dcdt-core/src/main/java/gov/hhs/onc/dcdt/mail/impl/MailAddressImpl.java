@@ -5,34 +5,58 @@ import gov.hhs.onc.dcdt.dns.DnsNameException;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.MailAddressPart;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
-import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
+import java.io.UnsupportedEncodingException;
+import java.util.EnumMap;
 import java.util.Objects;
 import javax.annotation.Nullable;
+import javax.mail.Address;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.xbill.DNS.Name;
 
 public class MailAddressImpl extends AbstractToolBean implements MailAddress {
-    private MutablePair<String, String> addrPartsPair = new MutablePair<>();
+    private EnumMap<MailAddressPart, String> addrPartMap = new EnumMap<>(MailAddressPart.class);
 
     public MailAddressImpl() {
         this(null, null);
     }
 
-    public MailAddressImpl(@Nullable String addr) {
-        String[] addrParts = ToolMailAddressUtils.splitParts(addr);
+    public MailAddressImpl(@Nullable Address addr) {
+        this(Objects.toString(addr, null));
+    }
 
-        this.setLocalPart(ToolArrayUtils.getFirst(addrParts));
-        this.setDomainNamePart(ToolArrayUtils.getLast(addrParts));
+    public MailAddressImpl(@Nullable String addr) {
+        this(ToolMailAddressUtils.splitParts(addr));
+    }
+
+    public MailAddressImpl(@Nullable String[] addrParts) {
+        if (addrParts == null) {
+            return;
+        }
+
+        if (addrParts.length == 3) {
+            this.setPersonalPart(addrParts[0]);
+        }
+
+        if (addrParts.length == 2) {
+            this.setLocalPart(addrParts[addrParts.length - 2]);
+        }
+
+        this.setDomainNamePart(addrParts[addrParts.length - 1]);
     }
 
     public MailAddressImpl(@Nullable String localPart, @Nullable String domainNamePart) {
+        this(null, localPart, domainNamePart);
+    }
+
+    public MailAddressImpl(@Nullable String personalPart, @Nullable String localPart, @Nullable String domainNamePart) {
+        this.setPersonalPart(personalPart);
         this.setLocalPart(localPart);
         this.setDomainNamePart(domainNamePart);
     }
@@ -50,10 +74,16 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     public BindingType getBindingType() {
         return (this.hasDomainNamePart() ? (this.hasLocalPart() ? BindingType.ADDRESS : BindingType.DOMAIN) : BindingType.NONE);
     }
-    
+
     @Nullable
     @Override
     public InternetAddress toInternetAddress() throws ToolMailAddressException {
+        return this.toInternetAddress(true);
+    }
+
+    @Nullable
+    @Override
+    public InternetAddress toInternetAddress(boolean includePersonalPart) throws ToolMailAddressException {
         String addr = this.toAddress();
 
         if (StringUtils.isBlank(addr)) {
@@ -61,8 +91,14 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
         }
 
         try {
-            return new InternetAddress(addr, true);
-        } catch (AddressException e) {
+            InternetAddress internetAddr = new InternetAddress(addr, true);
+
+            if (includePersonalPart && this.hasPersonalPart()) {
+                internetAddr.setPersonal(this.getPersonalPart());
+            }
+
+            return internetAddr;
+        } catch (AddressException | UnsupportedEncodingException e) {
             throw new ToolMailAddressException(String.format("Unable to get Internet mail address from mail address string: %s", addr), e);
         }
     }
@@ -82,7 +118,8 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     public Name getAddressName() throws ToolMailAddressException {
         if (this.toAddress() != null) {
             try {
-                return ToolDnsNameUtils.fromString(this.toAddress().replace(ToolMailAddressUtils.DELIM_MAIL_ADDR_PARTS, ToolDnsNameUtils.DNS_NAME_DELIM));
+                // noinspection ConstantConditions
+                return ToolDnsNameUtils.fromString(this.toAddress().replace(ToolMailAddressUtils.MAIL_ADDR_PART_DELIM, ToolDnsNameUtils.DNS_NAME_DELIM));
             } catch (DnsNameException e) {
                 throw new ToolMailAddressException(String.format("Unable to get mail address from string: %s", this.toAddress()), e);
             }
@@ -125,7 +162,7 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
 
         return addrName;
     }
-    
+
     @Nullable
     @Override
     public String toAddress() {
@@ -176,39 +213,88 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     }
 
     @Override
+    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
+    public boolean equals(@Nullable Object obj) {
+        return Objects.equals(Objects.toString(obj), this.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.toString());
+    }
+
+    @Nullable
+    @Override
+    public String toString() {
+        return this.toAddress();
+    }
+
+    @Override
     public void setDomainName(@Nullable Name domainName) {
         this.setDomainNamePart(Objects.toString(domainName));
     }
 
     @Override
     public boolean hasDomainNamePart() {
-        return !StringUtils.isBlank(this.getDomainNamePart());
+        return this.hasPart(MailAddressPart.DOMAIN_NAME);
     }
 
     @Nullable
     @Override
     public String getDomainNamePart() {
-        return this.addrPartsPair.getRight();
+        return this.getPart(MailAddressPart.DOMAIN_NAME);
     }
 
     @Override
     public void setDomainNamePart(@Nullable String domainNamePart) {
-        this.addrPartsPair.setRight(domainNamePart);
+        this.setPart(MailAddressPart.DOMAIN_NAME, domainNamePart);
     }
 
     @Override
     public boolean hasLocalPart() {
-        return !StringUtils.isBlank(this.getLocalPart());
+        return this.hasPart(MailAddressPart.LOCAL);
     }
 
     @Nullable
     @Override
     public String getLocalPart() {
-        return this.addrPartsPair.getLeft();
+        return this.getPart(MailAddressPart.LOCAL);
     }
 
     @Override
     public void setLocalPart(@Nullable String localPart) {
-        this.addrPartsPair.setLeft(localPart);
+        this.setPart(MailAddressPart.LOCAL, localPart);
+    }
+
+    @Override
+    public boolean hasPersonalPart() {
+        return this.hasPart(MailAddressPart.PERSONAL);
+    }
+
+    @Nullable
+    @Override
+    public String getPersonalPart() {
+        return this.getPart(MailAddressPart.PERSONAL);
+    }
+
+    @Override
+    public void setPersonalPart(@Nullable String personalPart) {
+        this.setPart(MailAddressPart.PERSONAL, personalPart);
+    }
+
+    @Override
+    public boolean hasPart(MailAddressPart part) {
+        return !StringUtils.isBlank(this.getPart(part));
+    }
+
+    @Nullable
+    @Override
+    public String getPart(MailAddressPart part) {
+        return this.addrPartMap.get(part);
+    }
+
+    @Override
+    public void setPart(MailAddressPart part, @Nullable String partValue) {
+        this.addrPartMap.put(part, partValue);
     }
 }

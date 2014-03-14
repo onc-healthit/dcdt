@@ -15,17 +15,6 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean id="discoveryTestcase" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" parent="toolTestcase" abstract="true"/>
-    <beans:bean id="discoveryTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription" parent="toolTestcaseDesc" abstract="true"/>
-    <beans:bean id="discoveryTestcaseResult" class="gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult" parent="toolTestcaseResult" abstract="true"/>
-    
-    <beans:bean id="discoveryTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseFactoryBean" parent="discoveryTestcase"
-        abstract="true"/>
-    <beans:bean id="discoveryTestcaseDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDescriptionImpl" parent="discoveryTestcaseDesc"
-        abstract="true"/>
-    <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.results.impl.DiscoveryTestcaseResultImpl" parent="toolTestcaseResult"
-        abstract="true"/>
-    
     <!--====================================================================================================
     = DISCOVERY TESTCASE STRINGS
     =====================================================================================================-->
@@ -41,8 +30,19 @@
     </dcdt:normalized-string>
     
     <!--====================================================================================================
+    = DISCOVERY TESTCASE DESCRIPTIONS
+    =====================================================================================================-->
+    <beans:bean id="discoveryTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription" parent="toolTestcaseDesc" abstract="true"/>
+    <beans:bean id="discoveryTestcaseDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseDescriptionImpl" parent="discoveryTestcaseDesc"
+        abstract="true"/>
+    
+    <!--====================================================================================================
     = DISCOVERY TESTCASES
     =====================================================================================================-->
+    <beans:bean id="discoveryTestcase" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" parent="toolTestcase" abstract="true"/>
+    <beans:bean id="discoveryTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseFactoryBean" parent="discoveryTestcase"
+        abstract="true"/>
+    
     <beans:bean id="discoveryTestcaseNeg" parent="discoveryTestcaseImpl" abstract="true"
         p:negative="true"/>
     

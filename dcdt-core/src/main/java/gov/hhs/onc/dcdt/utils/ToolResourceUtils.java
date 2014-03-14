@@ -12,67 +12,65 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.SystemUtils;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.DefaultResourceLoader;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternUtils;
 
 public abstract class ToolResourceUtils {
-    public final static String URL_PREFIX_DELIM = ":";
-    public final static String CLASSPATH_ALL_URL_PREFIX = "classpath*" + URL_PREFIX_DELIM;
+    public final static String DELIM_URL_PREFIX = ":";
+    public final static String DELIMS_RESOURCE_LOC = ",; \t\n";
+
+    public final static String PREFIX_URL_CLASSPATH_ALL = "classpath*" + DELIM_URL_PREFIX;
+
+    public final static String RESOURCE_LOC_PATH_META_INF = "META-INF";
 
     public final static ResourceLoader RESOURCE_LOADER_DEFAULT = new DefaultResourceLoader();
     public final static ResourcePatternResolver RESOURCE_PATTERN_RESOLVER_DEFAULT = getResourcePatternResolver();
 
-    public final static String RESOURCE_LOC_DELIMS = ",; \t\n";
-    public final static String META_INF_RESOURCE_PATH = "META-INF";
-
-    public static List<String> getOverrideableResourceLocations(Collection<String> resourceLocs) {
-        return getOverrideableResourceLocations(resourceLocs, CLASSPATH_ALL_URL_PREFIX);
+    public static List<String> getOverrideableLocations(Collection<String> resourceLocs) {
+        return getOverrideableLocations(resourceLocs, PREFIX_URL_CLASSPATH_ALL);
     }
 
-    public static List<String> getOverrideableResourceLocations(Collection<String> resourceLocs, String urlPrefixDefault) {
-        return getOverrideableResourceLocations(resourceLocs, urlPrefixDefault, META_INF_RESOURCE_PATH);
+    public static List<String> getOverrideableLocations(Collection<String> resourceLocs, String urlPrefixDefault) {
+        return getOverrideableLocations(resourceLocs, urlPrefixDefault, RESOURCE_LOC_PATH_META_INF);
     }
 
-    public static List<String> getOverrideableResourceLocations(Collection<String> resourceLocs, String urlPrefixDefault, String baseResourcePath) {
-        return getOverrideableResourceLocations(resourceLocs, urlPrefixDefault, baseResourcePath, false);
+    public static List<String> getOverrideableLocations(Collection<String> resourceLocs, String urlPrefixDefault, String baseResourcePath) {
+        return getOverrideableLocations(resourceLocs, urlPrefixDefault, baseResourcePath, false);
     }
 
-    public static List<String> getOverrideableResourceLocations(Collection<String> resourceLocs, String urlPrefixDefault, String baseResourcePath,
+    public static List<String> getOverrideableLocations(Collection<String> resourceLocs, String urlPrefixDefault, String baseResourcePath,
         boolean includeResourceRawLocs) {
         List<String> overrideableResourceLocs = new ArrayList<>(resourceLocs.size() * (includeResourceRawLocs ? 4 : 2));
 
         for (String resourceLoc : resourceLocs) {
-            overrideableResourceLocs.addAll(getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, baseResourcePath, includeResourceRawLocs));
+            overrideableResourceLocs.addAll(getOverrideableLocations(resourceLoc, urlPrefixDefault, baseResourcePath, includeResourceRawLocs));
         }
 
         return overrideableResourceLocs;
     }
 
-    public static List<String> getOverrideableResourceLocation(String resourceLoc) {
-        return getOverrideableResourceLocation(resourceLoc, CLASSPATH_ALL_URL_PREFIX);
+    public static List<String> getOverrideableLocations(String resourceLoc) {
+        return getOverrideableLocations(resourceLoc, PREFIX_URL_CLASSPATH_ALL);
     }
 
-    public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault) {
-        return getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, META_INF_RESOURCE_PATH);
+    public static List<String> getOverrideableLocations(String resourceLoc, String urlPrefixDefault) {
+        return getOverrideableLocations(resourceLoc, urlPrefixDefault, RESOURCE_LOC_PATH_META_INF);
     }
 
-    public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault, String baseResourcePath) {
-        return getOverrideableResourceLocation(resourceLoc, urlPrefixDefault, baseResourcePath, false);
+    public static List<String> getOverrideableLocations(String resourceLoc, String urlPrefixDefault, String baseResourcePath) {
+        return getOverrideableLocations(resourceLoc, urlPrefixDefault, baseResourcePath, false);
     }
 
-    public static List<String> getOverrideableResourceLocation(String resourceLoc, String urlPrefixDefault, String baseResourcePath,
-        boolean includeResourceRawLocs) {
+    public static List<String> getOverrideableLocations(String resourceLoc, String urlPrefixDefault, String baseResourcePath, boolean includeResourceRawLocs) {
         String[] resourceLocParts =
-            resourceLoc.contains(URL_PREFIX_DELIM) ? resourceLoc.split(URL_PREFIX_DELIM, 2) : ArrayUtils.toArray(urlPrefixDefault, resourceLoc);
+            resourceLoc.contains(DELIM_URL_PREFIX) ? resourceLoc.split(DELIM_URL_PREFIX, 2) : ArrayUtils.toArray(urlPrefixDefault, resourceLoc);
         String resourceLocBaseRaw = baseResourcePath + SystemUtils.FILE_SEPARATOR + resourceLocParts[1], resourceLocRaw = resourceLocParts[1];
         List<String> resourceLocs =
-            ToolArrayUtils.asList(ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocBaseRaw), URL_PREFIX_DELIM),
-                ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocRaw), URL_PREFIX_DELIM));
+            ToolArrayUtils.asList(ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocBaseRaw), DELIM_URL_PREFIX),
+                ToolStringUtils.joinDelimit(ToolArrayUtils.asList(resourceLocParts[0], resourceLocRaw), DELIM_URL_PREFIX));
 
         if (includeResourceRawLocs) {
             resourceLocs.add(1, resourceLocBaseRaw);
@@ -82,16 +80,16 @@ public abstract class ToolResourceUtils {
         return resourceLocs;
     }
 
-    public static Map<String, List<Resource>> mapResourceLocations(List<String> resourceLocs) {
-        return mapResourceLocations(resourceLocs, RESOURCE_PATTERN_RESOLVER_DEFAULT);
+    public static Map<String, List<Resource>> mapLocations(List<String> resourceLocs) {
+        return mapLocations(RESOURCE_PATTERN_RESOLVER_DEFAULT, resourceLocs);
     }
 
-    public static Map<String, List<Resource>> mapResourceLocations(List<String> resourceLocs, ResourcePatternResolver resourcePatternResolver) {
+    public static Map<String, List<Resource>> mapLocations(ResourcePatternResolver resourcePatternResolver, List<String> resourceLocs) {
         Map<String, List<Resource>> resourceLocsMap = new LinkedHashMap<>(resourceLocs.size());
         List<Resource> resources;
 
         for (String resourceLoc : resourceLocs) {
-            resources = resolveResourceLocations(resourceLoc, resourcePatternResolver);
+            resources = resolveLocations(resourcePatternResolver, resourceLoc);
 
             if (resources != null) {
                 resourceLocsMap.put(resourceLoc, resources);
@@ -101,11 +99,11 @@ public abstract class ToolResourceUtils {
         return resourceLocsMap;
     }
 
-    public static List<Resource> resolveResourceLocations(String resourceLoc) {
-        return resolveResourceLocations(resourceLoc, RESOURCE_PATTERN_RESOLVER_DEFAULT);
+    public static List<Resource> resolveLocations(String resourceLoc) {
+        return resolveLocations(RESOURCE_PATTERN_RESOLVER_DEFAULT, resourceLoc);
     }
 
-    public static List<Resource> resolveResourceLocations(String resourceLoc, ResourcePatternResolver resourcePatternResolver) {
+    public static List<Resource> resolveLocations(ResourcePatternResolver resourcePatternResolver, String resourceLoc) {
         try {
             return ToolArrayUtils.asList(resourcePatternResolver.getResources(resourceLoc));
         } catch (IOException ignored) {
@@ -122,8 +120,8 @@ public abstract class ToolResourceUtils {
         return ResourcePatternUtils.getResourcePatternResolver(ObjectUtils.defaultIfNull(resourceLoader, RESOURCE_LOADER_DEFAULT));
     }
 
-    public static List<String> splitResourceLocations(String resourceLocsStr) {
-        String[] resourceLocsArr = StringUtils.split(resourceLocsStr, RESOURCE_LOC_DELIMS);
+    public static List<String> splitLocations(String resourceLocsStr) {
+        String[] resourceLocsArr = StringUtils.split(resourceLocsStr, DELIMS_RESOURCE_LOC);
         List<String> resourceLocs = new ArrayList<>(resourceLocsArr.length);
 
         for (String resourceLoc : resourceLocsArr) {
@@ -135,10 +133,12 @@ public abstract class ToolResourceUtils {
         return resourceLocs;
     }
 
-    public static InputStream getResourceInputStream(String resourceLoc) {
-        Resource resource = getFirstResource(resourceLoc);
+    public static InputStream getInputStream(String resourceLoc) {
+        return getInputStream(RESOURCE_PATTERN_RESOLVER_DEFAULT, resourceLoc);
+    }
 
-        if (resource instanceof ClassPathResource || resource instanceof InputStreamResource) {
+    public static InputStream getInputStream(ResourcePatternResolver resourcePatternResolver, String resourceLoc) {
+        for (Resource resource : resolveLocations(resourcePatternResolver, resourceLoc)) {
             try {
                 return resource.getInputStream();
             } catch (IOException ignored) {
@@ -146,9 +146,5 @@ public abstract class ToolResourceUtils {
         }
 
         return null;
-    }
-
-    public static Resource getFirstResource(String resourceLoc) {
-        return ToolListUtils.getFirst(resolveResourceLocations(resourceLoc));
     }
 }

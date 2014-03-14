@@ -40,10 +40,10 @@ $(document).ready(function () {
                     if (testcaseDiscoveryCredLocType == "LDAP") {
                         var testcaseDiscoveryCredLocLdapConfig = testcaseDiscoveryCredLoc["ldapConfig"];
                         
-                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Bind Address",
-                            testcaseDiscoveryCredLocLdapConfig["bindAddr"]));
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Host",
+                            testcaseDiscoveryCredLocLdapConfig["host"]));
                         testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Port",
-                            testcaseDiscoveryCredLocLdapConfig["bindPort"]));
+                            testcaseDiscoveryCredLocLdapConfig["port"]));
                     }
                     
                     testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Location", testcaseDiscoveryCredLocElems));

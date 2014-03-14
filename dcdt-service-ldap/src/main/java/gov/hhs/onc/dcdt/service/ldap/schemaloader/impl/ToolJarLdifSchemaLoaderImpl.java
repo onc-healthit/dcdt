@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
 public class ToolJarLdifSchemaLoaderImpl extends AbstractSchemaLoader implements ToolJarLdifSchemaLoader {
     private final static String DELIM_RESOURCE_PATTERN = "/";
 
-    private final static String RESOURCE_PATTERN_PREFIX_SCHEMA = ToolResourceUtils.CLASSPATH_ALL_URL_PREFIX
+    private final static String RESOURCE_PATTERN_PREFIX_SCHEMA = ToolResourceUtils.PREFIX_URL_CLASSPATH_ALL
         + StringUtils.join(
             ArrayUtils.toArray("schema", (SchemaConstants.OU_AT + ToolRdnUtils.DELIM_RDN + "schema"), (SchemaConstants.CN_AT + ToolRdnUtils.DELIM_RDN)),
             DELIM_RESOURCE_PATTERN);

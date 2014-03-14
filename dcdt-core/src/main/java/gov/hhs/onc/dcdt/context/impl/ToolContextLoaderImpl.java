@@ -40,6 +40,6 @@ public class ToolContextLoaderImpl implements ToolContextLoader {
 
     @Override
     public List<String> processLocations(Class<?> clazz, Collection<String> configLocs) {
-        return ToolResourceUtils.getOverrideableResourceLocations(configLocs);
+        return ToolResourceUtils.getOverrideableLocations(configLocs);
     }
 }

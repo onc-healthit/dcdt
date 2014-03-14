@@ -88,7 +88,7 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
         for (DnsServer dnsServer : dnsServers) {
             dnsServerConfigLookupService = ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DnsLookupService.class);
             // noinspection ConstantConditions
-            dnsServerConfigLookupService.setResolver(ToolDnsResolverUtils.fromSocketAddress((dnsServerConfig = dnsServer.getConfig()).getBindSocketAddress()));
+            dnsServerConfigLookupService.setResolver(ToolDnsResolverUtils.fromSocketAddress((dnsServerConfig = dnsServer.getConfig()).toSocketAddress()));
 
             this.testDnsServerConfigLookupServices.put(dnsServerConfig, dnsServerConfigLookupService);
         }

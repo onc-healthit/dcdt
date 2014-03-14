@@ -13,7 +13,8 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 import org.xbill.DNS.Name;
 
-@Test(dependsOnGroups = { "dcdt.test.func.config.all" }, groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.discovery" })
+@Test(dependsOnGroups = { "dcdt.test.func.config.all" }, groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.discovery.all",
+    "dcdt.test.func.testcases.discovery.testcases" })
 public class DiscoveryTestcaseFunctionalTests extends AbstractToolFunctionalTests {
     private List<DiscoveryTestcase> discoveryTestcases;
 

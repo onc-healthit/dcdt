@@ -18,53 +18,65 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = INSTANCE LDAP CREDENTIAL CONFIG
+    =====================================================================================================-->
+    <beans:bean id="instanceLdapCredConfig" class="gov.hhs.onc.dcdt.config.InstanceLdapCredentialConfig" abstract="true"/>
+    <beans:bean id="instanceLdapCredConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceLdapCredentialConfigImpl" parent="instanceLdapCredConfig"
+        abstract="true"/>
+    
+    <beans:bean id="instanceLdapCredConfigAnon" parent="instanceLdapCredConfigImpl" abstract="true"/>
+    
+    <beans:bean id="instanceLdapCredConfigAdmin" parent="instanceLdapCredConfigImpl" abstract="true"
+        p:id="#{ T(org.apache.directory.server.constants.ServerDNConstants).ADMIN_SYSTEM_DN }"/>
+    
+    <!--====================================================================================================
     = INSTANCE LDAP CONFIG
     =====================================================================================================-->
     <beans:bean id="instanceLdapConfig" class="gov.hhs.onc.dcdt.config.InstanceLdapConfig" abstract="true"/>
     <beans:bean id="instanceLdapConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceLdapConfigImpl" parent="instanceLdapConfig" abstract="true"
-        p:bindAddress-ref="ipAddrLocalAny"
+        p:host-ref="ipAddrLocalAny"
         p:sslType="NONE">
-        <beans:property name="bindCredentialConfigAnonymous">
-            <beans:bean parent="ldapBindCredConfigAnon"/>
+        <beans:property name="credentialConfigAnonymous">
+            <beans:bean parent="instanceLdapCredConfigAnon"/>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="instanceLdapConfig1" parent="instanceLdapConfigImpl"
-        p:bindPort="${dcdt.instance.ldap.1.bind.port}"
+        p:port="${dcdt.instance.ldap.1.port}"
         p:dataPartitionId="ldapPartition1"
         p:dataPartitionSuffix="${dcdt.instance.ldap.1.data.partition.suffix}"
         p:name="ldap1"
         p:nameDisplay="LDAP 1"
         p:serverId="ldapServer1">
-        <beans:property name="bindCredentialConfigAdmin">
-            <beans:bean parent="ldapBindCredConfigAdmin"
-                p:bindPassword="${dcdt.instance.ldap.1.bind.cred.admin.pass}"/>
+        <beans:property name="credentialConfigAdmin">
+            <beans:bean parent="instanceLdapCredConfigAdmin"
+                p:secret="${dcdt.instance.ldap.1.cred.admin.pass}"/>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="instanceLdapConfig2" parent="instanceLdapConfigImpl"
-        p:bindPort="${dcdt.instance.ldap.2.bind.port}"
+        p:port="${dcdt.instance.ldap.2.port}"
         p:dataPartitionId="ldapPartition2"
         p:dataPartitionSuffix="${dcdt.instance.ldap.2.data.partition.suffix}"
         p:name="ldap2"
         p:nameDisplay="LDAP 2"
         p:serverId="ldapServer2">
-        <beans:property name="bindCredentialConfigAdmin">
-            <beans:bean parent="ldapBindCredConfigAdmin"
-                p:bindPassword="${dcdt.instance.ldap.2.bind.cred.admin.pass}"/>
+        <beans:property name="credentialConfigAdmin">
+            <beans:bean parent="instanceLdapCredConfigAdmin"
+                p:secret="${dcdt.instance.ldap.2.cred.admin.pass}"/>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="instanceLdapConfig3" parent="instanceLdapConfigImpl"
-        p:bindPort="${dcdt.instance.ldap.3.bind.port}"
+        p:port="${dcdt.instance.ldap.3.port}"
         p:dataPartitionId="ldapPartition3"
         p:dataPartitionSuffix="${dcdt.instance.ldap.3.data.partition.suffix}"
         p:name="ldap3"
         p:nameDisplay="LDAP 3"
         p:serverId="ldapServer3">
-        <beans:property name="bindCredentialConfigAdmin">
-            <beans:bean parent="ldapBindCredConfigAdmin"
-                p:bindPassword="${dcdt.instance.ldap.3.bind.cred.admin.pass}"/>
+        <beans:property name="credentialConfigAdmin">
+            <beans:bean parent="instanceLdapCredConfigAdmin"
+                p:secret="${dcdt.instance.ldap.3.cred.admin.pass}"/>
         </beans:property>
     </beans:bean>
 </beans:beans>

@@ -17,11 +17,14 @@ public interface MailAddress extends ToolBean {
     @Nullable
     public InternetAddress toInternetAddress() throws ToolMailAddressException;
 
+    @Nullable
+    public InternetAddress toInternetAddress(boolean includePersonalPart) throws ToolMailAddressException;
+
     public boolean hasAddressName();
 
     @Nullable
     public Name getAddressName() throws ToolMailAddressException;
-    
+
     @Nullable
     public Name toAddressName() throws ToolMailAddressException;
 
@@ -33,7 +36,7 @@ public interface MailAddress extends ToolBean {
 
     @Nullable
     public Name toAddressName(BindingType bindingType) throws ToolMailAddressException;
-    
+
     public String[] toAddressParts();
 
     public boolean hasDomainName();
@@ -56,4 +59,18 @@ public interface MailAddress extends ToolBean {
     public String getLocalPart();
 
     public void setLocalPart(@Nullable String localPart);
+
+    public boolean hasPersonalPart();
+
+    @Nullable
+    public String getPersonalPart();
+
+    public void setPersonalPart(@Nullable String personalPart);
+
+    public boolean hasPart(MailAddressPart part);
+
+    @Nullable
+    public String getPart(MailAddressPart part);
+
+    public void setPart(MailAddressPart part, @Nullable String partValue);
 }

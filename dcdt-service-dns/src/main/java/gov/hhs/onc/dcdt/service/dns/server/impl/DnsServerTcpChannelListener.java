@@ -25,7 +25,7 @@ public class DnsServerTcpChannelListener extends AbstractTcpChannelListener<DnsS
     private DnsServerConfig dnsServerConfig;
 
     public DnsServerTcpChannelListener(DnsServerConfig dnsServerConfig) {
-        super(DnsServerQueryAttachment.class, DnsServerQueryResolver.class, DnsServerQueryResolverCallback.class, dnsServerConfig.getBindSocketAddress());
+        super(DnsServerQueryAttachment.class, DnsServerQueryResolver.class, DnsServerQueryResolverCallback.class, dnsServerConfig.toSocketAddress());
 
         this.dnsServerConfig = dnsServerConfig;
     }

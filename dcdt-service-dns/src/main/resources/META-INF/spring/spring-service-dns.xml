@@ -53,8 +53,8 @@
         <beans:constructor-arg name="config">
             <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="dnsServerConfigImpl"
-                p:bindAddress-ref="ipAddrLocalAny"
-                p:bindPort="${dcdt.service.dns.server.1.bind.port}"
+                p:host-ref="ipAddrLocalAny"
+                p:port="${dcdt.service.dns.server.1.port}"
                 p:name="dnsServer1"
                 p:nameDisplay="DNS Server 1"/>
         </beans:constructor-arg>

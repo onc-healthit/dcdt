@@ -4,7 +4,7 @@ public class ToolMailAddressException extends ToolMailException {
     private final static long serialVersionUID = 0L;
 
     public ToolMailAddressException() {
-        super();
+        super(null, null);
     }
 
     public ToolMailAddressException(String msg) {

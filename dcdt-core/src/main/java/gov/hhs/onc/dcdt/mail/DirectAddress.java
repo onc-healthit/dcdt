@@ -19,7 +19,7 @@ import org.hibernate.validator.constraints.ConstraintComposition;
 @Documented
 @Inherited
 @NotNull
-@Pattern(regexp = ToolMailAddressUtils.PATTERN_STR_DIRECT_ADDR)
+@Pattern(regexp = ToolMailAddressUtils.PATTERN_STR_MAIL_ADDR_DIRECT)
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE })

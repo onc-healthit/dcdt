@@ -33,8 +33,8 @@ public abstract class AbstractPathPropertyDefiner extends PropertyDefinerBase {
             return;
         }
 
-        this.paths = ToolResourceUtils.splitResourceLocations(this.pathsStr);
-        this.pathsResourcesMap = ToolResourceUtils.mapResourceLocations(this.paths);
+        this.paths = ToolResourceUtils.splitLocations(this.pathsStr);
+        this.pathsResourcesMap = ToolResourceUtils.mapLocations(this.paths);
     }
 
     public String getPaths() {
