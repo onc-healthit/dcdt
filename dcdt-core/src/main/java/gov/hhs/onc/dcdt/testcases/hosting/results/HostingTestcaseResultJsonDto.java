@@ -6,5 +6,5 @@ import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultJsonDto;
 import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultJsonDtoImpl;
 
 @JsonSubTypes({ @Type(HostingTestcaseResultJsonDtoImpl.class) })
-public interface HostingTestcaseResultJsonDto extends ToolTestcaseResultJsonDto<HostingTestcaseResultConfig, HostingTestcaseResultInfo, HostingTestcaseResult> {
+public interface HostingTestcaseResultJsonDto extends ToolTestcaseResultJsonDto<HostingTestcaseResult> {
 }

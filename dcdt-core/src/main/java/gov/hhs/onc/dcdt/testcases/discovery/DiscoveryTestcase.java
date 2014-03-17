@@ -8,16 +8,12 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultConfig;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseImpl.class) })
-public interface DiscoveryTestcase extends
-    ToolTestcase<DiscoveryTestcaseResultConfig, DiscoveryTestcaseResultInfo, DiscoveryTestcaseDescription, DiscoveryTestcaseResult> {
+public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseConfig> {
     public final static class DiscoveryTestcaseCredentialsExtractor extends AbstractToolTransformer<DiscoveryTestcase, List<DiscoveryTestcaseCredential>> {
         public final static DiscoveryTestcaseCredentialsExtractor INSTANCE = new DiscoveryTestcaseCredentialsExtractor();
 

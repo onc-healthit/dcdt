@@ -28,6 +28,10 @@ public class ToolBeanPropertyUtilsUnitTests extends AbstractToolUnitTests {
         public String getProp2();
 
         public void setProp3(String prop3);
+
+        public boolean getProp4();
+
+        public void setProp4(boolean prop4);
     }
 
     @Component("testBeanPropUtilsBean")
@@ -40,6 +44,9 @@ public class ToolBeanPropertyUtilsUnitTests extends AbstractToolUnitTests {
 
         @Value("${dcdt.test.beans.bean.1.prop.3.value}")
         private String prop3;
+
+        @Value("${dcdt.test.beans.bean.1.prop.4.value}")
+        private boolean prop4;
 
         @Id
         @Override
@@ -61,6 +68,16 @@ public class ToolBeanPropertyUtilsUnitTests extends AbstractToolUnitTests {
         public void setProp3(String prop3) {
             this.prop3 = prop3;
         }
+
+        @Override
+        public boolean getProp4() {
+            return this.prop4;
+        }
+
+        @Override
+        public void setProp4(boolean prop4) {
+            this.prop4 = prop4;
+        }
     }
 
     @Value("${dcdt.test.beans.bean.1.prop.1.name}")
@@ -71,6 +88,9 @@ public class ToolBeanPropertyUtilsUnitTests extends AbstractToolUnitTests {
 
     @Value("${dcdt.test.beans.bean.1.prop.3.name}")
     private String testBeanPropUtilsBeanProp3Name;
+
+    @Value("${dcdt.test.beans.bean.1.prop.4.name}")
+    private String testBeanPropUtilsBeanProp4Name;
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -90,13 +110,14 @@ public class ToolBeanPropertyUtilsUnitTests extends AbstractToolUnitTests {
 
         ToolBeanPropertyUtils.copy(this.testBeanPropUtilsBeanWrapper, testBeanPropUtilsBeanWrapperCopy);
 
-        Assert.assertEquals(testBeanPropUtilsBeanCopy.getProp1(), this.testBeanPropUtilsBean.getProp1(), "Unable to copy bean properties.");
+        Assert.assertEquals(testBeanPropUtilsBeanCopy.getProp1(), this.testBeanPropUtilsBean.getProp1(), "Unable to copy bean property 1.");
+        Assert.assertEquals(testBeanPropUtilsBeanCopy.getProp4(), this.testBeanPropUtilsBean.getProp4(), "Unable to copy bean property 4.");
     }
 
     @Test
     public void testDescribeReadable() {
         assertTestBeanPropUtilsBeanPropertyDescriptorsMatch(
-            this.describeTestBeanPropUtilsBean(this.testBeanPropUtilsBeanProp1Name, this.testBeanPropUtilsBeanProp2Name),
+            this.describeTestBeanPropUtilsBean(this.testBeanPropUtilsBeanProp1Name, this.testBeanPropUtilsBeanProp2Name, this.testBeanPropUtilsBeanProp4Name),
             ToolBeanPropertyUtils.describeReadable(this.testBeanPropUtilsBeanWrapper));
 
     }
@@ -104,8 +125,8 @@ public class ToolBeanPropertyUtilsUnitTests extends AbstractToolUnitTests {
     @Test
     public void testDescribeWriteable() {
         assertTestBeanPropUtilsBeanPropertyDescriptorsMatch(
-            this.describeTestBeanPropUtilsBean(this.testBeanPropUtilsBeanProp1Name, this.testBeanPropUtilsBeanProp3Name),
-            ToolBeanPropertyUtils.describeWriteable(this.testBeanPropUtilsBeanWrapper));
+            this.describeTestBeanPropUtilsBean(this.testBeanPropUtilsBeanProp1Name, this.testBeanPropUtilsBeanProp3Name, testBeanPropUtilsBeanProp4Name),
+            ToolBeanPropertyUtils.describeWriteable(this.testBeanPropUtilsBeanWrapper, null));
     }
 
     @Override
