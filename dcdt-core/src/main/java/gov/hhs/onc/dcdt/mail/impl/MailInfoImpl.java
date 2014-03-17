@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailResultStringUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
+import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import javax.annotation.Nullable;
@@ -25,7 +25,7 @@ public class MailInfoImpl extends AbstractToolBean implements MailInfo {
     private String message;
     private MimeMessage encryptedMsg;
     private MimeMessage decryptedMsg;
-    private DiscoveryTestcaseResultInfo resultInfo;
+    private DiscoveryTestcaseResult result;
     private DiscoveryTestcase testcase;
     private MessageSource msgSource;
 
@@ -108,18 +108,18 @@ public class MailInfoImpl extends AbstractToolBean implements MailInfo {
     }
 
     @Override
-    public boolean hasResultInfo() {
-        return this.resultInfo != null;
+    public boolean hasResult() {
+        return this.result != null;
     }
 
     @Override
-    public DiscoveryTestcaseResultInfo getResultInfo() {
-        return this.resultInfo;
+    public DiscoveryTestcaseResult getResult() {
+        return this.result;
     }
 
     @Override
-    public void setResultInfo(DiscoveryTestcaseResultInfo resultInfo) {
-        this.resultInfo = resultInfo;
+    public void setResult(DiscoveryTestcaseResult result) {
+        this.result = result;
     }
 
     @Override
@@ -149,15 +149,15 @@ public class MailInfoImpl extends AbstractToolBean implements MailInfo {
             resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
         }
 
-        if (hasResultInfo()) {
+        if (hasResult()) {
             resultStrBuilder.appendWithDelimiter(
-                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.result.status.msg", this.resultInfo.isSuccessful()), StringUtils.LF);
+                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.result.status.msg", this.result.isSuccessful()), StringUtils.LF);
             resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
 
-            ToolMailResultStringUtils.appendCredentialInfo(this.resultInfo, resultStrBuilder, this.msgSource);
+            ToolMailResultStringUtils.appendCredentialInfo(this.result, resultStrBuilder, this.msgSource);
 
-            if (this.resultInfo.hasDecryptionErrorMessage()) {
-                ToolMailResultStringUtils.appendDecryptionErrorMessage(resultStrBuilder, this.resultInfo.getDecryptionErrorMessage(), this.msgSource);
+            if (this.result.hasDecryptionErrorMessage()) {
+                ToolMailResultStringUtils.appendDecryptionErrorMessage(resultStrBuilder, this.result.getDecryptionErrorMessage(), this.msgSource);
             }
 
             if (this.hasDecryptedMessage()) {

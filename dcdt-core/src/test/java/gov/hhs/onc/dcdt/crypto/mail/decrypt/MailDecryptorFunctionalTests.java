@@ -20,7 +20,7 @@ import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultGenerator;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
 public class MailDecryptorFunctionalTests extends AbstractToolFunctionalTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private DiscoveryTestcaseResultGenerator resultGenerator;
+    private DiscoveryTestcaseProcessor testcaseProcessor;
 
     @Value("${dcdt.test.crypto.key.public.dts500}")
     private String testPublicKeyStr;
@@ -83,31 +83,31 @@ public class MailDecryptorFunctionalTests extends AbstractToolFunctionalTests {
     @Test
     public void testDecryptMailPkcs7MimeValid() throws IOException {
         MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_valid.eml");
-        assertmailInfoProperties(mailInfo, true, true);
+        assertMailInfoProperties(mailInfo, true, true);
     }
 
     @Test
     public void testDecryptMailPkcs7MimeEncryptedWithWrongKey() throws IOException {
         MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_encryptedWithWrongKey.eml");
-        assertmailInfoProperties(mailInfo, true, false);
+        assertMailInfoProperties(mailInfo, true, false);
     }
 
     @Test
     public void testDecryptMailPkcs7MimeDiffMimeTypeParamOrder() throws IOException {
         MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_diffMimeTypeParamOrder.eml");
-        assertmailInfoProperties(mailInfo, true, true);
+        assertMailInfoProperties(mailInfo, true, true);
     }
 
     @Test
     public void testDecryptMailXPkcs7MimeValid() throws IOException {
         MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_valid.eml");
-        assertmailInfoProperties(mailInfo, true, true);
+        assertMailInfoProperties(mailInfo, true, true);
     }
 
     @Test
     public void testDecryptMailXPkcsMimeNoMatchingKeys() throws IOException {
         MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_noMatchingKeys.eml");
-        assertmailInfoProperties(mailInfo, true, false);
+        assertMailInfoProperties(mailInfo, true, false);
         Assert.assertFalse(mailInfo.hasDecryptedMessage());
         Assert.assertNotEquals(mailInfo.getToAddress(), this.testToAddr);
     }
@@ -115,7 +115,7 @@ public class MailDecryptorFunctionalTests extends AbstractToolFunctionalTests {
     @Test
     public void testDecryptMailInvalidMimeType() throws IOException {
         MailInfo mailInfo = decryptAndParseEmail("core/mail/testDecryptMail_invalidMimeType.eml");
-        assertmailInfoProperties(mailInfo, false, false);
+        assertMailInfoProperties(mailInfo, false, false);
         Assert.assertNull(mailInfo.getFromAddress());
         Assert.assertNull(mailInfo.getToAddress());
         Assert.assertFalse(mailInfo.hasTestcase());
@@ -124,17 +124,17 @@ public class MailDecryptorFunctionalTests extends AbstractToolFunctionalTests {
 
     private MailInfo decryptAndParseEmail(String emailLoc) throws IOException {
         try (InputStream emailInStream = ToolResourceUtils.getResourceInputStream(emailLoc)) {
-            return this.resultGenerator.generateTestcaseResult(emailInStream, this.testDiscoveryTestcases);
+            return this.testcaseProcessor.processDiscoveryTestcase(emailInStream, this.testDiscoveryTestcases);
         }
     }
 
-    private void assertmailInfoProperties(MailInfo mailInfo, boolean hasEncryptedMsg, boolean successful) {
+    private void assertMailInfoProperties(MailInfo mailInfo, boolean hasEncryptedMsg, boolean successful) {
         Assert.assertNotNull(mailInfo);
-        Assert.assertTrue(mailInfo.hasResultInfo());
+        Assert.assertTrue(mailInfo.hasResult());
         Assert.assertTrue(mailInfo.hasMessage());
         Assert.assertEquals(mailInfo.hasEncryptedMessage(), hasEncryptedMsg);
         // noinspection ConstantConditions
-        Assert.assertEquals(mailInfo.getResultInfo().isSuccessful(), successful);
+        Assert.assertEquals(mailInfo.getResult().isSuccessful(), successful);
 
         if (mailInfo.hasEncryptedMessage()) {
             if (mailInfo.getToAddress().equals(this.testToAddr)) {

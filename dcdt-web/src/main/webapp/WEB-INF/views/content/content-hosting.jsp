@@ -67,7 +67,7 @@
                     </tiles:insertDefinition>:
                 </span>
                 <span class="form-cell form-cell-control">
-                    <select id="testcase-select" class="input-sm form-control" name="hostingTestcase">
+                    <select id="testcase-select" class="input-sm form-control" name="testcase">
                         <option>-- No testcase selected --</option>
                         <c:forEach var="testcase" items="${testcases}">
                             <option value=${testcase.name}>${testcase.nameDisplay}</option>

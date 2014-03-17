@@ -11,21 +11,17 @@ import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(HostingTestcaseSubmissionJsonDtoImpl.class) })
 public interface HostingTestcaseSubmissionJsonDto extends ToolBeanJsonDto<HostingTestcaseSubmission> {
-    public boolean hasHostingTestcase();
-
-    @JsonProperty("hostingTestcase")
-    @NamedBeanName(HostingTestcase.class)
-    @Nullable
-    public String getHostingTestcase();
-
-    public void setHostingTestcase(@Nullable String hostingTestcase);
-
-    public boolean hasDirectAddress();
-
     @DirectAddress
     @JsonProperty("directAddr")
     @Nullable
     public String getDirectAddress();
 
     public void setDirectAddress(@Nullable String directAddr);
+
+    @JsonProperty("hostingTestcase")
+    @NamedBeanName(HostingTestcase.class)
+    @Nullable
+    public String getTestcase();
+
+    public void setTestcase(@Nullable String testcase);
 }

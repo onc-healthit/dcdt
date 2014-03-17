@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.mail.utils;
 
 import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
+import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
@@ -30,14 +30,14 @@ public abstract class ToolMailResultStringUtils {
         }
     }
 
-    public static void appendCredentialInfo(DiscoveryTestcaseResultInfo resultInfo, ToolStrBuilder resultStrBuilder, MessageSource msgSource) {
-        appendCredentialDescription(CERT_FOUND, resultInfo.getCredentialFound(), resultStrBuilder, msgSource);
+    public static void appendCredentialInfo(DiscoveryTestcaseResult result, ToolStrBuilder resultStrBuilder, MessageSource msgSource) {
+        appendCredentialDescription(CERT_FOUND, result.getCredentialFound(), resultStrBuilder, msgSource);
         resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
 
-        if (resultInfo.isSuccessful()) {
+        if (result.isSuccessful()) {
             resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(msgSource, FOUND_EXPECTED_CERT), StringUtils.LF);
         } else {
-            appendCredentialDescription(CERT_EXPECTED, resultInfo.getCredentialExpected(), resultStrBuilder, msgSource);
+            appendCredentialDescription(CERT_EXPECTED, result.getCredentialExpected(), resultStrBuilder, msgSource);
         }
     }
 

@@ -18,20 +18,20 @@
     <beans:bean id="toolTestcase" class="gov.hhs.onc.dcdt.testcases.ToolTestcase" abstract="true"/>
     <beans:bean id="toolTestcaseDesc" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription" abstract="true"/>
     <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult" abstract="true"/>
-    <beans:bean id="toolTestcaseResultConfig" class="gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultConfig" abstract="true"/>
-    <beans:bean id="toolTestcaseResultStep" class="gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStep" abstract="true"/>
-    <beans:bean id="toolTestcaseResultStepDesc" class="gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultStepDescription" abstract="true"/>
+    <beans:bean id="toolTestcaseConfig" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseConfig" abstract="true"/>
+    <beans:bean id="toolTestcaseStep" class="gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep" abstract="true"/>
+    <beans:bean id="toolTestcaseStepDesc" class="gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStepDescription" abstract="true"/>
 
-    <beans:bean id="toolTestcaseDnsResultStep" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseDnsResultStepImpl"
-        parent="toolTestcaseResultStep" abstract="true" lazy-init="true" scope="prototype"/>
-    <beans:bean id="toolTestcaseDnsCertificateLookupResultStep" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseDnsCertificateLookupResultStepImpl"
-        parent="toolTestcaseResultStep" abstract="true" lazy-init="true" scope="prototype"/>
-    <beans:bean id="toolTestcaseLdapConnectionResultStep" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseLdapConnectionResultStepImpl"
-        parent="toolTestcaseResultStep" abstract="true" lazy-init="true" scope="prototype"/>
-    <beans:bean id="toolTestcaseLdapCertificateLookupResultStep" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseLdapCertificateLookupResultStepImpl"
-        parent="toolTestcaseResultStep" abstract="true" lazy-init="true" scope="prototype"/>
-    <beans:bean id="toolTestcaseResultStepDescriptionImpl" class="gov.hhs.onc.dcdt.testcases.results.impl.ToolTestcaseResultStepDescriptionImpl"
-        parent="toolTestcaseResultStepDesc" abstract="true"/>
+    <beans:bean id="toolTestcaseDnsLookupStep" class="gov.hhs.onc.dcdt.testcases.steps.impl.ToolTestcaseDnsLookupStepImpl"
+        parent="toolTestcaseStep" abstract="true"/>
+    <beans:bean id="toolTestcaseDnsCertificateLookupStep" class="gov.hhs.onc.dcdt.testcases.steps.impl.ToolTestcaseDnsCertificateLookupStepImpl"
+        parent="toolTestcaseStep" abstract="true"/>
+    <beans:bean id="toolTestcaseLdapConnectionStep" class="gov.hhs.onc.dcdt.testcases.steps.impl.ToolTestcaseLdapConnectionStepImpl"
+        parent="toolTestcaseStep" abstract="true"/>
+    <beans:bean id="toolTestcaseLdapCertificateLookupStep" class="gov.hhs.onc.dcdt.testcases.steps.impl.ToolTestcaseLdapCertificateLookupStepImpl"
+        parent="toolTestcaseStep" abstract="true"/>
+    <beans:bean id="toolTestcaseStepDescriptionImpl" class="gov.hhs.onc.dcdt.testcases.steps.impl.ToolTestcaseStepDescriptionImpl"
+        parent="toolTestcaseStepDesc" abstract="true"/>
 
     <!--====================================================================================================
     = TESTCASE SPECIFICATIONS
@@ -42,9 +42,9 @@
     </util:list>
 
     <!--====================================================================================================
-    = TESTCASE RESULTS - DNS RECORD LOOKUP STEPS
+    = TESTCASE CONFIG - DNS RECORD LOOKUP STEPS
     =====================================================================================================-->
-    <beans:bean id="dnsCertRecordLookup" parent="toolTestcaseDnsResultStep"
+    <beans:bean id="dnsCertRecordLookup" parent="toolTestcaseDnsLookupStep" abstract="true"
         p:resultType="DNS_LOOKUP"
         p:dnsRecordType="CERT"
         p:locationType="DNS"/>
@@ -52,7 +52,7 @@
     <beans:bean id="dnsAddrBoundCertRecordLookup" parent="dnsCertRecordLookup"
         p:bindingType="ADDRESS">
         <beans:property name="description">
-            <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
+            <beans:bean parent="toolTestcaseStepDescriptionImpl">
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         Query DNS for Direct address-bound CERT records.
@@ -65,7 +65,7 @@
     <beans:bean id="dnsDomainBoundCertRecordLookup" parent="dnsCertRecordLookup"
         p:bindingType="DOMAIN">
         <beans:property name="description">
-            <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
+            <beans:bean parent="toolTestcaseStepDescriptionImpl">
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         Query DNS for Direct domain-bound CERT records.
@@ -75,13 +75,13 @@
         </beans:property>
     </beans:bean>
 
-    <beans:bean id="dnsSrvRecordLookup" parent="toolTestcaseDnsResultStep"
+    <beans:bean id="dnsSrvRecordLookup" parent="toolTestcaseDnsLookupStep"
         p:resultType="DNS_LOOKUP"
         p:dnsRecordType="SRV"
         p:bindingType="DOMAIN"
         p:locationType="DNS">
         <beans:property name="description">
-            <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
+            <beans:bean parent="toolTestcaseStepDescriptionImpl">
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         Query DNS for SRV records.
@@ -92,15 +92,15 @@
     </beans:bean>
 
     <!--====================================================================================================
-    = TESTCASE RESULTS - LDAP STEPS
+    = TESTCASE CONFIG - LDAP STEPS
     =====================================================================================================-->
-    <beans:bean id="ldapConnection" parent="toolTestcaseLdapConnectionResultStep"
+    <beans:bean id="ldapConnection" parent="toolTestcaseLdapConnectionStep"
         p:resultType="LDAP_CONNECTION"
         p:bindingType="NONE"
         p:locationType="LDAP"
         p:ldapStatus="LDAP_CONNECTION_SUCCESS">
         <beans:property name="description">
-            <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
+            <beans:bean parent="toolTestcaseStepDescriptionImpl">
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         Connect to an LDAP server.
@@ -111,14 +111,14 @@
     </beans:bean>
 
     <!--====================================================================================================
-     = TESTCASE RESULTS - CERTIFICATE LOOKUP STEPS
+     = TESTCASE CONFIG - CERTIFICATE LOOKUP STEPS
      =====================================================================================================-->
-    <beans:bean id="dnsCertLookup" parent="toolTestcaseDnsCertificateLookupResultStep"
+    <beans:bean id="dnsCertLookup" parent="toolTestcaseDnsCertificateLookupStep" abstract="true"
         p:resultType="CERT_LOOKUP"
         p:locationType="DNS"
         p:certificateStatus="NO_CERT"/>
 
-    <beans:bean id="ldapCertLookup" parent="toolTestcaseLdapCertificateLookupResultStep"
+    <beans:bean id="ldapCertLookup" parent="toolTestcaseLdapCertificateLookupStep" abstract="true"
         p:resultType="CERT_LOOKUP"
         p:locationType="LDAP"
         p:certificateStatus="NO_CERT"/>
@@ -126,7 +126,7 @@
     <beans:bean id="dnsAddrBoundCertLookup" parent="dnsCertLookup"
         p:bindingType="ADDRESS">
         <beans:property name="description">
-            <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
+            <beans:bean parent="toolTestcaseStepDescriptionImpl">
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         Query DNS for Direct address-bound X.509 certificates found in CERT records.
@@ -139,7 +139,7 @@
     <beans:bean id="dnsDomainBoundCertLookup" parent="dnsCertLookup"
         p:bindingType="DOMAIN">
         <beans:property name="description">
-            <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
+            <beans:bean parent="toolTestcaseStepDescriptionImpl">
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         Query DNS for Direct domain-bound X.509 certificates found in CERT records.
@@ -152,7 +152,7 @@
     <beans:bean id="ldapAddrBoundCertLookup" parent="ldapCertLookup"
         p:bindingType="ADDRESS">
         <beans:property name="description">
-            <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
+            <beans:bean parent="toolTestcaseStepDescriptionImpl">
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         Query an LDAP server for Direct address-bound X.509 certificates.
@@ -165,7 +165,7 @@
     <beans:bean id="ldapDomainBoundCertLookup" parent="ldapCertLookup"
         p:bindingType="DOMAIN">
         <beans:property name="description">
-            <beans:bean parent="toolTestcaseResultStepDescriptionImpl">
+            <beans:bean parent="toolTestcaseStepDescriptionImpl">
                 <beans:property name="text">
                     <dcdt:normalized-string>
                         Query an LDAP server for Direct domain-bound X.509 certificates.
@@ -176,10 +176,10 @@
     </beans:bean>
 
     <!--====================================================================================================
-     = TESTCASE RESULTS - NO CERTIFICATES FOUND IN DNS CERT RECORDS
+     = TESTCASE CONFIG - NO CERTIFICATES FOUND IN DNS CERT RECORDS
      =====================================================================================================-->
-    <beans:bean id="noCertsFoundInDns" parent="hostingTestcaseResultConfigImpl">
-        <beans:property name="results">
+    <beans:bean id="noCertsFoundInDns" parent="hostingTestcaseConfigImpl">
+        <beans:property name="configSteps">
             <beans:list>
                 <beans:bean parent="dnsAddrBoundCertRecordLookup"/>
                 <beans:bean parent="dnsAddrBoundCertLookup"/>
@@ -192,14 +192,14 @@
     <!--====================================================================================================
      = CERTIFICATE DISCOVERY STEPS
      =====================================================================================================-->
-    <util:list id="certDiscoverySteps">
-        <beans:bean parent="dnsAddrBoundCertRecordLookup"/>
-        <beans:bean parent="dnsAddrBoundCertLookup"/>
-        <beans:bean parent="dnsDomainBoundCertRecordLookup"/>
-        <beans:bean parent="dnsDomainBoundCertLookup"/>
-        <beans:bean parent="dnsSrvRecordLookup"/>
-        <beans:bean parent="ldapConnection"/>
-        <beans:bean parent="ldapAddrBoundCertLookup"/>
-        <beans:bean parent="ldapDomainBoundCertLookup"/>
+    <util:list id="certDiscoverySteps" scope="prototype">
+        <beans:bean parent="dnsAddrBoundCertRecordLookup" lazy-init="true" scope="prototype"/>
+        <beans:bean parent="dnsAddrBoundCertLookup" lazy-init="true" scope="prototype"/>
+        <beans:bean parent="dnsDomainBoundCertRecordLookup" lazy-init="true" scope="prototype"/>
+        <beans:bean parent="dnsDomainBoundCertLookup" lazy-init="true" scope="prototype"/>
+        <beans:bean parent="dnsSrvRecordLookup" lazy-init="true" scope="prototype"/>
+        <beans:bean parent="ldapConnection" lazy-init="true" scope="prototype"/>
+        <beans:bean parent="ldapAddrBoundCertLookup" lazy-init="true" scope="prototype"/>
+        <beans:bean parent="ldapDomainBoundCertLookup" lazy-init="true" scope="prototype"/>
     </util:list>
 </beans:beans>

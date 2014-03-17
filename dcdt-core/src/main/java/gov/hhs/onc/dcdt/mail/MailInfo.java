@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.mail;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
+import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import javax.annotation.Nullable;
 import javax.mail.internet.MimeMessage;
 import org.springframework.context.MessageSourceAware;
@@ -41,12 +41,12 @@ public interface MailInfo extends MessageSourceAware, ToolBean {
 
     public void setDecryptedMessage(@Nullable MimeMessage decryptedMsg);
 
-    public boolean hasResultInfo();
+    public boolean hasResult();
 
     @Nullable
-    public DiscoveryTestcaseResultInfo getResultInfo();
+    public DiscoveryTestcaseResult getResult();
 
-    public void setResultInfo(@Nullable DiscoveryTestcaseResultInfo resultInfo);
+    public void setResult(@Nullable DiscoveryTestcaseResult result);
 
     public boolean hasTestcase();
 
