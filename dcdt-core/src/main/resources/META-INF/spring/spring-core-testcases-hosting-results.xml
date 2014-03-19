@@ -16,18 +16,10 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!--====================================================================================================
-    = HOSTING TESTCASE RESULT CONFIGURATIONS
-    =====================================================================================================-->
-    <beans:bean id="hostingTestcaseResultConfig" class="gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResultConfig"
-        parent="toolTestcaseResultConfig" abstract="true"/>
-    <beans:bean id="hostingTestcaseResultConfigImpl" class="gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultConfigImpl"
-        parent="hostingTestcaseResultConfig" abstract="true"/>
-    
-    <!--====================================================================================================
     = HOSTING TESTCASE RESULTS
     =====================================================================================================-->
     <beans:bean id="hostingTestcaseResult" class="gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult" parent="toolTestcaseResult"
         abstract="true"/>
     <beans:bean id="hostingTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl" parent="hostingTestcaseResult"
-        abstract="true"/>
+        lazy-init="true" scope="prototype"/>
 </beans:beans>

@@ -12,7 +12,6 @@ import gov.hhs.onc.dcdt.mail.sender.impl.AbstractToolMailSenderService;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -45,25 +44,22 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
 
         List<MimeAttachmentResource> attachments = null;
 
-        if (discoveryTestcaseResult.hasResultInfo()) {
+        if (discoveryTestcaseResult != null) {
             attachments = new ArrayList<>(2);
 
             String discoveryTestcaseName = discoveryTestcase.getName();
-            DiscoveryTestcaseResultInfo discoveryTestcaseResultInfo = discoveryTestcaseResult.getResultInfo();
             MimeAttachmentResource attachment;
 
-            // noinspection ConstantConditions
-            if (discoveryTestcaseResultInfo.hasCredentialExcepted()
+            if (discoveryTestcaseResult.hasCredentialExpected()
                 && ((attachment =
-                    buildDiscoveryTestcaseCredentialAttachment(discoveryTestcaseResultInfo.getCredentialExpected(),
+                    buildDiscoveryTestcaseCredentialAttachment(discoveryTestcaseResult.getCredentialExpected(),
                         (discoveryTestcaseName + ATTACHMENT_FILE_NAME_SUFFIX_TESTCASE_DISCOVERY_CRED_EXPECTED))) != null)) {
                 attachments.add(attachment);
             }
 
-            // noinspection ConstantConditions
-            if (discoveryTestcaseResultInfo.hasCredentialFound()
+            if (discoveryTestcaseResult.hasCredentialFound()
                 && ((attachment =
-                    buildDiscoveryTestcaseCredentialAttachment(discoveryTestcaseResultInfo.getCredentialFound(),
+                    buildDiscoveryTestcaseCredentialAttachment(discoveryTestcaseResult.getCredentialFound(),
                         (discoveryTestcaseName + ATTACHMENT_FILE_NAME_SUFFIX_TESTCASE_DISCOVERY_CRED_FOUND))) != null)) {
                 attachments.add(attachment);
             }

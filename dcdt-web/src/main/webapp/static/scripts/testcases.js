@@ -61,21 +61,21 @@
 
                 return testcaseDescItemElem;
             },
-            "buildTestcaseResultSteps": function (elem, testcaseResultSteps) {
+            "buildTestcaseSteps": function (elem, testcaseSteps) {
                 var stepElem = $("<ol/>");
-                testcaseResultSteps.forEach(function (testcaseResultStep) {
-                    var resultType = testcaseResultStep["resultType"];
-                    stepElem.append($("<li/>").append($("<b/>").append(testcaseResultStep["desc"]["text"])));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Successful: ", testcaseResultStep["successful"]));
+                testcaseSteps.forEach(function (testcaseStep) {
+                    var resultType = testcaseStep["resultType"];
+                    stepElem.append($("<li/>").append($("<b/>").append(testcaseStep["desc"]["text"])));
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Successful: ", testcaseStep["successful"]));
                     stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Result Type: ", resultType));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Binding Type: ", testcaseResultStep["bindingType"]));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Location Type: ", testcaseResultStep["locationType"]));
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Binding Type: ", testcaseStep["bindingType"]));
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Location Type: ", testcaseStep["locationType"]));
                     switch(resultType){
                         case "DNS_LOOKUP":
-                            stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "DNS Record Type: ", testcaseResultStep["dnsRecordType"]));
+                            stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "DNS Record Type: ", testcaseStep["dnsRecordType"]));
                             break;
                         case "CERT_LOOKUP":
-                            stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Certificate Status: ", testcaseResultStep["certStatus"]));
+                            stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Certificate Status: ", testcaseStep["certStatus"]));
                             break;
                         default: break;
                     }

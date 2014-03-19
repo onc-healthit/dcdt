@@ -6,5 +6,5 @@ import gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 
 @JsonSubTypes({ @Type(HostingTestcaseResultImpl.class) })
-public interface HostingTestcaseResult extends ToolTestcaseResult<HostingTestcaseResultConfig, HostingTestcaseResultInfo> {
+public interface HostingTestcaseResult extends ToolTestcaseResult {
 }

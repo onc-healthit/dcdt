@@ -21,7 +21,7 @@
     <beans:bean id="discoveryTestcaseResult" class="gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult" parent="toolTestcaseResult"
         abstract="true"/>
     <beans:bean id="discoveryTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.discovery.results.impl.DiscoveryTestcaseResultImpl"
-        parent="toolTestcaseResult" abstract="true"/>
+        parent="discoveryTestcaseResult" lazy-init="true" scope="prototype"/>
     
     <!--====================================================================================================
     = DISCOVERY TESTCASE RESULT MAIL MESSAGES
