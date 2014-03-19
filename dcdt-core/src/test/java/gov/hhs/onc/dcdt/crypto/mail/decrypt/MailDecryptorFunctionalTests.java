@@ -20,7 +20,7 @@ import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultGenerator;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,7 +38,7 @@ import org.testng.annotations.Test;
 public class MailDecryptorFunctionalTests extends AbstractToolFunctionalTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private DiscoveryTestcaseResultGenerator resultGenerator;
+    private DiscoveryTestcaseProcessor testcaseProcessor;
 
     @Value("${dcdt.test.crypto.key.public.dts500}")
     private String testPublicKeyStr;
@@ -124,17 +124,17 @@ public class MailDecryptorFunctionalTests extends AbstractToolFunctionalTests {
 
     private MailInfo decryptAndParseEmail(String emailLoc) throws IOException {
         try (InputStream emailInStream = ToolResourceUtils.getInputStream(emailLoc)) {
-            return this.resultGenerator.generateTestcaseResult(emailInStream, this.testDiscoveryTestcases);
+            return this.testcaseProcessor.processDiscoveryTestcase(emailInStream, this.testDiscoveryTestcases);
         }
     }
 
     private void assertMailInfoProperties(MailInfo mailInfo, boolean hasEncryptedMsg, boolean successful) {
         Assert.assertNotNull(mailInfo);
-        Assert.assertTrue(mailInfo.hasResultInfo());
+        Assert.assertTrue(mailInfo.hasResult());
         Assert.assertTrue(mailInfo.hasMessage());
         Assert.assertEquals(mailInfo.hasEncryptedMessage(), hasEncryptedMsg);
         // noinspection ConstantConditions
-        Assert.assertEquals(mailInfo.getResultInfo().isSuccessful(), successful);
+        Assert.assertEquals(mailInfo.getResult().isSuccessful(), successful);
 
         if (mailInfo.hasEncryptedMessage()) {
             if (mailInfo.getToAddress().equals(this.testToAddr)) {

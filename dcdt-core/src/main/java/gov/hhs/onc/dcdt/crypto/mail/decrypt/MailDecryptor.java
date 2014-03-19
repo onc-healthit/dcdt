@@ -10,7 +10,7 @@ import gov.hhs.onc.dcdt.crypto.mail.utils.MailCryptographyUtils;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateUtils;
+import gov.hhs.onc.dcdt.testcases.utils.ToolTestcaseCertificateUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import java.io.IOException;
 import java.security.PrivateKey;
@@ -80,8 +80,8 @@ public abstract class MailDecryptor {
         }
     }
 
-    public static boolean decryptMail(MailInfo mailInfo, ToolStrBuilder decryptionErrorBuilder, MimeMessage origMimeMessage,
-        DiscoveryTestcaseCredential cred, Set<CertificateValidator> certValidators) {
+    public static boolean decryptMail(MailInfo mailInfo, ToolStrBuilder decryptionErrorBuilder, MimeMessage origMimeMessage, DiscoveryTestcaseCredential cred,
+        Set<CertificateValidator> certValidators) {
         CredentialInfo credInfo = cred.getCredentialInfo();
 
         if (credInfo != null) {
@@ -95,7 +95,7 @@ public abstract class MailDecryptor {
 
             if (multipartMsg != null) {
                 // noinspection ConstantConditions
-                mailInfo.getResultInfo().setCredentialFound(cred);
+                mailInfo.getResult().setCredentialFound(cred);
                 processDecryptedMessage(mailInfo, multipartMsg, decryptionErrorBuilder, certValidators);
                 return true;
             }

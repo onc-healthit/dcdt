@@ -1,20 +1,36 @@
 package gov.hhs.onc.dcdt.testcases.results;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
+import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
+import java.util.List;
 import javax.annotation.Nullable;
 
-public interface ToolTestcaseResult<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo> extends ToolNamedBean {
-    public boolean hasResultConfig();
+public interface ToolTestcaseResult extends ToolNamedBean {
+    @JsonProperty("successful")
+    public boolean isSuccessful();
 
+    public void setSuccessful(boolean successful);
+
+    public boolean hasMessage();
+
+    @JsonProperty("msg")
     @Nullable
-    public T getResultConfig();
+    public String getMessage();
 
-    public void setResultConfig(@Nullable T resultConfig);
+    public void setMessage(@Nullable String message);
 
-    public boolean hasResultInfo();
-
+    @JsonProperty("certStr")
     @Nullable
-    public U getResultInfo();
+    public String getCertificate();
 
-    public void setResultInfo(@Nullable U resultInfo);
+    public void setCertificate(@Nullable String certStr);
+
+    public boolean hasInfoSteps();
+
+    @JsonProperty("infoSteps")
+    @Nullable
+    public List<ToolTestcaseStep> getInfoSteps();
+
+    public void setInfoSteps(@Nullable List<ToolTestcaseStep> infoSteps);
 }
