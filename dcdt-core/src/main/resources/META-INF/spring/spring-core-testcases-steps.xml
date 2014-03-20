@@ -190,14 +190,14 @@
     <beans:bean id="certDiscoverySteps" class="java.util.ArrayList" lazy-init="true" scope="prototype">
         <beans:constructor-arg>
             <util:list>
-                <beans:bean parent="dnsAddrBoundCertRecordLookup" lazy-init="true" scope="prototype"/>
-                <beans:bean parent="dnsAddrBoundCertLookup" lazy-init="true" scope="prototype"/>
-                <beans:bean parent="dnsDomainBoundCertRecordLookup" lazy-init="true" scope="prototype"/>
-                <beans:bean parent="dnsDomainBoundCertLookup" lazy-init="true" scope="prototype"/>
-                <beans:bean parent="dnsSrvRecordLookup" lazy-init="true" scope="prototype"/>
-                <beans:bean parent="ldapConnection" lazy-init="true" scope="prototype"/>
-                <beans:bean parent="ldapAddrBoundCertLookup" lazy-init="true" scope="prototype"/>
-                <beans:bean parent="ldapDomainBoundCertLookup" lazy-init="true" scope="prototype"/>
+                <beans:bean parent="dnsAddrBoundCertRecordLookup"/>
+                <beans:bean parent="dnsAddrBoundCertLookup"/>
+                <beans:bean parent="dnsDomainBoundCertRecordLookup"/>
+                <beans:bean parent="dnsDomainBoundCertLookup"/>
+                <beans:bean parent="dnsSrvRecordLookup"/>
+                <beans:bean parent="ldapConnection"/>
+                <beans:bean parent="ldapAddrBoundCertLookup"/>
+                <beans:bean parent="ldapDomainBoundCertLookup"/>
             </util:list>
         </beans:constructor-arg>
     </beans:bean>
