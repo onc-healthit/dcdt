@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = CONVERTERS
+    =====================================================================================================-->
+    <util:set id="convs">
+        <beans:ref bean="certConv"/>
+        <beans:ref bean="dnConv"/>
+        <beans:ref bean="dnsNameConv"/>
+        <beans:ref bean="inetAddrConv"/>
+        <beans:ref bean="keyConv"/>
+        <beans:ref bean="ldapAttrConv"/>
+        <beans:ref bean="ldapFilterConv"/>
+        <beans:ref bean="ldifConv"/>
+        <beans:ref bean="mailAddrConv"/>
+        <beans:ref bean="namedBeanConv"/>
+        <beans:ref bean="pathConv"/>
+        <beans:ref bean="rdnConv"/>
+        <beans:ref bean="uriConv"/>
+        <beans:ref bean="urlConv"/>
+        <beans:ref bean="x500NameConv"/>
+    </util:set>
+    
+    <!--====================================================================================================
+    = CONVERSION SERVICE
+    =====================================================================================================-->
+    <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" primary="true"
+        p:converters-ref="convs"/>
+</beans:beans>

@@ -1,0 +1,14 @@
+#* @vtlvariable name="discoveryTestcase" type="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" *#
+#* @vtlvariable name="discoveryTestcaseResult" type="gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult" *#
+#* @vtlmacrolibrary path="lib/core.vm" *#
+#define($head)
+#includeStyle("include/mail-testcase-discovery-result.css")
+#end
+#define($body)
+    <h1>Discovery testcase $discoveryTestcase.nameDisplay #if($discoveryTestcaseResult.resultInfo.successful)passed#{else}failed#{end}.</h1>
+    <h2>Details</h2>
+    <ul>
+        <li><strong>To</strong>: $discoveryTestcase.mailAddress</li>
+    </ul>
+#end
+#parse("mail.vm")

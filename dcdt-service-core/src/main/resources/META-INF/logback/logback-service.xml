@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration
+    debug="false"
+    scan="true"
+    scanPeriod="5 seconds"
+    xmlns="ch.qos.logback"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="ch.qos.logback /META-INF/logback/logback.xsd">
+    
+    <contextName>${dcdt.log.context.name:-%{project.artifactId}}</contextName>
+    
+    <include resource="logback/logback-service-include-test.xml" optional="true"/>
+    <include resource="logback/logback-service-include.xml" optional="true"/>
+    
+    <if condition='!isDefined("dcdt.log.console.term") &amp;&amp; 
+        org.tanukisoftware.wrapper.WrapperManager.isControlledByNativeWrapper() &amp;&amp; 
+        !org.tanukisoftware.wrapper.WrapperManager.isLaunchedAsService()'>
+        <then>
+            <property name="dcdt.log.console.term" value="true" scope="context"/>
+        </then>
+    </if>
+    
+    <include resource="logback/logback-core-include-test.xml" optional="true"/>
+    <include resource="logback/logback-core-include.xml" optional="true"/>
+</configuration>
