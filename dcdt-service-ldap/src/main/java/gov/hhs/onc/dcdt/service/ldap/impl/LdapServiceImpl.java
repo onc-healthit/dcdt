@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.service.ldap.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
-import gov.hhs.onc.dcdt.config.InstanceLdapCredentialConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceLdapCredentialConfig;
 import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.impl.AbstractToolService;
@@ -17,8 +17,6 @@ import java.util.Map;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.DefaultModification;
@@ -43,8 +41,6 @@ import org.springframework.stereotype.Component;
 @Component("ldapServiceImpl")
 @ServiceContextConfiguration({ "spring/spring-service-ldap.xml", "spring/spring-service-ldap-*.xml" })
 public class LdapServiceImpl extends AbstractToolService implements LdapService {
-    private final static int LEN_LDAP_BIND_ADMIN_PASS_GEN = 5;
-
     private final static Logger LOGGER = LoggerFactory.getLogger(LdapServiceImpl.class);
 
     @Autowired(required = false)
@@ -158,10 +154,6 @@ public class LdapServiceImpl extends AbstractToolService implements LdapService 
         String ldapAdminPass = ldapCredConfigAdmin.getSecret();
         // noinspection ConstantConditions
         CoreSession adminSession = dirService.getAdminSession();
-
-        if (StringUtils.isBlank(ldapAdminPass)) {
-            ldapAdminPass = RandomStringUtils.randomAscii(LEN_LDAP_BIND_ADMIN_PASS_GEN);
-        }
 
         try {
             adminSession.modify(ldapAdminDn, new DefaultModification(ModificationOperation.REPLACE_ATTRIBUTE, SchemaConstants.USER_PASSWORD_AT, ldapAdminPass));

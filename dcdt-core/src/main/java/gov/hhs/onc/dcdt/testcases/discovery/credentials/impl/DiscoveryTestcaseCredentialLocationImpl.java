@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.testcases.discovery.credentials.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.config.InstanceLdapConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.LocationType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;

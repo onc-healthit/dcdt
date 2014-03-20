@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.testcases.discovery;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.config.InstanceConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;

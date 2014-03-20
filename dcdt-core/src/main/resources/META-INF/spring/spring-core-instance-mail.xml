@@ -52,8 +52,8 @@
     <!--====================================================================================================
     = INSTANCE MAIL CONFIG
     =====================================================================================================-->
-    <beans:bean id="instanceMailAddrConfig" class="gov.hhs.onc.dcdt.config.InstanceMailAddressConfig" abstract="true"/>
-    <beans:bean id="instanceMailAddrConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceMailAddressConfigImpl" parent="instanceMailAddrConfig"
+    <beans:bean id="instanceMailAddrConfig" class="gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig" abstract="true"/>
+    <beans:bean id="instanceMailAddrConfigImpl" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceMailAddressConfigImpl" parent="instanceMailAddrConfig"
         abstract="true">
         <beans:property name="gatewayConfig">
             <beans:bean parent="mailGatewayConfigImpl"/>

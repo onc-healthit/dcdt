@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.discovery.results.sender.impl;
 
-import gov.hhs.onc.dcdt.config.InstanceMailAddressConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;

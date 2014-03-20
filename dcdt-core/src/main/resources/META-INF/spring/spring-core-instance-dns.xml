@@ -83,8 +83,8 @@
     <!--====================================================================================================
     = INSTANCE DNS CONFIG
     =====================================================================================================-->
-    <beans:bean id="instanceDnsConfig" class="gov.hhs.onc.dcdt.config.InstanceDnsConfig" abstract="true"/>
-    <beans:bean id="instanceDnsConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceDnsConfigImpl" parent="instanceDnsConfig" abstract="true"/>
+    <beans:bean id="instanceDnsConfig" class="gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig" abstract="true"/>
+    <beans:bean id="instanceDnsConfigImpl" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceDnsConfigImpl" parent="instanceDnsConfig" abstract="true"/>
     
     <beans:bean id="instanceDnsConfigBase" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfigBase.domainName }"

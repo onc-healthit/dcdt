@@ -100,6 +100,17 @@
     <beans:alias name="validator" alias="validatorFactory"/>
     
     <!--====================================================================================================
+    = CONFIGURATION BUILDER
+    =====================================================================================================-->
+    <beans:bean id="configBuilder" class="gov.hhs.onc.dcdt.config.ToolConfigurationBuilder" abstract="true"/>
+    
+    <beans:bean id="configBuilderImpl" class="gov.hhs.onc.dcdt.config.impl.ToolConfigurationBuilderImpl" parent="configBuilder" abstract="true"
+        p:attributeSplittingDisabled="true"
+        p:enableSubstitutionInVariables="true"
+        p:encoding="#{ charsetUtf8.name() }"
+        p:forceReloadCheck="true"/>
+    
+    <!--====================================================================================================
     = TASK EXECUTION
     =====================================================================================================-->
     <beans:bean id="taskExec" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"

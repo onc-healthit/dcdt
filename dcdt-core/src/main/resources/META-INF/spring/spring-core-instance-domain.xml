@@ -20,8 +20,8 @@
     <!--====================================================================================================
     = INSTANCE DOMAIN CONFIG
     =====================================================================================================-->
-    <beans:bean id="instanceDomainConfig" class="gov.hhs.onc.dcdt.config.InstanceDomainConfig" abstract="true"/>
-    <beans:bean id="instanceDomainConfigImpl" class="gov.hhs.onc.dcdt.config.impl.InstanceDomainConfigImpl" parent="instanceDomainConfig" abstract="true"/>
+    <beans:bean id="instanceDomainConfig" class="gov.hhs.onc.dcdt.config.instance.InstanceDomainConfig" abstract="true"/>
+    <beans:bean id="instanceDomainConfigImpl" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceDomainConfigImpl" parent="instanceDomainConfig" abstract="true"/>
     
     <beans:bean id="instanceDomainConfigBase" parent="instanceDomainConfigImpl"
         p:domainName="#{ instanceConfig.domainName }"

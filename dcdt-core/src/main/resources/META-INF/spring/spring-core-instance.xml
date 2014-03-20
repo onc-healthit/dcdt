@@ -94,5 +94,5 @@
     <!--====================================================================================================
     = INSTANCE CONFIG
     =====================================================================================================-->
-    <beans:bean id="instanceConfig" class="gov.hhs.onc.dcdt.config.impl.InstanceConfigFactoryBean"/>
+    <beans:bean id="instanceConfig" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceConfigFactoryBean"/>
 </beans:beans>

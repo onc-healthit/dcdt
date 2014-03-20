@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.mail.sender.impl;
 
-import gov.hhs.onc.dcdt.config.InstanceMailAddressConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.sender.ToolMimeMailMessage;
 import javax.annotation.Nullable;

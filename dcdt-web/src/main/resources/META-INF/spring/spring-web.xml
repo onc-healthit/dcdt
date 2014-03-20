@@ -24,8 +24,6 @@
                 <beans:value>classpath*:META-INF/service/service*.properties</beans:value>
                 <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:service/service*.properties</beans:value>
-                <beans:value>classpath*:james-database.properties</beans:value>
-                <beans:value>classpath*:mailbox-maildir.properties</beans:value>
                 <beans:value>classpath*:META-INF/service/**/service-*.properties</beans:value>
                 <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:service/**/service-*.properties</beans:value>

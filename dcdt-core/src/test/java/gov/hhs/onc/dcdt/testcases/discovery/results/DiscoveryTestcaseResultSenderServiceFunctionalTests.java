@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.discovery.results;
 
-import gov.hhs.onc.dcdt.config.InstanceMailAddressConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;

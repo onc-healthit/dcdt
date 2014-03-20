@@ -64,7 +64,9 @@
     =====================================================================================================-->
     <beans:bean id="mailGatewayCredConfig" class="gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig" abstract="true"/>
     <beans:bean id="mailGatewayCredConfigImpl" class="gov.hhs.onc.dcdt.mail.config.impl.MailGatewayCredentialConfigImpl" parent="mailGatewayCredConfig"
-        abstract="true"/>
+        abstract="true"
+        p:generatedPasswordLength="5"
+        p:generateSecret="true"/>
     
     <!--====================================================================================================
     = MAIL VELOCITY ENGINE

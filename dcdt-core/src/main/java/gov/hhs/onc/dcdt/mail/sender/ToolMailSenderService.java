@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.mail.sender;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.config.InstanceMailAddressConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.springframework.context.ApplicationContextAware;

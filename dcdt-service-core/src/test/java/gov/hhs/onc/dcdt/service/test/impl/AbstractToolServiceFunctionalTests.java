@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.service.test.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.config.InstanceConfig;
-import gov.hhs.onc.dcdt.config.InstanceConfigRegistry;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfigRegistry;
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.utils.ToolDateUtils;

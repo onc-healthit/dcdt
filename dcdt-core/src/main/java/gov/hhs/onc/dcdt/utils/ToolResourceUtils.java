@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -99,6 +100,16 @@ public abstract class ToolResourceUtils {
         return resourceLocsMap;
     }
 
+    @Nullable
+    public static Resource resolveLocation(String resourceLoc) {
+        return resolveLocation(RESOURCE_PATTERN_RESOLVER_DEFAULT, resourceLoc);
+    }
+
+    @Nullable
+    public static Resource resolveLocation(ResourcePatternResolver resourcePatternResolver, String resourceLoc) {
+        return ToolListUtils.getFirst(resolveLocations(resourcePatternResolver, resourceLoc));
+    }
+
     public static List<Resource> resolveLocations(String resourceLoc) {
         return resolveLocations(RESOURCE_PATTERN_RESOLVER_DEFAULT, resourceLoc);
     }
@@ -133,10 +144,29 @@ public abstract class ToolResourceUtils {
         return resourceLocs;
     }
 
+    @Nullable
+    public static File getFile(String resourceLoc) {
+        return getFile(RESOURCE_PATTERN_RESOLVER_DEFAULT, resourceLoc);
+    }
+
+    @Nullable
+    public static File getFile(ResourcePatternResolver resourcePatternResolver, String resourceLoc) {
+        for (Resource resource : resolveLocations(resourcePatternResolver, resourceLoc)) {
+            try {
+                return resource.getFile();
+            } catch (IOException ignored) {
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
     public static InputStream getInputStream(String resourceLoc) {
         return getInputStream(RESOURCE_PATTERN_RESOLVER_DEFAULT, resourceLoc);
     }
 
+    @Nullable
     public static InputStream getInputStream(ResourcePatternResolver resourcePatternResolver, String resourceLoc) {
         for (Resource resource : resolveLocations(resourcePatternResolver, resourceLoc)) {
             try {

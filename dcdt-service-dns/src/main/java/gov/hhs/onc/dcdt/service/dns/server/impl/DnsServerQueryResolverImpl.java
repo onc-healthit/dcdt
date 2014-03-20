@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.service.dns.server.impl;
 
-import gov.hhs.onc.dcdt.config.InstanceDnsConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsMessageRcode;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;

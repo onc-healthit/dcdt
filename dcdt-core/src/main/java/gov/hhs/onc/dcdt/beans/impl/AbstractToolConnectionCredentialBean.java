@@ -4,8 +4,28 @@ import gov.hhs.onc.dcdt.beans.ToolConnectionCredentialBean;
 import javax.annotation.Nullable;
 
 public abstract class AbstractToolConnectionCredentialBean<T, U> extends AbstractToolNamedBean implements ToolConnectionCredentialBean<T, U> {
+    protected boolean genSecret;
     protected T id;
     protected U secret;
+
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (!this.hasSecret() && this.getGenerateSecret()) {
+            this.secret = this.generateSecret();
+        }
+    }
+
+    protected abstract U generateSecret();
+
+    @Override
+    public boolean getGenerateSecret() {
+        return this.genSecret;
+    }
+
+    @Override
+    public void setGenerateSecret(boolean genSecret) {
+        this.genSecret = genSecret;
+    }
 
     @Override
     public boolean hasId() {

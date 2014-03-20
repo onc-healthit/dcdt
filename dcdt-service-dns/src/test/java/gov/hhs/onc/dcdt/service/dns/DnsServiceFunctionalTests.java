@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.service.dns;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.config.InstanceDnsConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.config.DnsRecordConfig;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;

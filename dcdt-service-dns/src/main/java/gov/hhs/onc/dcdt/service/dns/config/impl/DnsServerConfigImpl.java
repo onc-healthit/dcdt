@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.service.dns.config.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
-import gov.hhs.onc.dcdt.config.InstanceDnsConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import java.util.List;
 import javax.annotation.Nullable;

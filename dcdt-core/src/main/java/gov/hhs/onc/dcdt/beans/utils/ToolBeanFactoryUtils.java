@@ -67,6 +67,18 @@ public abstract class ToolBeanFactoryUtils {
 
     public final static Set<String> SCOPE_NAMES_BUILTIN = new HashSet<>(ToolArrayUtils.asList(BeanDefinition.SCOPE_SINGLETON, BeanDefinition.SCOPE_PROTOTYPE));
 
+    public static boolean isBeanAlias(BeanFactory beanFactory, String beanName) {
+        return !ArrayUtils.isEmpty(beanFactory.getAliases(beanName));
+    }
+
+    public static String getAliasedBeanName(BeanFactory beanFactory, String beanName) {
+        return ToolArrayUtils.getFirst(beanFactory.getAliases(beanName), beanName);
+    }
+
+    public static String[] getBeanAliases(BeanFactory beanFactory, String beanName) {
+        return ToolArrayUtils.removeFirst(beanFactory.getAliases(beanName));
+    }
+
     public static <T> List<T> createBeansOfType(ListableBeanFactory beanFactory, Class<T> beanClass, @Nullable Collection<?> beanCreationArgs) {
         return createBeansOfType(beanFactory, beanClass, ToolCollectionUtils.toArray(beanCreationArgs));
     }

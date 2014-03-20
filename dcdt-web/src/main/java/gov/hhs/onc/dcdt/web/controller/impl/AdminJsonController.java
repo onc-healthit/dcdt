@@ -1,9 +1,9 @@
 package gov.hhs.onc.dcdt.web.controller.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.config.InstanceConfig;
-import gov.hhs.onc.dcdt.config.InstanceConfigJsonDto;
-import gov.hhs.onc.dcdt.config.InstanceConfigRegistry;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfigJsonDto;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfigRegistry;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
 import gov.hhs.onc.dcdt.web.controller.JsonRequest;

@@ -59,6 +59,14 @@ public abstract class ToolDnsNameUtils {
         return null;
     }
 
+    public static Name toRelative(Name name) throws DnsNameException {
+        return toRelative(name, Name.root);
+    }
+
+    public static Name toRelative(Name name, Name originName) throws DnsNameException {
+        return name.relativize(originName);
+    }
+
     public static Name toAbsolute(Name name) throws DnsNameException {
         return name.isAbsolute() ? name : fromLabels(name, Name.root);
     }

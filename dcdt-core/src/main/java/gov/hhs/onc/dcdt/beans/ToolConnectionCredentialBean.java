@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import javax.annotation.Nullable;
 
 public interface ToolConnectionCredentialBean<T, U> extends ToolNamedBean {
+    public boolean getGenerateSecret();
+
+    public void setGenerateSecret(boolean genSecret);
+
     public boolean hasId();
 
     @JsonProperty("id")

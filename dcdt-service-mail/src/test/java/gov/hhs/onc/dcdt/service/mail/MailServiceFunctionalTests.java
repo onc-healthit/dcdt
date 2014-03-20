@@ -13,6 +13,14 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
         super(MailService.class);
     }
 
+    @Test
+    public void testSmtpServers() throws Exception {
+        // TEMP: dev
+        while (this.service.isRunning()) {
+            Thread.sleep(1000);
+        }
+    }
+
     @BeforeClass(dependsOnMethods = { "registerInstanceConfig" }, groups = { "dcdt.test.func.service.mail" })
     @Override
     public void startService() {
