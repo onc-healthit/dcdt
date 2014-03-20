@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.testcases.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
+import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.CertificateDiscoveryService;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseCertificateStep;
@@ -24,7 +25,13 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
         for (ToolTestcaseStep infoStep : certDiscoverySteps) {
             infoSteps.add(infoStep);
 
-            boolean successful = infoStep.execute(directAddr, prevStep);
+            boolean successful = false;
+
+            if (infoStep.getBindingType() != BindingType.ADDRESS || directAddr.getBindingType() != BindingType.DOMAIN) {
+                successful = infoStep.execute(directAddr, prevStep);
+                prevStep = infoStep;
+            }
+
             infoStep.setSuccessful(successful);
 
             switch (infoStep.getResultType()) {
@@ -48,8 +55,6 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
                 default:
                     break;
             }
-
-            prevStep = infoStep;
         }
 
         return infoSteps;

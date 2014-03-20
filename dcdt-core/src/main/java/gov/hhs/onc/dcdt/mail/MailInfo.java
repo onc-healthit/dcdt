@@ -1,57 +1,32 @@
 package gov.hhs.onc.dcdt.mail;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
+import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import javax.annotation.Nullable;
-import javax.mail.internet.MimeMessage;
-import org.springframework.context.MessageSourceAware;
+import javax.mail.MessagingException;
 
-public interface MailInfo extends MessageSourceAware, ToolBean {
-    public String getFromAddress();
-
-    public void setFromAddress(String fromAddr);
-
-    public String getToAddress();
-
-    public void setToAddress(String toAddr);
-
-    public String getSubject();
-
-    public void setSubject(String subj);
-
-    public boolean hasMessage();
+public interface MailInfo extends ToolBean {
+    public boolean hasFrom() throws MessagingException;
 
     @Nullable
-    public String getMessage();
+    public MailAddress getFrom() throws MessagingException;
 
-    public void setMessage(@Nullable String message);
-
-    public boolean hasEncryptedMessage();
+    public boolean hasTo() throws MessagingException;
 
     @Nullable
-    public MimeMessage getEncryptedMessage();
+    public MailAddress getTo() throws MessagingException;
 
-    public void setEncryptedMessage(@Nullable MimeMessage encryptedMsg);
-
-    public boolean hasDecryptedMessage();
+    public boolean hasEncryptedMessageHelper();
 
     @Nullable
-    public MimeMessage getDecryptedMessage();
+    public ToolMimeMessageHelper getEncryptedMessageHelper();
 
-    public void setDecryptedMessage(@Nullable MimeMessage decryptedMsg);
+    public void setEncryptedMessageHelper(@Nullable ToolMimeMessageHelper encryptedMsgHelper);
 
-    public boolean hasResult();
-
-    @Nullable
-    public DiscoveryTestcaseResult getResult();
-
-    public void setResult(@Nullable DiscoveryTestcaseResult result);
-
-    public boolean hasTestcase();
+    public boolean hasDecryptionErrorMessage();
 
     @Nullable
-    public DiscoveryTestcase getTestcase();
+    public String getDecryptionErrorMessage();
 
-    public void setTestcase(@Nullable DiscoveryTestcase testcase);
+    public void setDecryptionErrorMessage(@Nullable String decryptionErrorMsg);
 }

@@ -44,7 +44,7 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
             this.setPersonalPart(addrParts[0]);
         }
 
-        if (addrParts.length == 2) {
+        if (addrParts.length >= 2) {
             this.setLocalPart(addrParts[addrParts.length - 2]);
         }
 

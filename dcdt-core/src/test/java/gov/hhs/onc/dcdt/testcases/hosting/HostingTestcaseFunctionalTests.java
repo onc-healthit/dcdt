@@ -57,6 +57,12 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
     @Value("${dcdt.test.hosting.ldap.no.bound.direct.addr.1}")
     private MailAddress testLdapNoBoundDirectAddr1;
 
+    @Value("${dcdt.test.lookup.domain.1.name}")
+    private MailAddress testDnsDomainBoundDirectAddrDomain;
+
+    @Value("${dcdt.test.lookup.domain.2.name}")
+    private MailAddress testLdapDomainBoundDirectAddrDomain;
+
     @Value("${dcdt.test.hosting.dns.addr.bound.common.name.1}")
     private String testDnsAddrBoundCommonName1;
 
@@ -101,6 +107,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
         testHostingTestcase(hostingTestcase1, this.testDnsAddrBoundDirectAddr1, true, 0, this.testDnsAddrBoundCommonName1);
         testHostingTestcase(hostingTestcase1, this.testDnsAddrBoundDirectAddr2, true, 0, this.testDnsAddrBoundCommonName2);
         testHostingTestcase(hostingTestcase1, this.testDnsAddrBoundDirectAddr3, false, 2);
+        testHostingTestcase(hostingTestcase1, this.testDnsDomainBoundDirectAddrDomain, false, 1, this.testDnsDomainBoundCommonName1);
     }
 
     @Test
@@ -109,6 +116,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
         testHostingTestcase(hostingTestcase2, this.testDnsDomainBoundDirectAddr1, true, 0, this.testDnsDomainBoundCommonName1);
         testHostingTestcase(hostingTestcase2, this.testDnsAddrBoundDirectAddr1, false, 1, this.testDnsAddrBoundCommonName1);
         testHostingTestcase(hostingTestcase2, this.testDnsNoBoundDirectAddr1, false, 1);
+        testHostingTestcase(hostingTestcase2, this.testDnsDomainBoundDirectAddrDomain, true, 0, this.testDnsDomainBoundCommonName1);
     }
 
     @Test
@@ -118,11 +126,14 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
         testHostingTestcase(hostingTestcase3, this.testLdapAddrBoundDirectAddr2, true, 0, this.testLdapAddrBoundCommonName2);
         testHostingTestcase(hostingTestcase3, this.testLdapAddrBoundDirectAddr3, true, 0, this.testLdapAddrBoundCommonName3);
         testHostingTestcase(hostingTestcase3, this.testLdapAddrBoundDirectAddr4, true, 0, this.testLdapAddrBoundCommonName4);
+        testHostingTestcase(hostingTestcase3, this.testLdapDomainBoundDirectAddrDomain, false, 7, this.testLdapDomainBoundCommonName1);
     }
 
     @Test
     public void testHostingTestcase4() throws ToolTestcaseResultException {
-        testHostingTestcase("hostingTestcase4", this.testLdapDomainBoundDirectAddr1, true, 0, this.testLdapDomainBoundCommonName1);
+        String hostingTestcase4 = "hostingTestcase4";
+        testHostingTestcase(hostingTestcase4, this.testLdapDomainBoundDirectAddr1, true, 0, this.testLdapDomainBoundCommonName1);
+        testHostingTestcase(hostingTestcase4, this.testLdapDomainBoundDirectAddrDomain, true, 0, this.testLdapDomainBoundCommonName1);
     }
 
     @Test

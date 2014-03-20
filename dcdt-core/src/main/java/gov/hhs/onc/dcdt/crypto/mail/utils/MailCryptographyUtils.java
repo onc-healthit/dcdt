@@ -3,12 +3,9 @@ package gov.hhs.onc.dcdt.crypto.mail.utils;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
-import gov.hhs.onc.dcdt.crypto.mail.MimeMessageWrapper;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
-import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailContentTypeUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CertificateException;
@@ -16,11 +13,9 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
-import javax.mail.Address;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
 import javax.mail.Session;
-import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.apache.log4j.Logger;
@@ -88,21 +83,7 @@ public abstract class MailCryptographyUtils {
         }
     }
 
-    public static void parseMessageHeaders(MimeMessage mimeMsg, MailInfo mailInfo) throws MailCryptographyException {
-        try {
-            Address[] fromAddrs = mimeMsg.getFrom();
-            mailInfo.setFromAddress(((InternetAddress) fromAddrs[0]).getAddress());
-
-            Address[] toAddrs = mimeMsg.getAllRecipients();
-            mailInfo.setToAddress(((InternetAddress) toAddrs[0]).getAddress());
-
-            mailInfo.setSubject(mimeMsg.getSubject());
-        } catch (MessagingException e) {
-            throw new MailCryptographyException("Unable to parse headers from message.", e);
-        }
-    }
-
-    public static SMIMEEnveloped getEnvelopedMsg(MimeMessage mimeMsg) throws MailCryptographyException {
+    public static SMIMEEnveloped getEnvelopedMessage(MimeMessage mimeMsg) throws MailCryptographyException {
         try {
             return new SMIMEEnveloped(mimeMsg);
         } catch (CMSException | MessagingException e) {
@@ -111,52 +92,7 @@ public abstract class MailCryptographyUtils {
         }
     }
 
-    public static MimeMessage findMessagePart(Multipart msgMultiPart, MimeMessage origMimeMsg) throws MailCryptographyException {
-        try {
-            for (int a = 0; a < msgMultiPart.getCount(); a++) {
-                try {
-                    String contentTypeStr = msgMultiPart.getBodyPart(a).getContentType();
-
-                    try {
-                        if (!ToolMailContentTypeUtils.isSignature(MimeTypeUtils.parseMimeType(contentTypeStr))) {
-                            return createMimeMessage(msgMultiPart, origMimeMsg, a, contentTypeStr);
-                        }
-                    } catch (InvalidMimeTypeException e) {
-                        throw new MailCryptographyException(String.format("Unable to parse content type string (%s) into class=%s.", contentTypeStr,
-                            ToolClassUtils.getName(MimeType.class)));
-                    }
-                } catch (IOException e) {
-                    throw new MailCryptographyException(String.format("Unable to get message part (index=%d) body content.", a), e);
-                }
-            }
-        } catch (MessagingException e) {
-            throw new MailCryptographyException("Unable to get the number of message parts.", e);
-        }
-
-        return null;
-    }
-
-    public static MimeMessage createMimeMessage(Multipart msgMultiPart, MimeMessage origMimeMsg, int a, String contentType) throws IOException,
-        MessagingException {
-        Object msgPart;
-        msgPart = msgMultiPart.getBodyPart(a).getContent();
-        MimeMessageWrapper newMsg = new MimeMessageWrapper(origMimeMsg);
-
-        if (msgPart instanceof Multipart) {
-            newMsg.setContent((Multipart) msgPart);
-        } else {
-            newMsg.setContent(msgPart, contentType);
-        }
-
-        newMsg.setMessageId(origMimeMsg.getMessageID());
-        newMsg.saveChanges();
-
-        LOGGER.debug(String.format("Found message after decryption of email (%s).", ToolMailCryptographyStringUtils.messageHeaderInfoToString(origMimeMsg)));
-
-        return newMsg;
-    }
-
-    public static SMIMESigned findMailSignature(Multipart msgMultiPart) throws MailCryptographyException {
+    public static SMIMESigned getSignedMessageEntity(Multipart msgMultiPart) throws MailCryptographyException {
         String contentTypeStr = msgMultiPart.getContentType();
 
         try {
@@ -166,10 +102,18 @@ public abstract class MailCryptographyUtils {
                 try {
                     return new SMIMESigned((MimeMultipart) msgMultiPart);
                 } catch (CMSException | MessagingException e) {
-                    throw new MailCryptographyException("Unable to find mail signature.", e);
+                    String errorMsg =
+                        String.format("Unable to create signed message entity from multipart (class=%s) for content type %s",
+                            ToolClassUtils.getName(Multipart.class), contentTypeStr);
+                    LOGGER.debug(errorMsg);
+                    throw new MailCryptographyException(errorMsg, e);
                 }
             } else {
-                throw new MailCryptographyException("Unable to find detached mail signature for message.");
+                String errorMsg =
+                    String.format("Multipart (content type=%s) is not a multipart signature of content type %s or %s", contentTypeStr,
+                        MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG, MailContentTypes.MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG);
+                LOGGER.debug(errorMsg);
+                throw new MailCryptographyException(errorMsg);
             }
         } catch (InvalidMimeTypeException e) {
             throw new MailCryptographyException(String.format("Unable to parse content type string (%s) into class=%s.", contentTypeStr,

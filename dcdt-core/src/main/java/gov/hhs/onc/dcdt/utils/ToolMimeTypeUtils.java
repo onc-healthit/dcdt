@@ -114,7 +114,11 @@ public abstract class ToolMimeTypeUtils {
     }
 
     public static int compareTo(boolean includeParams, MimeType mimeType1, MimeType mimeType2) {
-        return (includeParams ? mimeType1 : forBaseType(mimeType1)).compareTo((includeParams ? mimeType2 : forBaseType(mimeType2)));
+        return (includeParams ? forParameters(mimeType1, mimeType2) : forBaseType(mimeType1)).compareTo((includeParams ? mimeType2 : forBaseType(mimeType2)));
+    }
+
+    public static MimeType forParameters(MimeType mimeType1, MimeType mimeType2) {
+        return new MimeType(mimeType1, mimeType2.getParameters());
     }
 
     public static MimeType forBaseType(MimeType mimeType) {
@@ -130,8 +134,9 @@ public abstract class ToolMimeTypeUtils {
     }
 
     public static boolean hasParameter(MimeType mimeType, String paramName, @Nullable Iterable<String> paramValues) {
-        return (hasParameters(mimeType) && ((paramValues != null) ? CollectionUtils.containsAny(mimeType.getParameters().entrySet(),
-            CollectionUtils.collect(paramValues, new MimeTypeParameterEntryTransformer(paramName))) : !StringUtils.isBlank(mimeType.getParameter(paramName))));
+        return (hasParameters(mimeType) && ((paramValues != null && paramValues.iterator().hasNext()) ? CollectionUtils.containsAny(mimeType.getParameters()
+            .entrySet(), CollectionUtils.collect(paramValues, new MimeTypeParameterEntryTransformer(paramName))) : !StringUtils.isBlank(mimeType
+            .getParameter(paramName))));
     }
 
     public static boolean hasParameters(MimeType mimeType) {
