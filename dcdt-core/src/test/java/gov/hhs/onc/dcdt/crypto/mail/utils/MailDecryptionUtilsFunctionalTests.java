@@ -37,7 +37,6 @@ import org.apache.commons.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MimeType;
-import org.springframework.util.MimeTypeUtils;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -62,13 +61,13 @@ public class MailDecryptionUtilsFunctionalTests extends AbstractToolFunctionalTe
     private MailAddress testToAddr;
 
     @Value("${dcdt.test.crypto.mail.type.multipart.signed}")
-    private String testMultipartSignedMimeTypeStr;
+    private MimeType testMultipartSignedMimeType;
 
     @Value("${dcdt.test.crypto.mail.type.pkcs7.mime.1}")
-    private String testPkcs7MimeContentTypeStr1;
+    private MimeType testPkcs7MimeContentType1;
 
     @Value("${dcdt.test.crypto.mail.type.pkcs7.mime.2}")
-    private String testPkcs7MimeContentTypeStr2;
+    private MimeType testPkcs7MimeContentType2;
 
     private DiscoveryTestcaseCredential testCred1 = new DiscoveryTestcaseCredentialImpl();
     private List<DiscoveryTestcase> testDiscoveryTestcases = new ArrayList<>();
@@ -181,17 +180,15 @@ public class MailDecryptionUtilsFunctionalTests extends AbstractToolFunctionalTe
 
     @Test
     public void testIsMultipartSignature() {
-        MimeType contentType = MimeTypeUtils.parseMimeType(this.testMultipartSignedMimeTypeStr);
-        Assert.assertEquals(ToolMimeTypeUtils.forBaseType(contentType), ToolMimeTypeUtils.forBaseType(MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG));
-        Assert.assertEquals(ToolMimeTypeUtils.compareTo(true, contentType, MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG), 0);
-        Assert.assertTrue(ToolMimeTypeUtils.hasParameter(contentType, MailContentTypes.MULTIPART_SIGNED_MSG_DIGEST_ALG_PARAM_NAME));
-        Assert.assertTrue(ToolMailContentTypeUtils.isMultipartSignature(contentType));
+        Assert.assertEquals(ToolMimeTypeUtils.forBaseType(this.testMultipartSignedMimeType),
+            ToolMimeTypeUtils.forBaseType(MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG));
+        Assert.assertEquals(ToolMimeTypeUtils.compareTo(true, this.testMultipartSignedMimeType, MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG), 0);
+        Assert.assertTrue(ToolMimeTypeUtils.hasParameter(this.testMultipartSignedMimeType, MailContentTypes.MULTIPART_SIGNED_MSG_DIGEST_ALG_PARAM_NAME));
+        Assert.assertTrue(ToolMailContentTypeUtils.isMultipartSignature(this.testMultipartSignedMimeType));
     }
 
     @Test
     public void testMimeTypeParamOrder() {
-        MimeType contentType1 = MimeTypeUtils.parseMimeType(this.testPkcs7MimeContentTypeStr1);
-        MimeType contentType2 = MimeTypeUtils.parseMimeType(this.testPkcs7MimeContentTypeStr2);
-        Assert.assertEquals(ToolMimeTypeUtils.compareTo(true, contentType1, contentType2), 0);
+        Assert.assertEquals(ToolMimeTypeUtils.compareTo(true, this.testPkcs7MimeContentType1, this.testPkcs7MimeContentType2), 0);
     }
 }
