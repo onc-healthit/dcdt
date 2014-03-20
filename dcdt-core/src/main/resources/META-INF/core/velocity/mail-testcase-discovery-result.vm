@@ -4,11 +4,60 @@
 #define($head)
 #includeStyle("include/mail-testcase-discovery-result.css")
 #end
+
+#set ( $credExpectedMsg = "Certificate Expected")
+#set ( $credFoundMsg = "Certificate Found")
+
+#macro ( credDescription $credMsg )
+    #if($credMsg == $credExpectedMsg)
+        #set( $cred = $discoveryTestcaseResult.credentialExpected)
+    #else
+        #set( $cred = $discoveryTestcaseResult.credentialFound)
+    #end
+
+    <li><strong>$credMsg</strong>:
+        #if($cred)
+            <ul>
+                <li><strong>Name</strong>: $cred.name</li>
+                <li><strong>Valid</strong>: $cred.valid</li>
+                <li><strong>Binding Type</strong>: $cred.bindingType</li>
+                <li><strong>Location</strong>:/li>
+                    #set ($loc = $cred.location)
+                    <ul>
+                        <li><strong>Type</strong>: $loc.type</li>
+                        <li><strong>Mail Address</strong>: $loc.mailAddress.toAddress()</li>
+                        #if($loc.hasLdapConfig())
+                            #set( $ldapConfig = $loc.ldapConfig)
+                            <li><strong>Host</strong>: $ldapConfig.host</li>
+                            <li><strong>Port</strong>: $ldapConfig.port</li>
+                        #end
+                    </ul>
+                <li><strong>Description</strong>: $cred.description.text/li>
+            </ul>
+        #else
+            None
+        #end
+    </li>
+    <br/>
+#end
+
 #define($body)
-    <h1>Discovery testcase $discoveryTestcase.nameDisplay #if($discoveryTestcaseResult.resultInfo.successful)passed#{else}failed#{end}.</h1>
+    <h1>Discovery testcase $discoveryTestcase.nameDisplay #if($discoveryTestcaseResult.successful)passed#{else}failed#{end}.</h1>
     <h2>Details</h2>
     <ul>
-        <li><strong>To</strong>: $discoveryTestcase.mailAddress</li>
+        <li><strong>To</strong>: $discoveryTestcase.mailAddress</li><br/>
+
+        #credDescription($credFoundMsg)
+
+        #if($discoveryTestcaseResult.successful)
+            Certificate expected is the same as certificate found.<br/>
+        #else
+            #credDescription($credExpectedMsg)
+        #end
+
+        #if($discoveryTestcaseResult.hasMailInfo() && $discoveryTestcaseResult.mailInfo.hasDecryptionErrorMessage())
+            <li><strong>Decryption error messages</strong>: $discoveryTestcaseResult.mailInfo.decryptionErrorMessage</li>
+        #end
     </ul>
 #end
 #parse("mail.vm")

@@ -1,15 +1,17 @@
 package gov.hhs.onc.dcdt.testcases.discovery.results.impl;
 
+import gov.hhs.onc.dcdt.mail.MailInfo;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResult;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 
 public class DiscoveryTestcaseResultImpl extends AbstractToolTestcaseResult implements DiscoveryTestcaseResult {
     private DiscoveryTestcaseCredential credExpected;
     private DiscoveryTestcaseCredential credFound;
-    private String decryptionErrorMsg;
+    private MailInfo mailInfo;
+    private DiscoveryTestcase testcase;
 
     @Override
     public boolean hasCredentialExpected() {
@@ -44,18 +46,34 @@ public class DiscoveryTestcaseResultImpl extends AbstractToolTestcaseResult impl
     }
 
     @Override
-    public boolean hasDecryptionErrorMessage() {
-        return !StringUtils.isBlank(this.decryptionErrorMsg);
+    public boolean hasMailInfo() {
+        return this.mailInfo != null;
     }
 
     @Nullable
     @Override
-    public String getDecryptionErrorMessage() {
-        return this.decryptionErrorMsg;
+    public MailInfo getMailInfo() {
+        return this.mailInfo;
     }
 
     @Override
-    public void setDecryptionErrorMessage(@Nullable String decryptionErrorMsg) {
-        this.decryptionErrorMsg = decryptionErrorMsg;
+    public void setMailInfo(@Nullable MailInfo mailInfo) {
+        this.mailInfo = mailInfo;
+    }
+
+    @Override
+    public boolean hasTestcase() {
+        return this.testcase != null;
+    }
+
+    @Nullable
+    @Override
+    public DiscoveryTestcase getTestcase() {
+        return this.testcase;
+    }
+
+    @Override
+    public void setTestcase(@Nullable DiscoveryTestcase testcase) {
+        this.testcase = testcase;
     }
 }

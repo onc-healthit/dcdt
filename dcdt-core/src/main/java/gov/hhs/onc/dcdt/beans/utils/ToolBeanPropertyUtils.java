@@ -228,12 +228,8 @@ public abstract class ToolBeanPropertyUtils {
     }
 
     public static boolean isReadable(@Nullable BeanWrapper beanWrapper, String beanPropName, Class<?> beanPropValueClass) {
-        if (beanWrapper != null) {
-            Class<?> beanPropClass = beanWrapper.getPropertyType(beanPropName);
-            return beanWrapper.isReadableProperty(beanPropName) && (beanPropClass.isPrimitive() || beanPropValueClass.isAssignableFrom(beanPropClass));
-        }
-
-        return false;
+        return beanWrapper != null && beanWrapper.isReadableProperty(beanPropName)
+            && ToolClassUtils.isAssignable(beanWrapper.getPropertyType(beanPropName), beanPropValueClass);
     }
 
     public static boolean isWriteable(@Nullable BeanWrapper beanWrapper, String beanPropName) {
@@ -241,11 +237,7 @@ public abstract class ToolBeanPropertyUtils {
     }
 
     public static boolean isWriteable(@Nullable BeanWrapper beanWrapper, String beanPropName, Class<?> beanPropValueClass) {
-        if (beanWrapper != null) {
-            Class<?> beanPropClass = beanWrapper.getPropertyType(beanPropName);
-            return beanWrapper.isWritableProperty(beanPropName) && (beanPropClass.isPrimitive() || beanPropValueClass.isAssignableFrom(beanPropClass));
-        }
-
-        return false;
+        return beanWrapper != null && beanWrapper.isWritableProperty(beanPropName)
+            && ToolClassUtils.isAssignable(beanWrapper.getPropertyType(beanPropName), beanPropValueClass);
     }
 }

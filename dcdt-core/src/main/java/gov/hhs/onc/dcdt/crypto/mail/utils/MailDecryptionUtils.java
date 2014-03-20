@@ -1,13 +1,12 @@
-package gov.hhs.onc.dcdt.crypto.mail.decrypt;
+package gov.hhs.onc.dcdt.crypto.mail.utils;
 
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
-import gov.hhs.onc.dcdt.crypto.mail.utils.ToolMailCryptographyStringUtils;
+import gov.hhs.onc.dcdt.crypto.mail.MailDecryptionException;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
-import gov.hhs.onc.dcdt.crypto.mail.utils.MailCryptographyUtils;
-import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
 import gov.hhs.onc.dcdt.testcases.utils.ToolTestcaseCertificateUtils;
@@ -31,8 +30,8 @@ import org.bouncycastle.mail.smime.SMIMEEnveloped;
 import org.bouncycastle.mail.smime.SMIMEException;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 
-public abstract class MailDecryptor {
-    private final static Logger LOGGER = Logger.getLogger(MailDecryptor.class);
+public abstract class MailDecryptionUtils {
+    private final static Logger LOGGER = Logger.getLogger(MailDecryptionUtils.class);
 
     public static MimeMultipart decryptMail(MimeMessage mimeMsg, CredentialInfo credentialInfo) throws MailCryptographyException {
         // noinspection ConstantConditions
@@ -41,7 +40,7 @@ public abstract class MailDecryptor {
 
     @SuppressWarnings("unchecked")
     public static MimeMultipart decryptMail(MimeMessage mimeMsg, PrivateKey key, X509Certificate cert) throws MailCryptographyException {
-        SMIMEEnveloped envelopedMsg = MailCryptographyUtils.getEnvelopedMsg(mimeMsg);
+        SMIMEEnveloped envelopedMsg = MailCryptographyUtils.getEnvelopedMessage(mimeMsg);
         KeyTransRecipientId recipientId = new JceKeyTransRecipientId(cert);
         KeyTransRecipientInformation recipient = MailCryptographyUtils.getRecipients(envelopedMsg).get(recipientId.getSerialNumber());
 
@@ -80,23 +79,22 @@ public abstract class MailDecryptor {
         }
     }
 
-    public static boolean decryptMail(MailInfo mailInfo, ToolStrBuilder decryptionErrorBuilder, MimeMessage origMimeMessage, DiscoveryTestcaseCredential cred,
-        Set<CertificateValidator> certValidators) {
+    public static boolean decryptMail(MailInfo mailInfo, ToolStrBuilder decryptionErrorBuilder, DiscoveryTestcaseCredential cred,
+        Set<CertificateValidator> certValidators) throws MessagingException {
         CredentialInfo credInfo = cred.getCredentialInfo();
 
         if (credInfo != null) {
             MimeMultipart multipartMsg = null;
 
             try {
-                multipartMsg = MailDecryptor.decryptMail(origMimeMessage, credInfo);
+                // noinspection ConstantConditions
+                multipartMsg = decryptMail(mailInfo.getEncryptedMessageHelper().getMimeMessage(), credInfo);
             } catch (MailCryptographyException e) {
                 decryptionErrorBuilder.appendWithDelimiter(e.getMessage(), StringUtils.LF);
             }
 
             if (multipartMsg != null) {
-                // noinspection ConstantConditions
-                mailInfo.getResult().setCredentialFound(cred);
-                processDecryptedMessage(mailInfo, multipartMsg, decryptionErrorBuilder, certValidators);
+                processMessageSignature(mailInfo.getFrom(), multipartMsg, decryptionErrorBuilder, certValidators);
                 return true;
             }
         }
@@ -104,22 +102,11 @@ public abstract class MailDecryptor {
         return false;
     }
 
-    public static void processDecryptedMessage(MailInfo mailInfo, MimeMultipart multipartMsg, ToolStrBuilder decryptionErrorBuilder,
+    public static void processMessageSignature(MailAddress mailAddr, MimeMultipart multipartMsg, ToolStrBuilder decryptionErrorBuilder,
         Set<CertificateValidator> certValidators) {
-        MimeMessage decryptedMsg = null;
-
         try {
-            decryptedMsg = MailCryptographyUtils.findMessagePart(multipartMsg, mailInfo.getEncryptedMessage());
-            mailInfo.setDecryptedMessage(decryptedMsg);
-        } catch (MailCryptographyException e) {
-            decryptionErrorBuilder.appendWithDelimiter(e.getMessage(), StringUtils.LF);
-        }
-        mailInfo.setDecryptedMessage(decryptedMsg);
-
-        try {
-            CertificateInfo certInfo = MailCryptographyUtils.validateSignature(MailCryptographyUtils.findMailSignature(multipartMsg));
-            ToolTestcaseCertificateResultType certStatus =
-                ToolTestcaseCertificateUtils.validateCertificate(certInfo, new MailAddressImpl(mailInfo.getFromAddress()), certValidators);
+            CertificateInfo certInfo = MailCryptographyUtils.validateSignature(MailCryptographyUtils.getSignedMessageEntity(multipartMsg));
+            ToolTestcaseCertificateResultType certStatus = ToolTestcaseCertificateUtils.validateCertificate(certInfo, mailAddr, certValidators);
 
             if (certStatus != ToolTestcaseCertificateResultType.VALID_CERT) {
                 decryptionErrorBuilder.appendWithDelimiter(String.format("Signer certificate in message signature was invalid (error: %s).", certStatus),

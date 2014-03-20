@@ -79,7 +79,8 @@
     <beans:bean id="certValidIntervalValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateValidIntervalValidator" parent="certValidator"
         p:errorCode="EXPIRED_CERT"/>
     <beans:bean id="certSubjValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectValidator" parent="certValidator"
-        p:errorCode="INVALID_SUBJ_DN"/>
+        p:errorCode="INVALID_SUBJ_DN"
+        p:optional="true"/>
     <beans:bean id="certSubjAltNamesValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectAltNamesValidator" parent="certValidator"
         p:errorCode="INVALID_SUBJ_ALT_NAME"
         p:optional="true"/>

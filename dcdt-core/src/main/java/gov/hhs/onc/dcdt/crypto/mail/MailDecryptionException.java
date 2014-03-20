@@ -1,6 +1,4 @@
-package gov.hhs.onc.dcdt.crypto.mail.decrypt;
-
-import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
+package gov.hhs.onc.dcdt.crypto.mail;
 
 public class MailDecryptionException extends MailCryptographyException {
     private final static long serialVersionUID = 0L;
