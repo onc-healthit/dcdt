@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;
 import gov.hhs.onc.dcdt.convert.ConvertsJson;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,6 @@ public class MimeTypeConverter extends AbstractToolConverter {
     @Nullable
     @Override
     protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
-        return sourceType.isAssignableTo(TYPE_DESC_MIME_TYPE) ? source.toString() : MimeTypeUtils.parseMimeType((String) source);
+        return sourceType.isAssignableTo(TYPE_DESC_MIME_TYPE) ? Objects.toString(source) : MimeTypeUtils.parseMimeType((String) source);
     }
 }
