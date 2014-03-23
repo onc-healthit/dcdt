@@ -81,6 +81,16 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
         this(new MimeMessage(mailSession), MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, mailEnc);
     }
 
+    public ToolMimeMessageHelper(MimeMessage mimeMsg) throws IOException, MessagingException {
+        this(mimeMsg, MimeMessageHelper.MULTIPART_MODE_NO);
+
+        this.initializeMimeMultiparts();
+    }
+
+    public ToolMimeMessageHelper(MimeMessage mimeMsg, int multipartMode) throws MessagingException {
+        super(mimeMsg, multipartMode);
+    }
+
     public ToolMimeMessageHelper(MimeMessage mimeMsg, Charset mailEnc) throws IOException, MessagingException {
         this(mimeMsg, MimeMessageHelper.MULTIPART_MODE_NO, mailEnc);
 
@@ -153,7 +163,7 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
 
             for (MimeAttachmentResource attachment : attachments) {
                 this.addAttachment((attachmentFilename = attachment.getFilename()), attachment, Objects.toString(attachment.getContentType(), null));
-                
+
                 if (attachment.hasDescription()) {
                     // noinspection ConstantConditions
                     this.getAttachmentPart(attachmentFilename).setDescription(attachment.getDescription());

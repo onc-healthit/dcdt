@@ -6,14 +6,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
-import javax.mail.Address;
-import javax.mail.Message.RecipientType;
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
@@ -49,7 +43,7 @@ public abstract class ToolMailCryptographyStringUtils {
     public static String appendAttributes(ToolStrBuilder builder, AttributeTable attrTable) {
         Hashtable<ASN1ObjectIdentifier, ASN1Encodable> attrHashTable = (Hashtable<ASN1ObjectIdentifier, ASN1Encodable>) attrTable.toHashtable();
 
-        for(Map.Entry<ASN1ObjectIdentifier, ASN1Encodable> entry : attrHashTable.entrySet()) {
+        for (Map.Entry<ASN1ObjectIdentifier, ASN1Encodable> entry : attrHashTable.entrySet()) {
             appendDelimiter(builder);
             builder.append(entry.getKey().getId());
             builder.append("=");
@@ -73,31 +67,6 @@ public abstract class ToolMailCryptographyStringUtils {
         }
 
         return builder.toString();
-    }
-
-    public static String messageHeaderInfoToString(MimeMessage msg) {
-        ToolStrBuilder builder = new ToolStrBuilder();
-
-        try {
-            appendMessageInfo(builder, "from", addressesToString(msg.getFrom()), true);
-            appendMessageInfo(builder, "to", addressesToString(msg.getRecipients(RecipientType.TO)), true);
-            builder.append("subject=");
-            builder.append(msg.getSubject());
-        } catch (MessagingException ignored) {
-        }
-
-        return builder.toString();
-    }
-
-    public static String addressesToString(Address[] addresses) {
-        if (ArrayUtils.isEmpty(addresses)) {
-            return StringUtils.EMPTY;
-        }
-
-        ToolStrBuilder addrStrBuilder = new ToolStrBuilder();
-        addrStrBuilder.appendWithDelimiters(addresses, DELIM_ITEM);
-
-        return addrStrBuilder.build();
     }
 
     public static String serialNumToString(BigInteger serialNum) {

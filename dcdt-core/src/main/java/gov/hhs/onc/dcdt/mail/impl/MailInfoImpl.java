@@ -1,16 +1,11 @@
 package gov.hhs.onc.dcdt.mail.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailInfo;
-import gov.hhs.onc.dcdt.mail.utils.ToolMailResultStringUtils;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultInfo;
-import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
-import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import javax.annotation.Nullable;
-import javax.mail.internet.MimeMessage;
+import javax.mail.MessagingException;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -19,159 +14,60 @@ import org.springframework.stereotype.Component;
 @Lazy
 @Scope("prototype")
 public class MailInfoImpl extends AbstractToolBean implements MailInfo {
-    private String fromAddr;
-    private String toAddr;
-    private String subj;
-    private String message;
-    private MimeMessage encryptedMsg;
-    private MimeMessage decryptedMsg;
-    private DiscoveryTestcaseResultInfo resultInfo;
-    private DiscoveryTestcase testcase;
-    private MessageSource msgSource;
+    private ToolMimeMessageHelper encryptedMsgHelper;
+    private String decryptionErrorMsg;
 
     @Override
-    public String getFromAddress() {
-        return this.fromAddr;
-    }
-
-    @Override
-    public void setFromAddress(String fromAddr) {
-        this.fromAddr = fromAddr;
-    }
-
-    @Override
-    public String getToAddress() {
-        return this.toAddr;
-    }
-
-    @Override
-    public void setToAddress(String toAddr) {
-        this.toAddr = toAddr;
-    }
-
-    @Override
-    public String getSubject() {
-        return this.subj;
-    }
-
-    @Override
-    public void setSubject(String subj) {
-        this.subj = subj;
-    }
-
-    @Override
-    public boolean hasMessage() {
-        return !StringUtils.isBlank(this.message);
+    public boolean hasFrom() throws MessagingException {
+        return this.getFrom() != null;
     }
 
     @Nullable
     @Override
-    public String getMessage() {
-        return this.message;
+    public MailAddress getFrom() throws MessagingException {
+        return this.hasEncryptedMessageHelper() ? this.encryptedMsgHelper.getFrom() : null;
     }
 
     @Override
-    public void setMessage(@Nullable String message) {
-        this.message = message;
-    }
-
-    @Override
-    public boolean hasEncryptedMessage() {
-        return this.encryptedMsg != null;
+    public boolean hasTo() throws MessagingException {
+        return this.getTo() != null;
     }
 
     @Nullable
     @Override
-    public MimeMessage getEncryptedMessage() {
-        return this.encryptedMsg;
+    public MailAddress getTo() throws MessagingException {
+        return this.hasEncryptedMessageHelper() ? this.encryptedMsgHelper.getTo() : null;
     }
 
     @Override
-    public void setEncryptedMessage(@Nullable MimeMessage encryptedMsg) {
-        this.encryptedMsg = encryptedMsg;
-    }
-
-    @Override
-    public boolean hasDecryptedMessage() {
-        return this.decryptedMsg != null;
+    public boolean hasEncryptedMessageHelper() {
+        return this.encryptedMsgHelper != null;
     }
 
     @Nullable
     @Override
-    public MimeMessage getDecryptedMessage() {
-        return this.decryptedMsg;
+    public ToolMimeMessageHelper getEncryptedMessageHelper() {
+        return this.encryptedMsgHelper;
     }
 
     @Override
-    public void setDecryptedMessage(@Nullable MimeMessage decryptedMsg) {
-        this.decryptedMsg = decryptedMsg;
+    public void setEncryptedMessageHelper(@Nullable ToolMimeMessageHelper encryptedMsgHelper) {
+        this.encryptedMsgHelper = encryptedMsgHelper;
     }
 
     @Override
-    public boolean hasResultInfo() {
-        return this.resultInfo != null;
-    }
-
-    @Override
-    public DiscoveryTestcaseResultInfo getResultInfo() {
-        return this.resultInfo;
-    }
-
-    @Override
-    public void setResultInfo(DiscoveryTestcaseResultInfo resultInfo) {
-        this.resultInfo = resultInfo;
-    }
-
-    @Override
-    public boolean hasTestcase() {
-        return this.testcase != null;
+    public boolean hasDecryptionErrorMessage() {
+        return !StringUtils.isBlank(this.decryptionErrorMsg);
     }
 
     @Nullable
     @Override
-    public DiscoveryTestcase getTestcase() {
-        return this.testcase;
+    public String getDecryptionErrorMessage() {
+        return this.decryptionErrorMsg;
     }
 
     @Override
-    public void setTestcase(@Nullable DiscoveryTestcase testcase) {
-        this.testcase = testcase;
-    }
-
-    @Override
-    public String toString() {
-        ToolStrBuilder resultStrBuilder = new ToolStrBuilder();
-
-        if (hasTestcase()) {
-            resultStrBuilder.appendWithDelimiter(
-                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.result.title.msg", new Object[] { this.testcase.getNameDisplay() }),
-                StringUtils.LF);
-            resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
-        }
-
-        if (hasResultInfo()) {
-            resultStrBuilder.appendWithDelimiter(
-                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.result.status.msg", this.resultInfo.isSuccessful()), StringUtils.LF);
-            resultStrBuilder.appendWithDelimiter(StringUtils.SPACE, StringUtils.LF);
-
-            ToolMailResultStringUtils.appendCredentialInfo(this.resultInfo, resultStrBuilder, this.msgSource);
-
-            if (this.resultInfo.hasDecryptionErrorMessage()) {
-                ToolMailResultStringUtils.appendDecryptionErrorMessage(resultStrBuilder, this.resultInfo.getDecryptionErrorMessage(), this.msgSource);
-            }
-
-            if (this.hasDecryptedMessage()) {
-                ToolMailResultStringUtils.appendDecryptedMessage(resultStrBuilder, this.decryptedMsg, this.msgSource);
-            }
-        } else {
-            resultStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.result.noResults.msg"), StringUtils.LF);
-        }
-
-        return resultStrBuilder.build();
-    }
-
-    @Override
-    public void setMessageSource(MessageSource messageSource) {
-        this.msgSource = messageSource;
+    public void setDecryptionErrorMessage(@Nullable String decryptionErrorMsg) {
+        this.decryptionErrorMsg = decryptionErrorMsg;
     }
 }

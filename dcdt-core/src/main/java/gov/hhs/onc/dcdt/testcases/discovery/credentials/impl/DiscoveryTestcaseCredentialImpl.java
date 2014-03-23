@@ -13,8 +13,6 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialType;
-import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
-import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import javax.annotation.Nullable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -27,11 +25,9 @@ import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Target;
-import org.springframework.context.MessageSource;
 
 @Entity(name = "discovery_testcase_cred")
 @JsonTypeName("discoveryTestcaseCred")
@@ -45,7 +41,6 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     private DiscoveryTestcaseCredentialLocation loc;
     private DiscoveryTestcaseCredentialType type;
     private boolean valid = true;
-    private MessageSource msgSource;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -58,39 +53,6 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
             // noinspection ConstantConditions
             credKeyInfo.setPublicKey(credCertInfo.getCertificate().getPublicKey());
         }
-    }
-
-    @Override
-    public String toString() {
-        ToolStrBuilder credStrBuilder = new ToolStrBuilder();
-
-        credStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.name.msg", new Object[] { this.name }),
-            StringUtils.LF);
-        credStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.valid.msg", this.valid), StringUtils.LF);
-        credStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.bindingType.msg", this.bindingType),
-            StringUtils.LF);
-        credStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.location.msg"), StringUtils.LF);
-        credStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.locationType.msg", this.loc.getType()),
-            StringUtils.LF);
-        // noinspection ConstantConditions
-        credStrBuilder.appendWithDelimiter(
-            ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.mailAddr.msg", new Object[] { this.loc.getMailAddress().toAddress() }),
-            StringUtils.LF);
-
-        if (this.loc.hasLdapConfig()) {
-            InstanceLdapConfig ldapConfig = this.loc.getLdapConfig();
-            // noinspection ConstantConditions
-            credStrBuilder.appendWithDelimiter(
-                ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.host.msg", new Object[] { ldapConfig.getHost().toString() }),
-                StringUtils.LF);
-            credStrBuilder.appendWithDelimiter(ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.port.msg", ldapConfig.getPort()),
-                StringUtils.LF);
-        }
-
-        credStrBuilder.appendWithDelimiter(
-            ToolMessageUtils.getMessage(this.msgSource, "dcdt.testcase.discovery.cred.desc.msg", new Object[] { this.desc.getText() }), StringUtils.LF);
-
-        return credStrBuilder.build();
     }
 
     @Override
@@ -235,10 +197,5 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     @Override
     public void setValid(boolean valid) {
         this.valid = valid;
-    }
-
-    @Override
-    public void setMessageSource(MessageSource messageSource) {
-        this.msgSource = messageSource;
     }
 }

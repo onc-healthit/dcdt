@@ -3,9 +3,7 @@ package gov.hhs.onc.dcdt.testcases.impl;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultConfig;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultInfo;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseConfig;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -13,12 +11,12 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 @MappedSuperclass
-public abstract class AbstractToolTestcase<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo, V extends ToolTestcaseDescription, W extends ToolTestcaseResult<T, U>>
-    extends AbstractToolNamedBean implements ToolTestcase<T, U, V, W> {
-    protected V desc;
+public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseConfig> extends AbstractToolNamedBean implements
+    ToolTestcase<T, U> {
+    protected T desc;
     protected boolean neg;
     protected boolean optional;
-    protected W result;
+    protected U config;
 
     @Override
     public boolean hasDescription() {
@@ -28,12 +26,12 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseResultConfig, U
     @Nullable
     @Override
     @Transient
-    public V getDescription() {
+    public T getDescription() {
         return this.desc;
     }
 
     @Override
-    public void setDescription(@Nullable V desc) {
+    public void setDescription(@Nullable T desc) {
         this.desc = desc;
     }
 
@@ -68,19 +66,19 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseResultConfig, U
     }
 
     @Override
-    public boolean hasResult() {
-        return this.result != null;
+    public boolean hasConfig() {
+        return this.config != null;
     }
 
     @Override
     @Nullable
     @Transient
-    public W getResult() {
-        return this.result;
+    public U getConfig() {
+        return this.config;
     }
 
     @Override
-    public void setResult(@Nullable W result) {
-        this.result = result;
+    public void setConfig(@Nullable U config) {
+        this.config = config;
     }
 }
