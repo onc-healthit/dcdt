@@ -60,6 +60,10 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
+    <logger name="gov.hhs.onc.dcdt.mail.impl.LoggingMailTransportListener" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
     <logger name="org.apache" level="info" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>

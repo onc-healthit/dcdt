@@ -2,8 +2,10 @@ package gov.hhs.onc.dcdt.service.mail.james.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.service.mail.james.MailRepositoryProtocol;
 import gov.hhs.onc.dcdt.service.mail.james.ToolMailRepository;
 import gov.hhs.onc.dcdt.service.mail.james.ToolMailRepositoryStore;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +19,8 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 public class ToolMailRepositoryStoreImpl extends AbstractToolBean implements ToolMailRepositoryStore {
     private AbstractApplicationContext appContext;
-    private Map<String, String> repoProtocolBeanNameMap = new HashMap<>();
+    private MailRepositoryProtocol defaultRepoProtocol;
+    private Map<MailRepositoryProtocol, String> repoProtocolBeanNames = new HashMap<>();
     private Map<String, ToolMailRepository> repoMap = new HashMap<>();
 
     @Override
@@ -27,16 +30,24 @@ public class ToolMailRepositoryStoreImpl extends AbstractToolBean implements Too
         }
 
         String[] repoUrlStrParts = StringUtils.split(repoUrlStr, ToolResourceUtils.DELIM_URL_PREFIX, 2);
+        MailRepositoryProtocol repoProtocol;
 
-        if (repoUrlStrParts.length != 2) {
-            throw new MailRepositoryStoreException(String.format("James mail repository URL string does not contain a prefix: %s", repoUrlStr));
-        } else if (!this.repoProtocolBeanNameMap.containsKey(repoUrlStrParts[0])) {
-            throw new MailRepositoryStoreException(String.format("Unknown James mail repository URL string prefix: %s", repoUrlStrParts[0]));
+        if (repoUrlStrParts.length == 2) {
+            try {
+                repoProtocol = MailRepositoryProtocol.valueOf(StringUtils.upperCase(repoUrlStrParts[0]));
+            } catch (IllegalArgumentException e) {
+                throw new MailRepositoryStoreException(String.format("Unknown James mail repository protocol: %s", repoUrlStrParts[0]));
+            }
+        } else {
+            repoProtocol = this.defaultRepoProtocol;
         }
 
-        ToolMailRepository repo =
-            ToolBeanFactoryUtils.createBean(this.appContext, this.repoProtocolBeanNameMap.get(repoUrlStrParts[0]), ToolMailRepository.class);
-        repo.setName(repoUrlStrParts[1]);
+        if (!this.repoProtocolBeanNames.containsKey(repoProtocol)) {
+            throw new MailRepositoryStoreException(String.format("Unknown James mail repository protocol: %s", repoProtocol));
+        }
+
+        ToolMailRepository repo = ToolBeanFactoryUtils.createBean(this.appContext, this.repoProtocolBeanNames.get(repoProtocol), ToolMailRepository.class);
+        repo.setName(ToolArrayUtils.getLast(repoUrlStrParts));
 
         this.repoMap.put(repoUrlStr, repo);
 
@@ -54,13 +65,23 @@ public class ToolMailRepositoryStoreImpl extends AbstractToolBean implements Too
     }
 
     @Override
-    public Map<String, String> getRepositoryProtocolBeanNameMap() {
-        return this.repoProtocolBeanNameMap;
+    public MailRepositoryProtocol getDefaultRepositoryProtocol() {
+        return this.defaultRepoProtocol;
     }
 
     @Override
-    public void setRepositoryProtocolBeanNameMap(Map<String, String> repoProtocolBeanNameMap) {
-        this.repoProtocolBeanNameMap.clear();
-        this.repoProtocolBeanNameMap.putAll(repoProtocolBeanNameMap);
+    public void setDefaultRepositoryProtocol(MailRepositoryProtocol defaultRepoProtocol) {
+        this.defaultRepoProtocol = defaultRepoProtocol;
+    }
+
+    @Override
+    public Map<MailRepositoryProtocol, String> getRepositoryProtocolBeanNames() {
+        return this.repoProtocolBeanNames;
+    }
+
+    @Override
+    public void setRepositoryProtocolBeanNames(Map<MailRepositoryProtocol, String> repoProtocolBeanNames) {
+        this.repoProtocolBeanNames.clear();
+        this.repoProtocolBeanNames.putAll(repoProtocolBeanNames);
     }
 }

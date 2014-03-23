@@ -25,7 +25,7 @@ public class LoggingMailTransportListener extends AbstractMailTransportListener 
     protected void processMessageEventInternal(MailTransportEventType eventType, TransportEvent event, ToolMimeMessageHelper mimeMsgHelper) throws Exception {
         switch (eventType) {
             case MESSAGE_DELIVERED:
-                LOGGER.debug(String.format("Delivered (sentAddrs=[%s]) mail message:\nheaders=\n%s\ntext=\n%s\n",
+                LOGGER.trace(String.format("Delivered (sentAddrs=[%s]) mail message:\nheaders=\n%s\ntext=\n%s\n",
                     ToolStringUtils.joinDelimit(event.getValidSentAddresses(), ", "), ToolStringUtils.joinLines(mimeMsgHelper.getHeaderLines()),
                     mimeMsgHelper.getText()));
                 break;

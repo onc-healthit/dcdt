@@ -122,27 +122,14 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
         Map<MimeType, MimePart> partMap = new TreeMap<>((matchParams ? MimeTypeComparator.INSTANCE : MimeTypeComparator.INSTANCE_BASE_TYPE));
 
         for (MimePart part : parts) {
-            partMap.put(MimeTypeUtils.parseMimeType(part.getContentType()), part);
+            partMap.put(getContentType(part), part);
         }
 
         return partMap;
     }
 
-    private void initializeMimeMultiparts() throws IOException, MessagingException {
-        MimeMessage mimeMsg = this.getMimeMessage();
-
-        if (!ToolMimeTypeUtils.equals(false, MimeTypeUtils.parseMimeType(mimeMsg.getContentType()), MailContentTypes.MULTIPART_MIXED)) {
-            return;
-        }
-
-        MimeMultipart rootMimeMultipart = ((MimeMultipart) this.getMimeMessage().getContent());
-        this.setMimeMultiparts(rootMimeMultipart, null);
-
-        Map<MimeType, MimePart> rootPartMap = this.mapRootParts();
-
-        if (rootPartMap.containsKey(MailContentTypes.MULTIPART_RELATED)) {
-            this.setMimeMultiparts(rootMimeMultipart, ((MimeMultipart) rootPartMap.get(MailContentTypes.MULTIPART_RELATED).getContent()));
-        }
+    public static MimeType getContentType(MimePart mimePart) throws MessagingException {
+        return MimeTypeUtils.parseMimeType(mimePart.getContentType());
     }
 
     public boolean hasAttachments() throws MessagingException {
@@ -287,5 +274,24 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
 
     public void setTo(@Nullable MailAddress to) throws MessagingException {
         this.getMimeMessage().setRecipient(RecipientType.TO, ((to != null) ? to.toInternetAddress() : null));
+    }
+
+    public MimeType getContentType() throws MessagingException {
+        return getContentType(this.getMimeMessage());
+    }
+
+    private void initializeMimeMultiparts() throws IOException, MessagingException {
+        if (!ToolMimeTypeUtils.equals(false, this.getContentType(), MailContentTypes.MULTIPART_MIXED)) {
+            return;
+        }
+
+        MimeMultipart rootMimeMultipart = ((MimeMultipart) this.getMimeMessage().getContent());
+        this.setMimeMultiparts(rootMimeMultipart, null);
+
+        Map<MimeType, MimePart> rootPartMap = this.mapRootParts();
+
+        if (rootPartMap.containsKey(MailContentTypes.MULTIPART_RELATED)) {
+            this.setMimeMultiparts(rootMimeMultipart, ((MimeMultipart) rootPartMap.get(MailContentTypes.MULTIPART_RELATED).getContent()));
+        }
     }
 }

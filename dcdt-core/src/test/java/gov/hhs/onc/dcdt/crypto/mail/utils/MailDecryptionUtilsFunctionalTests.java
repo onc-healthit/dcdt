@@ -17,9 +17,11 @@ import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailContentTypeUtils;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseMailAddressPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialImpl;
@@ -32,8 +34,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.internet.MimeMessage;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MimeType;
@@ -44,6 +50,10 @@ import org.testng.annotations.Test;
 @Test(groups = { "dcdt.test.func.crypto.all", "dcdt.test.func.crypto.mail.all", "dcdt.test.func.crypto.mail.utils.all",
     "dcdt.test.func.crypto.mail.utils.decrypt" })
 public class MailDecryptionUtilsFunctionalTests extends AbstractToolFunctionalTests {
+    @Resource(name = "mailSessionPlain")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private Session mailSession;
+
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private DiscoveryTestcaseProcessor testcaseProcessor;
@@ -147,9 +157,12 @@ public class MailDecryptionUtilsFunctionalTests extends AbstractToolFunctionalTe
         Assert.assertFalse(result.hasTestcase());
     }
 
-    private DiscoveryTestcaseResult decryptAndParseEmail(String emailLoc) throws IOException {
-        try (InputStream emailInStream = ToolResourceUtils.getInputStream(emailLoc)) {
-            return this.testcaseProcessor.processDiscoveryTestcase(emailInStream, this.testDiscoveryTestcases);
+    private DiscoveryTestcaseResult decryptAndParseEmail(String mailLoc) throws IOException, MessagingException {
+        try (InputStream mailInStream = ToolResourceUtils.getInputStream(mailLoc)) {
+            ToolMimeMessageHelper mimeMsgHelper = new ToolMimeMessageHelper(new MimeMessage(this.mailSession, mailInStream));
+
+            return this.testcaseProcessor.process(mimeMsgHelper,
+                CollectionUtils.find(this.testDiscoveryTestcases, new DiscoveryTestcaseMailAddressPredicate(mimeMsgHelper.getTo())));
         }
     }
 
