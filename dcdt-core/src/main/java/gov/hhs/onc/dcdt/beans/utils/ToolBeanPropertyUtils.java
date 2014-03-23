@@ -196,7 +196,7 @@ public abstract class ToolBeanPropertyUtils {
 
     @Nullable
     public static Object getValue(@Nullable BeanWrapper beanWrapper, String beanPropName) {
-        return getValue(beanWrapper, beanPropName, null);
+        return getValue(beanWrapper, beanPropName, ((Object) null));
     }
 
     @Nullable

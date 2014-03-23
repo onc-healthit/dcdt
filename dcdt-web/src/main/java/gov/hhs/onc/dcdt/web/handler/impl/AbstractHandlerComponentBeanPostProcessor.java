@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.handler.impl;
 
-import gov.hhs.onc.dcdt.beans.ToolBeanException;
 import gov.hhs.onc.dcdt.beans.factory.impl.AbstractToolBeanPostProcessor;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -20,7 +19,7 @@ public abstract class AbstractHandlerComponentBeanPostProcessor<T> extends Abstr
     }
 
     @Override
-    protected T postProcessAfterInitializationInternal(T bean, String beanName) throws ToolBeanException {
+    protected T postProcessAfterInitializationInternal(T bean, String beanName) throws Exception {
         List<HttpMessageConverter<?>> msgConvs = this.buildMessageConverters(bean);
 
         LOGGER.debug(String.format("Built %d handler component (class=%s) message converter(s).", msgConvs.size(), ToolClassUtils.getName(this)));
