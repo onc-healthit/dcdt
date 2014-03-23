@@ -4,11 +4,25 @@
 #define($head)
 #includeStyle("include/mail-testcase-discovery-result.css")
 #end
+
+#parse("mail-testcase-discovery-credentials.vm")
 #define($body)
-    <h1>Discovery testcase $discoveryTestcase.nameDisplay #if($discoveryTestcaseResult.resultInfo.successful)passed#{else}failed#{end}.</h1>
+    <h1>Discovery testcase $discoveryTestcase.nameDisplay #if($discoveryTestcaseResult.successful)passed#{else}failed#{end}.</h1>
     <h2>Details</h2>
     <ul>
-        <li><strong>To</strong>: $discoveryTestcase.mailAddress</li>
+        <li><strong>To</strong>: $discoveryTestcase.mailAddress</li><br/>
+
+        #credDescription($credFoundMsg)
+
+        #if($discoveryTestcaseResult.successful)
+            Certificate expected is the same as certificate found.<br/>
+        #else
+            #credDescription($credExpectedMsg)
+        #end
+
+        #if($discoveryTestcaseResult.hasMailInfo() && $discoveryTestcaseResult.mailInfo.hasDecryptionErrorMessage())
+            <li><strong>Decryption error messages</strong>: $discoveryTestcaseResult.mailInfo.decryptionErrorMessage</li>
+        #end
     </ul>
 #end
 #parse("mail.vm")

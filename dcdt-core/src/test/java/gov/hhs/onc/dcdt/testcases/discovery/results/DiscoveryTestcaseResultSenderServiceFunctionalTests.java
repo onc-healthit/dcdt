@@ -6,7 +6,6 @@ import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.results.impl.DiscoveryTestcaseResultImpl;
-import gov.hhs.onc.dcdt.testcases.discovery.results.impl.DiscoveryTestcaseResultInfoImpl;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.StringUtils;
@@ -42,13 +41,9 @@ public class DiscoveryTestcaseResultSenderServiceFunctionalTests extends Abstrac
             return;
         }
 
-        DiscoveryTestcaseResultInfo testDiscoveryTestcaseResultInfo = new DiscoveryTestcaseResultInfoImpl();
-        // noinspection ConstantConditions
-        testDiscoveryTestcaseResultInfo.setCredentialFound(testDiscoveryTestcase.getTargetCredentials().iterator().next());
-        testDiscoveryTestcaseResultInfo.setSuccessful(true);
-
         DiscoveryTestcaseResult testDiscoveryTestcaseResult = new DiscoveryTestcaseResultImpl();
-        testDiscoveryTestcaseResult.setResultInfo(testDiscoveryTestcaseResultInfo);
+        testDiscoveryTestcaseResult.setCredentialFound(testDiscoveryTestcase.getTargetCredentials().iterator().next());
+        testDiscoveryTestcaseResult.setSuccessful(true);
 
         this.testDiscoveryTestcaseResultSenderService.send(this.testDiscoveryTestcase, testDiscoveryTestcaseResult, testFromConfig.getMailAddress());
     }

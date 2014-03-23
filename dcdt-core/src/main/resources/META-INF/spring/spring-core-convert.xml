@@ -30,6 +30,7 @@
         <beans:ref bean="ldapFilterConv"/>
         <beans:ref bean="ldifConv"/>
         <beans:ref bean="mailAddrConv"/>
+        <beans:ref bean="mimeTypeConv"/>
         <beans:ref bean="namedBeanConv"/>
         <beans:ref bean="pathConv"/>
         <beans:ref bean="rdnConv"/>

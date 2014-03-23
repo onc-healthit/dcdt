@@ -2,44 +2,67 @@ package gov.hhs.onc.dcdt.testcases.results.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultConfig;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultInfo;
+import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
+import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.lang3.StringUtils;
 
-public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseResultConfig, U extends ToolTestcaseResultInfo> extends AbstractToolNamedBean implements
-    ToolTestcaseResult<T, U> {
-    protected T resultConfig;
-    protected U resultInfo;
+public abstract class AbstractToolTestcaseResult extends AbstractToolNamedBean implements ToolTestcaseResult {
+    protected boolean successful;
+    protected String message;
+    protected String certStr;
+    protected List<ToolTestcaseStep> infoSteps;
 
     @Override
-    public boolean hasResultConfig() {
-        return this.resultConfig != null;
+    public boolean isSuccessful() {
+        return this.successful;
+    }
+
+    @Override
+    public void setSuccessful(boolean successful) {
+        this.successful = successful;
+    }
+
+    @Override
+    public boolean hasMessage() {
+        return !StringUtils.isBlank(this.message);
     }
 
     @Nullable
     @Override
-    public T getResultConfig() {
-        return this.resultConfig;
+    public String getMessage() {
+        return this.message;
     }
 
     @Override
-    public void setResultConfig(@Nullable T resultConfig) {
-        this.resultConfig = resultConfig;
-    }
-
-    @Override
-    public boolean hasResultInfo() {
-        return this.resultInfo != null;
+    public void setMessage(@Nullable String message) {
+        this.message = message;
     }
 
     @Nullable
     @Override
-    public U getResultInfo() {
-        return this.resultInfo;
+    public String getCertificate() {
+        return this.certStr;
     }
 
     @Override
-    public void setResultInfo(@Nullable U resultInfo) {
-        this.resultInfo = resultInfo;
+    public void setCertificate(@Nullable String certStr) {
+        this.certStr = certStr;
+    }
+
+    @Override
+    public boolean hasInfoSteps() {
+        return this.infoSteps != null;
+    }
+
+    @Nullable
+    @Override
+    public List<ToolTestcaseStep> getInfoSteps() {
+        return this.infoSteps;
+    }
+
+    @Override
+    public void setInfoSteps(@Nullable List<ToolTestcaseStep> infoSteps) {
+        this.infoSteps = infoSteps;
     }
 }

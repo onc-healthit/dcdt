@@ -32,4 +32,14 @@
     = TESTCASES
     =====================================================================================================-->
     <beans:bean id="toolTestcase" class="gov.hhs.onc.dcdt.testcases.ToolTestcase" abstract="true"/>
+
+    <!--====================================================================================================
+    = TESTCASE CONFIG
+    =====================================================================================================-->
+    <beans:bean id="toolTestcaseConfig" class="gov.hhs.onc.dcdt.testcases.ToolTestcaseConfig" abstract="true"/>
+
+    <!--====================================================================================================
+    = TESTCASE RESULTS
+    =====================================================================================================-->
+    <beans:bean id="toolTestcaseResult" class="gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult" abstract="true"/>
 </beans:beans>
