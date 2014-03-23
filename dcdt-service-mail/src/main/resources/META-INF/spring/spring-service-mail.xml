@@ -39,28 +39,9 @@
         p:varDirectory="${dcdt.service.mail.james.var.dir}"/>
     
     <!--====================================================================================================
-    = JAMES CONFIGURATION BUILDER
+    = JAMES CONFIGURATION
     =====================================================================================================-->
-    <beans:bean id="configBuilderJames" parent="configBuilderImpl" lazy-init="true" scope="prototype"/>
-    
-    <!--====================================================================================================
-    = JAMES CONFIGURATION PROVIDER
-    =====================================================================================================-->
-    <beans:bean id="configProv" class="gov.hhs.onc.dcdt.service.mail.james.ToolConfigurationProvider" abstract="true"/>
-    
-    <beans:bean id="configProvImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolConfigurationProviderImpl" parent="configProv"
-        p:fileSystem-ref="fileSysImpl">
-        <beans:property name="configurationBuilderBeanName">
-            <beans:idref bean="configBuilderJames"/>
-        </beans:property>
-        <beans:property name="configurationMappings">
-            <util:map>
-                <beans:entry key="mailprocessor" value="mailetcontainer.processors"/>
-                <beans:entry key="mailspooler" value="mailetcontainer.spooler"/>
-                <beans:entry key="mailetcontext" value="mailetcontainer.context"/>
-            </util:map>
-        </beans:property>
-    </beans:bean>
+    <beans:bean id="configBeanJames" class="gov.hhs.onc.dcdt.service.mail.james.config.JamesConfigBean" abstract="true"/>
     
     <!--====================================================================================================
     = JAMES BEAN POST PROCESSORS
@@ -71,10 +52,6 @@
             <beans:bean class="org.apache.james.container.spring.lifecycle.LogProviderImpl"/>
         </beans:property>
     </beans:bean>
-    
-    <beans:bean class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolConfigurableBeanPostProcessor"
-        p:configurationProvider-ref="configProvImpl"
-        p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE + 1 }"/>
     
     <!--====================================================================================================
     = JAMES DOMAIN LIST
@@ -233,15 +210,210 @@
     </camel:camelContext>
     
     <!--====================================================================================================
+    = JAMES MAILET CONFIGURATION
+    =====================================================================================================-->
+    <beans:bean id="configBeanMailet" class="gov.hhs.onc.dcdt.service.mail.james.config.MailetConfigBean" parent="configBeanJames" abstract="true"/>
+    <beans:bean id="configBeanMailetImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MailetConfigBeanImpl" parent="configBeanMailet"
+        abstract="true"/>
+    
+    <beans:bean id="configBeanMailetAll" parent="configBeanMailetImpl" abstract="true"
+        p:match="All"/>
+    
+    <beans:bean id="configBeanMailetAllToRepo" parent="configBeanMailetAll" abstract="true"
+        p:className="ToRepository"/>
+    
+    <beans:bean id="configBeanMailetRecipientLocal" parent="configBeanMailetImpl" abstract="true"
+        p:match="RecipientIsLocal"/>
+    
+    <beans:bean id="configBeanMailetSmtpAuthSuccess" parent="configBeanMailetImpl" abstract="true"
+        p:match="SMTPAuthSuccessful"/>
+    
+    <!--====================================================================================================
+    = JAMES MAIL PROCESSOR CONFIGURATION
+    =====================================================================================================-->
+    <beans:bean id="configBeanMailProc" class="gov.hhs.onc.dcdt.service.mail.james.config.MailProcessorConfigBean" parent="configBeanJames" abstract="true"/>
+    <beans:bean id="configBeanMailProcImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MailProcessorConfigBeanImpl" parent="configBeanMailProc"
+        abstract="true"/>
+    
+    <beans:bean id="configBeanMailProcs" class="gov.hhs.onc.dcdt.service.mail.james.config.MailProcessorsConfigBean" parent="configBeanJames" abstract="true"/>
+    <beans:bean id="configBeanMailProcsImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MailProcessorsConfigBeanImpl" parent="configBeanMailProcs"
+        abstract="true"/>
+    
+    <!--====================================================================================================
     = JAMES MAIL PROCESSOR
     =====================================================================================================-->
-    <beans:bean id="mailProc" class="org.apache.james.mailetcontainer.api.MailProcessor" abstract="true"/>
+    <beans:bean id="mailProc" class="gov.hhs.onc.dcdt.service.mail.james.ToolMailProcessor" abstract="true"/>
     
-    <beans:bean id="mailProcCamel" class="org.apache.james.mailetcontainer.impl.camel.CamelCompositeProcessor" parent="mailProc">
-        <beans:meta key="configurableBeanName" value="mailprocessor"/>
+    <beans:bean id="mailProcImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolMailProcessorImpl" parent="mailProc">
+        <beans:property name="configBean">
+            <beans:bean parent="configBeanMailProcsImpl">
+                <beans:property name="processors">
+                    <util:list>
+                        <beans:bean parent="configBeanMailProcImpl"
+                            p:state="root">
+                            <beans:property name="mailets">
+                                <util:list>
+                                    <beans:bean parent="configBeanMailetAll"
+                                        p:className="PostmasterAlias"/>
+                                    <beans:bean parent="configBeanMailetImpl"
+                                        p:className="Null"
+                                        p:match="RelayLimit=30"/>
+                                    <beans:bean parent="configBeanMailetSmtpAuthSuccess"
+                                        p:className="ToProcessor">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="processor" value="transport"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                    <beans:bean parent="configBeanMailetAll"
+                                        p:className="ToProcessor">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="processor" value="transport"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                </util:list>
+                            </beans:property>
+                        </beans:bean>
+                        <beans:bean parent="configBeanMailProcImpl"
+                            p:state="error">
+                            <beans:property name="mailets">
+                                <util:list>
+                                    <beans:bean parent="configBeanMailetAllToRepo">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="repositoryPath"
+                                                    value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailRepositoryProtocol).MEMORY.protocol }:${dcdt.service.mail.james.repo.error}"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                </util:list>
+                            </beans:property>
+                        </beans:bean>
+                        <beans:bean parent="configBeanMailProcImpl"
+                            p:state="transport">
+                            <beans:property name="mailets">
+                                <util:list>
+                                    <beans:bean parent="configBeanMailetSmtpAuthSuccess"
+                                        p:className="SetMimeHeader">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="name" value="X-UserIsAuth"/>
+                                                <beans:entry key="value" value="true"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                    <beans:bean parent="configBeanMailetAll"
+                                        p:className="RecipientRewriteTable"/>
+                                    <beans:bean parent="configBeanMailetRecipientLocal"
+                                        p:className="ToSenderFolder">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="consume" value="false"/>
+                                                <beans:entry key="folder" value="Sent"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                    <beans:bean parent="configBeanMailetRecipientLocal"
+                                        p:className="LocalDelivery"/>
+                                    <beans:bean parent="configBeanMailetImpl"
+                                        p:className="ToProcessor"
+                                        p:match="HostIsLocal">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="processor" value="local-address-error"/>
+                                                <beans:entry key="notice" value="550 - Requested action not taken: no such user here"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                    <beans:bean parent="configBeanMailetAll"
+                                        p:className="RemoteDelivery">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="bounceProcessor" value="bounces"/>
+                                                <beans:entry key="delayTime">
+                                                    <util:list>
+                                                        <beans:value>5 minutes</beans:value>
+                                                        <beans:value>10 minutes</beans:value>
+                                                        <beans:value>45 minutes</beans:value>
+                                                        <beans:value>2 hours</beans:value>
+                                                        <beans:value>3 hours</beans:value>
+                                                        <beans:value>6 hours</beans:value>
+                                                    </util:list>
+                                                </beans:entry>
+                                                <beans:entry key="deliveryThreads" value="10"/>
+                                                <beans:entry key="maxDnsProblemRetries" value="0"/>
+                                                <beans:entry key="maxRetries" value="25"/>
+                                                <beans:entry key="outgoingQueue" value="outgoing"/>
+                                                <beans:entry key="sendpartial" value="true"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                </util:list>
+                            </beans:property>
+                        </beans:bean>
+                        <beans:bean parent="configBeanMailProcImpl"
+                            p:state="local-address-error">
+                            <beans:property name="mailets">
+                                <util:list>
+                                    <beans:bean parent="configBeanMailetAllToRepo">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="repositoryPath"
+                                                    value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailRepositoryProtocol).MEMORY.protocol }:${dcdt.service.mail.james.repo.error.addr}"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                </util:list>
+                            </beans:property>
+                        </beans:bean>
+                        <beans:bean parent="configBeanMailProcImpl"
+                            p:state="relay-denied">
+                            <beans:property name="mailets">
+                                <util:list>
+                                    <beans:bean parent="configBeanMailetAllToRepo">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="repositoryPath"
+                                                    value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailRepositoryProtocol).MEMORY.protocol }:${dcdt.service.mail.james.repo.error.relay}"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                </util:list>
+                            </beans:property>
+                        </beans:bean>
+                        <beans:bean parent="configBeanMailProcImpl"
+                            p:state="bounces">
+                            <beans:property name="mailets">
+                                <util:list>
+                                    <beans:bean parent="configBeanMailetAll"
+                                        p:className="DSNBounce">
+                                        <beans:property name="properties">
+                                            <util:map>
+                                                <beans:entry key="passThrough" value="false"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
+                                </util:list>
+                            </beans:property>
+                        </beans:bean>
+                    </util:list>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
     </beans:bean>
-    <beans:alias name="mailProcCamel" alias="processorRoute"/>
-    <beans:alias name="mailProcCamel" alias="mailprocessor"/>
+    <beans:alias name="mailProcImpl" alias="processorRoute"/>
+    <beans:alias name="mailProcImpl" alias="mailprocessor"/>
+    
+    <!--====================================================================================================
+    = JAMES MAILET CONTEXT CONFIGURATION
+    =====================================================================================================-->
+    <beans:bean id="configBeanMailetContext" class="gov.hhs.onc.dcdt.service.mail.james.config.MailetContextConfigBean" parent="configBeanJames"
+        abstract="true"/>
+    <beans:bean id="configBeanMailetContextImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MailetContextConfigBeanImpl"
+        parent="configBeanMailetContext" abstract="true"/>
     
     <!--====================================================================================================
     = JAMES MAILET CONTEXT
@@ -250,15 +422,26 @@
     
     <beans:bean id="mailetContextImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolMailetContextImpl" parent="mailetContext"
         p:domainList-ref="domainListImpl">
-        <beans:meta key="configurableBeanName" value="mailetcontext"/>
+        <beans:property name="configBean">
+            <beans:bean parent="configBeanMailetContextImpl"/>
+        </beans:property>
     </beans:bean>
     <beans:alias name="mailetContextImpl" alias="mailetcontext"/>
     
     <!--====================================================================================================
+    = JAMES MAIL SPOOLER CONFIGURATION
+    =====================================================================================================-->
+    <beans:bean id="configBeanMailSpooler" class="gov.hhs.onc.dcdt.service.mail.james.config.MailSpoolerConfigBean" parent="configBeanJames" abstract="true"/>
+    <beans:bean id="configBeanMailSpoolerImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MailSpoolerConfigBeanImpl" parent="configBeanMailSpooler"
+        abstract="true"/>
+    
+    <!--====================================================================================================
     = JAMES MAIL SPOOLER
     =====================================================================================================-->
-    <beans:bean id="mailSpooler" class="org.apache.james.mailetcontainer.impl.JamesMailSpooler">
-        <beans:meta key="configurableBeanName" value="mailspooler"/>
+    <beans:bean id="mailSpooler" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolMailSpooler">
+        <beans:property name="configBean">
+            <beans:bean parent="configBeanMailSpoolerImpl"/>
+        </beans:property>
     </beans:bean>
     <beans:alias name="mailSpooler" alias="mailspooler"/>
     
@@ -267,9 +450,7 @@
     =====================================================================================================-->
     <beans:bean id="mailetLoader" class="org.apache.james.mailetcontainer.api.MailetLoader" abstract="true"/>
     
-    <beans:bean id="mailetLoaderFactory" class="org.apache.james.container.spring.bean.factory.mailetcontainer.MailetLoaderBeanFactory" parent="mailetLoader">
-        <beans:meta key="configurableBeanName" value="mailetloader"/>
-    </beans:bean>
+    <beans:bean id="mailetLoaderFactory" class="org.apache.james.container.spring.bean.factory.mailetcontainer.MailetLoaderBeanFactory" parent="mailetLoader"/>
     <beans:alias name="mailetLoaderFactory" alias="mailetloader"/>
     
     <!--====================================================================================================
@@ -278,9 +459,7 @@
     <beans:bean id="matcherLoader" class="org.apache.james.mailetcontainer.api.MatcherLoader" abstract="true"/>
     
     <beans:bean id="matcherLoaderFactory" class="org.apache.james.container.spring.bean.factory.mailetcontainer.MatcherLoaderBeanFactory"
-        parent="matcherLoader">
-        <beans:meta key="configurableBeanName" value="matcherloader"/>
-    </beans:bean>
+        parent="matcherLoader"/>
     <beans:alias name="matcherLoaderFactory" alias="matcherloader"/>
     
     <!--====================================================================================================
@@ -289,20 +468,49 @@
     <beans:bean id="fileSys" class="gov.hhs.onc.dcdt.service.mail.james.ToolFileSystem" abstract="true"/>
     
     <beans:bean id="fileSysImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolFileSystemImpl" parent="fileSys"
-        p:resourcePatternResolver-ref="resourcePatternResolverJamesImpl">
-        <beans:meta key="configurableBeanName" value="filesystem"/>
-    </beans:bean>
+        p:resourcePatternResolver-ref="resourcePatternResolverJamesImpl"/>
     <beans:alias name="fileSysImpl" alias="filesystem"/>
+    
+    <!--====================================================================================================
+    = JAMES DNS SERVICE SERVERS CONFIGURATION
+    =====================================================================================================-->
+    <beans:bean id="configBeanDnsServiceServers" class="gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceServersConfigBean" parent="configBeanJames"
+        abstract="true"/>
+    <beans:bean id="configBeanDnsServiceServersImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.DnsServiceServersConfigBeanImpl"
+        parent="configBeanDnsServiceServers" abstract="true"/>
+    
+    <!--====================================================================================================
+    = JAMES DNS SERVICE CONFIGURATION
+    =====================================================================================================-->
+    <beans:bean id="configBeanDnsService" class="gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceConfigBean" parent="configBeanJames" abstract="true"/>
+    <beans:bean id="configBeanDnsServiceImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.DnsServiceConfigBeanImpl" parent="configBeanDnsService"
+        abstract="true"
+        p:autoDiscover="false"
+        p:maxCacheSize="0"/>
     
     <!--====================================================================================================
     = JAMES DNS SERVICE
     =====================================================================================================-->
-    <beans:bean id="dnsServiceJames" class="org.apache.james.dnsservice.api.DNSService" abstract="true"/>
+    <beans:bean id="dnsServiceJames" class="gov.hhs.onc.dcdt.service.mail.james.ToolDnsService" abstract="true"/>
     
-    <beans:bean id="dnsServiceJamesDnsJava" class="org.apache.james.dnsservice.dnsjava.DNSJavaService">
-        <beans:meta key="configurableBeanName" value="dnsservice"/>
+    <beans:bean id="dnsServiceJamesImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolDnsServiceImpl" parent="dnsServiceJames">
+        <beans:property name="configBean">
+            <beans:bean parent="configBeanDnsServiceImpl">
+                <beans:property name="servers">
+                    <beans:bean parent="configBeanDnsServiceServersImpl">
+                        <beans:property name="servers">
+                            <util:list>
+                                <beans:value>#{ ipAddrLocalhost.hostAddress }</beans:value>
+                                <beans:value>#{ ipAddrDnsServerGoogle1.hostAddress }</beans:value>
+                                <beans:value>#{ ipAddrDnsServerGoogle2.hostAddress }</beans:value>
+                            </util:list>
+                        </beans:property>
+                    </beans:bean>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
     </beans:bean>
-    <beans:alias name="dnsServiceJamesDnsJava" alias="dnsservice"/>
+    <beans:alias name="dnsServiceJamesImpl" alias="dnsservice"/>
     
     <!--====================================================================================================
     = JAMES PROTOCOL HANDLER LOADER
@@ -310,16 +518,45 @@
     <beans:bean id="protocolHandlerLoader" class="org.apache.james.protocols.lib.handler.ProtocolHandlerLoader" abstract="true"/>
     
     <beans:bean id="protocolHandlerLoaderFactory" class="org.apache.james.container.spring.bean.factory.protocols.ProtocolHandlerLoaderBeanFactory"
-        parent="protocolHandlerLoader">
-        <beans:meta key="configurableBeanName" value="protocolhandlerloader"/>
-    </beans:bean>
+        parent="protocolHandlerLoader"/>
     <beans:alias name="protocolHandlerLoaderFactory" alias="protocolhandlerloader"/>
+    
+    <!--====================================================================================================
+    = JAMES HANDLER CHAIN CONFIGURATION
+    =====================================================================================================-->
+    <beans:bean id="configBeanHandlerChain" class="gov.hhs.onc.dcdt.service.mail.james.config.HandlerChainConfigBean" parent="configBeanJames" abstract="true"/>
+    <beans:bean id="configBeanHandlerChainImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.HandlerChainConfigBeanImpl"
+        parent="configBeanHandlerChain" abstract="true"/>
+    
+    <!--====================================================================================================
+    = JAMES SMTP SERVER CONFIGURATION
+    =====================================================================================================-->
+    <beans:bean id="configBeanServerSmtp" class="gov.hhs.onc.dcdt.service.mail.james.config.SmtpServerConfigBean" parent="configBeanJames" abstract="true"/>
+    <beans:bean id="configBeanServerSmtpImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.SmtpServerConfigBeanImpl" parent="configBeanServerSmtp"
+        abstract="true">
+        <beans:property name="handlerChain">
+            <beans:bean parent="configBeanHandlerChainImpl"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="configBeanServersSmtp" class="gov.hhs.onc.dcdt.service.mail.james.config.SmtpServersConfigBean" parent="configBeanJames" abstract="true"/>
+    <beans:bean id="configBeanServersSmtpImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.SmtpServersConfigBeanImpl" parent="configBeanServersSmtp"
+        abstract="true"/>
     
     <!--====================================================================================================
     = JAMES SMTP SERVER
     =====================================================================================================-->
-    <beans:bean id="serverFactorySmtp" class="org.apache.james.smtpserver.netty.SMTPServerFactory" lazy-init="true" scope="prototype">
-        <beans:meta key="configurableBeanName" value="smtpserver"/>
+    <beans:bean id="serverFactorySmtp" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolSmtpServerFactory" lazy-init="true" scope="prototype">
+        <beans:property name="configBean">
+            <beans:bean parent="configBeanServersSmtpImpl">
+                <beans:property name="servers">
+                    <util:list>
+                        <beans:bean parent="configBeanServerSmtpImpl"
+                            p:bind="${dcdt.service.mail.james.smtp.bind}"/>
+                    </util:list>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
     </beans:bean>
     <beans:alias name="serverFactorySmtp" alias="smtpserver"/>
     
@@ -363,9 +600,7 @@
     <beans:bean id="mailboxSubscriptionManager" class="org.apache.james.mailbox.SubscriptionManager" abstract="true"/>
     
     <beans:bean id ="mailboxSubscriptionManagerMem" class="org.apache.james.mailbox.store.StoreSubscriptionManager" parent="mailboxSubscriptionManager"
-        c:mapperFactory-ref="mailboxSessionMapperFactoryMem">
-        <beans:meta key="configurableBeanName" value="subscriptionManager"/>
-    </beans:bean>
+        c:mapperFactory-ref="mailboxSessionMapperFactoryMem"/>
     <beans:alias name="mailboxSubscriptionManagerMem" alias="subscriptionManager"/>
     
     <!--====================================================================================================
@@ -378,8 +613,6 @@
         c:authenticator-ref="mailboxAuthAnon"
         c:groupMembershipResolver-ref="mailboxGroupMembershipResolverSimple"
         c:locker-ref="mailboxLockerMem"
-        c:mailboxSessionMapperFactory-ref="mailboxSessionMapperFactoryMem">
-        <beans:meta key="configurableBeanName" value="mailboxmanager"/>
-    </beans:bean>
+        c:mailboxSessionMapperFactory-ref="mailboxSessionMapperFactoryMem"/>
     <beans:alias name="mailboxManagerMem" alias="mailboxmanager"/>
 </beans:beans>

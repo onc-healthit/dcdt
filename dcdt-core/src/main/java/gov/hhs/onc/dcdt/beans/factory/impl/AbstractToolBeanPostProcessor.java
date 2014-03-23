@@ -33,10 +33,15 @@ public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolOrder
         T beanCast = this.beanClass.cast(bean);
 
         if (this.canPostProcessAfterInitialization(beanCast, beanName)) {
-            bean = this.postProcessAfterInitializationInternal(beanCast, beanName);
+            try {
+                bean = this.postProcessAfterInitializationInternal(beanCast, beanName);
 
-            LOGGER.debug(String.format("Post processed (class=%s) bean (name=%s, class=%s) after initialization.", ToolClassUtils.getName(this), beanName,
-                ToolClassUtils.getName(bean)));
+                LOGGER.debug(String.format("Post processed (class=%s) bean (name=%s, class=%s) after initialization.", ToolClassUtils.getName(this), beanName,
+                    ToolClassUtils.getName(bean)));
+            } catch (Exception e) {
+                throw new ToolBeanException(String.format("Unable to post process (class=%s) bean (name=%s, class=%s) after initialization.",
+                    ToolClassUtils.getName(this), beanName, ToolClassUtils.getName(bean)), e);
+            }
         }
 
         return bean;
@@ -51,10 +56,15 @@ public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolOrder
         T beanCast = this.beanClass.cast(bean);
 
         if (this.canPostProcessBeforeInitialization(beanCast, beanName)) {
-            bean = this.postProcessBeforeInitializationInternal(beanCast, beanName);
+            try {
+                bean = this.postProcessBeforeInitializationInternal(beanCast, beanName);
 
-            LOGGER.debug(String.format("Post processed (class=%s) bean (name=%s, class=%s) before initialization.", ToolClassUtils.getName(this), beanName,
-                ToolClassUtils.getName(bean)));
+                LOGGER.debug(String.format("Post processed (class=%s) bean (name=%s, class=%s) before initialization.", ToolClassUtils.getName(this), beanName,
+                    ToolClassUtils.getName(bean)));
+            } catch (Exception e) {
+                throw new ToolBeanException(String.format("Unable to post process (class=%s) bean (name=%s, class=%s) before initialization.",
+                    ToolClassUtils.getName(this), beanName, ToolClassUtils.getName(bean)), e);
+            }
         }
 
         return bean;
@@ -70,11 +80,11 @@ public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolOrder
         return this.postProcBeforeInit;
     }
 
-    protected T postProcessAfterInitializationInternal(T bean, String beanName) throws ToolBeanException {
+    protected T postProcessAfterInitializationInternal(T bean, String beanName) throws Exception {
         return bean;
     }
 
-    protected T postProcessBeforeInitializationInternal(T bean, String beanName) throws ToolBeanException {
+    protected T postProcessBeforeInitializationInternal(T bean, String beanName) throws Exception {
         return bean;
     }
 

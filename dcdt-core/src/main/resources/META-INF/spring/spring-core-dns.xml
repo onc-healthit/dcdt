@@ -26,6 +26,17 @@
         p:maxNCache="0"/>
     
     <!--====================================================================================================
+    = GOOGLE DNS SERVERS
+    =====================================================================================================-->
+    <beans:bean id="ipAddrDnsServerGoogle1" class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress">
+        <beans:constructor-arg index="0" value="8.8.8.8"/>
+    </beans:bean>
+    
+    <beans:bean id="ipAddrDnsServerGoogle2" class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress">
+        <beans:constructor-arg index="0" value="8.8.4.4"/>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = DNS RESOLVERS
     =====================================================================================================-->
     <beans:bean id="dnsResolver" class="org.xbill.DNS.ExtendedResolver" abstract="true"/>
@@ -34,8 +45,8 @@
     <beans:bean id="dnsResolverExtExternal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt" factory-method="fromAddresses">
         <beans:constructor-arg name="addrs">
             <util:list>
-                <beans:value>#{ T(gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils).getByAddress('8.8.8.8') }</beans:value>
-                <beans:value>#{ T(gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils).getByAddress('8.8.4.4') }</beans:value>
+                <beans:ref bean="ipAddrDnsServerGoogle1"/>
+                <beans:ref bean="ipAddrDnsServerGoogle2"/>
             </util:list>
         </beans:constructor-arg>
     </beans:bean>
