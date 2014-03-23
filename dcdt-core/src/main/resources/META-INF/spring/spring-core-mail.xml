@@ -49,7 +49,7 @@
     =====================================================================================================-->
     <beans:bean id="mailGatewayConfig" class="gov.hhs.onc.dcdt.mail.config.MailGatewayConfig" abstract="true"/>
     <beans:bean id="mailGatewayConfigImpl" class="gov.hhs.onc.dcdt.mail.config.impl.MailGatewayConfigImpl" parent="mailGatewayConfig" abstract="true"
-        p:host-ref="ipAddrLoopback"
+        p:host-ref="ipAddrLocalAny"
         p:transportProtocol="SMTP">
         <beans:constructor-arg name="mailSessionPlainBeanName">
             <beans:idref bean="mailSessionPlain"/>

@@ -1,12 +1,12 @@
 package gov.hhs.onc.dcdt.service.mail.james.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceDomainConfig;
 import gov.hhs.onc.dcdt.service.mail.james.ToolDomainList;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
@@ -15,6 +15,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.james.domainlist.api.DomainListException;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainList {
     private static class InstanceDomainConfigNameStringTransformer extends AbstractToolTransformer<InstanceDomainConfig, String> {
@@ -27,8 +30,9 @@ public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainLi
         }
     }
 
+    private AbstractApplicationContext appContext;
     private InstanceDomainConfig defaultDomainConfig;
-    private List<InstanceDomainConfig> domainConfigs = new ArrayList<>();
+    private List<InstanceDomainConfig> domainConfigs;
 
     @Override
     public String getDefaultDomain() throws DomainListException {
@@ -67,9 +71,19 @@ public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainLi
                     new LinkedHashSet<String>(this.domainConfigs.size())), PredicateUtils.notNullPredicate()), String.class);
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.domainConfigs = ToolBeanFactoryUtils.getBeansOfType(this.appContext, InstanceDomainConfig.class);
+    }
+
     @Nullable
     private static String getDomainNameString(InstanceDomainConfig domainConfig) throws DomainListException {
         return Objects.toString(domainConfig.getDomainName(), null);
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
+        this.appContext = ((AbstractApplicationContext) appContext);
     }
 
     @Override
@@ -83,13 +97,12 @@ public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainLi
     }
 
     @Override
-    public List<InstanceDomainConfig> getDomainConfigs() {
-        return this.domainConfigs;
+    public boolean hasDomainConfigs() {
+        return !CollectionUtils.isEmpty(this.domainConfigs);
     }
 
     @Override
-    public void setDomainConfigs(List<InstanceDomainConfig> domainConfigs) {
-        this.domainConfigs.clear();
-        this.domainConfigs.addAll(domainConfigs);
+    public List<InstanceDomainConfig> getDomainConfigs() {
+        return this.domainConfigs;
     }
 }

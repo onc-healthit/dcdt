@@ -1,14 +1,14 @@
 package gov.hhs.onc.dcdt.service.mail.james.config.impl;
 
 import gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceConfigBean;
-import gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceServersConfigBean;
-import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
 import javax.annotation.Nullable;
+import org.xbill.DNS.Cache;
+import org.xbill.DNS.Resolver;
 
 public class DnsServiceConfigBeanImpl extends AbstractJamesConfigBean implements DnsServiceConfigBean {
     private Boolean autoDiscover;
-    private Integer maxCacheSize;
-    private DnsServiceServersConfigBean servers;
+    private Cache cache;
+    private Resolver resolver;
 
     @Override
     public boolean hasAutoDiscover() {
@@ -27,34 +27,34 @@ public class DnsServiceConfigBeanImpl extends AbstractJamesConfigBean implements
     }
 
     @Override
-    public boolean hasMaxCacheSize() {
-        return !ToolNumberUtils.isNegative(this.maxCacheSize);
+    public boolean hasCache() {
+        return (this.cache != null);
     }
 
     @Nullable
     @Override
-    public Integer getMaxCacheSize() {
-        return this.maxCacheSize;
+    public Cache getCache() {
+        return this.cache;
     }
 
     @Override
-    public void setMaxCacheSize(@Nullable Integer maxCacheSize) {
-        this.maxCacheSize = maxCacheSize;
+    public void setCache(@Nullable Cache cache) {
+        this.cache = cache;
     }
 
     @Override
-    public boolean hasServers() {
-        return (this.servers != null);
+    public boolean hasResolver() {
+        return (this.resolver != null);
     }
 
     @Nullable
     @Override
-    public DnsServiceServersConfigBean getServers() {
-        return this.servers;
+    public Resolver getResolver() {
+        return this.resolver;
     }
 
     @Override
-    public void setServers(@Nullable DnsServiceServersConfigBean servers) {
-        this.servers = servers;
+    public void setResolver(@Nullable Resolver resolver) {
+        this.resolver = resolver;
     }
 }

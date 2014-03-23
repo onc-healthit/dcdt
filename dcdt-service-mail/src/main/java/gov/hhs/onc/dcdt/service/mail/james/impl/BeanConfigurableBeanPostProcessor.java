@@ -10,10 +10,13 @@ import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 
 @Component("beanConfigurableBeanPostProc")
+@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 @SuppressWarnings({ "rawtypes" })
 public class BeanConfigurableBeanPostProcessor extends AbstractToolBeanPostProcessor<BeanConfigurable> {
     private final static Logger LOGGER = LoggerFactory.getLogger(BeanConfigurableBeanPostProcessor.class);

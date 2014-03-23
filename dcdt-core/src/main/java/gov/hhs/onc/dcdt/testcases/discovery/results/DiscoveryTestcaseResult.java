@@ -7,6 +7,11 @@ import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 import javax.annotation.Nullable;
 
 public interface DiscoveryTestcaseResult extends ToolTestcaseResult {
+    public boolean hasCredential(DiscoveryTestcaseResultCredentialType credType);
+
+    @Nullable
+    public DiscoveryTestcaseCredential getCredential(DiscoveryTestcaseResultCredentialType credType);
+
     public boolean hasCredentialExpected();
 
     @Nullable

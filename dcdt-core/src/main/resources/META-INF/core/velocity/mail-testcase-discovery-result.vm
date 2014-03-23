@@ -1,27 +1,28 @@
-#* @vtlvariable name="discoveryTestcase" type="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" *#
 #* @vtlvariable name="discoveryTestcaseResult" type="gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult" *#
 #* @vtlmacrolibrary path="lib/core.vm" *#
+#* @vtlmacrolibrary path="lib/core-testcases-discovery-results.vm" *#
 #define($head)
 #includeStyle("include/mail-testcase-discovery-result.css")
 #end
-
-#parse("mail-testcase-discovery-credentials.vm")
 #define($body)
-    <h1>Discovery testcase $discoveryTestcase.nameDisplay #if($discoveryTestcaseResult.successful)passed#{else}failed#{end}.</h1>
+    <h1>Discovery testcase $discoveryTestcaseResult.testcase.nameDisplay #if($discoveryTestcaseResult.successful)passed#{else}failed#{end}.</h1>
     <h2>Details</h2>
     <ul>
-        <li><strong>To</strong>: $discoveryTestcase.mailAddress</li><br/>
+        #if($discoveryTestcaseResult.hasMailInfo())
+            <li><strong>From</strong>: $discoveryTestcaseResult.mailInfo.from</li>
+            <li><strong>To</strong>: $discoveryTestcaseResult.mailInfo.to</li>
+        #end
 
-        #credDescription($credFoundMsg)
-
-        #if($discoveryTestcaseResult.successful)
-            Certificate expected is the same as certificate found.<br/>
-        #else
-            #credDescription($credExpectedMsg)
+        #if($discoveryTestcaseResult.hasCredentialFound())
+            #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialFound "Found")
+        #end
+        
+        #if(!$discoveryTestcaseResult.successful && $discoveryTestcaseResult.hasCredentialExpected())
+            #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialExpected "Expected")
         #end
 
         #if($discoveryTestcaseResult.hasMailInfo() && $discoveryTestcaseResult.mailInfo.hasDecryptionErrorMessage())
-            <li><strong>Decryption error messages</strong>: $discoveryTestcaseResult.mailInfo.decryptionErrorMessage</li>
+            <li><strong>Decryption Error</strong>: $discoveryTestcaseResult.mailInfo.decryptionErrorMessage</li>
         #end
     </ul>
 #end

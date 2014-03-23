@@ -193,6 +193,23 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     }
 
     @Override
+    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
+    public boolean equals(@Nullable Object obj) {
+        return Objects.equals(Objects.toString(obj), this.toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.toString());
+    }
+
+    @Nullable
+    @Override
+    public String toString() {
+        return this.toAddress();
+    }
+
+    @Override
     public boolean hasDomainName() {
         try {
             return this.getDomainName() != null;
@@ -210,23 +227,6 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
         } catch (DnsNameException e) {
             throw new ToolMailAddressException(String.format("Unable to get mail address domain name from string: %s", this.getDomainNamePart()), e);
         }
-    }
-
-    @Override
-    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
-    public boolean equals(@Nullable Object obj) {
-        return Objects.equals(Objects.toString(obj), this.toString());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(this.toString());
-    }
-
-    @Nullable
-    @Override
-    public String toString() {
-        return this.toAddress();
     }
 
     @Override
