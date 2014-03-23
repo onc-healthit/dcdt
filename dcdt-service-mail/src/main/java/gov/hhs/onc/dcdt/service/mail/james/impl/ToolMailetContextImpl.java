@@ -14,7 +14,7 @@ public class ToolMailetContextImpl extends JamesMailetContext implements ToolMai
 
     @Override
     public void configure(HierarchicalConfiguration config) throws ConfigurationException {
-        if (this.domains.getDefaultDomainConfig().hasDomainName()) {
+        if (this.domains.hasDefaultDomainName()) {
             super.configure(config);
         }
     }

@@ -16,6 +16,14 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = DNS NAMES
+    =====================================================================================================-->
+    <beans:bean id="dnsName" class="org.xbill.DNS.Name" abstract="true"/>
+    
+    <beans:bean id="dnsNameLocalhost" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils" parent="dnsName" factory-method="fromString"
+        c:nameStr="#{ ipAddrLocalhost.hostName }"/>
+    
+    <!--====================================================================================================
     = DNS CACHES
     =====================================================================================================-->
     <beans:bean id="dnsCache" class="org.xbill.DNS.Cache" abstract="true"/>

@@ -18,6 +18,7 @@ import org.apache.james.domainlist.api.DomainListException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.xbill.DNS.Name;
 
 public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainList {
     private static class InstanceDomainConfigNameStringTransformer extends AbstractToolTransformer<InstanceDomainConfig, String> {
@@ -31,19 +32,13 @@ public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainLi
     }
 
     private AbstractApplicationContext appContext;
-    private InstanceDomainConfig defaultDomainConfig;
+    private Name defaultDomainName;
+    private Name defaultDomainNameFallback;
     private List<InstanceDomainConfig> domainConfigs;
 
     @Override
     public String getDefaultDomain() throws DomainListException {
-        String defaultDomainNameStr = getDomainNameString(this.defaultDomainConfig);
-
-        if (defaultDomainNameStr == null) {
-            throw new DomainListException(String.format("Default domain configuration (name=%s) in James domain list (class=%s) must have a domain name.",
-                this.defaultDomainConfig.getName(), ToolClassUtils.getName(this)));
-        }
-
-        return getDomainNameString(this.defaultDomainConfig);
+        return getDomainNameString((this.hasDefaultDomainName() ? this.defaultDomainName : this.defaultDomainNameFallback));
     }
 
     @Override
@@ -78,7 +73,12 @@ public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainLi
 
     @Nullable
     private static String getDomainNameString(InstanceDomainConfig domainConfig) throws DomainListException {
-        return Objects.toString(domainConfig.getDomainName(), null);
+        return getDomainNameString(domainConfig.getDomainName());
+    }
+
+    @Nullable
+    private static String getDomainNameString(Name domainName) throws DomainListException {
+        return Objects.toString(domainName, null);
     }
 
     @Override
@@ -87,13 +87,29 @@ public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainLi
     }
 
     @Override
-    public InstanceDomainConfig getDefaultDomainConfig() {
-        return this.defaultDomainConfig;
+    public boolean hasDefaultDomainName() {
+        return (this.defaultDomainName != null);
+    }
+
+    @Nullable
+    @Override
+    public Name getDefaultDomainName() {
+        return this.defaultDomainName;
     }
 
     @Override
-    public void setDefaultDomainConfig(InstanceDomainConfig defaultDomainConfig) {
-        this.defaultDomainConfig = defaultDomainConfig;
+    public void setDefaultDomainName(@Nullable Name defaultDomainName) {
+        this.defaultDomainName = defaultDomainName;
+    }
+
+    @Override
+    public Name getDefaultDomainNameFallback() {
+        return this.defaultDomainNameFallback;
+    }
+
+    @Override
+    public void setDefaultDomainNameFallback(Name defaultDomainNameFallback) {
+        this.defaultDomainNameFallback = defaultDomainNameFallback;
     }
 
     @Override
