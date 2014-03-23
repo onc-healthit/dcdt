@@ -96,8 +96,7 @@
     <!--====================================================================================================
     = JAMES MAIL QUEUE BROKER
     =====================================================================================================-->
-    <amq:broker id="mailQueueBroker" brokerName="mailQueue" dataDirectory="file:${dcdt.service.mail.james.var.mail.queue.amq.brokers.dir}" persistent="true"
-        schedulerSupport="false" useJmx="true" useShutdownHook="true">
+    <amq:broker id="mailQueueBroker" brokerName="mailQueue" persistent="false" schedulerSupport="false" useJmx="true" useShutdownHook="true">
         <amq:destinationPolicy>
             <amq:policyMap>
                 <amq:policyEntries>
@@ -108,12 +107,16 @@
         <amq:managementContext>
             <amq:managementContext createConnector="false"/>
         </amq:managementContext>
-        <amq:persistenceAdapter>
-            <amq:amqPersistenceAdapter/>
-        </amq:persistenceAdapter>
         <amq:plugins>
             <amq:statisticsBrokerPlugin/>
         </amq:plugins>
+        <amq:systemUsage>
+            <amq:systemUsage>
+                <amq:memoryUsage>
+                    <amq:memoryUsage limit="64M"/>
+                </amq:memoryUsage>
+            </amq:systemUsage>
+        </amq:systemUsage>
         <amq:transportConnectors>
             <amq:transportConnector uri="tcp://localhost:0"/>
         </amq:transportConnectors>
@@ -131,10 +134,6 @@
                 <amq:prefetchPolicy>
                     <amq:prefetchPolicy queuePrefetch="0" topicPrefetch="0"/>
                 </amq:prefetchPolicy>
-                <beans:property name="blobTransferPolicy">
-                    <beans:bean class="org.apache.james.queue.activemq.FileSystemBlobTransferPolicy"
-                        p:defaultUploadUrl="file:${dcdt.service.mail.james.var.mail.queue.amq.blob.xfer.dir}"/>
-                </beans:property>
             </amq:connectionFactory>
         </beans:property>
     </beans:bean>
@@ -152,7 +151,8 @@
     =====================================================================================================-->
     <beans:bean id="mailQueue" class="org.apache.james.queue.api.MailQueue" abstract="true"/>
     
-    <beans:bean name="mailQueueFactory" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolMailQueueFactory" parent="mailQueue"/>
+    <beans:bean name="mailQueueFactory" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolMailQueueFactory" parent="mailQueue"
+        p:useBlobMessages="false"/>
     <beans:alias name="mailQueueFactory" alias="mailqueuefactory"/>
     
     <!--====================================================================================================

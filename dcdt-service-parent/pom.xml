@@ -48,8 +48,8 @@
         <dependencies>
             <dependency>
                 <groupId>org.apache.activemq</groupId>
-                <artifactId>activemq-core</artifactId>
-                <version>5.7.0</version>
+                <artifactId>activemq-spring</artifactId>
+                <version>5.9.0</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.camel</groupId>
@@ -276,6 +276,10 @@
                     <exclusion>
                         <groupId>javax.mail</groupId>
                         <artifactId>mail</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.activemq</groupId>
+                        <artifactId>activemq-core</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
