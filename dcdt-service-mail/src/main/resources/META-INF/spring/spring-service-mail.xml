@@ -49,7 +49,8 @@
     <beans:bean id="domainList" class="gov.hhs.onc.dcdt.service.mail.james.ToolDomainList" abstract="true"/>
     
     <beans:bean id="domainListImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolDomainListImpl" parent="domainList"
-        p:defaultDomainConfig-ref="instanceDomainConfigBase"/>
+        p:defaultDomainName="#{ instanceDomainConfigBase.domainName }"
+        p:defaultDomainNameFallback-ref="dnsNameLocalhost"/>
     <beans:alias name="domainListImpl" alias="domainlist"/>
     
     <!--====================================================================================================

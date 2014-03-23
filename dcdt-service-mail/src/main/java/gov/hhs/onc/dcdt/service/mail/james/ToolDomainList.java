@@ -6,11 +6,19 @@ import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.james.domainlist.api.DomainList;
 import org.springframework.context.ApplicationContextAware;
+import org.xbill.DNS.Name;
 
 public interface ToolDomainList extends ApplicationContextAware, DomainList, ToolBean {
-    public InstanceDomainConfig getDefaultDomainConfig();
+    public boolean hasDefaultDomainName();
 
-    public void setDefaultDomainConfig(InstanceDomainConfig defaultDomainConfig);
+    @Nullable
+    public Name getDefaultDomainName();
+
+    public void setDefaultDomainName(@Nullable Name defaultDomainName);
+
+    public Name getDefaultDomainNameFallback();
+
+    public void setDefaultDomainNameFallback(Name defaultDomainNameFallback);
 
     public boolean hasDomainConfigs();
 
