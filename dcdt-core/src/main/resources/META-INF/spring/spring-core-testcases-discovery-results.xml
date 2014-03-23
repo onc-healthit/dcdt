@@ -44,6 +44,14 @@
         <beans:constructor-arg name="mimeMailMsgBeanName">
             <beans:idref bean="discoveryTestcaseResultMimeMailMsg"/>
         </beans:constructor-arg>
-        <beans:constructor-arg name="velocityEngine" ref="velocityEngineMail"/>
+        <beans:constructor-arg name="velocityEngine">
+            <beans:bean parent="velocityEngineMail">
+                <beans:property name="velocimacroLibraries">
+                    <beans:list merge="true">
+                        <beans:value>lib/core-testcases-discovery-results</beans:value>
+                    </beans:list>
+                </beans:property>
+            </beans:bean>
+        </beans:constructor-arg>
     </beans:bean>
 </beans:beans>

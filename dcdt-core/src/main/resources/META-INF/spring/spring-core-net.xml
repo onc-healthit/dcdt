@@ -23,12 +23,22 @@
     <beans:bean id="ipAddr" class="java.net.InetAddress" abstract="true"/>
     
     <beans:bean id="ipAddrLocalAny" class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress">
-        <beans:constructor-arg index="0" value="0.0.0.0"/>
+        <beans:constructor-arg name="str" value="0.0.0.0"/>
     </beans:bean>
     
     <beans:bean id="ipAddrLocalhost" parent="ipAddr" factory-method="getLocalHost"/>
     
     <beans:bean id="ipAddrLoopback" parent="ipAddr" factory-method="getLoopbackAddress"/>
+    
+    <!--====================================================================================================
+    = SOCKET ADDRESS
+    =====================================================================================================-->
+    <beans:bean id="socketAddr" class="java.net.InetSocketAddress" abstract="true"/>
+    
+    <beans:bean id="socketAddrLoopback" parent="socketAddr" abstract="true">
+        <!--suppress InjectionValueTypeInspection -->
+        <beans:constructor-arg index="0" ref="ipAddrLoopback"/>
+    </beans:bean>
     
     <!--====================================================================================================
     = URI

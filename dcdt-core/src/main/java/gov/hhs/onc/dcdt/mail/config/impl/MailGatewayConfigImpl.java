@@ -23,8 +23,6 @@ public class MailGatewayConfigImpl extends AbstractToolConnectionBean implements
     @Override
     public Session getSession() {
         return this.appContext.getBean((this.isSsl() ? this.mailSessionSslBeanName : this.mailSessionPlainBeanName), Session.class);
-        
-        // return ToolBeanFactoryUtils.createBean(this.appContext, (this.isSsl() ? this.mailSessionSslBeanName : this.mailSessionPlainBeanName), Session.class);
     }
 
     @Override

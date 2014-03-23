@@ -54,7 +54,7 @@
             <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="dnsServerConfigImpl"
                 p:host-ref="ipAddrLocalAny"
-                p:port="${dcdt.service.dns.server.1.port}"
+                p:port="${dcdt.instance.dns.server.1.port}"
                 p:name="dnsServer1"
                 p:nameDisplay="DNS Server 1"/>
         </beans:constructor-arg>

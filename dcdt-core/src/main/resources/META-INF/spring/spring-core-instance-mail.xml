@@ -56,7 +56,8 @@
     <beans:bean id="instanceMailAddrConfigImpl" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceMailAddressConfigImpl" parent="instanceMailAddrConfig"
         abstract="true">
         <beans:property name="gatewayConfig">
-            <beans:bean parent="mailGatewayConfigImpl"/>
+            <beans:bean parent="mailGatewayConfigImpl"
+                p:port="${dcdt.instance.mail.james.smtp.1.port}"/>
         </beans:property>
         <beans:property name="gatewayCredentialConfig">
             <beans:bean parent="mailGatewayCredConfigImpl"/>

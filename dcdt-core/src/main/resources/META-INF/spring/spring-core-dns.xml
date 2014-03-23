@@ -26,14 +26,27 @@
         p:maxNCache="0"/>
     
     <!--====================================================================================================
-    = GOOGLE DNS SERVERS
+    = DNS SERVER SOCKET ADDRESSES
     =====================================================================================================-->
-    <beans:bean id="ipAddrDnsServerGoogle1" class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress">
-        <beans:constructor-arg index="0" value="8.8.8.8"/>
+    <beans:bean id="socketAddrDnsServer" parent="socketAddr" abstract="true">
+        <beans:constructor-arg index="1" value="#{ T(org.xbill.DNS.SimpleResolver).DEFAULT_PORT }"/>
     </beans:bean>
     
-    <beans:bean id="ipAddrDnsServerGoogle2" class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress">
-        <beans:constructor-arg index="0" value="8.8.4.4"/>
+    <!--====================================================================================================
+    = GOOGLE DNS SERVER SOCKET ADDRESSES
+    =====================================================================================================-->
+    <beans:bean id="socketAddrDnsServerGoogle1" parent="socketAddrDnsServer">
+        <beans:constructor-arg index="0">
+            <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress"
+                c:str="8.8.8.8"/>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+    <beans:bean id="socketAddrDnsServerGoogle2" parent="socketAddrDnsServer">
+        <beans:constructor-arg index="0">
+            <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress"
+                c:str="8.8.4.4"/>
+        </beans:constructor-arg>
     </beans:bean>
     
     <!--====================================================================================================
@@ -42,11 +55,12 @@
     <beans:bean id="dnsResolver" class="org.xbill.DNS.ExtendedResolver" abstract="true"/>
     <beans:bean id="dnsResolverExt" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver" abstract="true"/>
     
-    <beans:bean id="dnsResolverExtExternal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt" factory-method="fromAddresses">
-        <beans:constructor-arg name="addrs">
+    <beans:bean id="dnsResolverExtExternal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt"
+        factory-method="fromSocketAddresses">
+        <beans:constructor-arg name="socketAddrs">
             <util:list>
-                <beans:ref bean="ipAddrDnsServerGoogle1"/>
-                <beans:ref bean="ipAddrDnsServerGoogle2"/>
+                <beans:ref bean="socketAddrDnsServerGoogle1"/>
+                <beans:ref bean="socketAddrDnsServerGoogle2"/>
             </util:list>
         </beans:constructor-arg>
     </beans:bean>

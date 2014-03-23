@@ -2,6 +2,8 @@ package gov.hhs.onc.dcdt.service.mail.james.config;
 
 import gov.hhs.onc.dcdt.config.ConfigurationNode;
 import javax.annotation.Nullable;
+import org.xbill.DNS.Cache;
+import org.xbill.DNS.Resolver;
 
 @ConfigurationNode(name = "dnsservice")
 public interface DnsServiceConfigBean extends JamesConfigBean {
@@ -13,19 +15,17 @@ public interface DnsServiceConfigBean extends JamesConfigBean {
 
     public void setAutoDiscover(@Nullable Boolean autoDiscover);
 
-    public boolean hasMaxCacheSize();
+    public boolean hasCache();
 
-    @ConfigurationNode(name = "maxcachesize")
     @Nullable
-    public Integer getMaxCacheSize();
+    public Cache getCache();
 
-    public void setMaxCacheSize(@Nullable Integer maxCacheSize);
+    public void setCache(@Nullable Cache cache);
 
-    public boolean hasServers();
+    public boolean hasResolver();
 
-    @ConfigurationNode
     @Nullable
-    public DnsServiceServersConfigBean getServers();
+    public Resolver getResolver();
 
-    public void setServers(@Nullable DnsServiceServersConfigBean servers);
+    public void setResolver(@Nullable Resolver resolver);
 }

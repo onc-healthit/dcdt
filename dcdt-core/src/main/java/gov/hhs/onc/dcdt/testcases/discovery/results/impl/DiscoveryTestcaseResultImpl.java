@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
+import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultCredentialType;
 import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResult;
 import javax.annotation.Nullable;
 
@@ -12,6 +13,17 @@ public class DiscoveryTestcaseResultImpl extends AbstractToolTestcaseResult impl
     private DiscoveryTestcaseCredential credFound;
     private MailInfo mailInfo;
     private DiscoveryTestcase testcase;
+
+    @Override
+    public boolean hasCredential(DiscoveryTestcaseResultCredentialType credType) {
+        return (this.getCredential(credType) != null);
+    }
+
+    @Nullable
+    @Override
+    public DiscoveryTestcaseCredential getCredential(DiscoveryTestcaseResultCredentialType credType) {
+        return ((credType == DiscoveryTestcaseResultCredentialType.EXPECTED) ? this.credExpected : this.credFound);
+    }
 
     @Override
     public boolean hasCredentialExpected() {

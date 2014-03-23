@@ -1,13 +1,13 @@
 package gov.hhs.onc.dcdt.service.mail.james.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
 import gov.hhs.onc.dcdt.service.mail.james.ToolUsersRepository;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +18,9 @@ import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.james.user.api.UsersRepositoryException;
 import org.apache.james.user.api.model.User;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
 public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUsersRepository {
     private static class ToolJamesUserNamePredicate extends AbstractToolPredicate<InstanceMailAddressConfig> {
@@ -76,7 +79,8 @@ public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUse
         }
     }
 
-    private List<InstanceMailAddressConfig> mailAddrConfigs = new ArrayList<>();
+    private AbstractApplicationContext appContext;
+    private List<InstanceMailAddressConfig> mailAddrConfigs;
 
     @Override
     public void removeUser(String userName) throws UsersRepositoryException {
@@ -131,6 +135,11 @@ public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUse
         return false;
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.mailAddrConfigs = ToolBeanFactoryUtils.getBeansOfType(this.appContext, InstanceMailAddressConfig.class);
+    }
+
     private static Collection<String> getUserNames(List<InstanceMailAddressConfig> mailAddrConfigs) {
         return CollectionUtils.select(CollectionUtils.collect(mailAddrConfigs, ToolJamesUserNameTransformer.INSTANCE), PredicateUtils.notNullPredicate());
     }
@@ -157,13 +166,18 @@ public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUse
     }
 
     @Override
-    public List<InstanceMailAddressConfig> getMailAddressConfigs() {
-        return this.mailAddrConfigs;
+    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
+        this.appContext = ((AbstractApplicationContext) appContext);
     }
 
     @Override
-    public void setMailAddressConfigs(List<InstanceMailAddressConfig> mailAddrConfigs) {
-        this.mailAddrConfigs.clear();
-        this.mailAddrConfigs.addAll(mailAddrConfigs);
+    public boolean hasMailAddressConfigs() {
+        return !CollectionUtils.isEmpty(this.mailAddrConfigs);
+    }
+
+    @Nullable
+    @Override
+    public List<InstanceMailAddressConfig> getMailAddressConfigs() {
+        return this.mailAddrConfigs;
     }
 }
