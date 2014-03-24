@@ -25,8 +25,8 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
     private final static String MODEL_ATTR_NAME_TESTCASE_DISCOVERY_RESULT = "discoveryTestcaseResult";
 
     public DiscoveryTestcaseResultSenderServiceImpl(Charset mailEnc, VelocityEngine velocityEngine, InstanceMailAddressConfig fromConfig,
-        String mimeMailMsgBeanName) {
-        super(mailEnc, velocityEngine, fromConfig, mimeMailMsgBeanName);
+        @Nullable InstanceMailAddressConfig replyToConfig, String mimeMailMsgBeanName) {
+        super(mailEnc, velocityEngine, fromConfig, replyToConfig, mimeMailMsgBeanName);
     }
 
     @Override

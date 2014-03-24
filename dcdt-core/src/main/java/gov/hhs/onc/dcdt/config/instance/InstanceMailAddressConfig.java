@@ -25,4 +25,9 @@ public interface InstanceMailAddressConfig extends ToolNamedBean {
     public MailAddress getMailAddress();
 
     public void setMailAddress(MailAddress mailAddr);
+
+    @JsonProperty("processed")
+    public boolean isProcessed();
+
+    public void setProcessed(boolean processed);
 }

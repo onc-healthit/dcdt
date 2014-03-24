@@ -170,6 +170,15 @@
     <beans:bean id="configBeanMatcherImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MatcherConfigBeanImpl" parent="configBeanMatcher"
         abstract="true"/>
     
+    <beans:bean id="configBeanMatcherRecipientNotProcessed" parent="configBeanMatcherImpl" abstract="true">
+        <beans:property name="match">
+            <dcdt:normalized-string>
+                gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsNotProcessedMatcher=
+                #{ T(gov.hhs.onc.dcdt.service.mail.james.matcher.ToolMatcher).COND_PARAM_NAME_MAIL_ENC }=#{ charsetUtf8.name() }
+            </dcdt:normalized-string>
+        </beans:property>
+    </beans:bean>
+    
     <beans:bean id="configBeanMatcherRecipientDiscoveryTestcase" parent="configBeanMatcherImpl" abstract="true">
         <beans:property name="match">
             <dcdt:normalized-string>
@@ -185,6 +194,19 @@
     <beans:bean id="configBeanMailet" class="gov.hhs.onc.dcdt.service.mail.james.config.MailetConfigBean" parent="configBeanJames" abstract="true"/>
     <beans:bean id="configBeanMailetImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MailetConfigBeanImpl" parent="configBeanMailet"
         abstract="true"/>
+    
+    <beans:bean id="configBeanMailetNull" parent="configBeanMailetImpl" abstract="true"
+        p:className="Null"/>
+    
+    <beans:bean id="configBeanMailetNullRecipientNotProcessed" parent="configBeanMailetNull" abstract="true"
+        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsNotProcessedMatcher">
+        <beans:property name="initParameters">
+            <util:map>
+                <beans:entry key="#{ T(gov.hhs.onc.dcdt.service.mail.james.mailet.ToolMailet).INIT_PARAM_NAME_MAIL_ENC }"
+                    value="#{ charsetUtf8.name() }"/>
+            </util:map>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="configBeanMailetAll" parent="configBeanMailetImpl" abstract="true"
         p:match="All"/>
@@ -234,10 +256,10 @@
                             p:state="ROOT">
                             <beans:property name="mailets">
                                 <util:list>
+                                    <beans:bean parent="configBeanMailetNullRecipientNotProcessed"/>
                                     <beans:bean parent="configBeanMailetAll"
                                         p:className="PostmasterAlias"/>
-                                    <beans:bean parent="configBeanMailetImpl"
-                                        p:className="Null"
+                                    <beans:bean parent="configBeanMailetNull"
                                         p:match="RelayLimit=30"/>
                                     <beans:bean parent="configBeanMailetAll"
                                         p:className="LogMessage"/>

@@ -9,6 +9,11 @@ import org.springframework.context.ApplicationContextAware;
 public interface ToolMailSenderService extends ApplicationContextAware, ToolBean {
     public InstanceMailAddressConfig getFromConfig();
 
+    public boolean hasReplyToConfig();
+
+    @Nullable
+    public InstanceMailAddressConfig getReplyToConfig();
+
     public boolean hasTransportListenerBeanNames();
 
     @Nullable

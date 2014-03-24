@@ -31,6 +31,7 @@ import javax.mail.internet.MimePart;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.EnumerationUtils;
 import org.apache.commons.collections4.PredicateUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.MimeType;
@@ -246,6 +247,21 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
         }
 
         return parts;
+    }
+
+    public boolean hasReplyTo() throws MessagingException {
+        return (this.getReplyTo() != null);
+    }
+
+    @Nullable
+    public MailAddress getReplyTo() throws MessagingException {
+        Address addr = ToolArrayUtils.getFirst(this.getMimeMessage().getReplyTo());
+
+        return ((addr != null) ? new MailAddressImpl(addr) : null);
+    }
+
+    public void setReplyTo(@Nullable MailAddress replyTo) throws MessagingException {
+        this.getMimeMessage().setReplyTo(ArrayUtils.toArray(((replyTo != null) ? replyTo.toInternetAddress() : null)));
     }
 
     public boolean hasText() throws IOException, MessagingException {
