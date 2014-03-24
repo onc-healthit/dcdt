@@ -12,7 +12,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 public class DiscoveryTestcaseMailMappingFactoryBean extends AbstractToolFactoryBean<DiscoveryTestcaseMailMapping> implements ApplicationContextAware {
     private AbstractApplicationContext appContext;
 
-    private DiscoveryTestcaseMailMappingFactoryBean() {
+    public DiscoveryTestcaseMailMappingFactoryBean() {
         super(DiscoveryTestcaseMailMapping.class);
     }
 
