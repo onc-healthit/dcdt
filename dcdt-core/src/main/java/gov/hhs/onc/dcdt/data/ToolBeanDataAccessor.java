@@ -8,7 +8,7 @@ import org.hibernate.criterion.Criterion;
 public interface ToolBeanDataAccessor<T extends ToolBean> extends ToolBean {
     public boolean containsBean() throws ToolBeanDataAccessException;
 
-    public boolean containsBean(Serializable beanIdValue) throws ToolBeanDataAccessException;
+    public boolean containsBeanOfId(Serializable beanIdValue) throws ToolBeanDataAccessException;
 
     public boolean containsBean(Criterion ... beanCriterions) throws ToolBeanDataAccessException;
 

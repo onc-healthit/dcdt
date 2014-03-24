@@ -50,7 +50,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     }
 
     @Override
-    public boolean containsBean(Serializable beanIdValue) throws ToolBeanDataAccessException {
+    public boolean containsBeanOfId(Serializable beanIdValue) throws ToolBeanDataAccessException {
         return this.containsBean(this.getCheckedSession(), beanIdValue);
     }
 
@@ -272,7 +272,7 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
     protected T loadBean(Session session, T bean) throws ToolBeanDataAccessException {
         Serializable beanId = ToolBeanUtils.getId(ToolBeanUtils.wrap(bean, this.convService));
 
-        if (this.containsBean(beanId)) {
+        if (this.containsBeanOfId(beanId)) {
             T beanPersistent = this.getBeanById(beanId);
 
             if (beanPersistent != null) {

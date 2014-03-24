@@ -1,17 +1,10 @@
 package gov.hhs.onc.dcdt.testcases;
 
-import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.beans.ToolDirectAddressBean;
 import javax.annotation.Nullable;
 
-public interface ToolTestcaseSubmission<T extends ToolTestcaseDescription, U extends ToolTestcaseConfig, V extends ToolTestcase<T, U>> extends ToolBean {
-    public boolean hasDirectAddress();
-
-    @Nullable
-    public MailAddress getDirectAddress();
-
-    public void setDirectAddress(@Nullable MailAddress directAddr);
-
+public interface ToolTestcaseSubmission<T extends ToolTestcaseDescription, U extends ToolTestcaseConfig, V extends ToolTestcase<T, U>> extends
+    ToolDirectAddressBean {
     public boolean hasTestcase();
 
     @Nullable

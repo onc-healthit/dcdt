@@ -9,6 +9,7 @@ import gov.hhs.onc.dcdt.mail.MailAddressPart;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.EnumMap;
 import java.util.Objects;
@@ -20,7 +21,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.xbill.DNS.Name;
 
-public class MailAddressImpl extends AbstractToolBean implements MailAddress {
+public class MailAddressImpl extends AbstractToolBean implements MailAddress, Serializable {
+    private final static long serialVersionUID = 1L;
     private EnumMap<MailAddressPart, String> addrPartMap = new EnumMap<>(MailAddressPart.class);
 
     public MailAddressImpl() {

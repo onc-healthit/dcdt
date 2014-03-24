@@ -52,4 +52,10 @@
         <put-attribute name="head" value="/WEB-INF/views/content/head-discovery.jsp" type="template"/>
         <put-attribute name="content" value="/WEB-INF/views/content/content-discovery.jsp" type="template"/>
     </definition>
+
+    <definition name="discovery-mail-mapping" extends="layout">
+        <put-attribute name="name" value="discovery-mail-mapping" cascade="true" type="string"/>
+        <put-attribute name="head" value="/WEB-INF/views/content/head-discovery-mail-mapping.jsp" type="template"/>
+        <put-attribute name="content" value="/WEB-INF/views/content/content-discovery-mail-mapping.jsp" type="template"/>
+    </definition>
 </tiles-definitions>

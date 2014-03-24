@@ -13,3 +13,8 @@ create table discovery_testcase_creds (
     private_key_data blob(8192) not null,
     cert_data blob(8192) not null
 );
+
+create table discovery_testcase_mail_mappings (
+    direct_address varchar(253) not null primary key,
+    results_address varchar(253) not null
+);

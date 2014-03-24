@@ -30,6 +30,7 @@
 <spring:url var="urlHostingProcess" value="/hosting/process" scope="request"/>
 <spring:url var="urlDiscovery" value="/discovery" scope="request"/>
 <spring:url var="urlDiscoveryMailMapping" value="/discovery/mail/mapping" scope="request"/>
+<spring:url var="urlDiscoveryMailMappingAdd" value="/discovery/mail/mapping/add" scope="request"/>
 <spring:url var="urlDiscoveryTrustAnchor" value="/discovery/anchor" scope="request"/>
 <c:set var="templateName" scope="request"><tiles:getAsString name="name"/></c:set>
 <c:set var="templateNameProp" scope="request" value="${fn:replace(templateName, '-', '.')}"/>
