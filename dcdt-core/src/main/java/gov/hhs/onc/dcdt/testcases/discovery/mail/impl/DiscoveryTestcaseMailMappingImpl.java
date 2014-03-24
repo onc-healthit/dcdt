@@ -10,13 +10,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-@Component("discoveryTestcaseMailMappingImpl")
-@Lazy
-@Scope("prototype")
 @Entity(name = "discovery_testcase_mail_mapping")
 @Table(name = "discovery_testcase_mail_mappings")
 public class DiscoveryTestcaseMailMappingImpl extends AbstractToolDirectAddressBean implements DiscoveryTestcaseMailMapping {
