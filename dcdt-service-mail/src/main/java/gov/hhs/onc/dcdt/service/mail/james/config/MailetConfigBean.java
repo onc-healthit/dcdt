@@ -12,16 +12,16 @@ public interface MailetConfigBean extends JamesConfigBean {
 
     public void setClassName(String className);
 
+    public boolean hasInitParameters();
+
+    @ConfigurationNode(type = ConfigurationNodeType.CHILD_MAP)
+    @Nullable
+    public Map<String, String> getInitParameters();
+
+    public void setInitParameters(@Nullable Map<String, String> initParams);
+
     @ConfigurationNode(type = ConfigurationNodeType.ATTRIBUTE)
     public String getMatch();
 
     public void setMatch(String match);
-
-    public boolean hasProperties();
-
-    @ConfigurationNode(type = ConfigurationNodeType.CHILD_MAP)
-    @Nullable
-    public Map<String, ?> getProperties();
-
-    public void setProperties(@Nullable Map<String, ?> props);
 }

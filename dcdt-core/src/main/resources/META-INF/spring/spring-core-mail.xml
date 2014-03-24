@@ -26,17 +26,22 @@
     <!--====================================================================================================
     = MAIL SESSION
     =====================================================================================================-->
-    <beans:bean id="mailSession" class="javax.mail.Session" abstract="true"/>
-    
-    <beans:bean id="mailSessionPlain" parent="mailSession" factory-method="getInstance" lazy-init="true" scope="prototype">
-        <beans:constructor-arg name="props">
-            <beans:props/>
+    <beans:bean id="mailSession" class="javax.mail.Session" abstract="true" factory-method="getInstance">
+        <beans:constructor-arg index="0">
+            <beans:props>
+                <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailMimeProperties).CACHE_MULTIPART }">false</beans:prop>
+            </beans:props>
+        </beans:constructor-arg>
+        <beans:constructor-arg index="1">
+            <beans:null/>
         </beans:constructor-arg>
     </beans:bean>
     
-    <beans:bean id="mailSessionSsl" parent="mailSession" factory-method="getInstance" lazy-init="true" scope="prototype">
-        <beans:constructor-arg name="props">
-            <beans:props>
+    <beans:bean id="mailSessionPlain" parent="mailSession" lazy-init="true" scope="prototype"/>
+    
+    <beans:bean id="mailSessionSsl" parent="mailSession" lazy-init="true" scope="prototype">
+        <beans:constructor-arg index="0">
+            <beans:props merge="true">
                 <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).SSL_ENABLE }">true</beans:prop>
                 <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).SSL_TRUST }">*</beans:prop>
                 <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).SSL_STARTTLS_ENABLE }">true</beans:prop>

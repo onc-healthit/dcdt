@@ -1,23 +1,23 @@
 package gov.hhs.onc.dcdt.mail;
 
-import org.springframework.mail.MailException;
+import javax.mail.MessagingException;
 
-public class ToolMailException extends MailException {
+public class ToolMailException extends MessagingException {
     private final static long serialVersionUID = 0L;
 
     public ToolMailException() {
-        super(null, null);
+        this(null, null);
     }
 
     public ToolMailException(String msg) {
-        super(msg);
+        this(msg, null);
     }
 
     public ToolMailException(Throwable cause) {
-        super(null, cause);
+        this(null, cause);
     }
 
     public ToolMailException(String msg, Throwable cause) {
-        super(msg, cause);
+        super(msg, ((Exception) cause));
     }
 }

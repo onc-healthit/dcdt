@@ -66,12 +66,15 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
     protected Charset mailEnc;
     protected VelocityEngine velocityEngine;
     protected InstanceMailAddressConfig fromConfig;
+    protected InstanceMailAddressConfig replyToConfig;
     protected String mimeMailMsgBeanName;
 
-    protected AbstractToolMailSenderService(Charset mailEnc, VelocityEngine velocityEngine, InstanceMailAddressConfig fromConfig, String mimeMailMsgBeanName) {
+    protected AbstractToolMailSenderService(Charset mailEnc, VelocityEngine velocityEngine, InstanceMailAddressConfig fromConfig,
+        @Nullable InstanceMailAddressConfig replyToConfig, String mimeMailMsgBeanName) {
         this.mailEnc = mailEnc;
         this.velocityEngine = velocityEngine;
         this.fromConfig = fromConfig;
+        this.replyToConfig = replyToConfig;
         this.mimeMailMsgBeanName = mimeMailMsgBeanName;
     }
 
@@ -99,7 +102,7 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
 
         ToolMimeMailMessage mimeMailMsg =
             ToolBeanFactoryUtils.createBean(this.appContext, this.mimeMailMsgBeanName, ToolMimeMailMessage.class, new ToolMimeMessageHelper(mailSession,
-                this.mailEnc), this.fromConfig, subjModelMap, textModelMap);
+                this.mailEnc), this.fromConfig, this.replyToConfig, subjModelMap, textModelMap);
 
         mailSender.send(mimeMailMsg,
             ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolMimeMessagePreparator.class, this.velocityEngine, mimeMailMsg, to, attachments));
@@ -113,6 +116,17 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
     @Override
     public InstanceMailAddressConfig getFromConfig() {
         return this.fromConfig;
+    }
+
+    @Override
+    public boolean hasReplyToConfig() {
+        return (this.replyToConfig != null);
+    }
+
+    @Nullable
+    @Override
+    public InstanceMailAddressConfig getReplyToConfig() {
+        return this.replyToConfig;
     }
 
     @Override

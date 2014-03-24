@@ -39,7 +39,8 @@
     
     <beans:bean id="discoveryTestcaseResultSenderServiceImpl"
         class="gov.hhs.onc.dcdt.testcases.discovery.results.sender.impl.DiscoveryTestcaseResultSenderServiceImpl" parent="discoveryTestcaseResultSenderService"
-        c:fromConfig-ref="instanceMailAddrConfigResults">
+        c:fromConfig-ref="instanceMailAddrConfigResults"
+        c:replyToConfig-ref="instanceMailAddrConfigNoReply">
         <beans:constructor-arg name="mailEnc" ref="charsetUtf8"/>
         <beans:constructor-arg name="mimeMailMsgBeanName">
             <beans:idref bean="discoveryTestcaseResultMimeMailMsg"/>

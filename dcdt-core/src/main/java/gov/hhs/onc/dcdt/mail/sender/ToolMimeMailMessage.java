@@ -14,6 +14,11 @@ public interface ToolMimeMailMessage extends MailMessage {
 
     public ToolMimeMessageHelper getMimeMessageHelperExtended();
 
+    public boolean hasReplyToConfig();
+
+    @Nullable
+    public InstanceMailAddressConfig getReplyToConfig();
+
     public boolean hasSubjectModelMap();
 
     @Nullable

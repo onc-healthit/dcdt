@@ -13,9 +13,10 @@ import org.apache.commons.lang3.StringUtils;
 
 @JsonTypeName("instanceMailAddrConfig")
 public class InstanceMailAddressConfigImpl extends AbstractToolNamedBean implements InstanceMailAddressConfig {
-    private MailAddress mailAddr;
     private MailGatewayConfig gatewayConfig;
     private MailGatewayCredentialConfig gatewayCredConfig;
+    private MailAddress mailAddr;
+    private boolean processed;
 
     @Override
     public void afterPropertiesSet() throws Exception {
@@ -78,5 +79,15 @@ public class InstanceMailAddressConfigImpl extends AbstractToolNamedBean impleme
     @Override
     public void setMailAddress(MailAddress mailAddr) {
         this.mailAddr = mailAddr;
+    }
+
+    @Override
+    public boolean isProcessed() {
+        return this.processed;
+    }
+
+    @Override
+    public void setProcessed(boolean processed) {
+        this.processed = processed;
     }
 }
