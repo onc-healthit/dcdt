@@ -3,12 +3,13 @@ package gov.hhs.onc.dcdt.mail;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import gov.hhs.onc.dcdt.beans.ToolBean;
+import java.io.Serializable;
 import javax.annotation.Nullable;
 import javax.mail.internet.InternetAddress;
 import org.xbill.DNS.Name;
 
 @JsonTypeInfo(use = Id.NONE)
-public interface MailAddress extends ToolBean {
+public interface MailAddress extends Serializable, ToolBean {
     @Nullable
     public MailAddress forBindingType(BindingType bindingType);
 
