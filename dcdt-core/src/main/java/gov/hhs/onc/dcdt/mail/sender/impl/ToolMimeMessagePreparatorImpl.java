@@ -54,6 +54,11 @@ public class ToolMimeMessagePreparatorImpl extends AbstractToolBean implements T
         mimeMsgHelper.setFrom(this.mimeMailMsg.getFromConfig().getMailAddress());
         mimeMsgHelper.setTo(this.to);
 
+        if (this.mimeMailMsg.hasReplyToConfig()) {
+            // noinspection ConstantConditions
+            mimeMsgHelper.setReplyTo(this.mimeMailMsg.getReplyToConfig().getMailAddress());
+        }
+
         if (this.mimeMailMsg.hasSubjectTemplateLocation()) {
             mimeMsgHelper.setSubject(this.prepareTemplate(encName, this.mimeMailMsg.getSubjectTemplateLocation(), this.mimeMailMsg.getSubjectModelMap()));
         }
