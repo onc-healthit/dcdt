@@ -53,14 +53,27 @@
     = INSTANCE MAIL CONFIG
     =====================================================================================================-->
     <beans:bean id="instanceMailAddrConfig" class="gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig" abstract="true"/>
+    
     <beans:bean id="instanceMailAddrConfigImpl" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceMailAddressConfigImpl" parent="instanceMailAddrConfig"
-        abstract="true">
+        abstract="true"
+        p:processed="true">
         <beans:property name="gatewayConfig">
             <beans:bean parent="mailGatewayConfigImpl"
                 p:port="${dcdt.instance.mail.james.smtp.1.port}"/>
         </beans:property>
         <beans:property name="gatewayCredentialConfig">
             <beans:bean parent="mailGatewayCredConfigImpl"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfigNotProcessed" parent="instanceMailAddrConfigImpl" abstract="true"
+        p:processed="false"/>
+    
+    <beans:bean id="instanceMailAddrConfigNoReply" parent="instanceMailAddrConfigNotProcessed"
+        p:name="no-reply"
+        p:nameDisplay="DCDT No-Reply">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddrBase"/>
         </beans:property>
     </beans:bean>
     

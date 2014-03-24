@@ -7,8 +7,8 @@ import org.apache.commons.collections4.MapUtils;
 
 public class MailetConfigBeanImpl extends AbstractJamesConfigBean implements MailetConfigBean {
     private String className;
+    private Map<String, String> initParams;
     private String match;
-    private Map<String, ?> props;
 
     @Override
     public String getClassName() {
@@ -21,6 +21,22 @@ public class MailetConfigBeanImpl extends AbstractJamesConfigBean implements Mai
     }
 
     @Override
+    public boolean hasInitParameters() {
+        return !MapUtils.isEmpty(this.initParams);
+    }
+
+    @Nullable
+    @Override
+    public Map<String, String> getInitParameters() {
+        return this.initParams;
+    }
+
+    @Override
+    public void setInitParameters(@Nullable Map<String, String> initParams) {
+        this.initParams = initParams;
+    }
+
+    @Override
     public String getMatch() {
         return this.match;
     }
@@ -28,21 +44,5 @@ public class MailetConfigBeanImpl extends AbstractJamesConfigBean implements Mai
     @Override
     public void setMatch(String match) {
         this.match = match;
-    }
-
-    @Override
-    public boolean hasProperties() {
-        return !MapUtils.isEmpty(this.props);
-    }
-
-    @Nullable
-    @Override
-    public Map<String, ?> getProperties() {
-        return this.props;
-    }
-
-    @Override
-    public void setProperties(@Nullable Map<String, ?> props) {
-        this.props = props;
     }
 }

@@ -83,6 +83,13 @@ public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUse
     private List<InstanceMailAddressConfig> mailAddrConfigs;
 
     @Override
+    public boolean isProcessed(String recipientMailAddrStr) {
+        InstanceMailAddressConfig recipientMailAddrConfig = CollectionUtils.find(this.mailAddrConfigs, new ToolJamesUserNamePredicate(recipientMailAddrStr));
+
+        return ((recipientMailAddrConfig != null) && recipientMailAddrConfig.isProcessed());
+    }
+
+    @Override
     public void removeUser(String userName) throws UsersRepositoryException {
         throw new UsersRepositoryException(String.format("Unable to remove James user (name=%s) from James users repository (class=%s).", userName,
             ToolClassUtils.getName(this)));

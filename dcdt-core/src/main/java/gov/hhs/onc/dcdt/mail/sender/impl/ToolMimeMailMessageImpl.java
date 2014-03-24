@@ -10,16 +10,18 @@ import org.springframework.ui.ModelMap;
 
 public class ToolMimeMailMessageImpl extends MimeMailMessage implements ToolMimeMailMessage {
     private InstanceMailAddressConfig fromConfig;
+    private InstanceMailAddressConfig replyToConfig;
     private ModelMap subjModelMap;
     private String subjTemplateLoc;
     private ModelMap textModelMap;
     private String textTemplateLoc;
 
-    public ToolMimeMailMessageImpl(ToolMimeMessageHelper mimeMsgHelper, InstanceMailAddressConfig fromConfig, @Nullable ModelMap subjModelMap,
-        @Nullable ModelMap textModelMap) {
+    public ToolMimeMailMessageImpl(ToolMimeMessageHelper mimeMsgHelper, InstanceMailAddressConfig fromConfig,
+        @Nullable InstanceMailAddressConfig replyToConfig, @Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap) {
         super(mimeMsgHelper);
 
         this.fromConfig = fromConfig;
+        this.replyToConfig = replyToConfig;
         this.subjModelMap = subjModelMap;
         this.textModelMap = textModelMap;
     }
@@ -32,6 +34,17 @@ public class ToolMimeMailMessageImpl extends MimeMailMessage implements ToolMime
     @Override
     public ToolMimeMessageHelper getMimeMessageHelperExtended() {
         return ((ToolMimeMessageHelper) this.getMimeMessageHelper());
+    }
+
+    @Override
+    public boolean hasReplyToConfig() {
+        return (this.replyToConfig != null);
+    }
+
+    @Nullable
+    @Override
+    public InstanceMailAddressConfig getReplyToConfig() {
+        return this.replyToConfig;
     }
 
     @Override

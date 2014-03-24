@@ -8,6 +8,8 @@ import org.apache.james.user.api.UsersRepository;
 import org.springframework.context.ApplicationContextAware;
 
 public interface ToolUsersRepository extends ApplicationContextAware, ToolBean, UsersRepository {
+    public boolean isProcessed(String recipientMailAddrStr);
+
     public boolean hasMailAddressConfigs();
 
     @Nullable

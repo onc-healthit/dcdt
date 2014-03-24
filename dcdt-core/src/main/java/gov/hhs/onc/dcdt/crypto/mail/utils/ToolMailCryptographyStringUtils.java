@@ -1,12 +1,12 @@
 package gov.hhs.onc.dcdt.crypto.mail.utils;
 
-import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map;
-import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
+import javax.mail.MessagingException;
 import org.apache.commons.codec.binary.Hex;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -24,7 +24,7 @@ public abstract class ToolMailCryptographyStringUtils {
 
         try {
             appendMessageInfo(builder, "recipients", recipientsToString(MailCryptographyUtils.getRecipients(envelopedMsg).values()), true);
-        } catch (MailCryptographyException ignored) {
+        } catch (MessagingException ignored) {
         }
 
         builder.append("encryptAlg=");

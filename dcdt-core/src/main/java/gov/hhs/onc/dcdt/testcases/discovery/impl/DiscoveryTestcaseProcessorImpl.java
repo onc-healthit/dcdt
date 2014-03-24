@@ -1,35 +1,24 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator;
-import gov.hhs.onc.dcdt.crypto.mail.utils.MailDecryptionUtils;
-import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.MailInfo;
-import gov.hhs.onc.dcdt.crypto.mail.MailCryptographyException;
 import gov.hhs.onc.dcdt.crypto.mail.utils.MailCryptographyUtils;
+import gov.hhs.onc.dcdt.crypto.mail.utils.MailDecryptionUtils;
+import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseConfig;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseConfig;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcaseProcessor;
-import gov.hhs.onc.dcdt.utils.ToolMapUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
+import javax.annotation.Nullable;
 import javax.mail.MessagingException;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -41,44 +30,28 @@ public class DiscoveryTestcaseProcessorImpl
     @Autowired
     private Set<CertificateValidator> certificateValidators;
 
-    @Autowired
-    private List<DiscoveryTestcase> discoveryTestcases;
-
     @Override
-    public DiscoveryTestcaseResult processDiscoveryTestcase(InputStream emailInStream) {
-        return processDiscoveryTestcase(emailInStream, this.discoveryTestcases);
-    }
-
-    @Override
-    public DiscoveryTestcaseResult processDiscoveryTestcase(InputStream emailInStream, List<DiscoveryTestcase> discoveryTestcases) {
-        DiscoveryTestcaseResult result = runDecryptionSteps(emailInStream, discoveryTestcases);
-        result.setSuccessful(result.hasTestcase() && result.getCredentialFound() == result.getCredentialExpected());
+    public DiscoveryTestcaseResult process(ToolMimeMessageHelper mimeMsgHelper, @Nullable DiscoveryTestcase discoveryTestcase) {
+        DiscoveryTestcaseResult result = runDecryptionSteps(mimeMsgHelper, discoveryTestcase);
+        result.setSuccessful(result.hasTestcase() && (result.getCredentialFound() == result.getCredentialExpected()));
 
         return result;
     }
 
-    @Override
-    public DiscoveryTestcaseResult runDecryptionSteps(InputStream emailInStream, List<DiscoveryTestcase> discoveryTestcases) {
+    private DiscoveryTestcaseResult runDecryptionSteps(ToolMimeMessageHelper mimeMsgHelper, @Nullable DiscoveryTestcase discoveryTestcase) {
         MailInfo mailInfo = ToolBeanFactoryUtils.createBeanOfType(this.appContext, MailInfo.class);
         DiscoveryTestcaseResult result = ToolBeanFactoryUtils.createBeanOfType(this.appContext, DiscoveryTestcaseResult.class);
         // noinspection ConstantConditions
         result.setMailInfo(mailInfo);
 
-        Map<MailAddress, DiscoveryTestcase> discoveryTestcaseMap =
-            ToolMapUtils.putAll(new LinkedHashMap<MailAddress, DiscoveryTestcase>(),
-                CollectionUtils.collect(discoveryTestcases, new DiscoveryTestcaseMailAddressTestcasePairTransformer()));
-
         ToolStrBuilder decryptionErrorBuilder = new ToolStrBuilder();
 
         try {
-            ToolMimeMessageHelper mimeMessageHelper = new ToolMimeMessageHelper(MailCryptographyUtils.getMimeMessage(emailInStream));
+            MailCryptographyUtils.assertIsEnvelopedMessage(mimeMsgHelper);
             // noinspection ConstantConditions
-            mailInfo.setEncryptedMessageHelper(mimeMessageHelper);
-            MailAddress testcaseAddr = mimeMessageHelper.getTo();
+            mailInfo.setEncryptedMessageHelper(mimeMsgHelper);
 
-            // noinspection ConstantConditions
-            if (discoveryTestcaseMap.containsKey(testcaseAddr)) {
-                DiscoveryTestcase discoveryTestcase = discoveryTestcaseMap.get(testcaseAddr);
+            if (discoveryTestcase != null) {
                 result.setTestcase(discoveryTestcase);
                 result.setCredentialExpected(getCredentialExpected(discoveryTestcase));
 
@@ -90,10 +63,10 @@ public class DiscoveryTestcaseProcessorImpl
                     }
                 }
             } else {
-                decryptionErrorBuilder
-                    .appendWithDelimiter(String.format("Unable to find a matching testcase mail address=(%s).", testcaseAddr), StringUtils.LF);
+                decryptionErrorBuilder.appendWithDelimiter(
+                    String.format("Unable to find a matching Discovery testcase for mail address: %s", mimeMsgHelper.getTo()), StringUtils.LF);
             }
-        } catch (MailCryptographyException | MessagingException | IOException e) {
+        } catch (MessagingException e) {
             decryptionErrorBuilder.appendWithDelimiter(e.getMessage(), StringUtils.LF);
         }
 
@@ -101,14 +74,6 @@ public class DiscoveryTestcaseProcessorImpl
         mailInfo.setDecryptionErrorMessage(decryptionErrorBuilder.build());
 
         return result;
-    }
-
-    private static class DiscoveryTestcaseMailAddressTestcasePairTransformer extends
-        AbstractToolTransformer<DiscoveryTestcase, Pair<MailAddress, DiscoveryTestcase>> {
-        @Override
-        protected Pair<MailAddress, DiscoveryTestcase> transformInternal(DiscoveryTestcase discoveryTestcase) throws Exception {
-            return new ImmutablePair<>(discoveryTestcase.getMailAddress(), discoveryTestcase);
-        }
     }
 
     private DiscoveryTestcaseCredential getCredentialExpected(DiscoveryTestcase discoveryTestcase) {

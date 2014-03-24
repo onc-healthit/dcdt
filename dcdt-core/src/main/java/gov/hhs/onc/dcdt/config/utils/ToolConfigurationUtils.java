@@ -82,6 +82,10 @@ public abstract class ToolConfigurationUtils {
                             nodeValuePropValues = ToolArrayUtils.asList(ToolBeanPropertyUtils.getValue(nodeValueWrapper, nodeValuePropName));
                         }
 
+                        if (nodeValuePropValues == null) {
+                            continue;
+                        }
+
                         // noinspection ConstantConditions
                         for (Object nodeValuePropValue : nodeValuePropValues) {
                             if (nodeValuePropValue == null) {
