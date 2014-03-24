@@ -1,0 +1,4 @@
+#* @vtlvariable name="discoveryTestcase" type="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase" *#
+#* @vtlvariable name="discoveryTestcaseResult" type="gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult" *#
+#* @vtlmacrolibrary path="lib/core.vm" *#
+[DCDT] Discovery Testcase $discoveryTestcase.nameDisplay #if($discoveryTestcaseResult.successful)Passed#{else}Failed#{end}

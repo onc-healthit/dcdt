@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE urlrewrite PUBLIC "-//tuckey.org//DTD UrlRewrite 4.0//EN" "http://www.tuckey.org/res/dtds/urlrewrite4.0.dtd">
+<urlrewrite default-match-type="wildcard">
+    <rule match-type="regex">
+       <from>^/favicon(\.(?:ico|png))$</from>
+       <to>/static/images/dcdt-logo-16x16$1</to>
+    </rule>
+</urlrewrite>

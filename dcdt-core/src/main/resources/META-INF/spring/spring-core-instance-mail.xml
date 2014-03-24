@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = INSTANCE MAIL ADDRESSES
+    =====================================================================================================-->
+    <beans:bean id="instanceMailAddr" parent="mailAddrImpl" abstract="true"/>
+    
+    <beans:bean id="instanceMailAddrBase" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfigBase.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr1" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig1.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr2" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig2.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr3" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig3.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr4" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig4.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr5" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig5.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr6" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig6.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr7" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig7.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr8" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig8.domainName }"/>
+    
+    <!--====================================================================================================
+    = INSTANCE MAIL CONFIG
+    =====================================================================================================-->
+    <beans:bean id="instanceMailAddrConfig" class="gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig" abstract="true"/>
+    <beans:bean id="instanceMailAddrConfigImpl" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceMailAddressConfigImpl" parent="instanceMailAddrConfig"
+        abstract="true">
+        <beans:property name="gatewayConfig">
+            <beans:bean parent="mailGatewayConfigImpl"
+                p:port="${dcdt.instance.mail.james.smtp.1.port}"/>
+        </beans:property>
+        <beans:property name="gatewayCredentialConfig">
+            <beans:bean parent="mailGatewayCredConfigImpl"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfigResults" parent="instanceMailAddrConfigImpl"
+        p:name="results"
+        p:nameDisplay="DCDT Results">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddrBase"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig1" parent="instanceMailAddrConfigImpl"
+        p:name="d1"
+        p:nameDisplay="D1">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig2" parent="instanceMailAddrConfigImpl"
+        p:name="d2"
+        p:nameDisplay="D2">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig3" parent="instanceMailAddrConfigImpl"
+        p:name="d3"
+        p:nameDisplay="D3">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr2"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig4" parent="instanceMailAddrConfigImpl"
+        p:name="d4"
+        p:nameDisplay="D4">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr2"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig5" parent="instanceMailAddrConfigImpl"
+        p:name="d5"
+        p:nameDisplay="D5">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig6" parent="instanceMailAddrConfigImpl"
+        p:name="d6"
+        p:nameDisplay="D6">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr4"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig7" parent="instanceMailAddrConfigImpl"
+        p:name="d7"
+        p:nameDisplay="D7">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr2"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig8" parent="instanceMailAddrConfigImpl"
+        p:name="d8"
+        p:nameDisplay="D8">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr5"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig9" parent="instanceMailAddrConfigImpl"
+        p:name="d9"
+        p:nameDisplay="D9">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig10" parent="instanceMailAddrConfigImpl"
+        p:name="d10"
+        p:nameDisplay="D10">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr3"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig11" parent="instanceMailAddrConfigImpl"
+        p:name="d11"
+        p:nameDisplay="D11">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr6"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig12" parent="instanceMailAddrConfigImpl"
+        p:name="d12"
+        p:nameDisplay="D12">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr7"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig13" parent="instanceMailAddrConfigImpl"
+        p:name="d13"
+        p:nameDisplay="D13">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr8"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig14" parent="instanceMailAddrConfigImpl"
+        p:name="d14"
+        p:nameDisplay="D14">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig15" parent="instanceMailAddrConfigImpl"
+        p:name="d15"
+        p:nameDisplay="D15">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr1"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig16" parent="instanceMailAddrConfigImpl"
+        p:name="d16"
+        p:nameDisplay="D16">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr2"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig17" parent="instanceMailAddrConfigImpl"
+        p:name="d17"
+        p:nameDisplay="D17">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr5"/>
+        </beans:property>
+    </beans:bean>
+</beans:beans>
