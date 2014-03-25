@@ -4,7 +4,6 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.MailTransportListener;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
 import gov.hhs.onc.dcdt.mail.impl.MimeAttachmentResource;
@@ -15,12 +14,8 @@ import gov.hhs.onc.dcdt.mail.sender.ToolMimeMessagePreparator;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.nio.charset.Charset;
-import java.util.List;
 import javax.annotation.Nullable;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
-import javax.mail.Transport;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -45,24 +40,9 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
 
             this.send(mimeMailMsg.getMimeMessage());
         }
-
-        @Override
-        protected Transport getTransport(Session mailSession) throws NoSuchProviderException {
-            Transport transport = super.getTransport(mailSession);
-
-            if (AbstractToolMailSenderService.this.hasTransportListenerBeanNames()) {
-                for (String transportListenerBeanName : AbstractToolMailSenderService.this.transportListenerBeanNames) {
-                    transport.addTransportListener(ToolBeanFactoryUtils.createBean(AbstractToolMailSenderService.this.appContext, transportListenerBeanName,
-                        MailTransportListener.class, AbstractToolMailSenderService.this.mailEnc));
-                }
-            }
-
-            return transport;
-        }
     }
 
     protected AbstractApplicationContext appContext;
-    protected List<String> transportListenerBeanNames;
     protected Charset mailEnc;
     protected VelocityEngine velocityEngine;
     protected InstanceMailAddressConfig fromConfig;
@@ -78,14 +58,13 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
         this.mimeMailMsgBeanName = mimeMailMsgBeanName;
     }
 
-    protected void send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable MimeAttachmentResource ... attachments)
-        throws Exception {
-        this.send(subjModelMap, textModelMap, to, ToolArrayUtils.asList(attachments));
+    protected void send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to,
+        @Nullable MimeAttachmentResource ... attachmentResources) throws Exception {
+        this.send(subjModelMap, textModelMap, to, ToolArrayUtils.asList(attachmentResources));
     }
 
-    protected void
-        send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable Iterable<MimeAttachmentResource> attachments)
-            throws Exception {
+    protected void send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to,
+        @Nullable Iterable<MimeAttachmentResource> attachmentResources) throws Exception {
         MailGatewayConfig mailGatewayConfig = fromConfig.getGatewayConfig();
         MailGatewayCredentialConfig mailGatewayCredConfig = fromConfig.getGatewayCredentialConfig();
         Session mailSession = mailGatewayConfig.getSession();
@@ -105,7 +84,7 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
                 this.mailEnc), this.fromConfig, this.replyToConfig, subjModelMap, textModelMap);
 
         mailSender.send(mimeMailMsg,
-            ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolMimeMessagePreparator.class, this.velocityEngine, mimeMailMsg, to, attachments));
+            ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolMimeMessagePreparator.class, this.velocityEngine, mimeMailMsg, to, attachmentResources));
     }
 
     @Override
@@ -127,21 +106,5 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
     @Override
     public InstanceMailAddressConfig getReplyToConfig() {
         return this.replyToConfig;
-    }
-
-    @Override
-    public boolean hasTransportListenerBeanNames() {
-        return !CollectionUtils.isEmpty(this.transportListenerBeanNames);
-    }
-
-    @Nullable
-    @Override
-    public List<String> getTransportListenerBeanNames() {
-        return this.transportListenerBeanNames;
-    }
-
-    @Override
-    public void setTransportListenerBeanNames(@Nullable List<String> transportListenerBeanNames) {
-        this.transportListenerBeanNames = transportListenerBeanNames;
     }
 }

@@ -43,7 +43,7 @@ public abstract class CertificateUtils {
             return readCertificate(IOUtils.toByteArray(reader), certType, dataEnc);
         } catch (IOException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format(
-                "Unable to read certificate instance of type (name=%s, providerName=%s) from reader (class=%s).", certType.getName(),
+                "Unable to read certificate instance of type (id=%s, providerName=%s) from reader (class=%s).", certType.getId(),
                 CryptographyUtils.PROVIDER_NAME, ToolClassUtils.getName(reader)), e);
         }
     }
@@ -51,13 +51,13 @@ public abstract class CertificateUtils {
     public static X509Certificate readCertificate(byte[] data, CertificateType certType, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.writePemContent(certType.getName(), data);
+                data = PemUtils.writePemContent(certType.getId(), data);
             }
 
             return (X509Certificate) getCertificateFactory(certType).generateCertificate(new ByteArrayInputStream(data));
         } catch (CertificateException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format(
-                "Unable to read certificate instance of type (name=%s, providerName=%s) from data.", certType.getName(), CryptographyUtils.PROVIDER_NAME), e);
+                "Unable to read certificate instance of type (id=%s, providerName=%s) from data.", certType.getId(), CryptographyUtils.PROVIDER_NAME), e);
         }
     }
 
@@ -101,11 +101,11 @@ public abstract class CertificateUtils {
 
     public static CertificateFactory getCertificateFactory(CertificateType certType) throws CryptographyException {
         try {
-            return CryptographyUtils.PROVIDER_HELPER.createCertificateFactory(certType.getName());
+            return CryptographyUtils.PROVIDER_HELPER.createCertificateFactory(certType.getId());
         } catch (CertificateException | NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format(
-                "Unable to get certificate factory instance for certificate type (name=%s, providerName=%s).", certType.getName(),
-                CryptographyUtils.PROVIDER_NAME), e);
+            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(
+                String.format("Unable to get certificate factory instance for certificate type (id=%s, providerName=%s).", certType.getId(),
+                    CryptographyUtils.PROVIDER_NAME), e);
         }
     }
 }

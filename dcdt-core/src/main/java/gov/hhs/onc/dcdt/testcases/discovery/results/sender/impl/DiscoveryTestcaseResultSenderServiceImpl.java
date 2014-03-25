@@ -5,7 +5,6 @@ import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
-import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.MimeAttachmentResource;
 import gov.hhs.onc.dcdt.mail.sender.impl.AbstractToolMailSenderService;
@@ -61,6 +60,6 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
             discoveryTestcaseResultCredInfo.getCertificateDescriptor()).hasCertificate()) ? new MimeAttachmentResource(CertificateUtils.writeCertificate(
             discoveryTestcaseResultCredCertInfo.getCertificate(), DataEncoding.DER), discoveryTestcaseResultCred.getName(), discoveryTestcaseResultCredCertInfo
             .getCertificateType().getContentType(), discoveryTestcaseResult.getTestcase().getName()
-            + discoveryTestcaseResultCredType.getAttachmentFileNameSuffix() + CryptographyUtils.FILE_EXT_DER) : null);
+            + discoveryTestcaseResultCredType.getAttachmentFileNameSuffix() + DataEncoding.DER.getFileExtension()) : null);
     }
 }

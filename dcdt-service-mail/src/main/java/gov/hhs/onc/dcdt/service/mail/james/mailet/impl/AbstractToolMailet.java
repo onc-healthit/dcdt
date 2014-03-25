@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.mailet.Mail;
@@ -17,14 +18,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
 public abstract class AbstractToolMailet extends GenericMailet implements ToolMailet {
+    @Resource(name = "charsetUtf8")
+    protected Charset mailEnc;
+
     protected AbstractApplicationContext appContext;
     protected Map<String, String> initParamMap;
 
     @Override
     public void service(Mail mail) throws MessagingException {
         try {
-            this.serviceInternal(new ToolMimeMessageHelper(mail.getMessage(), (this.initParamMap.containsKey(INIT_PARAM_NAME_MAIL_ENC) ? Charset
-                .forName(this.initParamMap.get(INIT_PARAM_NAME_MAIL_ENC)) : Charset.defaultCharset())));
+            this.serviceInternal(new ToolMimeMessageHelper(mail.getMessage(), this.mailEnc));
         } catch (ToolMailException e) {
             throw e;
         } catch (Exception e) {

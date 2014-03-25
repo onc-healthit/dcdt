@@ -1,7 +1,9 @@
-package gov.hhs.onc.dcdt.utils;
+package gov.hhs.onc.dcdt.net.mime.utils;
 
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolMapUtils;
 import java.util.Comparator;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;

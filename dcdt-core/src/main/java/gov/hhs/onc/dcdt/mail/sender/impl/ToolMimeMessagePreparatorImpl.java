@@ -26,19 +26,19 @@ public class ToolMimeMessagePreparatorImpl extends AbstractToolBean implements T
     private VelocityEngine velocityEngine;
     private ToolMimeMailMessage mimeMailMsg;
     private MailAddress to;
-    private Iterable<MimeAttachmentResource> attachments;
+    private Iterable<MimeAttachmentResource> attachmentResources;
 
     public ToolMimeMessagePreparatorImpl(VelocityEngine velocityEngine, ToolMimeMailMessage mimeMailMsg, MailAddress to,
-        @Nullable MimeAttachmentResource ... attachments) {
-        this(velocityEngine, mimeMailMsg, to, ToolArrayUtils.asList(attachments));
+        @Nullable MimeAttachmentResource ... attachmentResources) {
+        this(velocityEngine, mimeMailMsg, to, ToolArrayUtils.asList(attachmentResources));
     }
 
     public ToolMimeMessagePreparatorImpl(VelocityEngine velocityEngine, ToolMimeMailMessage mimeMailMsg, MailAddress to,
-        @Nullable Iterable<MimeAttachmentResource> attachments) {
+        @Nullable Iterable<MimeAttachmentResource> attachmentResources) {
         this.velocityEngine = velocityEngine;
         this.mimeMailMsg = mimeMailMsg;
         this.to = to;
-        this.attachments = attachments;
+        this.attachmentResources = attachmentResources;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class ToolMimeMessagePreparatorImpl extends AbstractToolBean implements T
             mimeMsgHelper.setText(this.prepareTemplate(encName, this.mimeMailMsg.getTextTemplateLocation(), this.mimeMailMsg.getTextModelMap()), true);
         }
 
-        mimeMsgHelper.setAttachments(this.attachments);
+        mimeMsgHelper.setAttachments(this.attachmentResources);
     }
 
     private String prepareTemplate(String encName, String templateLoc, @Nullable ModelMap modelMap) {

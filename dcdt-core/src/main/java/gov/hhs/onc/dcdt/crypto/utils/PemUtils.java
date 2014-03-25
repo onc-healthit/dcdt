@@ -66,7 +66,7 @@ public abstract class PemUtils {
     }
 
     public static void writePemContent(Writer writer, PemType pemType, byte[] data) throws CryptographyException {
-        writePemObject(writer, new PemObject(pemType.getName(), data));
+        writePemObject(writer, new PemObject(pemType.getId(), data));
     }
 
     public static void writePemObject(OutputStream outStream, PemObject pemObj) throws CryptographyException {

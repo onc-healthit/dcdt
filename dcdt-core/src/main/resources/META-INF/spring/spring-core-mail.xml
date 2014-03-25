@@ -37,6 +37,8 @@
         </beans:constructor-arg>
     </beans:bean>
     
+    <beans:bean id="mailSessionDefault" parent="mailSession" factory-method="getDefaultInstance" primary="true"/>
+    
     <beans:bean id="mailSessionPlain" parent="mailSession" lazy-init="true" scope="prototype"/>
     
     <beans:bean id="mailSessionSsl" parent="mailSession" lazy-init="true" scope="prototype">
@@ -87,11 +89,5 @@
     <!--====================================================================================================
     = MAIL SENDER SERVICE
     =====================================================================================================-->
-    <beans:bean id="mailSenderService" class="gov.hhs.onc.dcdt.mail.sender.ToolMailSenderService" abstract="true">
-        <beans:property name="transportListenerBeanNames">
-            <beans:list>
-                <beans:idref bean="mailTransportListenerLog"/>
-            </beans:list>
-        </beans:property>
-    </beans:bean>
+    <beans:bean id="mailSenderService" class="gov.hhs.onc.dcdt.mail.sender.ToolMailSenderService" abstract="true"/>
 </beans:beans>

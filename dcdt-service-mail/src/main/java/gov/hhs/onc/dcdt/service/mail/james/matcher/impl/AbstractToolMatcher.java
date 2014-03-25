@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.TransformerUtils;
@@ -23,6 +24,9 @@ import org.springframework.context.support.AbstractApplicationContext;
 public abstract class AbstractToolMatcher extends GenericMatcher implements ToolMatcher {
     protected final static Collection<MailAddress> MATCH_ADDRS_NONE = new ArrayList<>(0);
 
+    @Resource(name = "charsetUtf8")
+    protected Charset mailEnc;
+
     protected AbstractApplicationContext appContext;
     protected Map<String, String> condParamMap;
 
@@ -30,8 +34,7 @@ public abstract class AbstractToolMatcher extends GenericMatcher implements Tool
     @SuppressWarnings({ "rawtypes" })
     public Collection<?> match(Mail mail) throws MessagingException {
         try {
-            return CollectionUtils.collect(this.matchInternal(new ToolMimeMessageHelper(mail.getMessage(), (this.condParamMap
-                .containsKey(COND_PARAM_NAME_MAIL_ENC) ? Charset.forName(this.condParamMap.get(COND_PARAM_NAME_MAIL_ENC)) : Charset.defaultCharset()))),
+            return CollectionUtils.collect(this.matchInternal(new ToolMimeMessageHelper(mail.getMessage(), this.mailEnc)),
                 TransformerUtils.stringValueTransformer());
         } catch (ToolMailException e) {
             throw e;

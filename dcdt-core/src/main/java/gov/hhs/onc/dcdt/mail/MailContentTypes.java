@@ -1,13 +1,20 @@
 package gov.hhs.onc.dcdt.mail;
 
-import gov.hhs.onc.dcdt.utils.ToolMimeTypeUtils;
+import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.MimeType;
 
 /**
- * See MIME media type details in: <a href="http://tools.ietf.org/html/rfc5751#section-5.1">5.1. Media Type for application/pkcs7-mime</a>
+ * Derived from:
+ * <ul>
+ * <li><a href="http://tools.ietf.org/html/rfc2046">RFC 2046 - Media Types</a></li>
+ * <li><a href="http://tools.ietf.org/html/rfc5322">RFC 5322 - Internet Message Format</a></li>
+ * <li><a href="http://tools.ietf.org/html/rfc5751#section-5">RFC 5751 - S/MIME 3.2 Message Specification, Section 5 - IANA Considerations</a></li>
+ * </ul>
+ * 
+ * A summary is available here: <a href="http://en.wikipedia.org/wiki/Internet_media_type">Internet_media_type</a>
  */
 public final class MailContentTypes {
     public final static String NAME_PARAM_NAME = "name";

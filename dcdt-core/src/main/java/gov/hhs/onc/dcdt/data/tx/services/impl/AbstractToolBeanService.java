@@ -20,8 +20,8 @@ public abstract class AbstractToolBeanService<T extends ToolBean, U extends Tool
     }
 
     @Override
-    public boolean containsBean(Serializable beanIdValue) throws ToolBeanDataAccessException {
-        return this.beanDao.containsBean(beanIdValue);
+    public boolean containsBeanOfId(Serializable beanIdValue) throws ToolBeanDataAccessException {
+        return this.beanDao.containsBeanOfId(beanIdValue);
     }
 
     @Override

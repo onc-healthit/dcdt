@@ -11,8 +11,6 @@ public interface ToolMatcher extends ApplicationContextAware, Matcher, MatcherCo
     public final static String DELIM_COND = ",";
     public final static String DELIM_COND_VALUE = "=";
 
-    public final static String COND_PARAM_NAME_MAIL_ENC = "mailEncoding";
-    
     @Override
     @SuppressWarnings({ "rawtypes" })
     public Collection<?> match(Mail mail) throws MessagingException;

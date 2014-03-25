@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -11,6 +12,19 @@ import org.apache.commons.lang3.ClassUtils;
 import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class ToolClassUtils {
+    public static class IsAssignablePredicate<T> extends AbstractToolPredicate<Object> {
+        private Class<T> clazz;
+
+        public IsAssignablePredicate(Class<T> clazz) {
+            this.clazz = clazz;
+        }
+
+        @Override
+        protected boolean evaluateInternal(@Nullable Object obj) throws Exception {
+            return isAssignable(ToolClassUtils.getClass(obj), this.clazz);
+        }
+    }
+
     public static boolean isAssignable(@Nullable Collection<Class<?>> classes1, @Nullable Collection<Class<?>> classes2) {
         return isAssignable(ToolCollectionUtils.toArray(classes1, Class.class), ToolCollectionUtils.toArray(classes2, Class.class));
     }

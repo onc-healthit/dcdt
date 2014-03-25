@@ -8,17 +8,17 @@ public enum PemType implements CryptographyTypeIdentifier {
     X509_PUBLIC_KEY("PUBLIC KEY", PublicKey.class), PKCS8_PRIVATE_KEY("RSA PRIVATE KEY", PrivateKey.class), X509_CERTIFICATE("X.509 CERTIFICATE",
         X509Certificate.class);
 
-    private final String name;
+    private final String id;
     private final Class<?> type;
 
-    private PemType(String name, Class<?> type) {
-        this.name = name;
+    private PemType(String id, Class<?> type) {
+        this.id = id;
         this.type = type;
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return this.id;
     }
 
     @Override

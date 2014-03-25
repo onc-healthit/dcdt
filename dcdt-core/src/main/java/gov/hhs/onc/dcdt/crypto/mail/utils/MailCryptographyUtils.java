@@ -74,7 +74,7 @@ public abstract class MailCryptographyUtils {
         try {
             MimeType contentType = MimeTypeUtils.parseMimeType(contentTypeStr);
 
-            if (ToolMailContentTypeUtils.isMultipartSignature(contentType)) {
+            if (ToolMailContentTypeUtils.isMultipartSigned(contentType)) {
                 try {
                     return new SMIMESigned((MimeMultipart) msgMultiPart);
                 } catch (CMSException | MessagingException e) {

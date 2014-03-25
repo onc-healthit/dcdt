@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.crypto.mail;
+package gov.hhs.onc.dcdt.net.mime.impl;
 
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.List;

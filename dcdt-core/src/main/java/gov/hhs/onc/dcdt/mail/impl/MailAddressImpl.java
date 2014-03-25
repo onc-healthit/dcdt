@@ -21,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.xbill.DNS.Name;
 
 public class MailAddressImpl extends AbstractToolBean implements MailAddress {
+    private final static long serialVersionUID = 1L;
     private EnumMap<MailAddressPart, String> addrPartMap = new EnumMap<>(MailAddressPart.class);
 
     public MailAddressImpl() {

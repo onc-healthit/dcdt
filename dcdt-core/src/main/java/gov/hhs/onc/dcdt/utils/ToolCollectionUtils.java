@@ -1,11 +1,43 @@
 package gov.hhs.onc.dcdt.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 
 public abstract class ToolCollectionUtils {
+    public static class AssignableTransformer<T> extends AbstractToolTransformer<Object, T> {
+        private Class<T> clazz;
+
+        public AssignableTransformer(Class<T> clazz) {
+            this.clazz = clazz;
+        }
+
+        @Nullable
+        @Override
+        protected T transformInternal(@Nullable Object obj) throws Exception {
+            return (ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), this.clazz) ? this.clazz.cast(obj) : null);
+        }
+    }
+
+    public static <T> Collection<T> collectAssignable(Class<T> clazz, @Nullable Iterable<?> ... iterables) {
+        return collectAssignable(clazz, ToolArrayUtils.asList(iterables));
+    }
+
+    public static <T> Collection<T> collectAssignable(Class<T> clazz, @Nullable Iterable<? extends Iterable<?>> iterables) {
+        return collectAssignable(clazz, new ArrayList<T>(), iterables);
+    }
+
+    public static <T, U extends Collection<T>> U collectAssignable(Class<T> clazz, U coll, @Nullable Iterable<?> ... iterables) {
+        return collectAssignable(clazz, coll, ToolArrayUtils.asList(iterables));
+    }
+
+    public static <T, U extends Collection<T>> U collectAssignable(Class<T> clazz, U coll, @Nullable Iterable<? extends Iterable<?>> iterables) {
+        return CollectionUtils.collect(ToolIteratorUtils.chainedIterator(iterables), new AssignableTransformer<>(clazz), coll);
+    }
+
     @Nullable
     public static <T, U extends Collection<T>> U nullIfEmpty(@Nullable U coll) {
         return !CollectionUtils.isEmpty(coll) ? coll : null;

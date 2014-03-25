@@ -170,23 +170,11 @@
     <beans:bean id="configBeanMatcherImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MatcherConfigBeanImpl" parent="configBeanMatcher"
         abstract="true"/>
     
-    <beans:bean id="configBeanMatcherRecipientNotProcessed" parent="configBeanMatcherImpl" abstract="true">
-        <beans:property name="match">
-            <dcdt:normalized-string>
-                gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsNotProcessedMatcher=
-                #{ T(gov.hhs.onc.dcdt.service.mail.james.matcher.ToolMatcher).COND_PARAM_NAME_MAIL_ENC }=#{ charsetUtf8.name() }
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
+    <beans:bean id="configBeanMatcherRecipientNotProcessed" parent="configBeanMatcherImpl" abstract="true"
+        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsNotProcessedMatcher"/>
     
-    <beans:bean id="configBeanMatcherRecipientDiscoveryTestcase" parent="configBeanMatcherImpl" abstract="true">
-        <beans:property name="match">
-            <dcdt:normalized-string>
-                gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsDiscoveryTestcaseMatcher=
-                #{ T(gov.hhs.onc.dcdt.service.mail.james.matcher.ToolMatcher).COND_PARAM_NAME_MAIL_ENC }=#{ charsetUtf8.name() }
-            </dcdt:normalized-string>
-        </beans:property>
-    </beans:bean>
+    <beans:bean id="configBeanMatcherRecipientDiscoveryTestcase" parent="configBeanMatcherImpl" abstract="true"
+        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsDiscoveryTestcaseMatcher"/>
     
     <!--====================================================================================================
     = JAMES MAILET CONFIGURATION
@@ -198,32 +186,11 @@
     <beans:bean id="configBeanMailetNull" parent="configBeanMailetImpl" abstract="true"
         p:className="Null"/>
     
-    <beans:bean id="configBeanMailetNullRecipientNotProcessed" parent="configBeanMailetNull" abstract="true"
-        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsNotProcessedMatcher">
-        <beans:property name="initParameters">
-            <util:map>
-                <beans:entry key="#{ T(gov.hhs.onc.dcdt.service.mail.james.mailet.ToolMailet).INIT_PARAM_NAME_MAIL_ENC }"
-                    value="#{ charsetUtf8.name() }"/>
-            </util:map>
-        </beans:property>
-    </beans:bean>
-    
     <beans:bean id="configBeanMailetAll" parent="configBeanMailetImpl" abstract="true"
         p:match="All"/>
     
     <beans:bean id="configBeanMailetAllToRepo" parent="configBeanMailetAll" abstract="true"
         p:className="ToRepository"/>
-    
-    <beans:bean id="configBeanMailetProcDiscoveryTestcase" parent="configBeanMailetImpl" abstract="true"
-        p:className="gov.hhs.onc.dcdt.service.mail.james.mailet.impl.ProcessDiscoveryTestcaseMailet"
-        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsDiscoveryTestcaseMatcher">
-        <beans:property name="initParameters">
-            <util:map>
-                <beans:entry key="#{ T(gov.hhs.onc.dcdt.service.mail.james.mailet.ToolMailet).INIT_PARAM_NAME_MAIL_ENC }"
-                    value="#{ charsetUtf8.name() }"/>
-            </util:map>
-        </beans:property>
-    </beans:bean>
     
     <beans:bean id="configBeanMailetRecipientLocal" parent="configBeanMailetImpl" abstract="true"
         p:match="RecipientIsLocal"/>
@@ -256,7 +223,8 @@
                             p:state="ROOT">
                             <beans:property name="mailets">
                                 <util:list>
-                                    <beans:bean parent="configBeanMailetNullRecipientNotProcessed"/>
+                                    <beans:bean id="configBeanMailetNullRecipientNotProcessed" parent="configBeanMailetNull" abstract="true"
+                                        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsNotProcessedMatcher"/>
                                     <beans:bean parent="configBeanMailetAll"
                                         p:className="PostmasterAlias"/>
                                     <beans:bean parent="configBeanMailetNull"
@@ -317,7 +285,9 @@
                                         p:className="ToSenderFolder"/>
                                     <beans:bean parent="configBeanMailetRecipientLocal"
                                         p:className="LocalDelivery"/>
-                                    <beans:bean parent="configBeanMailetProcDiscoveryTestcase"/>
+                                    <beans:bean id="configBeanMailetProcDiscoveryTestcase" parent="configBeanMailetImpl" abstract="true"
+                                        p:className="gov.hhs.onc.dcdt.service.mail.james.mailet.impl.ProcessDiscoveryTestcaseMailet"
+                                        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsDiscoveryTestcaseMatcher"/>
                                     <beans:bean parent="configBeanMailetImpl"
                                         p:className="ToProcessor"
                                         p:match="HostIsLocal">

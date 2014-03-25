@@ -28,10 +28,11 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCr
 import gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
-import gov.hhs.onc.dcdt.utils.ToolMimeTypeUtils;
+import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
@@ -53,6 +54,10 @@ public class MailDecryptionUtilsFunctionalTests extends AbstractToolFunctionalTe
     @Resource(name = "mailSessionPlain")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private Session mailSession;
+
+    @Resource(name = "charsetUtf8")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private Charset mailEnc;
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -159,7 +164,7 @@ public class MailDecryptionUtilsFunctionalTests extends AbstractToolFunctionalTe
 
     private DiscoveryTestcaseResult decryptAndParseEmail(String mailLoc) throws IOException, MessagingException {
         try (InputStream mailInStream = ToolResourceUtils.getInputStream(mailLoc)) {
-            ToolMimeMessageHelper mimeMsgHelper = new ToolMimeMessageHelper(new MimeMessage(this.mailSession, mailInStream));
+            ToolMimeMessageHelper mimeMsgHelper = new ToolMimeMessageHelper(new MimeMessage(this.mailSession, mailInStream), this.mailEnc);
 
             return this.testcaseProcessor.process(mimeMsgHelper,
                 CollectionUtils.find(this.testDiscoveryTestcases, new DiscoveryTestcaseMailAddressPredicate(mimeMsgHelper.getTo())));
@@ -197,7 +202,7 @@ public class MailDecryptionUtilsFunctionalTests extends AbstractToolFunctionalTe
             ToolMimeTypeUtils.forBaseType(MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG));
         Assert.assertEquals(ToolMimeTypeUtils.compareTo(true, this.testMultipartSignedMimeType, MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG), 0);
         Assert.assertTrue(ToolMimeTypeUtils.hasParameter(this.testMultipartSignedMimeType, MailContentTypes.MULTIPART_SIGNED_MSG_DIGEST_ALG_PARAM_NAME));
-        Assert.assertTrue(ToolMailContentTypeUtils.isMultipartSignature(this.testMultipartSignedMimeType));
+        Assert.assertTrue(ToolMailContentTypeUtils.isMultipartSigned(this.testMultipartSignedMimeType));
     }
 
     @Test

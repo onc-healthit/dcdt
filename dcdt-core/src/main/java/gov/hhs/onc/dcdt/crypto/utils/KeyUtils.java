@@ -84,22 +84,22 @@ public abstract class KeyUtils {
             return readKey(keyType, IOUtils.toByteArray(reader), keyAlg, dataEnc);
         } catch (IOException e) {
             throw new KeyException(String.format(
-                "Unable to read key instance (type=%s) for key algorithm (name=%s, format=%s, providerName=%s) from reader (class=%s).", keyType.getName(),
-                keyAlg.getName(), keyAlg.getPrivateFormat(), CryptographyUtils.PROVIDER_NAME, ToolClassUtils.getName(reader)), e);
+                "Unable to read key instance (type=%s) for key algorithm (id=%s, format=%s, providerName=%s) from reader (class=%s).", keyType.getId(),
+                keyAlg.getId(), keyAlg.getPrivateFormat(), CryptographyUtils.PROVIDER_NAME, ToolClassUtils.getName(reader)), e);
         }
     }
 
     public static Key readKey(KeyType keyType, byte[] data, KeyAlgorithm keyAlg, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.writePemContent(keyType.getName(), data);
+                data = PemUtils.writePemContent(keyType.getId(), data);
             }
 
-            return (Key) SerializationUtils.deserialize(SerializationUtils.serialize(new KeyRep(keyType.getKeyRepType(), keyAlg.getName(), keyAlg
+            return (Key) SerializationUtils.deserialize(SerializationUtils.serialize(new KeyRep(keyType.getKeyRepType(), keyAlg.getId(), keyAlg
                 .getFormat(keyType), data)));
         } catch (SerializationException e) {
-            throw new KeyException(String.format("Unable to read key instance (type=%s) for key algorithm (name=%s, format=%s, providerName=%s) from data.",
-                keyType.getName(), keyAlg.getName(), keyAlg.getPrivateFormat(), CryptographyUtils.PROVIDER_NAME), e);
+            throw new KeyException(String.format("Unable to read key instance (type=%s) for key algorithm (id=%s, format=%s, providerName=%s) from data.",
+                keyType.getId(), keyAlg.getId(), keyAlg.getPrivateFormat(), CryptographyUtils.PROVIDER_NAME), e);
         }
     }
 
@@ -132,9 +132,9 @@ public abstract class KeyUtils {
 
     public static KeyPairGenerator getKeyPairGenerator(KeyAlgorithm keyAlg) throws CryptographyException {
         try {
-            return CryptographyUtils.PROVIDER_HELPER.createKeyPairGenerator(keyAlg.getName());
+            return CryptographyUtils.PROVIDER_HELPER.createKeyPairGenerator(keyAlg.getId());
         } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new KeyException(String.format("Unable to get key pair generator instance for key algorithm (name=%s, providerName=%s).", keyAlg.getName(),
+            throw new KeyException(String.format("Unable to get key pair generator instance for key algorithm (id=%s, providerName=%s).", keyAlg.getId(),
                 CryptographyUtils.PROVIDER_NAME), e);
         }
     }

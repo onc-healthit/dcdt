@@ -59,9 +59,10 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
 
         try {
             SignatureAlgorithm certSigAlg = certConfig.getSignatureAlgorithm();
+            // noinspection ConstantConditions
             X509CertificateHolder certHolder =
-                certBuilder.build(new BcRSAContentSignerBuilder(certSigAlg.getId(), certSigAlg.getDigestId()).build(PrivateKeyFactory.createKey(certConfig
-                    .isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo.getKeyDescriptor().getPrivateKeyInfo())));
+                certBuilder.build(new BcRSAContentSignerBuilder(certSigAlg.getAlgorithmId(), certSigAlg.getDigestAlgorithmId()).build(PrivateKeyFactory
+                    .createKey(certConfig.isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo.getKeyDescriptor().getPrivateKeyInfo())));
 
             return new CertificateInfoImpl((X509Certificate) CertificateUtils.getCertificateFactory(certType).generateCertificate(
                 new ByteArrayInputStream(certHolder.getEncoded())));
@@ -76,6 +77,7 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
         CertificateName certSubj = certConfig.getSubject();
         CertificateValidInterval certValidInterval = certConfig.getValidInterval();
 
+        // noinspection ConstantConditions
         X509v3CertificateBuilder certBuilder =
             new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubject().toX500Name(), (certConfig.hasSerialNumber()
                 ? certConfig.getSerialNumber() : CertificateUtils.generateSerialNumber()), certValidInterval.getNotBefore(), certValidInterval.getNotAfter(),

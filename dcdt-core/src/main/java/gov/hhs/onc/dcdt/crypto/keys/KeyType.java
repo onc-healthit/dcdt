@@ -8,21 +8,21 @@ import java.security.PublicKey;
 public enum KeyType implements CryptographyTypeIdentifier {
     PUBLIC(Type.PUBLIC.name(), PublicKey.class), PRIVATE(Type.PRIVATE.name(), PrivateKey.class);
 
-    private final String name;
+    private final String id;
     private final Class<?> type;
 
-    private KeyType(String name, Class<?> type) {
-        this.name = name;
+    private KeyType(String id, Class<?> type) {
+        this.id = id;
         this.type = type;
     }
 
     public Type getKeyRepType() {
-        return Type.valueOf(this.name);
+        return Type.valueOf(this.id);
     }
 
     @Override
-    public String getName() {
-        return this.name;
+    public String getId() {
+        return this.id;
     }
 
     @Override

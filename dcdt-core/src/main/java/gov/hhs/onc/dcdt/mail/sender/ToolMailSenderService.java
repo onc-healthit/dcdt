@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.mail.sender;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
-import java.util.List;
 import javax.annotation.Nullable;
 import org.springframework.context.ApplicationContextAware;
 
@@ -13,11 +12,4 @@ public interface ToolMailSenderService extends ApplicationContextAware, ToolBean
 
     @Nullable
     public InstanceMailAddressConfig getReplyToConfig();
-
-    public boolean hasTransportListenerBeanNames();
-
-    @Nullable
-    public List<String> getTransportListenerBeanNames();
-
-    public void setTransportListenerBeanNames(@Nullable List<String> transportListenerBeanNames);
 }
