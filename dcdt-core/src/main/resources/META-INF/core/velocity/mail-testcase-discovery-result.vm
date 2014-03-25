@@ -1,0 +1,29 @@
+#* @vtlvariable name="discoveryTestcaseResult" type="gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult" *#
+#* @vtlmacrolibrary path="lib/core.vm" *#
+#* @vtlmacrolibrary path="lib/core-testcases-discovery-results.vm" *#
+#define($head)
+#includeStyle("include/mail-testcase-discovery-result.css")
+#end
+#define($body)
+    <h1>Discovery testcase $discoveryTestcaseResult.testcase.name #if($discoveryTestcaseResult.successful)passed#{else}failed#{end}.</h1>
+    <h2>Details</h2>
+    <ul>
+        #if($discoveryTestcaseResult.hasMailInfo())
+            <li><strong>From</strong>: $discoveryTestcaseResult.mailInfo.from</li>
+            <li><strong>To</strong>: $discoveryTestcaseResult.mailInfo.to</li>
+        #end
+
+        #if($discoveryTestcaseResult.hasCredentialFound())
+            #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialFound "Found")
+        #end
+        
+        #if(!$discoveryTestcaseResult.successful && $discoveryTestcaseResult.hasCredentialExpected())
+            #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialExpected "Expected")
+        #end
+
+        #if($discoveryTestcaseResult.hasMailInfo() && $discoveryTestcaseResult.mailInfo.hasDecryptionErrorMessage())
+            <li><strong>Decryption Error</strong>: $discoveryTestcaseResult.mailInfo.decryptionErrorMessage</li>
+        #end
+    </ul>
+#end
+#parse("mail.vm")
