@@ -20,7 +20,7 @@ public class DnsLookupResultImpl<T extends Record> implements DnsLookupResult<T>
     private DnsRecordType recordType;
     private Class<T> recordClass;
     private Name questionName;
-    private List<T> answerRecords;
+    private List<Record> answerRecords;
     private String errorStr;
     private DnsResultType type;
 
@@ -32,10 +32,21 @@ public class DnsLookupResultImpl<T extends Record> implements DnsLookupResult<T>
         this.type = ToolDnsResolverUtils.findResultType(lookup.getResult());
 
         if (!this.type.isError()) {
-            this.answerRecords = ToolCollectionUtils.addAll(new ArrayList<T>(), ToolArrayUtils.asList(((T[]) lookup.getAnswers())));
+            this.answerRecords = ToolCollectionUtils.addAll(new ArrayList<Record>(), ToolArrayUtils.asList(lookup.getAnswers()));
         } else {
             this.errorStr = lookup.getErrorString();
         }
+    }
+
+    @Override
+    public boolean hasResolvedAnswers() {
+        return !CollectionUtils.isEmpty(this.getResolvedAnswers());
+    }
+
+    @Nullable
+    @Override
+    public List<T> getResolvedAnswers() {
+        return ToolCollectionUtils.collectAssignable(this.recordClass, new ArrayList<T>(CollectionUtils.size(this.answerRecords)), this.answerRecords);
     }
 
     @Override
@@ -45,7 +56,7 @@ public class DnsLookupResultImpl<T extends Record> implements DnsLookupResult<T>
 
     @Nullable
     @Override
-    public List<T> getAnswers() {
+    public List<Record> getAnswers() {
         return this.answerRecords;
     }
 

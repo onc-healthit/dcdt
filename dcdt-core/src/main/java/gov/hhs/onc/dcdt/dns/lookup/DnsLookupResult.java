@@ -8,10 +8,15 @@ import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 
 public interface DnsLookupResult<T extends Record> {
+    public boolean hasResolvedAnswers();
+
+    @Nullable
+    public List<T> getResolvedAnswers();
+
     public boolean hasAnswers();
 
     @Nullable
-    public List<T> getAnswers();
+    public List<Record> getAnswers();
 
     public Name getQuestionName();
 
@@ -20,9 +25,9 @@ public interface DnsLookupResult<T extends Record> {
     public DnsRecordType getRecordType();
 
     public boolean hasErrorString();
-    
+
     @Nullable
     public String getErrorString();
-    
+
     public DnsResultType getType();
 }

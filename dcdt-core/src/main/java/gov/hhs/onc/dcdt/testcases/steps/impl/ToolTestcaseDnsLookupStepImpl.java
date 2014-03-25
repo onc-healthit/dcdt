@@ -83,7 +83,7 @@ public class ToolTestcaseDnsLookupStepImpl extends AbstractToolTestcaseStep impl
         DnsLookupResult<SRVRecord> dnsLookupResult;
         try {
             dnsLookupResult = this.dnsLookupService.lookupSrvRecords(DnsServiceType.LDAP, DnsServiceProtocol.TCP, directAddrName);
-            records = dnsLookupResult.getAnswers();
+            records = dnsLookupResult.getResolvedAnswers();
             this.setMessage(dnsLookupResult.getErrorString());
         } catch (DnsException e) {
             this.setMessage(e.getMessage());
@@ -96,7 +96,7 @@ public class ToolTestcaseDnsLookupStepImpl extends AbstractToolTestcaseStep impl
         DnsLookupResult<CERTRecord> dnsLookupResult;
         try {
             dnsLookupResult = this.dnsLookupService.lookupCertRecords(directAddrName);
-            records = dnsLookupResult.getAnswers();
+            records = dnsLookupResult.getResolvedAnswers();
             this.setMessage(dnsLookupResult.getErrorString());
         } catch (DnsException e) {
             this.setMessage(e.getMessage());
