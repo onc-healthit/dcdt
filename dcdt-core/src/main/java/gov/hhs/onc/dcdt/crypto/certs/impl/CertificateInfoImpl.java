@@ -2,13 +2,12 @@ package gov.hhs.onc.dcdt.crypto.certs.impl;
 
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateSerialNumber;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
-import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
-import java.math.BigInteger;
 import java.security.cert.X509Certificate;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -68,14 +67,14 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
 
     @Override
     public boolean hasSerialNumber() {
-        return ToolNumberUtils.isPositive(this.getSerialNumber());
+        return (this.getSerialNumber() != null);
     }
 
     @Nullable
     @Override
     @Transient
-    public BigInteger getSerialNumber() {
-        return this.hasCertificate() ? this.cert.getSerialNumber() : null;
+    public CertificateSerialNumber getSerialNumber() {
+        return this.hasCertificate() ? new CertificateSerialNumberImpl(this.cert.getSerialNumber()) : null;
     }
 
     @Override

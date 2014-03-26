@@ -1,8 +1,10 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.PemType;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateDescriptor;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -21,14 +23,36 @@ import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
 import java.security.cert.X509Certificate;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 
 public abstract class CertificateUtils {
+    public static class CertificateDescriptorMailAddressPredicate extends AbstractToolPredicate<CertificateDescriptor> {
+        private MailAddress mailAddr;
+
+        public CertificateDescriptorMailAddressPredicate(@Nullable MailAddress mailAddr) {
+            this.mailAddr = mailAddr;
+        }
+
+        @Override
+        protected boolean evaluateInternal(CertificateDescriptor certDesc) throws Exception {
+            // noinspection ConstantConditions
+            return (certDesc.hasSubject() && Objects.equals(certDesc.getSubject().getMailAddress(), this.mailAddr));
+        }
+    }
+
+    public final static JcaX509CertificateConverter CERT_CONV = new JcaX509CertificateConverter();
+
     private final static int SERIAL_NUM_GEN_RAND_SEED_SIZE_DEFAULT = 8;
+
+    static {
+        CERT_CONV.setProvider(CryptographyUtils.PROVIDER);
+    }
 
     public static BigInteger generateSerialNumber() throws CryptographyException {
         return BigInteger.valueOf(SecureRandomUtils.getRandom(SERIAL_NUM_GEN_RAND_SEED_SIZE_DEFAULT).nextLong()).abs();

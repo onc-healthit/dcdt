@@ -7,16 +7,16 @@ import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils.MimeTypeComparator;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
 import javax.mail.Address;
@@ -31,6 +31,7 @@ import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.EnumerationUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -38,18 +39,46 @@ import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
 public class ToolMimeMessageHelper extends MimeMessageHelper {
+    public final static String FILE_EXT_MAIL = ".eml";
+
     public ToolMimeMessageHelper(Session mailSession, Charset mailEnc) throws MessagingException {
         this(new MimeMessage(mailSession), MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, mailEnc);
     }
 
-    public ToolMimeMessageHelper(MimeMessage mimeMsg, Charset mailEnc) throws IOException, MessagingException {
-        this(mimeMsg, MimeMessageHelper.MULTIPART_MODE_NO, mailEnc);
+    public ToolMimeMessageHelper(MimeMessage msg, Charset mailEnc) throws IOException, MessagingException {
+        this(msg, MimeMessageHelper.MULTIPART_MODE_NO, mailEnc);
 
         this.initializeMimeMultiparts();
     }
 
-    private ToolMimeMessageHelper(MimeMessage mimeMsg, int multipartMode, Charset mailEnc) throws MessagingException {
-        super(mimeMsg, multipartMode, MimeUtility.mimeCharset(mailEnc.name()));
+    private ToolMimeMessageHelper(MimeMessage msg, int multipartMode, Charset mailEnc) throws MessagingException {
+        super(msg, multipartMode, MimeUtility.mimeCharset(mailEnc.name()));
+    }
+
+    public String writeString() throws IOException, MessagingException {
+        return this.writeString(true);
+    }
+
+    public String writeString(boolean includeHeaders) throws IOException, MessagingException {
+        ToolStrBuilder strBuilder = new ToolStrBuilder();
+
+        if (includeHeaders) {
+            strBuilder.appendWithDelimiters(this.getHeaderLines(), StringUtils.LF);
+        }
+
+        strBuilder.appendWithDelimiter(new String(this.write(), this.getEncoding()), StringUtils.LF);
+
+        return strBuilder.toString();
+    }
+
+    public byte[] write() throws IOException, MessagingException {
+        return this.write(true);
+    }
+
+    public byte[] write(boolean raw) throws IOException, MessagingException {
+        MimeMessage msg = this.getMimeMessage();
+
+        return IOUtils.toByteArray((raw ? msg.getRawInputStream() : msg.getInputStream()));
     }
 
     public boolean hasText() throws IOException, MessagingException {
@@ -142,11 +171,16 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     }
 
     @SuppressWarnings({ "unchecked" })
-    public Set<Header> getHeaders() throws MessagingException {
-        return new LinkedHashSet<>(EnumerationUtils.toList(((Enumeration<Header>) this.getMimeMessage().getAllHeaders())));
+    public List<String> getHeaderLines() throws MessagingException {
+        return EnumerationUtils.toList(((Enumeration<String>) this.getMimeMessage().getAllHeaderLines()));
     }
 
-    public void setHeaders(@Nullable Set<Header> headers) throws MessagingException {
+    @SuppressWarnings({ "unchecked" })
+    public List<Header> getHeaders() throws MessagingException {
+        return EnumerationUtils.toList(((Enumeration<Header>) this.getMimeMessage().getAllHeaders()));
+    }
+
+    public void setHeaders(@Nullable Collection<Header> headers) throws MessagingException {
         MimeMessage mimeMsg = this.getMimeMessage();
 
         for (Header header : this.getHeaders()) {
