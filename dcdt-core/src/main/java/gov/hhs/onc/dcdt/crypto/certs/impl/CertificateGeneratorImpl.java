@@ -79,8 +79,8 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
 
         // noinspection ConstantConditions
         X509v3CertificateBuilder certBuilder =
-            new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubject().toX500Name(), (certConfig.hasSerialNumber()
-                ? certConfig.getSerialNumber() : CertificateUtils.generateSerialNumber()), certValidInterval.getNotBefore(), certValidInterval.getNotAfter(),
+            new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubject().toX500Name(), (certConfig.hasSerialNumber() ? certConfig
+                .getSerialNumber().getValue() : CertificateUtils.generateSerialNumber()), certValidInterval.getNotBefore(), certValidInterval.getNotAfter(),
                 certSubj.toX500Name(), keyPairInfo.getSubjectPublicKeyInfo());
 
         try {

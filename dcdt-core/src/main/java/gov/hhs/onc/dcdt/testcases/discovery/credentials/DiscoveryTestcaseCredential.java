@@ -13,6 +13,15 @@ import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
 public interface DiscoveryTestcaseCredential extends ToolNamedBean {
+    public final static class DiscoveryTestcaseCredentialValidPredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
+        public final static DiscoveryTestcaseCredentialValidPredicate INSTANCE = new DiscoveryTestcaseCredentialValidPredicate();
+
+        @Override
+        protected boolean evaluateInternal(DiscoveryTestcaseCredential cred) throws Exception {
+            return cred.isValid();
+        }
+    }
+
     public final static class DiscoveryTestcaseCredentialTypePredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
         public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_CA = new DiscoveryTestcaseCredentialTypePredicate(
             DiscoveryTestcaseCredentialType.CA);

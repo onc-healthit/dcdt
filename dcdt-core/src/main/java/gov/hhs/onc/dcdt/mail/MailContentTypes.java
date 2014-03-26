@@ -47,6 +47,11 @@ public final class MailContentTypes {
     public final static String APP_X_PKCS7_SIG_SUBTYPE = "x-" + APP_PKCS7_SIG_SUBTYPE;
     public final static MimeType APP_X_PKCS7_SIG = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_X_PKCS7_SIG_SUBTYPE, NAME_SMIME_SIG_PARAM);
 
+    public final static String MSG_TYPE = "message";
+
+    public final static String MSG_RFC822_SUBTYPE = "rfc822";
+    public final static MimeType MSG_RFC822 = ToolMimeTypeUtils.valueOf(MSG_TYPE, MSG_RFC822_SUBTYPE);
+
     public final static String MULTIPART_TYPE = "multipart";
 
     public final static String MULTIPART_MIXED_SUBTYPE = "mixed";

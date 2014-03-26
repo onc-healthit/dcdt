@@ -7,5 +7,5 @@ import javax.annotation.Nullable;
 
 public interface DiscoveryTestcaseProcessor extends
     ToolTestcaseProcessor<DiscoveryTestcaseDescription, DiscoveryTestcaseConfig, DiscoveryTestcaseResult, DiscoveryTestcase, DiscoveryTestcaseSubmission> {
-    public DiscoveryTestcaseResult process(ToolMimeMessageHelper mimeMsgHelper, @Nullable DiscoveryTestcase discoveryTestcase);
+    public DiscoveryTestcaseResult process(ToolMimeMessageHelper msgHelper, @Nullable DiscoveryTestcase discoveryTestcase);
 }

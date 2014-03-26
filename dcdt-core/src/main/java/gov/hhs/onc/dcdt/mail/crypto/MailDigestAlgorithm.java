@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.crypto.mail;
+package gov.hhs.onc.dcdt.mail.crypto;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyAlgorithmIdentifier;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;

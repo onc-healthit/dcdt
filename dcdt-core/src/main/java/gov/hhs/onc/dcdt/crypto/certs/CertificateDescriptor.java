@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyDescriptor;
-import java.math.BigInteger;
 import javax.annotation.Nullable;
 
 public interface CertificateDescriptor extends CryptographyDescriptor {
@@ -15,7 +14,7 @@ public interface CertificateDescriptor extends CryptographyDescriptor {
     public boolean hasSerialNumber();
 
     @Nullable
-    public BigInteger getSerialNumber();
+    public CertificateSerialNumber getSerialNumber();
 
     public boolean hasSignatureAlgorithm();
 

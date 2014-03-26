@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyConfig;
-import java.math.BigInteger;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
 
@@ -15,7 +14,7 @@ public interface CertificateConfig extends CertificateDescriptor, CryptographyCo
 
     public void setCertificateType(@Nullable CertificateType certType);
 
-    public void setSerialNumber(@Nullable BigInteger serialNum);
+    public void setSerialNumber(@Nullable CertificateSerialNumber serialNum);
 
     @NotNull(message = "{dcdt.crypto.certs.validation.constraints.cert.sig.alg.NotNull.msg}", groups = { GenerateConstraintGroup.class })
     @Nullable

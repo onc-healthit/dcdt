@@ -2,18 +2,17 @@ package gov.hhs.onc.dcdt.crypto.certs.impl;
 
 import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateSerialNumber;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
-import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
-import java.math.BigInteger;
 import javax.annotation.Nullable;
 
 public class CertificateConfigImpl extends AbstractCryptographyDescriptor implements CertificateConfig {
     private boolean ca;
     private CertificateType certType;
-    private BigInteger serialNum;
+    private CertificateSerialNumber serialNum;
     private SignatureAlgorithm sigAlg;
     private CertificateName subj;
     private CertificateValidInterval validInterval;
@@ -46,17 +45,17 @@ public class CertificateConfigImpl extends AbstractCryptographyDescriptor implem
 
     @Override
     public boolean hasSerialNumber() {
-        return ToolNumberUtils.isPositive(this.serialNum);
+        return (this.serialNum != null);
     }
 
     @Nullable
     @Override
-    public BigInteger getSerialNumber() {
+    public CertificateSerialNumber getSerialNumber() {
         return this.serialNum;
     }
 
     @Override
-    public void setSerialNumber(@Nullable BigInteger serialNum) {
+    public void setSerialNumber(@Nullable CertificateSerialNumber serialNum) {
         this.serialNum = serialNum;
     }
 
