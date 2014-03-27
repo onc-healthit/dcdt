@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.service.mail.james.matcher.impl;
 
-import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.ToolMailException;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.service.mail.james.matcher.ToolMatcher;
@@ -12,10 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.TransformerUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.mailet.Mail;
+import org.apache.mailet.MailAddress;
 import org.apache.mailet.base.GenericMatcher;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
@@ -34,8 +32,7 @@ public abstract class AbstractToolMatcher extends GenericMatcher implements Tool
     @SuppressWarnings({ "rawtypes" })
     public Collection<?> match(Mail mail) throws MessagingException {
         try {
-            return CollectionUtils.collect(this.matchInternal(new ToolMimeMessageHelper(mail.getMessage(), this.mailEnc)),
-                TransformerUtils.stringValueTransformer());
+            return this.matchInternal(new ToolMimeMessageHelper(mail.getMessage(), this.mailEnc));
         } catch (ToolMailException e) {
             throw e;
         } catch (Exception e) {

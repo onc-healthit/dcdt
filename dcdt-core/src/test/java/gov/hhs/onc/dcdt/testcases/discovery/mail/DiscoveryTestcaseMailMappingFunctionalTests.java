@@ -3,10 +3,8 @@ package gov.hhs.onc.dcdt.testcases.discovery.mail;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
-import gov.hhs.onc.dcdt.utils.ToolListUtils;
-import java.util.List;
-import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.Restrictions;
+import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping.DiscoveryTestcaseMailMappingPredicate;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
@@ -32,8 +30,6 @@ public class DiscoveryTestcaseMailMappingFunctionalTests extends AbstractToolFun
 
     @Value("${dcdt.test.discovery.mail.mapping.results.addr.rm}")
     private MailAddress testMailMappingResultsAddrRm;
-
-    private final static String DIRECT_ADDR_PROP_NAME = "directAddress";
 
     private DiscoveryTestcaseMailMapping mailMapping;
 
@@ -61,22 +57,17 @@ public class DiscoveryTestcaseMailMappingFunctionalTests extends AbstractToolFun
     @Test(dependsOnMethods = { "testRegisterBeans" })
     public void testRemoveBeans() {
         this.discoveryTestcaseMailMappingReg.removeBeans(this.mailMapping);
-        Criterion criterion = Restrictions.eq(DIRECT_ADDR_PROP_NAME, this.testMailMappingDirectAddrRm);
-
-        Assert.assertFalse(this.discoveryTestcaseMailMappingService.containsBean(criterion),
+        Assert.assertNull(getMailMapping(this.testMailMappingDirectAddrRm),
             String.format("A discovery testcase mail mapping with a Direct address=%s should not have been found.", this.testMailMappingDirectAddrRm));
     }
 
     private void assertMailMappingProperties(MailAddress directAddr, MailAddress resultsAddr) {
-        Criterion criterion = Restrictions.eq(DIRECT_ADDR_PROP_NAME, directAddr);
-        Assert.assertTrue(this.discoveryTestcaseMailMappingService.containsBean(criterion),
-            String.format("Unable to find a discovery testcase mail mapping bean with Direct address=%s.", directAddr));
+        DiscoveryTestcaseMailMapping mailMapping = getMailMapping(directAddr);
+        Assert.assertEquals(mailMapping.getDirectAddress(), directAddr, "Direct addresses are not equal.");
+        Assert.assertEquals(mailMapping.getResultsAddress(), resultsAddr, "Results addresses are not equal.");
+    }
 
-        List<DiscoveryTestcaseMailMapping> mailMappings = this.discoveryTestcaseMailMappingService.getBeansBy(criterion);
-        Assert.assertEquals(mailMappings.size(), 1);
-        DiscoveryTestcaseMailMapping mailMapping = ToolListUtils.getFirst(mailMappings);
-        // noinspection ConstantConditions
-        Assert.assertEquals(mailMapping.getDirectAddress(), directAddr);
-        Assert.assertEquals(mailMapping.getResultsAddress(), resultsAddr);
+    private DiscoveryTestcaseMailMapping getMailMapping(MailAddress mailAddr) {
+        return CollectionUtils.find(discoveryTestcaseMailMappingService.getBeans(), new DiscoveryTestcaseMailMappingPredicate(mailAddr));
     }
 }

@@ -33,8 +33,7 @@
         <br/><br/>
         <strong>Step 5: </strong> Attempt to send a message to the Direct address that you've just copied.
         Please only send to one address at a time. The test case results message will indicate the test case results.
-        See the instructions for the test case for further information (Note: you should not receive a result test message
-        for test cases D5, D6, D7, D8, D11, D12, and D13).
+        See the test case instructions for additional information.
         <br/>
     </p>
 </div>
