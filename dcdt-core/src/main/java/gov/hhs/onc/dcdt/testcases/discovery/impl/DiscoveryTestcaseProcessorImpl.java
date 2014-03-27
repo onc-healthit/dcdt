@@ -146,8 +146,8 @@ public class DiscoveryTestcaseProcessorImpl
                 .info(String
                     .format(
                         "Found a matching signer certificate (subj={%s}, issuer={%s}, serialNum=%s) for mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s).",
-                        msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(signed.getContent()), signerCertInfo.getSubject(), signerCertInfo
-                            .getCertificate().getIssuerX500Principal(), signerCertInfo.getSerialNumber()));
+                        signerCertInfo.getSubject(), signerCertInfo.getCertificate().getIssuerX500Principal(), signerCertInfo.getSerialNumber(), msgId,
+                        msgFrom, msgTo, ToolMimePartUtils.getContentType(signed.getContent())));
 
             ToolTestcaseCertificateResultType signerCertStatus = ToolTestcaseCertificateUtils.validateCertificate(signerCertInfo, msgFrom, this.certValidators);
 
