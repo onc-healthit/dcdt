@@ -167,25 +167,20 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     @Nullable
     @Override
     public String toAddress() {
-        return ToolMailAddressUtils.joinParts(this.toAddressParts());
+        return this.toAddress(this.getBindingType());
     }
 
     @Nullable
     @Override
     public String toAddress(BindingType bindingType) {
-        String addrStr = null;
-
         switch (bindingType) {
             case ADDRESS:
-                addrStr = this.toAddress();
-                break;
+                return ToolMailAddressUtils.joinParts(this.toAddressParts());
             case DOMAIN:
-                addrStr = this.getDomainNamePart();
-                break;
+                return this.getDomainNamePart();
             default:
-                break;
+                return null;
         }
-        return addrStr;
     }
 
     @Override

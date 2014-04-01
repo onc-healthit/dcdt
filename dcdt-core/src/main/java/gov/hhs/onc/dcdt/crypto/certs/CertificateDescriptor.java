@@ -24,7 +24,7 @@ public interface CertificateDescriptor extends CryptographyDescriptor {
     public boolean hasSubject();
 
     @Nullable
-    public CertificateName getSubject();
+    public CertificateName getSubject() throws CertificateException;
 
     public boolean hasValidInterval();
 

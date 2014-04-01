@@ -5,18 +5,17 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import java.security.Principal;
 import java.util.SortedMap;
 import javax.annotation.Nullable;
+import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 
 public interface CertificateName extends Principal, ToolBean {
+    public X500Principal toX500Principal();
+
     public X500Name toX500Name();
-
-    public boolean hasSubjectAltNames();
-
-    @Nullable
-    public GeneralNames getSubjectAltNames();
 
     @Override
     public String getName();
@@ -43,6 +42,20 @@ public interface CertificateName extends Principal, ToolBean {
     public MailAddress getMailAddress();
 
     public void setMailAddress(@Nullable MailAddress mailAddr);
+
+    public boolean hasAltName(CertificateAltNameType altNameType);
+
+    @Nullable
+    public GeneralName getAltName(CertificateAltNameType altNameType);
+
+    public void setAltName(GeneralName altName);
+
+    public boolean hasAltNames();
+
+    @Nullable
+    public GeneralNames getAltNames();
+
+    public void setAltNames(@Nullable GeneralNames altNames);
 
     public boolean hasAttribute(ASN1ObjectIdentifier attrOid);
 

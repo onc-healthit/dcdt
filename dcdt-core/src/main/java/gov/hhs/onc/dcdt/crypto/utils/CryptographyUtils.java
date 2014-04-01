@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.crypto.utils;
 import gov.hhs.onc.dcdt.crypto.CryptographyAlgorithmIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
+import gov.hhs.onc.dcdt.crypto.CryptographyTaggedIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.security.Provider;
@@ -42,6 +43,17 @@ public abstract class CryptographyUtils {
     public static <T extends Enum<T> & CryptographyObjectIdentifier> T findObjectId(Class<T> idEnumClass, ASN1ObjectIdentifier oid) {
         for (T idEnum : EnumSet.allOf(idEnumClass)) {
             if (Objects.equals(idEnum.getOid(), oid)) {
+                return idEnum;
+            }
+        }
+
+        return null;
+    }
+
+    @Nullable
+    public static <T extends Enum<T> & CryptographyTaggedIdentifier> T findTaggedId(Class<T> idEnumClass, int tag) {
+        for (T idEnum : EnumSet.allOf(idEnumClass)) {
+            if (Objects.equals(idEnum.getTag(), tag)) {
                 return idEnum;
             }
         }

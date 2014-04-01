@@ -91,8 +91,8 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
                 certBuilder.addExtension(Extension.subjectKeyIdentifier, false, keyPairInfo.getSubjectKeyId());
             }
 
-            if (certSubj.hasSubjectAltNames()) {
-                certBuilder.addExtension(Extension.subjectAlternativeName, false, certSubj.getSubjectAltNames());
+            if (certSubj.hasAltNames()) {
+                certBuilder.addExtension(Extension.subjectAlternativeName, false, certSubj.getAltNames());
             }
         } catch (CertIOException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException("Unable to set certificate X509v3 extension.", e);

@@ -26,7 +26,7 @@ public interface CertificateConfig extends CertificateDescriptor, CryptographyCo
     @NotNull(message = "{dcdt.crypto.certs.validation.constraints.cert.subj.NotNull.msg}", groups = { GenerateConstraintGroup.class })
     @Nullable
     @Override
-    public CertificateName getSubject();
+    public CertificateName getSubject() throws CertificateException;
 
     public void setSubject(@Nullable CertificateName subj);
 

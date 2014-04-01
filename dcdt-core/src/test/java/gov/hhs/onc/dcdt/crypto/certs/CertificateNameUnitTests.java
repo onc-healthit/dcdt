@@ -33,13 +33,13 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
     private CertificateConfig testCertConfigDomain1;
 
     @Test
-    public void testX500Name() {
+    public void testX500Name() throws Exception {
         assertCertificateSubjectsMatch(this.testCertConfigCa1, this.testCertSubjX500NameCa1);
         assertCertificateSubjectsMatch(this.testCertConfigAddr1, this.testCertSubjX500NameAddr1);
         assertCertificateSubjectsMatch(this.testCertConfigDomain1, this.testCertSubjX500NameDomain1);
     }
 
-    private static void assertCertificateSubjectsMatch(CertificateConfig testCertConfig, X500Name testCertSubjX500Name) {
+    private static void assertCertificateSubjectsMatch(CertificateConfig testCertConfig, X500Name testCertSubjX500Name) throws Exception {
         CertificateName testCertSubj = testCertConfig.getSubject();
 
         Assert.assertNotNull(testCertSubj, "Certificate subject is null.");
