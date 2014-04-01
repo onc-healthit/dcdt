@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.certs.impl;
 
+import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateSerialNumber;
@@ -7,6 +8,7 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
+import gov.hhs.onc.dcdt.crypto.utils.CertificateNameUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import java.security.cert.X509Certificate;
 import javax.annotation.Nullable;
@@ -91,14 +93,19 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
 
     @Override
     public boolean hasSubject() {
-        return this.getSubject() != null;
+        try {
+            return (this.getSubject() != null);
+        } catch (CertificateException ignored) {
+            return false;
+        }
     }
 
     @Nullable
     @Override
     @Transient
-    public CertificateName getSubject() {
-        return this.hasCertificate() ? new CertificateNameImpl(this.cert.getSubjectDN().getName()) : null;
+    public CertificateName getSubject() throws CertificateException {
+        return (this.hasCertificate()
+            ? new CertificateNameImpl(CertificateNameUtils.buildSubjectAltNames(this.cert), this.cert.getSubjectX500Principal()) : null);
     }
 
     @Override

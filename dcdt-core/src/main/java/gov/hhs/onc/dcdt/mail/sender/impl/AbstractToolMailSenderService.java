@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.mail.sender.impl;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
+import gov.hhs.onc.dcdt.mail.JavaMailProperties;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
@@ -67,7 +68,9 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
         @Nullable Iterable<MimeAttachmentResource> attachmentResources) throws Exception {
         MailGatewayConfig mailGatewayConfig = fromConfig.getGatewayConfig();
         MailGatewayCredentialConfig mailGatewayCredConfig = fromConfig.getGatewayCredentialConfig();
+
         Session mailSession = mailGatewayConfig.getSession();
+        mailSession.getProperties().put(JavaMailProperties.FROM, this.fromConfig.getMailAddress().toAddress());
 
         ToolMailSender mailSender = new ToolMailSender();
         mailSender.setSession(mailSession);

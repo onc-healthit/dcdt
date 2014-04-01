@@ -26,9 +26,6 @@ import java.security.cert.X509Certificate;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.ArrayUtils;
-import org.bouncycastle.asn1.x509.GeneralName;
-import org.bouncycastle.asn1.x509.GeneralNames;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 
 public abstract class CertificateUtils {
@@ -109,18 +106,6 @@ public abstract class CertificateUtils {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format("Unable to write certificate instance (class=%s) to data.",
                 ToolClassUtils.getClass(cert)), e);
         }
-    }
-
-    @Nullable
-    public static GeneralNames buildSubjectAltNames(@Nullable MailAddress mailAddr) {
-        if (mailAddr == null) {
-            return null;
-        }
-
-        GeneralName mailSubjAltName = new GeneralName(GeneralName.rfc822Name, mailAddr.toAddress());
-
-        return mailAddr.hasLocalPart() ? new GeneralNames(mailSubjAltName) : new GeneralNames(ArrayUtils.toArray(mailSubjAltName, new GeneralName(
-            GeneralName.dNSName, mailAddr.getDomainNamePart())));
     }
 
     public static CertificateFactory getCertificateFactory(CertificateType certType) throws CryptographyException {

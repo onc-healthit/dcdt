@@ -7,16 +7,15 @@ import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseSubmissionImpl;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseCertificateStep;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultException;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import java.util.Date;
+import java.util.List;
+import javax.annotation.Nullable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
-import javax.annotation.Nullable;
-import java.util.Date;
-import java.util.List;
 
 @Test(groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.hosting.all", "dcdt.test.func.testcases.hosting.testcases" })
 public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests {
@@ -102,7 +101,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
     }
 
     @Test
-    public void testHostingTestcase1() throws ToolTestcaseResultException {
+    public void testHostingTestcase1() throws Exception {
         String hostingTestcase1 = "hostingTestcase1";
         testHostingTestcase(hostingTestcase1, this.testDnsAddrBoundDirectAddr1, true, 0, this.testDnsAddrBoundCommonName1);
         testHostingTestcase(hostingTestcase1, this.testDnsAddrBoundDirectAddr2, true, 0, this.testDnsAddrBoundCommonName2);
@@ -111,7 +110,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
     }
 
     @Test
-    public void testHostingTestcase2() throws ToolTestcaseResultException {
+    public void testHostingTestcase2() throws Exception {
         String hostingTestcase2 = "hostingTestcase2";
         testHostingTestcase(hostingTestcase2, this.testDnsDomainBoundDirectAddr1, true, 0, this.testDnsDomainBoundCommonName1);
         testHostingTestcase(hostingTestcase2, this.testDnsAddrBoundDirectAddr1, false, 1, this.testDnsAddrBoundCommonName1);
@@ -120,7 +119,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
     }
 
     @Test
-    public void testHostingTestcase3() throws ToolTestcaseResultException {
+    public void testHostingTestcase3() throws Exception {
         String hostingTestcase3 = "hostingTestcase3";
         testHostingTestcase(hostingTestcase3, this.testLdapAddrBoundDirectAddr1, true, 0, this.testLdapAddrBoundCommonName1);
         testHostingTestcase(hostingTestcase3, this.testLdapAddrBoundDirectAddr2, true, 0, this.testLdapAddrBoundCommonName2);
@@ -130,29 +129,28 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
     }
 
     @Test
-    public void testHostingTestcase4() throws ToolTestcaseResultException {
+    public void testHostingTestcase4() throws Exception {
         String hostingTestcase4 = "hostingTestcase4";
         testHostingTestcase(hostingTestcase4, this.testLdapDomainBoundDirectAddr1, true, 0, this.testLdapDomainBoundCommonName1);
         testHostingTestcase(hostingTestcase4, this.testLdapDomainBoundDirectAddrDomain, true, 0, this.testLdapDomainBoundCommonName1);
     }
 
     @Test
-    public void testHostingTestcase5() throws ToolTestcaseResultException {
+    public void testHostingTestcase5() throws Exception {
         String hostingTestcase5 = "hostingTestcase5";
         testHostingTestcase(hostingTestcase5, this.testLdapNoBoundDirectAddr1, false, 5);
         testHostingTestcase(hostingTestcase5, this.testDnsAddrBoundDirectAddr1, false, 1, this.testDnsAddrBoundCommonName1);
     }
 
-    private void testHostingTestcase(String testcaseName, MailAddress directAddress, boolean successExpected, int errorStepPos)
-        throws ToolTestcaseResultException {
+    private void testHostingTestcase(String testcaseName, MailAddress directAddress, boolean successExpected, int errorStepPos) throws Exception {
         testHostingTestcase(testcaseName, directAddress, successExpected, errorStepPos, null);
     }
 
     @SuppressWarnings({ "unchecked" })
     private void
         testHostingTestcase(String testcaseName, MailAddress directAddress, boolean successExpected, int errorStepPos, @Nullable String certCommonName)
-            throws ToolTestcaseResultException {
-        HostingTestcase hostingTestcase = (HostingTestcase) this.applicationContext.getBean(testcaseName);
+            throws Exception {
+        HostingTestcase hostingTestcase = this.applicationContext.getBean(testcaseName, HostingTestcase.class);
         HostingTestcaseSubmission hostingTestcaseSubmission = new HostingTestcaseSubmissionImpl();
         hostingTestcaseSubmission.setTestcase(hostingTestcase);
         hostingTestcaseSubmission.setDirectAddress(directAddress);
@@ -165,7 +163,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
         Assert.assertEquals(this.testcaseProcessor.getErrorStepPosition(hostingTestcase.getConfig(), result), errorStepPos);
     }
 
-    private void assertCertificateProperties(ToolTestcaseStep lastStep, @Nullable String certCommonName) {
+    private void assertCertificateProperties(ToolTestcaseStep lastStep, @Nullable String certCommonName) throws Exception {
         if (lastStep instanceof ToolTestcaseCertificateStep) {
             ToolTestcaseCertificateStep certInfoStep = ((ToolTestcaseCertificateStep) lastStep);
 
@@ -175,8 +173,6 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
                 Assert.assertEquals(certInfo.getSubject().getCommonName(), certCommonName);
                 // noinspection ConstantConditions
                 Assert.assertTrue(certInfo.getValidInterval().isValid(new Date()));
-            } else {
-                Assert.assertNull(certCommonName);
             }
         }
     }

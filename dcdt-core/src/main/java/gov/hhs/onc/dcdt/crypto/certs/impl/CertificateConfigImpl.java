@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.crypto.certs.impl;
 
 import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateSerialNumber;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
@@ -82,7 +83,7 @@ public class CertificateConfigImpl extends AbstractCryptographyDescriptor implem
 
     @Nullable
     @Override
-    public CertificateName getSubject() {
+    public CertificateName getSubject() throws CertificateException {
         return this.subj;
     }
 

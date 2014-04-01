@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
-import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
@@ -39,7 +38,7 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
     private CredentialInfo testCredInfoCa1;
 
     @Test(dependsOnMethods = { "testGenerateCaCertificate" })
-    public void testGenerateDomainBoundCertificate() throws CryptographyException {
+    public void testGenerateDomainBoundCertificate() throws Exception {
         KeyInfo testDomain1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigDomain1.getKeyDescriptor());
 
         CredentialInfo testDomain1CredInfo =
@@ -50,7 +49,7 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
     }
 
     @Test(dependsOnMethods = { "testGenerateCaCertificate" })
-    public void testGenerateAddressBoundCertificate() throws CryptographyException {
+    public void testGenerateAddressBoundCertificate() throws Exception {
         KeyInfo testAddr1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigAddr1.getKeyDescriptor());
 
         CredentialInfo testAddr1CredInfo =
@@ -61,7 +60,7 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
     }
 
     @Test
-    public void testGenerateCaCertificate() throws CryptographyException {
+    public void testGenerateCaCertificate() throws Exception {
         KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor());
 
         this.testCredInfoCa1 =
@@ -70,7 +69,7 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
         assertCredentialDescriptorsMatch(this.testCredConfigCa1, this.testCredInfoCa1);
     }
 
-    private static void assertCredentialDescriptorsMatch(CredentialConfig testCredConfig, CredentialInfo testCredInfo) {
+    private static void assertCredentialDescriptorsMatch(CredentialConfig testCredConfig, CredentialInfo testCredInfo) throws Exception {
         assertKeyDescriptorsMatch(testCredConfig.getKeyDescriptor(), testCredInfo.getKeyDescriptor());
         assertCertificateDescriptorsMatch(testCredConfig.getCertificateDescriptor(), testCredInfo.getCertificateDescriptor());
     }
@@ -80,7 +79,7 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
         Assert.assertEquals(testKeyInfo.getKeySize(), testKeyConfig.getKeySize(), "Key configuration and information key sizes do not match.");
     }
 
-    private static void assertCertificateDescriptorsMatch(CertificateConfig testCertConfig, CertificateInfo testCertInfo) {
+    private static void assertCertificateDescriptorsMatch(CertificateConfig testCertConfig, CertificateInfo testCertInfo) throws Exception {
         Assert.assertSame(testCertInfo.getCertificateType(), testCertConfig.getCertificateType(),
             "Certificate configuration and information certificate types do not match.");
         Assert.assertSame(testCertInfo.getSignatureAlgorithm(), testCertConfig.getSignatureAlgorithm(),

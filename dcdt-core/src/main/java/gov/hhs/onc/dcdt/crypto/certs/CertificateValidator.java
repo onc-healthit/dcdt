@@ -5,7 +5,7 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
 
 public interface CertificateValidator extends ToolBean {
-    public boolean validate(MailAddress directAddr, CertificateInfo certInfo);
+    public boolean validate(MailAddress directAddr, CertificateInfo certInfo) throws Exception;
 
     public ToolTestcaseCertificateResultType getErrorCode();
 

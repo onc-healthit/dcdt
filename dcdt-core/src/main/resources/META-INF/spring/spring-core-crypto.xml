@@ -51,7 +51,7 @@
     <beans:bean id="certConfig" class="gov.hhs.onc.dcdt.crypto.certs.CertificateConfig" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="certConfigImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateConfigImpl" parent="certConfig" abstract="true"
         p:certificateType="X509"
-        p:signatureAlgorithm="SHA1WITHRSA">
+        p:signatureAlgorithm="SHA1_WITH_RSA_ENCRYPTION">
         <beans:property name="validInterval">
             <beans:bean parent="certValidIntervalImpl"/>
         </beans:property>
@@ -76,11 +76,14 @@
     = CERTIFICATE VALIDATORS
     =====================================================================================================-->
     <beans:bean id="certValidator" class="gov.hhs.onc.dcdt.crypto.certs.CertificateValidator" abstract="true"/>
+    
     <beans:bean id="certValidIntervalValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateValidIntervalValidator" parent="certValidator"
         p:errorCode="EXPIRED_CERT"/>
+    
     <beans:bean id="certSubjValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectValidator" parent="certValidator"
         p:errorCode="INVALID_SUBJ_DN"
         p:optional="true"/>
+    
     <beans:bean id="certSubjAltNamesValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectAltNamesValidator" parent="certValidator"
         p:errorCode="INVALID_SUBJ_ALT_NAME"
         p:optional="true"/>

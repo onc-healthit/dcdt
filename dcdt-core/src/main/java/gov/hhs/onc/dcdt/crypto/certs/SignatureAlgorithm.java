@@ -8,18 +8,19 @@ import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 
 public enum SignatureAlgorithm implements CryptographyAlgorithmIdentifier {
-    SHA1WITHRSA("SHA1WITHRSA", PKCSObjectIdentifiers.sha1WithRSAEncryption);
+    SHA1_WITH_RSA_ENCRYPTION("sha1WithRSAEncryption", PKCSObjectIdentifiers.sha1WithRSAEncryption), SHA256_WITH_RSA_ENCRYPTION("sha256WithRSAEncryption",
+        PKCSObjectIdentifiers.sha256WithRSAEncryption);
 
     private final String id;
     private final ASN1ObjectIdentifier oid;
     private final AlgorithmIdentifier algId;
-    private final AlgorithmIdentifier digestAlgoId;
+    private final AlgorithmIdentifier digestAlgId;
 
     private SignatureAlgorithm(String id, ASN1ObjectIdentifier oid) {
         this.id = id;
         this.oid = oid;
         this.algId = new DefaultSignatureAlgorithmIdentifierFinder().find(this.id);
-        this.digestAlgoId = new DefaultDigestAlgorithmIdentifierFinder().find(this.algId);
+        this.digestAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(this.algId);
     }
 
     @Override
@@ -28,7 +29,7 @@ public enum SignatureAlgorithm implements CryptographyAlgorithmIdentifier {
     }
 
     public AlgorithmIdentifier getDigestAlgorithmId() {
-        return this.digestAlgoId;
+        return this.digestAlgId;
     }
 
     @Override
