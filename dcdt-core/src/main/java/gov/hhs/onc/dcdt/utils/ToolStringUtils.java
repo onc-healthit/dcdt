@@ -85,6 +85,17 @@ public abstract class ToolStringUtils {
         return (objs != null) ? new ToolStrBuilder().appendWithDelimiters(objs, delim).toString() : null;
     }
 
+    public static String unquote(String str) {
+        return unquote(str, QUOTE_DBL);
+    }
+
+    public static String unquote(String str, String quoteStr) {
+        int strLen = str.length(), quoteStrLen = quoteStr.length();
+
+        return (str.startsWith(quoteStr) && str.endsWith(quoteStr) ? ((strLen > (quoteStrLen * 2))
+            ? str.substring(quoteStrLen, strLen - quoteStrLen) : StringUtils.EMPTY) : str);
+    }
+
     public static String quote(String str) {
         return quote(str, QUOTE_DBL);
     }

@@ -9,7 +9,8 @@ import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 
 public enum SignatureAlgorithm implements CryptographyAlgorithmIdentifier {
     SHA1_WITH_RSA_ENCRYPTION("sha1WithRSAEncryption", PKCSObjectIdentifiers.sha1WithRSAEncryption), SHA256_WITH_RSA_ENCRYPTION("sha256WithRSAEncryption",
-        PKCSObjectIdentifiers.sha256WithRSAEncryption);
+        PKCSObjectIdentifiers.sha256WithRSAEncryption), SHA384_WITH_RSA_ENCRYPTION("sha384WithRSAEncryption", PKCSObjectIdentifiers.sha384WithRSAEncryption),
+    SHA512_WITH_RSA_ENCRYPTION("sha512WithRSAEncryption", PKCSObjectIdentifiers.sha512WithRSAEncryption);
 
     private final String id;
     private final ASN1ObjectIdentifier oid;

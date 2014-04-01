@@ -12,6 +12,8 @@ import org.springframework.util.MimeType;
  * <li><a href="http://tools.ietf.org/html/rfc2046">RFC 2046 - Media Types</a></li>
  * <li><a href="http://tools.ietf.org/html/rfc5322">RFC 5322 - Internet Message Format</a></li>
  * <li><a href="http://tools.ietf.org/html/rfc5751#section-5">RFC 5751 - S/MIME 3.2 Message Specification, Section 5 - IANA Considerations</a></li>
+ * <li><a href="http://wiki.directproject.org/Applicability+Statement+for+Secure+Health+Transport+Working+Version">Applicability Statement for Secure Health
+ * Transport</a></li>
  * </ul>
  * 
  * A summary is available here: <a href="http://en.wikipedia.org/wiki/Internet_media_type">Internet_media_type</a>
@@ -28,6 +30,8 @@ public final class MailContentTypes {
     public final static Pair<String, String> SMIME_TYPE_ENV_DATA_PARAM = new ImmutablePair<>(SMIME_TYPE_PARAM_NAME, SMIME_TYPE_ENV_DATA_PARAM_VALUE);
     public final static String SMIME_TYPE_SIGNED_DATA_PARAM_VALUE = "signed-data";
     public final static Pair<String, String> SMIME_TYPE_SIGNED_DATA_PARAM = new ImmutablePair<>(SMIME_TYPE_PARAM_NAME, SMIME_TYPE_SIGNED_DATA_PARAM_VALUE);
+
+    public final static String MICALG_PARAM_NAME = "micalg";
 
     public final static String APP_PKCS7_MIME_SUBTYPE = "pkcs7-mime";
     public final static MimeType APP_PKCS7_MIME_ENV = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_PKCS7_MIME_SUBTYPE, SMIME_TYPE_ENV_DATA_PARAM,
@@ -72,7 +76,6 @@ public final class MailContentTypes {
         MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG_PARAM);
     public final static MimeType MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG = ToolMimeTypeUtils.valueOf(MULTIPART_TYPE, MULTIPART_SIGNED_SUBTYPE,
         MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG_PARAM);
-    public final static String MULTIPART_SIGNED_MSG_DIGEST_ALG_PARAM_NAME = "micalg";
 
     private MailContentTypes() {
     }

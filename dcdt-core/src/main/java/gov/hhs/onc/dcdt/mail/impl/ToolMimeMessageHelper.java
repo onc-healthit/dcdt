@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.mail.impl;
 
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
@@ -164,6 +165,11 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
         } else {
             return ToolMimePartUtils.getBodyParts((fromRoot ? this.getRootMimeMultipart() : this.getMimeMultipart()));
         }
+    }
+
+    @Nullable
+    public MailContentTransferEncoding getContentXferEncoding() throws MessagingException {
+        return ToolMimePartUtils.getContentXferEncoding(this.getMimeMessage());
     }
 
     public MimeType getContentType() throws MessagingException {
