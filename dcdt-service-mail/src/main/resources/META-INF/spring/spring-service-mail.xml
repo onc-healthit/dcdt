@@ -303,8 +303,6 @@
                                         p:className="RemoteDelivery">
                                         <beans:property name="initParameters">
                                             <util:map>
-                                                <beans:entry key="bounceProcessor"
-                                                    value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailProcessorState).BOUNCES.state }"/>
                                                 <beans:entry key="delayTime" value="5 minutes"/>
                                                 <beans:entry key="deliveryThreads" value="#{ taskExecServiceMail.maxPoolSize }"/>
                                                 <beans:entry key="maxRetries" value="0"/>
@@ -341,21 +339,6 @@
                                         <beans:property name="initParameters">
                                             <util:map>
                                                 <beans:entry key="repositoryPath" value="${dcdt.service.mail.james.repo.error.relay}"/>
-                                            </util:map>
-                                        </beans:property>
-                                    </beans:bean>
-                                </util:list>
-                            </beans:property>
-                        </beans:bean>
-                        <beans:bean parent="configBeanMailProcImpl"
-                            p:state="BOUNCES">
-                            <beans:property name="mailets">
-                                <util:list>
-                                    <beans:bean parent="configBeanMailetAll"
-                                        p:className="DSNBounce">
-                                        <beans:property name="initParameters">
-                                            <util:map>
-                                                <beans:entry key="passThrough" value="false"/>
                                             </util:map>
                                         </beans:property>
                                     </beans:bean>
