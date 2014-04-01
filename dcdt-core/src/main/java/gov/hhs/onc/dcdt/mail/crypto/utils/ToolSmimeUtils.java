@@ -4,6 +4,10 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSerialNumberImpl;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
+import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
+import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
+import gov.hhs.onc.dcdt.mail.MailContentTypes;
+import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.ToolSmimeException;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
@@ -21,6 +25,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.security.auth.x500.X500Principal;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cms.CMSException;
@@ -45,6 +50,8 @@ import org.springframework.util.MimeType;
  * <li><a href="http://tools.ietf.org/html/rfc2046">RFC 2046 - Media Types</a></li>
  * <li><a href="http://tools.ietf.org/html/rfc5322">RFC 5322 - Internet Message Format</a></li>
  * <li><a href="http://tools.ietf.org/html/rfc5751">RFC 5751 - S/MIME 3.2 Message Specification</a></li>
+ * <li><a href="http://wiki.directproject.org/Applicability+Statement+for+Secure+Health+Transport+Working+Version">Applicability Statement for Secure Health
+ * Transport</a></li>
  * </ul>
  * 
  * A summary is available here: <a href="http://en.wikipedia.org/wiki/S/MIME">S/MIME</a>
@@ -90,9 +97,6 @@ public abstract class ToolSmimeUtils {
         Map<SignerId, SignerInformation> signerInfoMap = new LinkedHashMap<>(signerInfos.size());
 
         for (SignerInformation signerInfo : signerInfos) {
-            // TODO: check signature content type
-            // TODO: check signature digest algorithm
-
             signerInfoMap.put(signerInfo.getSID(), signerInfo);
         }
 
@@ -103,15 +107,44 @@ public abstract class ToolSmimeUtils {
         try {
             MimeType bodyPartContentType = ToolMimePartUtils.getContentType(bodyPart);
 
+            if (ToolSmimeContentTypeUtils.getMicalg(bodyPartContentType) == null) {
+                // noinspection ConstantConditions
+                throw new ToolSmimeException(
+                    String
+                        .format(
+                            "Mail MIME message (id=%s, from=%s, to=%s) signed data content type (type=%s) has unknown/invalid Message Integrity Check algorithm (micalg) value: %s",
+                            msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType,
+                            bodyPartContentType.getParameter(MailContentTypes.MICALG_PARAM_NAME)));
+            }
+
+            SMIMESigned signed;
+
             if (ToolSmimeContentTypeUtils.isMultipartSigned(bodyPartContentType)) {
-                return new SMIMESigned(((MimeMultipart) bodyPart.getContent()));
+                MimeMultipart bodyMultipart = ((MimeMultipart) bodyPart.getContent());
+                MimeType sigPartContentType = ToolMimePartUtils.getContentType(((MimeBodyPart) bodyMultipart.getBodyPart(1)));
+
+                if (!ToolSmimeContentTypeUtils.isDetachedSignature(sigPartContentType)) {
+                    throw new ToolSmimeException(String.format(
+                        "Mail MIME message (id=%s, from=%s, to=%s) signed data signature body part content (type=%s) is not a detached signature.", msgHelper
+                            .getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), sigPartContentType));
+                }
+
+                signed = new SMIMESigned(bodyMultipart);
             } else if (ToolSmimeContentTypeUtils.isSignedData(bodyPartContentType)) {
-                return new SMIMESigned(bodyPart);
+                signed = new SMIMESigned(bodyPart);
+
+                if (ToolMimePartUtils.getContentXferEncoding(bodyPart) != MailContentTransferEncoding.BASE64) {
+                    throw new ToolSmimeException(String.format(
+                        "Mail MIME message (id=%s, from=%s, to=%s) signed data content (type=%s) transfer encoding is not base64: %s", msgHelper
+                            .getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType, bodyPart.getEncoding()));
+                }
             } else {
                 throw new ToolSmimeException(String.format(
                     "Decrypted mail MIME message (id=%s, from=%s, to=%s) body part content (type=%s) is not signed data.", msgHelper.getMimeMessage()
                         .getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType));
             }
+
+            return signed;
         } catch (ToolSmimeException e) {
             throw e;
         } catch (CMSException | IOException | MessagingException | SMIMEException e) {
@@ -176,9 +209,22 @@ public abstract class ToolSmimeUtils {
                     msg.getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), msgContentType));
             }
 
-            return new SMIMEEnveloped(msg);
+            SMIMEEnveloped enveloped = new SMIMEEnveloped(msg);
+            ASN1ObjectIdentifier encAlgOid = new ASN1ObjectIdentifier(enveloped.getEncryptionAlgOID());
 
-            // TODO: check cipher algorithm
+            if (CryptographyUtils.findObjectId(MailEncryptionAlgorithm.class, encAlgOid) == null) {
+                throw new ToolSmimeException(String.format(
+                    "Mail MIME message (id=%s, from=%s, to=%s) content (type=%s) has unknown/invalid content encryption algorithm: oid=%s", msg.getMessageID(),
+                    msgHelper.getFrom(), msgHelper.getTo(), msgContentType, encAlgOid.getId()));
+            }
+
+            if (msgHelper.getContentXferEncoding() != MailContentTransferEncoding.BASE64) {
+                throw new ToolSmimeException(String.format(
+                    "Mail MIME message (id=%s, from=%s, to=%s) enveloped data content (type=%s) transfer encoding is not base64: %s", msg.getMessageID(),
+                    msgHelper.getFrom(), msgHelper.getTo(), msgContentType, msg.getEncoding()));
+            }
+
+            return enveloped;
         } catch (ToolSmimeException e) {
             throw e;
         } catch (CMSException | MessagingException e) {

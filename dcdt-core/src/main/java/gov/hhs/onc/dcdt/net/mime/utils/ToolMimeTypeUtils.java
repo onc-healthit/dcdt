@@ -131,14 +131,8 @@ public abstract class ToolMimeTypeUtils {
         return (mimeType.getType() + DELIM_TYPE + mimeType.getSubtype());
     }
 
-    public static boolean hasParameter(MimeType mimeType, String paramName, @Nullable String ... paramValues) {
-        return hasParameter(mimeType, paramName, ToolArrayUtils.asList(paramValues));
-    }
-
-    public static boolean hasParameter(MimeType mimeType, String paramName, @Nullable Iterable<String> paramValues) {
-        return (hasParameters(mimeType) && ((paramValues != null && paramValues.iterator().hasNext()) ? CollectionUtils.containsAny(mimeType.getParameters()
-            .entrySet(), CollectionUtils.collect(paramValues, new MimeTypeParameterEntryTransformer(paramName))) : !StringUtils.isBlank(mimeType
-            .getParameter(paramName))));
+    public static boolean hasParameter(MimeType mimeType, String paramName) {
+        return (hasParameters(mimeType) && (mimeType.getParameters().containsKey(paramName)));
     }
 
     public static boolean hasParameters(MimeType mimeType) {

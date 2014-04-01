@@ -125,6 +125,10 @@ public class DiscoveryTestcaseProcessorImpl
             }
 
             SMIMESigned signed = ToolSmimeUtils.getSigned(msgHelper, decryptedBodyPart);
+
+            LOGGER.info(String.format("Extracted mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s).", msgId, msgFrom, msgTo,
+                ToolMimePartUtils.getContentType(signed.getContent())));
+
             Map<SignerInformation, CertificateInfo> signerCertInfoMap = ToolSmimeUtils.verifySignatures(signed);
 
             if (signerCertInfoMap.isEmpty()) {

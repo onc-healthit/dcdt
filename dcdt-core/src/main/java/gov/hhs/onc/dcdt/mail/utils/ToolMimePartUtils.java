@@ -1,10 +1,12 @@
 package gov.hhs.onc.dcdt.mail.utils;
 
+import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.ToolMailException;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils.MimeTypeComparator;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,6 +93,21 @@ public abstract class ToolMimePartUtils {
         }
 
         return bodyParts;
+    }
+
+    @Nullable
+    public static MailContentTransferEncoding getContentXferEncoding(MimePart part) throws MessagingException {
+        String contentXferEncStr = part.getEncoding();
+
+        if (contentXferEncStr != null) {
+            for (MailContentTransferEncoding contentXferEnc : EnumSet.allOf(MailContentTransferEncoding.class)) {
+                if (contentXferEnc.getValue().equals(contentXferEncStr)) {
+                    return contentXferEnc;
+                }
+            }
+        }
+
+        return null;
     }
 
     @Nullable

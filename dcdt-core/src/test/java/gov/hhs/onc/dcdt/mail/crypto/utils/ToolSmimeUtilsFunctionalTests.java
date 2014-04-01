@@ -204,7 +204,8 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         if (successful) {
             Assert.assertEquals(result.getCredentialFound(), result.getCredentialExpected(),
                 String.format("Discovery testcase result (msg=%s) credentials do not match.", mailInfo.getDecryptionErrorMessage()));
-            Assert.assertFalse(mailInfo.hasDecryptionErrorMessage(), "Successful Discovery testcase result has decryption error message.");
+            Assert.assertFalse(mailInfo.hasDecryptionErrorMessage(),
+                String.format("Successful Discovery testcase result has decryption error message: %s", mailInfo.getDecryptionErrorMessage()));
         }
     }
 
