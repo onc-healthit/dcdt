@@ -62,6 +62,9 @@ public class DiscoveryTestcaseProcessorImpl
         DiscoveryTestcaseResult result = ToolBeanFactoryUtils.createBeanOfType(this.appContext, DiscoveryTestcaseResult.class);
         // noinspection ConstantConditions
         result.setMailInfo(mailInfo);
+        result.setTestcase(discoveryTestcase);
+        // noinspection ConstantConditions
+        mailInfo.setMessageHelper(msgHelper);
 
         ToolStrBuilder decryptionErrorBuilder = new ToolStrBuilder();
 
@@ -74,13 +77,7 @@ public class DiscoveryTestcaseProcessorImpl
                     msgId, msgFrom, msgTo));
             }
 
-            SMIMEEnveloped enveloped = ToolSmimeUtils.getEnveloped(msgHelper);
-
-            // noinspection ConstantConditions
-            mailInfo.setEncryptedMessageHelper(msgHelper);
-
-            result.setTestcase(discoveryTestcase);
-
+            SMIMEEnveloped enveloped = null;
             MimeBodyPart decryptedBodyPart = null;
 
             if (discoveryTestcase.hasCredentials()) {
@@ -88,6 +85,8 @@ public class DiscoveryTestcaseProcessorImpl
                     result.setCredentialExpected(CollectionUtils.find(discoveryTestcase.getTargetCredentials(),
                         DiscoveryTestcaseCredentialValidPredicate.INSTANCE));
                 }
+
+                enveloped = ToolSmimeUtils.getEnveloped(msgHelper);
 
                 CredentialInfo discoveryTestcaseCredInfo;
                 KeyInfo discoveryTestcaseCredKeyInfo;
@@ -119,6 +118,7 @@ public class DiscoveryTestcaseProcessorImpl
             }
 
             if (decryptedBodyPart == null) {
+                // noinspection ConstantConditions
                 throw new ToolSmimeException(String.format(
                     "Unable to decrypt enveloped mail MIME message (id=%s, from=%s, to=%s) enveloped content (type=%s).", msgId, msgFrom, msgTo,
                     ToolMimePartUtils.getContentType(enveloped.getEncryptedContent())));

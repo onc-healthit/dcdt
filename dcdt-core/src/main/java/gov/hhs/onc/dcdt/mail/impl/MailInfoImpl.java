@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Lazy
 @Scope("prototype")
 public class MailInfoImpl extends AbstractToolBean implements MailInfo {
-    private ToolMimeMessageHelper encryptedMsgHelper;
+    private ToolMimeMessageHelper msgHelper;
     private String decryptionErrorMsg;
 
     @Override
@@ -25,7 +25,7 @@ public class MailInfoImpl extends AbstractToolBean implements MailInfo {
     @Nullable
     @Override
     public MailAddress getFrom() throws MessagingException {
-        return this.hasEncryptedMessageHelper() ? this.encryptedMsgHelper.getFrom() : null;
+        return this.hasMessageHelper() ? this.msgHelper.getFrom() : null;
     }
 
     @Override
@@ -36,23 +36,23 @@ public class MailInfoImpl extends AbstractToolBean implements MailInfo {
     @Nullable
     @Override
     public MailAddress getTo() throws MessagingException {
-        return this.hasEncryptedMessageHelper() ? this.encryptedMsgHelper.getTo() : null;
+        return this.hasMessageHelper() ? this.msgHelper.getTo() : null;
     }
 
     @Override
-    public boolean hasEncryptedMessageHelper() {
-        return this.encryptedMsgHelper != null;
+    public boolean hasMessageHelper() {
+        return this.msgHelper != null;
     }
 
     @Nullable
     @Override
-    public ToolMimeMessageHelper getEncryptedMessageHelper() {
-        return this.encryptedMsgHelper;
+    public ToolMimeMessageHelper getMessageHelper() {
+        return this.msgHelper;
     }
 
     @Override
-    public void setEncryptedMessageHelper(@Nullable ToolMimeMessageHelper encryptedMsgHelper) {
-        this.encryptedMsgHelper = encryptedMsgHelper;
+    public void setMessageHelper(@Nullable ToolMimeMessageHelper msgHelper) {
+        this.msgHelper = msgHelper;
     }
 
     @Override

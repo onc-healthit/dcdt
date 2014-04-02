@@ -19,7 +19,7 @@ public abstract class ToolSmimeContentTypeUtils {
             String micalgStr = ToolStringUtils.unquote(contentType.getParameter(MailContentTypes.MICALG_PARAM_NAME));
 
             for (MailDigestAlgorithm micalg : EnumSet.allOf(MailDigestAlgorithm.class)) {
-                if (micalg.getMicalg().equals(micalgStr)) {
+                if (micalg.getMicalg().contains(micalgStr)) {
                     return micalg;
                 }
             }

@@ -59,9 +59,9 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
         MailInfo mailInfo;
 
         // noinspection ConstantConditions
-        if (discoveryTestcaseResult.hasMailInfo() && (mailInfo = discoveryTestcaseResult.getMailInfo()).hasEncryptedMessageHelper()) {
+        if (discoveryTestcaseResult.hasMailInfo() && (mailInfo = discoveryTestcaseResult.getMailInfo()).hasMessageHelper()) {
             // noinspection ConstantConditions
-            ToolMimeMessageHelper msgHelper = mailInfo.getEncryptedMessageHelper();
+            ToolMimeMessageHelper msgHelper = mailInfo.getMessageHelper();
             // noinspection ConstantConditions
             MimeMessage msg = msgHelper.getMimeMessage();
             Date msgSentDate = msg.getSentDate();
@@ -75,7 +75,7 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
                     + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgSentDate) + ToolMimeMessageHelper.FILE_EXT_MAIL)));
         }
 
-        this.send(modelMap, modelMap, to, attachmentResources);
+        this.send(modelMap, modelMap, to, null, null, attachmentResources);
     }
 
     @Nullable

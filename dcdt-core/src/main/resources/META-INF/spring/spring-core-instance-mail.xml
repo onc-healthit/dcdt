@@ -24,7 +24,7 @@
     
     <beans:bean id="instanceMailAddrBase" parent="instanceMailAddr" abstract="true"
         p:domainName="#{ instanceDomainConfigBase.domainName }"/>
-    
+
     <beans:bean id="instanceMailAddr1" parent="instanceMailAddr" abstract="true"
         p:domainName="#{ instanceDomainConfig1.domainName }"/>
     
@@ -84,7 +84,15 @@
             <beans:bean parent="instanceMailAddrBase"/>
         </beans:property>
     </beans:bean>
-    
+
+    <beans:bean id="instanceMailAddrConfigSubmission" parent="instanceMailAddrConfigImpl"
+        p:name="submission"
+        p:nameDisplay="DCDT Discovery Testcase Submission">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddrBase"/>
+        </beans:property>
+    </beans:bean>
+
     <beans:bean id="instanceMailAddrConfig1" parent="instanceMailAddrConfigImpl"
         p:name="d1"
         p:nameDisplay="D1">
@@ -201,21 +209,13 @@
         p:name="d15"
         p:nameDisplay="D15">
         <beans:property name="mailAddress">
-            <beans:bean parent="instanceMailAddr1"/>
+            <beans:bean parent="instanceMailAddr2"/>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="instanceMailAddrConfig16" parent="instanceMailAddrConfigImpl"
         p:name="d16"
         p:nameDisplay="D16">
-        <beans:property name="mailAddress">
-            <beans:bean parent="instanceMailAddr2"/>
-        </beans:property>
-    </beans:bean>
-    
-    <beans:bean id="instanceMailAddrConfig17" parent="instanceMailAddrConfigImpl"
-        p:name="d17"
-        p:nameDisplay="D17">
         <beans:property name="mailAddress">
             <beans:bean parent="instanceMailAddr5"/>
         </beans:property>

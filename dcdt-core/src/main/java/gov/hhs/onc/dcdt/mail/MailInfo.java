@@ -16,12 +16,12 @@ public interface MailInfo extends ToolBean {
     @Nullable
     public MailAddress getTo() throws MessagingException;
 
-    public boolean hasEncryptedMessageHelper();
+    public boolean hasMessageHelper();
 
     @Nullable
-    public ToolMimeMessageHelper getEncryptedMessageHelper();
+    public ToolMimeMessageHelper getMessageHelper();
 
-    public void setEncryptedMessageHelper(@Nullable ToolMimeMessageHelper encryptedMsgHelper);
+    public void setMessageHelper(@Nullable ToolMimeMessageHelper msgHelper);
 
     public boolean hasDecryptionErrorMessage();
 

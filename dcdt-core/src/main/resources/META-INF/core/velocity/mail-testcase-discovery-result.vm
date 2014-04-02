@@ -5,7 +5,7 @@
 #includeStyle("include/mail-testcase-discovery-result.css")
 #end
 #define($body)
-    <h1>Discovery testcase $discoveryTestcaseResult.testcase.name #if($discoveryTestcaseResult.successful)passed#{else}failed#{end}.</h1>
+    <h1>Discovery testcase $discoveryTestcaseResult.testcase.name ($discoveryTestcaseResult.testcase.nameDisplay) #if($discoveryTestcaseResult.successful)passed#{else}failed#{end}.</h1>
     <h2>Details</h2>
     <ul>
         #if($discoveryTestcaseResult.hasMailInfo())

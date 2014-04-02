@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.mail.crypto.utils;
 
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSerialNumberImpl;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
@@ -14,10 +15,14 @@ import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PrivateKey;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import javax.mail.MessagingException;
@@ -26,19 +31,29 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.security.auth.x500.X500Principal;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.smime.SMIMECapabilitiesAttribute;
+import org.bouncycastle.asn1.smime.SMIMECapabilityVector;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.KeyTransRecipientId;
 import org.bouncycastle.cms.KeyTransRecipientInformation;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
+import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
 import org.bouncycastle.cms.jcajce.JceKeyTransEnvelopedRecipient;
 import org.bouncycastle.cms.jcajce.JceKeyTransRecipientId;
+import org.bouncycastle.cms.jcajce.JceKeyTransRecipientInfoGenerator;
 import org.bouncycastle.mail.smime.SMIMEEnveloped;
+import org.bouncycastle.mail.smime.SMIMEEnvelopedGenerator;
 import org.bouncycastle.mail.smime.SMIMEException;
 import org.bouncycastle.mail.smime.SMIMESigned;
+import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Store;
@@ -231,5 +246,72 @@ public abstract class ToolSmimeUtils {
             throw new ToolSmimeException(String.format("Unable to get enveloped data wrapper for mail MIME message (id=%s, from=%s, to=%s) content (type=%s).",
                 msg.getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), msg.getContentType()), e);
         }
+    }
+
+    public static ToolMimeMessageHelper encrypt(ToolMimeMessageHelper unencryptedMsgHelper, X509Certificate cert) throws MessagingException {
+        MimeMessage unencryptedMsg = unencryptedMsgHelper.getMimeMessage();
+        ToolMimeMessageHelper encryptedMsgHelper = new ToolMimeMessageHelper(unencryptedMsg.getSession(), MailContentTypes.MAIL_ENCODING_UTF8);
+        MimeMessage encryptedMsg = encryptedMsgHelper.getMimeMessage();
+
+        try {
+            SMIMEEnvelopedGenerator envelopedGen = new SMIMEEnvelopedGenerator();
+            envelopedGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(cert));
+
+            MimeBodyPart encryptedMsgBodyPart =
+                envelopedGen.generate(unencryptedMsg, new JceCMSContentEncryptorBuilder(MailEncryptionAlgorithm.AES256.getOid()).build());
+            encryptedMsgHelper.setHeaders(unencryptedMsgHelper.getHeaders());
+            encryptedMsg.setContent(encryptedMsgBodyPart.getContent(), encryptedMsgBodyPart.getContentType());
+            encryptedMsg.saveChanges();
+        } catch (CMSException | IOException | SMIMEException | CertificateEncodingException e) {
+            throw new ToolSmimeException(String.format("Unable to encrypt MIME message (id=%s, from=%s, to=%s) content (type=%s).",
+                unencryptedMsg.getMessageID(), unencryptedMsgHelper.getFrom(), unencryptedMsgHelper.getTo(), unencryptedMsg.getContentType()), e);
+        }
+
+        return encryptedMsgHelper;
+    }
+
+    public static ToolMimeMessageHelper sign(ToolMimeMessageHelper unsignedMsgHelper, PrivateKey privateKey, X509Certificate cert) throws MessagingException {
+        MimeMessage unsignedMsg = unsignedMsgHelper.getMimeMessage();
+        SMIMESignedGenerator signer = new SMIMESignedGenerator();
+
+        ASN1EncodableVector signedAttrs = getSignedAttributes();
+
+        List<X509Certificate> certList = new ArrayList<>();
+        certList.add(cert);
+
+        ToolMimeMessageHelper signedMsgHelper;
+
+        try {
+            signer.addCertificates(new JcaCertStore(certList));
+            signer.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build(
+                SignatureAlgorithm.SHA1_WITH_RSA_ENCRYPTION.getId(), privateKey, cert));
+
+            MimeMessage signedMsg = new MimeMessage(unsignedMsg.getSession());
+            signedMsg.setContent(signer.generate(unsignedMsg));
+            signedMsg.saveChanges();
+
+            signedMsgHelper = new ToolMimeMessageHelper(signedMsg, MailContentTypes.MAIL_ENCODING_UTF8);
+            signedMsgHelper.setFrom(unsignedMsgHelper.getFrom());
+            signedMsgHelper.setTo(unsignedMsgHelper.getTo());
+            signedMsgHelper.setSubject(unsignedMsgHelper.getSubject());
+        } catch (OperatorCreationException | CertificateEncodingException | SMIMEException | IOException e) {
+            throw new ToolSmimeException(String.format("Unable to sign MIME message (id=%s, from=%s, to=%s) content (type=%s).", unsignedMsg.getMessageID(),
+                unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()), e);
+        }
+
+        return signedMsgHelper;
+    }
+
+    public static ASN1EncodableVector getSignedAttributes() {
+        ASN1EncodableVector signedAttrs = new ASN1EncodableVector();
+        SMIMECapabilityVector caps = new SMIMECapabilityVector();
+
+        for (MailEncryptionAlgorithm alg : EnumSet.allOf(MailEncryptionAlgorithm.class)) {
+            caps.addCapability(alg.getOid());
+        }
+
+        signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
+
+        return signedAttrs;
     }
 }

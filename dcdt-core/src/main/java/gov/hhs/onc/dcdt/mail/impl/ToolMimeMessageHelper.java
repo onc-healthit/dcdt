@@ -250,6 +250,19 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
         this.getMimeMessage().setFrom(((from != null) ? from.toInternetAddress() : null));
     }
 
+    public boolean hasSubject() throws MessagingException {
+        return this.getSubject() != null;
+    }
+
+    @Nullable
+    public String getSubject() throws MessagingException {
+        return this.getMimeMessage().getSubject();
+    }
+
+    public void setSubject(@Nullable String subject) throws MessagingException {
+        this.getMimeMessage().setSubject(subject);
+    }
+
     private void initializeMimeMultiparts() throws IOException, MessagingException {
         if (!ToolMimeTypeUtils.equals(false, this.getContentType(), MailContentTypes.MULTIPART_MIXED)) {
             return;

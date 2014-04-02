@@ -2,7 +2,9 @@ package gov.hhs.onc.dcdt.utils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -54,5 +56,11 @@ public abstract class ToolArrayUtils {
     @SuppressWarnings({ "varargs" })
     public static <T> List<T> asList(@Nullable T ... items) {
         return (items != null) ? new ArrayList<>(Arrays.asList(items)) : new ArrayList<T>();
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({ "varargs" })
+    public static <T> Set<T> asSet(@Nullable T ... items) {
+        return (items != null) ? new HashSet<>(Arrays.asList(items)) : new HashSet<T>();
     }
 }

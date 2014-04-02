@@ -22,7 +22,7 @@
         the receipt of the messages.
         <br/><br/>
         <ul>
-            <li><a href="${urlDiscoveryMailMapping}" target="_blank"><strong>Map Email Addresses</strong></a></li>
+            <li><a href="${urlDiscoveryMailMapping}"><strong>Map Email Addresses</strong></a></li>
         </ul>
         <br/>
         <strong>Step 4: </strong> Choose a test case from the drop down menu below. Read the test case description below
