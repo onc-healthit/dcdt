@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:clover="antlib:com.atlassian.clover.ant"
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant">
+    
+    <macrodef name="instrument" description="Generates Clover instrumented source files.">
+        <attribute name="dbFile"/>
+        <attribute name="srcDir"/>
+        <attribute name="testSrcDir"/>
+        <attribute name="instrumentedSrcDir"/>
+        <attribute name="testInstrumentedSrcDir"/>
+        <sequential>
+            <clover:instr initstring="@{dbFile}" destdir="@{instrumentedSrcDir}" taskname="clover-instrument">
+                <fileset dir="@{srcDir}" erroronmissingdir="false">
+                    <patternset refid="patternset.java.files"/>
+                </fileset>
+            </clover:instr>
+            <clover:instr initstring="@{dbFile}" destdir="@{testInstrumentedSrcDir}" taskname="clover-instrument">
+                <testsources dir="@{testSrcDir}" erroronmissingdir="false">
+                    <patternset refid="patternset.java.files"/>
+                </testsources>
+            </clover:instr>
+        </sequential>
+    </macrodef>
+    
+    <macrodef name="license" description="Checks if a Clover license is available.">
+        <attribute name="licenseAvailableProperty"/>
+        <attribute name="licenseSourceProperty"/>
+        <attribute name="licenseLocationProperty"/>
+        <attribute name="licenseValueProperty"/>
+        <sequential>
+            <var name="@{licenseAvailableProperty}" value="true"/>
+            <if>
+                <and>
+                    <isset property="@{licenseLocationProperty}"/>
+                    <not><equals arg1="${@{licenseLocationProperty}}" arg2=""/></not>
+                    <available file="${@{licenseLocationProperty}}"/>
+                </and>
+                <then>
+                    <var name="@{licenseSourceProperty}" value="location"/>
+                </then>
+                <else>
+                    <if>
+                        <and>
+                            <isset property="@{licenseValueProperty}"/>
+                            <not><equals arg1="${@{licenseValueProperty}}" arg2=""/></not>
+                        </and>
+                        <then>
+                            <var name="@{licenseSourceProperty}" value="value"/>
+                        </then>
+                        <else>
+                            <var name="@{licenseAvailableProperty}" value="false"/>
+                        </else>
+                    </if>
+                </else>
+            </if>
+        </sequential>
+    </macrodef>
+</antlib>
