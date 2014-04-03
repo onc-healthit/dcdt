@@ -15,7 +15,7 @@ public interface ToolTestcaseDnsLookupStep extends ToolTestcaseStep {
     public boolean hasRecords();
 
     @Nullable
-    public <T extends Record> List<T> getRecords();
+    public List<? extends Record> getRecords();
 
-    public <T extends Record> void setRecords(@Nullable List<T> records);
+    public void setRecords(@Nullable List<? extends Record> records);
 }
