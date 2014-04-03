@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSerialNumberImpl;
+import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
@@ -12,6 +13,7 @@ import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.ToolSmimeException;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.security.PrivateKey;
@@ -248,58 +250,65 @@ public abstract class ToolSmimeUtils {
         }
     }
 
-    public static ToolMimeMessageHelper encrypt(ToolMimeMessageHelper unencryptedMsgHelper, X509Certificate cert) throws MessagingException {
-        MimeMessage unencryptedMsg = unencryptedMsgHelper.getMimeMessage();
-        ToolMimeMessageHelper encryptedMsgHelper = new ToolMimeMessageHelper(unencryptedMsg.getSession(), MailContentTypes.MAIL_ENCODING_UTF8);
-        MimeMessage encryptedMsg = encryptedMsgHelper.getMimeMessage();
+    public static MimeBodyPart encrypt(MimeBodyPart unencryptedBodyPart, X509Certificate cert, MailEncryptionAlgorithm encryptionAlg) throws MessagingException {
+        MimeType bodyPartContentType = ToolMimePartUtils.getContentType(unencryptedBodyPart);
 
         try {
             SMIMEEnvelopedGenerator envelopedGen = new SMIMEEnvelopedGenerator();
             envelopedGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(cert));
+            JceCMSContentEncryptorBuilder encryptorBuilder = new JceCMSContentEncryptorBuilder(encryptionAlg.getOid());
 
-            MimeBodyPart encryptedMsgBodyPart =
-                envelopedGen.generate(unencryptedMsg, new JceCMSContentEncryptorBuilder(MailEncryptionAlgorithm.AES256.getOid()).build());
-            encryptedMsgHelper.setHeaders(unencryptedMsgHelper.getHeaders());
-            encryptedMsg.setContent(encryptedMsgBodyPart.getContent(), encryptedMsgBodyPart.getContentType());
-            encryptedMsg.saveChanges();
-        } catch (CMSException | IOException | SMIMEException | CertificateEncodingException e) {
-            throw new ToolSmimeException(String.format("Unable to encrypt MIME message (id=%s, from=%s, to=%s) content (type=%s).",
-                unencryptedMsg.getMessageID(), unencryptedMsgHelper.getFrom(), unencryptedMsgHelper.getTo(), unencryptedMsg.getContentType()), e);
+            if (ToolSmimeContentTypeUtils.isSignedData(bodyPartContentType)) {
+                return envelopedGen.generate(unencryptedBodyPart, encryptorBuilder.build());
+            } else {
+                MimeMultipart multipartBody = (MimeMultipart) unencryptedBodyPart.getContent();
+                MimeType multipartContentType = ToolMimePartUtils.getContentType(multipartBody);
+
+                if (ToolSmimeContentTypeUtils.isMultipartSigned(multipartContentType)) {
+                    return envelopedGen.generate(unencryptedBodyPart, encryptorBuilder.build());
+                } else {
+                    throw new ToolSmimeException(
+                        String
+                            .format(
+                                "Content (type=%s) of MIME body part (class=%s), content (type=%s) of MIME multipart (class=%s) is not of a signed-data type=(%s or %s) or of a multipart/signed type=(%s or %s).",
+                                bodyPartContentType, ToolClassUtils.getName(unencryptedBodyPart), multipartContentType, ToolClassUtils.getName(multipartBody),
+                                MailContentTypes.APP_PKCS7_MIME_SIGNED, MailContentTypes.APP_X_PKCS7_MIME_SIGNED,
+                                MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG, MailContentTypes.MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG));
+                }
+            }
+        } catch (CMSException | SMIMEException | CertificateEncodingException | IOException e) {
+            throw new ToolSmimeException(String.format("Unable to encrypt content (type=%s) of MIME body part (class=%s).", bodyPartContentType,
+                ToolClassUtils.getName(unencryptedBodyPart)), e);
         }
-
-        return encryptedMsgHelper;
     }
 
-    public static ToolMimeMessageHelper sign(ToolMimeMessageHelper unsignedMsgHelper, PrivateKey privateKey, X509Certificate cert) throws MessagingException {
+    public static MimeMultipart sign(ToolMimeMessageHelper unsignedMsgHelper, PrivateKey privateKey, X509Certificate cert) throws MessagingException {
         MimeMessage unsignedMsg = unsignedMsgHelper.getMimeMessage();
-        SMIMESignedGenerator signer = new SMIMESignedGenerator();
+        CertificateInfo certInfo = new CertificateInfoImpl(cert);
+        SignatureAlgorithm sigAlg = certInfo.getSignatureAlgorithm();
 
-        ASN1EncodableVector signedAttrs = getSignedAttributes();
+        if (sigAlg == null) {
+            throw new ToolSmimeException(String.format(
+                "Unable to find a signature algorithm for signing the MIME message (id=%s, from=%s, to=%s) content (type=%s).", unsignedMsg.getMessageID(),
+                unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()));
+        } else {
+            SMIMESignedGenerator signer = new SMIMESignedGenerator();
+            ASN1EncodableVector signedAttrs = getSignedAttributes();
 
-        List<X509Certificate> certList = new ArrayList<>();
-        certList.add(cert);
+            List<X509Certificate> certList = new ArrayList<>();
+            certList.add(cert);
 
-        ToolMimeMessageHelper signedMsgHelper;
+            try {
+                signer.addCertificates(new JcaCertStore(certList));
+                signer.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build(
+                    sigAlg.getId(), privateKey, cert));
 
-        try {
-            signer.addCertificates(new JcaCertStore(certList));
-            signer.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build(
-                SignatureAlgorithm.SHA1_WITH_RSA_ENCRYPTION.getId(), privateKey, cert));
-
-            MimeMessage signedMsg = new MimeMessage(unsignedMsg.getSession());
-            signedMsg.setContent(signer.generate(unsignedMsg));
-            signedMsg.saveChanges();
-
-            signedMsgHelper = new ToolMimeMessageHelper(signedMsg, MailContentTypes.MAIL_ENCODING_UTF8);
-            signedMsgHelper.setFrom(unsignedMsgHelper.getFrom());
-            signedMsgHelper.setTo(unsignedMsgHelper.getTo());
-            signedMsgHelper.setSubject(unsignedMsgHelper.getSubject());
-        } catch (OperatorCreationException | CertificateEncodingException | SMIMEException | IOException e) {
-            throw new ToolSmimeException(String.format("Unable to sign MIME message (id=%s, from=%s, to=%s) content (type=%s).", unsignedMsg.getMessageID(),
-                unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()), e);
+                return signer.generate(unsignedMsg);
+            } catch (OperatorCreationException | CertificateEncodingException | SMIMEException e) {
+                throw new ToolSmimeException(String.format("Unable to sign MIME message (id=%s, from=%s, to=%s) content (type=%s).",
+                    unsignedMsg.getMessageID(), unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()), e);
+            }
         }
-
-        return signedMsgHelper;
     }
 
     public static ASN1EncodableVector getSignedAttributes() {
@@ -313,5 +322,27 @@ public abstract class ToolSmimeUtils {
         signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
 
         return signedAttrs;
+    }
+
+    public static ToolMimeMessageHelper signAndEncrypt(ToolMimeMessageHelper msgHelper, CredentialInfo signingCredInfo, CertificateInfo encryptingCertInfo,
+        MailEncryptionAlgorithm encryptionAlg) throws MessagingException, IOException {
+        MimeMessage msg = msgHelper.getMimeMessage();
+        // noinspection ConstantConditions
+        MimeMultipart mimeMultipart =
+            ToolSmimeUtils.sign(msgHelper, signingCredInfo.getKeyDescriptor().getPrivateKey(), signingCredInfo.getCertificateDescriptor().getCertificate());
+        MimeBodyPart signedBodyPart = new MimeBodyPart();
+        signedBodyPart.setContent(mimeMultipart);
+
+        MimeBodyPart encryptedBodyPart = ToolSmimeUtils.encrypt(signedBodyPart, encryptingCertInfo.getCertificate(), encryptionAlg);
+        MimeMessage encryptedMsg = new MimeMessage(msg.getSession());
+        encryptedMsg.setContent(encryptedBodyPart.getContent(), encryptedBodyPart.getContentType());
+        encryptedMsg.saveChanges();
+
+        ToolMimeMessageHelper encryptedMsgHelper = new ToolMimeMessageHelper(encryptedMsg, msgHelper.getMailEncoding());
+        encryptedMsgHelper.setFrom(msgHelper.getFrom());
+        encryptedMsgHelper.setTo(msgHelper.getTo());
+        encryptedMsgHelper.setSubject(msgHelper.getSubject());
+
+        return encryptedMsgHelper;
     }
 }

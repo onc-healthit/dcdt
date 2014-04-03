@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.sender.impl.AbstractToolMailSenderService;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.sender.DiscoveryTestcaseSubmissionSenderService;
@@ -21,11 +22,16 @@ public class DiscoveryTestcaseSubmissionSenderServiceImpl extends AbstractToolMa
     }
 
     @Override
+    public void send(DiscoveryTestcaseSubmission submission, MailAddress mailAddr) throws Exception {
+        this.send(submission, mailAddr, null, null, null);
+    }
+
+    @Override
     public void send(DiscoveryTestcaseSubmission submission, MailAddress mailAddr, @Nullable CredentialInfo signingCredInfo,
-        @Nullable CertificateInfo encryptingCertInfo) throws Exception {
+        @Nullable CertificateInfo encryptingCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg) throws Exception {
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute(MODEL_ATTR_NAME_TESTCASE_DISCOVERY_SUBMISSION, submission);
 
-        this.send(modelMap, modelMap, mailAddr, signingCredInfo, encryptingCertInfo);
+        this.send(modelMap, modelMap, mailAddr, signingCredInfo, encryptingCertInfo, encryptionAlg);
     }
 }

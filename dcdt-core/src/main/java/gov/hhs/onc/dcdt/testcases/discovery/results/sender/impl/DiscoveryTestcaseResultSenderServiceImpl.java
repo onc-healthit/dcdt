@@ -75,7 +75,7 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
                     + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgSentDate) + ToolMimeMessageHelper.FILE_EXT_MAIL)));
         }
 
-        this.send(modelMap, modelMap, to, null, null, attachmentResources);
+        this.send(modelMap, modelMap, to, attachmentResources);
     }
 
     @Nullable

@@ -13,11 +13,9 @@
             <li><strong>To</strong>: $discoveryTestcaseResult.mailInfo.to</li>
         #end
 
-        #if($discoveryTestcaseResult.hasCredentialFound())
-            #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialFound "Found")
-        #end
+        #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialFound "Found")
         
-        #if(!$discoveryTestcaseResult.successful && $discoveryTestcaseResult.hasCredentialExpected())
+        #if(!$discoveryTestcaseResult.successful)
             #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialExpected "Expected")
         #end
 

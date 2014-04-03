@@ -125,4 +125,20 @@ public abstract class ToolMimePartUtils {
                 part.getDescription(), partContentType), e);
         }
     }
+
+    @Nullable
+    public static MimeType getContentType(MimeMultipart multipart) throws MessagingException {
+        String multipartContentType = multipart.getContentType();
+
+        if (multipartContentType == null) {
+            return null;
+        }
+
+        try {
+            return MimeTypeUtils.parseMimeType(multipartContentType);
+        } catch (InvalidMimeTypeException e) {
+            throw new ToolMailException(String.format("Unable to parse MIME multipart (class=%s, body part number=%d) content type: %s",
+                ToolClassUtils.getName(multipart), multipart.getCount(), multipartContentType), e);
+        }
+    }
 }
