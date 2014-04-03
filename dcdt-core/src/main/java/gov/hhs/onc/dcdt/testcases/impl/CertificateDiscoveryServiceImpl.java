@@ -5,20 +5,33 @@ import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.CertificateDiscoveryService;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseCertificateStep;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseDnsLookupStep;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultException;
+import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseCertificateStep;
+import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseDnsLookupStep;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
-import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractApplicationContext;
 
-@Component("certificateDiscoveryServiceImpl")
 public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements CertificateDiscoveryService {
+    private AbstractApplicationContext appContext;
+    private String certDiscoveryStepsBeanName;
+
+    public CertificateDiscoveryServiceImpl(String certDiscoveryStepsBeanName) {
+        this.certDiscoveryStepsBeanName = certDiscoveryStepsBeanName;
+    }
+
     @Override
-    public List<ToolTestcaseStep> runCertificateDiscoverySteps(MailAddress directAddr, List<ToolTestcaseStep> certDiscoverySteps)
-        throws ToolTestcaseResultException {
+    @SuppressWarnings({ "unchecked" })
+    public List<ToolTestcaseStep> discoverCertificates(MailAddress directAddr) throws ToolTestcaseResultException {
+        return this.discoverCertificates(directAddr, ((List<ToolTestcaseStep>) this.appContext.getBean(this.certDiscoveryStepsBeanName, List.class)));
+    }
+
+    @Override
+    public List<ToolTestcaseStep> discoverCertificates(MailAddress directAddr, List<ToolTestcaseStep> certDiscoverySteps) throws ToolTestcaseResultException {
         List<ToolTestcaseStep> infoSteps = new ArrayList<>(certDiscoverySteps.size());
         ToolTestcaseStep prevStep = null;
 
@@ -58,5 +71,10 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
         }
 
         return infoSteps;
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
+        this.appContext = ((AbstractApplicationContext) appContext);
     }
 }

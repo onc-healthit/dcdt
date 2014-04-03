@@ -16,6 +16,17 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = CERTIFICATE DISCOVERY SERVICE
+    =====================================================================================================-->
+    <beans:bean id="certDiscoveryService" class="gov.hhs.onc.dcdt.testcases.CertificateDiscoveryService" abstract="true"/>
+    
+    <beans:bean id="certDiscoveryServiceImpl" class="gov.hhs.onc.dcdt.testcases.impl.CertificateDiscoveryServiceImpl" parent="certDiscoveryService">
+        <beans:constructor-arg name="certDiscoveryStepsBeanName">
+            <beans:idref bean="certDiscoverySteps"/>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = TESTCASE SPECIFICATIONS
     =====================================================================================================-->
     <util:list id="toolTestcaseSpecsDns">
