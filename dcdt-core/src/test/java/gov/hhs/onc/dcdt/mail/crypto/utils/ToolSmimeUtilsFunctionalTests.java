@@ -14,6 +14,7 @@ import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailInfo;
+import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
@@ -80,7 +81,6 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @Value("${dcdt.test.mail.crypto.type.pkcs7.mime.2}")
     private MimeType testPkcs7MimeContentType2;
 
-    private KeyInfo testKeyInfo;
     private CertificateInfo testCertInfo;
     private CredentialInfo testCredInfo;
     private DiscoveryTestcaseCredential testCred;
@@ -146,11 +146,10 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         msg.saveChanges();
 
         ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);
-        ToolMimeMessageHelper signedMsgHelper = ToolSmimeUtils.sign(unencryptedMsgHelper, this.testKeyInfo.getPrivateKey(), this.testCertInfo.getCertificate());
-        ToolMimeMessageHelper encryptedMsgHelper = ToolSmimeUtils.encrypt(signedMsgHelper, this.testCertInfo.getCertificate());
+        ToolMimeMessageHelper encryptedMsgHelper =
+            ToolSmimeUtils.signAndEncrypt(unencryptedMsgHelper, this.testCredInfo, this.testCertInfo, MailEncryptionAlgorithm.AES256);
 
-        assertMessageHeadersMatch(unencryptedMsgHelper, signedMsgHelper);
-        assertMessageHeadersMatch(signedMsgHelper, encryptedMsgHelper);
+        assertMessageHeadersMatch(unencryptedMsgHelper, encryptedMsgHelper);
         assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testCred);
     }
 
@@ -168,7 +167,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
 
     @BeforeClass
     public void buildCredentialInfo() throws CryptographyException {
-        this.testKeyInfo =
+        KeyInfo testKeyInfo =
             new KeyInfoImpl(KeyUtils.readPublicKey(Base64.decodeBase64(this.testPublicKeyStr), KeyAlgorithm.RSA, DataEncoding.DER), KeyUtils.readPrivateKey(
                 Base64.decodeBase64(this.testPrivateKeyStr), KeyAlgorithm.RSA, DataEncoding.DER));
         this.testCertInfo =

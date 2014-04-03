@@ -5,7 +5,6 @@ import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.MimeType;
-import java.nio.charset.Charset;
 
 /**
  * Derived from:
@@ -56,8 +55,6 @@ public final class MailContentTypes {
 
     public final static String MSG_RFC822_SUBTYPE = "rfc822";
     public final static MimeType MSG_RFC822 = ToolMimeTypeUtils.valueOf(MSG_TYPE, MSG_RFC822_SUBTYPE);
-
-    public final static Charset MAIL_ENCODING_UTF8 = Charset.forName("UTF-8");
 
     public final static String MULTIPART_TYPE = "multipart";
 

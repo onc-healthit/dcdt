@@ -167,6 +167,10 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
         }
     }
 
+    public Charset getMailEncoding() {
+        return Charset.forName(this.getEncoding());
+    }
+
     @Nullable
     public MailContentTransferEncoding getContentXferEncoding() throws MessagingException {
         return ToolMimePartUtils.getContentXferEncoding(this.getMimeMessage());

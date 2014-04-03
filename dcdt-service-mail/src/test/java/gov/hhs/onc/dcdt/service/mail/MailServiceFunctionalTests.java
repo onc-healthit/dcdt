@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.service.mail;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
@@ -67,11 +68,11 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
             // noinspection ConstantConditions
             this.discoveryTestcaseSubmissionSenderService.send(discoveryTestcaseSubmission, discoveryTestcase.getMailAddress(), discoveryTestcaseCred != null
                 ? discoveryTestcaseCred.getCredentialInfo() : null, discoveryTestcaseCred != null ? discoveryTestcaseCred.getCredentialInfo()
-                .getCertificateDescriptor() : null);
+                .getCertificateDescriptor() : null, MailEncryptionAlgorithm.AES256);
         }
 
         this.discoveryTestcaseSubmissionSenderService.send(ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class),
-            this.testToAddr, null, null);
+            this.testToAddr);
     }
 
     @AfterGroups(groups = { "dcdt.test.func.service.mail.discovery" }, alwaysRun = true, timeOut = ToolDateUtils.MS_IN_SEC * 30)
