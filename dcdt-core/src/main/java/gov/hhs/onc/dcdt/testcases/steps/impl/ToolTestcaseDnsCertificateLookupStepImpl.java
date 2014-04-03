@@ -10,9 +10,10 @@ import org.xbill.DNS.CERTRecord;
 
 public class ToolTestcaseDnsCertificateLookupStepImpl extends AbstractToolTestcaseCertificateStep implements ToolTestcaseDnsCertificateLookupStep {
     @Override
+    @SuppressWarnings({ "unchecked" })
     public boolean execute(MailAddress directAddr, ToolTestcaseStep prevStep) {
         if (prevStep instanceof ToolTestcaseDnsLookupStep && ((ToolTestcaseDnsLookupStep) prevStep).hasRecords()) {
-            List<CERTRecord> certRecords = ((ToolTestcaseDnsLookupStep) prevStep).getRecords();
+            List<CERTRecord> certRecords = ((List<CERTRecord>) ((ToolTestcaseDnsLookupStep) prevStep).getRecords());
             parseCertRecords(directAddr.forBindingType(this.bindingType), certRecords);
         } else {
             this.setCertificateStatus(ToolTestcaseCertificateResultType.NO_CERT);
