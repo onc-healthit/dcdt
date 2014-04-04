@@ -29,7 +29,7 @@ public class HostingTestcaseProcessorImpl extends
     public HostingTestcaseResult generateTestcaseResult(HostingTestcaseSubmission submission, List<ToolTestcaseStep> certDiscoverySteps)
         throws ToolTestcaseResultException {
         HostingTestcaseResult hostingTestcaseResult = ToolBeanFactoryUtils.createBeanOfType(this.appContext, HostingTestcaseResult.class);
-        List<ToolTestcaseStep> infoSteps = certDiscoveryService.runCertificateDiscoverySteps(submission.getDirectAddress(), certDiscoverySteps);
+        List<ToolTestcaseStep> infoSteps = certDiscoveryService.discoverCertificates(submission.getDirectAddress(), certDiscoverySteps);
         // noinspection ConstantConditions
         hostingTestcaseResult.setInfoSteps(infoSteps);
         hostingTestcaseResult.setSuccessful(getResult(submission.getTestcase(), hostingTestcaseResult, ToolListUtils.getLast(infoSteps)));

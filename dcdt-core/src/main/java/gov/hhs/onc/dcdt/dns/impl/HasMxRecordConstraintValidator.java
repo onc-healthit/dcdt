@@ -3,17 +3,17 @@ package gov.hhs.onc.dcdt.dns.impl;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.HasMxRecord;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
-import gov.hhs.onc.dcdt.dns.utils.DnsRecordSortingUtils;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordOrderUtils;
 import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.validation.constraints.impl.AbstractToolConstraintValidator;
 import java.util.List;
-import java.util.Map;
 import javax.validation.ConstraintValidatorContext;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.xbill.DNS.ARecord;
 import org.xbill.DNS.MXRecord;
 
 public class HasMxRecordConstraintValidator extends AbstractToolConstraintValidator<HasMxRecord, String> {
@@ -31,7 +31,7 @@ public class HasMxRecordConstraintValidator extends AbstractToolConstraintValida
         try {
             List<MXRecord> mxRecords = this.dnsLookupService.lookupMxRecords(mailAddr.toAddressName(BindingType.DOMAIN)).getResolvedAnswers();
 
-            if (mxRecords != null && !mxRecords.isEmpty()) {
+            if (!CollectionUtils.isEmpty(mxRecords)) {
                 if (resolveMxRecordTarget(mxRecords)) {
                     return true;
                 }
@@ -48,15 +48,9 @@ public class HasMxRecordConstraintValidator extends AbstractToolConstraintValida
     }
 
     private boolean resolveMxRecordTarget(List<MXRecord> mxRecords) throws DnsException {
-        Map<Integer, List<MXRecord>> sortedMxRecords = DnsRecordSortingUtils.sortSrvRecordsByPriority(mxRecords);
-
-        for (int priority : sortedMxRecords.keySet()) {
-            for (MXRecord record : sortedMxRecords.get(priority)) {
-                List<ARecord> aRecords = this.dnsLookupService.lookupARecords(record.getTarget()).getResolvedAnswers();
-
-                if (aRecords != null && !aRecords.isEmpty()) {
-                    return true;
-                }
+        for (MXRecord record : IteratorUtils.asIterable(ToolDnsRecordOrderUtils.buildMxRecordIterator(mxRecords))) {
+            if (!CollectionUtils.isEmpty(this.dnsLookupService.lookupARecords(record.getTarget()).getResolvedAnswers())) {
+                return true;
             }
         }
 
