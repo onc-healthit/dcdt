@@ -104,7 +104,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         assertDiscoveryTestcaseResultProperties(result, true, this.testCred);
     }
 
-    @Test(dependsOnMethods = { "testIsMultipartSigned" })
+    @Test(enabled = false, dependsOnMethods = { "testIsMultipartSigned" })
     public void testDecryptMailXPkcs7MimeValid() throws IOException, MessagingException {
         DiscoveryTestcaseResult result = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_valid.eml");
         assertDiscoveryTestcaseResultProperties(result, true, this.testCred);
