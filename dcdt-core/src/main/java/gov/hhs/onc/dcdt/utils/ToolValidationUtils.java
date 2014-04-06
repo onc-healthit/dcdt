@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.context.MessageSource;
@@ -15,6 +17,18 @@ import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
 public abstract class ToolValidationUtils {
+    private final static String MSG_MACRO_ESCAPE = "\\";
+    private final static String PATTERN_STR_MSG_MACRO_ESCAPE = Pattern.quote(MSG_MACRO_ESCAPE);
+    private final static String PATTERN_STR_MSG_MACRO_AFFIX = "(?!" + PATTERN_STR_MSG_MACRO_ESCAPE + ")(\\$?\\{|\\})";
+
+    private final static String REPLACEMENT_STR_MSG_MACRO_ESCAPE = Matcher.quoteReplacement(MSG_MACRO_ESCAPE) + "$1";
+
+    private final static Pattern PATTERN_MSG_MACRO_AFFIX = Pattern.compile(PATTERN_STR_MSG_MACRO_AFFIX);
+
+    public static String escapeMessageMacros(String msg) {
+        return PATTERN_MSG_MACRO_AFFIX.matcher(msg).replaceAll(REPLACEMENT_STR_MSG_MACRO_ESCAPE);
+    }
+
     public static Map<String, List<String>> mapErrorMessages(MessageSource msgSource, Errors errors) {
         Map<String, List<String>> errorMsgsMap = new LinkedHashMap<>();
 

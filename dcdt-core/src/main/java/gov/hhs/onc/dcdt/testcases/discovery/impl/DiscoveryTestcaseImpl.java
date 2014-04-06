@@ -44,8 +44,8 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
                     && ((credMailAddrBound = this.mailAddr.forBindingType(credBindingType)) != null)) {
                     // noinspection ConstantConditions
                     if (cred.hasCredentialConfig() && (credConfig = cred.getCredentialConfig()).hasCertificateDescriptor()
-                        && (credCertConfig = credConfig.getCertificateDescriptor()).hasSubject()
-                        && !(credCertConfigSubj = credCertConfig.getSubject()).hasMailAddress()) {
+                        && (credCertConfig = credConfig.getCertificateDescriptor()).hasSubjectName()
+                        && !(credCertConfigSubj = credCertConfig.getSubjectName()).hasMailAddress()) {
                         credCertConfigSubj.setMailAddress(credMailAddrBound);
                     }
 

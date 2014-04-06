@@ -170,7 +170,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
             if (certInfoStep.hasCertificateInfo()) {
                 CertificateInfo certInfo = certInfoStep.getCertificateInfo();
                 // noinspection ConstantConditions
-                Assert.assertEquals(certInfo.getSubject().getCommonName(), certCommonName);
+                Assert.assertEquals(certInfo.getSubjectName().getCommonName(), certCommonName);
                 // noinspection ConstantConditions
                 Assert.assertTrue(certInfo.getValidInterval().isValid(new Date()));
             }

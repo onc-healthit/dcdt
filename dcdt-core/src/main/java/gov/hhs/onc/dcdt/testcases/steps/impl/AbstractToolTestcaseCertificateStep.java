@@ -1,37 +1,41 @@
 package gov.hhs.onc.dcdt.testcases.steps.impl;
 
+import gov.hhs.onc.dcdt.crypto.CryptographyException;
+import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator;
+import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseCertificateStep;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
-import gov.hhs.onc.dcdt.testcases.utils.ToolTestcaseCertificateUtils;
-import java.util.Set;
+import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseCertificateStep;
 import javax.annotation.Nullable;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class AbstractToolTestcaseCertificateStep extends AbstractToolTestcaseStep implements ToolTestcaseCertificateStep {
-    private CertificateInfo certificateInfo;
+    private CertificateInfo certInfo;
     private ToolTestcaseCertificateResultType certStatus;
 
+    // @formatter:off
+    /*
     @Autowired
     private Set<CertificateValidator> certificateValidators;
+    */
+    // @formatter:on
 
     @Override
     public boolean hasCertificateInfo() {
-        return this.certificateInfo != null;
+        return this.certInfo != null;
     }
 
     @Nullable
     @Override
     public CertificateInfo getCertificateInfo() {
-        return this.certificateInfo;
+        return this.certInfo;
     }
 
     @Override
-    public void setCertificateInfo(@Nullable CertificateInfo certificateInfo) {
-        this.certificateInfo = certificateInfo;
+    public void setCertificateInfo(@Nullable CertificateInfo certInfo) {
+        this.certInfo = certInfo;
     }
 
     @Override
@@ -46,11 +50,23 @@ public abstract class AbstractToolTestcaseCertificateStep extends AbstractToolTe
 
     @Override
     public void updateCertificateStatus(byte[] certData, MailAddress mailAddr) {
-        CertificateInfo certificateInfo = new CertificateInfoImpl();
-        this.setCertificateStatus(ToolTestcaseCertificateUtils.processCertificateData(certData, certificateInfo, mailAddr, this.certificateValidators));
+        // TEMP: dev
+        try {
+            this.certInfo = new CertificateInfoImpl(CertificateUtils.readCertificate(certData, CertificateType.X509, DataEncoding.DER));
+            this.certStatus = ToolTestcaseCertificateResultType.VALID_CERT;
+        } catch (CryptographyException e) {
+            this.certStatus = ToolTestcaseCertificateResultType.UNREADABLE_CERT_DATA;
+        }
+
+        // @formatter:off
+        /*
+        CertificateInfo certInfo = new CertificateInfoImpl();
+        this.setCertificateStatus(ToolTestcaseCertificateUtils.processCertificateData(certData, certInfo, mailAddr, this.certificateValidators));
 
         if (this.certStatus == ToolTestcaseCertificateResultType.VALID_CERT) {
-            this.certificateInfo = certificateInfo;
+            this.certInfo = certInfo;
         }
+        */
+        // @formatter:on
     }
 }

@@ -10,6 +10,8 @@ import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateNameUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
@@ -18,6 +20,10 @@ import javax.persistence.Lob;
 import javax.persistence.Transient;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.Extensions;
+import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
 
 @Embeddable
 public class CertificateInfoImpl extends AbstractCryptographyDescriptor implements CertificateInfo {
@@ -29,6 +35,61 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
 
     public CertificateInfoImpl(@Nullable X509Certificate cert) {
         this.cert = cert;
+    }
+
+    @Override
+    public boolean hasExtension(ASN1ObjectIdentifier oid) throws CertificateException {
+        return (this.getExtension(oid) != null);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public Extension getExtension(ASN1ObjectIdentifier oid) throws CertificateException {
+        X509CertificateHolder certHolder = this.getCertificateHolder();
+
+        return ((certHolder != null) ? certHolder.getExtension(oid) : null);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public Extensions getExtensions() throws CertificateException {
+        X509CertificateHolder certHolder = this.getCertificateHolder();
+
+        return ((certHolder != null) ? certHolder.getExtensions() : null);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public X509CertificateHolder getCertificateHolder() throws CertificateException {
+        try {
+            return (this.hasCertificate() ? new JcaX509CertificateHolder(this.cert) : null);
+        } catch (CertificateEncodingException e) {
+            throw new CertificateException(String.format("Unable to get BouncyCastle X509v3 certificate (subj={%s}, issuer={%s}, serialNum=%s) holder.",
+                this.cert.getSubjectX500Principal().getName(), this.cert.getIssuerX500Principal().getName(), this.getSerialNumber()), e);
+        }
+    }
+
+    @Override
+    @Transient
+    public boolean isSelfIssued() throws CertificateException {
+        // noinspection ConstantConditions
+        return (this.hasCertificate() && this.getSubjectName().equals(this.getIssuerName()));
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        CertificateInfo certInfo;
+
+        return (this.hasCertificate() && (obj != null) && ToolClassUtils.isAssignable(obj.getClass(), CertificateInfo.class)
+            && (certInfo = ((CertificateInfo) obj)).hasCertificate() && this.cert.equals(certInfo.getCertificate()));
+    }
+
+    @Override
+    public int hashCode() {
+        return (this.hasCertificate() ? this.cert.hashCode() : super.hashCode());
     }
 
     @Override
@@ -68,6 +129,22 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
     }
 
     @Override
+    public boolean hasIssuerName() {
+        try {
+            return (this.getIssuerName() != null);
+        } catch (CertificateException ignored) {
+            return false;
+        }
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public CertificateName getIssuerName() throws CertificateException {
+        return (this.hasCertificate() ? new CertificateNameImpl(CertificateNameUtils.buildIssuerAltNames(this.cert), this.cert.getIssuerX500Principal()) : null);
+    }
+
+    @Override
     public boolean hasSerialNumber() {
         return (this.getSerialNumber() != null);
     }
@@ -92,9 +169,9 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
     }
 
     @Override
-    public boolean hasSubject() {
+    public boolean hasSubjectName() {
         try {
-            return (this.getSubject() != null);
+            return (this.getSubjectName() != null);
         } catch (CertificateException ignored) {
             return false;
         }
@@ -103,7 +180,7 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
     @Nullable
     @Override
     @Transient
-    public CertificateName getSubject() throws CertificateException {
+    public CertificateName getSubjectName() throws CertificateException {
         return (this.hasCertificate()
             ? new CertificateNameImpl(CertificateNameUtils.buildSubjectAltNames(this.cert), this.cert.getSubjectX500Principal()) : null);
     }

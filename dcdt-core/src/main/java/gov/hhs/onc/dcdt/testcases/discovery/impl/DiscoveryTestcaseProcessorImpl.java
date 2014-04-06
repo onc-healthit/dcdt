@@ -2,9 +2,6 @@ package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator;
-import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateNameImpl;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
@@ -13,7 +10,6 @@ import gov.hhs.onc.dcdt.mail.crypto.ToolSmimeException;
 import gov.hhs.onc.dcdt.mail.crypto.utils.ToolSmimeUtils;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
-import gov.hhs.onc.dcdt.testcases.CertificateDiscoveryService;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseConfig;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
@@ -23,43 +19,32 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialValidPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcaseProcessor;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultException;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseCertificateStep;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
-import gov.hhs.onc.dcdt.testcases.utils.ToolTestcaseCertificateUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
-import java.security.cert.X509Certificate;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.annotation.Nullable;
 import javax.mail.internet.MimeBodyPart;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bouncycastle.cms.SignerId;
-import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.mail.smime.SMIMEEnveloped;
 import org.bouncycastle.mail.smime.SMIMESigned;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("discoveryTestcaseProcessorImpl")
+@Component("discoveryTestcaseProcImpl")
 public class DiscoveryTestcaseProcessorImpl
     extends
     AbstractToolTestcaseProcessor<DiscoveryTestcaseDescription, DiscoveryTestcaseConfig, DiscoveryTestcaseResult, DiscoveryTestcase, DiscoveryTestcaseSubmission>
     implements DiscoveryTestcaseProcessor {
     private final static Logger LOGGER = LoggerFactory.getLogger(DiscoveryTestcaseProcessorImpl.class);
-
-    @Autowired
-    private CertificateDiscoveryService certDiscoveryService;
-
-    @Autowired
-    private Set<CertificateValidator> certValidators;
 
     @Override
     public DiscoveryTestcaseResult process(ToolMimeMessageHelper msgHelper, @Nullable DiscoveryTestcase discoveryTestcase) {
@@ -86,7 +71,7 @@ public class DiscoveryTestcaseProcessorImpl
 
             MimeBodyPart decryptedBodyPart = this.decrypt(msgHelper, msgId, msgFrom, msgTo, discoveryTestcase, discoveryTestcaseResult);
 
-            this.verifySender(msgHelper, msgId, msgFrom, msgTo, decryptedBodyPart, this.verifySigners(msgHelper, msgId, msgFrom, msgTo, decryptedBodyPart));
+            this.verifySender(msgId, msgFrom, msgTo, decryptedBodyPart, this.verifySigners(msgHelper, msgId, msgFrom, msgTo, decryptedBodyPart));
         } catch (Exception e) {
             decryptionErrorBuilder.appendWithDelimiter(e.getMessage(), StringUtils.LF);
         }
@@ -101,8 +86,9 @@ public class DiscoveryTestcaseProcessorImpl
         return discoveryTestcaseResult;
     }
 
-    private void verifySender(ToolMimeMessageHelper msgHelper, String msgId, MailAddress msgFrom, MailAddress msgTo, MimeBodyPart decryptedBodyPart,
-        Map<SignerId, Pair<SignerInformation, CertificateInfo>> signerInfoCertMap) throws Exception {
+    private void
+        verifySender(String msgId, MailAddress msgFrom, MailAddress msgTo, MimeBodyPart decryptedBodyPart, Map<SignerId, CertificateInfo> signerCertMap)
+            throws Exception {
         ToolTestcaseStep senderCertDiscoveryLastStep = ToolListUtils.getLast(this.certDiscoveryService.discoverCertificates(msgFrom));
         ToolTestcaseCertificateStep senderCertDiscoveryCertStep;
         CertificateInfo senderCertInfo;
@@ -116,18 +102,13 @@ public class DiscoveryTestcaseProcessorImpl
                 msgTo, senderCertDiscoveryLastStep.getMessage()));
         }
 
-        X509Certificate senderCert = senderCertInfo.getCertificate();
-        // noinspection ConstantConditions
-        CertificateName senderCertIssuerName = new CertificateNameImpl(senderCert.getIssuerX500Principal());
-        SignerId senderSignerId = new SignerId(senderCertIssuerName.toX500Name(), senderCert.getSerialNumber());
-
-        if (!signerInfoCertMap.containsKey(senderSignerId)) {
+        if (!signerCertMap.containsValue(senderCertInfo)) {
             throw new ToolSmimeException(
                 String
                     .format(
                         "Mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s) was not signed by the discovered sender certificate (subj={%s}, issuer={%s}, serialNum=%s).",
-                        msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(decryptedBodyPart), senderCertInfo.getSubject(), senderCertIssuerName,
-                        senderCertInfo.getSerialNumber()));
+                        msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(decryptedBodyPart), senderCertInfo.getSubjectName(),
+                        senderCertInfo.getIssuerName(), senderCertInfo.getSerialNumber()));
         }
 
         // noinspection ConstantConditions
@@ -135,33 +116,33 @@ public class DiscoveryTestcaseProcessorImpl
             .info(String
                 .format(
                     "Found a matching signer for discovered sender certificate (subj={%s}, issuer={%s}, serialNum=%s) in mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s).",
-                    senderCertInfo.getSubject(), senderCertIssuerName, senderCertInfo.getSerialNumber(), msgId, msgFrom, msgTo,
+                    senderCertInfo.getSubjectName(), senderCertInfo.getIssuerName(), senderCertInfo.getSerialNumber(), msgId, msgFrom, msgTo,
                     ToolMimePartUtils.getContentType(decryptedBodyPart)));
 
-        ToolTestcaseCertificateResultType senderCertValidityStatus =
-            ToolTestcaseCertificateUtils.validateCertificate(senderCertInfo, msgFrom, this.certValidators);
+        Pair<Boolean, List<String>> senderCertInfoValidationResult = this.certInfoValidator.validate(msgFrom, senderCertInfo);
 
-        if (senderCertValidityStatus != ToolTestcaseCertificateResultType.VALID_CERT) {
+        if (!senderCertInfoValidationResult.getLeft()) {
             throw new ToolSmimeException(String.format("Mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s) signer certificate is invalid: %s",
-                msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(decryptedBodyPart), senderCertValidityStatus.getMessage()));
+                msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(decryptedBodyPart),
+                ToolStringUtils.joinDelimit(senderCertInfoValidationResult.getRight(), "; ")));
         }
     }
 
-    private Map<SignerId, Pair<SignerInformation, CertificateInfo>> verifySigners(ToolMimeMessageHelper msgHelper, String msgId, MailAddress msgFrom,
-        MailAddress msgTo, MimeBodyPart decryptedBodyPart) throws Exception {
+    private Map<SignerId, CertificateInfo> verifySigners(ToolMimeMessageHelper msgHelper, String msgId, MailAddress msgFrom, MailAddress msgTo,
+        MimeBodyPart decryptedBodyPart) throws Exception {
         SMIMESigned signed = ToolSmimeUtils.getSigned(msgHelper, decryptedBodyPart);
 
         LOGGER.info(String.format("Extracted mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s).", msgId, msgFrom, msgTo,
             ToolMimePartUtils.getContentType(signed.getContent())));
 
-        Map<SignerId, Pair<SignerInformation, CertificateInfo>> signerInfoCertMap = ToolSmimeUtils.verifySignatures(signed);
+        Map<SignerId, CertificateInfo> signerCertMap = ToolSmimeUtils.verifySignatures(signed);
 
-        if (signerInfoCertMap.isEmpty()) {
+        if (signerCertMap.isEmpty()) {
             throw new ToolSmimeException(String.format("Mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s) does not contain any signed parts.",
                 msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(signed.getContent())));
         }
 
-        return signerInfoCertMap;
+        return signerCertMap;
     }
 
     private MimeBodyPart decrypt(ToolMimeMessageHelper msgHelper, String msgId, MailAddress msgFrom, MailAddress msgTo, DiscoveryTestcase discoveryTestcase,

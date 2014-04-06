@@ -12,7 +12,7 @@ public interface ToolTestcaseCertificateStep extends ToolTestcaseStep {
     @Nullable
     public CertificateInfo getCertificateInfo();
 
-    public void setCertificateInfo(@Nullable CertificateInfo certificateInfo);
+    public void setCertificateInfo(@Nullable CertificateInfo certInfo);
 
     @JsonProperty("certStatus")
     public ToolTestcaseCertificateResultType getCertificateStatus();

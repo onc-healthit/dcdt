@@ -13,7 +13,11 @@ public enum DnsResultType {
     }
 
     public boolean isError() {
-        return (this != SUCCESSFUL);
+        return !this.isSuccess();
+    }
+
+    public boolean isSuccess() {
+        return (this == SUCCESSFUL);
     }
 
     public int getResult() {

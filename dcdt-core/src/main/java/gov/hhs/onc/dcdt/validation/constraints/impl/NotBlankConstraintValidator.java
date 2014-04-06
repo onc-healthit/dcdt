@@ -12,9 +12,9 @@ import org.apache.commons.lang3.StringUtils;
  * @see String#trim()
  * @see org.hibernate.validator.internal.constraintvalidators.NotBlankValidator
  */
-public class NotBlankConstraintValidator extends AbstractToolConstraintValidator<NotBlank, CharSequence> {
+public class NotBlankConstraintValidator extends AbstractToolStringConstraintValidator<NotBlank> {
     @Override
-    public boolean isValid(CharSequence str, ConstraintValidatorContext validatorContext) {
-        return !StringUtils.isBlank(str);
+    protected boolean isValidInternal(String value, ConstraintValidatorContext validatorContext) throws Exception {
+        return !StringUtils.isBlank(value);
     }
 }
