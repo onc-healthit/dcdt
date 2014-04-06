@@ -99,6 +99,9 @@
     </beans:bean>
     <beans:alias name="validator" alias="validatorFactory"/>
     
+    <beans:bean class="org.springframework.validation.beanvalidation.MethodValidationPostProcessor"
+        p:validatorFactory-ref="validatorFactory"/>
+    
     <!--====================================================================================================
     = TASK EXECUTION
     =====================================================================================================-->

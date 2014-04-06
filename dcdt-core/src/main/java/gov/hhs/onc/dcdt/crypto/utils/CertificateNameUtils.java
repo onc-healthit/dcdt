@@ -73,10 +73,25 @@ public abstract class CertificateNameUtils {
     }
 
     @Nullable
+    public static GeneralNames buildIssuerAltNames(X509Certificate cert) throws CertificateException {
+        return buildAltNames(mapIssuerAltNames(cert));
+    }
+
+    @Nullable
+    public static Map<CertificateAltNameType, GeneralName> mapIssuerAltNames(X509Certificate cert) throws CertificateException {
+        try {
+            return mapAltNames(cert.getIssuerAlternativeNames());
+        } catch (CertificateParsingException e) {
+            throw new CertificateException(String.format("Unable to map X509 certificate (subj={%s}, issuer={%s}, serialNum=%s) issuer alternative name(s).",
+                cert.getSubjectX500Principal().getName(), cert.getIssuerX500Principal(), new CertificateSerialNumberImpl(cert.getSerialNumber())), e);
+        }
+    }
+
+    @Nullable
     public static GeneralNames buildSubjectAltNames(X509Certificate cert) throws CertificateException {
         return buildAltNames(mapSubjectAltNames(cert));
     }
-    
+
     @Nullable
     public static Map<CertificateAltNameType, GeneralName> mapSubjectAltNames(X509Certificate cert) throws CertificateException {
         try {
@@ -101,7 +116,7 @@ public abstract class CertificateNameUtils {
             CollectionUtils.select(CollectionUtils.collect(ToolArrayUtils.asList(altNames.getNames()), CertificateAltNameEntryTransformer.INSTANCE),
                 PredicateUtils.notNullPredicate())) : null);
     }
-    
+
     @Nullable
     public static GeneralNames buildAltNames(@Nullable Map<CertificateAltNameType, GeneralName> altNameMap) {
         return ((altNameMap != null) ? new GeneralNames(ToolCollectionUtils.toArray(altNameMap.values(), GeneralName.class)) : null);

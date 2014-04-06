@@ -26,7 +26,7 @@
     
     <beans:bean id="testKeyConfigCa1" parent="testKeyConfigCa"/>
     <beans:bean id="testCertConfigCa1" parent="testCertConfigCa">
-        <beans:property name="subject">
+        <beans:property name="subjectName">
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.ca.1}"/>
         </beans:property>
@@ -38,7 +38,7 @@
     
     <beans:bean id="testKeyPairConfigAddr1" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigAddr1" parent="testCertConfig">
-        <beans:property name="subject">
+        <beans:property name="subjectName">
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.1}"/>
         </beans:property>
@@ -50,7 +50,7 @@
     
     <beans:bean id="testKeyConfigDomain1" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigDomain1" parent="testCertConfig">
-        <beans:property name="subject">
+        <beans:property name="subjectName">
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.1}"/>
         </beans:property>

@@ -1,6 +1,7 @@
-package gov.hhs.onc.dcdt.dns;
+package gov.hhs.onc.dcdt.crypto.certs;
 
-import gov.hhs.onc.dcdt.dns.impl.HasMxRecordConstraintValidator;
+import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoSubjectDnConstraintValidator;
+import gov.hhs.onc.dcdt.mail.MailAddress;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -10,27 +11,30 @@ import java.lang.annotation.Target;
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import javax.validation.ReportAsSingleViolation;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.ConstraintComposition;
 
-@Constraint(validatedBy = { HasMxRecordConstraintValidator.class })
+@Constraint(validatedBy = { CertificateInfoSubjectDnConstraintValidator.class })
 @ConstraintComposition
 @Documented
 @Inherited
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
-public @interface HasMxRecord {
+@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+public @interface CertificateInfoSubjectDn {
     @Documented
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
+    @Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
     public @interface List {
-        HasMxRecord[] value();
+        CertificateInfoSubjectDn[] value();
     }
 
-    String message() default "{dcdt.dns.validation.constraints.HasMxRecord.msg}";
+    String message() default StringUtils.EMPTY;
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
+
+    Class<?>[] parameterClasses() default { MailAddress.class, CertificateInfo.class };
 }
