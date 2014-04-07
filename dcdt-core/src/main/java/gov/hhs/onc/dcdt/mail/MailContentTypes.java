@@ -19,6 +19,8 @@ import org.springframework.util.MimeType;
  * A summary is available here: <a href="http://en.wikipedia.org/wiki/Internet_media_type">Internet_media_type</a>
  */
 public final class MailContentTypes {
+    public final static String HEADER_NAME_CONTENT_TYPE = "Content-Type";
+
     public final static String NAME_PARAM_NAME = "name";
     public final static String NAME_SMIME_MIME_PARAM_VALUE = ToolStringUtils.quote("smime.p7m");
     public final static Pair<String, String> NAME_SMIME_MIME_PARAM = new ImmutablePair<>(NAME_PARAM_NAME, NAME_SMIME_MIME_PARAM_VALUE);
@@ -38,18 +40,22 @@ public final class MailContentTypes {
         NAME_SMIME_MIME_PARAM);
     public final static MimeType APP_PKCS7_MIME_SIGNED = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_PKCS7_MIME_SUBTYPE,
         SMIME_TYPE_SIGNED_DATA_PARAM);
+    public final static String APP_PKCS7_MIME_BASETYPE = ToolMimeTypeUtils.getBaseType(APP_PKCS7_MIME_ENV);
 
     public final static String APP_X_PKCS7_MIME_SUBTYPE = "x-" + APP_PKCS7_MIME_SUBTYPE;
     public final static MimeType APP_X_PKCS7_MIME_ENV = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_X_PKCS7_MIME_SUBTYPE,
         SMIME_TYPE_ENV_DATA_PARAM, NAME_SMIME_MIME_PARAM);
     public final static MimeType APP_X_PKCS7_MIME_SIGNED = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_X_PKCS7_MIME_SUBTYPE,
         SMIME_TYPE_SIGNED_DATA_PARAM);
+    public final static String APP_X_PKCS7_MIME_BASETYPE = ToolMimeTypeUtils.getBaseType(APP_X_PKCS7_MIME_ENV);
 
     public final static String APP_PKCS7_SIG_SUBTYPE = "pkcs7-signature";
     public final static MimeType APP_PKCS7_SIG = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_PKCS7_SIG_SUBTYPE, NAME_SMIME_SIG_PARAM);
+    public final static String APP_PKCS7_SIG_BASETYPE = ToolMimeTypeUtils.getBaseType(APP_PKCS7_SIG);
 
     public final static String APP_X_PKCS7_SIG_SUBTYPE = "x-" + APP_PKCS7_SIG_SUBTYPE;
     public final static MimeType APP_X_PKCS7_SIG = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_X_PKCS7_SIG_SUBTYPE, NAME_SMIME_SIG_PARAM);
+    public final static String APP_X_PKCS7_SIG_BASETYPE = ToolMimeTypeUtils.getBaseType(APP_X_PKCS7_SIG);
 
     public final static String MSG_TYPE = "message";
 
@@ -66,8 +72,8 @@ public final class MailContentTypes {
 
     public final static String MULTIPART_SIGNED_SUBTYPE = "signed";
     public final static String MULTIPART_SIGNED_PROTOCOL_PARAM_NAME = "protocol";
-    public final static String MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG_PARAM_VALUE = ToolStringUtils.quote(ToolMimeTypeUtils.getBaseType(APP_PKCS7_SIG));
-    public final static String MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG_PARAM_VALUE = ToolStringUtils.quote(ToolMimeTypeUtils.getBaseType(APP_X_PKCS7_SIG));
+    public final static String MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG_PARAM_VALUE = ToolStringUtils.quote(APP_PKCS7_SIG_BASETYPE);
+    public final static String MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG_PARAM_VALUE = ToolStringUtils.quote(APP_X_PKCS7_SIG_BASETYPE);
     public final static Pair<String, String> MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG_PARAM = new ImmutablePair<>(MULTIPART_SIGNED_PROTOCOL_PARAM_NAME,
         MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG_PARAM_VALUE);
     public final static Pair<String, String> MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG_PARAM = new ImmutablePair<>(MULTIPART_SIGNED_PROTOCOL_PARAM_NAME,

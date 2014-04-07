@@ -27,11 +27,11 @@ public class DiscoveryTestcaseSubmissionSenderServiceImpl extends AbstractToolMa
     }
 
     @Override
-    public void send(DiscoveryTestcaseSubmission submission, MailAddress mailAddr, @Nullable CredentialInfo signingCredInfo,
-        @Nullable CertificateInfo encryptingCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg) throws Exception {
+    public void send(DiscoveryTestcaseSubmission submission, MailAddress mailAddr, @Nullable CredentialInfo signerCredInfo,
+        @Nullable CertificateInfo encryptionCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg) throws Exception {
         ModelMap modelMap = new ModelMap();
         modelMap.addAttribute(MODEL_ATTR_NAME_TESTCASE_DISCOVERY_SUBMISSION, submission);
 
-        this.send(modelMap, modelMap, mailAddr, signingCredInfo, encryptingCertInfo, encryptionAlg);
+        this.send(modelMap, modelMap, mailAddr, signerCredInfo, encryptionCertInfo, encryptionAlg);
     }
 }

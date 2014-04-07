@@ -39,7 +39,7 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
             this.send(mimeMailMsg, null, null, null, mimeMsgPreps);
         }
 
-        public void send(ToolMimeMailMessage mimeMailMsg, @Nullable CredentialInfo signingCredInfo, @Nullable CertificateInfo encryptingCertInfo,
+        public void send(ToolMimeMailMessage mimeMailMsg, @Nullable CredentialInfo signerCredInfo, @Nullable CertificateInfo encryptionCertInfo,
             @Nullable MailEncryptionAlgorithm encryptionAlg, ToolMimeMessagePreparator ... mimeMsgPreps) throws MailException, MessagingException, IOException {
             for (ToolMimeMessagePreparator mimeMsgPrep : mimeMsgPreps) {
                 try {
@@ -52,8 +52,8 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
 
             ToolMimeMessageHelper msgHelper = new ToolMimeMessageHelper(mimeMailMsg.getMimeMessage(), mailEnc);
 
-            if (signingCredInfo != null && encryptingCertInfo != null && encryptionAlg != null) {
-                msgHelper = ToolSmimeUtils.signAndEncrypt(msgHelper, signingCredInfo, encryptingCertInfo, encryptionAlg);
+            if (signerCredInfo != null && encryptionCertInfo != null && encryptionAlg != null) {
+                msgHelper = ToolSmimeUtils.signAndEncrypt(msgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg);
             }
 
             this.send(msgHelper.getMimeMessage());
@@ -87,14 +87,14 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
     }
 
     protected void
-        send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable CredentialInfo signingCredInfo,
-            @Nullable CertificateInfo encryptingCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg,
+        send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable CredentialInfo signerCredInfo,
+            @Nullable CertificateInfo encryptionCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg,
             @Nullable MimeAttachmentResource ... attachmentResources) throws Exception {
-        this.send(subjModelMap, textModelMap, to, signingCredInfo, encryptingCertInfo, encryptionAlg, ToolArrayUtils.asList(attachmentResources));
+        this.send(subjModelMap, textModelMap, to, signerCredInfo, encryptionCertInfo, encryptionAlg, ToolArrayUtils.asList(attachmentResources));
     }
 
-    protected void send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable CredentialInfo signingCredInfo,
-        @Nullable CertificateInfo encryptingCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg,
+    protected void send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable CredentialInfo signerCredInfo,
+        @Nullable CertificateInfo encryptionCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg,
         @Nullable Iterable<MimeAttachmentResource> attachmentResources) throws Exception {
         MailGatewayConfig mailGatewayConfig = fromConfig.getGatewayConfig();
         MailGatewayCredentialConfig mailGatewayCredConfig = fromConfig.getGatewayCredentialConfig();
@@ -116,7 +116,7 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
             ToolBeanFactoryUtils.createBean(this.appContext, this.mimeMailMsgBeanName, ToolMimeMailMessage.class, new ToolMimeMessageHelper(mailSession,
                 this.mailEnc), this.fromConfig, this.replyToConfig, subjModelMap, textModelMap);
 
-        mailSender.send(mimeMailMsg, signingCredInfo, encryptingCertInfo, encryptionAlg,
+        mailSender.send(mimeMailMsg, signerCredInfo, encryptionCertInfo, encryptionAlg,
             ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolMimeMessagePreparator.class, this.velocityEngine, mimeMailMsg, to, attachmentResources));
     }
 

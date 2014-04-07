@@ -1,5 +1,8 @@
 package gov.hhs.onc.dcdt.mail.crypto.utils;
 
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfigRegistry;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
@@ -13,6 +16,7 @@ import gov.hhs.onc.dcdt.crypto.keys.impl.KeyInfoImpl;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
@@ -23,11 +27,9 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseM
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
-import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.io.IOException;
-import java.io.InputStream;
+import java.net.InetAddress;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.mail.Message.RecipientType;
@@ -38,15 +40,14 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.util.MimeType;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+import org.xbill.DNS.Name;
 
 @Test(dependsOnGroups = { "dcdt.test.func.testcases.discovery.all" }, groups = { "dcdt.test.func.mail.all", "dcdt.test.func.mail.crypto.all",
     "dcdt.test.func.mail.crypto.utils.all", "dcdt.test.func.mail.crypto.utils.smime" })
-@DirtiesContext
 public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @Resource(name = "mailSessionPlain")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -60,6 +61,12 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private DiscoveryTestcaseProcessor testcaseProcessor;
 
+    @Value("${dcdt.test.instance.domain.name}")
+    private Name testInstanceConfigDomainName;
+
+    @Value("${dcdt.test.instance.ip.addr}")
+    private InetAddress testInstanceConfigIpAddr;
+
     @Value("${dcdt.test.crypto.key.public.dts500}")
     private String testPublicKeyStr;
 
@@ -69,8 +76,13 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @Value("${dcdt.test.crypto.cert.dts500}")
     private String testCertStr;
 
-    @Value("${dcdt.test.lookup.domain.1.mail.addr.1}")
     private MailAddress testToAddr;
+
+    @Value("${dcdt.test.discovery.mail.mapping.results.addr}")
+    private MailAddress testToAddr2;
+
+    @Value("${dcdt.test.lookup.domain.1.mail.addr.1}")
+    private MailAddress testFromAddr;
 
     @Value("${dcdt.test.mail.crypto.type.multipart.signed}")
     private MimeType testMultipartSignedMimeType;
@@ -81,48 +93,53 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @Value("${dcdt.test.mail.crypto.type.pkcs7.mime.2}")
     private MimeType testPkcs7MimeContentType2;
 
-    private CertificateInfo testCertInfo;
-    private CredentialInfo testCredInfo;
-    private DiscoveryTestcaseCredential testCred;
-    private List<DiscoveryTestcase> testDiscoveryTestcases = new ArrayList<>();
+    private CredentialInfo testSignerCredInfo;
+    private DiscoveryTestcaseCredential testTargetCred;
+    private DiscoveryTestcaseCredential testBackgroundCred;
+    private CertificateInfo testTargetCertInfo;
+    private CertificateInfo testBackgroundCertInfo;
+    private List<DiscoveryTestcase> discoveryTestcases;
 
     @Test(dependsOnMethods = { "testIsMultipartSigned" })
     public void testDecryptMailPkcs7MimeValid() throws IOException, MessagingException {
-        DiscoveryTestcaseResult result = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_valid.eml");
-        assertDiscoveryTestcaseResultProperties(result, true, this.testCred);
+        ToolMimeMessageHelper encryptedMsgHelper =
+            signAndEncryptMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo, false);
+        assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testTargetCred);
     }
 
     @Test
-    public void testDecryptMailPkcs7MimeEncryptedWithWrongKey() throws IOException, MessagingException {
-        DiscoveryTestcaseResult result = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_encryptedWithWrongKey.eml");
-        assertDiscoveryTestcaseResultProperties(result, false, null);
+    public void testDecryptMailPkcs7MimeEncryptedWithWrongCertificate() throws IOException, MessagingException {
+        ToolMimeMessageHelper encryptedMsgHelper =
+            signAndEncryptMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testBackgroundCertInfo, false);
+        assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), false, this.testBackgroundCred);
     }
 
     @Test(dependsOnMethods = { "testMimeTypeParamOrder", "testIsMultipartSigned" })
     public void testDecryptMailPkcs7MimeDiffMimeTypeParamOrder() throws IOException, MessagingException {
-        DiscoveryTestcaseResult result = decryptAndParseEmail("core/mail/testDecryptMail_pkcs7-mime_diffMimeTypeParamOrder.eml");
-        assertDiscoveryTestcaseResultProperties(result, true, this.testCred);
+        ToolMimeMessageHelper encryptedMsgHelper =
+            signAndEncryptMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo, true);
+        assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testTargetCred);
     }
 
-    @Test(enabled = false, dependsOnMethods = { "testIsMultipartSigned" })
+    @Test(dependsOnMethods = { "testIsMultipartSigned" })
     public void testDecryptMailXPkcs7MimeValid() throws IOException, MessagingException {
-        DiscoveryTestcaseResult result = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_valid.eml");
-        assertDiscoveryTestcaseResultProperties(result, true, this.testCred);
+        ToolMimeMessageHelper encryptedMsgHelper =
+            signAndEncryptMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo, MailEncryptionAlgorithm.AES256,
+                MailContentTypes.APP_X_PKCS7_SIG_BASETYPE, MailContentTypes.APP_X_PKCS7_MIME_BASETYPE, false);
+        assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testTargetCred);
     }
 
     @Test
-    public void testDecryptMailXPkcsMimeNoMatchingKeys() throws IOException, MessagingException {
-        DiscoveryTestcaseResult result = decryptAndParseEmail("core/mail/testDecryptMail_x-pkcs7-mime_noMatchingKeys.eml");
-        assertDiscoveryTestcaseResultProperties(result, false, null);
-
-        // noinspection ConstantConditions
-        Assert.assertNotEquals(result.getMailInfo().getTo(), this.testToAddr);
+    public void testDecryptMailPkcsMimeInvalidTestcaseAddress() throws IOException, MessagingException {
+        ToolMimeMessageHelper encryptedMsgHelper =
+            signAndEncryptMessage(this.testToAddr2, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo, false);
+        assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), false, null);
     }
 
     @Test
     public void testDecryptMailInvalidMimeType() throws IOException, MessagingException {
-        DiscoveryTestcaseResult result = decryptAndParseEmail("core/mail/testDecryptMail_invalidMimeType.eml");
-        assertDiscoveryTestcaseResultProperties(result, false, null);
+        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(createMimeMessage(this.testToAddr, this.testFromAddr), this.mailEnc);
+        assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(unencryptedMsgHelper), false, null);
     }
 
     @Test(dependsOnMethods = { "testMimeTypeParamOrder" })
@@ -135,44 +152,38 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         Assert.assertTrue(ToolMimeTypeUtils.equals(this.testPkcs7MimeContentType1, this.testPkcs7MimeContentType2));
     }
 
-    @Test(dependsOnMethods = { "testIsMultipartSigned" })
-    public void testDecryptSignedAndEncryptedMessage() throws IOException, MessagingException {
-        String toAddr = this.testToAddr.toAddress();
-        MimeMessage msg = new MimeMessage(this.mailSession);
-        msg.setFrom(toAddr);
-        msg.setRecipient(RecipientType.TO, this.testToAddr.toInternetAddress());
-        msg.setSubject(toAddr);
-        msg.setText(toAddr);
-        msg.saveChanges();
+    @BeforeClass(dependsOnMethods = { "registerInstanceConfig" })
+    public void setupEncryptionCredentialInfo() {
+        this.discoveryTestcases = ToolBeanFactoryUtils.getBeansOfType(this.applicationContext, DiscoveryTestcase.class);
+        DiscoveryTestcase discoveryTestcase1 = this.discoveryTestcases.get(0);
+        this.testToAddr = discoveryTestcase1.getMailAddress();
 
-        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);
-        ToolMimeMessageHelper encryptedMsgHelper =
-            ToolSmimeUtils.signAndEncrypt(unencryptedMsgHelper, this.testCredInfo, this.testCertInfo, MailEncryptionAlgorithm.AES256);
-
-        assertMessageHeadersMatch(unencryptedMsgHelper, encryptedMsgHelper);
-        assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testCred);
-    }
-
-    @BeforeClass(dependsOnMethods = { "buildCredentialInfo" })
-    public void buildTestDiscoveryTestcases() {
-        DiscoveryTestcase discoveryTestcase1 = (DiscoveryTestcase) this.applicationContext.getBean("discoveryTestcase1");
-        DiscoveryTestcase discoveryTestcase2 = (DiscoveryTestcase) this.applicationContext.getBean("discoveryTestcase2");
-
-        discoveryTestcase1.setMailAddress(this.testToAddr);
-        this.testCred = discoveryTestcase1.getTargetCredentials().iterator().next();
-        this.testCred.setCredentialInfo(this.testCredInfo);
-        this.testDiscoveryTestcases.add(discoveryTestcase1);
-        this.testDiscoveryTestcases.add(discoveryTestcase2);
+        this.testTargetCred = discoveryTestcase1.getTargetCredentials().iterator().next();
+        // noinspection ConstantConditions
+        this.testTargetCertInfo = this.testTargetCred.getCredentialInfo().getCertificateDescriptor();
+        this.testBackgroundCred = discoveryTestcase1.getBackgroundCredentials().iterator().next();
+        // noinspection ConstantConditions
+        this.testBackgroundCertInfo = this.testBackgroundCred.getCredentialInfo().getCertificateDescriptor();
     }
 
     @BeforeClass
-    public void buildCredentialInfo() throws CryptographyException {
-        KeyInfo testKeyInfo =
+    public void registerInstanceConfig() {
+        InstanceConfig instanceConfig = ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, InstanceConfig.class);
+        // noinspection ConstantConditions
+        instanceConfig.setDomainName(this.testInstanceConfigDomainName);
+        instanceConfig.setIpAddress(this.testInstanceConfigIpAddr);
+        // noinspection ConstantConditions
+        ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, InstanceConfigRegistry.class).registerBeans(instanceConfig);
+    }
+
+    @BeforeClass
+    public void buildSignerCredentialInfo() throws CryptographyException {
+        KeyInfo testSignerKeyInfo =
             new KeyInfoImpl(KeyUtils.readPublicKey(Base64.decodeBase64(this.testPublicKeyStr), KeyAlgorithm.RSA, DataEncoding.DER), KeyUtils.readPrivateKey(
                 Base64.decodeBase64(this.testPrivateKeyStr), KeyAlgorithm.RSA, DataEncoding.DER));
-        this.testCertInfo =
+        CertificateInfo testSignerCertInfo =
             new CertificateInfoImpl(CertificateUtils.readCertificate(Base64.decodeBase64(this.testCertStr), CertificateType.X509, DataEncoding.DER));
-        this.testCredInfo = new CredentialInfoImpl(testKeyInfo, testCertInfo);
+        this.testSignerCredInfo = new CredentialInfoImpl(testSignerKeyInfo, testSignerCertInfo);
     }
 
     private void assertDiscoveryTestcaseResultProperties(DiscoveryTestcaseResult result, boolean successful, DiscoveryTestcaseCredential credFound)
@@ -217,10 +228,34 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         }
     }
 
-    private DiscoveryTestcaseResult decryptAndParseEmail(String mailLoc) throws IOException, MessagingException {
-        try (InputStream mailInStream = ToolResourceUtils.getInputStream(mailLoc)) {
-            return processDiscoveryTestcaseSubmission(new ToolMimeMessageHelper(new MimeMessage(this.mailSession, mailInStream), this.mailEnc));
-        }
+    private ToolMimeMessageHelper signAndEncryptMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
+        boolean reorderParams) throws MessagingException, IOException {
+        return signAndEncryptMessage(to, from, signerCredInfo, encryptionCertInfo, MailEncryptionAlgorithm.AES256, MailContentTypes.APP_PKCS7_SIG_BASETYPE,
+            MailContentTypes.APP_PKCS7_MIME_BASETYPE, reorderParams);
+    }
+
+    private ToolMimeMessageHelper signAndEncryptMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
+        MailEncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams) throws MessagingException, IOException {
+        MimeMessage msg = createMimeMessage(to, from);
+        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);
+        ToolMimeMessageHelper encryptedMsgHelper =
+            ToolSmimeUtils.signAndEncrypt(unencryptedMsgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg, sigBaseType, envBaseType, reorderParams);
+
+        assertMessageHeadersMatch(unencryptedMsgHelper, encryptedMsgHelper);
+
+        return encryptedMsgHelper;
+    }
+
+    private MimeMessage createMimeMessage(MailAddress to, MailAddress from) throws MessagingException {
+        String toAddr = to.toAddress();
+        MimeMessage msg = new MimeMessage(this.mailSession);
+        msg.setRecipient(RecipientType.TO, to.toInternetAddress());
+        msg.setFrom(from.toAddress());
+        msg.setSubject(toAddr);
+        msg.setText(toAddr);
+        msg.saveChanges();
+
+        return msg;
     }
 
     private void assertMessageHeadersMatch(ToolMimeMessageHelper msgHelper1, ToolMimeMessageHelper msgHelper2) throws MessagingException {
@@ -234,6 +269,6 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
 
     private DiscoveryTestcaseResult processDiscoveryTestcaseSubmission(ToolMimeMessageHelper msgHelper) throws MessagingException {
         return this.testcaseProcessor.process(msgHelper,
-            CollectionUtils.find(this.testDiscoveryTestcases, new DiscoveryTestcaseMailAddressPredicate(msgHelper.getTo())));
+            CollectionUtils.find(this.discoveryTestcases, new DiscoveryTestcaseMailAddressPredicate(msgHelper.getTo())));
     }
 }
