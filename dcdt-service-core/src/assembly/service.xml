@@ -1,0 +1,41 @@
+<assembly
+    xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+    
+    <id>service</id>
+    <baseDirectory>${project.artifactId}</baseDirectory>
+    
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    
+    <fileSets>
+        <!-- Executable file(s) (project) -->
+        <fileSet>
+            <directory>${project.build.serviceBinDirectory}</directory>
+            <outputDirectory>/bin</outputDirectory>
+        </fileSet>
+        <!-- Configuration file(s) (project) -->
+        <fileSet>
+            <directory>${project.build.serviceConfDirectory}</directory>
+            <outputDirectory>/conf</outputDirectory>
+        </fileSet>
+        <!-- Library file(s) (project) -->
+        <fileSet>
+            <directory>${project.build.serviceLibDirectory}</directory>
+            <outputDirectory>/lib</outputDirectory>
+        </fileSet>
+        <!-- Log file(s) (project) -->
+        <fileSet>
+            <directory>${project.build.serviceLogDirectory}</directory>
+            <outputDirectory>/log</outputDirectory>
+        </fileSet>
+        <!-- Runtime file(s) (project) -->
+        <fileSet>
+            <directory>${project.build.serviceVarDirectory}</directory>
+            <outputDirectory>/var</outputDirectory>
+        </fileSet>
+    </fileSets>
+</assembly>

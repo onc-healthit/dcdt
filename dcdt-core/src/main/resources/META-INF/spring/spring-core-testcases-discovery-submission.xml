@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+        xmlns:aop="http://www.springframework.org/schema/aop"
+        xmlns:beans="http://www.springframework.org/schema/beans"
+        xmlns:c="http://www.springframework.org/schema/c"
+        xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+        xmlns:p="http://www.springframework.org/schema/p"
+        xmlns:util="http://www.springframework.org/schema/util"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--====================================================================================================
+    = DISCOVERY TESTCASE SUBMISSION MAIL MESSAGES
+    =====================================================================================================-->
+    <!--suppress SpringBeanConstructorArgInspection -->
+    <beans:bean id="discoveryTestcaseSubmissionMimeMailMsg" parent="mimeMailMsgImpl" lazy-init="true" scope="prototype"
+        p:subjectTemplateLocation="mail-subj-testcase-discovery-submission"
+        p:textTemplateLocation="mail-testcase-discovery-submission"/>
+
+    <!--====================================================================================================
+    = DISCOVERY TESTCASE SUBMISSION SENDER SERVICE
+    =====================================================================================================-->
+    <beans:bean id="discoveryTestcaseSubmissionSenderService" class="gov.hhs.onc.dcdt.testcases.discovery.mail.sender.DiscoveryTestcaseSubmissionSenderService"
+        parent="mailSenderService" abstract="true"/>
+
+    <beans:bean id="discoveryTestcaseSubmissionSenderServiceImpl"
+        class="gov.hhs.onc.dcdt.testcases.discovery.mail.sender.impl.DiscoveryTestcaseSubmissionSenderServiceImpl" parent="discoveryTestcaseSubmissionSenderService"
+        c:fromConfig-ref="instanceMailAddrConfigSubmission"
+        c:replyToConfig-ref="instanceMailAddrConfigNoReply">
+        <beans:constructor-arg name="mailEnc" ref="charsetUtf8"/>
+        <beans:constructor-arg name="mimeMailMsgBeanName">
+            <beans:idref bean="discoveryTestcaseSubmissionMimeMailMsg"/>
+        </beans:constructor-arg>
+        <beans:constructor-arg name="velocityEngine">
+            <beans:bean parent="velocityEngineMail"/>
+        </beans:constructor-arg>
+    </beans:bean>
+</beans:beans>
