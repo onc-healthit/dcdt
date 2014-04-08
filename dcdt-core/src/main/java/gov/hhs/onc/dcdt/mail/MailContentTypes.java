@@ -19,8 +19,6 @@ import org.springframework.util.MimeType;
  * A summary is available here: <a href="http://en.wikipedia.org/wiki/Internet_media_type">Internet_media_type</a>
  */
 public final class MailContentTypes {
-    public final static String HEADER_NAME_CONTENT_TYPE = "Content-Type";
-
     public final static String NAME_PARAM_NAME = "name";
     public final static String NAME_SMIME_MIME_PARAM_VALUE = ToolStringUtils.quote("smime.p7m");
     public final static Pair<String, String> NAME_SMIME_MIME_PARAM = new ImmutablePair<>(NAME_PARAM_NAME, NAME_SMIME_MIME_PARAM_VALUE);

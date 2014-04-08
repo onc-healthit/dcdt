@@ -17,9 +17,11 @@ import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
+import gov.hhs.onc.dcdt.mail.MailHeaderNames;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
+import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
@@ -30,14 +32,24 @@ import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.annotation.Resource;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
 import javax.mail.Session;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import gov.hhs.onc.dcdt.utils.ToolMapUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.comparators.FixedOrderComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.MimeType;
@@ -103,36 +115,37 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @Test(dependsOnMethods = { "testIsMultipartSigned" })
     public void testDecryptMailPkcs7MimeValid() throws IOException, MessagingException {
         ToolMimeMessageHelper encryptedMsgHelper =
-            signAndEncryptMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo, false);
+            createSignedAndEncryptedMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo);
         assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testTargetCred);
     }
 
     @Test
     public void testDecryptMailPkcs7MimeEncryptedWithWrongCertificate() throws IOException, MessagingException {
         ToolMimeMessageHelper encryptedMsgHelper =
-            signAndEncryptMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testBackgroundCertInfo, false);
+            createSignedAndEncryptedMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testBackgroundCertInfo);
         assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), false, this.testBackgroundCred);
     }
 
     @Test(dependsOnMethods = { "testMimeTypeParamOrder", "testIsMultipartSigned" })
     public void testDecryptMailPkcs7MimeDiffMimeTypeParamOrder() throws IOException, MessagingException {
         ToolMimeMessageHelper encryptedMsgHelper =
-            signAndEncryptMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo, true);
+            createSignedAndEncryptedMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo,
+                MailEncryptionAlgorithm.AES256, MailContentTypes.APP_PKCS7_SIG_BASETYPE, MailContentTypes.APP_PKCS7_MIME_BASETYPE, true);
         assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testTargetCred);
     }
 
     @Test(dependsOnMethods = { "testIsMultipartSigned" })
     public void testDecryptMailXPkcs7MimeValid() throws IOException, MessagingException {
         ToolMimeMessageHelper encryptedMsgHelper =
-            signAndEncryptMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo, MailEncryptionAlgorithm.AES256,
-                MailContentTypes.APP_X_PKCS7_SIG_BASETYPE, MailContentTypes.APP_X_PKCS7_MIME_BASETYPE, false);
+            createSignedAndEncryptedMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo,
+                MailEncryptionAlgorithm.AES256, MailContentTypes.APP_X_PKCS7_SIG_BASETYPE, MailContentTypes.APP_X_PKCS7_MIME_BASETYPE, false);
         assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testTargetCred);
     }
 
     @Test
     public void testDecryptMailPkcsMimeInvalidTestcaseAddress() throws IOException, MessagingException {
         ToolMimeMessageHelper encryptedMsgHelper =
-            signAndEncryptMessage(this.testToAddr2, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo, false);
+            createSignedAndEncryptedMessage(this.testToAddr2, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo);
         assertDiscoveryTestcaseResultProperties(processDiscoveryTestcaseSubmission(encryptedMsgHelper), false, null);
     }
 
@@ -228,18 +241,29 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         }
     }
 
-    private ToolMimeMessageHelper signAndEncryptMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
-        boolean reorderParams) throws MessagingException, IOException {
-        return signAndEncryptMessage(to, from, signerCredInfo, encryptionCertInfo, MailEncryptionAlgorithm.AES256, MailContentTypes.APP_PKCS7_SIG_BASETYPE,
-            MailContentTypes.APP_PKCS7_MIME_BASETYPE, reorderParams);
+    private ToolMimeMessageHelper createSignedAndEncryptedMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo,
+        CertificateInfo encryptionCertInfo) throws MessagingException, IOException {
+        return createSignedAndEncryptedMessage(to, from, signerCredInfo, encryptionCertInfo, MailEncryptionAlgorithm.AES256);
     }
 
-    private ToolMimeMessageHelper signAndEncryptMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
-        MailEncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams) throws MessagingException, IOException {
+    private ToolMimeMessageHelper createSignedAndEncryptedMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo,
+        CertificateInfo encryptionCertInfo, MailEncryptionAlgorithm encryptionAlg) throws MessagingException, IOException {
+        MimeMessage msg = createMimeMessage(to, from);
+        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);
+        ToolMimeMessageHelper encryptedMsgHelper = ToolSmimeUtils.signAndEncrypt(unencryptedMsgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg);
+
+        assertMessageHeadersMatch(unencryptedMsgHelper, encryptedMsgHelper);
+
+        return encryptedMsgHelper;
+    }
+
+    private ToolMimeMessageHelper createSignedAndEncryptedMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo,
+        CertificateInfo encryptionCertInfo, MailEncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams)
+        throws MessagingException, IOException {
         MimeMessage msg = createMimeMessage(to, from);
         ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);
         ToolMimeMessageHelper encryptedMsgHelper =
-            ToolSmimeUtils.signAndEncrypt(unencryptedMsgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg, sigBaseType, envBaseType, reorderParams);
+            signAndEncrypt(unencryptedMsgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg, sigBaseType, envBaseType, reorderParams);
 
         assertMessageHeadersMatch(unencryptedMsgHelper, encryptedMsgHelper);
 
@@ -256,6 +280,55 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         msg.saveChanges();
 
         return msg;
+    }
+
+    private static ToolMimeMessageHelper signAndEncrypt(ToolMimeMessageHelper msgHelper, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
+        MailEncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams) throws MessagingException, IOException {
+        MimeMessage msg = msgHelper.getMimeMessage();
+        MimeBodyPart signedBodyPart = new MimeBodyPart();
+        // noinspection ConstantConditions
+        signedBodyPart.setContent(getSignedMultipartForBaseType(
+            ToolSmimeUtils.sign(msgHelper, signerCredInfo.getKeyDescriptor().getPrivateKey(), signerCredInfo.getCertificateDescriptor().getCertificate()),
+            sigBaseType));
+
+        MimeBodyPart encryptedBodyPart = ToolSmimeUtils.encrypt(signedBodyPart, encryptionCertInfo.getCertificate(), encryptionAlg);
+        MimeMessage encryptedMsg = new MimeMessage(msg.getSession());
+        encryptedMsg.setContent(encryptedBodyPart.getContent(), updateEncryptedBodyPartContentType(envBaseType, reorderParams, encryptedBodyPart));
+        encryptedMsg.saveChanges();
+
+        return ToolSmimeUtils.setMessageHeaders(encryptedMsg, msgHelper);
+    }
+
+    private static MimeMultipart getSignedMultipartForBaseType(MimeMultipart signedMultipart, String sigBaseType) throws MessagingException {
+        MimeBodyPart sigPart = (MimeBodyPart) signedMultipart.getBodyPart(1);
+        sigPart.setHeader(MailHeaderNames.HEADER_NAME_CONTENT_TYPE,
+            sigPart.getContentType().replace(ToolMimeTypeUtils.getBaseType(ToolMimePartUtils.getContentType(sigPart)), sigBaseType));
+
+        // noinspection ConstantConditions
+        String signedMultipartContentType =
+            signedMultipart.getContentType().replace(
+                ToolMimePartUtils.getContentType(signedMultipart).getParameters().get(MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PARAM_NAME),
+                ToolStringUtils.quote(sigBaseType));
+
+        return new MimeMultipart(signedMultipartContentType.substring(MailContentTypes.MULTIPART_TYPE.length() + 1), signedMultipart.getBodyPart(0), sigPart);
+    }
+
+    private static String updateEncryptedBodyPartContentType(String envBaseType, boolean reorderParams, MimeBodyPart encryptedBodyPart)
+        throws MessagingException {
+        MimeType encryptedContentType = ToolMimePartUtils.getContentType(encryptedBodyPart);
+        String encryptedBaseType = ToolMimeTypeUtils.getBaseType(encryptedContentType);
+
+        // noinspection ConstantConditions
+        return reorderParams ? new MimeType(encryptedContentType.getType(), encryptedContentType.getSubtype(), reverseParameterOrder(encryptedContentType))
+            .toString().replace(encryptedBaseType, envBaseType) : encryptedBodyPart.getContentType().replace(encryptedBaseType, envBaseType);
+    }
+
+    private static Map<String, String> reverseParameterOrder(MimeType mimeType) {
+        Map<String, String> params = mimeType.getParameters();
+
+        return ToolMapUtils.putAll(
+            new TreeMap<String, String>(new FixedOrderComparator<>(ToolListUtils.reverse(ToolCollectionUtils.addAll(new ArrayList<String>(params.size()),
+                params.keySet())))), params.entrySet());
     }
 
     private void assertMessageHeadersMatch(ToolMimeMessageHelper msgHelper1, ToolMimeMessageHelper msgHelper2) throws MessagingException {

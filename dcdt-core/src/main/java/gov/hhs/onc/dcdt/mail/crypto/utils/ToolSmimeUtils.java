@@ -13,7 +13,6 @@ import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.ToolSmimeException;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
-import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.IOException;
 import java.math.BigInteger;
@@ -33,7 +32,6 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.security.auth.x500.X500Principal;
-import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
@@ -331,53 +329,26 @@ public abstract class ToolSmimeUtils {
 
     public static ToolMimeMessageHelper signAndEncrypt(ToolMimeMessageHelper msgHelper, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
         MailEncryptionAlgorithm encryptionAlg) throws MessagingException, IOException {
-        return signAndEncrypt(msgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg, MailContentTypes.APP_PKCS7_SIG_BASETYPE,
-            MailContentTypes.APP_PKCS7_MIME_BASETYPE, false);
-    }
-
-    public static ToolMimeMessageHelper signAndEncrypt(ToolMimeMessageHelper msgHelper, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
-        MailEncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams) throws MessagingException, IOException {
         MimeMessage msg = msgHelper.getMimeMessage();
-        // noinspection ConstantConditions
-        MimeMultipart signedMimeMultipart =
-            ToolSmimeUtils.sign(msgHelper, signerCredInfo.getKeyDescriptor().getPrivateKey(), signerCredInfo.getCertificateDescriptor().getCertificate());
         MimeBodyPart signedBodyPart = new MimeBodyPart();
-        signedBodyPart.setContent(sigBaseType.equals(MailContentTypes.APP_PKCS7_SIG_BASETYPE) ? signedMimeMultipart : getSignedMultipartForBaseType(
-            signedMimeMultipart, sigBaseType));
+        // noinspection ConstantConditions
+        signedBodyPart.setContent(ToolSmimeUtils.sign(msgHelper, signerCredInfo.getKeyDescriptor().getPrivateKey(), signerCredInfo.getCertificateDescriptor()
+            .getCertificate()));
 
         MimeBodyPart encryptedBodyPart = ToolSmimeUtils.encrypt(signedBodyPart, encryptionCertInfo.getCertificate(), encryptionAlg);
-        MimeType encryptedContentType = ToolMimePartUtils.getContentType(encryptedBodyPart);
-        String encryptedBaseType = ToolMimeTypeUtils.getBaseType(encryptedContentType);
-
-        // noinspection ConstantConditions
-        String updatedContentTypeStr =
-            reorderParams ? new MimeType(encryptedContentType.getType(), encryptedContentType.getSubtype(),
-                ToolMimeTypeUtils.reverseParameterOrder(encryptedContentType)).toString().replace(encryptedBaseType, envBaseType) : encryptedBodyPart
-                .getContentType().replace(encryptedBaseType, envBaseType);
-
         MimeMessage encryptedMsg = new MimeMessage(msg.getSession());
-        encryptedMsg.setContent(encryptedBodyPart.getContent(), updatedContentTypeStr);
+        encryptedMsg.setContent(encryptedBodyPart.getContent(), encryptedBodyPart.getContentType());
         encryptedMsg.saveChanges();
 
+        return setMessageHeaders(encryptedMsg, msgHelper);
+    }
+
+    public static ToolMimeMessageHelper setMessageHeaders(MimeMessage encryptedMsg, ToolMimeMessageHelper msgHelper) throws MessagingException, IOException {
         ToolMimeMessageHelper encryptedMsgHelper = new ToolMimeMessageHelper(encryptedMsg, msgHelper.getMailEncoding());
         encryptedMsgHelper.setFrom(msgHelper.getFrom());
         encryptedMsgHelper.setTo(msgHelper.getTo());
         encryptedMsgHelper.setSubject(msgHelper.getSubject());
 
         return encryptedMsgHelper;
-    }
-
-    public static MimeMultipart getSignedMultipartForBaseType(MimeMultipart signedMultipart, String sigBaseType) throws MessagingException {
-        MimeBodyPart sigPart = (MimeBodyPart) signedMultipart.getBodyPart(1);
-        sigPart.setHeader(MailContentTypes.HEADER_NAME_CONTENT_TYPE,
-            sigPart.getContentType().replace(ToolMimeTypeUtils.getBaseType(ToolMimePartUtils.getContentType(sigPart)), sigBaseType));
-
-        // noinspection ConstantConditions
-        String signedMultipartContentType =
-            signedMultipart.getContentType().replace(
-                ToolMimePartUtils.getContentType(signedMultipart).getParameters().get(MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PARAM_NAME),
-                ToolStringUtils.quote(sigBaseType));
-
-        return new MimeMultipart(signedMultipartContentType.substring(MailContentTypes.MULTIPART_TYPE.length() + 1), signedMultipart.getBodyPart(0), sigPart);
     }
 }
