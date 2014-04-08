@@ -3,17 +3,11 @@ package gov.hhs.onc.dcdt.net.mime.utils;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolMapUtils;
-import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Map.Entry;
-import java.util.TreeMap;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.comparators.FixedOrderComparator;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.springframework.util.MimeType;
@@ -164,13 +158,5 @@ public abstract class ToolMimeTypeUtils {
     public static MimeType valueOf(@Nullable String type, @Nullable String subtype, @Nullable Iterable<Entry<String, String>> params) {
         return new MimeType(StringUtils.defaultIfBlank(type, TYPE_WILDCARD), StringUtils.defaultIfBlank(subtype, TYPE_WILDCARD), ToolMapUtils.toMap(
             String.class, String.class, params));
-    }
-
-    public static Map<String, String> reverseParameterOrder(MimeType mimeType) {
-        Map<String, String> params = mimeType.getParameters();
-
-        return ToolMapUtils.putAll(
-            new TreeMap<String, String>(new FixedOrderComparator<>(ToolListUtils.reverse(ToolCollectionUtils.addAll(new ArrayList<String>(params.size()),
-                params.keySet())))), params.entrySet());
     }
 }
