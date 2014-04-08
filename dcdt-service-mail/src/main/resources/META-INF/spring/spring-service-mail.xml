@@ -96,7 +96,7 @@
     <!--====================================================================================================
     = JAMES MAIL QUEUE BROKER
     =====================================================================================================-->
-    <amq:broker id="mailQueueBroker" brokerName="mailQueue" persistent="false" schedulerSupport="false" useJmx="true" useShutdownHook="true">
+    <amq:broker id="mailQueueBroker" brokerName="mailQueue" persistent="false" schedulerSupport="false" useShutdownHook="false">
         <amq:destinationPolicy>
             <amq:policyMap>
                 <amq:policyEntries>

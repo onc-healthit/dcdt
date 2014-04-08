@@ -21,10 +21,10 @@ public interface CertificateDescriptor extends CryptographyDescriptor {
     @Nullable
     public SignatureAlgorithm getSignatureAlgorithm();
 
-    public boolean hasSubject();
+    public boolean hasSubjectName();
 
     @Nullable
-    public CertificateName getSubject() throws CertificateException;
+    public CertificateName getSubjectName() throws CertificateException;
 
     public boolean hasValidInterval();
 

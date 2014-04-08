@@ -467,32 +467,32 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -507,29 +507,29 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-bom</artifactId>
-                <version>3.2.0.RELEASE</version>
+                <version>3.2.3.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -576,13 +576,13 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>4.0.1.RELEASE</version>
+                <version>4.0.3.RELEASE</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>6.8.7</version>
+                <version>6.8.8</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -698,6 +698,7 @@
                         <fork>true</fork>
                         <maxmem>256m</maxmem>
                         <meminitial>128m</meminitial>
+                        <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
                         <source>${java.version}</source>
@@ -1098,15 +1099,16 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.16</version>
+                    <version>2.17</version>
                     <inherited>true</inherited>
                     <configuration>
                         <additionalClasspathElements combine.children="append">
                             <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
                             <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
-                        <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</argLine>
+                        <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4</argLine>
                         <classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>
+                        <parallel>all</parallel>
                         <reportFormat>plain</reportFormat>
                         <systemPropertyVariables combine.children="append">
                             <dcdt.data.dir>${project.build.directory}/surefire-data</dcdt.data.dir>
@@ -1117,6 +1119,7 @@
                         </systemPropertyVariables>
                         <testClassesDirectory>${project.build.cloverTestOutputDirectory}</testClassesDirectory>
                         <testSourceDirectory>${project.build.cloverTestSourceDirectory}</testSourceDirectory>
+                        <threadCount>8</threadCount>
                         <trimStackTrace>false</trimStackTrace>
                         <workingDirectory>${project.build.directory}</workingDirectory>
                     </configuration>
@@ -1670,7 +1673,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.11</version>
+                        <version>2.12</version>
                         <configuration>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
@@ -1693,11 +1696,12 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
-                        <version>3.0.1</version>
+                        <version>3.1</version>
                         <configuration>
                             <includeXmlInSite>true</includeXmlInSite>
                             <includeTests>true</includeTests>
                             <printFailingErrors>true</printFailingErrors>
+                            <skipEmptyReport>false</skipEmptyReport>
                             <typeResolution>true</typeResolution>
                             <verbose>true</verbose>
                         </configuration>
@@ -1721,7 +1725,7 @@
                         <configuration>
                             <effort>Max</effort>
                             <includeTests>true</includeTests>
-                            <jvmArgs>-XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled</jvmArgs>
+                            <jvmArgs>-XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4</jvmArgs>
                             <threshold>Low</threshold>
                             <xmlOutput>true</xmlOutput>
                         </configuration>
@@ -1775,8 +1779,10 @@
                             <additionalJOptions>
                                 <additionalJOption>-J-XX:PermSize=64m</additionalJOption>
                                 <additionalJOption>-J-XX:MaxPermSize=128m</additionalJOption>
-                                <additionalJOption>-J-XX:+UseConcMarkSweepGC</additionalJOption>
-                                <additionalJOption>-J-XX:+CMSClassUnloadingEnabled</additionalJOption>
+                                <additionalJOption>-J-XX:+UseG1GC</additionalJOption>
+                                <additionalJOption>-J-XX:MaxGCPauseMillis=50</additionalJOption>
+                                <additionalJOption>-J-XX:ParallelGCThreads=4</additionalJOption>
+                                <additionalJOption>-J-XX:ConcGCThreads=4</additionalJOption>
                             </additionalJOptions>
                             <maxmemory>512m</maxmemory>
                             <minmemory>256m</minmemory>
@@ -1841,7 +1847,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-report-plugin</artifactId>
-                        <version>2.16</version>
+                        <version>2.17</version>
                         <reportSets>
                             <reportSet>
                                 <id>default</id>

@@ -63,6 +63,15 @@
     </beans:bean>
     
     <!--====================================================================================================
+    = CERTIFICATE PATH RESOLVER
+    =====================================================================================================-->
+    <beans:bean id="certPathResolver" class="gov.hhs.onc.dcdt.crypto.certs.path.CertificatePathResolver" abstract="true"/>
+    
+    <beans:bean id="certPathResolverImpl" class="gov.hhs.onc.dcdt.crypto.certs.path.impl.CertificatePathResolverImpl" parent="certPathResolver"
+        p:issuerAccessLocationUrlConnectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
+        p:issuerAccessLocationUrlReadTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"/>
+    
+    <!--====================================================================================================
     = CREDENTIALS
     =====================================================================================================-->
     <beans:bean id="credConfig" class="gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig" parent="cryptoDesc" abstract="true"/>
@@ -71,20 +80,4 @@
     <beans:bean id="credConfigCa" parent="credConfigImpl" abstract="true">
         <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
     </beans:bean>
-
-    <!--====================================================================================================
-    = CERTIFICATE VALIDATORS
-    =====================================================================================================-->
-    <beans:bean id="certValidator" class="gov.hhs.onc.dcdt.crypto.certs.CertificateValidator" abstract="true"/>
-    
-    <beans:bean id="certValidIntervalValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateValidIntervalValidator" parent="certValidator"
-        p:errorCode="EXPIRED_CERT"/>
-    
-    <beans:bean id="certSubjValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectValidator" parent="certValidator"
-        p:errorCode="INVALID_SUBJ_DN"
-        p:optional="true"/>
-    
-    <beans:bean id="certSubjAltNamesValidator" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectAltNamesValidator" parent="certValidator"
-        p:errorCode="INVALID_SUBJ_ALT_NAME"
-        p:optional="true"/>
 </beans:beans>

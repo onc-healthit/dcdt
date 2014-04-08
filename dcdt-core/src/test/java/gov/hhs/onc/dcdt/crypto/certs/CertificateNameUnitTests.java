@@ -40,7 +40,7 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
     }
 
     private static void assertCertificateSubjectsMatch(CertificateConfig testCertConfig, X500Name testCertSubjX500Name) throws Exception {
-        CertificateName testCertSubj = testCertConfig.getSubject();
+        CertificateName testCertSubj = testCertConfig.getSubjectName();
 
         Assert.assertNotNull(testCertSubj, "Certificate subject is null.");
         Assert.assertEquals(testCertSubj, new CertificateNameImpl(testCertSubjX500Name), "Certificate subjects do not match.");

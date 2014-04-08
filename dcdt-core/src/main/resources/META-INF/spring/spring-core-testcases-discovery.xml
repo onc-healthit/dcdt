@@ -79,7 +79,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D1_valA"/>
                                     </beans:property>
@@ -109,7 +109,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D1_invB"/>
                                     </beans:property>
@@ -138,7 +138,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D1_invC"/>
                                     </beans:property>
@@ -167,7 +167,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D1_invD"/>
                                     </beans:property>
@@ -224,7 +224,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D2_valB"/>
                                     </beans:property>
@@ -254,7 +254,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D2_invC"/>
                                     </beans:property>
@@ -283,7 +283,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D2_invD"/>
                                     </beans:property>
@@ -339,7 +339,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D3_valC"/>
                                     </beans:property>
@@ -369,7 +369,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D3_invD"/>
                                     </beans:property>
@@ -426,7 +426,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D4_valD"/>
                                     </beans:property>
@@ -478,7 +478,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D5_invA"/>
                                     </beans:property>
@@ -529,7 +529,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D6_invB"/>
                                     </beans:property>
@@ -580,7 +580,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D7_invC"/>
                                     </beans:property>
@@ -632,7 +632,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D8_invD"/>
                                     </beans:property>
@@ -684,7 +684,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D9_valA"/>
                                     </beans:property>
@@ -714,7 +714,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D9_invA"/>
                                     </beans:property>
@@ -775,7 +775,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D10_valE"/>
                                     </beans:property>
@@ -899,7 +899,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D14_valA"/>
                                     </beans:property>
@@ -960,7 +960,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D15_valC"/>
                                     </beans:property>
@@ -990,7 +990,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeafExpired">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D15_invE"/>
                                     </beans:property>
@@ -1049,7 +1049,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D16_valC"/>
                                     </beans:property>
@@ -1079,7 +1079,7 @@
                         <beans:bean parent="discoveryTestcaseCredConfigLeaf">
                             <beans:property name="certificateDescriptor">
                                 <beans:bean parent="discoveryTestcaseCertConfigLeaf">
-                                    <beans:property name="subject">
+                                    <beans:property name="subjectName">
                                         <beans:bean parent="certNameImpl"
                                             p:commonName="D16_valE"/>
                                     </beans:property>

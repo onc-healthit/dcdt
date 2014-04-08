@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.ldap;
 
+import gov.hhs.onc.dcdt.ldap.lookup.LdapEntryLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
 import gov.hhs.onc.dcdt.service.ldap.config.impl.ToolDirectoryServiceBean;
 import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
@@ -44,16 +45,21 @@ public class LdapServiceFunctionalTests extends AbstractToolServiceFunctionalTes
 
             ldapSearchConnConfig = dirServiceBean.getLdapConfig().toConnectionConfigAnonymous();
 
+            LdapEntryLookupResult dataResultEntriesLookupResult;
+            List<Entry> dataResultEntries;
             Entry dataResultEntry;
             String dataEntryAttrUpId, dataEntryAttrValueStr;
             byte[] dataEntryAttrValueData;
 
             // noinspection ConstantConditions
             for (Entry dataEntry : dirServiceBean.getDataEntries()) {
-                List<Entry> dataResultEntries = this.ldapLookupService.search(ldapSearchConnConfig, dataEntry.getDn(), SearchScope.OBJECT, null);
+                dataResultEntriesLookupResult = this.ldapLookupService.lookupEntries(ldapSearchConnConfig, dataEntry.getDn(), SearchScope.OBJECT, null);
 
-                Assert.assertFalse(dataResultEntries.isEmpty(), String.format("No LDAP service data result entries (dn={%s}) found.", dataEntry.getDn()));
-                Assert.assertEquals(dataResultEntries.size(), 1, String.format("LDAP service data result entry (dn={%s}) is not unique.", dataEntry.getDn()));
+                Assert.assertTrue(dataResultEntriesLookupResult.hasItems(),
+                    String.format("No LDAP service data result entries (dn={%s}) found.", dataEntry.getDn()));
+                // noinspection ConstantConditions
+                Assert.assertEquals((dataResultEntries = dataResultEntriesLookupResult.getItems()).size(), 1,
+                    String.format("LDAP service data result entry (dn={%s}) is not unique.", dataEntry.getDn()));
                 Assert.assertEquals((dataResultEntry = dataResultEntries.get(0)).size(), dataEntry.size(),
                     String.format("LDAP service data result entry (dn={%s}) size does not match.", dataEntry.getDn()));
 

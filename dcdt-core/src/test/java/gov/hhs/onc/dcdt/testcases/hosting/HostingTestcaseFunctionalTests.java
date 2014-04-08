@@ -100,7 +100,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
         }
     }
 
-    @Test
+    @Test(enabled = false)
     public void testHostingTestcase1() throws Exception {
         String hostingTestcase1 = "hostingTestcase1";
         testHostingTestcase(hostingTestcase1, this.testDnsAddrBoundDirectAddr1, true, 0, this.testDnsAddrBoundCommonName1);
@@ -109,7 +109,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
         testHostingTestcase(hostingTestcase1, this.testDnsDomainBoundDirectAddrDomain, false, 1, this.testDnsDomainBoundCommonName1);
     }
 
-    @Test
+    @Test(enabled = false)
     public void testHostingTestcase2() throws Exception {
         String hostingTestcase2 = "hostingTestcase2";
         testHostingTestcase(hostingTestcase2, this.testDnsDomainBoundDirectAddr1, true, 0, this.testDnsDomainBoundCommonName1);
@@ -170,7 +170,7 @@ public class HostingTestcaseFunctionalTests extends AbstractToolFunctionalTests 
             if (certInfoStep.hasCertificateInfo()) {
                 CertificateInfo certInfo = certInfoStep.getCertificateInfo();
                 // noinspection ConstantConditions
-                Assert.assertEquals(certInfo.getSubject().getCommonName(), certCommonName);
+                Assert.assertEquals(certInfo.getSubjectName().getCommonName(), certCommonName);
                 // noinspection ConstantConditions
                 Assert.assertTrue(certInfo.getValidInterval().isValid(new Date()));
             }

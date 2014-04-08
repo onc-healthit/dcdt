@@ -5,5 +5,5 @@ import org.apache.directory.api.ldap.model.filter.ExprNode;
 import java.util.List;
 
 public interface ToolTestcaseLdapCertificateLookupStep extends ToolTestcaseCertificateStep {
-    public List<Entry> getSearchResults(ExprNode exprNode);
+    public List<Entry> lookupEntries(ExprNode exprNode);
 }
