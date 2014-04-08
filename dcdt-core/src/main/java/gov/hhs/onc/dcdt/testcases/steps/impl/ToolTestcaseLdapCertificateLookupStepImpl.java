@@ -1,13 +1,14 @@
 package gov.hhs.onc.dcdt.testcases.steps.impl;
 
-import gov.hhs.onc.dcdt.ldap.ToolLdapException;
 import gov.hhs.onc.dcdt.ldap.ToolCoreSchemaConstants;
+import gov.hhs.onc.dcdt.ldap.lookup.LdapEntryLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseCertificateResultType;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseLdapCertificateLookupStep;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseLdapStep;
 import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.directory.api.ldap.model.entry.Attribute;
@@ -18,7 +19,6 @@ import org.apache.directory.api.ldap.model.filter.AndNode;
 import org.apache.directory.api.ldap.model.filter.EqualityNode;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
 import org.apache.directory.api.ldap.model.filter.PresenceNode;
-import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,9 +62,9 @@ public class ToolTestcaseLdapCertificateLookupStepImpl extends AbstractToolTestc
             PresenceNode userCertificatePresence = new PresenceNode(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT);
             ExprNode exprNode = new AndNode(mailAttributeEquality, userCertificatePresence);
 
-            List<Entry> searchResults = getSearchResults(exprNode);
+            List<Entry> entries = this.lookupEntries(exprNode);
 
-            for (Entry entry : searchResults) {
+            for (Entry entry : entries) {
                 Attribute userCertAttr = entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT);
                 if (userCertAttr != null) {
                     try {
@@ -75,7 +75,7 @@ public class ToolTestcaseLdapCertificateLookupStepImpl extends AbstractToolTestc
                 }
             }
 
-            if (searchResults.isEmpty()) {
+            if (entries.isEmpty()) {
                 this.setCertificateStatus(ToolTestcaseCertificateResultType.NO_CERT);
             }
         }
@@ -84,15 +84,20 @@ public class ToolTestcaseLdapCertificateLookupStepImpl extends AbstractToolTestc
     }
 
     @Override
-    public List<Entry> getSearchResults(ExprNode exprNode) {
-        List<Entry> searchResults = new ArrayList<>();
+    public List<Entry> lookupEntries(ExprNode exprNode) {
+        List<Entry> entries = new ArrayList<>();
+        LdapEntryLookupResult entryLookupResult;
+
         for (Dn baseDn : this.baseDns) {
-            try {
-                searchResults.addAll(this.ldapLookupService.search(this.ldapConnConfig, baseDn, SearchScope.SUBTREE, exprNode));
-            } catch (ToolLdapException e) {
-                this.setMessage(e.getMessage());
+            if (!(entryLookupResult = this.ldapLookupService.lookupEntries(this.ldapConnConfig, baseDn, exprNode)).isSuccess()) {
+                this.setMessage(entryLookupResult.getMessage());
+
+                break;
+            } else {
+                ToolCollectionUtils.addAll(entries, entryLookupResult.getItems());
             }
         }
-        return searchResults;
+
+        return entries;
     }
 }

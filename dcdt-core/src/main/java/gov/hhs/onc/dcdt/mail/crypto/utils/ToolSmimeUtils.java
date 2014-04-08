@@ -32,10 +32,8 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.security.auth.x500.X500Principal;
-import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
-import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.cms.AttributeTable;
 import org.bouncycastle.asn1.smime.SMIMECapabilitiesAttribute;
 import org.bouncycastle.asn1.smime.SMIMECapabilityVector;
@@ -77,11 +75,11 @@ import org.springframework.util.MimeType;
  */
 public abstract class ToolSmimeUtils {
     @SuppressWarnings({ "unchecked" })
-    public static Map<SignerId, Pair<SignerInformation, CertificateInfo>> verifySignatures(SMIMESigned signed) throws MessagingException {
+    public static Map<SignerId, CertificateInfo> verifySignatures(SMIMESigned signed) throws MessagingException {
         Store signedCerts = signed.getCertificates();
         JcaSimpleSignerInfoVerifierBuilder signerInfoVerifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
         Map<SignerId, SignerInformation> signerInfoMap = mapSigners(signed);
-        Map<SignerId, Pair<SignerInformation, CertificateInfo>> signerInfoCertMap = new LinkedHashMap<>(signerInfoMap.size());
+        Map<SignerId, CertificateInfo> signerCertMap = new LinkedHashMap<>(signerInfoMap.size());
         SignerInformation signerInfo;
 
         for (SignerId signerId : signerInfoMap.keySet()) {
@@ -90,8 +88,7 @@ public abstract class ToolSmimeUtils {
             for (X509CertificateHolder certHolder : ((Collection<X509CertificateHolder>) signedCerts.getMatches(signerId))) {
                 try {
                     if (signerInfo.verify(signerInfoVerifierBuilder.build(certHolder))) {
-                        signerInfoCertMap.put(signerId,
-                            new MutablePair<>(signerInfo, ((CertificateInfo) new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)))));
+                        signerCertMap.put(signerId, new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)));
 
                         break;
                     }
@@ -102,13 +99,13 @@ public abstract class ToolSmimeUtils {
                 }
             }
 
-            if (!signerInfoCertMap.containsKey(signerId)) {
+            if (!signerCertMap.containsKey(signerId)) {
                 throw new ToolSmimeException(String.format("Unable to verify mail signed data signer (id={issuer=%s, serialNum=%s}).", signerId.getIssuer(),
                     new CertificateSerialNumberImpl(signerId.getSerialNumber())));
             }
         }
 
-        return signerInfoCertMap;
+        return signerCertMap;
     }
 
     @SuppressWarnings({ "unchecked" })

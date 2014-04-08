@@ -15,7 +15,7 @@ public class CertificateConfigImpl extends AbstractCryptographyDescriptor implem
     private CertificateType certType;
     private CertificateSerialNumber serialNum;
     private SignatureAlgorithm sigAlg;
-    private CertificateName subj;
+    private CertificateName subjName;
     private CertificateValidInterval validInterval;
 
     @Override
@@ -77,19 +77,19 @@ public class CertificateConfigImpl extends AbstractCryptographyDescriptor implem
     }
 
     @Override
-    public boolean hasSubject() {
-        return this.subj != null;
+    public boolean hasSubjectName() {
+        return this.subjName != null;
     }
 
     @Nullable
     @Override
-    public CertificateName getSubject() throws CertificateException {
-        return this.subj;
+    public CertificateName getSubjectName() throws CertificateException {
+        return this.subjName;
     }
 
     @Override
-    public void setSubject(@Nullable CertificateName subj) {
-        this.subj = subj;
+    public void setSubjectName(@Nullable CertificateName subjName) {
+        this.subjName = subjName;
     }
 
     @Override

@@ -1,223 +1,197 @@
 package gov.hhs.onc.dcdt.ldap.lookup.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.ldap.ToolLdapException;
+import gov.hhs.onc.dcdt.ldap.lookup.LdapBaseDnLookupResult;
+import gov.hhs.onc.dcdt.ldap.lookup.LdapEntryLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
-import gov.hhs.onc.dcdt.ldap.lookup.ToolLdapLookupException;
 import gov.hhs.onc.dcdt.ldap.utils.ToolLdapAttributeUtils.LdapAttributeIdTransformer;
 import gov.hhs.onc.dcdt.ldap.utils.ToolLdapFilterUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.exception.LdapAuthenticationException;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
 import org.apache.directory.api.ldap.model.filter.ObjectClassNode;
+import org.apache.directory.api.ldap.model.message.LdapResult;
+import org.apache.directory.api.ldap.model.message.LdapResultImpl;
 import org.apache.directory.api.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.api.ldap.model.message.SearchScope;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnection;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 import org.apache.directory.ldap.client.api.LdapNetworkConnection;
+import org.apache.directory.ldap.client.api.exception.InvalidConnectionException;
 import org.springframework.stereotype.Component;
 
 @Component("ldapLookupServiceImpl")
 public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLookupService {
-    private final static class CloseableLdapConnectionWrapper implements AutoCloseable {
-        private LdapConnectionConfig ldapConnConfig;
-        private LdapConnection ldapConn;
+    @Override
+    public LdapEntryLookupResult lookupEntries(LdapConnectionConfig connConfig, Dn baseDn, @Nullable Attribute ... attrs) {
+        return this.lookupEntries(connConfig, baseDn, ToolArrayUtils.asSet(attrs));
+    }
 
-        private CloseableLdapConnectionWrapper(LdapConnectionConfig ldapConnConfig) {
-            this.ldapConnConfig = ldapConnConfig;
-        }
+    @Override
+    public LdapEntryLookupResult lookupEntries(LdapConnectionConfig connConfig, Dn baseDn, @Nullable Set<Attribute> attrs) {
+        return this.lookupEntries(connConfig, baseDn, null, attrs);
+    }
 
-        @Override
-        public void close() throws Exception {
-            if (this.ldapConn != null) {
-                disconnect(this.ldapConnConfig, unBind(this.ldapConnConfig, this.ldapConn));
+    @Override
+    public LdapEntryLookupResult lookupEntries(LdapConnectionConfig connConfig, Dn baseDn, @Nullable ExprNode filter, @Nullable Attribute ... attrs) {
+        return this.lookupEntries(connConfig, baseDn, filter, ToolArrayUtils.asSet(attrs));
+    }
+
+    @Override
+    public LdapEntryLookupResult lookupEntries(LdapConnectionConfig connConfig, Dn baseDn, @Nullable ExprNode filter, @Nullable Set<Attribute> attrs) {
+        return this.lookupEntries(connConfig, baseDn, null, filter, attrs);
+    }
+
+    @Override
+    public LdapEntryLookupResult lookupEntries(LdapConnectionConfig connConfig, Dn baseDn, @Nullable SearchScope scope, @Nullable ExprNode filter,
+        @Nullable Attribute ... attrs) {
+        return this.lookupEntries(connConfig, baseDn, scope, filter, ToolArrayUtils.asSet(attrs));
+    }
+
+    @Override
+    public LdapEntryLookupResult lookupEntries(LdapConnectionConfig connConfig, Dn baseDn, @Nullable SearchScope scope, @Nullable ExprNode filter,
+        @Nullable Set<Attribute> attrs) {
+        scope = ObjectUtils.defaultIfNull(scope, SearchScope.SUBTREE);
+
+        String filterExpr = ToolLdapFilterUtils.writeFilter((filter = ObjectUtils.defaultIfNull(filter, ObjectClassNode.OBJECT_CLASS_NODE)));
+        LdapEntryLookupResult lookupResult;
+        LdapConnection conn = null;
+
+        try {
+            conn = bind(connConfig, connect(connConfig));
+
+            EntryCursor entryCursor =
+                conn.search(
+                    baseDn,
+                    filterExpr,
+                    scope,
+                    (!CollectionUtils.isEmpty(attrs) ? ToolCollectionUtils.toArray(CollectionUtils.collect(attrs, LdapAttributeIdTransformer.INSTANCE),
+                        String.class) : ArrayUtils.EMPTY_STRING_ARRAY));
+            List<Entry> entries = IteratorUtils.toList(entryCursor.iterator());
+
+            entryCursor.close();
+
+            lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, entryCursor.getSearchResultDone().getLdapResult(), entries);
+        } catch (LdapException e) {
+            lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, new LdapResultImpl());
+        } finally {
+            if (conn != null) {
+                try {
+                    disconnect(connConfig, unBind(connConfig, conn));
+                } catch (LdapException e) {
+                    lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, new LdapResultImpl());
+                }
             }
         }
 
-        public void setLdapConnection(LdapConnection ldapConn) {
-            this.ldapConn = ldapConn;
-        }
+        return lookupResult;
     }
 
     @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, Attribute ... searchAttrs) throws ToolLdapException {
-        return this.search(ldapConnConfig, ToolArrayUtils.asList(searchAttrs));
-    }
+    public LdapBaseDnLookupResult lookupBaseDns(LdapConnectionConfig connConfig) {
+        LdapBaseDnLookupResult lookupResult;
+        LdapConnection conn = null;
 
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, Iterable<Attribute> searchAttrs) throws ToolLdapException {
-        return this.search(ldapConnConfig, null, searchAttrs);
-    }
+        try {
+            conn = bind(connConfig, connect(connConfig));
 
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable ExprNode searchFilter, Attribute ... searchAttrs) throws ToolLdapException {
-        return this.search(ldapConnConfig, searchFilter, ToolArrayUtils.asList(searchAttrs));
-    }
+            Entry baseDnEntry = conn.getRootDse(SchemaConstants.NAMING_CONTEXTS_AT);
+            List<Dn> baseDns = new ArrayList<>(baseDnEntry.size());
 
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable ExprNode searchFilter, Iterable<Attribute> searchAttrs) throws ToolLdapException {
-        return this.search(ldapConnConfig, null, searchFilter, searchAttrs);
-    }
-
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable SearchScope searchScope, @Nullable ExprNode searchFilter,
-        Attribute ... searchAttrs) throws ToolLdapException {
-        return this.search(ldapConnConfig, searchScope, searchFilter, ToolArrayUtils.asList(searchAttrs));
-    }
-
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable SearchScope searchScope, @Nullable ExprNode searchFilter,
-        Iterable<Attribute> searchAttrs) throws ToolLdapException {
-        return this.search(ldapConnConfig, null, searchScope, searchFilter, searchAttrs);
-    }
-
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable Dn baseDn, @Nullable SearchScope searchScope, @Nullable ExprNode searchFilter,
-        Attribute ... searchAttrs) throws ToolLdapException {
-        return this.search(ldapConnConfig, baseDn, searchScope, searchFilter, ToolArrayUtils.asList(searchAttrs));
-    }
-
-    @Override
-    public List<Entry> search(LdapConnectionConfig ldapConnConfig, @Nullable Dn baseDn, @Nullable SearchScope searchScope, @Nullable ExprNode searchFilter,
-        Iterable<Attribute> searchAttrs) throws ToolLdapException {
-        searchScope = (searchScope != null) ? searchScope : SearchScope.SUBTREE;
-
-        if (baseDn != null) {
-            return this.searchInternal(ldapConnConfig, baseDn, searchScope, searchFilter, searchAttrs);
-        } else {
-            List<Entry> searchResults = new ArrayList<>();
-
-            for (Dn baseDnFound : this.getBaseDns(ldapConnConfig)) {
-                searchResults.addAll(this.searchInternal(ldapConnConfig, baseDnFound, searchScope, searchFilter, searchAttrs));
-            }
-
-            return searchResults;
-        }
-    }
-
-    @Override
-    public List<Dn> getBaseDns(LdapConnectionConfig ldapConnConfig) throws ToolLdapException {
-        LdapConnection ldapConn;
-
-        try (CloseableLdapConnectionWrapper ldapConnWrapper = new CloseableLdapConnectionWrapper(ldapConnConfig)) {
-            ldapConnWrapper.setLdapConnection(ldapConn = bind(ldapConnConfig, connect(ldapConnConfig)));
-
-            Collection<Attribute> baseDnsAttrs = ldapConn.getRootDse(SchemaConstants.NAMING_CONTEXTS_AT).getAttributes();
-            List<Dn> baseDns = new ArrayList<>(baseDnsAttrs.size());
-
-            for (Attribute baseDnAttr : baseDnsAttrs) {
+            for (Attribute baseDnAttr : baseDnEntry) {
                 baseDns.add(new Dn(baseDnAttr.getString()));
             }
 
-            return baseDns;
-        } catch (Exception e) {
-            throw new ToolLdapLookupException(String.format("Unable to get base DN(s) in LDAP server (host=%s, port=%d, ssl=%s).",
-                ldapConnConfig.getLdapHost(), ldapConnConfig.getLdapPort(), ldapConnConfig.isUseSsl()), e);
+            lookupResult = new LdapBaseDnLookupResultImpl(connConfig, new LdapResultImpl(), baseDns);
+        } catch (LdapException e) {
+            lookupResult = new LdapBaseDnLookupResultImpl(connConfig, buildResult(e));
+        } finally {
+            if (conn != null) {
+                try {
+                    disconnect(connConfig, unBind(connConfig, conn));
+                } catch (LdapException e) {
+                    lookupResult = new LdapBaseDnLookupResultImpl(connConfig, buildResult(e));
+                }
+            }
         }
+
+        return lookupResult;
     }
 
-    private static LdapConnection disconnect(LdapConnectionConfig ldapConnConfig, LdapConnection ldapConn) throws ToolLdapException {
-        if (ldapConn.isConnected()) {
+    private static LdapConnection disconnect(LdapConnectionConfig connConfig, LdapConnection conn) throws LdapException {
+        if (conn.isConnected()) {
             try {
-                ldapConn.close();
+                conn.close();
             } catch (IOException e) {
-                throw new ToolLdapLookupException(String.format("Unable to disconnect from LDAP server (host=%s, port=%d, ssl=%s).",
-                    ldapConnConfig.getLdapHost(), ldapConnConfig.getLdapPort(), ldapConnConfig.isUseSsl()), e);
+                throw new InvalidConnectionException(String.format("Unable to disconnect from LDAP server (host=%s, port=%d, ssl=%s).",
+                    connConfig.getLdapHost(), connConfig.getLdapPort(), connConfig.isUseSsl()), e);
             }
         }
 
-        return ldapConn;
+        return conn;
     }
 
-    private static LdapConnection unBind(LdapConnectionConfig ldapConnConfig, LdapConnection ldapConn) throws ToolLdapException {
-        if (ldapConn.isAuthenticated()) {
-            try {
-                ldapConn.unBind();
-            } catch (LdapException e) {
-                throw new ToolLdapLookupException(String.format("Unable to unbind from LDAP server (host=%s, port=%d, ssl=%s).", ldapConnConfig.getLdapHost(),
-                    ldapConnConfig.getLdapPort(), ldapConnConfig.getSslProtocol()), e);
+    private static LdapConnection unBind(LdapConnectionConfig connConfig, LdapConnection conn) throws LdapException {
+        if (conn.isAuthenticated()) {
+            conn.unBind();
+
+            if (conn.isAuthenticated()) {
+                throw new LdapAuthenticationException(String.format("Unable to unbind (dn={%s}) from LDAP server (host=%s, port=%d, ssl=%s).",
+                    connConfig.getName(), connConfig.getLdapHost(), connConfig.getLdapPort(), connConfig.getSslProtocol()));
             }
         }
 
-        return ldapConn;
+        return conn;
     }
 
-    private static LdapConnection bind(LdapConnectionConfig ldapConnConfig, LdapConnection ldapConn) throws ToolLdapException {
-        try {
-            if (StringUtils.isBlank(ldapConnConfig.getName())) {
-                ldapConn.anonymousBind();
-            } else {
-                ldapConn.bind();
-            }
-        } catch (LdapException e) {
-            throw new ToolLdapLookupException(String.format("Unable to bind (bindDn=%s) to LDAP server (host=%s, port=%d, ssl=%s).", ldapConnConfig.getName(),
-                ldapConnConfig.getLdapHost(), ldapConnConfig.getLdapPort(), ldapConnConfig.getSslProtocol()), e);
+    private static LdapConnection bind(LdapConnectionConfig connConfig, LdapConnection conn) throws LdapException {
+        if (StringUtils.isBlank(connConfig.getName()) || StringUtils.isBlank(connConfig.getCredentials())) {
+            conn.anonymousBind();
+        } else {
+            conn.bind();
         }
 
-        return ldapConn;
+        if (!conn.isAuthenticated()) {
+            throw new LdapAuthenticationException(String.format("Unable to bind (dn={%s}) to LDAP server (host=%s, port=%d, ssl=%s).", connConfig.getName(),
+                connConfig.getLdapHost(), connConfig.getLdapPort(), connConfig.getSslProtocol()));
+        }
+
+        return conn;
     }
 
-    private static LdapConnection connect(LdapConnectionConfig ldapConnConfig) throws ToolLdapException {
-        try {
-            LdapConnection ldapConn = new LdapNetworkConnection(ldapConnConfig);
-            ldapConn.connect();
+    private static LdapConnection connect(LdapConnectionConfig connConfig) throws LdapException {
+        LdapConnection conn = new LdapNetworkConnection(connConfig);
 
-            return ldapConn;
-        } catch (LdapException e) {
-            throw new ToolLdapLookupException(String.format("Unable to connect to LDAP server (host=%s, port=%d, ssl=%s).", ldapConnConfig.getLdapHost(),
-                ldapConnConfig.getLdapPort(), ldapConnConfig.getSslProtocol()), e);
+        if (!conn.connect()) {
+            throw new InvalidConnectionException(String.format("Unable to connect to LDAP server (host=%s, port=%d, ssl=%s).", connConfig.getLdapHost(),
+                connConfig.getLdapPort(), connConfig.isUseSsl()));
         }
+
+        return conn;
     }
 
-    private List<Entry> searchInternal(LdapConnectionConfig ldapConnConfig, Dn baseDn, SearchScope searchScope, @Nullable ExprNode searchFilter,
-        Iterable<Attribute> searchAttrs) throws ToolLdapException {
-        String searchFilterExpr = ToolLdapFilterUtils.writeFilter(ObjectUtils.defaultIfNull(searchFilter, ObjectClassNode.OBJECT_CLASS_NODE));
-        String[] searchAttrIds = ToolCollectionUtils.toArray(CollectionUtils.collect(searchAttrs, LdapAttributeIdTransformer.INSTANCE), String.class);
-        LdapConnection ldapConn;
+    private static LdapResult buildResult(LdapException exception) {
+        LdapResult result = new LdapResultImpl();
+        result.setDiagnosticMessage(exception.getMessage());
+        result.setResultCode(ResultCodeEnum.getBestEstimate(exception, null));
 
-        try (CloseableLdapConnectionWrapper ldapConnWrapper = new CloseableLdapConnectionWrapper(ldapConnConfig)) {
-            ldapConnWrapper.setLdapConnection(ldapConn = bind(ldapConnConfig, connect(ldapConnConfig)));
-
-            EntryCursor searchResultsCursor = ldapConn.search(baseDn, searchFilterExpr, searchScope, searchAttrIds);
-            List<Entry> searchResults = new ArrayList<>();
-            Entry searchResult;
-
-            while (searchResultsCursor.next() && ((searchResult = searchResultsCursor.get()) != null)) {
-                searchResults.add(searchResult);
-            }
-
-            searchResultsCursor.close();
-
-            ResultCodeEnum searchResultCode;
-
-            if ((searchResultCode = searchResultsCursor.getSearchResultDone().getLdapResult().getResultCode()) != ResultCodeEnum.SUCCESS) {
-                throw new ToolLdapLookupException(String.format(
-                    "Unable to search (baseDn=%s, scope=%s, filter=%s, attrs=[%s]) LDAP server (host=%s, port=%d, ssl=%s): %s", baseDn, searchScope,
-                    searchFilterExpr, ToolStringUtils.joinDelimit(searchAttrIds, ","), ldapConnConfig.getLdapHost(), ldapConnConfig.getLdapPort(),
-                    ldapConnConfig.isUseSsl(), searchResultCode.name()));
-            }
-
-            return searchResults;
-        } catch (Exception e) {
-            throw new ToolLdapLookupException(String.format(
-                "Unable to search (baseDn=%s, scope=%s, filter=%s, attrIds=[%s]) LDAP server (host=%s, port=%d, ssl=%s).", baseDn, searchScope,
-                searchFilterExpr, ToolStringUtils.joinDelimit(searchAttrIds, ","), ldapConnConfig.getLdapHost(), ldapConnConfig.getLdapPort(),
-                ldapConnConfig.isUseSsl()), e);
-        }
+        return result;
     }
 }

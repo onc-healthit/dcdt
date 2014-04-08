@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.testcases.steps.impl;
 
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordOrderUtils;
-import gov.hhs.onc.dcdt.ldap.ToolLdapException;
+import gov.hhs.onc.dcdt.ldap.lookup.LdapBaseDnLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseLdapResultType;
@@ -60,25 +60,24 @@ public class ToolTestcaseLdapConnectionStepImpl extends AbstractToolTestcaseStep
     @SuppressWarnings({ "unchecked" })
     public boolean execute(MailAddress directAddr, ToolTestcaseStep prevStep) {
         if (prevStep instanceof ToolTestcaseDnsLookupStep) {
+            LdapBaseDnLookupResult baseDnLookupResult;
+
             for (SRVRecord srvRecord : IteratorUtils.asIterable(ToolDnsRecordOrderUtils
                 .buildSrvRecordIterator(((List<SRVRecord>) ((ToolTestcaseDnsLookupStep) prevStep).getRecords())))) {
                 this.ldapConnConfig = new LdapConnectionConfig();
                 this.ldapConnConfig.setLdapHost(StringUtils.removeEnd(srvRecord.getTarget().toString(), ToolDnsNameUtils.DNS_NAME_DELIM));
                 this.ldapConnConfig.setLdapPort(srvRecord.getPort());
 
-                try {
-                    this.baseDns = this.ldapLookupService.getBaseDns(this.ldapConnConfig);
-                } catch (ToolLdapException e) {
-                    this.setMessage(e.getMessage());
-                }
-
-                if (this.baseDns != null) {
-                    if (this.baseDns.isEmpty()) {
-                        this.ldapStatus = ToolTestcaseLdapResultType.NO_BASE_DNS;
-                        return false;
-                    } else {
+                if ((baseDnLookupResult = this.ldapLookupService.lookupBaseDns(this.ldapConnConfig)).isSuccess()) {
+                    if (baseDnLookupResult.hasItems()) {
+                        this.baseDns = baseDnLookupResult.getItems();
                         this.ldapStatus = ToolTestcaseLdapResultType.LDAP_CONNECTION_SUCCESS;
+
                         return true;
+                    } else {
+                        this.ldapStatus = ToolTestcaseLdapResultType.NO_BASE_DNS;
+
+                        return false;
                     }
                 }
             }

@@ -74,12 +74,12 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
     private <T extends CertificateDescriptor> X509v3CertificateBuilder generateCertificateBuilder(KeyInfo issuerKeyPairInfo, T issuerCertDesc,
         KeyInfo keyPairInfo, CertificateConfig certConfig) throws CryptographyException {
         boolean certCa = certConfig.isCertificateAuthority();
-        CertificateName certSubj = certConfig.getSubject();
+        CertificateName certSubj = certConfig.getSubjectName();
         CertificateValidInterval certValidInterval = certConfig.getValidInterval();
 
         // noinspection ConstantConditions
         X509v3CertificateBuilder certBuilder =
-            new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubject().toX500Name(), (certConfig.hasSerialNumber() ? certConfig
+            new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubjectName().toX500Name(), (certConfig.hasSerialNumber() ? certConfig
                 .getSerialNumber().getValue() : CertificateUtils.generateSerialNumber()), certValidInterval.getNotBefore(), certValidInterval.getNotAfter(),
                 certSubj.toX500Name(), keyPairInfo.getSubjectPublicKeyInfo());
 

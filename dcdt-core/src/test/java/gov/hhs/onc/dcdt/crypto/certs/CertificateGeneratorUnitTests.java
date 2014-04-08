@@ -84,6 +84,6 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
             "Certificate configuration and information certificate types do not match.");
         Assert.assertSame(testCertInfo.getSignatureAlgorithm(), testCertConfig.getSignatureAlgorithm(),
             "Certificate configuration and information signature algorithms do not match.");
-        Assert.assertEquals(testCertInfo.getSubject(), testCertConfig.getSubject(), "Certificate configuration and information subjects do not match.");
+        Assert.assertEquals(testCertInfo.getSubjectName(), testCertConfig.getSubjectName(), "Certificate configuration and information subjects do not match.");
     }
 }

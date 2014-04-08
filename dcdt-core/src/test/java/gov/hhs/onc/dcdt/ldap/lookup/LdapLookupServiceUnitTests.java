@@ -1,7 +1,8 @@
 package gov.hhs.onc.dcdt.ldap.lookup;
 
-import gov.hhs.onc.dcdt.ldap.ToolLdapException;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
@@ -37,22 +38,32 @@ public class LdapLookupServiceUnitTests extends AbstractToolUnitTests {
     private ExprNode testLdapLookupSearchFilter;
 
     private LdapConnectionConfig testLdapLookupConnConfig;
+    private List<Dn> testLdapLookupBaseDns;
 
-    @Test(dependsOnMethods = { "testGetBaseDns" })
-    public void testSearch() throws ToolLdapException, LdapInvalidAttributeValueException {
-        List<Entry> searchResults = this.ldapLookupService.search(this.testLdapLookupConnConfig, this.testLdapLookupSearchFilter);
-        Assert.assertFalse(searchResults.isEmpty(), String.format("No LDAP search (filter=%s) results found.", this.testLdapLookupSearchFilter));
+    @Test(dependsOnMethods = { "testLookupBaseDns" })
+    public void testLookupEntries() throws LdapInvalidAttributeValueException {
+        List<Entry> entries = new ArrayList<>();
 
-        for (Entry searchResult : searchResults) {
-            assertSearchResultLdapAttributeMatches(searchResult, this.testLdapLookupSearchAttrMail);
-            assertSearchResultLdapAttributeMatches(searchResult, this.testLdapLookupSearchAttrUserCert);
+        for (Dn testLdapLookupBaseDn : this.testLdapLookupBaseDns) {
+            ToolCollectionUtils.addAll(entries,
+                this.ldapLookupService.lookupEntries(this.testLdapLookupConnConfig, testLdapLookupBaseDn, this.testLdapLookupSearchFilter).getItems());
+        }
+
+        Assert.assertFalse(entries.isEmpty(), String.format("No LDAP search (filter=%s) results found.", this.testLdapLookupSearchFilter));
+
+        for (Entry entry : entries) {
+            assertEntryLdapAttributeMatches(entry, this.testLdapLookupSearchAttrMail);
+            assertEntryLdapAttributeMatches(entry, this.testLdapLookupSearchAttrUserCert);
         }
     }
 
     @Test
-    public void testGetBaseDns() throws ToolLdapException {
-        List<Dn> baseDns = this.ldapLookupService.getBaseDns(this.testLdapLookupConnConfig);
-        Assert.assertFalse(baseDns.isEmpty(), "No LDAP base DN(s) found.");
+    public void testLookupBaseDns() {
+        LdapBaseDnLookupResult baseDnLookupResult = this.ldapLookupService.lookupBaseDns(this.testLdapLookupConnConfig);
+        Assert.assertTrue(baseDnLookupResult.isSuccess(), String.format("LDAP base DN lookup was not successful: %s", baseDnLookupResult.getMessage()));
+        Assert.assertTrue(baseDnLookupResult.hasItems(), "No LDAP base DN(s) found.");
+
+        this.testLdapLookupBaseDns = baseDnLookupResult.getItems();
     }
 
     @Override
@@ -64,13 +75,12 @@ public class LdapLookupServiceUnitTests extends AbstractToolUnitTests {
         this.testLdapLookupConnConfig.setLdapPort(this.testLdapLookupPort);
     }
 
-    private static void assertSearchResultLdapAttributeMatches(Entry searchResult, Attribute searchAttr) {
-        Assert.assertTrue(searchResult.contains(searchAttr),
-            String.format("LDAP search result (dn=%s) does not contain LDAP attribute (id=%s).", searchResult.getDn(), searchAttr.getId()));
+    private static void assertEntryLdapAttributeMatches(Entry entry, Attribute entryAttr) {
+        Assert.assertTrue(entry.contains(entryAttr),
+            String.format("LDAP search result (dn=%s) does not contain LDAP attribute (id=%s).", entry.getDn(), entryAttr.getId()));
 
-        if (searchAttr.isHumanReadable()) {
-            Assert.assertEquals(searchResult.get(searchAttr.getId()), searchAttr,
-                String.format("LDAP search result (dn=%s) attribute does not match.", searchResult.getDn()));
+        if (entryAttr.isHumanReadable()) {
+            Assert.assertEquals(entry.get(entryAttr.getId()), entryAttr, String.format("LDAP search result (dn=%s) attribute does not match.", entry.getDn()));
         }
     }
 }

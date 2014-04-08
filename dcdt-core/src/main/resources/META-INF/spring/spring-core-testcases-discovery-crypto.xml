@@ -106,7 +106,7 @@
     <beans:bean id="discoveryTestcaseKeyConfigCa" parent="keyConfigCa"/>
     
     <beans:bean id="discoveryTestcaseCertConfigCa" parent="certConfigCa">
-        <beans:property name="subject">
+        <beans:property name="subjectName">
             <beans:bean parent="certNameImpl"
                 p:commonName="#{ instanceConfig.domainName }_ca"/>
         </beans:property>

@@ -31,6 +31,11 @@ public class CertificateValidIntervalImpl implements CertificateValidInterval {
     }
 
     @Override
+    public boolean isValid() {
+        return this.isValid(new Date());
+    }
+
+    @Override
     public boolean isValid(Date date) {
         return date.after(this.getNotBefore()) && date.before(this.getNotAfter());
     }
