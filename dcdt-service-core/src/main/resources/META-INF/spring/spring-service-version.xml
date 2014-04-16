@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--suppress SpringModelInspection -->
+    <beans:bean id="toolModuleVersionServiceParent" parent="toolModuleVersionImpl"
+        c:groupId="${dcdt.module.dcdt-service-parent.groupId:}"
+        c:artifactId="${dcdt.module.dcdt-service-parent.artifactId:}"
+        c:version="${dcdt.module.dcdt-service-parent.version:}"
+        c:name="${dcdt.module.dcdt-service-parent.name:}"
+        c:description="${dcdt.module.dcdt-service-parent.description:}"
+        p:buildTimestampString="${dcdt.module.dcdt-service-parent.build.timestamp:}"
+        p:hgAuthor="${dcdt.module.dcdt-service-parent.hg.author:}"
+        p:hgAuthorMail="${dcdt.module.dcdt-service-parent.hg.author.email:}"
+        p:hgAuthorPerson="${dcdt.module.dcdt-service-parent.hg.author.person:}"
+        p:hgBranch="${dcdt.module.dcdt-service-parent.hg.branch:}"
+        p:hgDateString="${dcdt.module.dcdt-service-parent.hg.date:}"
+        p:hgNode="${dcdt.module.dcdt-service-parent.hg.node:}"
+        p:hgNodeShort="${dcdt.module.dcdt-service-parent.hg.node.short:}"
+        p:hgPath="${dcdt.module.dcdt-service-parent.hg.path:}"
+        p:hgRevision="${dcdt.module.dcdt-service-parent.hg.rev:-1}"
+        p:hgTag="${dcdt.module.dcdt-service-parent.hg.tag:}"/>
+    
+    <!--suppress SpringModelInspection -->
+    <beans:bean id="toolModuleVersionServiceCore" parent="toolModuleVersionImpl"
+        c:groupId="${dcdt.module.dcdt-service-core.groupId:}"
+        c:artifactId="${dcdt.module.dcdt-service-core.artifactId:}"
+        c:version="${dcdt.module.dcdt-service-core.version:}"
+        c:name="${dcdt.module.dcdt-service-core.name:}"
+        c:description="${dcdt.module.dcdt-service-core.description:}"
+        p:buildTimestampString="${dcdt.module.dcdt-service-core.build.timestamp:}"
+        p:hgAuthor="${dcdt.module.dcdt-service-core.hg.author:}"
+        p:hgAuthorMail="${dcdt.module.dcdt-service-core.hg.author.email:}"
+        p:hgAuthorPerson="${dcdt.module.dcdt-service-core.hg.author.person:}"
+        p:hgBranch="${dcdt.module.dcdt-service-core.hg.branch:}"
+        p:hgDateString="${dcdt.module.dcdt-service-core.hg.date:}"
+        p:hgNode="${dcdt.module.dcdt-service-core.hg.node:}"
+        p:hgNodeShort="${dcdt.module.dcdt-service-core.hg.node.short:}"
+        p:hgPath="${dcdt.module.dcdt-service-core.hg.path:}"
+        p:hgRevision="${dcdt.module.dcdt-service-core.hg.rev:-1}"
+        p:hgTag="${dcdt.module.dcdt-service-core.hg.tag:}"/>
+</beans:beans>
