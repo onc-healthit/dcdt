@@ -4,7 +4,12 @@ import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigJsonDto;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigRegistry;
+import gov.hhs.onc.dcdt.config.instance.InstanceConfigService;
+import gov.hhs.onc.dcdt.service.dns.DnsService;
+import gov.hhs.onc.dcdt.service.ldap.LdapService;
+import gov.hhs.onc.dcdt.service.mail.MailService;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
 import gov.hhs.onc.dcdt.web.controller.JsonRequest;
 import gov.hhs.onc.dcdt.web.controller.JsonResponse;
@@ -26,6 +31,12 @@ public class AdminJsonController extends AbstractToolController {
     @Autowired
     private InstanceConfigRegistry instanceConfigRegistry;
 
+    private final static String SERVICES_MSG_CODE = "dcdt.web.admin.instance.config.services.msg";
+
+    private DnsService dnsService;
+    private LdapService ldapService;
+    private MailService mailService;
+
     @JsonRequest
     @RequestMapping({ "/admin/instance/set" })
     public ResponseJsonWrapper<InstanceConfig, InstanceConfigJsonDto> setInstanceConfig(
@@ -37,6 +48,10 @@ public class AdminJsonController extends AbstractToolController {
             InstanceConfigJsonDto reqInstanceConfigJsonDto = ToolListUtils.getFirst(reqJsonWrapper.getItems());
 
             if (reqInstanceConfigJsonDto != null) {
+                if (this.getExistingInstanceConfigBean() != null) {
+                    this.removeInstanceConfig();
+                }
+
                 InstanceConfig reqInstanceConfig = reqInstanceConfigJsonDto.toBean(this.convService);
 
                 InstanceConfig instanceConfig = this.getInstanceConfigBean();
@@ -45,7 +60,11 @@ public class AdminJsonController extends AbstractToolController {
 
                 this.instanceConfigRegistry.registerBeans(instanceConfig);
 
-                respJsonWrapperBuilder.addItems(this.getInstanceConfigJsonDto(this.getInstanceConfigBean()));
+                startServices();
+                instanceConfig.setMessage(ToolMessageUtils.getMessage(this.msgSource, SERVICES_MSG_CODE, this.dnsService.getLifecycleStatus(),
+                    this.ldapService.getLifecycleStatus(), this.mailService.getLifecycleStatus()));
+
+                respJsonWrapperBuilder.addItems(this.getInstanceConfigJsonDto(instanceConfig));
             }
         }
 
@@ -75,5 +94,19 @@ public class AdminJsonController extends AbstractToolController {
 
     private InstanceConfig getInstanceConfigBean() {
         return ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfig.class);
+    }
+
+    private InstanceConfig getExistingInstanceConfigBean() {
+        // noinspection ConstantConditions
+        return ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfigService.class).getBean();
+    }
+
+    private void startServices() {
+        // noinspection ConstantConditions
+        (this.dnsService = ToolBeanFactoryUtils.getBeanOfType(this.appContext, DnsService.class)).start();
+        // noinspection ConstantConditions
+        (this.ldapService = ToolBeanFactoryUtils.getBeanOfType(this.appContext, LdapService.class)).start();
+        // noinspection ConstantConditions
+        (this.mailService = ToolBeanFactoryUtils.getBeanOfType(this.appContext, MailService.class)).start();
     }
 }

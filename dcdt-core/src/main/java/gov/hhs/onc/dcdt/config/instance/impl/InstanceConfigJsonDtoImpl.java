@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 public class InstanceConfigJsonDtoImpl extends AbstractToolBeanJsonDto<InstanceConfig> implements InstanceConfigJsonDto {
     private String domainName;
     private String ipAddr;
+    private String msg;
 
     public InstanceConfigJsonDtoImpl() {
         super(InstanceConfig.class, InstanceConfigImpl.class);
@@ -57,5 +58,16 @@ public class InstanceConfigJsonDtoImpl extends AbstractToolBeanJsonDto<InstanceC
     @Override
     public void setIpAddress(@Nullable String ipAddr) {
         this.ipAddr = ipAddr;
+    }
+
+    @Nullable
+    @Override
+    public String getMessage() {
+        return this.msg;
+    }
+
+    @Override
+    public void setMessage(@Nullable String msg) {
+        this.msg = msg;
     }
 }

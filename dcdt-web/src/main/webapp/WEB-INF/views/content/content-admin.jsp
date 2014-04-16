@@ -85,5 +85,9 @@
                 </tiles:insertDefinition>
             </span>
         </div>
+        <br/>
+        <div class="form-group form-group-text">
+            <div id="instance-config-messages"></div>
+        </div>
     </div>
 </form>

@@ -11,4 +11,11 @@ public interface InstanceConfig extends ToolDomainBean {
     public InetAddress getIpAddress();
 
     public void setIpAddress(@Nullable InetAddress ipAddr);
+
+    public boolean hasMessage();
+
+    @Nullable
+    public String getMessage();
+
+    public void setMessage(@Nullable String msg);
 }

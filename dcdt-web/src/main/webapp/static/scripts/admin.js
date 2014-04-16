@@ -13,16 +13,20 @@
                     }),
                     "queryBeanSuccess": function (data, status, jqXhr) {
                         $.dcdt.admin.getInstanceConfig();
+                        instanceConfigStatusMsg = "Successfully set instance configuration.";
+                        $.dcdt.admin.appendServiceStatus(data);
                     },
                     "queryBeanErrors": function (data, status, jqXhr) {
                         $.dcdt.beans.addQueryErrors(instanceConfigForm, data);
+                        instanceConfigStatusMsg = "Unable to set instance configuration.";
                     },
                     "postQueryBean": function (jqXhr, status) {
+                        $.dcdt.admin.appendInstanceConfigStatus();
                         instanceConfigForm.dcdt.form.formReady();
                     },
                     "preQueryBean": function (jqXhr, settings) {
                         $.dcdt.beans.clearBeanErrors(instanceConfigForm);
-                        
+                        $.dcdt.admin.clearInstanceConfigMessages();
                         instanceConfigForm.dcdt.form.formWait(instanceConfigButtonSet);
                     },
                     "url": URL_ADMIN_INSTANCE_CONFIG_SET
@@ -32,16 +36,19 @@
                 return $.dcdt.beans.removeBean({
                     "queryBeanSuccess": function (data, status, jqXhr) {
                         $.dcdt.admin.getInstanceConfig();
+                        instanceConfigStatusMsg = "Successfully removed instance configuration.";
                     },
                     "queryBeanErrors": function (data, status, jqXhr) {
+                        instanceConfigStatusMsg = "Unable to remove instance configuration.";
                         $.dcdt.beans.addQueryErrors(instanceConfigForm, data);
                     },
                     "postQueryBean": function (jqXhr, status) {
+                        $.dcdt.admin.appendInstanceConfigStatus();
                         instanceConfigForm.dcdt.form.formReady();
                     },
                     "preQueryBean": function (jqXhr, settings) {
                         $.dcdt.beans.clearBeanErrors(instanceConfigForm);
-                        
+                        $.dcdt.admin.clearInstanceConfigMessages();
                         instanceConfigForm.dcdt.form.formWait(instanceConfigButtonRm);
                     },
                     "url": URL_ADMIN_INSTANCE_CONFIG_RM
@@ -65,7 +72,7 @@
                             instanceConfigInputDomainName.val("");
                             instanceConfigInputIpAddr.val("");
                         }
-                        
+
                         if (instanceConfigDomainName && instanceConfigIpAddr) {
                             instanceConfigButtonRm.removeAttr("disabled");
                         } else {
@@ -79,12 +86,26 @@
                     },
                     "url": URL_ADMIN_INSTANCE_CONFIG_GET
                 });
+            },
+            "appendServiceStatus": function (data) {
+                var servicesMsg = data["items"][0]["msg"];
+
+                if (servicesMsg) {
+                    instanceConfigMessages.append(servicesMsg);
+                    instanceConfigMessages.append("<br/>");
+                }
+            },
+            "appendInstanceConfigStatus": function () {
+                instanceConfigMessages.append(instanceConfigStatusMsg);
+            },
+            "clearInstanceConfigMessages": function () {
+                instanceConfigMessages.empty();
             }
         })
     });
     
     var instanceConfigForm, instanceConfigInputDomainName, instanceConfigInputIpAddr, instanceConfigButtons, instanceConfigButtonRm, instanceConfigButtonSet,
-        instanceConfig;
+        instanceConfig, instanceConfigMessages, instanceConfigStatusMsg;
     
     $(document).ready(function () {
         instanceConfigForm = $("form[name=\"admin-instance-config\"]");
@@ -93,7 +114,8 @@
         instanceConfigButtons = instanceConfigForm.dcdt.form.formButtons();
         instanceConfigButtonRm = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-rm");
         instanceConfigButtonSet = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-set");
-        
+        instanceConfigMessages = $("div#instance-config-messages");
+
         instanceConfigForm.submit(function (event, instanceConfigButton) {
             if (instanceConfigButton.is(instanceConfigButtonRm)) {
                 $.dcdt.admin.removeInstanceConfig();

@@ -181,12 +181,14 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
 
     @BeforeClass
     public void registerInstanceConfig() {
+        InstanceConfigRegistry instanceConfigReg = ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, InstanceConfigRegistry.class);
         InstanceConfig instanceConfig = ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, InstanceConfig.class);
         // noinspection ConstantConditions
         instanceConfig.setDomainName(this.testInstanceConfigDomainName);
         instanceConfig.setIpAddress(this.testInstanceConfigIpAddr);
         // noinspection ConstantConditions
-        ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, InstanceConfigRegistry.class).registerBeans(instanceConfig);
+        instanceConfigReg.removeAllBeans();
+        instanceConfigReg.registerBeans(instanceConfig);
     }
 
     @BeforeClass

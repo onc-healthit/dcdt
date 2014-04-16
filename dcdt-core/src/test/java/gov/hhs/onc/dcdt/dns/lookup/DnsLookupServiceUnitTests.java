@@ -31,8 +31,14 @@ public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
     @Value("${dcdt.test.dns.lookup.domain.name}")
     private Name testDnsLookupDomainName;
 
+    @Value("${dcdt.test.dns.lookup.domain.name.2}")
+    private Name testDnsLookupDomainName2;
+
     @Value("${dcdt.test.dns.lookup.domain.cname.1}")
     private Name testDnsLookupDomainCname1;
+
+    @Value("${dcdt.test.dns.lookup.domain.cname.2}")
+    private Name testDnsLookupDomainCname2;
 
     @Value("${dcdt.test.dns.lookup.domain.ns.1}")
     private Name testDnsLookupDomainNs1;
@@ -62,9 +68,15 @@ public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
 
     @Test
     public void testLookupCnameRecords() throws DnsException {
-        DnsLookupResult<CNAMERecord> result = assertResultValid(this.dnsLookupService.lookupCnameRecords(this.testDnsLookupDomainCname1), 1);
+        DnsLookupResult<CNAMERecord> cnameRecordResult1 = assertResultValid(this.dnsLookupService.lookupCnameRecords(this.testDnsLookupDomainCname1), 1);
         // noinspection ConstantConditions
-        Assert.assertEquals(result.getResolvedAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainName));
+        Assert.assertEquals(cnameRecordResult1.getResolvedAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainName));
+        DnsLookupResult<CNAMERecord> cnameRecordResult2 = assertResultValid(this.dnsLookupService.lookupCnameRecords(this.testDnsLookupDomainCname2), 1);
+        // noinspection ConstantConditions
+        Assert.assertEquals(cnameRecordResult2.getResolvedAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainName2));
+        DnsLookupResult<ARecord> aRecordResult = assertResultValid(this.dnsLookupService.lookupARecords(this.testDnsLookupDomainCname2), 1);
+        // noinspection ConstantConditions
+        Assert.assertEquals(aRecordResult.getResolvedAnswers().get(0).getName(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainName2));
     }
 
     @Test

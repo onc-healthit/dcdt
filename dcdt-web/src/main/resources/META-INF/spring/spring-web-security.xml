@@ -16,10 +16,10 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-    
+
     <beans:bean id="anonAuthProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider"
         c:key="AUTH_ANON"/>
-    
+
     <sec:authentication-manager id="toolAuthManager">
         <sec:authentication-provider>
             <!--suppress SpringModelInspection -->
@@ -38,7 +38,7 @@
         <sec:logout logout-url="/admin/logout" logout-success-url="/"/>
         <sec:remember-me key="AUTH_REMEMBERED"/>
         <sec:session-management>
-            <sec:concurrency-control error-if-maximum-exceeded="true" max-sessions="1"/>
+            <sec:concurrency-control max-sessions="1" expired-url="/expired"/>
         </sec:session-management>
     </sec:http>
     

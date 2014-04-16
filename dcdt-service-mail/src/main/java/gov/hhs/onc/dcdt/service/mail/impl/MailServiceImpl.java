@@ -52,6 +52,10 @@ public class MailServiceImpl extends AbstractToolService implements MailService 
                 for (AbstractConfigurableAsyncServer server : serverFactory.getServers()) {
                     this.servers.add(server);
 
+                    if (!server.isStarted()) {
+                        server.start();
+                    }
+
                     if (server.isStarted()) {
                         LOGGER.debug(String.format("Started mail service James server (class=%s, serviceType=%s, socketType=%s, boundAddrs=[%s]).",
                             ToolClassUtils.getName(server), StringUtils.split(server.getServiceType())[0], server.getSocketType(),

@@ -164,7 +164,8 @@ div.input-group-sm div.form-group {
 }
 
 div.input-group-sm div.form-group.form-group-addons:not(:first-child),
-div.input-group-sm div.form-group.form-group-buttons {
+div.input-group-sm div.form-group.form-group-buttons,
+div.input-group-sm div.form-group.form-group-text {
     margin-left: 35px;
 }
 

@@ -499,6 +499,95 @@
                         <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
                     </beans:property>
                 </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackground"
+                    p:bindingType="DOMAIN"
+                    p:name="D5_valB"
+                    p:nameDisplay="D5_valB">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subjectName">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D5_valB"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    A valid domain-bound certificate for the Direct address in a DNS CERT record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Dns"/>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackground"
+                    p:bindingType="ADDRESS"
+                    p:name="D5_valC"
+                    p:nameDisplay="D5_valC">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subjectName">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D5_valC"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Ldap1"/>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackground"
+                    p:bindingType="DOMAIN"
+                    p:name="D5_valD"
+                    p:nameDisplay="D5_valD">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subjectName">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D5_valD"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid domain-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc1Ldap1"/>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -550,6 +639,66 @@
                         <beans:bean parent="discoveryTestcaseCredLoc4Dns"/>
                     </beans:property>
                 </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackground"
+                    p:bindingType="ADDRESS"
+                    p:name="D6_valC"
+                    p:nameDisplay="D6_valC">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subjectName">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D6_valC"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid address-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc4Ldap1"/>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackground"
+                    p:bindingType="DOMAIN"
+                    p:name="D6_valD"
+                    p:nameDisplay="D6_valD">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subjectName">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D6_valD"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid domain-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc4Ldap1"/>
+                    </beans:property>
+                </beans:bean>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -594,6 +743,36 @@
                                 <dcdt:normalized-string>
                                     Invalid address-bound certificate for the Direct address in an LDAP server with
                                     an associated SRV record.
+                                </dcdt:normalized-string>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="location">
+                        <beans:bean parent="discoveryTestcaseCredLoc2Ldap1"/>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="discoveryTestcaseCredLeafBackground"
+                    p:bindingType="DOMAIN"
+                    p:name="D7_valD"
+                    p:nameDisplay="D7_valD">
+                    <beans:property name="credentialConfig">
+                        <beans:bean parent="discoveryTestcaseCredConfigLeaf">
+                            <beans:property name="certificateDescriptor">
+                                <beans:bean parent="discoveryTestcaseCertConfigLeaf">
+                                    <beans:property name="subjectName">
+                                        <beans:bean parent="certNameImpl"
+                                            p:commonName="D7_valD"/>
+                                    </beans:property>
+                                </beans:bean>
+                            </beans:property>
+                        </beans:bean>
+                    </beans:property>
+                    <beans:property name="description">
+                        <beans:bean parent="discoveryTestcaseCredDescImpl">
+                            <beans:property name="text">
+                                <dcdt:normalized-string>
+                                    Valid domain-bound certificate in an LDAP server with the appropriate mail attribute and
+                                    InetOrgPerson schema. The associated SRV record has Priority = 0.
                                 </dcdt:normalized-string>
                             </beans:property>
                         </beans:bean>
