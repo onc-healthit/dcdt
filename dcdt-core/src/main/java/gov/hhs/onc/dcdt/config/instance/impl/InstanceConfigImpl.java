@@ -8,15 +8,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-import org.apache.commons.lang3.StringUtils;
 import org.xbill.DNS.Name;
 
 @Entity(name = "instance_config")
 @Table(name = "instance_configs")
 public class InstanceConfigImpl extends AbstractToolDomainBean implements InstanceConfig {
     private InetAddress ipAddr;
-    private String msg;
 
     @Column(name = "domain_name", nullable = false)
     @Id
@@ -41,22 +38,5 @@ public class InstanceConfigImpl extends AbstractToolDomainBean implements Instan
     @Override
     public void setIpAddress(@Nullable InetAddress ipAddr) {
         this.ipAddr = ipAddr;
-    }
-
-    @Override
-    public boolean hasMessage() {
-        return !StringUtils.isBlank(this.msg);
-    }
-
-    @Nullable
-    @Override
-    @Transient
-    public String getMessage() {
-        return this.msg;
-    }
-
-    @Override
-    public void setMessage(@Nullable String msg) {
-        this.msg = msg;
     }
 }

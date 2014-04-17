@@ -15,12 +15,12 @@ public class ToolMailQueueFactory extends ActiveMQMailQueueFactory {
     protected synchronized void registerMBean(String queueName, MailQueue queue) {
         try {
             super.registerMBean(queueName, queue);
-        } catch (Throwable th) {
-            if (ExceptionUtils.indexOfThrowable(th, InstanceAlreadyExistsException.class) == -1) {
-                throw new ToolRuntimeException(String.format("Unable to register mail queue (name=%s) managed bean.", queueName), th);
+        } catch (Exception e) {
+            if (ExceptionUtils.indexOfThrowable(e, InstanceAlreadyExistsException.class) == -1) {
+                throw new ToolRuntimeException(String.format("Unable to register mail queue (name=%s) managed bean.", queueName), e);
             }
 
-            LOGGER.error(String.format("Unable to register mail queue (name=%s) managed bean.", queueName), th.getMessage());
+            LOGGER.error(String.format("Unable to register mail queue (name=%s) managed bean.", queueName), e);
         }
     }
 }
