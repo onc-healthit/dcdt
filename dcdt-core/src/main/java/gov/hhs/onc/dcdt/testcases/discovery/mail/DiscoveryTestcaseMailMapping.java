@@ -26,11 +26,4 @@ public interface DiscoveryTestcaseMailMapping extends ToolDirectAddressBean {
     public MailAddress getResultsAddress();
 
     public void setResultsAddress(@Nullable MailAddress resultsAddr);
-
-    public boolean hasMessage();
-
-    @Nullable
-    public String getMessage();
-
-    public void setMessage(@Nullable String msg);
 }

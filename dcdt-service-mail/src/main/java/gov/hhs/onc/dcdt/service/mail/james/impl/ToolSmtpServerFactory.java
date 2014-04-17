@@ -29,13 +29,13 @@ public class ToolSmtpServerFactory extends SMTPServerFactory implements BeanConf
     public void init() throws Exception {
         try {
             super.init();
-        } catch (Throwable th) {
-            if (ExceptionUtils.indexOfThrowable(th, InstanceAlreadyExistsException.class) == -1) {
+        } catch (Exception e) {
+            if (ExceptionUtils.indexOfThrowable(e, InstanceAlreadyExistsException.class) == -1) {
                 throw new ToolRuntimeException(String.format("Unable to initialize SMTP server factory (name=%s) managed bean.", ToolClassUtils.getName(this)),
-                    th);
+                    e);
             }
 
-            LOGGER.error(String.format("Unable to register SMTP server factory (name=%s) managed bean.", ToolClassUtils.getName(this)), th.getMessage());
+            LOGGER.error(String.format("Unable to register SMTP server factory (name=%s) managed bean.", ToolClassUtils.getName(this)), e);
         }
     }
 }

@@ -55,11 +55,13 @@ public class DiscoveryMailMappingJsonController extends AbstractToolController {
 
                 this.discoveryTestcaseMailMappingRegistry.registerBeans(discoveryTestcaseMailMapping);
 
+                DiscoveryTestcaseMailMappingJsonDto discoveryTestcaseMailMappingJsonDto =
+                    this.getDiscoveryTestcaseMailMappingJsonDto(discoveryTestcaseMailMapping);
                 // noinspection ConstantConditions
-                discoveryTestcaseMailMapping.setMessage(ToolMessageUtils.getMessage(this.msgSource, successMsgCode, new Object[] { directAddr.toAddress(),
-                    resultsAddr.toAddress() }));
+                discoveryTestcaseMailMappingJsonDto.setMessage(ToolMessageUtils.getMessage(this.msgSource, successMsgCode,
+                    new Object[] { directAddr.toAddress(), resultsAddr.toAddress() }));
 
-                respJsonWrapperBuilder.addItems(this.getDiscoveryTestcaseMailMappingJsonDto(discoveryTestcaseMailMapping));
+                respJsonWrapperBuilder.addItems(discoveryTestcaseMailMappingJsonDto);
             }
         }
 
