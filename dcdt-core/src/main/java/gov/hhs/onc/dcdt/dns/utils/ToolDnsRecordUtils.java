@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
+import gov.hhs.onc.dcdt.dns.DnsCertificateType;
 import gov.hhs.onc.dcdt.dns.DnsDclassType;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
@@ -21,6 +23,7 @@ import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.DNSKEYRecord;
 import org.xbill.DNS.DNSKEYRecord.Protocol;
 import org.xbill.DNS.DNSSEC.DNSSECException;
@@ -65,6 +68,24 @@ public abstract class ToolDnsRecordUtils {
         }
     }
 
+    public static class CertRecordParameterPredicate extends AbstractToolPredicate<CERTRecord> {
+        public final static CertRecordParameterPredicate INSTANCE_PKIX = new CertRecordParameterPredicate(DnsKeyAlgorithmType.RSASHA1, DnsCertificateType.PKIX);
+
+        private DnsKeyAlgorithmType keyAlgType;
+        private DnsCertificateType certType;
+
+        public CertRecordParameterPredicate(@Nullable DnsKeyAlgorithmType keyAlgType, @Nullable DnsCertificateType certType) {
+            this.keyAlgType = keyAlgType;
+            this.certType = certType;
+        }
+
+        @Override
+        protected boolean evaluateInternal(CERTRecord certRecord) throws Exception {
+            return (((this.keyAlgType == null) || (certRecord.getAlgorithm() == this.keyAlgType.getTag())) && ((this.certType == null) || (certRecord
+                .getCertType() == this.certType.getTag())));
+        }
+    }
+
     public final static DateFormat DATE_FORMAT_SERIAL = new SimpleDateFormat("yyyyMMdd");
 
     @Nonnegative
@@ -80,7 +101,7 @@ public abstract class ToolDnsRecordUtils {
     @Nonnegative
     public static int getKeyTag(DnsKeyAlgorithmType keyAlgType, PublicKey publicKey) throws DnsException {
         try {
-            return new DNSKEYRecord(Name.root, DnsDclassType.IN.getType(), 0, 0, Protocol.DNSSEC, keyAlgType.getType(), publicKey).getFootprint();
+            return new DNSKEYRecord(Name.root, DnsDclassType.IN.getType(), 0, 0, Protocol.DNSSEC, keyAlgType.getTag(), publicKey).getFootprint();
         } catch (DNSSECException e) {
             throw new DnsException(String.format("Unable to get key tag for public key (class=%s, algType=%s).", ToolClassUtils.getName(publicKey),
                 keyAlgType.name()), e);

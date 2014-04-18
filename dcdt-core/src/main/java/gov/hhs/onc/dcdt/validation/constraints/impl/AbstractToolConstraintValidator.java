@@ -4,16 +4,16 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolValidationUtils;
 import gov.hhs.onc.dcdt.validation.constraints.ToolConstraintValidator;
+import gov.hhs.onc.dcdt.validation.impl.ToolValidatorFactory;
 import java.lang.annotation.Annotation;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.ValidatorFactory;
 import org.springframework.context.MessageSource;
 
 public abstract class AbstractToolConstraintValidator<T extends Annotation, U> extends AbstractToolBean implements ToolConstraintValidator<T, U> {
     @Resource(name = "validatorFactory")
-    protected ValidatorFactory validatorFactory;
+    protected ToolValidatorFactory validatorFactory;
 
     @Resource(name = "messageSourceValidation")
     protected MessageSource msgSourceValidation;

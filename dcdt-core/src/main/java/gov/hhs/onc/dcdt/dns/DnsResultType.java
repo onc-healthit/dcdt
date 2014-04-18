@@ -12,10 +12,6 @@ public enum DnsResultType {
         this.result = result;
     }
 
-    public boolean isError() {
-        return !this.isSuccess();
-    }
-
     public boolean isSuccess() {
         return (this == SUCCESSFUL);
     }

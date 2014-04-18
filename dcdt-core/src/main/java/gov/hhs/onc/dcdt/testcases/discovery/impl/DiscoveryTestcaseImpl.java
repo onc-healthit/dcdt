@@ -4,14 +4,13 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
-import gov.hhs.onc.dcdt.mail.BindingType;
+import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseConfig;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
 import java.util.Collection;
 import java.util.List;
@@ -24,7 +23,7 @@ import org.apache.commons.collections4.CollectionUtils;
 @Entity(name = "discovery_testcase")
 @JsonTypeName("discoveryTestcase")
 @Table(name = "discovery_testcases")
-public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseConfig> implements DiscoveryTestcase {
+public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription> implements DiscoveryTestcase {
     private List<DiscoveryTestcaseCredential> creds;
     private MailAddress mailAddr;
 

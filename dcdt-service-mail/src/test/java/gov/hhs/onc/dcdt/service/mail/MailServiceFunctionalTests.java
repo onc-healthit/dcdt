@@ -12,7 +12,6 @@ import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMappingRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.sender.DiscoveryTestcaseSubmissionSenderService;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.discovery.results.impl.DiscoveryTestcaseResultImpl;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
 import gov.hhs.onc.dcdt.utils.ToolDateUtils;
 import java.util.List;
@@ -27,41 +26,25 @@ import org.testng.annotations.Test;
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.mail" })
 public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTests<MailService> {
+    @Value("${dcdt.test.discovery.mail.mapping.results.addr}")
+    private MailAddress testToAddr;
+
     private DiscoveryTestcaseSubmissionSenderService discoveryTestcaseSubmissionSenderService;
     private DiscoveryTestcaseResultSenderService discoveryTestcaseResultSenderService;
     private List<DiscoveryTestcase> discoveryTestcases;
     private MailAddress testResultsAddr;
 
-    @Value("${dcdt.test.discovery.mail.mapping.results.addr}")
-    private MailAddress testToAddr;
-
     public MailServiceFunctionalTests() {
         super(MailService.class);
     }
 
-    @Test
-    public void testSendDiscoveryTestcaseResults() throws Exception {
-        this.discoveryTestcases = ToolBeanFactoryUtils.getBeansOfType(this.applicationContext, DiscoveryTestcase.class);
-        DiscoveryTestcase testDiscoveryTestcase = this.discoveryTestcases.get(0);
-        // noinspection ConstantConditions
-        DiscoveryTestcaseCredential testDiscoveryTestcaseCred = testDiscoveryTestcase.getTargetCredentials().iterator().next();
-
-        DiscoveryTestcaseResult testDiscoveryTestcaseResult = new DiscoveryTestcaseResultImpl();
-        testDiscoveryTestcaseResult.setCredentialExpected(testDiscoveryTestcaseCred);
-        testDiscoveryTestcaseResult.setCredentialFound(testDiscoveryTestcaseCred);
-        testDiscoveryTestcaseResult.setSuccessful(true);
-        testDiscoveryTestcaseResult.setTestcase(testDiscoveryTestcase);
-
-        this.discoveryTestcaseResultSenderService.send(testDiscoveryTestcaseResult, this.testResultsAddr);
-    }
-
-    @Test(groups = { "dcdt.test.func.service.mail.discovery" }, dependsOnMethods = "testSendDiscoveryTestcaseResults")
+    @Test(dependsOnMethods = "testSendDiscoveryTestcaseResults")
     public void testSendDiscoveryTestcaseSubmission() throws Exception {
         for (DiscoveryTestcase discoveryTestcase : this.discoveryTestcases) {
             DiscoveryTestcaseCredential discoveryTestcaseCred =
                 CollectionUtils.find(discoveryTestcase.getTargetCredentials(), DiscoveryTestcaseCredentialValidPredicate.INSTANCE);
             DiscoveryTestcaseSubmission discoveryTestcaseSubmission =
-                ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class);
+                ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class, discoveryTestcase);
             // noinspection ConstantConditions
             discoveryTestcaseSubmission.setTestcase(discoveryTestcase);
 
@@ -75,7 +58,25 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
             this.testToAddr);
     }
 
-    @AfterGroups(groups = { "dcdt.test.func.service.mail.discovery" }, alwaysRun = true, timeOut = ToolDateUtils.MS_IN_SEC * 30)
+    @Test
+    public void testSendDiscoveryTestcaseResults() throws Exception {
+        this.discoveryTestcases = ToolBeanFactoryUtils.getBeansOfType(this.applicationContext, DiscoveryTestcase.class);
+        DiscoveryTestcase testDiscoveryTestcase = this.discoveryTestcases.get(0);
+        // noinspection ConstantConditions
+        DiscoveryTestcaseCredential testDiscoveryTestcaseCred = testDiscoveryTestcase.getTargetCredentials().iterator().next();
+        DiscoveryTestcaseSubmission testDiscoveryTestcaseSubmission =
+            ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class, testDiscoveryTestcase);
+
+        DiscoveryTestcaseResult testDiscoveryTestcaseResult =
+            ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseResult.class, testDiscoveryTestcaseSubmission, null);
+        // noinspection ConstantConditions
+        testDiscoveryTestcaseResult.setExpectedDecryptionCredential(testDiscoveryTestcaseCred);
+        testDiscoveryTestcaseResult.setDecryptionCredential(testDiscoveryTestcaseCred);
+
+        this.discoveryTestcaseResultSenderService.send(testDiscoveryTestcaseResult, this.testResultsAddr);
+    }
+
+    @AfterGroups(groups = { "dcdt.test.func.service.mail" }, alwaysRun = true, timeOut = ToolDateUtils.MS_IN_SEC * 30)
     @Override
     public void stopService() {
         try {

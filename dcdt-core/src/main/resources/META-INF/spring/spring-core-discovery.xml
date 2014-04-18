@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY STEP DESCRIPTIONS
+    =====================================================================================================-->
+    <beans:bean id="certDiscoveryStepDesc" class="gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStepDescription" abstract="true"/>
+    
+    <beans:bean id="certDiscoveryStepDescImpl" class="gov.hhs.onc.dcdt.discovery.steps.impl.CertificateDiscoveryStepDescriptionImpl"
+        parent="certDiscoveryStepDesc" abstract="true"/>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY STEPS
+    =====================================================================================================-->
+    <beans:bean id="certDiscoveryStep" class="gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep" abstract="true"/>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY LOOKUP STEPS
+    =====================================================================================================-->
+    <beans:bean id="lookupStep" class="gov.hhs.onc.dcdt.discovery.steps.LookupStep" parent="certDiscoveryStep" abstract="true"/>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY DNS LOOKUP STEPS
+    =====================================================================================================-->
+    <beans:bean id="lookupStepDns" class="gov.hhs.onc.dcdt.discovery.steps.dns.DnsLookupStep" parent="lookupStep" abstract="true"/>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY DNS CERT RECORD LOOKUP STEPS
+    =====================================================================================================-->
+    <beans:bean id="lookupStepDnsCert" class="gov.hhs.onc.dcdt.discovery.steps.dns.DnsCertRecordLookupStep" parent="lookupStepDns" abstract="true"/>
+    
+    <beans:bean id="lookupStepDnsCertImpl" class="gov.hhs.onc.dcdt.discovery.steps.dns.impl.DnsCertRecordLookupStepImpl" parent="lookupStepDnsCert"
+        abstract="true">
+        <beans:constructor-arg name="lookupService" ref="dnsLookupServiceExternal"/>
+    </beans:bean>
+    
+    <beans:bean id="lookupStepDnsCertAddr" parent="lookupStepDnsCertImpl" lazy-init="true" scope="prototype"
+        c:bindingType="ADDRESS">
+        <beans:property name="description">
+            <beans:bean parent="certDiscoveryStepDescImpl">
+                <beans:property name="text">
+                    <dcdt:normalized-string>
+                        Query DNS for address-bound CERT record(s).
+                    </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="lookupStepDnsCertDomain" parent="lookupStepDnsCertImpl" lazy-init="true" scope="prototype"
+        c:bindingType="DOMAIN">
+        <beans:property name="description">
+            <beans:bean parent="certDiscoveryStepDescImpl">
+                <beans:property name="text">
+                    <dcdt:normalized-string>
+                        Query DNS for domain-bound CERT record(s).
+                    </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY DNS SRV RECORD LOOKUP STEPS
+    =====================================================================================================-->
+    <beans:bean id="lookupStepDnsSrv" class="gov.hhs.onc.dcdt.discovery.steps.dns.DnsSrvRecordLookupStep" parent="lookupStepDns" abstract="true"/>
+    
+    <beans:bean id="lookupStepDnsSrvImpl" class="gov.hhs.onc.dcdt.discovery.steps.dns.impl.DnsSrvRecordLookupStepImpl" parent="lookupStepDnsSrv"
+        lazy-init="true" scope="prototype"
+        c:lookupService-ref="dnsLookupServiceExternal">
+        <beans:property name="description">
+            <beans:bean parent="certDiscoveryStepDescImpl">
+                <beans:property name="text">
+                    <dcdt:normalized-string>
+                        Query DNS for SRV record(s).
+                    </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY LDAP LOOKUP STEPS
+    =====================================================================================================-->
+    <beans:bean id="lookupStepLdap" class="gov.hhs.onc.dcdt.discovery.steps.ldap.LdapLookupStep" parent="lookupStep" abstract="true"/>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY LDAP BASE DN LOOKUP STEPS
+    =====================================================================================================-->
+    <beans:bean id="lookupStepLdapBaseDn" class="gov.hhs.onc.dcdt.discovery.steps.ldap.LdapBaseDnLookupStep" parent="lookupStepLdap" abstract="true"/>
+    
+    <beans:bean id="lookupStepLdapBaseDnImpl" class="gov.hhs.onc.dcdt.discovery.steps.ldap.impl.LdapBaseDnLookupStepImpl" parent="lookupStepLdapBaseDn"
+        lazy-init="true" scope="prototype"
+        c:lookupService-ref="ldapLookupServiceImpl">
+        <beans:property name="description">
+            <beans:bean parent="certDiscoveryStepDescImpl">
+                <beans:property name="text">
+                    <dcdt:normalized-string>
+                        Query the first available LDAP server for it's base Distinguished Name(s) (DN[s]).
+                    </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY LDAP CERTIFICATE LOOKUP STEPS
+    =====================================================================================================-->
+    <beans:bean id="lookupStepLdapCert" class="gov.hhs.onc.dcdt.discovery.steps.ldap.LdapCertificateLookupStep" parent="lookupStepLdap" abstract="true"/>
+    
+    <beans:bean id="lookupStepLdapCertImpl" class="gov.hhs.onc.dcdt.discovery.steps.ldap.impl.LdapCertificateLookupStepImpl" parent="lookupStepLdapCert"
+        abstract="true">
+        <beans:constructor-arg name="lookupService" ref="ldapLookupServiceImpl"/>
+    </beans:bean>
+    
+    <beans:bean id="lookupStepLdapCertAddr" parent="lookupStepLdapCertImpl" lazy-init="true" scope="prototype"
+        c:bindingType="ADDRESS">
+        <beans:property name="description">
+            <beans:bean parent="certDiscoveryStepDescImpl">
+                <beans:property name="text">
+                    <dcdt:normalized-string>
+                        Query the first available LDAP server for the userCertificate attribute of entry(s) whose mail attribute is address-bound.
+                    </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="lookupStepLdapCertDomain" parent="lookupStepLdapCertImpl" lazy-init="true" scope="prototype"
+        c:bindingType="DOMAIN">
+        <beans:property name="description">
+            <beans:bean parent="certDiscoveryStepDescImpl">
+                <beans:property name="text">
+                    <dcdt:normalized-string>
+                        Query the first available LDAP server for the userCertificate attribute of entry(s) whose mail attribute is domain-bound.
+                    </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = CERTIFICATE VALIDATION STEPS
+    =====================================================================================================-->
+    <beans:bean id="certValidationStep" class="gov.hhs.onc.dcdt.discovery.steps.CertificateValidationStep" parent="certDiscoveryStep" abstract="true"/>
+    
+    <beans:bean id="certValidationStepImpl" class="gov.hhs.onc.dcdt.discovery.steps.impl.CertificateValidationStepImpl" parent="certValidationStep"
+        lazy-init="true" scope="prototype">
+        <beans:property name="description">
+            <beans:bean parent="certDiscoveryStepDescImpl">
+                <beans:property name="text">
+                    <dcdt:normalized-string>
+                        Validation of discovered certificate(s).
+                    </dcdt:normalized-string>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = CERTIFICATE DISCOVERY SERVICE
+    =====================================================================================================-->
+    <beans:bean id="certDiscoveryService" class="gov.hhs.onc.dcdt.discovery.CertificateDiscoveryService" abstract="true"/>
+    
+    <beans:bean id="certDiscoveryServiceImpl" class="gov.hhs.onc.dcdt.discovery.impl.CertificateDiscoveryServiceImpl" parent="certDiscoveryService">
+        <beans:constructor-arg name="defaultSteps">
+            <util:list>
+                <beans:ref bean="lookupStepDnsCertAddr"/>
+                <beans:ref bean="lookupStepDnsCertDomain"/>
+                <beans:ref bean="lookupStepDnsSrvImpl"/>
+                <beans:ref bean="lookupStepLdapBaseDnImpl"/>
+                <beans:ref bean="lookupStepLdapCertAddr"/>
+                <beans:ref bean="lookupStepLdapCertDomain"/>
+                <beans:ref bean="certValidationStepImpl"/>
+            </util:list>
+        </beans:constructor-arg>
+    </beans:bean>
+</beans:beans>

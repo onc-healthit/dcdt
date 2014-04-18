@@ -1,9 +1,10 @@
 package gov.hhs.onc.dcdt.testcases.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
-import gov.hhs.onc.dcdt.testcases.ToolTestcaseConfig;
+import java.util.List;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -11,12 +12,11 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
 
 @MappedSuperclass
-public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseConfig> extends AbstractToolNamedBean implements
-    ToolTestcase<T, U> {
+public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription> extends AbstractToolNamedBean implements ToolTestcase<T> {
     protected T desc;
     protected boolean neg;
     protected boolean optional;
-    protected U config;
+    protected List<CertificateDiscoveryStep> steps;
 
     @Override
     public boolean hasDescription() {
@@ -66,19 +66,18 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription, U 
     }
 
     @Override
-    public boolean hasConfig() {
-        return this.config != null;
+    public boolean hasSteps() {
+        return !this.steps.isEmpty();
     }
 
     @Override
-    @Nullable
     @Transient
-    public U getConfig() {
-        return this.config;
+    public List<CertificateDiscoveryStep> getSteps() {
+        return this.steps;
     }
 
     @Override
-    public void setConfig(@Nullable U config) {
-        this.config = config;
+    public void setSteps(List<CertificateDiscoveryStep> steps) {
+        this.steps = steps;
     }
 }

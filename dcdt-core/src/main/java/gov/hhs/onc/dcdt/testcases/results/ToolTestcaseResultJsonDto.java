@@ -1,32 +1,35 @@
 package gov.hhs.onc.dcdt.testcases.results;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import gov.hhs.onc.dcdt.beans.ToolResultBean;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.json.ToolBeanJsonDto;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
+import gov.hhs.onc.dcdt.testcases.ToolTestcase;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseSubmission;
 import java.util.List;
-import javax.annotation.Nullable;
 
-public interface ToolTestcaseResultJsonDto<T extends ToolTestcaseResult> extends ToolBeanJsonDto<T> {
-    @JsonProperty("successful")
-    public boolean isSuccessful();
+public interface ToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>, W extends ToolTestcaseResult<T, U, V>>
+    extends ToolBeanJsonDto<W>, ToolResultBean {
+    @JsonProperty("msgs")
+    @Override
+    public List<String> getMessages();
 
-    public void setSuccessful(boolean successful);
+    public void setMessages(List<String> msgs);
 
-    @JsonProperty("msg")
-    @Nullable
-    public String getMessage();
+    @JsonProperty("processedSteps")
+    public List<CertificateDiscoveryStep> getProcessedSteps();
 
-    public void setMessage(@Nullable String message);
+    public void setProcessedSteps(List<CertificateDiscoveryStep> processedSteps);
 
-    @JsonProperty("certStr")
-    @Nullable
-    public String getCertificate();
+    @JsonProperty("submission")
+    public V getSubmission();
 
-    public void setCertificate(@Nullable String certStr);
+    public void setSubmission(V submission);
 
-    @JsonProperty("infoSteps")
-    @Nullable
-    public List<ToolTestcaseStep> getInfoSteps();
+    @JsonProperty("success")
+    @Override
+    public boolean isSuccess();
 
-    public void setInfoSteps(@Nullable List<ToolTestcaseStep> infoSteps);
+    public void setSuccess(boolean success);
 }

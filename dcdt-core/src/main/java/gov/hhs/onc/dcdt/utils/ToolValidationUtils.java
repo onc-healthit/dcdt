@@ -33,7 +33,7 @@ public abstract class ToolValidationUtils {
         Map<String, List<String>> errorMsgsMap = new LinkedHashMap<>();
 
         if (errors.hasGlobalErrors()) {
-            errorMsgsMap.put(null, getErrorMessages(msgSource, errors.getGlobalErrors()));
+            errorMsgsMap.put(null, buildErrorMessages(msgSource, errors.getGlobalErrors()));
         }
 
         if (errors.hasFieldErrors()) {
@@ -44,24 +44,24 @@ public abstract class ToolValidationUtils {
                     errorMsgsMap.put(fieldName, new ArrayList<String>());
                 }
 
-                errorMsgsMap.get(fieldName).add(getErrorMessage(msgSource, fieldError));
+                errorMsgsMap.get(fieldName).add(buildErrorMessage(msgSource, fieldError));
             }
         }
 
         return errorMsgsMap;
     }
 
-    public static List<String> getErrorMessages(MessageSource msgSource, Iterable<ObjectError> errors) {
+    public static List<String> buildErrorMessages(MessageSource msgSource, Iterable<ObjectError> errors) {
         List<String> errorMsgs = new ArrayList<>();
 
         for (ObjectError error : errors) {
-            errorMsgs.add(getErrorMessage(msgSource, error));
+            errorMsgs.add(buildErrorMessage(msgSource, error));
         }
 
         return errorMsgs;
     }
 
-    public static String getErrorMessage(MessageSource msgSource, ObjectError error) {
+    public static String buildErrorMessage(MessageSource msgSource, ObjectError error) {
         return ToolMessageUtils.getMessage(msgSource, error);
     }
 

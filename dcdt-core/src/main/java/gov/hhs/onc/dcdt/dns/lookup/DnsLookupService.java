@@ -1,10 +1,14 @@
 package gov.hhs.onc.dcdt.dns.lookup;
 
+import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.dns.DnsCertificateType;
 import gov.hhs.onc.dcdt.dns.DnsException;
+import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
 import gov.hhs.onc.dcdt.dns.DnsServiceType;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.CNAMERecord;
@@ -17,10 +21,13 @@ import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SOARecord;
 import org.xbill.DNS.SRVRecord;
 
-public interface DnsLookupService {
+public interface DnsLookupService extends ToolBean {
     public DnsLookupResult<ARecord> lookupARecords(Name name) throws DnsException;
 
     public DnsLookupResult<CERTRecord> lookupCertRecords(Name name) throws DnsException;
+
+    public DnsLookupResult<CERTRecord> lookupCertRecords(@Nullable DnsKeyAlgorithmType keyAlgType, @Nullable DnsCertificateType certType, Name name)
+        throws DnsException;
 
     public DnsLookupResult<CNAMERecord> lookupCnameRecords(Name name) throws DnsException;
 
@@ -33,6 +40,9 @@ public interface DnsLookupService {
     public DnsLookupResult<SRVRecord> lookupSrvRecords(DnsServiceType serviceType, DnsServiceProtocol serviceProtocol, Name name) throws DnsException;
 
     public <T extends Record> DnsLookupResult<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name) throws DnsException;
+
+    public <T extends Record> DnsLookupResult<T>
+        lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name, @Nullable Predicate<T> recordPredicate) throws DnsException;
 
     public boolean hasCache();
 

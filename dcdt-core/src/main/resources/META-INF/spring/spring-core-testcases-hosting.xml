@@ -23,11 +23,14 @@
         abstract="true"/>
 
     <!--====================================================================================================
-    = HOSTING TESTCASE CONFIGURATIONS
+    = HOSTING TESTCASE SUBMISSIONS
     =====================================================================================================-->
-    <beans:bean id="hostingTestcaseConfig" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseConfig" parent="toolTestcaseConfig" abstract="true"/>
-    <beans:bean id="hostingTestcaseConfigImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseConfigImpl" parent="hostingTestcaseConfig" abstract="true"/>
-
+    <beans:bean id="hostingTestcaseSubmission" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcaseSubmission" parent="toolTestcaseSubmission"
+        abstract="true"/>
+    <!--suppress SpringBeanConstructorArgInspection -->
+    <beans:bean id="hostingTestcaseSubmissionImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseSubmissionImpl"
+        parent="hostingTestcaseSubmission" lazy-init="true" scope="prototype"/>
+    
     <!--====================================================================================================
     = HOSTING TESTCASES
     =====================================================================================================-->
@@ -60,18 +63,11 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="config">
-            <beans:bean parent="hostingTestcaseConfigImpl">
-                <beans:property name="configSteps">
-                    <util:list>
-                        <beans:bean parent="dnsAddrBoundCertRecordLookup"
-                            p:successful="true"/>
-                        <beans:bean parent="dnsAddrBoundCertLookup"
-                            p:certificateStatus="VALID_CERT"
-                            p:successful="true"/>
-                    </util:list>
-                </beans:property>
-            </beans:bean>
+        <beans:property name="steps">
+            <util:list>
+                <beans:ref bean="lookupStepDnsCertAddr"/>
+                <beans:ref bean="certValidationStepImpl"/>
+            </util:list>
         </beans:property>
     </beans:bean>
 
@@ -98,20 +94,11 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="config">
-            <beans:bean parent="hostingTestcaseConfigImpl">
-                <beans:property name="configSteps">
-                    <util:list>
-                        <beans:bean parent="dnsAddrBoundCertRecordLookup"/>
-                        <beans:bean parent="dnsAddrBoundCertLookup"/>
-                        <beans:bean parent="dnsDomainBoundCertRecordLookup"
-                            p:successful="true"/>
-                        <beans:bean parent="dnsDomainBoundCertLookup"
-                            p:certificateStatus="VALID_CERT"
-                            p:successful="true"/>
-                    </util:list>
-                </beans:property>
-            </beans:bean>
+        <beans:property name="steps">
+            <util:list>
+                <beans:ref bean="lookupStepDnsCertDomain"/>
+                <beans:ref bean="certValidationStepImpl"/>
+            </util:list>
         </beans:property>
     </beans:bean>
 
@@ -138,20 +125,13 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="config">
-            <beans:bean parent="noCertsFoundInDns">
-                <beans:property name="configSteps">
-                    <beans:list merge="true">
-                        <beans:bean parent="dnsSrvRecordLookup"
-                            p:successful="true"/>
-                        <beans:bean parent="ldapConnection"
-                            p:successful="true"/>
-                        <beans:bean parent="ldapAddrBoundCertLookup"
-                            p:certificateStatus="VALID_CERT"
-                            p:successful="true"/>
-                    </beans:list>
-                </beans:property>
-            </beans:bean>
+        <beans:property name="steps">
+            <util:list>
+                <beans:ref bean="lookupStepDnsSrvImpl"/>
+                <beans:ref bean="lookupStepLdapBaseDnImpl"/>
+                <beans:ref bean="lookupStepLdapCertAddr"/>
+                <beans:ref bean="certValidationStepImpl"/>
+            </util:list>
         </beans:property>
     </beans:bean>
 
@@ -182,21 +162,13 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="config">
-            <beans:bean parent="noCertsFoundInDns">
-                <beans:property name="configSteps">
-                    <beans:list merge="true">
-                        <beans:bean parent="dnsSrvRecordLookup"
-                            p:successful="true"/>
-                        <beans:bean parent="ldapConnection"
-                            p:successful="true"/>
-                        <beans:bean parent="ldapAddrBoundCertLookup"/>
-                        <beans:bean parent="ldapDomainBoundCertLookup"
-                            p:certificateStatus="VALID_CERT"
-                            p:successful="true"/>
-                    </beans:list>
-                </beans:property>
-            </beans:bean>
+        <beans:property name="steps">
+            <util:list>
+                <beans:ref bean="lookupStepDnsSrvImpl"/>
+                <beans:ref bean="lookupStepLdapBaseDnImpl"/>
+                <beans:ref bean="lookupStepLdapCertDomain"/>
+                <beans:ref bean="certValidationStepImpl"/>
+            </util:list>
         </beans:property>
     </beans:bean>
 
@@ -229,19 +201,14 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
-        <beans:property name="config">
-            <beans:bean parent="noCertsFoundInDns">
-                <beans:property name="configSteps">
-                    <beans:list merge="true">
-                        <beans:bean parent="dnsSrvRecordLookup"
-                            p:successful="true"/>
-                        <beans:bean parent="ldapConnection"
-                            p:successful="true"/>
-                        <beans:bean parent="ldapAddrBoundCertLookup"/>
-                        <beans:bean parent="ldapDomainBoundCertLookup"/>
-                    </beans:list>
-                </beans:property>
-            </beans:bean>
+        <beans:property name="steps">
+            <util:list>
+                <beans:ref bean="lookupStepDnsSrvImpl"/>
+                <beans:ref bean="lookupStepLdapBaseDnImpl"/>
+                <beans:ref bean="lookupStepLdapCertAddr"/>
+                <beans:ref bean="lookupStepLdapCertDomain"/>
+                <beans:ref bean="certValidationStepImpl"/>
+            </util:list>
         </beans:property>
     </beans:bean>
 </beans:beans>
