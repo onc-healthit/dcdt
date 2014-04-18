@@ -12,11 +12,10 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.certs.path.CertificatePathResolver;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
+import gov.hhs.onc.dcdt.discovery.CertificateDiscoveryService;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateValidationStep;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.testcases.CertificateDiscoveryService;
-import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultException;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseCertificateStep;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
@@ -140,29 +139,19 @@ public class CertificatePathResolverImpl extends AbstractToolBean implements Cer
         // noinspection ConstantConditions
         if (issuerCerts.isEmpty() && (issuerName = certInfo.getIssuerName()).hasMailAddress()) {
             MailAddress issuerMailAddr = issuerName.getMailAddress();
+            CertificateDiscoveryStep issuerDiscoveryLastStep = ToolListUtils.getLast(this.certDiscoveryService.discoverCertificates(issuerMailAddr));
+            CertificateValidationStep issuerDiscoveryCertValidationStep;
 
-            try {
-                ToolTestcaseStep issuerDiscoveryLastStep = ToolListUtils.getLast(this.certDiscoveryService.discoverCertificates(issuerMailAddr));
-                ToolTestcaseCertificateStep issuerDiscoveryCertStep;
+            // noinspection ConstantConditions
+            if (issuerDiscoveryLastStep.isSuccess() && ToolClassUtils.isAssignable(issuerDiscoveryLastStep.getClass(), CertificateValidationStep.class)
+                && (issuerDiscoveryCertValidationStep = ((CertificateValidationStep) issuerDiscoveryLastStep)).hasValidCertificateInfo()
+                && (issuerCertInfo = issuerDiscoveryCertValidationStep.getValidCertificateInfo()).hasCertificate()) {
+                issuerCerts.add(issuerCertInfo);
 
                 // noinspection ConstantConditions
-                if (issuerDiscoveryLastStep.isSuccessful()
-                    && ToolClassUtils.isAssignable(issuerDiscoveryLastStep.getClass(), ToolTestcaseCertificateStep.class)
-                    && (issuerDiscoveryCertStep = ((ToolTestcaseCertificateStep) issuerDiscoveryLastStep)).hasCertificateInfo()
-                    && (issuerCertInfo = issuerDiscoveryCertStep.getCertificateInfo()).hasCertificate()) {
-                    issuerCerts.add(issuerCertInfo);
-
-                    // noinspection ConstantConditions
-                    LOGGER.info(String.format(
-                        "Discovered certificate (subj={%s}, serialNum=%s) issuer (subj={%s}, serialNum=%s) using issuer mail address: %s", cert
-                            .getSubjectX500Principal().getName(), certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName(), issuerCertInfo
-                            .getSerialNumber(), issuerMailAddr));
-                }
-            } catch (ToolTestcaseResultException e) {
-                // noinspection ConstantConditions
-                throw new CertificateException(String.format(
-                    "Unable to discover certificate (subj={%s}, serialNum=%s) issuer (subj={%s}) using mail address: %s", cert.getSubjectX500Principal()
-                        .getName(), certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName(), issuerMailAddr), e);
+                LOGGER.info(String.format("Discovered certificate (subj={%s}, serialNum=%s) issuer (subj={%s}, serialNum=%s) using issuer mail address: %s",
+                    cert.getSubjectX500Principal().getName(), certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName(),
+                    issuerCertInfo.getSerialNumber(), issuerMailAddr));
             }
         }
 

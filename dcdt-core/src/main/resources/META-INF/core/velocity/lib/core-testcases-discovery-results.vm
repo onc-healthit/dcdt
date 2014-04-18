@@ -3,12 +3,12 @@
 #macro(discoveryTestcaseResultCredDesc $discoveryTestcaseResultCred $discoveryTestcaseResultCredTypeLbl)
     <li>
         <strong>$discoveryTestcaseResultCredTypeLbl Certificate</strong>:
-        #if($discoveryTestcaseResultCred)
+        #if ($discoveryTestcaseResultCred)
             <ul>
                 <li><strong>Name</strong>: $discoveryTestcaseResultCred.name</li>
                 <li><strong>Valid</strong>: $discoveryTestcaseResultCred.valid</li>
                 <li><strong>Binding Type</strong>: $discoveryTestcaseResultCred.bindingType</li>
-                <li><strong>Location</strong>:/li>
+                <li><strong>Location</strong>:
                     #set ($discoveryTestcaseResultCredLoc = $discoveryTestcaseResultCred.location)
                     <ul>
                         <li><strong>Type</strong>: $discoveryTestcaseResultCredLoc.type</li>
@@ -19,7 +19,8 @@
                             <li><strong>Port</strong>: $discoveryTestcaseResultCredLocLdapConfig.port</li>
                         #end
                     </ul>
-                <li><strong>Description</strong>: $discoveryTestcaseResultCred.description.text/li>
+                </li>
+                <li><strong>Description</strong>: $discoveryTestcaseResultCred.description.text</li>
             </ul>
         #else
             <i>None</i>

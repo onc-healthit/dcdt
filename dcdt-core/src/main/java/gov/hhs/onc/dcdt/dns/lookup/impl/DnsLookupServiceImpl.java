@@ -1,13 +1,18 @@
 package gov.hhs.onc.dcdt.dns.lookup.impl;
 
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.dns.DnsCertificateType;
 import gov.hhs.onc.dcdt.dns.DnsException;
+import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
 import gov.hhs.onc.dcdt.dns.DnsServiceType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.CertRecordParameterPredicate;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.CNAMERecord;
@@ -21,7 +26,7 @@ import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SOARecord;
 import org.xbill.DNS.SRVRecord;
 
-public class DnsLookupServiceImpl implements DnsLookupService {
+public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupService {
     private Cache cache;
     private Resolver resolver;
 
@@ -32,7 +37,13 @@ public class DnsLookupServiceImpl implements DnsLookupService {
 
     @Override
     public DnsLookupResult<CERTRecord> lookupCertRecords(Name name) throws DnsException {
-        return this.lookupRecords(DnsRecordType.CERT, CERTRecord.class, name);
+        return this.lookupCertRecords(null, null, name);
+    }
+
+    @Override
+    public DnsLookupResult<CERTRecord> lookupCertRecords(@Nullable DnsKeyAlgorithmType keyAlgType, @Nullable DnsCertificateType certType, Name name)
+        throws DnsException {
+        return this.lookupRecords(DnsRecordType.CERT, CERTRecord.class, name, new CertRecordParameterPredicate(keyAlgType, certType));
     }
 
     @Override
@@ -62,8 +73,14 @@ public class DnsLookupServiceImpl implements DnsLookupService {
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
     public <T extends Record> DnsLookupResult<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name) throws DnsException {
+        return this.lookupRecords(recordType, recordClass, name, null);
+    }
+
+    @Override
+    @SuppressWarnings({ "unchecked" })
+    public <T extends Record> DnsLookupResult<T>
+        lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name, @Nullable Predicate<T> recordPredicate) throws DnsException {
         Lookup lookup = new Lookup(name, recordType.getType(), recordType.getDclassType().getType());
 
         if (this.hasCache()) {
@@ -75,8 +92,8 @@ public class DnsLookupServiceImpl implements DnsLookupService {
         }
 
         lookup.run();
-        
-        return new DnsLookupResultImpl<>(recordType, recordClass, name, lookup);
+
+        return new DnsLookupResultImpl<>(recordType, recordClass, name, lookup, recordPredicate);
     }
 
     @Override

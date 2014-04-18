@@ -6,6 +6,7 @@ import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseMailAddressPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping.DiscoveryTestcaseMailMappingPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMappingService;
@@ -25,11 +26,10 @@ public class ProcessDiscoveryTestcaseMailet extends AbstractToolMailet {
         MailAddress to = mimeMsgHelper.getTo(), from = mimeMsgHelper.getFrom();
         DiscoveryTestcase discoveryTestcase =
             CollectionUtils.find(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class), new DiscoveryTestcaseMailAddressPredicate(to));
+        DiscoveryTestcaseSubmission discoveryTestcaseSubmission =
+            ToolBeanFactoryUtils.createBeanOfType(this.appContext, DiscoveryTestcaseSubmission.class, discoveryTestcase, mimeMsgHelper);
         // noinspection ConstantConditions
-        DiscoveryTestcaseResult discoveryTestcaseResult = discoveryTestcaseProc.process(mimeMsgHelper, discoveryTestcase);
-
-        LOGGER.info(String.format("Discovery testcase (name=%s, mailAddr=%s) mail (from=%s) submission processed (class=%s) into result (success=%s).",
-            discoveryTestcase.getName(), to, from, ToolClassUtils.getName(discoveryTestcaseProc), discoveryTestcaseResult.isSuccessful()));
+        DiscoveryTestcaseResult discoveryTestcaseResult = discoveryTestcaseProc.process(discoveryTestcaseSubmission);
 
         // noinspection ConstantConditions
         DiscoveryTestcaseMailMapping mailMapping =

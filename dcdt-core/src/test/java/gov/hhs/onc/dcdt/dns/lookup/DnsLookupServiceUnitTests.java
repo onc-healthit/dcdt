@@ -6,6 +6,7 @@ import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
 import gov.hhs.onc.dcdt.dns.DnsServiceType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,35 +51,35 @@ public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
     public void testLookupARecords() throws DnsException {
         DnsLookupResult<ARecord> result = assertResultValid(this.dnsLookupService.lookupARecords(this.testDnsLookupDomain1Name), 1);
         // noinspection ConstantConditions
-        Assert.assertEquals(result.getResolvedAnswers().get(0).getName(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomain1Name));
+        Assert.assertEquals(result.getAnswers().get(0).getName(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomain1Name));
     }
 
     @Test
     public void testLookupCertRecords() throws DnsException {
         DnsLookupResult<CERTRecord> result = assertResultValid(this.dnsLookupService.lookupCertRecords(this.testDnsLookupDomain1Name), 1);
         // noinspection ConstantConditions
-        Assert.assertEquals(result.getResolvedAnswers().get(0).getCertType(), CertificateType.PKIX);
+        Assert.assertEquals(result.getAnswers().get(0).getCertType(), CertificateType.PKIX);
     }
 
     @Test
     public void testLookupCnameRecords() throws DnsException {
         DnsLookupResult<CNAMERecord> result = assertResultValid(this.dnsLookupService.lookupCnameRecords(this.testDnsLookupDomainCname1), 1);
         // noinspection ConstantConditions
-        Assert.assertEquals(result.getResolvedAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainName));
+        Assert.assertEquals(result.getAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainName));
     }
 
     @Test
     public void testLookupMxRecords() throws DnsException {
         DnsLookupResult<MXRecord> result = assertResultValid(this.dnsLookupService.lookupMxRecords(this.testDnsLookupDomain1Name), 1);
         // noinspection ConstantConditions
-        Assert.assertEquals(result.getResolvedAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomain1Name));
+        Assert.assertEquals(result.getAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomain1Name));
     }
 
     @Test
     public void testLookupNsRecords() throws DnsException {
         DnsLookupResult<NSRecord> result = assertResultValid(this.dnsLookupService.lookupNsRecords(this.testDnsLookupDomain1Name), 2);
         // noinspection ConstantConditions
-        Assert.assertEqualsNoOrder(ArrayUtils.toArray(result.getResolvedAnswers().get(0).getTarget(), result.getResolvedAnswers().get(1).getTarget()),
+        Assert.assertEqualsNoOrder(ArrayUtils.toArray(result.getAnswers().get(0).getTarget(), result.getAnswers().get(1).getTarget()),
             ArrayUtils.toArray(ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainNs1), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainNs2)));
     }
 
@@ -86,7 +87,7 @@ public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
     public void testLookupSoaRecords() throws DnsException {
         DnsLookupResult<SOARecord> result = assertResultValid(this.dnsLookupService.lookupSoaRecords(this.testDnsLookupDomain1Name), 1);
         // noinspection ConstantConditions
-        Assert.assertEquals(result.getResolvedAnswers().get(0).getHost(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainNs1));
+        Assert.assertEquals(result.getAnswers().get(0).getHost(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainNs1));
     }
 
     @Test
@@ -94,21 +95,21 @@ public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
         DnsLookupResult<SRVRecord> result =
             assertResultValid(this.dnsLookupService.lookupSrvRecords(DnsServiceType.LDAP, DnsServiceProtocol.TCP, this.testDnsLookupDomain1Name), 1);
         // noinspection ConstantConditions
-        Assert.assertEquals(result.getResolvedAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainSrv1));
+        Assert.assertEquals(result.getAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainSrv1));
     }
 
     private static <T extends Record> DnsLookupResult<T> assertResultValid(DnsLookupResult<T> result, int answersNum) {
         DnsResultType resultType = result.getType();
 
-        Assert.assertFalse(resultType.isError(), String.format("DNS lookup (recordType=%s, questionName=%s) error (type=%s): %s",
-            result.getRecordType().name(), result.getQuestionName(), resultType.name(), result.getErrorString()));
+        Assert.assertTrue(resultType.isSuccess(), String.format("DNS lookup (recordType=%s, questionName=%s) error (type=%s): [%s]", result.getRecordType()
+            .name(), result.getQuestionName(), resultType.name(), ToolStringUtils.joinDelimit(result.getMessages(), "; ")));
         Assert.assertTrue(
-            result.hasResolvedAnswers(),
+            result.hasAnswers(),
             String.format("DNS lookup (recordType=%s, questionName=%s) does not have any resolved answers.", result.getRecordType().name(),
                 result.getQuestionName()));
         // noinspection ConstantConditions
         Assert.assertEquals(
-            result.getResolvedAnswers().size(),
+            result.getAnswers().size(),
             answersNum,
             String.format("DNS lookup (recordType=%s, questionName=%s) resolved answers count does not match.", result.getRecordType().name(),
                 result.getQuestionName()));

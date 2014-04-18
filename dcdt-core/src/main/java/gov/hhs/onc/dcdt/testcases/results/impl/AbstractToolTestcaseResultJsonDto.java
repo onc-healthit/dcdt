@@ -1,64 +1,68 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
+import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.json.impl.AbstractToolBeanJsonDto;
+import gov.hhs.onc.dcdt.testcases.ToolTestcase;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultJsonDto;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
 import java.util.List;
-import javax.annotation.Nullable;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseResult> extends AbstractToolBeanJsonDto<T> implements
-    ToolTestcaseResultJsonDto<T> {
-    protected boolean successful;
-    protected String message;
-    protected String certStr;
-    protected List<ToolTestcaseStep> infoSteps;
+public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>, W extends ToolTestcaseResult<T, U, V>>
+    extends AbstractToolBeanJsonDto<W> implements ToolTestcaseResultJsonDto<T, U, V, W> {
+    protected List<String> msgs;
+    protected List<CertificateDiscoveryStep> processedSteps;
+    protected V submission;
+    protected boolean success;
 
-    protected AbstractToolTestcaseResultJsonDto(Class<T> beanClass, Class<? extends T> beanImplClass) {
+    protected AbstractToolTestcaseResultJsonDto(Class<W> beanClass, Class<? extends W> beanImplClass) {
         super(beanClass, beanImplClass);
     }
 
     @Override
-    public boolean isSuccessful() {
-        return this.successful;
+    public boolean hasMessages() {
+        return !this.getMessages().isEmpty();
     }
 
     @Override
-    public void setSuccessful(boolean successful) {
-        this.successful = successful;
-    }
-
-    @Nullable
-    @Override
-    public String getMessage() {
-        return this.message;
+    public List<String> getMessages() {
+        return this.msgs;
     }
 
     @Override
-    public void setMessage(@Nullable String message) {
-        this.message = message;
-    }
-
-    @Nullable
-    @Override
-    public String getCertificate() {
-        return this.certStr;
+    public void setMessages(List<String> msgs) {
+        this.msgs = msgs;
     }
 
     @Override
-    public void setCertificate(@Nullable String certStr) {
-        this.certStr = certStr;
-    }
-
-    @Nullable
-    @Override
-    public List<ToolTestcaseStep> getInfoSteps() {
-        return this.infoSteps;
+    public List<CertificateDiscoveryStep> getProcessedSteps() {
+        return this.processedSteps;
     }
 
     @Override
-    public void setInfoSteps(@Nullable List<ToolTestcaseStep> infoSteps) {
-        this.infoSteps = infoSteps;
+    public void setProcessedSteps(List<CertificateDiscoveryStep> processedSteps) {
+        this.processedSteps = processedSteps;
+    }
+
+    @Override
+    public V getSubmission() {
+        return this.submission;
+    }
+
+    @Override
+    public void setSubmission(V submission) {
+        this.submission = submission;
+    }
+
+    @Override
+    public boolean isSuccess() {
+        return this.success;
+    }
+
+    @Override
+    public void setSuccess(boolean success) {
+        this.success = success;
     }
 }

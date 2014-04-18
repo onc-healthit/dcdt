@@ -20,6 +20,7 @@
     =====================================================================================================-->
     <beans:bean id="hostingTestcaseResult" class="gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult" parent="toolTestcaseResult"
         abstract="true"/>
+    <!--suppress SpringBeanConstructorArgInspection -->
     <beans:bean id="hostingTestcaseResultImpl" class="gov.hhs.onc.dcdt.testcases.hosting.results.impl.HostingTestcaseResultImpl" parent="hostingTestcaseResult"
         lazy-init="true" scope="prototype"/>
 </beans:beans>

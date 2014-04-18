@@ -5,22 +5,35 @@
 #includeStyle("include/mail-testcase-discovery-result.css")
 #end
 #define($body)
-    <h1>Discovery testcase $discoveryTestcaseResult.testcase.name ($discoveryTestcaseResult.testcase.nameDisplay) #if($discoveryTestcaseResult.successful)passed#{else}failed#{end}.</h1>
+    #set ($discoveryTestcaseSubmission = $discoveryTestcaseResult.submission)
+    #set ($discoveryTestcase = $discoveryTestcaseSubmission.testcase)
+    
+    <h1>Discovery testcase $discoveryTestcase.name ($discoveryTestcase.nameDisplay) #if($discoveryTestcaseResult.success)passed#{else}failed#{end}.</h1>
     <h2>Details</h2>
     <ul>
-        #if($discoveryTestcaseResult.hasMailInfo())
-            <li><strong>From</strong>: $discoveryTestcaseResult.mailInfo.from</li>
-            <li><strong>To</strong>: $discoveryTestcaseResult.mailInfo.to</li>
-        #end
-
-        #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialFound "Found")
+        <li><strong>Optional</strong>: $discoveryTestcase.optional</li>
+        <li><strong>Negative</strong>: $discoveryTestcase.negative</li>
         
-        #if(!$discoveryTestcaseResult.successful)
-            #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.credentialExpected "Expected")
+        #set ($discoveryTestcaseMsgHelper = $discoveryTestcaseSubmission.messageHelper)
+        
+        <li><strong>From</strong>: $discoveryTestcaseMsgHelper.from</li>
+        <li><strong>To</strong>: $discoveryTestcaseMsgHelper.to</li>
+
+        #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.decryptionCredential "Discovered")
+        
+        #if (!$discoveryTestcaseResult.success)
+            #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.expectedDecryptionCredential "Expected")
         #end
 
-        #if($discoveryTestcaseResult.hasMailInfo() && $discoveryTestcaseResult.mailInfo.hasDecryptionErrorMessage())
-            <li><strong>Decryption Error</strong>: $discoveryTestcaseResult.mailInfo.decryptionErrorMessage</li>
+        #if ($discoveryTestcaseResult.hasMessages())
+            <li>
+                <strong>Messages</strong>:
+                <ul>
+                    #foreach ($discoveryTestcaseResultMsg in $discoveryTestcaseResult.messages)
+                        <li>$discoveryTestcaseResultMsg</li>
+                    #end
+                </ul>
+            </li>
         #end
     </ul>
 #end
