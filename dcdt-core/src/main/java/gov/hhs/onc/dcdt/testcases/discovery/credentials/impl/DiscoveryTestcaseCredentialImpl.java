@@ -2,13 +2,12 @@ package gov.hhs.onc.dcdt.testcases.discovery.credentials.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
-import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
-import gov.hhs.onc.dcdt.mail.BindingType;
+import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;

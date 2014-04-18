@@ -3,12 +3,11 @@ package gov.hhs.onc.dcdt.testcases;
 import gov.hhs.onc.dcdt.beans.ToolDirectAddressBean;
 import javax.annotation.Nullable;
 
-public interface ToolTestcaseSubmission<T extends ToolTestcaseDescription, U extends ToolTestcaseConfig, V extends ToolTestcase<T, U>> extends
-    ToolDirectAddressBean {
+public interface ToolTestcaseSubmission<T extends ToolTestcaseDescription, U extends ToolTestcase<T>> extends ToolDirectAddressBean {
     public boolean hasTestcase();
 
     @Nullable
-    public V getTestcase();
+    public U getTestcase();
 
-    public void setTestcase(@Nullable V testcase);
+    public void setTestcase(@Nullable U testcase);
 }

@@ -1,41 +1,57 @@
 package gov.hhs.onc.dcdt.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Collection;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.PredicateUtils;
 
 public abstract class ToolCollectionUtils {
     public static class AssignableTransformer<T> extends AbstractToolTransformer<Object, T> {
-        private Class<T> clazz;
+        private AssignablePredicate<T> predicate;
 
         public AssignableTransformer(Class<T> clazz) {
-            this.clazz = clazz;
+            this.predicate = new AssignablePredicate<>(clazz);
         }
 
         @Nullable
         @Override
         protected T transformInternal(@Nullable Object obj) throws Exception {
-            return (ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), this.clazz) ? this.clazz.cast(obj) : null);
+            return (this.predicate.evaluate(obj) ? this.predicate.clazz.cast(obj) : null);
         }
     }
 
-    public static <T> Collection<T> collectAssignable(Class<T> clazz, @Nullable Iterable<?> ... iterables) {
-        return collectAssignable(clazz, ToolArrayUtils.asList(iterables));
+    public static class AssignablePredicate<T> extends AbstractToolPredicate<Object> {
+        private Class<T> clazz;
+
+        public AssignablePredicate(Class<T> clazz) {
+            this.clazz = clazz;
+        }
+
+        @Override
+        protected boolean evaluateInternal(@Nullable Object obj) throws Exception {
+            return ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), this.clazz);
+        }
     }
 
-    public static <T> Collection<T> collectAssignable(Class<T> clazz, @Nullable Iterable<? extends Iterable<?>> iterables) {
-        return collectAssignable(clazz, new ArrayList<T>(), iterables);
+    @Nullable
+    public static <T> T findAssignable(Class<T> clazz, @Nullable Object ... objs) {
+        return findAssignable(clazz, ToolArrayUtils.asList(objs));
     }
 
-    public static <T, U extends Collection<T>> U collectAssignable(Class<T> clazz, U coll, @Nullable Iterable<?> ... iterables) {
-        return collectAssignable(clazz, coll, ToolArrayUtils.asList(iterables));
+    @Nullable
+    public static <T> T findAssignable(Class<T> clazz, @Nullable Iterable<?> objs) {
+        return clazz.cast(CollectionUtils.find(objs, new AssignablePredicate<>(clazz)));
     }
 
-    public static <T, U extends Collection<T>> U collectAssignable(Class<T> clazz, U coll, @Nullable Iterable<? extends Iterable<?>> iterables) {
-        return CollectionUtils.collect(ToolIteratorUtils.chainedIterator(iterables), new AssignableTransformer<>(clazz), coll);
+    public static <T, U extends Collection<T>> U collectAssignable(Class<T> clazz, U coll, Object ... objs) {
+        return collectAssignable(clazz, coll, ToolArrayUtils.asList(objs));
+    }
+
+    public static <T, U extends Collection<T>> U collectAssignable(Class<T> clazz, U coll, @Nullable Iterable<?> objs) {
+        return CollectionUtils.select(CollectionUtils.collect(objs, new AssignableTransformer<>(clazz)), PredicateUtils.notNullPredicate(), coll);
     }
 
     @Nullable

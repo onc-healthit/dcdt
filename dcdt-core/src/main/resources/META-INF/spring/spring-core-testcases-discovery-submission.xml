@@ -16,6 +16,15 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
     <!--====================================================================================================
+    = DISCOVERY TESTCASE SUBMISSIONS
+    =====================================================================================================-->
+    <beans:bean id="discoveryTestcaseSubmission" class="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission" parent="toolTestcaseSubmission"
+        abstract="true"/>
+    <!--suppress SpringBeanConstructorArgInspection -->
+    <beans:bean id="discoveryTestcaseSubmissionImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseSubmissionImpl"
+        parent="discoveryTestcaseSubmission" lazy-init="true" scope="prototype"/>
+    
+    <!--====================================================================================================
     = DISCOVERY TESTCASE SUBMISSION MAIL MESSAGES
     =====================================================================================================-->
     <!--suppress SpringBeanConstructorArgInspection -->
@@ -30,10 +39,11 @@
         parent="mailSenderService" abstract="true"/>
 
     <beans:bean id="discoveryTestcaseSubmissionSenderServiceImpl"
-        class="gov.hhs.onc.dcdt.testcases.discovery.mail.sender.impl.DiscoveryTestcaseSubmissionSenderServiceImpl" parent="discoveryTestcaseSubmissionSenderService"
+        class="gov.hhs.onc.dcdt.testcases.discovery.mail.sender.impl.DiscoveryTestcaseSubmissionSenderServiceImpl"
+        parent="discoveryTestcaseSubmissionSenderService"
         c:fromConfig-ref="instanceMailAddrConfigSubmission"
+        c:mailEnc-ref="charsetUtf8"
         c:replyToConfig-ref="instanceMailAddrConfigNoReply">
-        <beans:constructor-arg name="mailEnc" ref="charsetUtf8"/>
         <beans:constructor-arg name="mimeMailMsgBeanName">
             <beans:idref bean="discoveryTestcaseSubmissionMimeMailMsg"/>
         </beans:constructor-arg>

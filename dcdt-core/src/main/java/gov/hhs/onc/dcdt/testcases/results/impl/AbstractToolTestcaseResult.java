@@ -1,68 +1,115 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolResultBean;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateValidationStep;
+import gov.hhs.onc.dcdt.testcases.ToolTestcase;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
-public abstract class AbstractToolTestcaseResult extends AbstractToolNamedBean implements ToolTestcaseResult {
-    protected boolean successful;
-    protected String message;
-    protected String certStr;
-    protected List<ToolTestcaseStep> infoSteps;
+public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>> extends
+    AbstractToolResultBean implements ToolTestcaseResult<T, U, V> {
+    protected List<CertificateDiscoveryStep> procSteps;
+    protected List<String> procMsgs = new ArrayList<>();
+    protected Boolean procSuccess;
+    protected V submission;
 
-    @Override
-    public boolean isSuccessful() {
-        return this.successful;
+    protected AbstractToolTestcaseResult(V submission, @Nullable List<CertificateDiscoveryStep> procSteps) {
+        this.submission = submission;
+
+        // noinspection ConstantConditions
+        this.procSteps = ToolCollectionUtils.addAll(new ArrayList<CertificateDiscoveryStep>(), procSteps);
     }
 
     @Override
-    public void setSuccessful(boolean successful) {
-        this.successful = successful;
-    }
-
-    @Override
-    public boolean hasMessage() {
-        return !StringUtils.isBlank(this.message);
-    }
-
-    @Nullable
-    @Override
-    public String getMessage() {
-        return this.message;
-    }
-
-    @Override
-    public void setMessage(@Nullable String message) {
-        this.message = message;
+    public boolean hasDiscoveredCertificateInfo() {
+        return (this.getDiscoveredCertificateInfo() != null);
     }
 
     @Nullable
     @Override
-    public String getCertificate() {
-        return this.certStr;
+    public CertificateInfo getDiscoveredCertificateInfo() {
+        CertificateValidationStep processedCertValidationStep = ToolCollectionUtils.findAssignable(CertificateValidationStep.class, this.procSteps);
+
+        return ((processedCertValidationStep != null) ? processedCertValidationStep.getValidCertificateInfo() : null);
     }
 
     @Override
-    public void setCertificate(@Nullable String certStr) {
-        this.certStr = certStr;
+    public List<String> getMessages() {
+        return ToolCollectionUtils.addAll(new ArrayList<String>(), this.procMsgs, this.getDiscoveryMessages());
     }
 
     @Override
-    public boolean hasInfoSteps() {
-        return this.infoSteps != null;
-    }
+    public boolean isSuccess() {
+        U testcase;
 
-    @Nullable
-    @Override
-    public List<ToolTestcaseStep> getInfoSteps() {
-        return this.infoSteps;
+        // noinspection ConstantConditions
+        return (this.submission.hasTestcase() && ((testcase = this.submission.getTestcase()).isOptional() || (testcase.isNegative() != (this
+            .isProcessingSuccess() && this.isDiscoverySuccess()))));
     }
 
     @Override
-    public void setInfoSteps(@Nullable List<ToolTestcaseStep> infoSteps) {
-        this.infoSteps = infoSteps;
+    public boolean hasDiscoveryMessages() {
+        return !this.getDiscoveryMessages().isEmpty();
+    }
+
+    @Override
+    public List<String> getDiscoveryMessages() {
+        return ToolCollectionUtils.addAll(new ArrayList<String>(), CollectionUtils.collect(this.procSteps, ToolResultBeanMessageExtractor.INSTANCE));
+    }
+
+    @Override
+    public boolean isDiscoverySuccess() {
+        // noinspection ConstantConditions
+        return (this.hasProcessedSteps() && ToolListUtils.getLast(this.procSteps).isSuccess());
+    }
+
+    @Override
+    public boolean hasProcessedSteps() {
+        return !this.procSteps.isEmpty();
+    }
+
+    @Override
+    public List<CertificateDiscoveryStep> getProcessedSteps() {
+        return this.procSteps;
+    }
+
+    @Override
+    public boolean hasProcessingMessages() {
+        return !this.getProcessingMessages().isEmpty();
+    }
+
+    @Override
+    public List<String> getProcessingMessages() {
+        return procMsgs;
+    }
+
+    @Override
+    public void setProcessingMessages(List<String> procMsgs) {
+        this.procMsgs = procMsgs;
+    }
+
+    @Override
+    public boolean isProcessingSuccess() {
+        return ObjectUtils.defaultIfNull(this.procSuccess, true);
+    }
+
+    @Override
+    public void setProcessingSuccess(boolean procSuccess) {
+        this.procSuccess = procSuccess;
+    }
+
+    @Override
+    public V getSubmission() {
+        return this.submission;
     }
 }

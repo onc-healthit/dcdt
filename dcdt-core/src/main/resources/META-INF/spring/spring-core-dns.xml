@@ -16,6 +16,19 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = DNSJAVA OPTIONS
+    =====================================================================================================-->
+    <beans:bean id="dnsJavaOptsFromMap" parent="methodInvoke"
+        p:targetClass="gov.hhs.onc.dcdt.dns.DnsJavaOptions"
+        p:targetMethod="fromMap">
+        <beans:property name="arguments">
+            <util:map>
+                <beans:entry key="#{ T(gov.hhs.onc.dcdt.dns.DnsJavaOptions).BIND_TTL }" value="true"/>
+            </util:map>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = DNS NAMES
     =====================================================================================================-->
     <beans:bean id="dnsName" class="org.xbill.DNS.Name" abstract="true"/>

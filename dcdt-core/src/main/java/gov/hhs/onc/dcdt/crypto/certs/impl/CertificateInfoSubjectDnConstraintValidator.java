@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoSubjectDn;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
-import gov.hhs.onc.dcdt.mail.BindingType;
+import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import java.security.cert.X509Certificate;

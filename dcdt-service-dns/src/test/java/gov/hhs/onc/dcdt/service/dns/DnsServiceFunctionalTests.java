@@ -58,7 +58,7 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
                             ToolCollectionUtils.toArray(
                                 (testDnsLookupResult =
                                     testDnsServerConfigLookupService.lookupRecords(testDnsConfigRecordType, testDnsConfigRecordType.getRecordClass(),
-                                        testDnsConfigRecord.getName())).getResolvedAnswers(), Record.class),
+                                        testDnsConfigRecord.getName())).getAnswers(), Record.class),
                             ToolCollectionUtils.toArray(
                                 (testDnsConfigAnswerRecords =
                                     ToolCollectionUtils.nullIfEmpty(testDnsServerConfig.findAuthoritativeDnsConfig(testDnsConfigRecord).findAnswers(

@@ -1,33 +1,46 @@
 package gov.hhs.onc.dcdt.dns.lookup;
 
+import gov.hhs.onc.dcdt.beans.ToolLookupResultBean;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsResultType;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.Predicate;
+import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 
-public interface DnsLookupResult<T extends Record> {
-    public boolean hasResolvedAnswers();
+public interface DnsLookupResult<T extends Record> extends ToolLookupResultBean<T, DnsResultType> {
+    public boolean hasAliases();
 
     @Nullable
-    public List<T> getResolvedAnswers();
+    public List<Name> getAliases();
 
     public boolean hasAnswers();
 
     @Nullable
-    public List<Record> getAnswers();
+    public List<T> getAnswers();
+
+    public Lookup getLookup();
+
+    public boolean hasOrderedAnswers();
+
+    @Nullable
+    public List<T> getOrderedAnswers();
 
     public Name getQuestionName();
 
-    public Class<T> getRecordClass();
-
-    public DnsRecordType getRecordType();
-
-    public boolean hasErrorString();
+    public boolean hasRawAnswers();
 
     @Nullable
-    public String getErrorString();
+    public List<Record> getRawAnswers();
 
-    public DnsResultType getType();
+    public Class<T> getRecordClass();
+
+    public boolean hasRecordPredicate();
+
+    @Nullable
+    public Predicate<T> getRecordPredicate();
+
+    public DnsRecordType getRecordType();
 }

@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.mail;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import gov.hhs.onc.dcdt.beans.ToolBean;
+import gov.hhs.onc.dcdt.discovery.BindingType;
 import java.io.Serializable;
 import javax.annotation.Nullable;
 import javax.mail.internet.InternetAddress;

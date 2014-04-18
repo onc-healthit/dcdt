@@ -19,8 +19,29 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
+import org.springframework.beans.factory.support.AbstractBeanDefinition;
+import org.springframework.beans.factory.support.AutowireCandidateQualifier;
 
 public abstract class ToolBeanFactoryUtils {
+    public static class QualifiedBeanNamePredicate extends AbstractToolPredicate<String> {
+        private ConfigurableListableBeanFactory beanFactory;
+        private Collection<AutowireCandidateQualifier> quals;
+
+        public QualifiedBeanNamePredicate(ConfigurableListableBeanFactory beanFactory, AutowireCandidateQualifier ... quals) {
+            this(beanFactory, ToolArrayUtils.asList(quals));
+        }
+
+        public QualifiedBeanNamePredicate(ConfigurableListableBeanFactory beanFactory, Collection<AutowireCandidateQualifier> quals) {
+            this.beanFactory = beanFactory;
+            this.quals = quals;
+        }
+
+        @Override
+        protected boolean evaluateInternal(String beanName) throws Exception {
+            return CollectionUtils.containsAll(ToolBeanFactoryUtils.getQualifiers(this.beanFactory, beanName), this.quals);
+        }
+    }
+
     public static class RegisteredScopedBeanNamePredicate extends AbstractScopedBeanNamePredicate<ConfigurableListableBeanFactory> {
         public RegisteredScopedBeanNamePredicate(ConfigurableListableBeanFactory beanFactory, String beanScopeName) {
             super(beanFactory, beanScopeName);
@@ -66,6 +87,12 @@ public abstract class ToolBeanFactoryUtils {
     }
 
     public final static Set<String> SCOPE_NAMES_BUILTIN = new HashSet<>(ToolArrayUtils.asList(BeanDefinition.SCOPE_SINGLETON, BeanDefinition.SCOPE_PROTOTYPE));
+
+    @Nullable
+    public static Set<AutowireCandidateQualifier> getQualifiers(ConfigurableListableBeanFactory beanFactory, @Nullable String beanName) {
+        // noinspection ConstantConditions
+        return (containsBeanDefinition(beanFactory, beanName) ? getBeanDefinition(beanFactory, beanName).getQualifiers() : null);
+    }
 
     public static boolean isBeanAlias(BeanFactory beanFactory, String beanName) {
         return !ArrayUtils.isEmpty(beanFactory.getAliases(beanName));
@@ -161,8 +188,8 @@ public abstract class ToolBeanFactoryUtils {
     }
 
     @Nullable
-    public static BeanDefinition getBeanDefinition(ConfigurableListableBeanFactory beanFactory, @Nullable String beanName) {
-        return (containsBeanDefinition(beanFactory, beanName) ? beanFactory.getBeanDefinition(beanName) : null);
+    public static AbstractBeanDefinition getBeanDefinition(ConfigurableListableBeanFactory beanFactory, @Nullable String beanName) {
+        return (containsBeanDefinition(beanFactory, beanName) ? ((AbstractBeanDefinition) beanFactory.getBeanDefinition(beanName)) : null);
     }
 
     public static boolean containsBeanDefinition(ConfigurableListableBeanFactory beanFactory, @Nullable String beanName) {

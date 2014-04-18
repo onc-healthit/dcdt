@@ -2,9 +2,11 @@ package gov.hhs.onc.dcdt.testcases;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
+import java.util.List;
 import javax.annotation.Nullable;
 
-public interface ToolTestcase<T extends ToolTestcaseDescription, U extends ToolTestcaseConfig> extends ToolNamedBean {
+public interface ToolTestcase<T extends ToolTestcaseDescription> extends ToolNamedBean {
     public boolean hasDescription();
 
     @JsonProperty("desc")
@@ -23,11 +25,10 @@ public interface ToolTestcase<T extends ToolTestcaseDescription, U extends ToolT
 
     public void setOptional(boolean optional);
 
-    public boolean hasConfig();
+    public boolean hasSteps();
 
-    @JsonProperty("config")
-    @Nullable
-    public U getConfig();
+    @JsonProperty("steps")
+    public List<CertificateDiscoveryStep> getSteps();
 
-    public void setConfig(@Nullable U config);
+    public void setSteps(List<CertificateDiscoveryStep> steps);
 }

@@ -9,5 +9,5 @@ public interface CertificateInfoValidator extends ToolBean {
     public static interface CertificateInfoValidationConstraintGroup {
     }
 
-    public Pair<Boolean, List<String>> validate(MailAddress directAddr, CertificateInfo certInfo) throws Exception;
+    public Pair<Boolean, List<String>> validate(MailAddress directAddr, CertificateInfo certInfo);
 }

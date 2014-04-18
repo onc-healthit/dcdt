@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.ldap.lookup;
 
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.directory.api.ldap.model.entry.Attribute;
@@ -38,13 +39,13 @@ public class LdapLookupServiceUnitTests extends AbstractToolUnitTests {
     private ExprNode testLdapLookupSearchFilter;
 
     private LdapConnectionConfig testLdapLookupConnConfig;
-    private List<Dn> testLdapLookupBaseDns;
+    private LdapBaseDnLookupResult testLdapLookupBaseDnsResult;
 
     @Test(dependsOnMethods = { "testLookupBaseDns" })
     public void testLookupEntries() throws LdapInvalidAttributeValueException {
         List<Entry> entries = new ArrayList<>();
 
-        for (Dn testLdapLookupBaseDn : this.testLdapLookupBaseDns) {
+        for (Dn testLdapLookupBaseDn : this.testLdapLookupBaseDnsResult) {
             ToolCollectionUtils.addAll(entries,
                 this.ldapLookupService.lookupEntries(this.testLdapLookupConnConfig, testLdapLookupBaseDn, this.testLdapLookupSearchFilter).getItems());
         }
@@ -59,11 +60,10 @@ public class LdapLookupServiceUnitTests extends AbstractToolUnitTests {
 
     @Test
     public void testLookupBaseDns() {
-        LdapBaseDnLookupResult baseDnLookupResult = this.ldapLookupService.lookupBaseDns(this.testLdapLookupConnConfig);
-        Assert.assertTrue(baseDnLookupResult.isSuccess(), String.format("LDAP base DN lookup was not successful: %s", baseDnLookupResult.getMessage()));
-        Assert.assertTrue(baseDnLookupResult.hasItems(), "No LDAP base DN(s) found.");
-
-        this.testLdapLookupBaseDns = baseDnLookupResult.getItems();
+        this.testLdapLookupBaseDnsResult = this.ldapLookupService.lookupBaseDns(this.testLdapLookupConnConfig);
+        Assert.assertTrue(this.testLdapLookupBaseDnsResult.isSuccess(),
+            String.format("LDAP base DN lookup was not successful: %s", ToolStringUtils.joinDelimit(this.testLdapLookupBaseDnsResult.getMessages(), "; ")));
+        Assert.assertTrue(this.testLdapLookupBaseDnsResult.hasItems(), "No LDAP base DN(s) found.");
     }
 
     @Override
