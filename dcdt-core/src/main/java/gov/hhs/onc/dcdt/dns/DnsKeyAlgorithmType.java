@@ -1,17 +1,26 @@
 package gov.hhs.onc.dcdt.dns;
 
+import gov.hhs.onc.dcdt.crypto.CryptographyTaggedIdentifier;
 import org.xbill.DNS.DNSSEC.Algorithm;
 
-public enum DnsKeyAlgorithmType {
-    RSASHA1(Algorithm.RSASHA1), INDIRECT(Algorithm.INDIRECT);
+public enum DnsKeyAlgorithmType implements CryptographyTaggedIdentifier {
+    RSASHA1("RSASHA1", Algorithm.RSASHA1), INDIRECT("INDIRECT", Algorithm.INDIRECT);
 
-    private final int type;
+    private final String id;
+    private final int tag;
 
-    private DnsKeyAlgorithmType(int type) {
-        this.type = type;
+    private DnsKeyAlgorithmType(String id, int tag) {
+        this.id = id;
+        this.tag = tag;
     }
 
-    public int getType() {
-        return this.type;
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public int getTag() {
+        return this.tag;
     }
 }

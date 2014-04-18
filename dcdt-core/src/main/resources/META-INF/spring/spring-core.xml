@@ -68,6 +68,7 @@
     <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true">
         <beans:property name="basenames">
             <beans:array>
+                <!--suppress SpringModelInspection -->
                 <beans:value>core/core-messages</beans:value>
             </beans:array>
         </beans:property>
@@ -78,6 +79,7 @@
         <beans:property name="basenames">
             <beans:array>
                 <beans:value>org/hibernate/validator/ValidationMessages</beans:value>
+                <!--suppress SpringModelInspection -->
                 <beans:value>core/core-messages-validation</beans:value>
             </beans:array>
         </beans:property>
@@ -87,7 +89,7 @@
     <!--====================================================================================================
     = VALIDATION
     =====================================================================================================-->
-    <beans:bean id="validator" class="org.springframework.validation.beanvalidation.LocalValidatorFactoryBean">
+    <beans:bean id="validator" class="gov.hhs.onc.dcdt.validation.impl.ToolValidatorFactory">
         <beans:property name="messageInterpolator">
             <beans:bean class="org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator">
                 <beans:constructor-arg name="userResourceBundleLocator">
@@ -124,7 +126,9 @@
     <!--====================================================================================================
     = METHOD INVOCATIONS
     =====================================================================================================-->
-    <beans:bean id="setSysProps" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"
+    <beans:bean id="methodInvoke" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"/>
+    
+    <beans:bean id="setSysProps" parent="methodInvoke" abstract="true"
         p:targetObject="#{ systemProperties }"
         p:targetMethod="putAll"/>
 </beans:beans>

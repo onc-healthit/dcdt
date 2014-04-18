@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.validation.impl;
 
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import java.util.LinkedHashSet;
 import java.util.Set;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
@@ -22,11 +24,13 @@ public class ToolValidatorFactory extends LocalValidatorFactoryBean {
     private Configuration<?> config;
     private ParameterNameProvider paramNameProv;
 
-    public BindingResult buildBindingResult(Object obj, Set<ConstraintViolation<Object>> constraintViolations) {
+    @SuppressWarnings({ "unchecked" })
+    public BindingResult buildBindingResult(Object obj, Set<? extends ConstraintViolation<?>> constraintViolations) {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(obj, DataBinder.DEFAULT_OBJECT_NAME);
         bindingResult.initConversion(this.convService);
 
-        this.processConstraintViolations(constraintViolations, bindingResult);
+        this.processConstraintViolations(ToolCollectionUtils.addAll(new LinkedHashSet<ConstraintViolation<Object>>(constraintViolations.size()),
+            ((Set<? extends ConstraintViolation<Object>>) constraintViolations)), bindingResult);
 
         return bindingResult;
     }

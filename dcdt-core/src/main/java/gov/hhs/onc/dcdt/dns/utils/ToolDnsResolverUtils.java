@@ -71,13 +71,14 @@ public abstract class ToolDnsResolverUtils {
         }
     }
 
-    public static DnsResultType findResultType(int result) throws DnsException {
+    @Nullable
+    public static DnsResultType findResultType(int result) {
         for (DnsResultType enumItem : EnumSet.allOf(DnsResultType.class)) {
             if (enumItem.getResult() == result) {
                 return enumItem;
             }
         }
 
-        throw new DnsException(String.format("Unknown DNS result type (result=%d).", result));
+        return null;
     }
 }

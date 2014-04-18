@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
+import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
@@ -103,6 +104,20 @@ public abstract class ToolDnsRecordOrderUtils {
         protected Pair<Integer, T> transformInternal(T record) throws Exception {
             return new ImmutablePair<>((ToolClassUtils.isAssignable(record.getClass(), MXRecord.class)
                 ? ((MXRecord) record).getPriority() : ((SRVRecord) record).getPriority()), record);
+        }
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public static <T extends Record> Iterator<T> buildOrderedIterator(DnsRecordType recordType, Iterable<T> records) {
+        switch (recordType) {
+            case MX:
+                return ((Iterator<T>) buildMxRecordIterator(((Iterable<MXRecord>) records)));
+
+            case SRV:
+                return ((Iterator<T>) buildSrvRecordIterator(((Iterable<SRVRecord>) records)));
+
+            default:
+                return records.iterator();
         }
     }
 

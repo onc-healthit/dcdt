@@ -15,7 +15,7 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseImpl.class) })
-public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseDescription, DiscoveryTestcaseConfig> {
+public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseDescription> {
     public final static class DiscoveryTestcaseCredentialsExtractor extends AbstractToolTransformer<DiscoveryTestcase, List<DiscoveryTestcaseCredential>> {
         public final static DiscoveryTestcaseCredentialsExtractor INSTANCE = new DiscoveryTestcaseCredentialsExtractor();
 

@@ -1,16 +1,14 @@
 package gov.hhs.onc.dcdt.mail.impl;
 
+import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordOrderUtils;
-import gov.hhs.onc.dcdt.mail.BindingType;
 import gov.hhs.onc.dcdt.mail.HasMxRecord;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.validation.constraints.impl.AbstractToolStringConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
-import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.MXRecord;
@@ -27,13 +25,13 @@ public class HasMxRecordConstraintValidator extends AbstractToolStringConstraint
         try {
             DnsLookupResult<MXRecord> mxRecordLookupResult = this.dnsLookupService.lookupMxRecords(mailAddr.toAddressName(BindingType.DOMAIN));
 
-            if (mxRecordLookupResult.getType().isSuccess() && mxRecordLookupResult.hasResolvedAnswers()) {
+            if (mxRecordLookupResult.getType().isSuccess() && mxRecordLookupResult.hasOrderedAnswers()) {
                 DnsLookupResult<ARecord> targetARecordLookupResult;
 
                 // noinspection ConstantConditions
-                for (MXRecord mxRecord : IteratorUtils.asIterable(ToolDnsRecordOrderUtils.buildMxRecordIterator(mxRecordLookupResult.getResolvedAnswers()))) {
+                for (MXRecord mxRecord : mxRecordLookupResult.getOrderedAnswers()) {
                     if ((targetARecordLookupResult = this.dnsLookupService.lookupARecords(mxRecord.getTarget())).getType().isSuccess()
-                        && targetARecordLookupResult.hasResolvedAnswers()) {
+                        && targetARecordLookupResult.hasAnswers()) {
                         return true;
                     }
                 }

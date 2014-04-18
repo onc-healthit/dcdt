@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.mail.impl;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.dns.DnsNameException;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
-import gov.hhs.onc.dcdt.mail.BindingType;
+import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailAddressPart;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
@@ -52,6 +52,10 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
         this.setDomainNamePart(addrParts[addrParts.length - 1]);
     }
 
+    public MailAddressImpl(MailAddress addr) {
+        this(addr.getPersonalPart(), addr.getLocalPart(), addr.getDomainNamePart());
+    }
+
     public MailAddressImpl(@Nullable String localPart, @Nullable String domainNamePart) {
         this(null, localPart, domainNamePart);
     }
@@ -67,8 +71,8 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
     public MailAddress forBindingType(BindingType bindingType) {
         BindingType bindingTypeSelf = this.getBindingType();
 
-        return ((bindingTypeSelf.isBound() && bindingType.isBound()) ? ((bindingType == bindingTypeSelf) ? new MailAddressImpl(this.getLocalPart(),
-            this.getDomainNamePart()) : (bindingType.isDomainBound() ? new MailAddressImpl(null, this.getDomainNamePart()) : null)) : null);
+        return ((!bindingType.isBound() || (bindingType == bindingTypeSelf)) ? new MailAddressImpl(this) : (bindingType.isDomainBound() ? new MailAddressImpl(
+            null, this.getDomainNamePart()) : null));
     }
 
     @Override

@@ -1,36 +1,40 @@
 package gov.hhs.onc.dcdt.testcases.results;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import gov.hhs.onc.dcdt.beans.ToolNamedBean;
-import gov.hhs.onc.dcdt.testcases.steps.ToolTestcaseStep;
+import gov.hhs.onc.dcdt.beans.ToolResultBean;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
+import gov.hhs.onc.dcdt.testcases.ToolTestcase;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
+import gov.hhs.onc.dcdt.testcases.ToolTestcaseSubmission;
 import java.util.List;
 import javax.annotation.Nullable;
 
-public interface ToolTestcaseResult extends ToolNamedBean {
-    @JsonProperty("successful")
-    public boolean isSuccessful();
+public interface ToolTestcaseResult<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>> extends
+    ToolResultBean {
+    public boolean hasDiscoveredCertificateInfo();
 
-    public void setSuccessful(boolean successful);
-
-    public boolean hasMessage();
-
-    @JsonProperty("msg")
     @Nullable
-    public String getMessage();
+    public CertificateInfo getDiscoveredCertificateInfo();
 
-    public void setMessage(@Nullable String message);
+    public boolean hasDiscoveryMessages();
 
-    @JsonProperty("certStr")
-    @Nullable
-    public String getCertificate();
+    public List<String> getDiscoveryMessages();
 
-    public void setCertificate(@Nullable String certStr);
+    public boolean isDiscoverySuccess();
 
-    public boolean hasInfoSteps();
+    public boolean hasProcessedSteps();
 
-    @JsonProperty("infoSteps")
-    @Nullable
-    public List<ToolTestcaseStep> getInfoSteps();
+    public List<CertificateDiscoveryStep> getProcessedSteps();
 
-    public void setInfoSteps(@Nullable List<ToolTestcaseStep> infoSteps);
+    public boolean hasProcessingMessages();
+
+    public List<String> getProcessingMessages();
+
+    public void setProcessingMessages(List<String> procMsgs);
+
+    public boolean isProcessingSuccess();
+
+    public void setProcessingSuccess(boolean procSuccess);
+
+    public V getSubmission();
 }

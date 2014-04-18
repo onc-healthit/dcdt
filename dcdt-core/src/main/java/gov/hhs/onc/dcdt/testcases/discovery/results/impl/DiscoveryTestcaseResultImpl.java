@@ -1,91 +1,71 @@
 package gov.hhs.onc.dcdt.testcases.discovery.results.impl;
 
-import gov.hhs.onc.dcdt.mail.MailInfo;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultCredentialType;
 import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResult;
+import java.util.List;
 import javax.annotation.Nullable;
 
-public class DiscoveryTestcaseResultImpl extends AbstractToolTestcaseResult implements DiscoveryTestcaseResult {
-    private DiscoveryTestcaseCredential credExpected;
-    private DiscoveryTestcaseCredential credFound;
-    private MailInfo mailInfo;
-    private DiscoveryTestcase testcase;
+public class DiscoveryTestcaseResultImpl extends AbstractToolTestcaseResult<DiscoveryTestcaseDescription, DiscoveryTestcase, DiscoveryTestcaseSubmission>
+    implements DiscoveryTestcaseResult {
+    private DiscoveryTestcaseCredential decryptCred;
+    private DiscoveryTestcaseCredential expectedDecryptCred;
+    private CertificateInfo signerCertInfo;
+
+    public DiscoveryTestcaseResultImpl(DiscoveryTestcaseSubmission submission, @Nullable List<CertificateDiscoveryStep> procSteps) {
+        super(submission, procSteps);
+    }
 
     @Override
-    public boolean hasCredential(DiscoveryTestcaseResultCredentialType credType) {
-        return (this.getCredential(credType) != null);
+    public boolean hasDecryptionCredential() {
+        return (this.decryptCred != null);
     }
 
     @Nullable
     @Override
-    public DiscoveryTestcaseCredential getCredential(DiscoveryTestcaseResultCredentialType credType) {
-        return ((credType == DiscoveryTestcaseResultCredentialType.EXPECTED) ? this.credExpected : this.credFound);
+    public DiscoveryTestcaseCredential getDecryptionCredential() {
+        return this.decryptCred;
     }
 
     @Override
-    public boolean hasCredentialExpected() {
-        return this.credExpected != null;
-    }
-
-    @Nullable
-    @Override
-    public DiscoveryTestcaseCredential getCredentialExpected() {
-        return this.credExpected;
+    public void setDecryptionCredential(DiscoveryTestcaseCredential decryptCred) {
+        this.decryptCred = decryptCred;
     }
 
     @Override
-    public void setCredentialExpected(@Nullable DiscoveryTestcaseCredential credExpected) {
-        this.credExpected = credExpected;
-    }
-
-    @Override
-    public boolean hasCredentialFound() {
-        return this.credFound != null;
+    public boolean hasExpectedDecryptionCredential() {
+        return (this.expectedDecryptCred != null);
     }
 
     @Nullable
     @Override
-    public DiscoveryTestcaseCredential getCredentialFound() {
-        return this.credFound;
+    public DiscoveryTestcaseCredential getExpectedDecryptionCredential() {
+        return this.expectedDecryptCred;
     }
 
     @Override
-    public void setCredentialFound(@Nullable DiscoveryTestcaseCredential credFound) {
-        this.credFound = credFound;
+    public void setExpectedDecryptionCredential(DiscoveryTestcaseCredential expectedDecryptCred) {
+        this.expectedDecryptCred = expectedDecryptCred;
     }
 
     @Override
-    public boolean hasMailInfo() {
-        return this.mailInfo != null;
-    }
-
-    @Nullable
-    @Override
-    public MailInfo getMailInfo() {
-        return this.mailInfo;
-    }
-
-    @Override
-    public void setMailInfo(@Nullable MailInfo mailInfo) {
-        this.mailInfo = mailInfo;
-    }
-
-    @Override
-    public boolean hasTestcase() {
-        return this.testcase != null;
+    public boolean hasSignerCertificateInfo() {
+        return (this.signerCertInfo != null);
     }
 
     @Nullable
     @Override
-    public DiscoveryTestcase getTestcase() {
-        return this.testcase;
+    public CertificateInfo getSignerCertificateInfo() {
+        return this.signerCertInfo;
     }
 
     @Override
-    public void setTestcase(@Nullable DiscoveryTestcase testcase) {
-        this.testcase = testcase;
+    public void setSignerCertificateInfo(CertificateInfo signerCertInfo) {
+        this.signerCertInfo = signerCertInfo;
     }
 }
