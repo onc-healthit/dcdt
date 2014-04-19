@@ -90,13 +90,13 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
 
             lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, entryCursor.getSearchResultDone().getLdapResult(), entries);
         } catch (LdapException e) {
-            lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, new LdapResultImpl());
+            lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, buildResult(e));
         } finally {
             if (conn != null) {
                 try {
                     disconnect(connConfig, unBind(connConfig, conn));
                 } catch (LdapException e) {
-                    lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, new LdapResultImpl());
+                    lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, buildResult(e));
                 }
             }
         }

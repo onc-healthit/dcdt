@@ -9,10 +9,13 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoValidator;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoValidator.CertificateInfoValidationConstraintGroup;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolValidationUtils;
 import gov.hhs.onc.dcdt.validation.impl.ToolValidatorFactory;
 import java.util.List;
+import java.util.Set;
 import javax.annotation.Resource;
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -37,8 +40,10 @@ public class CertificateInfoValidatorImpl extends AbstractToolBean implements Ce
         try {
             return this.validateInternal(directAddr, certInfo);
         } catch (ConstraintViolationException e) {
-            return new ImmutablePair<>(false, ToolValidationUtils.buildErrorMessages(this.msgSourceValidation,
-                this.validatorFactory.buildBindingResult(certInfo, e.getConstraintViolations()).getAllErrors()));
+            Set<? extends ConstraintViolation<?>> constraintViolations = e.getConstraintViolations();
+
+            return new ImmutablePair<>(false, ToolListUtils.addFirst(ToolValidationUtils.buildErrorMessages(this.msgSourceValidation, this.validatorFactory
+                .buildBindingResult(certInfo, constraintViolations).getAllErrors()), e.getMessage()));
         }
     }
 

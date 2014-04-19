@@ -48,7 +48,7 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
     @Nullable
     @Override
     public List<Name> getAliases() {
-        return ToolArrayUtils.asList(this.lookup.getAliases());
+        return (this.isSuccess() ? ToolArrayUtils.asList(this.lookup.getAliases()) : null);
     }
 
     @Override
@@ -64,9 +64,7 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
             (this.isSuccess() ? ToolCollectionUtils.collectAssignable(this.recordClass,
                 new ArrayList<T>(CollectionUtils.size((rawAnswers = this.getRawAnswers()))), rawAnswers) : null);
 
-        if (this.hasRecordPredicate() && !CollectionUtils.isEmpty(answers)) {
-            CollectionUtils.filter(answers, this.recordPredicate);
-        }
+        CollectionUtils.filter(answers, this.recordPredicate);
 
         return answers;
     }

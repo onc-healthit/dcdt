@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.discovery.steps.ldap.impl;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.discovery.steps.dns.DnsSrvRecordLookupStep;
+import gov.hhs.onc.dcdt.discovery.steps.ldap.LdapBaseDnLookupStep;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapBaseDnLookupResult;
@@ -22,16 +23,11 @@ import org.xbill.DNS.ARecord;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.SRVRecord;
 
-public class LdapBaseDnLookupStepImpl extends AbstractLdapLookupStep<Dn, LdapBaseDnLookupResult> {
+public class LdapBaseDnLookupStepImpl extends AbstractLdapLookupStep<Dn, LdapBaseDnLookupResult> implements LdapBaseDnLookupStep {
     private final static Logger LOGGER = LoggerFactory.getLogger(LdapBaseDnLookupStepImpl.class);
 
     public LdapBaseDnLookupStepImpl(LdapLookupService lookupService) {
         super(BindingType.DOMAIN, lookupService);
-    }
-
-    @Override
-    public boolean execute(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr) {
-        return super.execute(prevSteps, directAddr);
     }
 
     @Nullable

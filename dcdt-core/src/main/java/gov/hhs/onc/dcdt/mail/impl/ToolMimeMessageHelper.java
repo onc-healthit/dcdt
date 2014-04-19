@@ -73,7 +73,7 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     }
 
     public byte[] write() throws IOException, MessagingException {
-        return this.write(true);
+        return this.write(false);
     }
 
     public byte[] write(boolean raw) throws IOException, MessagingException {
