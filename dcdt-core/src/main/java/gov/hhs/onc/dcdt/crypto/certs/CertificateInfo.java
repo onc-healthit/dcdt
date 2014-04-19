@@ -1,5 +1,8 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import gov.hhs.onc.dcdt.crypto.CryptographyInfo;
 import java.security.cert.X509Certificate;
 import javax.annotation.Nullable;
@@ -8,6 +11,7 @@ import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
 import org.bouncycastle.cert.X509CertificateHolder;
 
+@JsonTypeInfo(use = Id.NONE)
 public interface CertificateInfo extends CertificateDescriptor, CryptographyInfo {
     public boolean hasExtension(ASN1ObjectIdentifier oid) throws CertificateException;
     
@@ -24,6 +28,7 @@ public interface CertificateInfo extends CertificateDescriptor, CryptographyInfo
 
     public boolean hasCertificate();
 
+    @JsonProperty("cert")
     @Nullable
     public X509Certificate getCertificate();
 

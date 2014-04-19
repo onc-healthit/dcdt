@@ -9,6 +9,10 @@ import javax.annotation.Nullable;
 
 public class HostingTestcaseSubmissionImpl extends AbstractToolTestcaseSubmission<HostingTestcaseDescription, HostingTestcase> implements
     HostingTestcaseSubmission {
+    public HostingTestcaseSubmissionImpl() {
+        this(null, null);
+    }
+
     public HostingTestcaseSubmissionImpl(@Nullable HostingTestcase testcase, MailAddress directAddr) {
         super(testcase);
 

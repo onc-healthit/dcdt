@@ -67,7 +67,7 @@
                 testcaseSteps.forEach(function (testcaseStep) {
                     stepElem.append($("<li/>").append($("<strong/>").append(testcaseStep["desc"]["text"])));
                     stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Success: ", testcaseStep["success"]));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Message(s): ", testcaseStep["msgs"]));
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Message(s): ", (testcaseStep["msgs"] || null)));
                     stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Binding Type: ", testcaseStep["bindingType"]));
                     stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Location Type: ", testcaseStep["locType"]));
                 });
