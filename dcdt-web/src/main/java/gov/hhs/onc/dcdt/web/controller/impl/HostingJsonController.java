@@ -40,10 +40,7 @@ public class HostingJsonController extends AbstractToolController {
             HostingTestcaseSubmissionJsonDto reqJsonDto = ToolListUtils.getFirst(reqJsonWrapper.getItems());
 
             if (reqJsonDto != null) {
-                HostingTestcaseSubmission hostingTestcaseSubmission = reqJsonDto.toBean(this.convService);
-
-                respJsonWrapperBuilder.addItems(this.buildHostingTestcaseResultJsonDto(this.hostingTestcaseProc.process(ToolBeanFactoryUtils.createBeanOfType(
-                    this.appContext, HostingTestcaseSubmission.class, hostingTestcaseSubmission.getTestcase(), hostingTestcaseSubmission.getDirectAddress()))));
+                respJsonWrapperBuilder.addItems(this.buildHostingTestcaseResultJsonDto(this.hostingTestcaseProc.process(reqJsonDto.toBean(this.convService))));
             }
         }
 
@@ -51,9 +48,8 @@ public class HostingJsonController extends AbstractToolController {
     }
 
     private HostingTestcaseResultJsonDto buildHostingTestcaseResultJsonDto(HostingTestcaseResult hostingTestcaseResult) throws Exception {
-        HostingTestcaseResultJsonDto hostingTestcaseResultJsonDto =
-            this.appContext.getBean(ToolBeanFactoryUtils.getBeanNameOfType(this.appContext, HostingTestcaseResultJsonDto.class),
-                HostingTestcaseResultJsonDto.class);
+        HostingTestcaseResultJsonDto hostingTestcaseResultJsonDto = ToolBeanFactoryUtils.createBeanOfType(this.appContext, HostingTestcaseResultJsonDto.class);
+        // noinspection ConstantConditions
         hostingTestcaseResultJsonDto.fromBean(this.convService, hostingTestcaseResult);
 
         return hostingTestcaseResultJsonDto;

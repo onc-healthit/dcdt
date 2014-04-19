@@ -8,7 +8,7 @@
                     "data": $.encodeJson({
                         "@type": "request",
                         "items": [
-                            hostingTestcaseSub
+                            hostingTestcaseSubmission
                         ]
                     }),
                     "queryBeanSuccess": function (data, status, jqXhr) {
@@ -28,36 +28,40 @@
             },
             "displayHostingTestcaseResults": function (data) {
                 var hostingTestcaseResult = data["items"][0];
-                var hostingTestcase = hostingTestcaseSub["hostingTestcase"];
-                var directAddr = hostingTestcaseSub["directAddr"];
+                var hostingTestcase = hostingTestcaseSubmission["testcase"];
+                var directAddr = hostingTestcaseSubmission["directAddr"];
                 var testcase = TESTCASES.filter(function (testcase) {
                     return testcase["name"] == hostingTestcase;
                 });
                 testcase = testcase[0];
 
-                var procSteps = testcase["procSteps"];
+                var procSteps = hostingTestcaseResult["procSteps"];
                 var success = hostingTestcaseResult["success"];
                 var msgs = hostingTestcaseResult["msgs"];
+                var discoveredCertInfo = hostingTestcaseResult["discoveredCertInfo"], discoveredCert = (discoveredCertInfo ? discoveredCertInfo["cert"] : null);
 
                 var header = $("<h3/>");
                 $.fn.dcdt.testcases.appendTestcaseResults(header, "Testcase: ", hostingTestcase);
                 $.fn.dcdt.testcases.appendTestcaseResults(header, "Direct Address: ", directAddr);
+                
                 var result = $("<div/>");
                 $.fn.dcdt.testcases.appendTestcaseResults(result, "Success: ", success, true);
-                $.fn.dcdt.testcases.appendTestcaseResults(result, "Messages: ", msgs, true);
-                //$.fn.dcdt.testcases.appendTestcaseResults(result, "Certificate Found: ", certStr, true);
-                //$.fn.dcdt.testcases.appendTestcaseResults(result, "Expected Results: ", "<br/>");
+                $.fn.dcdt.testcases.appendTestcaseResults(result, "Message(s): ", (msgs || null), true);
                 $.fn.dcdt.testcases.buildTestcaseSteps(result, procSteps);
+                $.fn.dcdt.testcases.appendTestcaseResults(result, "Discovered Certificate: ", (!$.isNull(discoveredCert) ? 
+                    $("<pre/>").text(discoveredCert) : null), true);
 
                 hostingTestcaseResults.append(header);
                 hostingTestcaseResults.append(result);
+                
                 hostingTestcaseResults.accordion("refresh");
+                hostingTestcaseResults.accordion({ "active": -1 });
             }
         })
     });
 
     var formTestcasesHosting, testcasesHostingSelect, testcaseHostingDirectAddr,testcaseHostingSubmit, testcaseHostingReset,
-        hostingTestcaseSub, hostingTestcaseResults;
+        hostingTestcaseSubmission, hostingTestcaseResults;
 
     $(document).ready(function () {
         formTestcasesHosting = $("form[name=\"form-testcases-hosting\"]");
@@ -73,10 +77,10 @@
         });
 
         formTestcasesHosting.submit(function (event) {
-            hostingTestcaseSub = {
-                "@type": "hostingTestcaseSub",
-                "hostingTestcase": testcasesHostingSelect.val(),
-                "directAddr": testcaseHostingDirectAddr.val()
+            hostingTestcaseSubmission = {
+                "@type": "hostingTestcaseSubmission",
+                "directAddr": testcaseHostingDirectAddr.val(),
+                "testcase": testcasesHostingSelect.val()
             };
             $.dcdt.hosting.processHostingTestcase();
 

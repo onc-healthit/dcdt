@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.json.impl.AbstractToolBeanJsonDto;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
@@ -9,16 +10,26 @@ import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultJsonDto;
 import java.util.List;
 
-@SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>, W extends ToolTestcaseResult<T, U, V>>
     extends AbstractToolBeanJsonDto<W> implements ToolTestcaseResultJsonDto<T, U, V, W> {
+    protected CertificateInfo discoveredCertInfo;
     protected List<String> msgs;
-    protected List<CertificateDiscoveryStep> processedSteps;
+    protected List<CertificateDiscoveryStep> procSteps;
     protected V submission;
     protected boolean success;
 
     protected AbstractToolTestcaseResultJsonDto(Class<W> beanClass, Class<? extends W> beanImplClass) {
         super(beanClass, beanImplClass);
+    }
+
+    @Override
+    public CertificateInfo getDiscoveredCertificateInfo() {
+        return this.discoveredCertInfo;
+    }
+
+    @Override
+    public void setDiscoveredCertificateInfo(CertificateInfo discoveredCertInfo) {
+        this.discoveredCertInfo = discoveredCertInfo;
     }
 
     @Override
@@ -38,12 +49,12 @@ public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDe
 
     @Override
     public List<CertificateDiscoveryStep> getProcessedSteps() {
-        return this.processedSteps;
+        return this.procSteps;
     }
 
     @Override
-    public void setProcessedSteps(List<CertificateDiscoveryStep> processedSteps) {
-        this.processedSteps = processedSteps;
+    public void setProcessedSteps(List<CertificateDiscoveryStep> procSteps) {
+        this.procSteps = procSteps;
     }
 
     @Override
