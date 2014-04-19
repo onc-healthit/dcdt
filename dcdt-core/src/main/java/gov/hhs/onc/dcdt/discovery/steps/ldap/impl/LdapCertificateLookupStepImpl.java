@@ -29,12 +29,8 @@ import org.apache.directory.api.ldap.model.filter.EqualityNode;
 import org.apache.directory.api.ldap.model.filter.PresenceNode;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class LdapCertificateLookupStepImpl extends AbstractLdapLookupStep<Entry, LdapEntryLookupResult> implements LdapCertificateLookupStep {
-    private final static Logger LOGGER = LoggerFactory.getLogger(LdapCertificateLookupStepImpl.class);
-
     private List<CertificateInfo> certInfos;
 
     public LdapCertificateLookupStepImpl(BindingType bindingType, LdapLookupService lookupService) {
@@ -46,7 +42,7 @@ public class LdapCertificateLookupStepImpl extends AbstractLdapLookupStep<Entry,
     protected LdapEntryLookupResult executeLookup(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr) {
         LdapBaseDnLookupStep baseDnLookupStep = ToolCollectionUtils.findAssignable(LdapBaseDnLookupStep.class, prevSteps);
         LdapBaseDnLookupResult baseDnLookupResult;
-        
+
         // noinspection ConstantConditions
         if (baseDnLookupStep.isSuccess() && (baseDnLookupResult = baseDnLookupStep.getResult()).hasItems()) {
             // noinspection ConstantConditions
@@ -57,13 +53,11 @@ public class LdapCertificateLookupStepImpl extends AbstractLdapLookupStep<Entry,
             LdapEntryLookupResult lookupResult = null;
             CertificateInfo certInfo;
 
-            // noinspection ConstantConditions
-            for (Dn baseDn : baseDnLookupResult.getItems()) {
-                if ((lookupResult = this.lookupService.lookupEntries(baseDnConnConfig, baseDn, lookupFilter, ToolCoreSchemaConstants.ATTR_USER_CERT))
-                    .isSuccess() && lookupResult.hasItems()) {
-                    // noinspection ConstantConditions
-                    this.certInfos = new ArrayList<>(lookupResult.getItems().size());
+            this.certInfos = new ArrayList<>();
 
+            // noinspection ConstantConditions
+            for (Dn baseDn : baseDnLookupResult) {
+                if ((lookupResult = this.lookupService.lookupEntries(baseDnConnConfig, baseDn, lookupFilter)).isSuccess() && lookupResult.hasItems()) {
                     for (Entry entry : lookupResult) {
                         try {
                             this.certInfos.add((certInfo =

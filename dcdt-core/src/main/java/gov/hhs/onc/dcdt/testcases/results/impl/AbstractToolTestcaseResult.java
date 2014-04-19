@@ -27,7 +27,7 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
         this.submission = submission;
 
         // noinspection ConstantConditions
-        this.procSteps = ToolCollectionUtils.addAll(new ArrayList<CertificateDiscoveryStep>(), procSteps);
+        this.procSteps = ToolCollectionUtils.addAll(new ArrayList<CertificateDiscoveryStep>(CollectionUtils.size(procSteps)), procSteps);
     }
 
     @Override

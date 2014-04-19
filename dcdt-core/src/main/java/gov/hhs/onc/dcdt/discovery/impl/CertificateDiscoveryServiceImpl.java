@@ -32,7 +32,7 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
         MailAddress directAddrBound;
         Class<? extends CertificateDiscoveryStep> stepClass;
         BindingType stepBindingType;
-        boolean certDiscovered = false;
+        boolean certDiscovered = false, skipStep;
         List<CertificateDiscoveryStep> processedSteps = new ArrayList<>(steps.size());
         CertificateDiscoveryStep processedStep;
 
@@ -43,23 +43,27 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
 
             processedSteps.add((processedStep = ObjectUtils.clone(step)));
 
+            skipStep = false;
+
             if (!directAddrBoundMap.containsKey((stepBindingType = step.getBindingType()))) {
                 if ((directAddrBound = directAddr.forBindingType(stepBindingType)) == null) {
                     processedStep.getExecutionMessages().add(
                         String.format("Direct address cannot be converted to binding type (%s): %s", stepBindingType.name(), directAddr.toAddress()));
 
-                    break;
+                    skipStep = true;
                 }
 
-                directAddrBoundMap.put(stepBindingType, directAddrBound);
+                if (!skipStep) {
+                    directAddrBoundMap.put(stepBindingType, directAddrBound);
+                }
             }
 
-            if (!processedStep.execute(processedSteps, directAddrBoundMap.get(stepBindingType))) {
+            if (!skipStep && !processedStep.execute(processedSteps, directAddrBoundMap.get(stepBindingType))) {
                 break;
             }
 
             certDiscovered =
-                (ToolClassUtils.isAssignable(stepClass, CertificateLookupStep.class) && ((CertificateLookupStep<?, ?, ?, ?>) processedStep)
+                (!skipStep && ToolClassUtils.isAssignable(stepClass, CertificateLookupStep.class) && ((CertificateLookupStep<?, ?, ?, ?>) processedStep)
                     .hasCertificateInfos());
         }
 

@@ -63,23 +63,15 @@
             },
             "buildTestcaseSteps": function (elem, testcaseSteps) {
                 var stepElem = $("<ol/>");
+                
                 testcaseSteps.forEach(function (testcaseStep) {
-                    var resultType = testcaseStep["resultType"];
-                    stepElem.append($("<li/>").append($("<b/>").append(testcaseStep["desc"]["text"])));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Successful: ", testcaseStep["successful"]));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Result Type: ", resultType));
+                    stepElem.append($("<li/>").append($("<strong/>").append(testcaseStep["desc"]["text"])));
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Success: ", testcaseStep["success"]));
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Message(s): ", testcaseStep["msgs"]));
                     stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Binding Type: ", testcaseStep["bindingType"]));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Location Type: ", testcaseStep["locationType"]));
-                    switch(resultType){
-                        case "DNS_LOOKUP":
-                            stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "DNS Record Type: ", testcaseStep["dnsRecordType"]));
-                            break;
-                        case "CERT_LOOKUP":
-                            stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Certificate Status: ", testcaseStep["certStatus"]));
-                            break;
-                        default: break;
-                    }
+                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Location Type: ", testcaseStep["locType"]));
                 });
+                
                 elem.append(stepElem);
             },
             "clearTestcaseDescription": function (settings) {
