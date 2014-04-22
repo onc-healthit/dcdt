@@ -19,13 +19,8 @@ import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Target;
 
 @Entity(name = "discovery_testcase_cred")
@@ -130,12 +125,9 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
         return this.issuerCred != null;
     }
 
-    @Cascade({ CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH, CascadeType.SAVE_UPDATE, CascadeType.REPLICATE, CascadeType.LOCK,
-        CascadeType.DETACH })
-    @JoinColumns({ @JoinColumn(name = "issuer_name", referencedColumnName = "name") })
-    @ManyToOne(targetEntity = DiscoveryTestcaseCredentialImpl.class, optional = false)
     @Nullable
     @Override
+    @Transient
     public DiscoveryTestcaseCredential getIssuerCredential() {
         return this.issuerCred;
     }

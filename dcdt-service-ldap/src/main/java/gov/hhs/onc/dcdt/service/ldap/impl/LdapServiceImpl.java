@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapCredentialConfig;
 import gov.hhs.onc.dcdt.context.AutoStartup;
+import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.impl.AbstractToolService;
 import gov.hhs.onc.dcdt.service.ldap.LdapService;
@@ -131,6 +132,8 @@ public class LdapServiceImpl extends AbstractToolService implements LdapService 
 
     protected DirectoryService buildDirectoryService(ToolDirectoryServiceBean dirServiceBean) throws LdapServiceException {
         DirectoryService dirService = ToolBeanFactoryUtils.createBeanOfType(this.appContext, DirectoryService.class, dirServiceBean);
+
+        CryptographyUtils.initializeProvider();
 
         try {
             // noinspection ConstantConditions

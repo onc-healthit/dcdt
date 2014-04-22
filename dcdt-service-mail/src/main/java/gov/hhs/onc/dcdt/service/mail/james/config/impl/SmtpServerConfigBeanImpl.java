@@ -6,8 +6,25 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
 public class SmtpServerConfigBeanImpl extends AbstractJamesConfigBean implements SmtpServerConfigBean {
+    private String authReq;
     private String bind;
     private HandlerChainConfigBean handlerChain;
+
+    @Override
+    public boolean hasAuthRequired() {
+        return !StringUtils.isBlank(this.authReq);
+    }
+
+    @Nullable
+    @Override
+    public String getAuthRequired() {
+        return this.authReq;
+    }
+
+    @Override
+    public void setAuthRequired(String authReq) {
+        this.authReq = authReq;
+    }
 
     @Override
     public boolean hasBind() {

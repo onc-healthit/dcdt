@@ -39,7 +39,7 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean {
         @Override
         protected boolean evaluateInternal(DiscoveryTestcaseCredential cred) throws Exception {
             // noinspection ConstantConditions
-            return cred.hasType() && cred.getType().equals(this.credType);
+            return (cred.getType() == this.credType);
         }
     }
 

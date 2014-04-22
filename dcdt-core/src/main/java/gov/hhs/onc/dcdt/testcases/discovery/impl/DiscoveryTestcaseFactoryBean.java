@@ -30,9 +30,17 @@ public class DiscoveryTestcaseFactoryBean extends AbstractToolFactoryBean<Discov
         if (this.discoveryTestcase.hasCredentials()) {
             DiscoveryTestcaseCredentialService discoveryTestcaseCredService =
                 ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseCredentialService.class);
+            boolean discoveryTestcaseIssuerCredLoaded = false;
 
             // noinspection ConstantConditions
             for (DiscoveryTestcaseCredential discoveryTestcaseCred : this.discoveryTestcase.getCredentials()) {
+                if (!discoveryTestcaseIssuerCredLoaded && discoveryTestcaseCred.hasIssuerCredential()) {
+                    // noinspection ConstantConditions
+                    discoveryTestcaseCredService.loadBean(discoveryTestcaseCred.getIssuerCredential());
+
+                    discoveryTestcaseIssuerCredLoaded = true;
+                }
+
                 // noinspection ConstantConditions
                 discoveryTestcaseCredService.loadBean(discoveryTestcaseCred).afterPropertiesSet();
             }

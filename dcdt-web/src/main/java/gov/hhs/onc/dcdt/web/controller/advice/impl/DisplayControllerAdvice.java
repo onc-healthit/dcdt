@@ -34,20 +34,20 @@ public class DisplayControllerAdvice extends AbstractToolControllerAdvice<ModelA
     }
 
     @ModelAttribute("googleAnalyticsConfig")
-    private GoogleAnalyticsConfig getGoogleAnalyticsConfigModelAttribute() {
+    public GoogleAnalyticsConfig getGoogleAnalyticsConfigModelAttribute() {
         return this.googleAnalyticsConfig;
     }
 
     @ModelAttribute("user")
     @Nullable
-    private User getUserModelAttribute() {
+    public User getUserModelAttribute() {
         Object userObj = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         return ToolClassUtils.isAssignable(ToolClassUtils.getClass(userObj), User.class) ? ((User) userObj) : null;
     }
 
     @ModelAttribute("version")
-    private ToolVersion getVersionModelAttribute() {
+    public ToolVersion getVersionModelAttribute() {
         return this.version;
     }
 }

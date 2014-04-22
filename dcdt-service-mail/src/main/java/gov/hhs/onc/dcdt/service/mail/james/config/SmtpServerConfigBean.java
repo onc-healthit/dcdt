@@ -5,6 +5,14 @@ import javax.annotation.Nullable;
 
 @ConfigurationNode(name = "smtpserver")
 public interface SmtpServerConfigBean {
+    public boolean hasAuthRequired();
+
+    @ConfigurationNode
+    @Nullable
+    public String getAuthRequired();
+
+    public void setAuthRequired(String authReq);
+
     public boolean hasBind();
 
     @ConfigurationNode

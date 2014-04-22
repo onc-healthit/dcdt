@@ -26,7 +26,7 @@ public abstract class CryptographyUtils {
     public final static JcaJceHelper PROVIDER_HELPER = new ProviderJcaJceHelper(PROVIDER);
 
     static {
-        Security.addProvider(PROVIDER);
+        initializeProvider();
     }
 
     public static <T extends Enum<T> & CryptographyAlgorithmIdentifier> T findAlgorithmId(Class<T> algEnumClass, AlgorithmIdentifier algId) {
@@ -81,5 +81,10 @@ public abstract class CryptographyUtils {
         }
 
         return null;
+    }
+
+    public static void initializeProvider() {
+        Security.removeProvider(PROVIDER_NAME);
+        Security.addProvider(PROVIDER);
     }
 }

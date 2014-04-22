@@ -36,9 +36,6 @@
     =====================================================================================================-->
     <beans:bean id="hostingTestcase" class="gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase" parent="toolTestcase" abstract="true"/>
     <beans:bean id="hostingTestcaseImpl" class="gov.hhs.onc.dcdt.testcases.hosting.impl.HostingTestcaseImpl" parent="hostingTestcase" abstract="true"/>
-    
-    <beans:bean id="hostingTestcaseNeg" parent="hostingTestcaseImpl" abstract="true"
-        p:negative="true"/>
 
     <beans:bean id="hostingTestcase1" parent="hostingTestcaseImpl"
         p:name="H1_DNS_AB_Normal"
@@ -166,46 +163,6 @@
             <util:list>
                 <beans:ref bean="lookupStepDnsSrvImpl"/>
                 <beans:ref bean="lookupStepLdapBaseDnImpl"/>
-                <beans:ref bean="lookupStepLdapCertDomain"/>
-                <beans:ref bean="certValidationStepImpl"/>
-            </util:list>
-        </beans:property>
-    </beans:bean>
-
-    <beans:bean id="hostingTestcase5" parent="hostingTestcaseNeg"
-        p:name="H5_LDAP_NB_InvalidDirectAddr"
-        p:nameDisplay="H5 - Invalid Direct address for certificate search in LDAP"
-        p:bindingType="NONE"
-        p:locationType="LDAP">
-        <beans:property name="description">
-            <beans:bean parent="hostingTestcaseDescImpl"
-                p:rtmSections="2,3,5,6,7,8,9,10,11,12,13,14,17,19,20,21,22">
-                <beans:property name="instructions">
-                    <dcdt:normalized-string>
-                        Enter a Direct address that is not associated with a X.509 certificate hosted by your system's
-                        LDAP server and then click Submit. DCDT will attempt to discover the certificate but should not
-                        be able to find it, so the server may take up to 15 seconds to display the result on the screen.
-                    </dcdt:normalized-string>
-                </beans:property>
-                <beans:property name="specifications">
-                    <util:list>
-                        <dcdt:normalized-string>RFC 4511: Section 4.5.2</dcdt:normalized-string>
-                        <dcdt:normalized-string>RFC 4511: Appendix A.2</dcdt:normalized-string>
-                    </util:list>
-                </beans:property>
-                <beans:property name="text">
-                    <dcdt:normalized-string>
-                        This test case verifies that your system's LDAP server does not return any X.509 certificates in response
-                        to a query for certificates associated with a Direct address that your system does not support.
-                    </dcdt:normalized-string>
-                </beans:property>
-            </beans:bean>
-        </beans:property>
-        <beans:property name="steps">
-            <util:list>
-                <beans:ref bean="lookupStepDnsSrvImpl"/>
-                <beans:ref bean="lookupStepLdapBaseDnImpl"/>
-                <beans:ref bean="lookupStepLdapCertAddr"/>
                 <beans:ref bean="lookupStepLdapCertDomain"/>
                 <beans:ref bean="certValidationStepImpl"/>
             </util:list>

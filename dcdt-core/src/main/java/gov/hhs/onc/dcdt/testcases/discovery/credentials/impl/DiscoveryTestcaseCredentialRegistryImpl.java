@@ -86,6 +86,7 @@ public class DiscoveryTestcaseCredentialRegistryImpl extends
     @Override
     protected void postRemoveBeans(Iterable<DiscoveryTestcaseCredential> beans) throws ToolBeanRegistryException {
         if (this.discoveryTestcaseIssuerCred != null) {
+            // noinspection ConstantConditions
             ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseCredentialService.class).removeBean(this.discoveryTestcaseIssuerCred);
         }
     }
