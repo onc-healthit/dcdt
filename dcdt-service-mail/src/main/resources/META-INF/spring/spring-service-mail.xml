@@ -475,7 +475,8 @@
     =====================================================================================================-->
     <beans:bean id="configBeanServerSmtp" class="gov.hhs.onc.dcdt.service.mail.james.config.SmtpServerConfigBean" parent="configBeanJames" abstract="true"/>
     <beans:bean id="configBeanServerSmtpImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.SmtpServerConfigBeanImpl" parent="configBeanServerSmtp"
-        abstract="true">
+        abstract="true"
+        p:authRequired="true">
         <beans:property name="handlerChain">
             <beans:bean parent="configBeanHandlerChainImpl"/>
         </beans:property>

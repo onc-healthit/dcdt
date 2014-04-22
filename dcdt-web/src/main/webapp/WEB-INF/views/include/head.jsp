@@ -8,6 +8,7 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<spring:eval expression="T(org.apache.commons.lang3.StringUtils).LF" var="LF" scope="request"/>
 <spring:message var="urlGoogleCodeProject" code="dcdt.web.url.google.code.project" scope="request"/>
 <spring:message var="urlWikiUserGuide" code="dcdt.web.url.wiki.user.guide" scope="request"/>
 <spring:message var="urlWikiFaq" code="dcdt.web.url.wiki.faq" scope="request"/>
@@ -29,9 +30,9 @@
 <spring:url var="urlHosting" value="/hosting" scope="request"/>
 <spring:url var="urlHostingProcess" value="/hosting/process" scope="request"/>
 <spring:url var="urlDiscovery" value="/discovery" scope="request"/>
+<spring:url var="urlDiscoveryAnchor" value="/discovery/anchor" scope="request"/>
 <spring:url var="urlDiscoveryMailMapping" value="/discovery/mail/mapping" scope="request"/>
 <spring:url var="urlDiscoveryMailMappingAdd" value="/discovery/mail/mapping/add" scope="request"/>
-<spring:url var="urlDiscoveryTrustAnchor" value="/discovery/anchor" scope="request"/>
 <c:set var="templateName" scope="request"><tiles:getAsString name="name"/></c:set>
 <c:set var="templateNameProp" scope="request" value="${fn:replace(templateName, '-', '.')}"/>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>

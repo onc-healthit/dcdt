@@ -50,11 +50,8 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
 
     @Override
     public boolean isSuccess() {
-        U testcase;
-
         // noinspection ConstantConditions
-        return (this.submission.hasTestcase() && ((testcase = this.submission.getTestcase()).isOptional() || (testcase.isNegative() != (this
-            .isProcessingSuccess() && this.isDiscoverySuccess()))));
+        return (this.submission.hasTestcase() && (this.submission.getTestcase().isNegative() != (this.isProcessingSuccess() && this.isDiscoverySuccess())));
     }
 
     @Override

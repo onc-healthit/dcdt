@@ -12,7 +12,8 @@
     <p>
         <strong>Step 1: </strong>Download the Testing Tool's trust anchor.<br/>
         <ul>
-            <li><a href="${urlDiscoveryTrustAnchor}" target="_blank"><strong>Download Trust Anchor</strong></a></li>
+            <li><a href="${urlDiscoveryAnchor}" target="discoveryAnchor"><strong>Download Trust Anchor</strong></a></li>
+            <iframe id="testcase-discovery-anchor" name="discoveryAnchor" src="about:blank"></iframe>
         </ul><br/>
         <strong>Step 2: </strong> Upload the anchor to your Direct instance. This will allow you to send messages to our tool.
         <br/><br/>

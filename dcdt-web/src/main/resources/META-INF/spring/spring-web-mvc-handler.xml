@@ -58,7 +58,7 @@
         p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }">
         <beans:property name="handlerComponents">
             <util:list>
-                <beans:bean class="org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver"
+                <beans:bean class="gov.hhs.onc.dcdt.web.handler.impl.ToolExceptionHandlerExceptionResolver"
                     p:contentNegotiationManager-ref="contentNegotiationManager"
                     p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }"/>
                 <beans:bean class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver"
