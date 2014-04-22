@@ -21,12 +21,12 @@
             },
             "buildTestcaseDescription": function (settings, testcase) {
                 var elem = $(this), testcaseDesc = testcase["desc"], testcaseDescElem = $("<div/>");
-                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Negative", testcase["neg"]));
-                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Optional", testcase["opt"]));
-                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Description", testcaseDesc["text"]));
-                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("RTM Sections", testcaseDesc["rtmSections"].join(", ")));
-                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Underlying Specification References", testcaseDesc["specs"]));
-                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem("Instructions", testcaseDesc["instructions"]));
+                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem("Negative", testcase["neg"]));
+                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem("Optional", testcase["opt"]));
+                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem("Description", testcaseDesc["text"]));
+                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem("RTM Sections", testcaseDesc["rtmSections"].join(", ")));
+                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem("Underlying Specification References", testcaseDesc["specs"]));
+                testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem("Instructions", testcaseDesc["instructions"]));
 
                 if (settings) {
                     var postBuildTestcaseDescCallback = settings["postBuildTestcaseDescription"];
@@ -37,42 +37,6 @@
                 }
 
                 return testcaseDescElem;
-            },
-            "buildTestcaseDescriptionItem": function (testcaseDescItemLbl, testcaseDescItemValues) {
-                var testcaseDescItemElem = $("<div/>"), testcaseDescItemLblElem = $("<span/>");
-                testcaseDescItemLblElem.append($("<b/>").text(testcaseDescItemLbl), ": ");
-                testcaseDescItemElem.append(testcaseDescItemLblElem);
-
-                if (!$.isBoolean(testcaseDescItemValues) && !$.isNumeric(testcaseDescItemValues) && (!testcaseDescItemValues ||
-                    $.isEmptyObject(testcaseDescItemValues))) {
-                    testcaseDescItemLblElem.append($("<i/>").text("None"));
-                } else if ($.isArray(testcaseDescItemValues)) {
-                    var testcaseDescItemValuesList = $("<ul/>");
-
-                    testcaseDescItemValues.forEach(function (testcaseDescItemValue) {
-                        testcaseDescItemValuesList.append($("<li/>").append(testcaseDescItemValue));
-                    });
-
-                    testcaseDescItemElem.append(testcaseDescItemValuesList);
-                } else {
-                    testcaseDescItemLblElem.append(($.isBoolean(testcaseDescItemValues) || $.isNumeric(testcaseDescItemValues)) ?
-                        testcaseDescItemValues.toString() : testcaseDescItemValues);
-                }
-
-                return testcaseDescItemElem;
-            },
-            "buildTestcaseSteps": function (elem, testcaseSteps) {
-                var stepElem = $("<ol/>");
-                
-                testcaseSteps.forEach(function (testcaseStep) {
-                    stepElem.append($("<li/>").append($("<strong/>").append(testcaseStep["desc"]["text"])));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Success: ", testcaseStep["success"]));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Message(s): ", (testcaseStep["msgs"] || null)));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Binding Type: ", testcaseStep["bindingType"]));
-                    stepElem.append($.fn.dcdt.testcases.appendTestcaseResults(stepElem, "Location Type: ", testcaseStep["locType"]));
-                });
-                
-                elem.append(stepElem);
             },
             "clearTestcaseDescription": function (settings) {
                 var elem = $(this), testcaseDescElem = elem.dcdt.testcases.testcaseDescription();
@@ -94,14 +58,42 @@
             "testcaseSelect": function () {
                 return $(this).find("select#testcase-select");
             },
-            "appendTestcaseResults": function (elem, testcaseLbl, testcaseValue, hasLineBreak) {
-                elem.append($("<b/>").text(testcaseLbl));
-                $.isNull(testcaseValue) ? elem.append($("<i/>").text("None")) :
-                    ($.isBoolean(testcaseValue) ? elem.append(testcaseValue.toString()) : elem.append(testcaseValue));
-                if(!$.isUndefined(hasLineBreak)) {
-                    elem.append("<br/>");
+            "buildTestcaseSteps": function (testcaseStepsLbl, testcaseSteps) {
+                var testcaseStepsList = $("<ol/>");
+                
+                testcaseSteps.forEach(function (testcaseStep) {
+                    testcaseStepsList.append($("<li/>").append($.fn.dcdt.testcases.buildTestcaseItem(testcaseStep["desc"]["text"], [
+                        $.fn.dcdt.testcases.buildTestcaseItem("Success", testcaseStep["success"]),
+                        $.fn.dcdt.testcases.buildTestcaseItem("Message(s)", testcaseStep["msgs"]),
+                        $.fn.dcdt.testcases.buildTestcaseItem("Binding Type", testcaseStep["bindingType"]),
+                        $.fn.dcdt.testcases.buildTestcaseItem("Location Type", testcaseStep["locType"])
+                    ])));
+                });
+                
+                return $.fn.dcdt.testcases.buildTestcaseItem(testcaseStepsLbl, testcaseStepsList);
+            },
+            "buildTestcaseItem": function (testcaseItemLbl, testcaseItemValues) {
+                var testcaseItemElem = $("<div/>"), testcaseItemLblElem = $("<span/>");
+                testcaseItemLblElem.append($("<strong/>").text(testcaseItemLbl), ": ");
+                testcaseItemElem.append(testcaseItemLblElem);
+                
+                if (!$.isBoolean(testcaseItemValues) && !$.isNumeric(testcaseItemValues) && (!testcaseItemValues ||
+                    $.isEmptyObject(testcaseItemValues))) {
+                    testcaseItemLblElem.append($("<i/>").text("None"));
+                } else if ($.isArray(testcaseItemValues)) {
+                    var testcaseItemValuesList = $("<ul/>");
+
+                    testcaseItemValues.forEach(function (testcaseItemValue) {
+                        testcaseItemValuesList.append($("<li/>").append(testcaseItemValue));
+                    });
+
+                    testcaseItemElem.append(testcaseItemValuesList);
+                } else {
+                    testcaseItemLblElem.append(($.isBoolean(testcaseItemValues) || $.isNumeric(testcaseItemValues)) ?
+                        testcaseItemValues.toString() : testcaseItemValues);
                 }
-                elem.append(("<br/>"));
+
+                return testcaseItemElem;
             }
         })
     });

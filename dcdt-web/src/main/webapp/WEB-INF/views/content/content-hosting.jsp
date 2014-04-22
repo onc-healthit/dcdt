@@ -34,17 +34,17 @@
             <tr>
                 <td><b>My system stores address-bound certificates</b></td>
                 <td>H1</td>
-                <td>H3, H5</td>
+                <td>H3</td>
             </tr>
             <tr>
                 <td><b>My system stores domain-bound certificates</b></td>
                 <td>H2</td>
-                <td>H4, H5</td>
+                <td>H4</td>
             </tr>
         </tbody>
     </table>
 </div>
-<form name="form-testcases-hosting">
+<form name="form-testcases-hosting" action="about:blank" method="post" target="testcase-target">
     <div id="testcase-info" class="input-group-sm">
         <div class="form-group form-group-addons">
             <div class="has-error">
@@ -68,7 +68,7 @@
                 </span>
                 <span class="form-cell form-cell-control">
                     <select id="testcase-select" class="input-sm form-control" name="testcase">
-                        <option>-- No testcase selected --</option>
+                        <option value="">-- No testcase selected --</option>
                         <c:forEach var="testcase" items="${testcases}">
                             <option value=${testcase.name}>${testcase.nameDisplay}</option>
                         </c:forEach>
@@ -98,7 +98,7 @@
                     </tiles:insertDefinition>:
                 </span>
                 <span class="form-cell form-cell-control">
-                    <input id="testcase-hosting-direct-addr" class="input-sm form-control" name="directAddress" type="text"/>
+                    <input id="testcase-hosting-direct-addr" class="input-sm form-control" name="directAddress" type="text" disabled="disabled"/>
                 </span>
             </div>
         </div>
@@ -130,7 +130,7 @@
     </div>
     <div id="testcase-results" class="input-group-sm">
         <div class="form-group">
-            <div id="testcase-results-header">
+            <div>
                 <span class="form-cell form-cell-label">
                     <tiles:insertDefinition name="component-glyph-label">
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-certificate glyphicon-type-info"/>
@@ -140,5 +140,7 @@
             </div>
         </div>
         <div id="testcase-results-accordion"></div>
+        <i>None</i>
     </div>
 </form>
+<iframe id="testcase-target" class="hide" name="testcase-target" src="about:blank"></iframe> 

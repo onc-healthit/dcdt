@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
-import gov.hhs.onc.dcdt.crypto.certs.impl.CertificatePathConstraintValidator;
-import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoPathConstraintValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -14,20 +13,20 @@ import javax.validation.ReportAsSingleViolation;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.ConstraintComposition;
 
-@Constraint(validatedBy = { CertificatePathConstraintValidator.class })
+@Constraint(validatedBy = { CertificateInfoPathConstraintValidator.class })
 @ConstraintComposition
 @Documented
 @Inherited
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
-public @interface CertificatePath {
+@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
+public @interface CertificateInfoPath {
     @Documented
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+    @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
     public @interface List {
-        CertificatePath[] value();
+        CertificateInfoPath[] value();
     }
 
     String message() default StringUtils.EMPTY;
@@ -35,6 +34,4 @@ public @interface CertificatePath {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-    Class<?>[] parameterClasses() default { MailAddress.class, CertificateInfo.class };
 }

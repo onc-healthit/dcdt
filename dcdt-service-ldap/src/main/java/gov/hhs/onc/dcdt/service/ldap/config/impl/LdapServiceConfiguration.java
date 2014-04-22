@@ -111,8 +111,8 @@ public class LdapServiceConfiguration {
         return new AvlPartition(schemaManager);
     }
 
-    private static Set<Index<?, String>> createAvlIndexes(List<IndexBean> indexBeans) throws Exception {
-        Set<Index<?, String>> indexes = new HashSet<>(indexBeans.size());
+    private static Set<Index<?, ?, String>> createAvlIndexes(List<IndexBean> indexBeans) throws Exception {
+        Set<Index<?, ?, String>> indexes = new HashSet<>(indexBeans.size());
 
         for (IndexBean indexBean : indexBeans) {
             if (indexBean.isEnabled() && ToolClassUtils.isAssignable(indexBean.getClass(), AvlIndexBean.class)) {
@@ -123,8 +123,8 @@ public class LdapServiceConfiguration {
         return indexes;
     }
 
-    private static AvlIndex<?> createAvlIndex(AvlIndexBean avlIndexBean) throws Exception {
-        AvlIndex<Entry> avlIndex = new AvlIndex<>(avlIndexBean.getIndexAttributeId(), avlIndexBean.getIndexHasReverse());
+    private static AvlIndex<?, ?> createAvlIndex(AvlIndexBean avlIndexBean) throws Exception {
+        AvlIndex<String, Entry> avlIndex = new AvlIndex<>(avlIndexBean.getIndexAttributeId(), avlIndexBean.getIndexHasReverse());
         avlIndex.setCacheSize(avlIndexBean.getIndexCacheSize());
 
         return avlIndex;

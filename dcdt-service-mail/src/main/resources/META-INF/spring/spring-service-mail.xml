@@ -475,8 +475,7 @@
     =====================================================================================================-->
     <beans:bean id="configBeanServerSmtp" class="gov.hhs.onc.dcdt.service.mail.james.config.SmtpServerConfigBean" parent="configBeanJames" abstract="true"/>
     <beans:bean id="configBeanServerSmtpImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.SmtpServerConfigBeanImpl" parent="configBeanServerSmtp"
-        abstract="true"
-        p:authRequired="true">
+        abstract="true">
         <beans:property name="handlerChain">
             <beans:bean parent="configBeanHandlerChainImpl"/>
         </beans:property>
@@ -495,6 +494,7 @@
                 <beans:property name="servers">
                     <util:list>
                         <beans:bean parent="configBeanServerSmtpImpl"
+                            p:authorizedAddresses="#{ ipAddrLoopback.hostAddress }"
                             p:bind="#{ ipAddrLocalAny.hostAddress }:${dcdt.instance.mail.james.smtp.1.port}"/>
                     </util:list>
                 </beans:property>

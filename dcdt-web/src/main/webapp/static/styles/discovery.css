@@ -1,9 +1,4 @@
-iframe#testcase-discovery-anchor {
-    display: none;
-}
-
 div#testcase-discovery-direct-addr {
-    display: none;
     font-size: 13px;
 }
 

@@ -20,13 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xbill.DNS.CERTRecord;
 
 public class DnsCertRecordLookupStepImpl extends AbstractDnsLookupStep<CERTRecord> implements DnsCertRecordLookupStep {
-    private final static Logger LOGGER = LoggerFactory.getLogger(DnsCertRecordLookupStepImpl.class);
-
     private List<CertificateInfo> certInfos;
 
     public DnsCertRecordLookupStepImpl(BindingType bindingType, DnsLookupService lookupService) {
@@ -47,7 +43,7 @@ public class DnsCertRecordLookupStepImpl extends AbstractDnsLookupStep<CERTRecor
                     this.certInfos.add((certInfo =
                         new CertificateInfoImpl(CertificateUtils.readCertificate(certRecord.getCert(), CertificateType.X509, DataEncoding.DER))));
 
-                    LOGGER.trace(String.format(
+                    this.execMsgs.add(String.format(
                         "DNS lookup (directAddr=%s) CERT record (keyAlg=%s, certType=%s) certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
                         directAddr.toAddress(), CryptographyUtils.findTaggedId(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()),
                         CryptographyUtils.findTaggedId(DnsCertificateType.class, certRecord.getCertType()), certInfo.getSubjectName(),

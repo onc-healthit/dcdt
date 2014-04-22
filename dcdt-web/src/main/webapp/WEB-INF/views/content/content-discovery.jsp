@@ -13,7 +13,7 @@
         <strong>Step 1: </strong>Download the Testing Tool's trust anchor.<br/>
         <ul>
             <li><a href="${urlDiscoveryAnchor}" target="discoveryAnchor"><strong>Download Trust Anchor</strong></a></li>
-            <iframe id="testcase-discovery-anchor" name="discoveryAnchor" src="about:blank"></iframe>
+            <iframe id="testcase-discovery-anchor" class="hide" name="discoveryAnchor" src="about:blank"></iframe>
         </ul><br/>
         <strong>Step 2: </strong> Upload the anchor to your Direct instance. This will allow you to send messages to our tool.
         <br/><br/>
@@ -51,7 +51,7 @@
                 </span>
                 <span class="form-cell form-cell-control">
                     <select id="testcase-select" class="input-sm form-control" name="discoveryTestcase">
-                        <option>-- No testcase selected --</option>
+                        <option value="">-- No testcase selected --</option>
                         <c:forEach var="testcase" items="${testcases}">
                             <option value=${testcase.name}>${testcase.nameDisplay}</option>
                         </c:forEach>

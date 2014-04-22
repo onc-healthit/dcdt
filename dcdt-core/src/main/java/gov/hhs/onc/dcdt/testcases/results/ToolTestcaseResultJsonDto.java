@@ -28,6 +28,13 @@ public interface ToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U 
 
     public void setProcessedSteps(List<CertificateDiscoveryStep> procSteps);
 
+    public boolean hasProcessingMessages();
+
+    @JsonProperty("procMsgs")
+    public List<String> getProcessingMessages();
+
+    public void setProcessingMessages(List<String> procMsgs);
+
     // @JsonProperty("submission")
     public V getSubmission();
 

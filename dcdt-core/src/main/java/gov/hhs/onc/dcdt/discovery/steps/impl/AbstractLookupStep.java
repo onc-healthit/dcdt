@@ -29,17 +29,6 @@ public abstract class AbstractLookupStep<T extends Serializable, U extends Enum<
     }
 
     @Override
-    public List<String> getMessages() {
-        List<String> msgs = super.getMessages();
-
-        if (this.hasResult()) {
-            msgs.addAll(this.result.getMessages());
-        }
-
-        return msgs;
-    }
-
-    @Override
     public boolean isSuccess() {
         return (super.isSuccess() && this.hasResult() && this.result.isSuccess());
     }

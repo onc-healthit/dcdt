@@ -5,23 +5,22 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoSubjectAltNames;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateValidationInfo;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import java.security.cert.X509Certificate;
 import java.util.Objects;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.constraintvalidation.SupportedValidationTarget;
-import javax.validation.constraintvalidation.ValidationTarget;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 
-@SupportedValidationTarget({ ValidationTarget.PARAMETERS })
 public class CertificateInfoSubjectAltNamesConstraintValidator extends AbstractCertificateInfoConstraintValidator<CertificateInfoSubjectAltNames> {
     @Override
-    protected boolean isValidInternal(MailAddress directAddr, CertificateInfo certInfo, ConstraintValidatorContext validatorContext) throws Exception {
+    protected boolean isValidInternal(CertificateValidationInfo certValidInfo, ConstraintValidatorContext validatorContext) throws Exception {
+        CertificateInfo certInfo = certValidInfo.getCertificateInfo();
         X509Certificate cert = certInfo.getCertificate();
         CertificateName certSubjName = certInfo.getSubjectName();
-        MailAddress certSubjAltNameDirectAddr, certSubjDnDirectAddr, directAddrBound;
+        MailAddress directAddr = certValidInfo.getDirectAddress(), directAddrBound, certSubjAltNameDirectAddr, certSubjDnDirectAddr;
 
         // noinspection ConstantConditions
         if (certSubjName.hasAltName(CertificateAltNameType.RFC822_NAME)) {

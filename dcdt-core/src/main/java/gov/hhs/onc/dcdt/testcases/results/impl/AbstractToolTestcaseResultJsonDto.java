@@ -14,6 +14,7 @@ public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDe
     extends AbstractToolBeanJsonDto<W> implements ToolTestcaseResultJsonDto<T, U, V, W> {
     protected CertificateInfo discoveredCertInfo;
     protected List<String> msgs;
+    protected List<String> procMsgs;
     protected List<CertificateDiscoveryStep> procSteps;
     protected V submission;
     protected boolean success;
@@ -34,12 +35,12 @@ public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDe
 
     @Override
     public boolean hasMessages() {
-        return !this.getMessages().isEmpty();
+        return !this.msgs.isEmpty();
     }
 
     @Override
     public List<String> getMessages() {
-        return this.msgs;
+        return msgs;
     }
 
     @Override
@@ -55,6 +56,21 @@ public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDe
     @Override
     public void setProcessedSteps(List<CertificateDiscoveryStep> procSteps) {
         this.procSteps = procSteps;
+    }
+
+    @Override
+    public boolean hasProcessingMessages() {
+        return !this.procMsgs.isEmpty();
+    }
+
+    @Override
+    public List<String> getProcessingMessages() {
+        return procMsgs;
+    }
+
+    @Override
+    public void setProcessingMessages(List<String> procMsgs) {
+        this.procMsgs = procMsgs;
     }
 
     @Override

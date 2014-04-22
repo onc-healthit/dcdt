@@ -17,15 +17,11 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.SRVRecord;
 
 public class LdapBaseDnLookupStepImpl extends AbstractLdapLookupStep<Dn, LdapBaseDnLookupResult> implements LdapBaseDnLookupStep {
-    private final static Logger LOGGER = LoggerFactory.getLogger(LdapBaseDnLookupStepImpl.class);
-
     public LdapBaseDnLookupStepImpl(LdapLookupService lookupService) {
         super(BindingType.DOMAIN, lookupService);
     }
@@ -56,7 +52,7 @@ public class LdapBaseDnLookupStepImpl extends AbstractLdapLookupStep<Dn, LdapBas
                         if ((srvRecordTargetLookupResult = srvRecordLookupStep.getLookupService().lookupARecords((connTarget = srvRecord.getTarget())))
                             .isSuccess() && srvRecordTargetLookupResult.hasAnswers()) {
                             // noinspection ConstantConditions
-                            LOGGER.trace(String.format("DNS SRV record (name=%s, target=%s, port=%d) target address resolution was successful: [%s]", connName,
+                            this.execMsgs.add(String.format("DNS SRV record (name=%s, target=%s, port=%d) target address resolution was successful: [%s]", connName,
                                 connTarget, connPort, (connHost =
                                     ToolListUtils.getFirst(srvRecordTargetLookupResult.getAnswers()).getAddress().getHostAddress())));
                         } else {
@@ -71,7 +67,7 @@ public class LdapBaseDnLookupStepImpl extends AbstractLdapLookupStep<Dn, LdapBas
                         connConfig.setLdapHost(connHost);
 
                         if ((lookupResult = this.lookupService.lookupBaseDns(connConfig)).isSuccess()) {
-                            LOGGER.trace(String.format("LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) was successful: [%s]", connHost, connPort,
+                            this.execMsgs.add(String.format("LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) was successful: [%s]", connHost, connPort,
                                 ToolStringUtils.joinDelimit(lookupResult, ", ")));
 
                             return lookupResult;
