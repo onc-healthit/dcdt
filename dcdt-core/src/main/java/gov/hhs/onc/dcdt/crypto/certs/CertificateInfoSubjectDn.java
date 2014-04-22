@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoSubjectDnConstraintValidator;
-import gov.hhs.onc.dcdt.mail.MailAddress;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -20,12 +19,12 @@ import org.hibernate.validator.constraints.ConstraintComposition;
 @Inherited
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+@Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
 public @interface CertificateInfoSubjectDn {
     @Documented
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
-    @Target({ ElementType.METHOD, ElementType.ANNOTATION_TYPE })
+    @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
     public @interface List {
         CertificateInfoSubjectDn[] value();
     }
@@ -35,6 +34,4 @@ public @interface CertificateInfoSubjectDn {
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
-
-    Class<?>[] parameterClasses() default { MailAddress.class, CertificateInfo.class };
 }

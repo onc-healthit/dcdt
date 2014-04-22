@@ -36,7 +36,7 @@ public class HostingTestcaseProcessorFunctionalTests extends AbstractToolFunctio
     @Value("${dcdt.test.hosting.ldap.no.bound.direct.addr.1}")
     private MailAddress testLdapNoBoundDirectAddr;
 
-    @Test
+    @Test(enabled = false)
     public void testProcess() {
         HostingTestcaseResult hostingTestcaseResult;
 

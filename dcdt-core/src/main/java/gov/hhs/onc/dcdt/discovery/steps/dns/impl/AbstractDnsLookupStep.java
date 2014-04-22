@@ -51,7 +51,7 @@ public abstract class AbstractDnsLookupStep<T extends Record> extends AbstractLo
             Name directAddrName = this.buildDirectAddressName(directAddr);
 
             if ((lookupResult = this.lookupService.lookupRecords(this.recordType, this.recordClass, directAddrName, this.recordPredicate)).isSuccess()) {
-                LOGGER.trace(String.format("DNS lookup (recordType=%s, directAddrName=%s) was successful: [%s]", this.recordType.getTypeDisplay(),
+                this.execMsgs.add(String.format("DNS lookup (recordType=%s, directAddrName=%s) was successful: [%s]", this.recordType.getTypeDisplay(),
                     directAddrName, ToolStringUtils.joinDelimit(lookupResult, ", ")));
             } else {
                 this.execMsgs.add(String.format("DNS lookup (recordType=%s, directAddrName=%s) failed (type=%s).", this.recordType.getTypeDisplay(),

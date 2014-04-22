@@ -1,23 +1,21 @@
 package gov.hhs.onc.dcdt.crypto.certs.impl;
 
-import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoActiveInterval;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoActiveInterval;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval;
-import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateValidationInfo;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import javax.validation.ConstraintValidatorContext;
-import javax.validation.constraintvalidation.SupportedValidationTarget;
-import javax.validation.constraintvalidation.ValidationTarget;
 
-@SupportedValidationTarget({ ValidationTarget.PARAMETERS })
 public class CertificateInfoActiveIntervalConstraintValidator extends AbstractCertificateInfoConstraintValidator<CertificateInfoActiveInterval> {
     private final static DateFormat DATE_FORMAT_CERT_VALID_INTERVAL_BOUNDARY = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
     @Override
-    protected boolean isValidInternal(MailAddress directAddr, CertificateInfo certInfo, ConstraintValidatorContext validatorContext) throws Exception {
+    protected boolean isValidInternal(CertificateValidationInfo certValidInfo, ConstraintValidatorContext validatorContext) throws Exception {
+        CertificateInfo certInfo = certValidInfo.getCertificateInfo();
         X509Certificate cert = certInfo.getCertificate();
         CertificateValidInterval certValidInterval = certInfo.getValidInterval();
 

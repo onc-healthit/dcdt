@@ -1,30 +1,32 @@
-div#testcase-info {
-    float: left;
-}
-
-div#testcase-desc {
-    width: 695px;
-}
-
-div#testcase-desc div > div {
-    margin: 15px;
-}
-
-div#testcase-results {
-    width: 430px;
-    margin-left: 15px;
-    float: left;
-}
-
-div#testcase-results-header {
-    margin-left: 70px;
-}
-
-.ui-accordion-content {
-    font-family: "Tahoma", sans-serif;
-    font-size: 11px;
-}
-
-.has-error {
+div.input-group-sm#testcase-info .has-error {
     width: 640px;
+}
+
+div.input-group-sm#testcase-info div#testcase-desc div > div,
+div.input-group-sm#testcase-results div#testcase-results-accordion div > div {
+    margin: 5px;
+}
+
+div.input-group-sm#testcase-results {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dotted black;
+}
+
+div.input-group-sm#testcase-results div.form-group span.form-cell.form-cell-label {
+    text-align: left;
+}
+
+div.input-group-sm#testcase-results div#testcase-results-accordion:not(:empty) + i {
+    display: none;
+}
+
+div.input-group-sm#testcase-results div#testcase-results-accordion h3.ui-accordion-header {
+    background: linear-gradient(to bottom, rgb(255, 255, 255) 0, rgb(220, 220, 220) 100%) repeat-x;
+    border-color: rgb(200, 200, 200);
+}
+
+div.input-group-sm#testcase-results div#testcase-results-accordion div.ui-accordion-content {
+    padding: 5px;
+    font-size: 11px;
 }

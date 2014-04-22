@@ -17,7 +17,7 @@ $(document).ready(function () {
                         });
                     }
                     
-                    testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseDescriptionItem($.capitalize(testcaseDiscoveryCredsType) + " Certificate(s)",
+                    testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem($.capitalize(testcaseDiscoveryCredsType) + " Certificate(s)",
                         testcaseDiscoveryCredDescElems));
                 });
                 
@@ -31,25 +31,25 @@ $(document).ready(function () {
                     var testcaseDiscoveryCredDesc = testcaseDiscoveryCred["desc"], testcaseDiscoveryCredLoc = testcaseDiscoveryCred["loc"],
                         testcaseDiscoveryCredLocType = testcaseDiscoveryCredLoc["type"], testcaseDiscoveryCredLocElems = [];
                     
-                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Valid", testcaseDiscoveryCred["valid"]));
-                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Binding Type", testcaseDiscoveryCred["bindingType"]));
+                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseItem("Valid", testcaseDiscoveryCred["valid"]));
+                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseItem("Binding Type", testcaseDiscoveryCred["bindingType"]));
                     
-                    testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Type", testcaseDiscoveryCredLocType));
-                    testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Mail Address", testcaseDiscoveryCredLoc["mailAddr"]));
+                    testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseItem("Type", testcaseDiscoveryCredLocType));
+                    testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseItem("Mail Address", testcaseDiscoveryCredLoc["mailAddr"]));
                     
                     if (testcaseDiscoveryCredLocType == "LDAP") {
                         var testcaseDiscoveryCredLocLdapConfig = testcaseDiscoveryCredLoc["ldapConfig"];
                         
-                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Host",
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseItem("Host",
                             testcaseDiscoveryCredLocLdapConfig["host"]));
-                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Port",
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseItem("Port",
                             testcaseDiscoveryCredLocLdapConfig["port"]));
                     }
                     
-                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Location", testcaseDiscoveryCredLocElems));
+                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseItem("Location", testcaseDiscoveryCredLocElems));
                     
-                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseDescriptionItem("Description", testcaseDiscoveryCredDesc["text"]));
-                    testcaseDiscoveryCredDescElems = elem.dcdt.testcases.buildTestcaseDescriptionItem(testcaseDiscoveryCred["nameDisplay"],
+                    testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseItem("Description", testcaseDiscoveryCredDesc["text"]));
+                    testcaseDiscoveryCredDescElems = elem.dcdt.testcases.buildTestcaseItem(testcaseDiscoveryCred["nameDisplay"],
                         testcaseDiscoveryCredDescElems);
                 }
                 
