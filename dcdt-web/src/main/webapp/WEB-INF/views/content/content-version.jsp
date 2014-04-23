@@ -7,7 +7,7 @@
 <%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
-<%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <div id="version-modules">
     <c:forEach var="moduleVersion" items="${version.moduleVersions}">
         <div class="version-module">

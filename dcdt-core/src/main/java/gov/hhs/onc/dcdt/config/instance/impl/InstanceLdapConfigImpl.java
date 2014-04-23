@@ -43,7 +43,8 @@ public class InstanceLdapConfigImpl extends AbstractToolConnectionBean implement
 
     private LdapConnectionConfig toConnectionConfig(InstanceLdapCredentialConfig credConfig) {
         LdapConnectionConfig ldapConnConfig = new LdapConnectionConfig();
-        ldapConnConfig.setLdapHost(this.host.getHostAddress());
+        // noinspection ConstantConditions
+        ldapConnConfig.setLdapHost(this.getHost(true).getHostAddress());
         ldapConnConfig.setLdapPort(this.port);
         ldapConnConfig.setUseSsl(this.isSsl());
         ldapConnConfig.setUseTls((this.sslType == LdapSslType.TLS));

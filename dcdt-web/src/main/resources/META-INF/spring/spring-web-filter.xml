@@ -20,26 +20,40 @@
         p:confReloadCheckInterval="30"
         p:statusPath="/urlrewrite/status"/>
     
-    <beans:bean id="charEncodingFilter" class="org.springframework.web.filter.CharacterEncodingFilter"
-        p:encoding="#{ charsetUtf8.name() }"
-        p:forceEncoding="true"/>
+    <beans:bean id="charEncFilter" class="gov.hhs.onc.dcdt.web.filter.impl.ToolCharacterEncodingFilter"
+        p:encoding-ref="charsetUtf8">
+        <beans:property name="contentTypes">
+            <util:set>
+                <beans:value>#{ T(gov.hhs.onc.dcdt.web.media.WebContentTypes).APP_JAVASCRIPT }</beans:value>
+                <beans:value>#{ T(org.springframework.http.MediaType).APPLICATION_JSON }</beans:value>
+                <beans:value>#{ T(org.springframework.http.MediaType).APPLICATION_XHTML_XML }</beans:value>
+                <beans:value>#{ T(org.springframework.http.MediaType).APPLICATION_XML }</beans:value>
+                <beans:value>#{ T(gov.hhs.onc.dcdt.web.media.WebContentTypes).TEXT_CSS }</beans:value>
+                <beans:value>#{ T(org.springframework.http.MediaType).TEXT_HTML }</beans:value>
+                <beans:value>#{ T(gov.hhs.onc.dcdt.web.media.WebContentTypes).TEXT_JAVASCRIPT }</beans:value>
+                <beans:value>#{ T(org.springframework.http.MediaType).TEXT_PLAIN }</beans:value>
+                <beans:value>#{ T(org.springframework.http.MediaType).TEXT_XML }</beans:value>
+            </util:set>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="jTidyFilter" class="gov.hhs.onc.dcdt.web.filter.impl.ToolJTidyFilter">
         <beans:property name="config">
             <util:map>
-                <beans:entry key="char-encoding" value="UTF-8"/>
+                <beans:entry key="char-encoding" value="#{ charsetUtf8.name() }"/>
                 <beans:entry key="force-output" value="true"/>
                 <beans:entry key="indent" value="auto"/>
                 <beans:entry key="indent-spaces" value="4"/>
                 <beans:entry key="join-styles" value="false"/>
                 <beans:entry key="literal-attributes" value="true"/>
-                <beans:entry key="output-encoding" value="UTF-8"/>
+                <beans:entry key="output-encoding" value="#{ charsetUtf8.name() }"/>
                 <beans:entry key="trim-empty-elements" value="false"/>
                 <beans:entry key="wrap" value="160"/>
             </util:map>
         </beans:property>
-        <beans:property name="filterContentTypes">
+        <beans:property name="contentTypes">
             <util:set>
+                <beans:value>#{ T(org.springframework.http.MediaType).APPLICATION_XHTML_XML }</beans:value>
                 <beans:value>#{ T(org.springframework.http.MediaType).TEXT_HTML }</beans:value>
             </util:set>
         </beans:property>

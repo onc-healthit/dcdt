@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.mail;
 
+import gov.hhs.onc.dcdt.net.mime.CoreContentTypes;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -34,25 +35,25 @@ public final class MailContentTypes {
     public final static String MICALG_PARAM_NAME = "micalg";
 
     public final static String APP_PKCS7_MIME_SUBTYPE = "pkcs7-mime";
-    public final static MimeType APP_PKCS7_MIME_ENV = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_PKCS7_MIME_SUBTYPE, SMIME_TYPE_ENV_DATA_PARAM,
+    public final static MimeType APP_PKCS7_MIME_ENV = ToolMimeTypeUtils.valueOf(CoreContentTypes.APP_TYPE, APP_PKCS7_MIME_SUBTYPE, SMIME_TYPE_ENV_DATA_PARAM,
         NAME_SMIME_MIME_PARAM);
-    public final static MimeType APP_PKCS7_MIME_SIGNED = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_PKCS7_MIME_SUBTYPE,
+    public final static MimeType APP_PKCS7_MIME_SIGNED = ToolMimeTypeUtils.valueOf(CoreContentTypes.APP_TYPE, APP_PKCS7_MIME_SUBTYPE,
         SMIME_TYPE_SIGNED_DATA_PARAM);
     public final static String APP_PKCS7_MIME_BASETYPE = ToolMimeTypeUtils.getBaseType(APP_PKCS7_MIME_ENV);
 
     public final static String APP_X_PKCS7_MIME_SUBTYPE = "x-" + APP_PKCS7_MIME_SUBTYPE;
-    public final static MimeType APP_X_PKCS7_MIME_ENV = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_X_PKCS7_MIME_SUBTYPE,
+    public final static MimeType APP_X_PKCS7_MIME_ENV = ToolMimeTypeUtils.valueOf(CoreContentTypes.APP_TYPE, APP_X_PKCS7_MIME_SUBTYPE,
         SMIME_TYPE_ENV_DATA_PARAM, NAME_SMIME_MIME_PARAM);
-    public final static MimeType APP_X_PKCS7_MIME_SIGNED = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_X_PKCS7_MIME_SUBTYPE,
+    public final static MimeType APP_X_PKCS7_MIME_SIGNED = ToolMimeTypeUtils.valueOf(CoreContentTypes.APP_TYPE, APP_X_PKCS7_MIME_SUBTYPE,
         SMIME_TYPE_SIGNED_DATA_PARAM);
     public final static String APP_X_PKCS7_MIME_BASETYPE = ToolMimeTypeUtils.getBaseType(APP_X_PKCS7_MIME_ENV);
 
     public final static String APP_PKCS7_SIG_SUBTYPE = "pkcs7-signature";
-    public final static MimeType APP_PKCS7_SIG = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_PKCS7_SIG_SUBTYPE, NAME_SMIME_SIG_PARAM);
+    public final static MimeType APP_PKCS7_SIG = ToolMimeTypeUtils.valueOf(CoreContentTypes.APP_TYPE, APP_PKCS7_SIG_SUBTYPE, NAME_SMIME_SIG_PARAM);
     public final static String APP_PKCS7_SIG_BASETYPE = ToolMimeTypeUtils.getBaseType(APP_PKCS7_SIG);
 
     public final static String APP_X_PKCS7_SIG_SUBTYPE = "x-" + APP_PKCS7_SIG_SUBTYPE;
-    public final static MimeType APP_X_PKCS7_SIG = ToolMimeTypeUtils.valueOf(ToolMimeTypeUtils.TYPE_APP, APP_X_PKCS7_SIG_SUBTYPE, NAME_SMIME_SIG_PARAM);
+    public final static MimeType APP_X_PKCS7_SIG = ToolMimeTypeUtils.valueOf(CoreContentTypes.APP_TYPE, APP_X_PKCS7_SIG_SUBTYPE, NAME_SMIME_SIG_PARAM);
     public final static String APP_X_PKCS7_SIG_BASETYPE = ToolMimeTypeUtils.getBaseType(APP_X_PKCS7_SIG);
 
     public final static String MSG_TYPE = "message";

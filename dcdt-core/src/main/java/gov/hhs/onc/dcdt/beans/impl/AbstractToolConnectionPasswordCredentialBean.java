@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.beans.impl;
 import gov.hhs.onc.dcdt.beans.ToolConnectionPasswordCredentialBean;
 import javax.annotation.Nonnegative;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public abstract class AbstractToolConnectionPasswordCredentialBean<T> extends AbstractToolConnectionCredentialBean<T, String> implements
     ToolConnectionPasswordCredentialBean<T> {
@@ -22,5 +23,10 @@ public abstract class AbstractToolConnectionPasswordCredentialBean<T> extends Ab
     @Override
     public void setGeneratedPasswordLength(@Nonnegative int genPassLen) {
         this.genPassLen = genPassLen;
+    }
+
+    @Override
+    public boolean hasSecret() {
+        return !StringUtils.isBlank(this.secret);
     }
 }

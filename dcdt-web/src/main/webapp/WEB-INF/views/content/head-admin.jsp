@@ -8,7 +8,7 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <c:set var="adminInstanceConfigDirBase" value="${pageContext.servletContext.getRealPath('/')}" scope="request"/>
-<%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <script type="text/javascript" src="${urlStaticScripts}/${templateName}.js"></script>
 <script type="text/javascript">
 var URL_ADMIN_INSTANCE_CONFIG_GET = "${urlAdminInstanceConfigGet}";

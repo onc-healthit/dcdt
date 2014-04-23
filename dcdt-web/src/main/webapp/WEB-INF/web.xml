@@ -113,14 +113,16 @@
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
     
+    <!--
     <filter>
-        <filter-name>charEncodingFilter</filter-name>
+        <filter-name>charEncFilter</filter-name>
         <filter-class>gov.hhs.onc.dcdt.web.filter.impl.DispatcherServletFilterProxy</filter-class>
     </filter>
     <filter-mapping>
-        <filter-name>charEncodingFilter</filter-name>
+        <filter-name>charEncFilter</filter-name>
         <servlet-name>dispatcherServlet</servlet-name>
     </filter-mapping>
+    -->
     
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -131,6 +133,7 @@
         <servlet-name>dispatcherServlet</servlet-name>
     </filter-mapping>
     
+    <!--
     <filter>
         <filter-name>jTidyFilter</filter-name>
         <filter-class>gov.hhs.onc.dcdt.web.filter.impl.DispatcherServletFilterProxy</filter-class>
@@ -143,4 +146,5 @@
         <filter-name>jTidyFilter</filter-name>
         <servlet-name>dispatcherServlet</servlet-name>
     </filter-mapping>
+    -->
 </web-app>

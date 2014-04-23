@@ -77,7 +77,7 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
 
     public CertificateNameImpl(@Nullable GeneralNames altNames, @Nullable Iterable<RDN> rdns) {
         this.setAltNames(altNames);
-        
+
         if (rdns != null) {
             this.attrMap.putAll(X500Utils.mapAttributes(rdns));
         }
@@ -154,7 +154,12 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
 
     @Override
     public void setMailAddress(@Nullable MailAddress mailAddr) {
-        this.putAttributeValueString(BCStyle.EmailAddress, ((mailAddr != null) ? mailAddr.toAddress() : null));
+        if ((mailAddr != null) && mailAddr.getBindingType().isAddressBound()) {
+            this.putAttributeValueString(BCStyle.EmailAddress, mailAddr.toAddress());
+        } else {
+            this.attrMap.remove(BCStyle.EmailAddress);
+        }
+
         this.setAltNames(CertificateNameUtils.setMailAddress(this.getAltNames(), mailAddr));
     }
 

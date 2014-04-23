@@ -96,7 +96,7 @@
     <!--====================================================================================================
     = JAMES MAIL QUEUE BROKER
     =====================================================================================================-->
-    <amq:broker id="mailQueueBroker" brokerName="mailQueue" persistent="false" schedulerSupport="false" useShutdownHook="false">
+    <amq:broker id="mailQueueBroker" brokerName="mailQueueBroker" persistent="false" schedulerSupport="false" useJmx="false" useShutdownHook="false">
         <amq:destinationPolicy>
             <amq:policyMap>
                 <amq:policyEntries>
@@ -105,7 +105,7 @@
             </amq:policyMap>
         </amq:destinationPolicy>
         <amq:managementContext>
-            <amq:managementContext createConnector="false"/>
+            <amq:managementContext createConnector="false" createMBeanServer="false" useMBeanServer="false"/>
         </amq:managementContext>
         <amq:plugins>
             <amq:statisticsBrokerPlugin/>
@@ -118,7 +118,7 @@
             </amq:systemUsage>
         </amq:systemUsage>
         <amq:transportConnectors>
-            <amq:transportConnector uri="tcp://localhost:0"/>
+            <amq:transportConnector enableStatusMonitor="true" uri="tcp://localhost:0?closeAsync=false"/>
         </amq:transportConnectors>
     </amq:broker>
     
@@ -130,7 +130,7 @@
         p:cacheProducers="true"
         p:sessionCacheSize="10">
         <beans:property name="targetConnectionFactory">
-            <amq:connectionFactory id="mailQueueConnFactory" brokerURL="vm://mailQueue?create=false">
+            <amq:connectionFactory id="mailQueueConnFactory" brokerURL="vm://mailQueueBroker?create=false">
                 <amq:prefetchPolicy>
                     <amq:prefetchPolicy queuePrefetch="0" topicPrefetch="0"/>
                 </amq:prefetchPolicy>
@@ -152,14 +152,15 @@
     <beans:bean id="mailQueue" class="org.apache.james.queue.api.MailQueue" abstract="true"/>
     
     <beans:bean name="mailQueueFactory" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolMailQueueFactory" parent="mailQueue"
-        p:useBlobMessages="false"/>
+        p:useBlobMessages="false"
+        p:useJMX="false"/>
     <beans:alias name="mailQueueFactory" alias="mailqueuefactory"/>
     
     <!--====================================================================================================
     = JAMES MAIL PROCESSOR CAMEL CONTEXT
     =====================================================================================================-->
     <camel:camelContext id="mailProcCamelContext" trace="false">
-        <camel:jmxAgent id="mailProcCamelJmxAgent" createConnector="false" disabled="false" serviceUrlPath="/jmxrmi/mailProcCamel"/>
+        <camel:jmxAgent id="mailProcCamelJmxAgent" disabled="true"/>
         <camel:template id="producerTemplate"/>
     </camel:camelContext>
     

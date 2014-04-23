@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.testcases.discovery.credentials.impl;
 
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateGenerator;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
@@ -86,8 +85,7 @@ public class DiscoveryTestcaseCredentialRegistryImpl extends
     @Override
     protected void postRemoveBeans(Iterable<DiscoveryTestcaseCredential> beans) throws ToolBeanRegistryException {
         if (this.discoveryTestcaseIssuerCred != null) {
-            // noinspection ConstantConditions
-            ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseCredentialService.class).removeBean(this.discoveryTestcaseIssuerCred);
+            this.getBeanService().removeBean(this.discoveryTestcaseIssuerCred);
         }
     }
 

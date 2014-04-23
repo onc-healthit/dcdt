@@ -2,14 +2,14 @@ package gov.hhs.onc.dcdt.crypto.keys;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyAlgorithmIdentifier;
 import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
-import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
+import gov.hhs.onc.dcdt.net.mime.CoreContentTypes;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.springframework.util.MimeType;
 
 public enum KeyAlgorithm implements CryptographyAlgorithmIdentifier {
-    RSA("RSA", PKCSObjectIdentifiers.rsaEncryption, "X.509", "PKCS#8", 512, new MimeType(ToolMimeTypeUtils.TYPE_APP, "pkcs8"), DnsKeyAlgorithmType.RSASHA1);
+    RSA("RSA", PKCSObjectIdentifiers.rsaEncryption, "X.509", "PKCS#8", 512, new MimeType(CoreContentTypes.APP_TYPE, "pkcs8"), DnsKeyAlgorithmType.RSASHA1);
 
     private final String id;
     private final ASN1ObjectIdentifier oid;

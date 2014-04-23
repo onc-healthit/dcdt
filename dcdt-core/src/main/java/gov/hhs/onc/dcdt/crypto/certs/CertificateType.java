@@ -2,14 +2,14 @@ package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
-import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
+import gov.hhs.onc.dcdt.net.mime.CoreContentTypes;
 import java.security.cert.X509Certificate;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.springframework.util.MimeType;
 
 public enum CertificateType implements CryptographyObjectIdentifier, CryptographyTypeIdentifier {
-    X509("X.509", PKCSObjectIdentifiers.x509Certificate, X509Certificate.class, new MimeType(ToolMimeTypeUtils.TYPE_APP, "x-x509-ca-cert"));
+    X509("X.509", PKCSObjectIdentifiers.x509Certificate, X509Certificate.class, new MimeType(CoreContentTypes.APP_TYPE, "x-x509-ca-cert"));
 
     private final String id;
     private final ASN1ObjectIdentifier oid;

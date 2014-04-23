@@ -9,7 +9,7 @@
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <c:set var="adminLoginErrorMsg" value="${(param.error != null) ? sessionScope['SPRING_SECURITY_LAST_EXCEPTION'].message : ''}"/>
 <c:set var="adminLoginHasError" value="${not empty adminLoginErrorMsg}"/>
-<%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <form name="admin-login" action="${urlAdminLoginProcess}" method="post">
     <div class="input-group-sm">
         <div class="form-group form-group-addons">

@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.net.mime.utils;
 
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
+import gov.hhs.onc.dcdt.net.mime.CoreContentTypes;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolMapUtils;
 import java.util.Comparator;
@@ -83,10 +84,6 @@ public abstract class ToolMimeTypeUtils {
     public final static String DELIM_PARAM = "; ";
     public final static String DELIM_PARAM_VALUE = "=";
 
-    public final static String TYPE_WILDCARD = "*";
-
-    public final static String TYPE_APP = "application";
-
     public static boolean isCompatible(MimeType mimeType, MimeType ... mimeTypeEvals) {
         return isCompatible(mimeType, ToolArrayUtils.asList(mimeTypeEvals));
     }
@@ -156,7 +153,7 @@ public abstract class ToolMimeTypeUtils {
     }
 
     public static MimeType valueOf(@Nullable String type, @Nullable String subtype, @Nullable Iterable<Entry<String, String>> params) {
-        return new MimeType(StringUtils.defaultIfBlank(type, TYPE_WILDCARD), StringUtils.defaultIfBlank(subtype, TYPE_WILDCARD), ToolMapUtils.toMap(
-            String.class, String.class, params));
+        return new MimeType(StringUtils.defaultIfBlank(type, CoreContentTypes.WILDCARD_TYPE), StringUtils.defaultIfBlank(subtype,
+            CoreContentTypes.WILDCARD_TYPE), ToolMapUtils.toMap(String.class, String.class, params));
     }
 }

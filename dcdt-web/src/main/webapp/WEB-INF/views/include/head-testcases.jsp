@@ -7,7 +7,7 @@
 <%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
-<%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <%@include file="head.jsp" %>
 <c:set var="testcases" value="${requestScope[dcdt:concat(templateName, 'Testcases')]}" scope="request"/>
 <script type="text/javascript" src="${urlStaticScripts}/testcases.js"></script>

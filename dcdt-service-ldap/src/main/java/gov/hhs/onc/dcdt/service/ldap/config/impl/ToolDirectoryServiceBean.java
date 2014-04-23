@@ -100,6 +100,7 @@ public class ToolDirectoryServiceBean extends DirectoryServiceBean implements Ap
 
         TcpTransportBean tcpTransportBean = new TcpTransportBean();
         tcpTransportBean.setSystemPort(this.ldapConfig.getPort());
+        // noinspection ConstantConditions
         tcpTransportBean.setTransportAddress(this.ldapConfig.getHost().getHostAddress());
         ldapServerBean.addTransports(tcpTransportBean);
 
