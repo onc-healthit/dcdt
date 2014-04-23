@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="project"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg">
+    
+    <description>Ant project for Direct Certificate Discovery Tool (DCDT) projects.</description>
+    
+    <import file="${project.basedir.all}/dcdt-core/src/main/scripts/ant-core.xml" as="" prefixSeparator=""/>
+    
+    <target name="project-process-props" description="Processes Maven project properties." depends="core-init">
+        <dcdt:mkdir-tree path="${project.build.pomPropertiesFile}"/>
+        
+        <trycatch>
+            <try>
+                <copy file="${project.build.pomPropertiesSourceFile}" tofile="${project.build.pomPropertiesFile}">
+                    <filterchain>
+                        <expandproperties/>
+                    </filterchain>
+                </copy>
+            </try>
+            <catch/>
+        </trycatch>
+        
+        <var name="project.java.package.regex" value="${project.java.package//\./\\\\.}"/>
+        <dcdt:write-properties file="${project.build.pomPropertiesFile}" append="true">
+            project.java.package.regex
+        </dcdt:write-properties>
+        
+        <if>
+            <isset property="skipTests"/>
+            <then>
+                <var name="skipTestsUnit" value="${skipTests}"/>
+                <var name="skipTestsFunc" value="${skipTests}"/>
+                <var name="skipTestsIt" value="${skipTests}"/>
+            </then>
+            <else>
+                <var name="skipTestsUnit" value="${skipTestsUnit:-false}"/>
+                <var name="skipTestsFunc" value="${skipTestsFunc:-false}"/>
+                <var name="skipTestsIt" value="${skipTestsIt:-false}"/>
+            </else>
+        </if>
+        <propertyset id="project-process-props.props.tests.skip">
+            <propertyref regex="^skipTests(Unit|Func|It)$"/>
+        </propertyset>
+        <dcdt:write-properties file="${project.build.pomPropertiesFile}" append="true">
+            ${toString:project-process-props.props.tests.skip}
+        </dcdt:write-properties>
+        
+        <dcdt:timestamp property="project.build.timestamp"/>
+        <dcdt-hg:properties path="${project.basedir}" pathBase="${project.basedir.all}"/>
+        
+        <propertyset id="project-process-props.props">
+            <propertyref regex="^project\.(?:groupId|artifactId|version|name|description)$"/>
+            <propertyref regex="^project\.build\.timestamp$"/>
+            <propertyref regex="^project\.hg\.(?:author(?:\.(?:email|person))?|branch|date|node(?:\.short)?|path\.[^$]+|rev|tag)$"/>
+        </propertyset>
+        <propertyset id="project-process-props.props.module">
+            <propertyset refid="project-process-props.props"/>
+            <regexpmapper from="^(project\.)([^$]+)$" to="\1module.${project.artifactId}.\2"/>
+        </propertyset>
+        <dcdt:write-properties file="${project.build.pomPropertiesFile}" append="true">
+            ${toString:project-process-props.props},
+            ${toString:project-process-props.props.module}
+        </dcdt:write-properties>
+        
+        <dcdt:info>Processed Maven project properties file: ${project.build.pomPropertiesFile}</dcdt:info>
+    </target>
+</project>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--suppress SpringModelInspection -->
+    <beans:bean id="toolModuleVersionServiceDns" parent="toolModuleVersionImpl"
+        c:groupId="${dcdt.module.dcdt-service-dns.groupId:}"
+        c:artifactId="${dcdt.module.dcdt-service-dns.artifactId:}"
+        c:version="${dcdt.module.dcdt-service-dns.version:}"
+        c:name="${dcdt.module.dcdt-service-dns.name:}"
+        c:description="${dcdt.module.dcdt-service-dns.description:}"
+        p:buildTimestampString="${dcdt.module.dcdt-service-dns.build.timestamp:}"
+        p:hgAuthor="${dcdt.module.dcdt-service-dns.hg.author:}"
+        p:hgAuthorMail="${dcdt.module.dcdt-service-dns.hg.author.email:}"
+        p:hgAuthorPerson="${dcdt.module.dcdt-service-dns.hg.author.person:}"
+        p:hgBranch="${dcdt.module.dcdt-service-dns.hg.branch:}"
+        p:hgDateString="${dcdt.module.dcdt-service-dns.hg.date:}"
+        p:hgNode="${dcdt.module.dcdt-service-dns.hg.node:}"
+        p:hgNodeShort="${dcdt.module.dcdt-service-dns.hg.node.short:}"
+        p:hgPath="${dcdt.module.dcdt-service-dns.hg.path:}"
+        p:hgRevision="${dcdt.module.dcdt-service-dns.hg.rev:-1}"
+        p:hgTag="${dcdt.module.dcdt-service-dns.hg.tag:}"/>
+</beans:beans>

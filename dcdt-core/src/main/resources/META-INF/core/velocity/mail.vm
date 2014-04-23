@@ -1,0 +1,12 @@
+#* @vtlvariable name="body" type="java.lang.String" *#
+#* @vtlvariable name="head" type="java.lang.String" *#
+#* @vtlmacrolibrary path="lib/core.vm" *#
+<html>
+    <head>
+        #includeStyle("include/mail.css")
+        #evaluate($head)
+    </head>
+    <body>
+        #evaluate($body)
+    </body>
+</html>

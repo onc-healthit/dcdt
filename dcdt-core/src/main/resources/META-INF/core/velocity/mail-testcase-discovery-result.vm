@@ -1,0 +1,40 @@
+#* @vtlvariable name="discoveryTestcaseResult" type="gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult" *#
+#* @vtlmacrolibrary path="lib/core.vm" *#
+#* @vtlmacrolibrary path="lib/core-testcases-discovery-results.vm" *#
+#define($head)
+#includeStyle("include/mail-testcase-discovery-result.css")
+#end
+#define($body)
+    #set ($discoveryTestcaseSubmission = $discoveryTestcaseResult.submission)
+    #set ($discoveryTestcase = $discoveryTestcaseSubmission.testcase)
+    
+    <h1>Discovery testcase $discoveryTestcase.name ($discoveryTestcase.nameDisplay) #if($discoveryTestcaseResult.success)passed#{else}failed#{end}.</h1>
+    <h2>Details</h2>
+    <ul>
+        <li><strong>Optional</strong>: $discoveryTestcase.optional</li>
+        <li><strong>Negative</strong>: $discoveryTestcase.negative</li>
+        
+        #set ($discoveryTestcaseMsgHelper = $discoveryTestcaseSubmission.messageHelper)
+        
+        <li><strong>From</strong>: $discoveryTestcaseMsgHelper.from</li>
+        <li><strong>To</strong>: $discoveryTestcaseMsgHelper.to</li>
+
+        #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.decryptionCredential "Discovered")
+        
+        #if (!$discoveryTestcaseResult.success)
+            #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.expectedDecryptionCredential "Expected")
+        #end
+
+        #if ($discoveryTestcaseResult.hasMessages())
+            <li>
+                <strong>Messages</strong>:
+                <ul>
+                    #foreach ($discoveryTestcaseResultMsg in $discoveryTestcaseResult.messages)
+                        <li>$discoveryTestcaseResultMsg</li>
+                    #end
+                </ul>
+            </li>
+        #end
+    </ul>
+#end
+#parse("mail.vm")

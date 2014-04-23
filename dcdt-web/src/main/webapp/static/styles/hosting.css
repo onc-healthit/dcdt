@@ -1,0 +1,8 @@
+pre.testcase-hosting-cert {
+    padding: 5px;
+    overflow: scroll;
+    border: 1px solid black;
+    background-color: rgb(220, 220, 220);
+    font: normal 8pt monospace;
+    white-space: pre;
+}
