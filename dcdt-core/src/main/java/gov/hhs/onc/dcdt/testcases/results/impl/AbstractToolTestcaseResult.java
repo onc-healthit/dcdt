@@ -44,6 +44,19 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
     }
 
     @Override
+    public boolean hasInvalidDiscoveredCertificateInfos() {
+        return !CollectionUtils.isEmpty(this.getInvalidDiscoveredCertificateInfos());
+    }
+
+    @Nullable
+    @Override
+    public List<CertificateInfo> getInvalidDiscoveredCertificateInfos() {
+        CertificateValidationStep processedCertValidationStep = ToolCollectionUtils.findAssignable(CertificateValidationStep.class, this.procSteps);
+
+        return processedCertValidationStep != null ? processedCertValidationStep.getInvalidCertificateInfos() : null;
+    }
+
+    @Override
     public List<String> getMessages() {
         return ToolCollectionUtils.addAll(new ArrayList<String>(), this.procMsgs, this.getDiscoveryMessages());
     }

@@ -16,6 +16,11 @@ public interface ToolTestcaseResult<T extends ToolTestcaseDescription, U extends
     @Nullable
     public CertificateInfo getDiscoveredCertificateInfo();
 
+    public boolean hasInvalidDiscoveredCertificateInfos();
+
+    @Nullable
+    public List<CertificateInfo> getInvalidDiscoveredCertificateInfos();
+
     public boolean hasDiscoveryMessages();
 
     public List<String> getDiscoveryMessages();
