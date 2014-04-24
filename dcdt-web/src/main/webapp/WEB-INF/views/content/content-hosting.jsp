@@ -11,36 +11,32 @@
 <div class="testcases-intro">
     <p>
         <b>Step 1:</b> Use the table below to help you determine the required test cases for your SUT (System Under Test).
-        Notice that there are two options for storage of address-bound and domain-bound certificates.
-        The Hosting tool provides tests that map to these options.
+        Notice that address-bound and domain-bound certificates can be hosted in DNS CERT Resource Records or LDAP servers.
         <br/><br/>
-        <b>Step 2:</b> Select the option that reflects the SUT and then select the appropriate test case from the dropdown.
+        <b>Step 2:</b> Select a test case that applies to your SUT from the dropdown.
         <br/><br/>
         <b>Step 3:</b> Read the Description and Instructions for the selected test case. Then enter the Direct address and submit.
         Your SUT configuration may require that you select more than one test case. If so, then select one test case at a time,
-        following the instructions to execute the test after each selection. Note: The results for your testcase will be displayed
-        to the right of the test case description.
+        following the instructions to execute the test after each selection. Note: The results for your test case will be displayed
+        in the Results section below the Submit and Reset buttons.
         <br/>
     </p>
     <table class="table table-striped">
         <thead>
             <tr>
-                <td></td>
-                <td><b>My system stores certificates in DNS CERT Resource Records</b></td>
-                <td><b>My system stores certificates in LDAP servers</b></td>
+                <td><b>Testcase Name</b></td>
+                <td><b>Location Type</b></td>
+                <td><b>Binding Type</b></td>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td><b>My system stores address-bound certificates</b></td>
-                <td>H1</td>
-                <td>H3</td>
-            </tr>
-            <tr>
-                <td><b>My system stores domain-bound certificates</b></td>
-                <td>H2</td>
-                <td>H4</td>
-            </tr>
+            <c:forEach items="${hostingTestcases}" var="testcase">
+                <tr>
+                    <td><c:out value="${testcase.name}"/></td>
+                    <td><c:out value="${testcase.locationType}"/></td>
+                    <td><c:out value="${testcase.bindingType}"/></td>
+                </tr>
+            </c:forEach>
         </tbody>
     </table>
 </div>

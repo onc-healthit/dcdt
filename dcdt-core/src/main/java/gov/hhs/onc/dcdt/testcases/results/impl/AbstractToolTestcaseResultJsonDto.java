@@ -13,6 +13,7 @@ import java.util.List;
 public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>, W extends ToolTestcaseResult<T, U, V>>
     extends AbstractToolBeanJsonDto<W> implements ToolTestcaseResultJsonDto<T, U, V, W> {
     protected CertificateInfo discoveredCertInfo;
+    protected List<CertificateInfo> invalidDiscoveredCertInfos;
     protected List<String> msgs;
     protected List<String> procMsgs;
     protected List<CertificateDiscoveryStep> procSteps;
@@ -31,6 +32,16 @@ public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDe
     @Override
     public void setDiscoveredCertificateInfo(CertificateInfo discoveredCertInfo) {
         this.discoveredCertInfo = discoveredCertInfo;
+    }
+
+    @Override
+    public List<CertificateInfo> getInvalidDiscoveredCertificateInfos() {
+        return this.invalidDiscoveredCertInfos;
+    }
+
+    @Override
+    public void setInvalidDiscoveredCertificateInfos(List<CertificateInfo> invalidDiscoveredCertInfos) {
+        this.invalidDiscoveredCertInfos = invalidDiscoveredCertInfos;
     }
 
     @Override
