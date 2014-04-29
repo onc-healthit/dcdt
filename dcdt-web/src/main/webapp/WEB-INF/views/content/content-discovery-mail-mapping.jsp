@@ -8,8 +8,28 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
-<form name="form-testcases-discovery-mail-mapping">
+<form name="form-testcases-discovery-mail-mapping" action="about:blank" method="post" target="testcases-discovery-mail-mapping-target">
     <div class="input-group-sm">
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Invalid Discovery mail mapping</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+            <div class="has-success">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Discovery mail mapping modified</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <div>
                 <span class="form-cell form-cell-label">
@@ -17,18 +37,19 @@
                         <tiles:putAttribute name="attrs">for="testcase-discovery-direct-addr"</tiles:putAttribute>
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-envelope glyphicon-type-info"/>
                         <tiles:putAttribute name="content" value="Direct Address"/>
-                    </tiles:insertDefinition> (i.e. the address where the messages will come from):
+                    </tiles:insertDefinition>:
                 </span>
                 <span class="form-cell form-cell-control">
-                    <input id="testcase-discovery-direct-addr" class="input-sm form-control" name="directAddress" type="text"/>
+                    <input id="testcase-discovery-direct-addr" class="input-sm form-control" name="directAddress" type="text"
+                        title="The Direct address you will be sending from."/>
                 </span>
             </div>
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
+                <div class="input-group-addon input-group-addon-msgs">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Direct address</strong>:
                     <ul></ul>
@@ -40,20 +61,21 @@
                 <span class="form-cell form-cell-label">
                     <tiles:insertDefinition name="component-glyph-label">
                         <tiles:putAttribute name="attrs">for="testcase-discovery-results-addr"</tiles:putAttribute>
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-envelope glyphicon-type-info"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-inbox glyphicon-type-info"/>
                         <tiles:putAttribute name="content" value="Results Address"/>
-                    </tiles:insertDefinition> (NOT a Direct address, but an address where you can receive regular email):
+                    </tiles:insertDefinition>:
                 </span>
                 <span class="form-cell form-cell-control">
-                    <input id="testcase-discovery-results-addr" class="input-sm form-control" name="resultsAddress" type="text"/>
+                    <input id="testcase-discovery-results-addr" class="input-sm form-control" name="resultsAddress" type="text"
+                        title="A regular (i.e. not Direct) email address you would like to receive results at."/>
                 </span>
             </div>
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
+                <div class="input-group-addon input-group-addon-msgs">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid results address</strong>:
                     <ul></ul>
@@ -74,9 +96,6 @@
                 </tiles:insertDefinition>
             </span>
         </div>
-        <br/>
-        <div id="mail-mapping-results"></div>
-        <br/>
         <div class="form-group">
             <tiles:insertDefinition name="component-glyph-label">
                 <tiles:putAttribute name="glyph-classes" value="glyphicon-backward glyphicon-type-info"/>
@@ -85,3 +104,4 @@
         </div>
     </div>
 </form>
+<iframe id="testcases-discovery-mail-mapping-target" class="hide" name="testcases-discovery-mail-mapping-target" src="about:blank"></iframe>

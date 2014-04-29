@@ -9,9 +9,10 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseImpl;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseImpl.class) })
@@ -26,16 +27,30 @@ public interface DiscoveryTestcase extends ToolTestcase<DiscoveryTestcaseDescrip
         }
     }
 
-    public final static class DiscoveryTestcaseMailAddressPredicate extends AbstractToolPredicate<DiscoveryTestcase> {
-        private MailAddress mailAddr;
+    public final static class DiscoveryTestcaseMailAddressExtractor extends AbstractToolTransformer<DiscoveryTestcase, MailAddress> {
+        public final static DiscoveryTestcaseMailAddressExtractor INSTANCE = new DiscoveryTestcaseMailAddressExtractor();
 
-        public DiscoveryTestcaseMailAddressPredicate(MailAddress mailAddr) {
-            this.mailAddr = mailAddr;
+        @Nullable
+        @Override
+        protected MailAddress transformInternal(DiscoveryTestcase discoveryTestcase) throws Exception {
+            return discoveryTestcase.getMailAddress();
+        }
+    }
+
+    public final static class DiscoveryTestcaseMailAddressPredicate extends AbstractToolPredicate<DiscoveryTestcase> {
+        private Set<MailAddress> mailAddrs;
+
+        public DiscoveryTestcaseMailAddressPredicate(MailAddress ... mailAddrs) {
+            this(ToolArrayUtils.asSet(mailAddrs));
+        }
+
+        public DiscoveryTestcaseMailAddressPredicate(Set<MailAddress> mailAddrs) {
+            this.mailAddrs = mailAddrs;
         }
 
         @Override
         protected boolean evaluateInternal(DiscoveryTestcase discoveryTestcase) throws Exception {
-            return Objects.equals(discoveryTestcase.getMailAddress(), this.mailAddr);
+            return this.mailAddrs.contains(discoveryTestcase.getMailAddress());
         }
     }
 

@@ -3,41 +3,45 @@
         "form": $.extend(function () {
             return this;
         }, {
-            "addErrorField": function (fieldName, errorMsg, preFormatted) {
+            "addMessageField": function (fieldName, level, msg, preFormatted) {
                 var elem = $(this);
                 
-                elem.dcdt.form.formGroupsFields(fieldName).find("div:first-child").enableClass("has-error");
+                elem.dcdt.form.formGroupsFields(fieldName).find("div:first-child").enableClass("has-" + level);
                 
-                return elem.dcdt.form.addError(elem.dcdt.form.errorsAddonsFields(fieldName), errorMsg, preFormatted);
+                return elem.dcdt.form.addMessage(elem.dcdt.form.messagesAddonsFields(level, fieldName), msg, preFormatted);
             },
-            "addErrorGlobal": function (errorMsg, preFormatted) {
+            "addMessageGlobal": function (level, msg, preFormatted) {
                 var elem = $(this);
                 
-                return elem.dcdt.form.addError(elem.dcdt.form.errorsAddonsGlobal(), errorMsg, preFormatted);
+                return elem.dcdt.form.addMessage(elem.dcdt.form.messagesAddonsGlobal(level), msg, preFormatted);
             },
-            "addError": function (errorsAddons, errorMsg, preFormatted) {
-                errorsAddons.enableClass("input-group-addon-active");
-                
-                var errorsAddonsListItem = $("<li/>");
-                
-                if (preFormatted) {
-                    errorsAddonsListItem.append($("<pre/>").text(errorMsg));
-                } else {
-                    errorsAddonsListItem.text(errorMsg);
+            "addMessage": function (msgsAddons, msg, preFormatted) {
+                if (!msg) {
+                    return msgsAddons;
                 }
                 
-                errorsAddons.find("ul").append(errorsAddonsListItem);
+                msgsAddons.enableClass("input-group-addon-active");
                 
-                return errorsAddons;
+                var msgsAddonsListItem = $("<li/>");
+                
+                if (preFormatted) {
+                    msgsAddonsListItem.append($("<pre/>").text(msg));
+                } else {
+                    msgsAddonsListItem.text(msg);
+                }
+                
+                msgsAddons.find("ul").append(msgsAddonsListItem);
+                
+                return msgsAddons;
             },
-            "clearErrors": function () {
-                var elem = $(this), errorsAddons = elem.dcdt.form.errorsAddons();
-                errorsAddons.disableClass("input-group-addon-active");
-                errorsAddons.find("ul").empty();
+            "clearMessages": function () {
+                var elem = $(this), msgsAddons = elem.dcdt.form.messagesAddons();
+                msgsAddons.disableClass("input-group-addon-active");
+                msgsAddons.find("ul").empty();
                 
                 elem.dcdt.form.formGroupsFields(null).find("div:first-child").removeClass();
                 
-                return errorsAddons;
+                return msgsAddons;
             },
             "formReady": function () {
                 var elem = $(this);
@@ -63,21 +67,24 @@
                 
                 return selector ? formButtons.filter(selector) : formButtons;
             },
-            "errorsAddonsFields": function (fieldName) {
-                var errorsAddonsFields = $(this).dcdt.form.errorsAddons(":not(.input-group-addon-errors-global)");
+            "messagesAddonsFields": function (level, fieldName) {
+                var msgsAddonsFields = $(this).dcdt.form.messagesAddons(level, ":not(.input-group-addon-msgs-global)");
                 
-                return fieldName ? errorsAddonsFields.filter(function () {
+                return fieldName ? msgsAddonsFields.filter(function () {
                     return $(this).parent().parent().prev().find("div:first-child span.form-cell.form-cell-control .form-control[name=\"" + fieldName +"\"]")
                         .length > 0;
-                }) : errorsAddonsFields;
+                }) : msgsAddonsFields;
             },
-            "errorsAddonsGlobal": function () {
-                return $(this).dcdt.form.errorsAddons(".input-group-addon-errors-global");
+            "messagesAddonsGlobal": function (level) {
+                return $(this).dcdt.form.messagesAddons(level, ".input-group-addon-msgs-global");
             },
-            "errorsAddons": function (selector) {
-                var errorsAddons = $(this).dcdt.form.formGroupsAddons().find("div.has-error div.input-group-addon-errors");
+            "messagesAddons": function (level, selector) {
+                var msgsAddons = $(this).dcdt.form.formGroupsAddons().find("div.input-group-addon-msgs");
+                msgsAddons = (level ? msgsAddons.filter(function () {
+                    return $(this).parent().hasClass("has-" + level);
+                }) : msgsAddons);
                 
-                return selector ? errorsAddons.filter(selector) : errorsAddons;
+                return selector ? msgsAddons.filter(selector) : msgsAddons;
             },
             "formInputs": function (fieldName) {
                 return $(this).dcdt.form.formGroupsFields(fieldName).find(".form-control");

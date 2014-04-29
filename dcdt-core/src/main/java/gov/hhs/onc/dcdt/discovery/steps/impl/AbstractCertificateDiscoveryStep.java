@@ -23,7 +23,11 @@ public abstract class AbstractCertificateDiscoveryStep extends AbstractToolResul
     protected List<String> execMsgs = new ArrayList<>();
     protected Boolean execSuccess;
 
-    protected AbstractCertificateDiscoveryStep(BindingType bindingType, LocationType locType) {
+    protected AbstractCertificateDiscoveryStep(BindingType bindingType) {
+        this(bindingType, null);
+    }
+
+    protected AbstractCertificateDiscoveryStep(BindingType bindingType, @Nullable LocationType locType) {
         this.bindingType = bindingType;
         this.locType = locType;
     }
@@ -90,6 +94,12 @@ public abstract class AbstractCertificateDiscoveryStep extends AbstractToolResul
         this.execSuccess = execSuccess;
     }
 
+    @Override
+    public boolean hasLocationType() {
+        return (this.locType != null);
+    }
+
+    @Nullable
     @Override
     public LocationType getLocationType() {
         return this.locType;

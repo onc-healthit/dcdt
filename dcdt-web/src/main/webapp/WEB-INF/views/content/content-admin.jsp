@@ -12,11 +12,20 @@
     <div class="input-group-sm">
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors input-group-addon-errors-global">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid instance configuration</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+            <div class="has-success">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Instance configuration modified</strong>:
                     <ul></ul>
                 </div>
             </div>
@@ -37,9 +46,9 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
+                <div class="input-group-addon input-group-addon-msgs">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid instance configuration domain name</strong>:
                     <ul></ul>
@@ -62,9 +71,9 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
+                <div class="input-group-addon input-group-addon-msgs">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid instance configuration IP address</strong>:
                     <ul></ul>
@@ -75,7 +84,7 @@
             <span class="btn-group btn-group-sm">
                 <tiles:insertDefinition name="component-glyph-button">
                     <tiles:putAttribute name="attrs">id="admin-instance-config-rm" disabled="disabled"</tiles:putAttribute>
-                    <tiles:putAttribute name="glyph-classes" value="glyphicon-remove-circle glyphicon-type-error"/>
+                    <tiles:putAttribute name="glyph-classes" value="glyphicon-trash glyphicon-type-error"/>
                     <tiles:putAttribute name="content" value="Remove Instance Configuration"/>
                 </tiles:insertDefinition>
                 <tiles:insertDefinition name="component-glyph-button">
@@ -84,10 +93,6 @@
                     <tiles:putAttribute name="content" value="Set Instance Configuration"/>
                 </tiles:insertDefinition>
             </span>
-        </div>
-        <br/>
-        <div class="form-group form-group-text">
-            <div id="instance-config-messages"></div>
         </div>
     </div>
 </form>

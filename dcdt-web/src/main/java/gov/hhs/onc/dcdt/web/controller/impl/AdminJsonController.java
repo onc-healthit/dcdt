@@ -93,6 +93,11 @@ public class AdminJsonController extends AbstractToolController {
             .build();
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        this.startServices();
+    }
+
     private InstanceConfigJsonDto getInstanceConfigJsonDto(InstanceConfig instanceConfig) throws Exception {
         InstanceConfigJsonDto instanceConfigJsonDto =
             this.appContext.getBean(ToolBeanFactoryUtils.getBeanNameOfType(this.appContext, InstanceConfigJsonDto.class), InstanceConfigJsonDto.class);
@@ -118,6 +123,7 @@ public class AdminJsonController extends AbstractToolController {
 
             if (service.getLifecycleStatus() != LifecycleStatusType.STARTED) {
                 serviceNotStarted = true;
+
                 LOGGER.error(String.format("Service (class=%s, beanName=%s) was not started, status=%s.", ToolClassUtils.getName(service.getClass()),
                     service.getBeanName(), service.getLifecycleStatus()));
                 break;

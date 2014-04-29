@@ -49,22 +49,6 @@
                         <tiles:putAttribute name="content"><strong>About</strong><span class="caret"></span></tiles:putAttribute>
                     </tiles:insertDefinition>
                     <ul role="menu" class="dropdown-menu">
-                        <li role="presentation" class="dropdown-header">Wiki</li>
-                        <li role="presentation">
-                            <tiles:insertDefinition name="component-glyph-link">
-                                <tiles:putAttribute name="attrs">role="menuitem" tabindex="-1" target="_blank" href="${urlWikiUserGuide}"</tiles:putAttribute>
-                                <tiles:putAttribute name="glyph-classes" value="glyphicon-user glyphicon-type-info"/>
-                                <tiles:putAttribute name="content">User's Guide</tiles:putAttribute>
-                            </tiles:insertDefinition>
-                        </li>
-                        <li role="presentation">
-                            <tiles:insertDefinition name="component-glyph-link">
-                                <tiles:putAttribute name="attrs">role="menuitem" tabindex="-1" target="_blank" href="${urlWikiFaq}"</tiles:putAttribute>
-                                <tiles:putAttribute name="glyph-classes" value="glyphicon-question-sign glyphicon-type-info"/>
-                                <tiles:putAttribute name="content">FAQ</tiles:putAttribute>
-                            </tiles:insertDefinition>
-                        </li>
-                        <li role="presentation" class="divider"></li>
                         <li role="presentation" class="dropdown-header">Google Code</li>
                         <li role="presentation">
                             <tiles:insertDefinition name="component-glyph-link">

@@ -37,7 +37,7 @@ public class ProcessDiscoveryTestcaseMailet extends AbstractToolMailet {
                 new DiscoveryTestcaseMailMappingPredicate(from));
 
         if (mailMapping != null) {
-            sendResultMail(to, discoveryTestcase, discoveryTestcaseResult, mailMapping);
+            this.sendResultMail(to, discoveryTestcase, discoveryTestcaseResult, mailMapping);
         } else {
             LOGGER.error(String.format(
                 "Unable to find mail address for sending results associated with Discovery testcase (name=%s, mailAddr=%s) mail (from=%s).",

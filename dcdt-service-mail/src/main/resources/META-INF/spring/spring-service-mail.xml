@@ -171,10 +171,10 @@
     <beans:bean id="configBeanMatcherImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.MatcherConfigBeanImpl" parent="configBeanMatcher"
         abstract="true"/>
     
-    <beans:bean id="configBeanMatcherRecipientNotProcessed" parent="configBeanMatcherImpl" abstract="true"
-        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsNotProcessedMatcher"/>
+    <beans:bean id="configBeanMatcherNotProc" parent="configBeanMatcherImpl" abstract="true"
+        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.NotProcessedMatcher"/>
     
-    <beans:bean id="configBeanMatcherRecipientDiscoveryTestcase" parent="configBeanMatcherImpl" abstract="true"
+    <beans:bean id="configBeanMatcherRecipIsDiscoveryTestcase" parent="configBeanMatcherImpl" abstract="true"
         p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsDiscoveryTestcaseMatcher"/>
     
     <!--====================================================================================================
@@ -224,43 +224,28 @@
                             p:state="ROOT">
                             <beans:property name="mailets">
                                 <util:list>
-                                    <beans:bean id="configBeanMailetNullRecipientNotProcessed" parent="configBeanMailetNull" abstract="true"
-                                        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsNotProcessedMatcher"/>
+                                    <beans:bean parent="configBeanMailetImpl"
+                                        p:className="ToProcessor"
+                                        p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.NotProcessedMatcher">
+                                        <beans:property name="initParameters">
+                                            <util:map>
+                                                <beans:entry key="processor"
+                                                    value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailProcessorState).ERROR.state }"/>
+                                            </util:map>
+                                        </beans:property>
+                                    </beans:bean>
                                     <beans:bean parent="configBeanMailetAll"
                                         p:className="PostmasterAlias"/>
                                     <beans:bean parent="configBeanMailetNull"
                                         p:match="RelayLimit=30"/>
                                     <beans:bean parent="configBeanMailetAll"
                                         p:className="LogMessage"/>
-                                    <beans:bean parent="configBeanMailetSmtpAuthSuccess"
-                                        p:className="ToProcessor">
-                                        <beans:property name="initParameters">
-                                            <util:map>
-                                                <beans:entry key="processor"
-                                                    value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailProcessorState).TRANSPORT.state }"/>
-                                            </util:map>
-                                        </beans:property>
-                                    </beans:bean>
                                     <beans:bean parent="configBeanMailetAll"
                                         p:className="ToProcessor">
                                         <beans:property name="initParameters">
                                             <util:map>
                                                 <beans:entry key="processor"
                                                     value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailProcessorState).TRANSPORT.state }"/>
-                                            </util:map>
-                                        </beans:property>
-                                    </beans:bean>
-                                </util:list>
-                            </beans:property>
-                        </beans:bean>
-                        <beans:bean parent="configBeanMailProcImpl"
-                            p:state="ERROR">
-                            <beans:property name="mailets">
-                                <util:list>
-                                    <beans:bean parent="configBeanMailetAllToRepo">
-                                        <beans:property name="initParameters">
-                                            <util:map>
-                                                <beans:entry key="repositoryPath" value="${dcdt.service.mail.james.repo.error}"/>
                                             </util:map>
                                         </beans:property>
                                     </beans:bean>
@@ -282,24 +267,11 @@
                                     </beans:bean>
                                     <beans:bean parent="configBeanMailetAll"
                                         p:className="RecipientRewriteTable"/>
-                                    <beans:bean parent="configBeanMailetRecipientLocal"
-                                        p:className="ToSenderFolder"/>
-                                    <beans:bean parent="configBeanMailetRecipientLocal"
-                                        p:className="LocalDelivery"/>
-                                    <beans:bean id="configBeanMailetProcDiscoveryTestcase" parent="configBeanMailetImpl" abstract="true"
+                                    <beans:bean parent="configBeanMailetImpl"
                                         p:className="gov.hhs.onc.dcdt.service.mail.james.mailet.impl.ProcessDiscoveryTestcaseMailet"
                                         p:match="gov.hhs.onc.dcdt.service.mail.james.matcher.impl.RecipientIsDiscoveryTestcaseMatcher"/>
-                                    <beans:bean parent="configBeanMailetImpl"
-                                        p:className="ToProcessor"
-                                        p:match="HostIsLocal">
-                                        <beans:property name="initParameters">
-                                            <util:map>
-                                                <beans:entry key="processor"
-                                                    value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailProcessorState).ERROR_ADDR_LOCAL.state }"/>
-                                                <beans:entry key="notice" value="550 - Requested action not taken: no such user here"/>
-                                            </util:map>
-                                        </beans:property>
-                                    </beans:bean>
+                                    <beans:bean parent="configBeanMailetRecipientLocal"
+                                        p:className="LocalDelivery"/>
                                     <beans:bean parent="configBeanMailetAll"
                                         p:className="RemoteDelivery">
                                         <beans:property name="initParameters">
@@ -314,32 +286,18 @@
                             </beans:property>
                             <beans:property name="matchers">
                                 <util:list>
-                                    <beans:bean parent="configBeanMatcherRecipientDiscoveryTestcase"/>
+                                    <beans:bean parent="configBeanMatcherRecipIsDiscoveryTestcase"/>
                                 </util:list>
                             </beans:property>
                         </beans:bean>
                         <beans:bean parent="configBeanMailProcImpl"
-                            p:state="ERROR_ADDR_LOCAL">
+                            p:state="ERROR">
                             <beans:property name="mailets">
                                 <util:list>
                                     <beans:bean parent="configBeanMailetAllToRepo">
                                         <beans:property name="initParameters">
                                             <util:map>
-                                                <beans:entry key="repositoryPath" value="${dcdt.service.mail.james.repo.error.addr}"/>
-                                            </util:map>
-                                        </beans:property>
-                                    </beans:bean>
-                                </util:list>
-                            </beans:property>
-                        </beans:bean>
-                        <beans:bean parent="configBeanMailProcImpl"
-                            p:state="ERROR_RELAY_DENIED">
-                            <beans:property name="mailets">
-                                <util:list>
-                                    <beans:bean parent="configBeanMailetAllToRepo">
-                                        <beans:property name="initParameters">
-                                            <util:map>
-                                                <beans:entry key="repositoryPath" value="${dcdt.service.mail.james.repo.error.relay}"/>
+                                                <beans:entry key="repositoryPath" value="${dcdt.service.mail.james.repo.error}"/>
                                             </util:map>
                                         </beans:property>
                                     </beans:bean>
@@ -424,7 +382,9 @@
     <beans:bean id="configBeanDnsService" class="gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceConfigBean" parent="configBeanJames" abstract="true"/>
     <beans:bean id="configBeanDnsServiceImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.DnsServiceConfigBeanImpl" parent="configBeanDnsService"
         abstract="true"
-        p:autoDiscover="false">
+        p:autoDiscover="false"
+        p:externalResolver-ref="dnsResolverExtExternal"
+        p:localResolver-ref="dnsResolverExtLocal">
         <beans:property name="cache">
             <beans:bean parent="dnsCacheNoOp"/>
         </beans:property>
@@ -437,20 +397,7 @@
     
     <beans:bean id="dnsServiceJamesImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolDnsServiceImpl" parent="dnsServiceJames">
         <beans:property name="configBean">
-            <beans:bean parent="configBeanDnsServiceImpl">
-                <beans:property name="resolver">
-                    <beans:bean class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt" factory-method="fromSocketAddresses">
-                        <beans:constructor-arg name="socketAddrs">
-                            <util:list>
-                                <beans:bean parent="socketAddrLoopback"
-                                    c:_1="${dcdt.instance.dns.server.1.port}"/>
-                                <beans:ref bean="socketAddrDnsServerGoogle1"/>
-                                <beans:ref bean="socketAddrDnsServerGoogle2"/>
-                            </util:list>
-                        </beans:constructor-arg>
-                    </beans:bean>
-                </beans:property>
-            </beans:bean>
+            <beans:bean parent="configBeanDnsServiceImpl"/>
         </beans:property>
     </beans:bean>
     <beans:alias name="dnsServiceJamesImpl" alias="dnsservice"/>
@@ -552,7 +499,7 @@
     =====================================================================================================-->
     <beans:bean id="mailboxManager" class="org.apache.james.mailbox.MailboxManager" abstract="true"/>
     
-    <beans:bean id="mailboxManagerMem" class="org.apache.james.mailbox.store.StoreMailboxManager" parent="mailboxManager"
+    <beans:bean id="mailboxManagerMem" class="org.apache.james.mailbox.store.StoreMailboxManager" parent="mailboxManager" init-method="init"
         c:aclResolver-ref="mailboxAclResolverUnion"
         c:authenticator-ref="mailboxAuthAnon"
         c:groupMembershipResolver-ref="mailboxGroupMembershipResolverSimple"

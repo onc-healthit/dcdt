@@ -20,7 +20,7 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
     private CertificateInfo validCertInfo;
 
     public CertificateValidationStepImpl() {
-        super(BindingType.NONE, null);
+        super(BindingType.NONE);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.ldap.impl;
 
+import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapCredentialConfig;
@@ -40,6 +41,7 @@ import org.springframework.stereotype.Component;
 
 @AutoStartup(false)
 @Component("ldapServiceImpl")
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 1)
 @ServiceContextConfiguration({ "spring/spring-service-ldap.xml", "spring/spring-service-ldap-*.xml" })
 public class LdapServiceImpl extends AbstractToolService implements LdapService {
     private final static Logger LOGGER = LoggerFactory.getLogger(LdapServiceImpl.class);

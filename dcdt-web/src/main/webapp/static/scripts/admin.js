@@ -13,20 +13,20 @@
                     }),
                     "queryBeanSuccess": function (data, status, jqXhr) {
                         $.dcdt.admin.getInstanceConfig();
-                        instanceConfigStatusMsg = "Successfully set instance configuration.";
-                        $.dcdt.admin.appendServiceStatus(data);
+                        
+                        $.dcdt.beans.addBeanMessageGlobal(instanceConfigForm, "success", "Successfully set instance configuration.");
+                        $.dcdt.beans.addBeanMessageGlobal(instanceConfigForm, "success", ((data["items"].length > 0) ? data["items"][0]["msg"] : null));
                     },
                     "queryBeanErrors": function (data, status, jqXhr) {
                         $.dcdt.beans.addQueryErrors(instanceConfigForm, data);
-                        instanceConfigStatusMsg = "Unable to set instance configuration.";
+                        
+                        $.dcdt.beans.addBeanMessageGlobal(instanceConfigForm, "error", "Unable to set instance configuration.");
                     },
                     "postQueryBean": function (jqXhr, status) {
-                        $.dcdt.admin.appendInstanceConfigStatus();
                         instanceConfigForm.dcdt.form.formReady();
                     },
                     "preQueryBean": function (jqXhr, settings) {
-                        $.dcdt.beans.clearBeanErrors(instanceConfigForm);
-                        $.dcdt.admin.clearInstanceConfigMessages();
+                        $.dcdt.beans.clearBeanMessages(instanceConfigForm);
                         instanceConfigForm.dcdt.form.formWait(instanceConfigButtonSet);
                     },
                     "url": URL_ADMIN_INSTANCE_CONFIG_SET
@@ -36,19 +36,20 @@
                 return $.dcdt.beans.removeBean({
                     "queryBeanSuccess": function (data, status, jqXhr) {
                         $.dcdt.admin.getInstanceConfig();
-                        instanceConfigStatusMsg = "Successfully removed instance configuration.";
+                        
+                        $.dcdt.beans.addBeanMessageGlobal(instanceConfigForm, "success", "Successfully removed instance configuration.");
                     },
                     "queryBeanErrors": function (data, status, jqXhr) {
                         instanceConfigStatusMsg = "Unable to remove instance configuration.";
                         $.dcdt.beans.addQueryErrors(instanceConfigForm, data);
+                        
+                        $.dcdt.beans.addBeanMessageGlobal(instanceConfigForm, "error", "Unable to remove instance configuration.");
                     },
                     "postQueryBean": function (jqXhr, status) {
-                        $.dcdt.admin.appendInstanceConfigStatus();
                         instanceConfigForm.dcdt.form.formReady();
                     },
                     "preQueryBean": function (jqXhr, settings) {
-                        $.dcdt.beans.clearBeanErrors(instanceConfigForm);
-                        $.dcdt.admin.clearInstanceConfigMessages();
+                        $.dcdt.beans.clearBeanMessages(instanceConfigForm);
                         instanceConfigForm.dcdt.form.formWait(instanceConfigButtonRm);
                     },
                     "url": URL_ADMIN_INSTANCE_CONFIG_RM
@@ -82,30 +83,16 @@
                     "preQueryBean": function (jqXhr, settings) {
                         instanceConfig = null;
                         
-                        $.dcdt.beans.clearBeanErrors(instanceConfigForm);
+                        $.dcdt.beans.clearBeanMessages(instanceConfigForm);
                     },
                     "url": URL_ADMIN_INSTANCE_CONFIG_GET
                 });
-            },
-            "appendServiceStatus": function (data) {
-                var servicesMsg = data["items"][0]["msg"];
-
-                if (servicesMsg) {
-                    instanceConfigMessages.append(servicesMsg);
-                    instanceConfigMessages.append("<br/>");
-                }
-            },
-            "appendInstanceConfigStatus": function () {
-                instanceConfigMessages.append(instanceConfigStatusMsg);
-            },
-            "clearInstanceConfigMessages": function () {
-                instanceConfigMessages.empty();
             }
         })
     });
     
     var instanceConfigForm, instanceConfigInputDomainName, instanceConfigInputIpAddr, instanceConfigButtons, instanceConfigButtonRm, instanceConfigButtonSet,
-        instanceConfig, instanceConfigMessages, instanceConfigStatusMsg;
+        instanceConfig;
     
     $(document).ready(function () {
         instanceConfigForm = $("form[name=\"admin-instance-config\"]");
@@ -114,7 +101,6 @@
         instanceConfigButtons = instanceConfigForm.dcdt.form.formButtons();
         instanceConfigButtonRm = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-rm");
         instanceConfigButtonSet = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-set");
-        instanceConfigMessages = $("div#instance-config-messages");
 
         instanceConfigForm.submit(function (event, instanceConfigButton) {
             if (instanceConfigButton.is(instanceConfigButtonRm)) {

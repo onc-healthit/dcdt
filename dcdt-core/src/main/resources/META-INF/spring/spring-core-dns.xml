@@ -76,6 +76,15 @@
     <beans:bean id="dnsResolver" class="org.xbill.DNS.ExtendedResolver" abstract="true"/>
     <beans:bean id="dnsResolverExt" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver" abstract="true"/>
     
+    <beans:bean id="dnsResolverExtLocal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt" factory-method="fromSocketAddresses">
+        <beans:constructor-arg name="socketAddrs">
+            <util:list>
+                <beans:bean parent="socketAddrLoopback"
+                    c:_1="${dcdt.instance.dns.server.1.port}"/>
+            </util:list>
+        </beans:constructor-arg>
+    </beans:bean>
+    
     <beans:bean id="dnsResolverExtExternal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt"
         factory-method="fromSocketAddresses">
         <beans:constructor-arg name="socketAddrs">

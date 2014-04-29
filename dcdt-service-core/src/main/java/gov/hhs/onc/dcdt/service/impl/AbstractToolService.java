@@ -15,6 +15,12 @@ public abstract class AbstractToolService extends AbstractToolLifecycleBean impl
     protected AbstractApplicationContext appContext;
 
     @Override
+    public boolean canStart() {
+        // noinspection ConstantConditions
+        return (super.canStart() && ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfig.class).isConfigured());
+    }
+
+    @Override
     public void afterPropertiesSet() throws Exception {
         super.afterPropertiesSet();
 
@@ -22,15 +28,12 @@ public abstract class AbstractToolService extends AbstractToolLifecycleBean impl
     }
 
     @Override
-    protected boolean canStart() {
-        InstanceConfig instanceConfig = ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfig.class);
-
-        // noinspection ConstantConditions
-        return super.canStart() && instanceConfig.hasDomainName() && instanceConfig.hasIpAddress();
+    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
+        this.appContext = (AbstractApplicationContext) appContext;
     }
 
     @Override
-    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
-        this.appContext = (AbstractApplicationContext) appContext;
+    public int getOrder() {
+        return this.getPhase();
     }
 }

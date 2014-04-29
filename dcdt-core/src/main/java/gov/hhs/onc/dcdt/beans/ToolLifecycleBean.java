@@ -10,5 +10,9 @@ public interface ToolLifecycleBean extends OverrideableAutoStartup, Overrideable
     @Override
     public void stop(@Nullable Runnable stopCallback);
 
+    public boolean canStop();
+
+    public boolean canStart();
+
     public LifecycleStatusType getLifecycleStatus();
 }

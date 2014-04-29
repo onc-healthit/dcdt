@@ -17,7 +17,7 @@ public abstract class AbstractLookupStep<T extends Serializable, U extends Enum<
     protected W lookupService;
     protected V result;
 
-    protected AbstractLookupStep(BindingType bindingType, LocationType locType, W lookupService) {
+    protected AbstractLookupStep(BindingType bindingType, @Nullable LocationType locType, W lookupService) {
         super(bindingType, locType);
 
         this.lookupService = lookupService;
@@ -32,7 +32,7 @@ public abstract class AbstractLookupStep<T extends Serializable, U extends Enum<
     public boolean isSuccess() {
         return (super.isSuccess() && this.hasResult() && this.result.isSuccess());
     }
-    
+
     @Nullable
     protected abstract V executeLookup(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr);
 

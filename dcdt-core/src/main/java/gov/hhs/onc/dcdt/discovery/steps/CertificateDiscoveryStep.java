@@ -42,6 +42,9 @@ public interface CertificateDiscoveryStep extends ApplicationContextAware, Clone
 
     public void setExecutionSuccess(boolean execSuccess);
 
+    public boolean hasLocationType();
+
     @JsonProperty("locType")
+    @Nullable
     public LocationType getLocationType();
 }

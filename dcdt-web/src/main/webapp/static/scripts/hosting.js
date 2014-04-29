@@ -48,10 +48,10 @@
                             testcaseHostingResultHeaderIcon.enableClass("glyphicon");
         
                             if (testcaseHostingResultHeaderElem.hasClass("testcase-hosting-result-header-success")) {
-                                testcaseHostingResultHeaderIcon.enableClass("glyphicon-ok-circle");
+                                testcaseHostingResultHeaderIcon.enableClass("glyphicon-ok-sign");
                                 testcaseHostingResultHeaderIcon.enableClass("glyphicon-type-success");
                             } else {
-                                testcaseHostingResultHeaderIcon.enableClass("glyphicon-remove-circle");
+                                testcaseHostingResultHeaderIcon.enableClass("glyphicon-remove-sign");
                                 testcaseHostingResultHeaderIcon.enableClass("glyphicon-type-error");
                             }
                         });
@@ -63,7 +63,7 @@
                         formTestcasesHosting.dcdt.form.formReady();
                     },
                     "preQueryBean": function (jqXhr, settings) {
-                        $.dcdt.beans.clearBeanErrors(formTestcasesHosting);
+                        $.dcdt.beans.clearBeanMessages(formTestcasesHosting);
                     },
                     "url": URL_HOSTING_PROCESS
                 });

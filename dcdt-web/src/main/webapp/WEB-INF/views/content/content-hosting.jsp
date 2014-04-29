@@ -22,35 +22,14 @@
         to the right of the test case description.
         <br/>
     </p>
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <td></td>
-                <td><b>My system stores certificates in DNS CERT Resource Records</b></td>
-                <td><b>My system stores certificates in LDAP servers</b></td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td><b>My system stores address-bound certificates</b></td>
-                <td>H1</td>
-                <td>H3</td>
-            </tr>
-            <tr>
-                <td><b>My system stores domain-bound certificates</b></td>
-                <td>H2</td>
-                <td>H4</td>
-            </tr>
-        </tbody>
-    </table>
 </div>
 <form name="form-testcases-hosting" action="about:blank" method="post" target="testcase-target">
     <div id="testcase-info" class="input-group-sm">
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors input-group-addon-errors-global">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Hosting testcase submission</strong>:
                     <ul></ul>
@@ -78,9 +57,9 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
+                <div class="input-group-addon input-group-addon-msgs">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Hosting testcase</strong>:
                     <ul></ul>
@@ -104,9 +83,9 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
+                <div class="input-group-addon input-group-addon-msgs">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Direct address</strong>:
                     <ul></ul>
@@ -143,4 +122,4 @@
         <i>None</i>
     </div>
 </form>
-<iframe id="testcase-target" class="hide" name="testcase-target" src="about:blank"></iframe> 
+<iframe id="testcase-target" class="hide" name="testcase-target" src="about:blank"></iframe>

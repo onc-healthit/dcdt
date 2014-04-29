@@ -11,30 +11,71 @@
     <h1>Discovery testcase $discoveryTestcase.name ($discoveryTestcase.nameDisplay) #if($discoveryTestcaseResult.success)passed#{else}failed#{end}.</h1>
     <h2>Details</h2>
     <ul>
-        <li><strong>Optional</strong>: $discoveryTestcase.optional</li>
         <li><strong>Negative</strong>: $discoveryTestcase.negative</li>
+        <li><strong>Optional</strong>: $discoveryTestcase.optional</li>
+        <li><strong>Description</strong>: $discoveryTestcase.description.text</li>
         
         #set ($discoveryTestcaseMsgHelper = $discoveryTestcaseSubmission.messageHelper)
         
         <li><strong>From</strong>: $discoveryTestcaseMsgHelper.from</li>
         <li><strong>To</strong>: $discoveryTestcaseMsgHelper.to</li>
-
-        #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.decryptionCredential "Discovered")
+        
+        <li>
+            <strong>Processing Message(s)</strong>:
+            #if ($discoveryTestcaseResult.hasProcessingMessages())
+                <ul>
+                    #foreach ($discoveryTestcaseResultProcMsg in $discoveryTestcaseResult.processingMessages)
+                        <li>$discoveryTestcaseResultProcMsg</li>
+                    #end
+                </ul>
+            #else
+                <i>None</i>
+            #end
+        </li>
+        
+        <li>
+            <strong>Processed Step(s)</strong>:
+            #if ($discoveryTestcaseResult.hasProcessedSteps())
+                <ul>
+                    #foreach ($discoveryTestcaseResultProcStep in $discoveryTestcaseResult.processedSteps)
+                        <li>
+                            <strong>$discoveryTestcaseResultProcStep.description.text</strong>:
+                            <ul>
+                                <li><strong>Success</strong>: $discoveryTestcaseResultProcStep.success</li>
+                                <li>
+                                    <strong>Message(s)</strong>:
+                                    #if ($discoveryTestcaseResultProcStep.hasMessages())
+                                        <ul>
+                                            #foreach ($discoveryTestcaseResultProcStepMsg in $discoveryTestcaseResultProcStep.messages)
+                                                <li>$discoveryTestcaseResultProcStepMsg</li>
+                                            #end
+                                        </ul>
+                                    #else
+                                        <i>None</i>
+                                    #end
+                                </li>
+                                <li><strong>Binding Type</strong>: $discoveryTestcaseResultProcStep.bindingType</li>
+                                <li><strong>Location Type</strong>:
+                                    #if ($discoveryTestcaseResultProcStep.hasLocationType())
+                                        $discoveryTestcaseResultProcStep.locationType
+                                    #else
+                                        <i>None</i>
+                                    #end
+                                </li>
+                            </ul>
+                        </li>
+                    #end
+                </ul>
+            #else
+                <i>None</i>
+            #end
+        </li>
         
         #if (!$discoveryTestcaseResult.success)
             #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.expectedDecryptionCredential "Expected")
         #end
-
-        #if ($discoveryTestcaseResult.hasMessages())
-            <li>
-                <strong>Messages</strong>:
-                <ul>
-                    #foreach ($discoveryTestcaseResultMsg in $discoveryTestcaseResult.messages)
-                        <li>$discoveryTestcaseResultMsg</li>
-                    #end
-                </ul>
-            </li>
-        #end
+        
+        #discoveryTestcaseResultCredDesc($discoveryTestcaseResult.decryptionCredential "Discovered")
     </ul>
 #end
 #parse("mail.vm")
