@@ -41,8 +41,6 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
 
                 if (certInfoValidationResultPair.getLeft()) {
                     this.validCertInfo = certInfo;
-
-                    break;
                 } else {
                     this.invalidCertInfos.add(certInfo);
                 }
