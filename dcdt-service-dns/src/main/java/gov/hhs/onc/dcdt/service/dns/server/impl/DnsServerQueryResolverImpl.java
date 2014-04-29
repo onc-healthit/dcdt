@@ -12,7 +12,6 @@ import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerQueryResolutionException;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerQueryResolver;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import java.util.Collection;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,16 +80,15 @@ public class DnsServerQueryResolverImpl extends AbstractChannelListenerDataProce
             return respMsg;
         }
 
-        Collection<Record> answerRecords = null;
         InstanceDnsConfig authoritativeDnsConfig = this.dnsServerConfig.findAuthoritativeDnsConfig(questionRecord);
 
         if (authoritativeDnsConfig != null) {
-            answerRecords = authoritativeDnsConfig.findAnswers(questionRecord);
+            ToolDnsMessageUtils.setAnswers(respMsg, authoritativeDnsConfig.findAnswers(questionRecord));
             // noinspection ConstantConditions
             ToolDnsMessageUtils.setAuthorities(respMsg, true, authoritativeDnsConfig.getSoaRecordConfig().toRecord());
+        } else {
+            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.REFUSED);
         }
-
-        ToolDnsMessageUtils.setAnswers(respMsg, answerRecords);
 
         return respMsg;
     }

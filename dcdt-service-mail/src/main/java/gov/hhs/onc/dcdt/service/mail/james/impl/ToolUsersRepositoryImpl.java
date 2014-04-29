@@ -139,7 +139,7 @@ public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUse
 
     @Override
     public boolean supportVirtualHosting() throws UsersRepositoryException {
-        return false;
+        return true;
     }
 
     @Override

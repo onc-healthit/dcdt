@@ -22,6 +22,7 @@ import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.cursor.EntryCursor;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
+import org.apache.directory.api.ldap.model.entry.Value;
 import org.apache.directory.api.ldap.model.exception.LdapAuthenticationException;
 import org.apache.directory.api.ldap.model.exception.LdapException;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
@@ -113,13 +114,21 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
             conn = bind(connConfig, connect(connConfig));
 
             Entry baseDnEntry = conn.getRootDse(SchemaConstants.NAMING_CONTEXTS_AT);
-            List<Dn> baseDns = new ArrayList<>(baseDnEntry.size());
 
-            for (Attribute baseDnAttr : baseDnEntry) {
-                baseDns.add(new Dn(baseDnAttr.getString()));
+            if (baseDnEntry.containsAttribute(SchemaConstants.NAMING_CONTEXTS_AT)) {
+                Attribute baseDnAttr = baseDnEntry.get(SchemaConstants.NAMING_CONTEXTS_AT);
+                List<Dn> baseDns = new ArrayList<>(baseDnAttr.size());
+
+                for (Value<?> baseDnAttrValue : baseDnAttr) {
+                    if (baseDnAttrValue.isHumanReadable()) {
+                        baseDns.add(new Dn(baseDnAttrValue.getString()));
+                    }
+                }
+
+                lookupResult = new LdapBaseDnLookupResultImpl(connConfig, new LdapResultImpl(), baseDns);
+            } else {
+                lookupResult = new LdapBaseDnLookupResultImpl(connConfig, new LdapResultImpl());
             }
-
-            lookupResult = new LdapBaseDnLookupResultImpl(connConfig, new LdapResultImpl(), baseDns);
         } catch (LdapException e) {
             lookupResult = new LdapBaseDnLookupResultImpl(connConfig, buildResult(e));
         } finally {

@@ -88,6 +88,16 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
     }
 
     @Override
+    public boolean canStop() {
+        return this.isRunning();
+    }
+
+    @Override
+    public boolean canStart() {
+        return !this.isRunning();
+    }
+
+    @Override
     public boolean isRunning() {
         return this.lifecycleStatus.isRunning();
     }
@@ -105,14 +115,6 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
     }
 
     protected void startInternal() throws Exception {
-    }
-
-    protected boolean canStop() {
-        return this.isRunning();
-    }
-
-    protected boolean canStart() {
-        return !this.isRunning();
     }
 
     @Override

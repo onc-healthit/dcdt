@@ -1,10 +1,8 @@
 package gov.hhs.onc.dcdt.utils;
 
-import java.lang.reflect.Method;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.PriorityQueue;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
@@ -33,7 +31,7 @@ public abstract class ToolOrderUtils {
     }
 
     public static class OrderComparator implements Comparator<Object> {
-        private final static OrderComparator INSTANCE = new OrderComparator();
+        public final static OrderComparator INSTANCE = new OrderComparator();
 
         @Override
         public int compare(Object obj1, Object obj2) {

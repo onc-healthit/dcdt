@@ -22,10 +22,17 @@ public interface DnsServiceConfigBean extends JamesConfigBean {
 
     public void setCache(@Nullable Cache cache);
 
-    public boolean hasResolver();
+    public boolean hasExternalResolver();
 
     @Nullable
-    public Resolver getResolver();
+    public Resolver getExternalResolver();
 
-    public void setResolver(@Nullable Resolver resolver);
+    public void setExternalResolver(@Nullable Resolver extResolver);
+
+    public boolean hasLocalResolver();
+
+    @Nullable
+    public Resolver getLocalResolver();
+
+    public void setLocalResolver(@Nullable Resolver localResolver);
 }

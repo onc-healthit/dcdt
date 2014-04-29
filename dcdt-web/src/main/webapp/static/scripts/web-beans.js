@@ -50,7 +50,7 @@
                     "success": function (data, status, jqXhr) {
                         var dataJson = $.encodeJson(data);
                         
-                        if ($.dcdt.beans.getQueryStatus(data)) {
+                        if ($.dcdt.beans.isQuerySuccess(data)) {
                             console.info("Successfully queried (url=" + settings["url"] + ", status=" + status + ") bean:\n" + dataJson);
                             
                             var queryBeanSuccessCallback = settings["queryBeanSuccess"];
@@ -82,7 +82,7 @@
                             
                             if (dataErrorGlobalMsgs) {
                                 $.each(dataErrorGlobalMsgs, function (dataErrorGlobalMsgIndex, dataErrorGlobalMsg) {
-                                    $.dcdt.beans.addBeanErrorGlobal(form, dataErrorGlobalMsg);
+                                    $.dcdt.beans.addBeanMessageGlobal(form, "error", dataErrorGlobalMsg);
                                 });
                             }
                         });
@@ -101,7 +101,7 @@
                                         
                                         if (dataErrorFieldMsgs) {
                                             $.each(dataErrorFieldMsgs, function (dataErrorFieldMsgIndex, dataErrorFieldMsg) {
-                                                $.dcdt.beans.addBeanErrorField(form, dataErrorFieldName, dataErrorFieldMsg);
+                                                $.dcdt.beans.addBeanMessageField(form, dataErrorFieldName, "error", dataErrorFieldMsg);
                                             });
                                         }
                                     });
@@ -111,17 +111,20 @@
                     }
                 }
             },
-            "addBeanErrorField": function (form, fieldName, errorMsg) {
-                return $(form).dcdt.form.addErrorField(fieldName.replace(/^items\[\d+\]\./, ""), errorMsg);
+            "addBeanMessageField": function (form, fieldName, level, msg) {
+                return $(form).dcdt.form.addMessageField(fieldName.replace(/^items\[\d+\]\./, ""), level, msg);
             },
-            "addBeanErrorGlobal": function (form, errorMsg) {
-                return $(form).dcdt.form.addErrorGlobal(errorMsg);
+            "addBeanMessageGlobal": function (form, level, msg) {
+                return $(form).dcdt.form.addMessageGlobal(level, msg);
             },
-            "clearBeanErrors": function (form) {
-                return $(form).dcdt.form.clearErrors();
+            "clearBeanMessages": function (form) {
+                return $(form).dcdt.form.clearMessages();
+            },
+            "isQuerySuccess": function (data) {
+                return ($.dcdt.beans.getQueryStatus(data) == "success");
             },
             "getQueryStatus": function (data) {
-                return data && data.hasOwnProperty("status") && (data["status"].toLowerCase() == "success");
+                return ((data && data.hasOwnProperty("status")) ? data["status"].toLowerCase() : null);
             }
         })
     });

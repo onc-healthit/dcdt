@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.mail.impl;
 
+import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 
 @AutoStartup(false)
 @Component("mailServiceImpl")
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
 @ServiceContextConfiguration({ "spring/spring-service-mail.xml", "spring/spring-service-mail-*.xml" })
 public class MailServiceImpl extends AbstractToolService implements MailService {
     private final static Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);

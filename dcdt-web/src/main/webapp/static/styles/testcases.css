@@ -17,7 +17,7 @@ div.input-group-sm#testcase-results div.form-group span.form-cell.form-cell-labe
     text-align: left;
 }
 
-div.input-group-sm#testcase-results div#testcase-results-accordion:empty + i {
+div.input-group-sm#testcase-results div#testcase-results-accordion:not(:empty) + i {
     display: none;
 }
 

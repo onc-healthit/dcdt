@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.dns.server.impl;
 
+import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLifecycleBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.context.AutoStartup;
@@ -16,6 +17,7 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
 
 @AutoStartup(false)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST)
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public class DnsServerImpl extends AbstractToolLifecycleBean implements DnsServer {
     private AbstractApplicationContext appContext;

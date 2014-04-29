@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.dns.server.impl;
 
+import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.nio.channels.impl.AbstractChannelListenerSelector;
@@ -15,8 +16,9 @@ import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.stereotype.Component;
 
 @AutoStartup(false)
-@Component("dnsServerTcpChannelListenerSelectorImpl")
+@Component("dnsServerChannelListenerSelectorImpl")
 @Lazy
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST)
 @Scope("prototype")
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public class DnsServerChannelListenerSelectorImpl extends AbstractChannelListenerSelector implements DnsServerChannelListenerSelector {

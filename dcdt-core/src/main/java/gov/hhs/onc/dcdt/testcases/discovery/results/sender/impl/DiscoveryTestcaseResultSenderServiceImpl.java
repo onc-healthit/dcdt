@@ -53,7 +53,7 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
         // noinspection ConstantConditions
         List<MimeAttachmentResource> attachmentResources = new ArrayList<>(DiscoveryTestcaseResultCredentialType.values().length + 1);
 
-        if (discoveryTestcaseResult.hasExpectedDecryptionCredential()) {
+        if (!discoveryTestcaseResult.isSuccess() && discoveryTestcaseResult.hasExpectedDecryptionCredential()) {
             DiscoveryTestcaseCredential expectedDecryptCred = discoveryTestcaseResult.getExpectedDecryptionCredential();
             // noinspection ConstantConditions
             CertificateInfo expectedDecryptCredCertInfo = expectedDecryptCred.getCredentialInfo().getCertificateDescriptor();

@@ -10,8 +10,6 @@
 <%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <spring:eval expression="T(org.apache.commons.lang3.StringUtils).LF" var="LF" scope="request"/>
 <spring:message var="urlGoogleCodeProject" code="dcdt.web.url.google.code.project" scope="request"/>
-<spring:message var="urlWikiUserGuide" code="dcdt.web.url.wiki.user.guide" scope="request"/>
-<spring:message var="urlWikiFaq" code="dcdt.web.url.wiki.faq" scope="request"/>
 <spring:url var="urlBase" value="/" scope="request"/>
 <spring:url var="urlStatic" value="/static" scope="request"/>
 <spring:url var="urlStaticImages" value="/static/images" scope="request"/>

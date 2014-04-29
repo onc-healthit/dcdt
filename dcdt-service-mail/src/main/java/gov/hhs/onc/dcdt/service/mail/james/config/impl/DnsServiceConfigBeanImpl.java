@@ -8,7 +8,8 @@ import org.xbill.DNS.Resolver;
 public class DnsServiceConfigBeanImpl extends AbstractJamesConfigBean implements DnsServiceConfigBean {
     private Boolean autoDiscover;
     private Cache cache;
-    private Resolver resolver;
+    private Resolver extResolver;
+    private Resolver localResolver;
 
     @Override
     public boolean hasAutoDiscover() {
@@ -43,18 +44,34 @@ public class DnsServiceConfigBeanImpl extends AbstractJamesConfigBean implements
     }
 
     @Override
-    public boolean hasResolver() {
-        return (this.resolver != null);
+    public boolean hasExternalResolver() {
+        return (this.extResolver != null);
     }
 
     @Nullable
     @Override
-    public Resolver getResolver() {
-        return this.resolver;
+    public Resolver getExternalResolver() {
+        return this.extResolver;
     }
 
     @Override
-    public void setResolver(@Nullable Resolver resolver) {
-        this.resolver = resolver;
+    public void setExternalResolver(@Nullable Resolver extResolver) {
+        this.extResolver = extResolver;
+    }
+
+    @Override
+    public boolean hasLocalResolver() {
+        return (this.localResolver != null);
+    }
+
+    @Nullable
+    @Override
+    public Resolver getLocalResolver() {
+        return this.localResolver;
+    }
+
+    @Override
+    public void setLocalResolver(@Nullable Resolver localResolver) {
+        this.localResolver = localResolver;
     }
 }

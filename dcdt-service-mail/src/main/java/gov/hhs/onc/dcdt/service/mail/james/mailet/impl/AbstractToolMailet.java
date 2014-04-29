@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.service.mail.james.mailet.impl;
 import gov.hhs.onc.dcdt.mail.ToolMailException;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.service.mail.james.mailet.ToolMailet;
+import gov.hhs.onc.dcdt.service.mail.james.utils.ToolJamesUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -27,11 +28,10 @@ public abstract class AbstractToolMailet extends GenericMailet implements ToolMa
     @Override
     public void service(Mail mail) throws MessagingException {
         try {
-            this.serviceInternal(new ToolMimeMessageHelper(mail.getMessage(), this.mailEnc));
-        } catch (ToolMailException e) {
-            throw e;
+            this.serviceInternal(ToolJamesUtils.wrapMessage(mail, this.mailEnc));
         } catch (Exception e) {
-            throw new ToolMailException(String.format("Unable to execute mailet (class=%s) service for mail.", ToolClassUtils.getName(this)), e);
+            throw new ToolMailException(String.format("Unable to execute mailet (class=%s) service for mail message:\n%s", ToolClassUtils.getName(this),
+                mail.getMessage()), e);
         }
     }
 
@@ -45,7 +45,7 @@ public abstract class AbstractToolMailet extends GenericMailet implements ToolMa
         }
     }
 
-    protected abstract void serviceInternal(ToolMimeMessageHelper mimeMsgHelper) throws Exception;
+    protected abstract void serviceInternal(ToolMimeMessageHelper msgHelper) throws Exception;
 
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {

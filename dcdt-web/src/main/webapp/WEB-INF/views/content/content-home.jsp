@@ -34,7 +34,3 @@
         implementations by using them to send Direct messages.
     </li>
 </ul>
-<p>
-    Both areas contain details on the underlying test cases and how to run them.
-    There is also a <a href="${urlWikiUserGuide}">User's Guide</a>.
-</p>

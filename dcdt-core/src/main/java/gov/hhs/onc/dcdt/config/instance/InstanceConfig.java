@@ -5,6 +5,8 @@ import java.net.InetAddress;
 import javax.annotation.Nullable;
 
 public interface InstanceConfig extends ToolDomainBean {
+    public boolean isConfigured();
+
     public boolean hasIpAddress();
 
     @Nullable
