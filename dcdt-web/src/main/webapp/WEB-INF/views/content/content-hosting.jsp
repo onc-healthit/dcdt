@@ -7,19 +7,18 @@
 <%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
-<%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <div class="testcases-intro">
     <p>
-        <b>Step 1:</b> Use the table below to help you determine the required test cases for your SUT (System Under Test).
+        <b>Step 1:</b> Determine the required test cases for your SUT (System Under Test).
         Notice that there are two options for storage of address-bound and domain-bound certificates.
-        The Hosting tool provides tests that map to these options.
         <br/><br/>
-        <b>Step 2:</b> Select the option that reflects the SUT and then select the appropriate test case from the dropdown.
+        <b>Step 2:</b> Select a test case that reflects the SUT from the dropdown.
         <br/><br/>
         <b>Step 3:</b> Read the Description and Instructions for the selected test case. Then enter the Direct address and submit.
         Your SUT configuration may require that you select more than one test case. If so, then select one test case at a time,
-        following the instructions to execute the test after each selection. Note: The results for your testcase will be displayed
-        to the right of the test case description.
+        following the instructions to execute the test after each selection. Note: The results for your test case will be displayed
+        in the Results section below the Submit and Reset buttons.
         <br/>
     </p>
 </div>
@@ -27,9 +26,9 @@
     <div id="testcase-info" class="input-group-sm">
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
+                <div class="input-group-addon input-group-addon-errors input-group-addon-errors-global">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Hosting testcase submission</strong>:
                     <ul></ul>
@@ -57,9 +56,9 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-msgs">
+                <div class="input-group-addon input-group-addon-errors">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Hosting testcase</strong>:
                     <ul></ul>
@@ -83,9 +82,9 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-msgs">
+                <div class="input-group-addon input-group-addon-errors">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Direct address</strong>:
                     <ul></ul>
@@ -122,4 +121,4 @@
         <i>None</i>
     </div>
 </form>
-<iframe id="testcase-target" class="hide" name="testcase-target" src="about:blank"></iframe>
+<iframe id="testcase-target" class="hide" name="testcase-target" src="about:blank"></iframe> 

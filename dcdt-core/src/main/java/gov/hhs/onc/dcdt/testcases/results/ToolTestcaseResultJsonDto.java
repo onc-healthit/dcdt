@@ -17,6 +17,11 @@ public interface ToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U 
 
     public void setDiscoveredCertificateInfo(CertificateInfo discoveredCertInfo);
 
+    @JsonProperty("invalidDiscoveredCertInfos")
+    public List<CertificateInfo> getInvalidDiscoveredCertificateInfos();
+
+    public void setInvalidDiscoveredCertificateInfos(List<CertificateInfo> invalidDiscoveredCertInfos);
+
     @JsonProperty("msgs")
     @Override
     public List<String> getMessages();

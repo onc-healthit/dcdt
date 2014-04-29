@@ -40,7 +40,6 @@
                         $.dcdt.beans.addBeanMessageGlobal(instanceConfigForm, "success", "Successfully removed instance configuration.");
                     },
                     "queryBeanErrors": function (data, status, jqXhr) {
-                        instanceConfigStatusMsg = "Unable to remove instance configuration.";
                         $.dcdt.beans.addQueryErrors(instanceConfigForm, data);
                         
                         $.dcdt.beans.addBeanMessageGlobal(instanceConfigForm, "error", "Unable to remove instance configuration.");
