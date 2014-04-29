@@ -3,8 +3,6 @@ $(document).ready(function () {
         testcaseDiscoveryDirectAddr = $("div#testcase-discovery-direct-addr", formTestcasesDiscovery),
         testcaseDiscoveryDirectAddrContent = $("span:last-of-type", testcaseDiscoveryDirectAddr);
 
-    testcaseDiscoveryDirectAddr.hide();
-
     testcasesDiscoverySelect.change(function (event) {
         $(event.target).dcdt.testcases.selectTestcase(event, formTestcasesDiscovery, {
             "postBuildTestcaseDescription": function (settings, testcase, testcaseDesc, testcaseDescElem) {
