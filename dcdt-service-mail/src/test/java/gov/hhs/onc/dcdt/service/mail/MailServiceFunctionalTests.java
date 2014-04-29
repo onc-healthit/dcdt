@@ -23,7 +23,6 @@ import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.AfterGroups;
 import org.testng.annotations.BeforeClass;
@@ -41,11 +40,10 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private Charset mailEnc;
 
-    @Value("${dcdt.test.discovery.mail.mapping.results.addr}")
-    private MailAddress testResultsAddr;
-
     private DiscoveryTestcaseSubmissionSenderService discoveryTestcaseSubmissionSenderService;
+    private MailAddress testSubmissionAddr;
     private DiscoveryTestcaseResultSenderService discoveryTestcaseResultSenderService;
+    private MailAddress testResultsAddr;
     private List<DiscoveryTestcase> discoveryTestcases;
 
     public MailServiceFunctionalTests() {
@@ -67,7 +65,7 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
             // noinspection ConstantConditions
             discoveryTestcaseSubmission =
                 ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class, discoveryTestcase,
-                    this.createMessageHelper((to = discoveryTestcase.getMailAddress())));
+                    this.createMessageHelper(this.testSubmissionAddr, (to = discoveryTestcase.getMailAddress())));
 
             // noinspection ConstantConditions
             this.discoveryTestcaseSubmissionSenderService.send(discoveryTestcaseSubmission, to, (discoveryTestcaseCredInfo =
@@ -86,7 +84,7 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
 
         DiscoveryTestcaseSubmission testDiscoveryTestcaseSubmission =
             ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class, testDiscoveryTestcase,
-                this.createMessageHelper(this.testResultsAddr));
+                this.createMessageHelper(this.testSubmissionAddr, this.testResultsAddr));
 
         DiscoveryTestcaseResult testDiscoveryTestcaseResult =
             ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseResult.class, testDiscoveryTestcaseSubmission, null);
@@ -113,13 +111,11 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
         this.discoveryTestcaseSubmissionSenderService =
             ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, DiscoveryTestcaseSubmissionSenderService.class);
         this.discoveryTestcaseResultSenderService = ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, DiscoveryTestcaseResultSenderService.class);
-        // noinspection ConstantConditions
-        this.testResultsAddr = this.discoveryTestcaseResultSenderService.getFromConfig().getMailAddress();
 
         DiscoveryTestcaseMailMapping mailMapping = ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, DiscoveryTestcaseMailMapping.class);
         // noinspection ConstantConditions
-        mailMapping.setDirectAddress(this.discoveryTestcaseSubmissionSenderService.getFromConfig().getMailAddress());
-        mailMapping.setResultsAddress(this.testResultsAddr);
+        mailMapping.setDirectAddress((this.testSubmissionAddr = this.discoveryTestcaseSubmissionSenderService.getFromConfig().getMailAddress()));
+        mailMapping.setResultsAddress((this.testResultsAddr = this.discoveryTestcaseResultSenderService.getFromConfig().getMailAddress()));
         // noinspection ConstantConditions
         ToolBeanFactoryUtils.getBeanOfType(this.applicationContext, DiscoveryTestcaseMailMappingRegistry.class).registerBeans(mailMapping);
     }
@@ -130,14 +126,12 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
         super.startService();
     }
 
-    private ToolMimeMessageHelper createMessageHelper(MailAddress to) throws MessagingException {
-        String toAddr = to.toAddress();
-
+    private ToolMimeMessageHelper createMessageHelper(MailAddress from, MailAddress to) throws MessagingException {
         ToolMimeMessageHelper msgHelper = new ToolMimeMessageHelper(this.mailSession, this.mailEnc);
-        msgHelper.setFrom(this.testResultsAddr);
+        msgHelper.setFrom(from);
         msgHelper.setTo(to);
-        msgHelper.setSubject(toAddr);
-        msgHelper.setText(toAddr);
+        msgHelper.setSubject(String.format("[DCDT Test] %s => %s", from, to));
+        msgHelper.setText(String.format("From: %s\nTo: %s", from, to));
         msgHelper.setSentDate(new Date());
         msgHelper.getMimeMessage().saveChanges();
 

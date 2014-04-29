@@ -35,7 +35,9 @@
     = DISCOVERY TESTCASE MAIL MAPPINGS
     =====================================================================================================-->
     <beans:bean id="discoveryTestcaseMailMapping" class="gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping" abstract="true"/>
-    <beans:bean id="discoveryTestcaseMailMappingImpl" class="gov.hhs.onc.dcdt.testcases.discovery.mail.impl.DiscoveryTestcaseMailMappingFactoryBean" parent="discoveryTestcaseMailMapping" lazy-init="true" scope="prototype"/>
+    
+    <beans:bean id="discoveryTestcaseMailMappingImpl" class="gov.hhs.onc.dcdt.testcases.discovery.mail.impl.DiscoveryTestcaseMailMappingFactoryBean"
+        parent="discoveryTestcaseMailMapping" lazy-init="true" scope="prototype"/>
 
     <!--====================================================================================================
     = DISCOVERY TESTCASES

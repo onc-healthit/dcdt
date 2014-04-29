@@ -3,13 +3,15 @@ package gov.hhs.onc.dcdt.mail.impl;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
+import gov.hhs.onc.dcdt.mail.MailHeaderNames;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils.MimeTypeComparator;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
-import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -32,9 +34,9 @@ import javax.mail.internet.MimePart;
 import javax.mail.internet.MimeUtility;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.EnumerationUtils;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.james.mime4j.codec.CodecUtil;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
@@ -56,30 +58,19 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
         super(msg, multipartMode, MimeUtility.mimeCharset(mailEnc.name()));
     }
 
-    public String writeString() throws IOException, MessagingException {
-        return this.writeString(true);
-    }
-
-    public String writeString(boolean includeHeaders) throws IOException, MessagingException {
-        ToolStrBuilder strBuilder = new ToolStrBuilder();
-
-        if (includeHeaders) {
-            strBuilder.appendWithDelimiters(this.getHeaderLines(), StringUtils.LF);
-        }
-
-        strBuilder.appendWithDelimiter(new String(this.write(), this.getEncoding()), StringUtils.LF);
-
-        return strBuilder.toString();
-    }
-
     public byte[] write() throws IOException, MessagingException {
         return this.write(false);
     }
 
-    public byte[] write(boolean raw) throws IOException, MessagingException {
+    public byte[] write(boolean quoted) throws IOException, MessagingException {
         MimeMessage msg = this.getMimeMessage();
+        ByteArrayOutputStream dataOutStream = new ByteArrayOutputStream();
 
-        return IOUtils.toByteArray((raw ? msg.getRawInputStream() : msg.getInputStream()));
+        try (OutputStream outStream = (quoted ? CodecUtil.wrapQuotedPrintable(dataOutStream, true) : dataOutStream)) {
+            msg.writeTo(outStream);
+
+            return dataOutStream.toByteArray();
+        }
     }
 
     public boolean hasText() throws IOException, MessagingException {
@@ -103,14 +94,21 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
 
         if (attachmentResources != null) {
             String attachmentFileName;
+            MimeBodyPart attachmentPart;
 
             for (MimeAttachmentResource attachmentResource : attachmentResources) {
                 this.addAttachment((attachmentFileName = attachmentResource.getFilename()), attachmentResource,
                     Objects.toString(attachmentResource.getContentType(), null));
 
+                attachmentPart = this.mapAttachmentPartFileNames().get(attachmentFileName);
+
                 if (attachmentResource.hasDescription()) {
+                    attachmentPart.setDescription(attachmentResource.getDescription());
+                }
+
+                if (attachmentResource.hasContentXferEncoding()) {
                     // noinspection ConstantConditions
-                    this.mapAttachmentPartFileNames().get(attachmentFileName).setDescription(attachmentResource.getDescription());
+                    attachmentPart.setHeader(MailHeaderNames.HEADER_NAME_CONTENT_XFER_ENC, attachmentResource.getContentXferEncoding().getValue());
                 }
             }
         }
