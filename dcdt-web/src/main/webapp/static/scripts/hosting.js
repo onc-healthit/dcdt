@@ -29,12 +29,34 @@
                         var testcaseHostingCertInfo = testcaseHostingResult["discoveredCertInfo"],
                             testcaseHostingCert = (testcaseHostingCertInfo ? testcaseHostingCertInfo["cert"] : null);
 
+                        var testcaseHostingCertInfosInvalid = testcaseHostingResult["invalidDiscoveredCertInfos"],
+                            testcaseHostingCertsInvalid = [];
+
+                        if(testcaseHostingCertInfosInvalid) {
+                            testcaseHostingCertInfosInvalid.forEach(function (testcaseHostingCertInfoInvalid) {
+                                testcaseHostingCertsInvalid.push(testcaseHostingCertInfoInvalid["cert"]);
+                            });
+                        }
+
                         var testcaseHostingResultBodyElem = $("<div/>");
                         testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseItem("Success", testcaseHostingSuccess));
                         testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseItem("Processing Message(s)", testcaseHostingResult["procMsgs"]));
                         testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseSteps("Processed Step(s)", testcaseHostingResult["procSteps"]));
-                        testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseItem("Discovered Certificate",
+                        testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseItem("Discovered Valid Certificate",
                             (testcaseHostingCert ? $("<pre/>").enableClass("testcase-hosting-cert").text(testcaseHostingCert.replace(/ {4}/g, "  ")) : null)));
+
+                        var testcaseHostingCertsInvalidBodyElem = $("<span/>");
+
+                        if(testcaseHostingCertsInvalid.length > 0) {
+                            testcaseHostingCertsInvalid.forEach(function (testcaseHostingCertInvalid) {
+                                testcaseHostingCertsInvalidBodyElem.append($("<pre/>").enableClass("testcase-hosting-cert").text(testcaseHostingCertInvalid.replace(/ {4}/g, "  ")))
+                            });
+                        }
+                        else {
+                            testcaseHostingCertsInvalidBodyElem = null;
+                        }
+
+                        testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseItem("Discovered Invalid Certificate(s)", testcaseHostingCertsInvalidBodyElem));
                         testcaseHostingResultsAccordion.append(testcaseHostingResultBodyElem);
 
                         testcaseHostingResultsAccordion.accordion("refresh");

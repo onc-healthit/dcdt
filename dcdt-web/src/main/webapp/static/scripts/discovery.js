@@ -2,7 +2,9 @@ $(document).ready(function () {
     var formTestcasesDiscovery = $("form[name=\"form-testcases-discovery\"]"), testcasesDiscoverySelect = $("select#testcase-select", formTestcasesDiscovery),
         testcaseDiscoveryDirectAddr = $("div#testcase-discovery-direct-addr", formTestcasesDiscovery),
         testcaseDiscoveryDirectAddrContent = $("span:last-of-type", testcaseDiscoveryDirectAddr);
-    
+
+    testcaseDiscoveryDirectAddr.hide();
+
     testcasesDiscoverySelect.change(function (event) {
         $(event.target).dcdt.testcases.selectTestcase(event, formTestcasesDiscovery, {
             "postBuildTestcaseDescription": function (settings, testcase, testcaseDesc, testcaseDescElem) {

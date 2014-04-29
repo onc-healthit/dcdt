@@ -8,8 +8,10 @@ import gov.hhs.onc.dcdt.discovery.steps.CertificateLookupStep;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateValidationStep;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -18,6 +20,7 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
     private CertificateInfoValidator certInfoValidator;
 
     private CertificateInfo validCertInfo;
+    private List<CertificateInfo> invalidCertInfos;
 
     public CertificateValidationStepImpl() {
         super(BindingType.NONE);
@@ -30,6 +33,7 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
         // noinspection ConstantConditions
         if (certLookupStep.isSuccess() && certLookupStep.hasCertificateInfos()) {
             Pair<Boolean, List<String>> certInfoValidationResultPair;
+            this.invalidCertInfos = new ArrayList<>();
 
             // noinspection ConstantConditions
             for (CertificateInfo certInfo : certLookupStep.getCertificateInfos()) {
@@ -39,6 +43,8 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
                     this.validCertInfo = certInfo;
 
                     break;
+                } else {
+                    this.invalidCertInfos.add(certInfo);
                 }
             }
         }
@@ -60,5 +66,16 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
     @Override
     public CertificateInfo getValidCertificateInfo() {
         return this.validCertInfo;
+    }
+
+    @Override
+    public boolean hasInvalidCertificateInfos() {
+        return !CollectionUtils.isEmpty(this.invalidCertInfos);
+    }
+
+    @Nullable
+    @Override
+    public List<CertificateInfo> getInvalidCertificateInfos() {
+        return this.invalidCertInfos;
     }
 }
