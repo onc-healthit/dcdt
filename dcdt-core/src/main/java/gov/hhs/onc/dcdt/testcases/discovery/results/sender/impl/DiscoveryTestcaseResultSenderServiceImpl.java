@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
+import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.impl.MimeAttachmentResource;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
@@ -61,7 +62,7 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
             // noinspection ConstantConditions
             attachmentResources.add(new MimeAttachmentResource(
                 CertificateUtils.writeCertificate(expectedDecryptCredCertInfo.getCertificate(), DataEncoding.DER), expectedDecryptCred.getName(),
-                expectedDecryptCredCertInfo.getCertificateType().getContentType(), discoveryTestcaseName
+                expectedDecryptCredCertInfo.getCertificateType().getContentType(), MailContentTransferEncoding.BASE64, discoveryTestcaseName
                     + DiscoveryTestcaseResultCredentialType.EXPECTED.getAttachmentFileNameSuffix() + DataEncoding.DER.getFileExtension()));
         }
 
@@ -72,7 +73,7 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
 
             // noinspection ConstantConditions
             attachmentResources.add(new MimeAttachmentResource(CertificateUtils.writeCertificate(decryptCredCertInfo.getCertificate(), DataEncoding.DER),
-                decryptCred.getName(), decryptCredCertInfo.getCertificateType().getContentType(), discoveryTestcaseName
+                decryptCred.getName(), decryptCredCertInfo.getCertificateType().getContentType(), MailContentTransferEncoding.BASE64, discoveryTestcaseName
                     + DiscoveryTestcaseResultCredentialType.DISCOVERED.getAttachmentFileNameSuffix() + DataEncoding.DER.getFileExtension()));
         }
 
@@ -81,9 +82,9 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
         Date msgSentDate = msg.getSentDate();
 
         // noinspection ConstantConditions
-        attachmentResources.add(new MimeAttachmentResource(msgHelper.write(),
+        attachmentResources.add(new MimeAttachmentResource(msgHelper.write(true),
             (discoveryTestcaseName + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgSentDate)),
-            MailContentTypes.MSG_RFC822, (discoveryTestcaseName.toLowerCase() + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL
+            MailContentTypes.MSG_RFC822, MailContentTransferEncoding.QUOTED, (discoveryTestcaseName.toLowerCase() + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL
                 + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgSentDate) + ToolMimeMessageHelper.FILE_EXT_MAIL)));
 
         this.send(modelMap, modelMap, to, attachmentResources);
