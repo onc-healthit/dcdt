@@ -7,7 +7,7 @@
 <%@taglib prefix="tiles" uri="http://tiles.apache.org/tags-tiles" %>
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
-<%@page contentType="text/html; UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
+<%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <div class="testcases-intro">
     <p>
         <b>Step 1:</b> Determine the required test cases for your SUT (System Under Test).
@@ -26,9 +26,9 @@
     <div id="testcase-info" class="input-group-sm">
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors input-group-addon-errors-global">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Hosting testcase submission</strong>:
                     <ul></ul>
@@ -56,9 +56,9 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
+                <div class="input-group-addon input-group-addon-msgs">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Hosting testcase</strong>:
                     <ul></ul>
@@ -82,9 +82,9 @@
         </div>
         <div class="form-group form-group-addons">
             <div class="has-error">
-                <div class="input-group-addon input-group-addon-errors">
+                <div class="input-group-addon input-group-addon-msgs">
                     <tiles:insertDefinition name="component-glyph">
-                        <tiles:putAttribute name="glyph-classes" value="glyphicon-warning-sign"/>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
                     </tiles:insertDefinition>
                     <strong>Invalid Direct address</strong>:
                     <ul></ul>
@@ -121,4 +121,4 @@
         <i>None</i>
     </div>
 </form>
-<iframe id="testcase-target" class="hide" name="testcase-target" src="about:blank"></iframe> 
+<iframe id="testcase-target" class="hide" name="testcase-target" src="about:blank"></iframe>
