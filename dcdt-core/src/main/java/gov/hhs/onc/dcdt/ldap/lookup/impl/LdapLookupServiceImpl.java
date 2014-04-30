@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -85,18 +84,23 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
                     scope,
                     (!CollectionUtils.isEmpty(attrs) ? ToolCollectionUtils.toArray(CollectionUtils.collect(attrs, LdapAttributeIdTransformer.INSTANCE),
                         String.class) : ArrayUtils.EMPTY_STRING_ARRAY));
-            List<Entry> entries = IteratorUtils.toList(entryCursor.iterator());
+            List<Entry> entries = new ArrayList<>();
+            Entry entry;
+
+            while (entryCursor.available() && entryCursor.next() && ((entry = entryCursor.get()) != null)) {
+                entries.add(entry);
+            }
 
             entryCursor.close();
 
             lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, entryCursor.getSearchResultDone().getLdapResult(), entries);
-        } catch (LdapException e) {
+        } catch (Exception e) {
             lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, buildResult(e));
         } finally {
             if (conn != null) {
                 try {
                     disconnect(connConfig, unBind(connConfig, conn));
-                } catch (LdapException e) {
+                } catch (Exception e) {
                     lookupResult = new LdapEntryLookupResultImpl(connConfig, baseDn, scope, filter, attrs, buildResult(e));
                 }
             }
@@ -129,13 +133,13 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
             } else {
                 lookupResult = new LdapBaseDnLookupResultImpl(connConfig, new LdapResultImpl());
             }
-        } catch (LdapException e) {
+        } catch (Exception e) {
             lookupResult = new LdapBaseDnLookupResultImpl(connConfig, buildResult(e));
         } finally {
             if (conn != null) {
                 try {
                     disconnect(connConfig, unBind(connConfig, conn));
-                } catch (LdapException e) {
+                } catch (Exception e) {
                     lookupResult = new LdapBaseDnLookupResultImpl(connConfig, buildResult(e));
                 }
             }
@@ -196,7 +200,7 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
         return conn;
     }
 
-    private static LdapResult buildResult(LdapException exception) {
+    private static LdapResult buildResult(Exception exception) {
         LdapResult result = new LdapResultImpl();
         result.setDiagnosticMessage(exception.getMessage());
         result.setResultCode(ResultCodeEnum.getBestEstimate(exception, null));

@@ -91,7 +91,7 @@
                     var dataErrorsFieldsMap = dataErrors["fields"];
                     
                     if (dataErrorsFieldsMap) {
-                        for (var dataErrorFieldName in dataErrorsFieldsMap) {
+                        for ( var dataErrorFieldName in dataErrorsFieldsMap) {
                             if (dataErrorsFieldsMap.hasOwnProperty(dataErrorFieldName)) {
                                 var dataErrorsField = dataErrorsFieldsMap[dataErrorFieldName];
                                 

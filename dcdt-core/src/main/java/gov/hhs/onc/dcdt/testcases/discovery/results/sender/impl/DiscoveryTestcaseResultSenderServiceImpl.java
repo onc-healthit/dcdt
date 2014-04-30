@@ -82,7 +82,7 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
         Date msgSentDate = msg.getSentDate();
 
         // noinspection ConstantConditions
-        attachmentResources.add(new MimeAttachmentResource(msgHelper.write(true),
+        attachmentResources.add(new MimeAttachmentResource(msgHelper.write(),
             (discoveryTestcaseName + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgSentDate)),
             MailContentTypes.MSG_RFC822, MailContentTransferEncoding.QUOTED, (discoveryTestcaseName.toLowerCase() + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL
                 + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgSentDate) + ToolMimeMessageHelper.FILE_EXT_MAIL)));

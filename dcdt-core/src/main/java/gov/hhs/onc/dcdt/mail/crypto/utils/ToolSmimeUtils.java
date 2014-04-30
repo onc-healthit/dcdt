@@ -95,7 +95,7 @@ public abstract class ToolSmimeUtils {
                 } catch (CertificateException | CMSException | OperatorCreationException e) {
                     throw new ToolSmimeException(String.format(
                         "Unable to verify mail signed data signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).", signerId.getIssuer(),
-                        new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()));
+                        new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()), e);
                 }
             }
 
