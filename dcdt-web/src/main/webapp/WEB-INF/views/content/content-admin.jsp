@@ -8,7 +8,144 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
-<form name="admin-instance-config">
+<h2>Services</h2>
+<form name="admin-service-hub">
+    <div class="input-group-sm">
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Service hub status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+            <div class="has-success">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Service hub status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="attrs">for="admin-service-dns-status"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-globe"/>
+                        <tiles:putAttribute name="content" value="DNS Service"/>
+                    </tiles:insertDefinition>:
+                </span>
+                <span class="form-cell form-cell-control">
+                    <input id="admin-service-dns-status" class="input-sm form-control form-control-service-status" name="serviceDnsStatus" type="text"
+                        disabled="disabled"/>
+                </span>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon input-group-addon-msgs">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>DNS service status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-success">
+                <div class="input-group-addon input-group-addon-msgs">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>DNS service status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="attrs">for="admin-service-ldap-status"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-th-list"/>
+                        <tiles:putAttribute name="content" value="LDAP Service"/>
+                    </tiles:insertDefinition>:
+                </span>
+                <span class="form-cell form-cell-control">
+                    <input id="admin-service-ldap-status" class="input-sm form-control form-control-service-status" name="serviceLdapStatus" type="text"
+                        disabled="disabled"/>
+                </span>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon input-group-addon-msgs">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>LDAP service status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-success">
+                <div class="input-group-addon input-group-addon-msgs">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>LDAP service status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="attrs">for="admin-service-mail-status"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-inbox"/>
+                        <tiles:putAttribute name="content" value="Mail Service"/>
+                    </tiles:insertDefinition>:
+                </span>
+                <span class="form-cell form-cell-control">
+                    <input id="admin-service-mail-status" class="input-sm form-control form-control-service-status" name="serviceMailStatus" type="text"
+                        disabled="disabled"/>
+                </span>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon input-group-addon-msgs">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Mail service status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-success">
+                <div class="input-group-addon input-group-addon-msgs">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Mail service status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+<h2>Instance Configuration</h2>
+<form name="admin-instance-config" action="about:blank" method="post" target="admin-instance-config-target">
     <div class="input-group-sm">
         <div class="form-group form-group-addons">
             <div class="has-error">
@@ -96,3 +233,4 @@
         </div>
     </div>
 </form>
+<iframe id="admin-instance-config-target" class="hide" name="admin-instance-config-target" src="about:blank"></iframe>

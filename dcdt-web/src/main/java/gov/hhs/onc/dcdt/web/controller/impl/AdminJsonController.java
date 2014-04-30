@@ -5,23 +5,15 @@ import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigJsonDto;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigRegistry;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigService;
-import gov.hhs.onc.dcdt.context.LifecycleStatusType;
-import gov.hhs.onc.dcdt.service.ToolService;
-import gov.hhs.onc.dcdt.service.dns.DnsService;
-import gov.hhs.onc.dcdt.service.ldap.LdapService;
-import gov.hhs.onc.dcdt.service.mail.MailService;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
-import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
 import gov.hhs.onc.dcdt.web.controller.JsonRequest;
 import gov.hhs.onc.dcdt.web.controller.JsonResponse;
 import gov.hhs.onc.dcdt.web.json.RequestJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.impl.ResponseJsonWrapperBuilder;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import gov.hhs.onc.dcdt.web.service.ToolServiceHub;
+import gov.hhs.onc.dcdt.web.service.ToolServiceHubJsonDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -34,12 +26,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @JsonController
 @JsonResponse
 public class AdminJsonController extends AbstractToolController {
-    private final static Logger LOGGER = LoggerFactory.getLogger(AdminJsonController.class);
-
     @Autowired
     private InstanceConfigRegistry instanceConfigRegistry;
 
-    private final static String SERVICES_MSG_CODE = "dcdt.web.admin.instance.config.services.msg";
+    @Autowired
+    private ToolServiceHub serviceHub;
+
+    @JsonRequest
+    @RequestMapping(value = { "/admin/service/hub" }, method = { RequestMethod.GET })
+    public ResponseJsonWrapper<ToolServiceHub, ToolServiceHubJsonDto> getServiceHub() throws Exception {
+        return new ResponseJsonWrapperBuilder<ToolServiceHub, ToolServiceHubJsonDto>().addItems(this.createServiceHubJsonDto()).build();
+    }
 
     @JsonRequest
     @RequestMapping({ "/admin/instance/set" })
@@ -63,17 +60,6 @@ public class AdminJsonController extends AbstractToolController {
                 instanceConfig.setIpAddress(reqInstanceConfig.getIpAddress());
 
                 this.instanceConfigRegistry.registerBeans(instanceConfig);
-
-                startServices();
-
-                InstanceConfigJsonDto instanceConfigJsonDto = this.getInstanceConfigJsonDto(instanceConfig);
-                // noinspection ConstantConditions
-                instanceConfigJsonDto.setMessage(ToolMessageUtils.getMessage(this.msgSource, SERVICES_MSG_CODE,
-                    ToolBeanFactoryUtils.getBeanOfType(this.appContext, DnsService.class).getLifecycleStatus(),
-                    ToolBeanFactoryUtils.getBeanOfType(this.appContext, LdapService.class).getLifecycleStatus(),
-                    ToolBeanFactoryUtils.getBeanOfType(this.appContext, MailService.class).getLifecycleStatus()));
-
-                respJsonWrapperBuilder.addItems(instanceConfigJsonDto);
             }
         }
 
@@ -89,18 +75,21 @@ public class AdminJsonController extends AbstractToolController {
 
     @RequestMapping(value = { "/admin/instance" }, method = { RequestMethod.GET })
     public ResponseJsonWrapper<InstanceConfig, InstanceConfigJsonDto> getInstanceConfig() throws Exception {
-        return new ResponseJsonWrapperBuilder<InstanceConfig, InstanceConfigJsonDto>().addItems(this.getInstanceConfigJsonDto(this.getInstanceConfigBean()))
+        return new ResponseJsonWrapperBuilder<InstanceConfig, InstanceConfigJsonDto>().addItems(this.createInstanceConfigJsonDto(this.getInstanceConfigBean()))
             .build();
     }
 
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        this.startServices();
+    private ToolServiceHubJsonDto createServiceHubJsonDto() throws Exception {
+        ToolServiceHubJsonDto serviceHubJsonDto = ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolServiceHubJsonDto.class);
+        // noinspection ConstantConditions
+        serviceHubJsonDto.fromBean(this.convService, this.serviceHub);
+
+        return serviceHubJsonDto;
     }
 
-    private InstanceConfigJsonDto getInstanceConfigJsonDto(InstanceConfig instanceConfig) throws Exception {
-        InstanceConfigJsonDto instanceConfigJsonDto =
-            this.appContext.getBean(ToolBeanFactoryUtils.getBeanNameOfType(this.appContext, InstanceConfigJsonDto.class), InstanceConfigJsonDto.class);
+    private InstanceConfigJsonDto createInstanceConfigJsonDto(InstanceConfig instanceConfig) throws Exception {
+        InstanceConfigJsonDto instanceConfigJsonDto = ToolBeanFactoryUtils.createBeanOfType(this.appContext, InstanceConfigJsonDto.class);
+        // noinspection ConstantConditions
         instanceConfigJsonDto.fromBean(this.convService, instanceConfig);
 
         return instanceConfigJsonDto;
@@ -113,31 +102,5 @@ public class AdminJsonController extends AbstractToolController {
     private InstanceConfig getExistingInstanceConfigBean() {
         // noinspection ConstantConditions
         return ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfigService.class).getBean();
-    }
-
-    private void startServices() {
-        boolean serviceNotStarted = false;
-
-        for (ToolService service : this.getServices()) {
-            service.start();
-
-            if (service.getLifecycleStatus() != LifecycleStatusType.STARTED) {
-                serviceNotStarted = true;
-
-                LOGGER.error(String.format("Service (class=%s, beanName=%s) was not started, status=%s.", ToolClassUtils.getName(service.getClass()),
-                    service.getBeanName(), service.getLifecycleStatus()));
-                break;
-            }
-        }
-
-        if (serviceNotStarted) {
-            for (ToolService service : this.getServices()) {
-                service.stop();
-            }
-        }
-    }
-
-    private List<ToolService> getServices() {
-        return ToolBeanFactoryUtils.getBeansOfType(this.appContext, ToolService.class);
     }
 }

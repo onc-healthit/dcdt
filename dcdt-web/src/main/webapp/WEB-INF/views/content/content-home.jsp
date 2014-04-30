@@ -24,13 +24,23 @@
 <p>
     Our tool is divided into two main testing areas:
 </p>
-<ul>
+<ul class="list-unstyled">
     <li>
-        <a href="${urlHosting}">Hosting</a> allows a System Under Test (SUT) to verify that their certificates are hosted 
+        <tiles:insertDefinition name="component-glyph-link">
+            <tiles:putAttribute name="attrs">href="${urlHosting}"</tiles:putAttribute>
+            <tiles:putAttribute name="glyph-classes" value="glyphicon-cloud-download glyphicon-type-info"/>
+            <tiles:putAttribute name="content"><strong>Hosting</strong></tiles:putAttribute>
+        </tiles:insertDefinition>
+        allows a System Under Test (SUT) to verify that their certificates are hosted 
         correctly, and discoverable by other Direct implementations.
     </li>
     <li>
-        <a href="${urlDiscovery}">Discovery</a> allows a SUT to verify that they can discover certificates in other Direct 
+        <tiles:insertDefinition name="component-glyph-link">
+            <tiles:putAttribute name="attrs">href="${urlDiscovery}"</tiles:putAttribute>
+            <tiles:putAttribute name="glyph-classes" value="glyphicon-cloud-upload glyphicon-type-info"/>
+            <tiles:putAttribute name="content"><strong>Discovery</strong></tiles:putAttribute>
+        </tiles:insertDefinition>
+        allows a SUT to verify that they can discover certificates in other Direct 
         implementations by using them to send Direct messages.
     </li>
 </ul>

@@ -117,18 +117,24 @@ ul.navbar-nav {
 }
 
 ul.navbar-nav li a {
-    font-size: 13px;
-}
-
-ul.navbar-nav li a {
     padding-top: 0;
     padding-bottom: 0;
     line-height: inherit;
+    font-size: 13px;
 }
 
 ul.dropdown-menu,
 ul.dropdown-menu li.dropdown-header {
     font-size: 11px;
+}
+
+ul.list-unstyled {
+    text-indent: 10px;
+}
+
+ul.list-unstyled li {
+    display: block;
+    line-height: 32px;
 }
 
 span.caret {

@@ -145,7 +145,7 @@
                     testcaseHostingDirectAddr.attr("disabled", "disabled");
                 }
             });
-            $.fn.dcdt.form.clearErrors();
+            $.fn.dcdt.form.clearMessages();
         });
     });
 })(jQuery);

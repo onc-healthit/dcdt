@@ -87,7 +87,7 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
             List<Entry> entries = new ArrayList<>();
             Entry entry;
 
-            while (entryCursor.available() && entryCursor.next() && ((entry = entryCursor.get()) != null)) {
+            while (entryCursor.next() && ((entry = entryCursor.get()) != null)) {
                 entries.add(entry);
             }
 

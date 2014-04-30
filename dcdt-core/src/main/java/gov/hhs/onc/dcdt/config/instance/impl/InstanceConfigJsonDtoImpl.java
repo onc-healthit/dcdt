@@ -59,15 +59,4 @@ public class InstanceConfigJsonDtoImpl extends AbstractToolBeanJsonDto<InstanceC
     public void setIpAddress(@Nullable String ipAddr) {
         this.ipAddr = ipAddr;
     }
-
-    @Nullable
-    @Override
-    public String getMessage() {
-        return this.msg;
-    }
-
-    @Override
-    public void setMessage(@Nullable String msg) {
-        this.msg = msg;
-    }
 }

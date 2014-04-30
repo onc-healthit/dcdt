@@ -24,10 +24,4 @@ public interface InstanceConfigJsonDto extends ToolBeanJsonDto<InstanceConfig> {
     public String getIpAddress();
 
     public void setIpAddress(@Nullable String ipAddr);
-
-    @JsonProperty("msg")
-    @Nullable
-    public String getMessage();
-
-    public void setMessage(@Nullable String msg);
 }
