@@ -11,7 +11,6 @@ import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +35,6 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.EnumerationUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.james.mime4j.codec.CodecUtil;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
@@ -59,17 +57,10 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     }
 
     public byte[] write() throws IOException, MessagingException {
-        return this.write(false);
-    }
+        try (ByteArrayOutputStream outStream = new ByteArrayOutputStream()) {
+            this.getMimeMessage().writeTo(outStream);
 
-    public byte[] write(boolean quoted) throws IOException, MessagingException {
-        MimeMessage msg = this.getMimeMessage();
-        ByteArrayOutputStream dataOutStream = new ByteArrayOutputStream();
-
-        try (OutputStream outStream = (quoted ? CodecUtil.wrapQuotedPrintable(dataOutStream, true) : dataOutStream)) {
-            msg.writeTo(outStream);
-
-            return dataOutStream.toByteArray();
+            return outStream.toByteArray();
         }
     }
 

@@ -7,9 +7,7 @@
                 return $.dcdt.beans.setBean({
                     "data": $.encodeJson({
                         "@type": "request",
-                        "items": [
-                            instanceConfig
-                        ]
+                        "items": [ instanceConfig ]
                     }),
                     "queryBeanSuccess": function (data, status, jqXhr) {
                         $.dcdt.admin.getInstanceConfig();
@@ -72,7 +70,7 @@
                             instanceConfigInputDomainName.val("");
                             instanceConfigInputIpAddr.val("");
                         }
-
+                        
                         if (instanceConfigDomainName && instanceConfigIpAddr) {
                             instanceConfigButtonRm.removeAttr("disabled");
                         } else {
@@ -90,8 +88,7 @@
         })
     });
     
-    var instanceConfigForm, instanceConfigInputDomainName, instanceConfigInputIpAddr, instanceConfigButtons, instanceConfigButtonRm, instanceConfigButtonSet,
-        instanceConfig;
+    var instanceConfigForm, instanceConfigInputDomainName, instanceConfigInputIpAddr, instanceConfigButtons, instanceConfigButtonRm, instanceConfigButtonSet, instanceConfig;
     
     $(document).ready(function () {
         instanceConfigForm = $("form[name=\"admin-instance-config\"]");
@@ -100,7 +97,7 @@
         instanceConfigButtons = instanceConfigForm.dcdt.form.formButtons();
         instanceConfigButtonRm = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-rm");
         instanceConfigButtonSet = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-set");
-
+        
         instanceConfigForm.submit(function (event, instanceConfigButton) {
             if (instanceConfigButton.is(instanceConfigButtonRm)) {
                 $.dcdt.admin.removeInstanceConfig();

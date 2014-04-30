@@ -7,9 +7,7 @@
                 return $.dcdt.beans.setBean({
                     "data": $.encodeJson({
                         "@type": "request",
-                        "items": [
-                            discoveryMailMapping
-                        ]
+                        "items": [ discoveryMailMapping ]
                     }),
                     "queryBeanSuccess": function (data, status, jqXhr) {
                         $.dcdt.beans.addBeanMessageGlobal(formDiscoveryMailMapping, "success", ((data["items"].length > 0) ? data["items"][0]["msg"] : null));
@@ -30,17 +28,16 @@
             }
         })
     });
-
-    var formDiscoveryMailMapping, directAddr, resultsAddr, discoveryMailMappingSubmit, discoveryMailMappingReset,
-        discoveryMailMapping;
-
+    
+    var formDiscoveryMailMapping, directAddr, resultsAddr, discoveryMailMappingSubmit, discoveryMailMappingReset, discoveryMailMapping;
+    
     $(document).ready(function () {
         formDiscoveryMailMapping = $("form[name=\"form-testcases-discovery-mail-mapping\"]");
         directAddr = $("input[name=\"directAddress\"]", formDiscoveryMailMapping);
         resultsAddr = $("input[name=\"resultsAddress\"]", formDiscoveryMailMapping);
         discoveryMailMappingSubmit = $("button#discovery-mail-mapping-submit");
         discoveryMailMappingReset = $("button#discovery-mail-mapping-reset");
-
+        
         $.each([ directAddr, resultsAddr ], function (addrElemIndex, addrElem) {
             addrElem.tooltip();
         });
@@ -54,11 +51,11 @@
             
             $.dcdt.discoveryMailMapping.processDiscoveryMailMapping();
         });
-
+        
         discoveryMailMappingSubmit.click(function (event) {
             formDiscoveryMailMapping.submit();
         });
-
+        
         discoveryMailMappingReset.click(function (event) {
             directAddr.val("");
             resultsAddr.val("");

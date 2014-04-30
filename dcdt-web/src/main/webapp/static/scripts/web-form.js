@@ -71,8 +71,7 @@
                 var msgsAddonsFields = $(this).dcdt.form.messagesAddons(level, ":not(.input-group-addon-msgs-global)");
                 
                 return fieldName ? msgsAddonsFields.filter(function () {
-                    return $(this).parent().parent().prev().find("div:first-child span.form-cell.form-cell-control .form-control[name=\"" + fieldName +"\"]")
-                        .length > 0;
+                    return $(this).parent().parent().prev().find("div:first-child span.form-cell.form-cell-control .form-control[name=\"" + fieldName + "\"]").length > 0;
                 }) : msgsAddonsFields;
             },
             "messagesAddonsGlobal": function (level) {
@@ -92,8 +91,7 @@
             "formGroupsFields": function (fieldName) {
                 var formGroupsFields = $(this).dcdt.form.formGroups(":not(.form-group-addons)");
                 
-                return fieldName ? formGroupsFields.has("div:first-child span.form-cell.form-cell-control .form-control[name=\"" + fieldName +"\"]") : 
-                    formGroupsFields;
+                return fieldName ? formGroupsFields.has("div:first-child span.form-cell.form-cell-control .form-control[name=\"" + fieldName + "\"]") : formGroupsFields;
             },
             "formGroupsAddons": function (selector) {
                 var formGroupsAddons = $(this).dcdt.form.formGroups(".form-group-addons");

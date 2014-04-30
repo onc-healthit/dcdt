@@ -1,8 +1,8 @@
 $(document).ready(function () {
-    var formTestcasesDiscovery = $("form[name=\"form-testcases-discovery\"]"), testcasesDiscoverySelect = $("select#testcase-select", formTestcasesDiscovery),
-        testcaseDiscoveryDirectAddr = $("div#testcase-discovery-direct-addr", formTestcasesDiscovery),
-        testcaseDiscoveryDirectAddrContent = $("span:last-of-type", testcaseDiscoveryDirectAddr);
-
+    var formTestcasesDiscovery = $("form[name=\"form-testcases-discovery\"]"), testcasesDiscoverySelect = $("select#testcase-select", formTestcasesDiscovery), testcaseDiscoveryDirectAddr =
+        $("div#testcase-discovery-direct-addr", formTestcasesDiscovery), testcaseDiscoveryDirectAddrContent =
+        $("span:last-of-type", testcaseDiscoveryDirectAddr);
+    
     testcasesDiscoverySelect.change(function (event) {
         $(event.target).dcdt.testcases.selectTestcase(event, formTestcasesDiscovery, {
             "postBuildTestcaseDescription": function (settings, testcase, testcaseDesc, testcaseDescElem) {
@@ -17,8 +17,7 @@ $(document).ready(function () {
                         });
                     }
                     
-                    testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem($.capitalize(testcaseDiscoveryCredsType) + " Certificate(s)",
-                        testcaseDiscoveryCredDescElems));
+                    testcaseDescElem.append(elem.dcdt.testcases.buildTestcaseItem($.capitalize(testcaseDiscoveryCredsType) + " Certificate(s)", testcaseDiscoveryCredDescElems));
                 });
                 
                 testcaseDiscoveryDirectAddrContent.append(settings["buildDiscoveryTestcaseDnsName"](testcase["mailAddr"]));
@@ -28,8 +27,8 @@ $(document).ready(function () {
                 var elem = $(this), testcaseDiscoveryCredDescElems = [];
                 
                 if (testcaseDiscoveryCred) {
-                    var testcaseDiscoveryCredDesc = testcaseDiscoveryCred["desc"], testcaseDiscoveryCredLoc = testcaseDiscoveryCred["loc"],
-                        testcaseDiscoveryCredLocType = testcaseDiscoveryCredLoc["type"], testcaseDiscoveryCredLocElems = [];
+                    var testcaseDiscoveryCredDesc = testcaseDiscoveryCred["desc"], testcaseDiscoveryCredLoc = testcaseDiscoveryCred["loc"], testcaseDiscoveryCredLocType =
+                        testcaseDiscoveryCredLoc["type"], testcaseDiscoveryCredLocElems = [];
                     
                     testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseItem("Valid", testcaseDiscoveryCred["valid"]));
                     testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseItem("Binding Type", testcaseDiscoveryCred["bindingType"]));
@@ -40,17 +39,15 @@ $(document).ready(function () {
                     if (testcaseDiscoveryCredLocType == "LDAP") {
                         var testcaseDiscoveryCredLocLdapConfig = testcaseDiscoveryCredLoc["ldapConfig"];
                         
-                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseItem("Host",
-                            testcaseDiscoveryCredLocLdapConfig["host"]));
-                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseItem("Port",
-                            testcaseDiscoveryCredLocLdapConfig["port"]));
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseItem("Host", testcaseDiscoveryCredLocLdapConfig["host"]));
+                        testcaseDiscoveryCredLocElems.push(elem.dcdt.testcases.buildTestcaseItem("Port", testcaseDiscoveryCredLocLdapConfig["port"]));
                     }
                     
                     testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseItem("Location", testcaseDiscoveryCredLocElems));
                     
                     testcaseDiscoveryCredDescElems.push(elem.dcdt.testcases.buildTestcaseItem("Description", testcaseDiscoveryCredDesc["text"]));
-                    testcaseDiscoveryCredDescElems = elem.dcdt.testcases.buildTestcaseItem(testcaseDiscoveryCred["nameDisplay"],
-                        testcaseDiscoveryCredDescElems);
+                    testcaseDiscoveryCredDescElems =
+                        elem.dcdt.testcases.buildTestcaseItem(testcaseDiscoveryCred["nameDisplay"], testcaseDiscoveryCredDescElems);
                 }
                 
                 return testcaseDiscoveryCredDescElems;
