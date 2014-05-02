@@ -22,8 +22,9 @@
 
     <sec:authentication-manager id="toolAuthManager">
         <sec:authentication-provider>
-            <!--suppress SpringModelInspection -->
-            <sec:user-service id="toolUserService" properties="/WEB-INF/classes/web/web-users.properties"/>
+            <sec:user-service id="toolUserService">
+                <sec:user name="${dcdt.web.user.admin.name}" authorities="ROLE_ADMIN" password="${dcdt.web.user.admin.secret}"/>
+            </sec:user-service>
         </sec:authentication-provider>
         <sec:authentication-provider ref="anonAuthProvider"/>
     </sec:authentication-manager>
