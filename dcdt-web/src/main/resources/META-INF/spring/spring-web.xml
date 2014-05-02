@@ -30,7 +30,7 @@
                 <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:web/web.properties</beans:value>
                 <!--suppress SpringModelInspection -->
-                <beans:value>classpath*:web/web*.properties</beans:value>
+                <beans:value>classpath*:web/web-*.properties</beans:value>
             </beans:array>
         </beans:property>
     </beans:bean>
