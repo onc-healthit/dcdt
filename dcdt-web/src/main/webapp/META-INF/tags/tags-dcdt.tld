@@ -17,6 +17,16 @@
     =====================================================================================================-->
     <tag>
         <description>
+            Tag that cleans it's body content using HtmlCleaner.
+        </description>
+        <display-name>HtmlCleaner Tag</display-name>
+        <name>htmlcleaner</name>
+        <tag-class>gov.hhs.onc.dcdt.web.tags.impl.HtmlCleanerTag</tag-class>
+        <body-content>JSP</body-content>
+    </tag>
+    
+    <tag>
+        <description>
             Tag that converts given object(s) into JSON.
         </description>
         <display-name>JSON Tag</display-name>

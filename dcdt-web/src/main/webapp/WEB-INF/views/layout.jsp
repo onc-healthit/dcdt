@@ -8,24 +8,26 @@
 <%@taglib prefix="tilesx" uri="http://tiles.apache.org/tags-tiles-extras" %>
 <%@taglib prefix="x" uri="http://java.sun.com/jsp/jstl/xml" %>
 <%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
-<!DOCTYPE html>
-<html>
-    <head>
-        <tiles:insertAttribute name="head-common"/>
-        <tiles:insertAttribute name="head" ignore="true"/>
-    </head>
-    <body>
-        <div id="wrap">
-            <tiles:insertAttribute name="nav-common"/>
-            <tiles:insertAttribute name="nav" ignore="true"/>
-            <div id="content">
-                <div class="container">
-                    <tiles:insertAttribute name="content-common"/>
-                    <tiles:insertAttribute name="content" ignore="true"/>
+<dcdt:htmlcleaner>
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <tiles:insertAttribute name="head-common"/>
+            <tiles:insertAttribute name="head" ignore="true"/>
+        </head>
+        <body>
+            <div id="wrap">
+                <tiles:insertAttribute name="nav-common"/>
+                <tiles:insertAttribute name="nav" ignore="true"/>
+                <div id="content">
+                    <div class="container">
+                        <tiles:insertAttribute name="content-common"/>
+                        <tiles:insertAttribute name="content" ignore="true"/>
+                    </div>
                 </div>
             </div>
-        </div>
-        <tiles:insertAttribute name="footer-common"/>
-        <tiles:insertAttribute name="footer" ignore="true"/>
-    </body>
-</html>
+            <tiles:insertAttribute name="footer-common"/>
+            <tiles:insertAttribute name="footer" ignore="true"/>
+        </body>
+    </html>
+</dcdt:htmlcleaner>
