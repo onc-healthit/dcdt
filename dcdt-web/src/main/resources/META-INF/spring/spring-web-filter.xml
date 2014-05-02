@@ -15,13 +15,23 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
-    <beans:bean id="urlRewriteFilter" class="gov.hhs.onc.dcdt.web.filter.impl.ToolUrlRewriteFilter"
+    <!--====================================================================================================
+    = FILTERS
+    =====================================================================================================-->
+    <beans:bean id="filter" class="javax.servlet.Filter" abstract="true"/>
+    
+    <beans:bean id="filterUrlRewrite" class="gov.hhs.onc.dcdt.web.filter.impl.ToolUrlRewriteFilter"
         p:confPath="/WEB-INF/urlrewrite/urlrewrite-web.xml"
         p:confReloadCheckInterval="30"
         p:statusPath="/urlrewrite/status"/>
     
-    <beans:bean id="charEncFilter" class="gov.hhs.onc.dcdt.web.filter.impl.ToolCharacterEncodingFilter"
-        p:encoding-ref="charsetUtf8">
+    <!--====================================================================================================
+    = CONTENT FILTERS
+    =====================================================================================================-->
+    <beans:bean id="filterContent" class="gov.hhs.onc.dcdt.web.filter.ContentFilter" parent="filter" abstract="true"/>
+    
+    <beans:bean id="filterContentCharEnc" class="gov.hhs.onc.dcdt.web.filter.impl.ToolCharacterEncodingFilter" parent="filterContent"
+        c:enc-ref="charsetUtf8">
         <beans:property name="contentTypes">
             <util:set>
                 <beans:value>#{ T(gov.hhs.onc.dcdt.web.media.WebContentTypes).APP_JAVASCRIPT }</beans:value>
@@ -37,7 +47,7 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="jTidyFilter" class="gov.hhs.onc.dcdt.web.filter.impl.ToolJTidyFilter">
+    <beans:bean id="filterContentJTidy" class="gov.hhs.onc.dcdt.web.filter.impl.ToolJTidyFilter" parent="filterContent">
         <beans:property name="config">
             <util:map>
                 <beans:entry key="char-encoding" value="#{ charsetUtf8.name() }"/>

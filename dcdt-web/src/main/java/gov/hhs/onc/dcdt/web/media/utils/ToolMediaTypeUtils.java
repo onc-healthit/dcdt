@@ -29,6 +29,14 @@ public abstract class ToolMediaTypeUtils {
         }
     }
 
+    public static boolean isIncluded(Iterable<MediaType> mediaTypes, MediaType ... mediaTypesEval) {
+        return isIncluded(mediaTypes, ToolArrayUtils.asList(mediaTypesEval));
+    }
+
+    public static boolean isIncluded(Iterable<MediaType> mediaTypes, Iterable<MediaType> mediaTypesEval) {
+        return CollectionUtils.exists(mediaTypesEval, new IncludesMediaTypePredicate(mediaTypes));
+    }
+
     @Nullable
     public static MediaType findIncluded(Iterable<MediaType> mediaTypes, MediaType ... mediaTypesEval) {
         return findIncluded(mediaTypes, ToolArrayUtils.asList(mediaTypesEval));
