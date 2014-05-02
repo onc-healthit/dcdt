@@ -3,10 +3,10 @@ package gov.hhs.onc.dcdt.web.filter.impl;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import gov.hhs.onc.dcdt.web.filter.ContentFilter;
-import gov.hhs.onc.dcdt.web.media.utils.ToolMediaTypeUtils;
 import java.io.IOException;
+import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.TreeSet;
+import javax.annotation.Nullable;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -21,7 +21,7 @@ import org.springframework.http.MediaType;
 
 public abstract class AbstractContentFilter<T extends Filter> implements ContentFilter<T> {
     protected T filter;
-    protected Set<MediaType> contentTypes = new TreeSet<>(MediaType.SPECIFICITY_COMPARATOR);
+    protected Set<MediaType> contentTypes = new LinkedHashSet<>();
     protected MutableFilterConfig filterConfig;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractContentFilter.class);
@@ -32,14 +32,14 @@ public abstract class AbstractContentFilter<T extends Filter> implements Content
 
     @Override
     public void doFilter(ServletRequest servletReq, ServletResponse servletResp, FilterChain filterChain) throws IOException, ServletException {
-        this.doFilterInternal(((HttpServletRequest) servletReq), ((HttpServletResponse) servletResp), filterChain);
+        this.doFilterInternal(((HttpServletRequest)servletReq), ((HttpServletResponse)servletResp), filterChain);
     }
 
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         this.filter.init(this.initInternal((this.filterConfig = new MutableFilterConfig(filterConfig))));
 
-        LOGGER.debug(String.format("Initialized filter (name=%s): {%s}", this.filterConfig.getFilterName(),
+        LOGGER.debug(String.format("Initialized filter (name=%s, class=%s): {%s}", this.filterConfig.getFilterName(), ToolClassUtils.getName(this),
             ToolStringUtils.joinDelimit(this.filterConfig.getInitParameters().entrySet(), "; ")));
     }
 
@@ -47,7 +47,7 @@ public abstract class AbstractContentFilter<T extends Filter> implements Content
     public void destroy() {
         this.filter.destroy();
 
-        LOGGER.debug(String.format("Destroyed filter (name=%s).", this.filterConfig.getFilterName()));
+        LOGGER.debug(String.format("Destroyed filter (name=%s, class=%s).", this.filterConfig.getFilterName(), ToolClassUtils.getName(this)));
     }
 
     protected void doFilterInternal(HttpServletRequest servletReq, HttpServletResponse servletResp, FilterChain filterChain) throws IOException,
@@ -78,17 +78,15 @@ public abstract class AbstractContentFilter<T extends Filter> implements Content
     }
 
     protected boolean canPostFilter(HttpServletRequest servletReq, HttpServletResponse servletResp, FilterChain filterChain) {
-        return this.isContentTypeIncluded(servletReq, servletResp);
+        return false;
     }
 
     protected boolean canPreFilter(HttpServletRequest servletReq, HttpServletResponse servletResp, FilterChain filterChain) {
         return false;
     }
-
-    protected boolean isContentTypeIncluded(HttpServletRequest servletReq, HttpServletResponse servletResp) {
-        String contentTypeStr = servletResp.getContentType();
-
-        return ((contentTypeStr != null) && ToolMediaTypeUtils.isIncluded(this.contentTypes, new MediaType(MediaType.parseMediaType(contentTypeStr), null)));
+    
+    protected boolean isContentTypeIncluded(@Nullable String contentTypeStr) {
+        return ((contentTypeStr != null) && this.contentTypes.contains(new MediaType(MediaType.parseMediaType(contentTypeStr), null)));
     }
 
     protected MutableFilterConfig initInternal(MutableFilterConfig filterConfig) throws ServletException {

@@ -5,17 +5,6 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="ch.qos.logback /META-INF/logback/logback.xsd">
     
-    <if condition='!isDefined("dcdt.log.dir") &amp;&amp; isDefined("catalina.base")'>
-        <then>
-            <property name="dcdt.log.dir" value="${catalina.base}/logs" scope="context"/>
-        </then>
-    </if>
-    <if condition='!isDefined("dcdt.log.dir") &amp;&amp; isDefined("jetty.logs")'>
-        <then>
-            <property name="dcdt.log.dir" value="${jetty.logs}" scope="context"/>
-        </then>
-    </if>
-    
     <logger name="gov.hhs.onc.dcdt.web.filter" level="debug" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>

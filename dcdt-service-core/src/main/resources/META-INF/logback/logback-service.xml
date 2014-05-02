@@ -9,9 +9,6 @@
     
     <contextName>${dcdt.log.context.name:-%{project.artifactId}}</contextName>
     
-    <include resource="logback/logback-service-include-test.xml" optional="true"/>
-    <include resource="logback/logback-service-include.xml" optional="true"/>
-    
     <if condition='!isDefined("dcdt.log.console.term") &amp;&amp; 
         org.tanukisoftware.wrapper.WrapperManager.isControlledByNativeWrapper() &amp;&amp; 
         !org.tanukisoftware.wrapper.WrapperManager.isLaunchedAsService()'>
@@ -22,4 +19,7 @@
     
     <include resource="logback/logback-core-include-test.xml" optional="true"/>
     <include resource="logback/logback-core-include.xml" optional="true"/>
+    
+    <include resource="logback/logback-service-include-test.xml" optional="true"/>
+    <include resource="logback/logback-service-include.xml" optional="true"/>
 </configuration>

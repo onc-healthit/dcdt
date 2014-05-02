@@ -9,12 +9,23 @@
     
     <contextName>${dcdt.log.context.name:-%{project.artifactId}}</contextName>
     
-    <include resource="logback/logback-web-include-test.xml" optional="true"/>
-    <include resource="logback/logback-web-include.xml" optional="true"/>
+    <if condition='!isDefined("dcdt.log.dir") &amp;&amp; isDefined("catalina.base")'>
+        <then>
+            <property name="dcdt.log.dir" value="${catalina.base}/logs" scope="context"/>
+        </then>
+    </if>
+    <if condition='!isDefined("dcdt.log.dir") &amp;&amp; isDefined("jetty.logs")'>
+        <then>
+            <property name="dcdt.log.dir" value="${jetty.logs}" scope="context"/>
+        </then>
+    </if>
+    
+    <include resource="logback/logback-core-include-test.xml" optional="true"/>
+    <include resource="logback/logback-core-include.xml" optional="true"/>
     
     <include resource="logback/logback-service-include-test.xml" optional="true"/>
     <include resource="logback/logback-service-include.xml" optional="true"/>
     
-    <include resource="logback/logback-core-include-test.xml" optional="true"/>
-    <include resource="logback/logback-core-include.xml" optional="true"/>
+    <include resource="logback/logback-web-include-test.xml" optional="true"/>
+    <include resource="logback/logback-web-include.xml" optional="true"/>
 </configuration>
