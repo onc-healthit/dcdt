@@ -121,30 +121,4 @@
         <filter-name>springSecurityFilterChain</filter-name>
         <servlet-name>dispatcherServlet</servlet-name>
     </filter-mapping>
-    
-    <filter>
-        <filter-name>filterContentCharEnc</filter-name>
-        <filter-class>gov.hhs.onc.dcdt.web.filter.impl.DispatcherServletFilterProxy</filter-class>
-        <init-param>
-            <param-name>targetFilterLifecycle</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>filterContentCharEnc</filter-name>
-        <servlet-name>dispatcherServlet</servlet-name>
-    </filter-mapping>
-    
-    <filter>
-        <filter-name>filterContentJTidy</filter-name>
-        <filter-class>gov.hhs.onc.dcdt.web.filter.impl.DispatcherServletFilterProxy</filter-class>
-        <init-param>
-            <param-name>targetFilterLifecycle</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>filterContentJTidy</filter-name>
-        <servlet-name>dispatcherServlet</servlet-name>
-    </filter-mapping>
 </web-app>

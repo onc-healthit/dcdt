@@ -16,12 +16,27 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
-    = FILTERS
+    = HTMLCLEANER PROPERTIES
     =====================================================================================================-->
-    <beans:bean id="filter" class="javax.servlet.Filter" abstract="true"/>
+    <beans:bean id="cleanerProps" class="org.htmlcleaner.CleanerProperties"
+        p:charset="#{ charsetUtf8.name() }"
+        p:keepWhitespaceAndCommentsInHead="false"
+        p:omitCdataOutsideScriptAndStyle="true"
+        p:omitComments="true"
+        p:omitXmlDeclaration="true"
+        p:translateSpecialEntities="false"
+        p:useEmptyElementTags="false"/>
     
-    <beans:bean id="filterUrlRewrite" class="gov.hhs.onc.dcdt.web.filter.impl.ToolUrlRewriteFilter"
-        p:confPath="/WEB-INF/urlrewrite/urlrewrite-web.xml"
-        p:confReloadCheckInterval="30"
-        p:statusPath="/urlrewrite/status"/>
+    <!--====================================================================================================
+    = HTMLCLEANER
+    =====================================================================================================-->
+    <beans:bean id="cleaner" class="org.htmlcleaner.HtmlCleaner"
+        c:properties-ref="cleanerProps"/>
+    
+    <!--====================================================================================================
+    = HTMLCLEANER SERIALIZER
+    =====================================================================================================-->
+    <beans:bean id="cleanerSerializer" class="org.htmlcleaner.PrettyHtmlSerializer"
+        c:indentString="#{ T(org.apache.commons.lang3.StringUtils).repeat(T(org.apache.commons.lang3.StringUtils).SPACE, 4) }"
+        c:props-ref="cleanerProps"/>
 </beans:beans>

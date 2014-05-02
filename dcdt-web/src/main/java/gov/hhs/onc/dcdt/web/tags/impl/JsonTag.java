@@ -1,12 +1,8 @@
 package gov.hhs.onc.dcdt.web.tags.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import gov.hhs.onc.dcdt.json.ToolJsonException;
-import gov.hhs.onc.dcdt.json.utils.ToolJsonUtils;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import java.io.IOException;
-import javax.servlet.jsp.JspException;
+import gov.hhs.onc.dcdt.json.utils.ToolJsonUtils;
 
 @SuppressWarnings({ "serial" })
 public class JsonTag extends AbstractToolTag {
@@ -14,21 +10,17 @@ public class JsonTag extends AbstractToolTag {
     private Object target;
 
     @Override
-    public int doEndTag() throws JspException {
-        try {
-            this.pageContext.getOut().println(ToolJsonUtils.toJson(this.objMapper, this.target));
-        } catch (IOException | ToolJsonException e) {
-            throw new JspException(String.format("Unable to write target (class=%s) JSON.", ToolClassUtils.getName(this.target)), e);
-        }
+    protected int doEndTagInternal() throws Exception {
+        this.pageContext.getOut().println(ToolJsonUtils.toJson(this.objMapper, this.target));
 
-        return super.doEndTag();
+        return super.doEndTagInternal();
     }
 
     @Override
-    protected int doStartTagInternal() throws Exception {
-        this.objMapper = ToolBeanFactoryUtils.getBeanOfType(this.getRequestContext().getWebApplicationContext(), ObjectMapper.class);
+    protected int doStartTagInternalWrapped() throws Exception {
+        this.objMapper = ToolBeanFactoryUtils.getBeanOfType(this.appContext, ObjectMapper.class);
 
-        return super.doStartTagInternal();
+        return super.doStartTagInternalWrapped();
     }
 
     public void setTarget(Object target) {
