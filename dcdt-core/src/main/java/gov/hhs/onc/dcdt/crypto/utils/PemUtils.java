@@ -38,19 +38,11 @@ public abstract class PemUtils {
     }
 
     public static PemObject readPemObject(Reader reader) throws CryptographyException {
-        try (PEMParser pemParser = new PEMParser(reader)) {
-            return pemParser.readPemObject();
+        try {
+            return new PEMParser(reader).readPemObject();
         } catch (IOException e) {
             throw new CryptographyException(String.format("Unable to read PEM object from reader (class=%s).", ToolClassUtils.getName(reader)), e);
         }
-    }
-
-    public static byte[] writePemContent(String pemType, byte[] data) throws CryptographyException {
-        return writePemObject(pemType, data).getContent();
-    }
-
-    public static PemObject writePemObject(String pemType, byte[] data) {
-        return new PemObject(pemType, data);
     }
 
     public static byte[] writePemContent(PemType pemType, byte[] data) throws CryptographyException {
@@ -74,11 +66,14 @@ public abstract class PemUtils {
     }
 
     public static void writePemObject(Writer writer, PemObject pemObj) throws CryptographyException {
-        try (PemWriter pemWriter = new PemWriter(writer)) {
+        PemWriter pemWriter = new PemWriter(writer);
+
+        try {
             pemWriter.writeObject(pemObj);
             pemWriter.flush();
         } catch (IOException e) {
-            throw new CryptographyException(String.format("Unable to write PEM object to writer (class=%s).", ToolClassUtils.getName(writer)), e);
+            throw new CryptographyException(String.format("Unable to write PEM object (type=%s) to writer (class=%s).", pemObj.getType(),
+                ToolClassUtils.getName(writer)), e);
         }
     }
 }

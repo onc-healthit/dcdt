@@ -128,10 +128,12 @@
                         
                         if (instanceConfigDomainName && instanceConfigIpAddr) {
                             instanceConfigButtonRm.removeAttr("disabled");
+                            instanceConfigButtonCreds.removeAttr("disabled");
                             
                             $.dcdt.admin.getServiceHub("STARTED");
                         } else {
                             instanceConfigButtonRm.attr("disabled", "disabled");
+                            instanceConfigButtonCreds.attr("disabled", "disabled");
                             
                             $.dcdt.admin.getServiceHub("STOPPED");
                         }
@@ -148,7 +150,7 @@
     });
     
     var serviceHubForm, serviceInputDnsStatus, serviceInputLdapStatus, serviceInputMailStatus, serviceHub;
-    var instanceConfigForm, instanceConfigInputDomainName, instanceConfigInputIpAddr, instanceConfigButtons, instanceConfigButtonRm, instanceConfigButtonSet, instanceConfig;
+    var instanceConfigForm, instanceConfigInputDomainName, instanceConfigInputIpAddr, instanceConfigButtons, instanceConfigButtonRm, instanceConfigButtonSet, instanceConfigButtonCreds, instanceConfigDialogRm, instanceConfigDialogSet, instanceConfig;
     
     $(document).ready(function () {
         serviceHubForm = $("form[name=\"admin-service-hub\"]");
@@ -162,18 +164,55 @@
         instanceConfigButtons = instanceConfigForm.dcdt.form.formButtons();
         instanceConfigButtonRm = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-rm");
         instanceConfigButtonSet = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-set");
+        instanceConfigButtonCreds = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-creds");
+        instanceConfigDialogRm = $("div#dialog-admin-instance-config-rm", instanceConfigForm);
+        instanceConfigDialogSet = $("div#dialog-admin-instance-config-set", instanceConfigForm);
         
         instanceConfigForm.submit(function (event, instanceConfigButton) {
             if (instanceConfigButton.is(instanceConfigButtonRm)) {
-                $.dcdt.admin.removeInstanceConfig();
+                instanceConfigDialogRm.dialog({
+                    "buttons": {
+                        "Remove Instance Configuration": function () {
+                            $(this).dialog("close");
+                            
+                            $.dcdt.admin.removeInstanceConfig();
+                        },
+                        "Cancel": function () {
+                            $(this).dialog("close");
+                        }
+                    },
+                    "modal": true
+                });
             } else if (instanceConfigButton.is(instanceConfigButtonSet)) {
-                instanceConfig = {
-                    "@type": "instanceConfig",
-                    "domainName": instanceConfigInputDomainName.val(),
-                    "ipAddr": instanceConfigInputIpAddr.val()
-                };
-                
-                $.dcdt.admin.setInstanceConfig();
+                if (instanceConfig["domainName"] && instanceConfig["ipAddr"]) {
+                    instanceConfigDialogSet.dialog({
+                        "buttons": {
+                            "Re-set Instance Configuration": function () {
+                                $(this).dialog("close");
+                                
+                                instanceConfig = {
+                                    "@type": "instanceConfig",
+                                    "domainName": instanceConfigInputDomainName.val(),
+                                    "ipAddr": instanceConfigInputIpAddr.val()
+                                };
+                                
+                                $.dcdt.admin.setInstanceConfig();
+                            },
+                            "Cancel": function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                        "modal": true
+                    });
+                } else {
+                    instanceConfig = {
+                        "@type": "instanceConfig",
+                        "domainName": instanceConfigInputDomainName.val(),
+                        "ipAddr": instanceConfigInputIpAddr.val()
+                    };
+                    
+                    $.dcdt.admin.setInstanceConfig();
+                }
             }
         });
         
@@ -181,6 +220,14 @@
             var instanceConfigButton = $(event.target);
             
             if (!instanceConfigButton.attr("disabled")) {
+                if (instanceConfigButton.is(instanceConfigButtonCreds)) {
+                    instanceConfigForm.attr("action", URL_ADMIN_INSTANCE_CONFIG_CREDS);
+                    instanceConfigForm.attr("method", "get");
+                } else {
+                    instanceConfigForm.attr("action", "about:blank");
+                    instanceConfigForm.attr("method", "post");
+                }
+                
                 instanceConfigForm.trigger("submit", [ instanceConfigButton ]);
             }
         });

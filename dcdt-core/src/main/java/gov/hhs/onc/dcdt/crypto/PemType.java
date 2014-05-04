@@ -5,8 +5,7 @@ import java.security.PublicKey;
 import java.security.cert.X509Certificate;
 
 public enum PemType implements CryptographyTypeIdentifier {
-    X509_PUBLIC_KEY("PUBLIC KEY", PublicKey.class), PKCS8_PRIVATE_KEY("RSA PRIVATE KEY", PrivateKey.class), X509_CERTIFICATE("X.509 CERTIFICATE",
-        X509Certificate.class);
+    PUBLIC_KEY("PUBLIC KEY", PublicKey.class), PRIVATE_KEY("PRIVATE KEY", PrivateKey.class), X509_CERTIFICATE("X.509 CERTIFICATE", X509Certificate.class);
 
     private final String id;
     private final Class<?> type;

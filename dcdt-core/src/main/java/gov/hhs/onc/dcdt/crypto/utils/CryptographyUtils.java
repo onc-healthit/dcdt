@@ -64,7 +64,7 @@ public abstract class CryptographyUtils {
     @Nullable
     public static <U extends Enum<U> & CryptographyTypeIdentifier> U findTypeId(Class<U> idEnumClass, Class<?> type) {
         for (U idEnum : EnumSet.allOf(idEnumClass)) {
-            if (ToolClassUtils.isAssignable(idEnum.getType(), type)) {
+            if (ToolClassUtils.isAssignable(type, idEnum.getType())) {
                 return idEnum;
             }
         }

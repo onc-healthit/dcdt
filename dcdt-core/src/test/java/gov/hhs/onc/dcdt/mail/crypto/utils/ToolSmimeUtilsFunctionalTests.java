@@ -10,6 +10,7 @@ import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
+import gov.hhs.onc.dcdt.crypto.keys.KeyType;
 import gov.hhs.onc.dcdt.crypto.keys.impl.KeyInfoImpl;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
@@ -34,6 +35,8 @@ import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -182,8 +185,8 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @BeforeClass
     public void buildSignerCredentialInfo() throws CryptographyException {
         KeyInfo testSignerKeyInfo =
-            new KeyInfoImpl(KeyUtils.readPublicKey(Base64.decodeBase64(this.testPublicKeyStr), KeyAlgorithm.RSA, DataEncoding.DER), KeyUtils.readPrivateKey(
-                Base64.decodeBase64(this.testPrivateKeyStr), KeyAlgorithm.RSA, DataEncoding.DER));
+            new KeyInfoImpl(((PublicKey) KeyUtils.readKey(KeyType.PUBLIC, Base64.decodeBase64(this.testPublicKeyStr), KeyAlgorithm.RSA, DataEncoding.DER)),
+                ((PrivateKey) KeyUtils.readKey(KeyType.PRIVATE, Base64.decodeBase64(this.testPrivateKeyStr), KeyAlgorithm.RSA, DataEncoding.DER)));
         CertificateInfo testSignerCertInfo =
             new CertificateInfoImpl(CertificateUtils.readCertificate(Base64.decodeBase64(this.testCertStr), CertificateType.X509, DataEncoding.DER));
         this.testSignerCredInfo = new CredentialInfoImpl(testSignerKeyInfo, testSignerCertInfo);

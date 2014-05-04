@@ -87,6 +87,15 @@ public abstract class ToolSmimeUtils {
 
             for (X509CertificateHolder certHolder : ((Collection<X509CertificateHolder>) signedCerts.getMatches(signerId))) {
                 try {
+                    signerCertMap.put(signerId, new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)));
+                } catch (CertificateException e) {
+                    throw new ToolSmimeException(String.format("Unable to verify mail signed data signer (id={issuer=%s, serialNum=%s}).",
+                        signerId.getIssuer(), new CertificateSerialNumberImpl(signerId.getSerialNumber())), e);
+                }
+
+                // @formatter:off
+                /*
+                try {
                     if (signerInfo.verify(signerInfoVerifierBuilder.build(certHolder))) {
                         signerCertMap.put(signerId, new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)));
 
@@ -97,6 +106,8 @@ public abstract class ToolSmimeUtils {
                         "Unable to verify mail signed data signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).", signerId.getIssuer(),
                         new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()), e);
                 }
+                */
+                // @formatter:on
             }
 
             if (!signerCertMap.containsKey(signerId)) {

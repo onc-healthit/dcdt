@@ -229,8 +229,35 @@
                     <tiles:putAttribute name="glyph-classes" value="glyphicon-edit glyphicon-type-success"/>
                     <tiles:putAttribute name="content" value="Set Instance Configuration"/>
                 </tiles:insertDefinition>
+                <tiles:insertDefinition name="component-glyph-button">
+                    <tiles:putAttribute name="attrs">id="admin-instance-config-creds" disabled="disabled"</tiles:putAttribute>
+                    <tiles:putAttribute name="glyph-classes" value="glyphicon-download-alt glyphicon-type-link"/>
+                    <tiles:putAttribute name="content" value="Download Instance Credentials"/>
+                </tiles:insertDefinition>
             </span>
         </div>
+    </div>
+    <div id="dialog-admin-instance-config-rm" class="dialog-admin-instance-config" title="Remove Instance Configuration">
+        <tiles:insertDefinition name="component-glyph">
+            <tiles:putAttribute name="glyph-classes" value="glyphicon-trash glyphicon-type-error"/>
+        </tiles:insertDefinition>
+        <p>
+            Are you sure you want to remove the current instance configuration?
+        </p>
+        <p>
+            <strong>Note</strong>: All generated credentials (private keys + certificates), including those of the trust anchor, will be permanently deleted.
+        </p>
+    </div>
+    <div id="dialog-admin-instance-config-set" class="dialog-admin-instance-config" title="Re-set Instance Configuration">
+        <tiles:insertDefinition name="component-glyph">
+            <tiles:putAttribute name="glyph-classes" value="glyphicon-edit glyphicon-type-success"/>
+        </tiles:insertDefinition>
+        <p>
+            Are you sure you want to set the instance configuration again?
+        </p>
+        <p>
+            <strong>Note</strong>: All current generated credentials (private keys + certificates), including those of the trust anchor, will be overwritten.
+        </p>
     </div>
 </form>
 <iframe id="admin-instance-config-target" class="hide" name="admin-instance-config-target" src="about:blank"></iframe>

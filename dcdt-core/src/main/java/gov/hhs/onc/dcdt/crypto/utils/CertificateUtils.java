@@ -53,7 +53,7 @@ public abstract class CertificateUtils {
     public static X509Certificate readCertificate(byte[] data, CertificateType certType, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.writePemContent(certType.getId(), data);
+                data = PemUtils.writePemContent(CryptographyUtils.findTypeId(PemType.class, certType.getType()), data);
             }
 
             return (X509Certificate) getCertificateFactory(certType).generateCertificate(new ByteArrayInputStream(data));

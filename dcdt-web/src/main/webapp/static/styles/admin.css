@@ -1,0 +1,9 @@
+div.dialog-admin-instance-config {
+    display: none;
+}
+
+div.dialog-admin-instance-config span.glyphicon {
+    display: block;
+    float: left;
+    margin-right: 5px;
+}
