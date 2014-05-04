@@ -113,7 +113,7 @@
         <amq:systemUsage>
             <amq:systemUsage>
                 <amq:memoryUsage>
-                    <amq:memoryUsage limit="64M"/>
+                    <amq:memoryUsage limit="256M"/>
                 </amq:memoryUsage>
             </amq:systemUsage>
         </amq:systemUsage>
@@ -276,8 +276,7 @@
                                         p:className="RemoteDelivery">
                                         <beans:property name="initParameters">
                                             <util:map>
-                                                <beans:entry key="delayTime" value="5 minutes"/>
-                                                <beans:entry key="deliveryThreads" value="#{ taskExecServiceMail.maxPoolSize }"/>
+                                                <beans:entry key="deliveryThreads" value="20"/>
                                                 <beans:entry key="maxRetries" value="0"/>
                                             </util:map>
                                         </beans:property>
@@ -345,7 +344,9 @@
     =====================================================================================================-->
     <beans:bean id="mailSpooler" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolMailSpooler">
         <beans:property name="configBean">
-            <beans:bean parent="configBeanMailSpoolerImpl"/>
+            <beans:bean parent="configBeanMailSpoolerImpl"
+                p:dequeueThreads="20"
+                p:threads="100"/>
         </beans:property>
     </beans:bean>
     <beans:alias name="mailSpooler" alias="mailspooler"/>

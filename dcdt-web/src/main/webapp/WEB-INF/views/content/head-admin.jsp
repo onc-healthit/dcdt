@@ -14,6 +14,7 @@
 var URL_ADMIN_INSTANCE_CONFIG_GET = "${urlAdminInstanceConfigGet}";
 var URL_ADMIN_INSTANCE_CONFIG_RM = "${urlAdminInstanceConfigRemove}";
 var URL_ADMIN_INSTANCE_CONFIG_SET = "${urlAdminInstanceConfigSet}";
+var URL_ADMIN_INSTANCE_CONFIG_CREDS = "${urlAdminInstanceConfigCreds}";
 var ADMIN_INSTANCE_CONFIG_DIR_BASE = "${adminInstanceConfigDirBase}";
 var URL_ADMIN_SERVICE_HUB_GET = "${urlAdminServiceHubGet}";
 </script>

@@ -216,7 +216,6 @@
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
                 <version>1.5.1</version>
-                <scope>provided</scope>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
@@ -296,6 +295,11 @@
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-collections4</artifactId>
                 <version>4.0</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.commons</groupId>
+                <artifactId>commons-compress</artifactId>
+                <version>1.8</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>

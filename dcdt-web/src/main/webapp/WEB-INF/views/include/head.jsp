@@ -19,6 +19,7 @@
 <spring:url var="urlAdminInstanceConfigGet" value="/admin/instance" scope="request"/>
 <spring:url var="urlAdminInstanceConfigRemove" value="/admin/instance/rm" scope="request"/>
 <spring:url var="urlAdminInstanceConfigSet" value="/admin/instance/set" scope="request"/>
+<spring:url var="urlAdminInstanceConfigCreds" value="/admin/instance/creds" scope="request"/>
 <spring:url var="urlAdminLogin" value="/admin/login" scope="request"/>
 <spring:url var="urlAdminLoginProcess" value="/admin/login/process" scope="request"/>
 <spring:url var="urlAdminLogout" value="/admin/logout" scope="request"/>
