@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.web.service.impl;
 
-import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLifecycleBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.context.AutoStartup;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Component;
 
 @AutoStartup
 @Component("toolServiceHubImpl")
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 3)
 public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements ToolServiceHub {
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolServiceHubImpl.class);
 
@@ -49,7 +47,7 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
                 this.serviceMsgsMap.put(serviceType, ToolArrayUtils.asList(String.format("Unable to stop service (class=%s, type=%s, status=%s): %s",
                     ToolClassUtils.getName(service), serviceType.name(), service.getLifecycleStatus().name(), e.getMessage())));
 
-                LOGGER.error(String.format("Unable to start service (class=%s, type=%s, status=%s).", ToolClassUtils.getName(service), serviceType.name(),
+                LOGGER.error(String.format("Unable to stop service (class=%s, type=%s, status=%s).", ToolClassUtils.getName(service), serviceType.name(),
                     service.getLifecycleStatus().name()), e);
             }
         }

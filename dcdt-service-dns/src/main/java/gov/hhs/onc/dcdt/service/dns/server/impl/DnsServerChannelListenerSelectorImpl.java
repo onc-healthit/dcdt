@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.service.dns.server.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
-import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.nio.channels.impl.AbstractChannelListenerSelector;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerChannelListenerSelector;
@@ -30,9 +30,11 @@ public class DnsServerChannelListenerSelectorImpl extends AbstractChannelListene
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
+    protected void startInternal() throws Exception {
         this.setChannelListeners(ToolBeanFactoryUtils.createBeanOfType(this.appContext, DnsServerUdpChannelListener.class, this.dnsServerConfig),
             ToolBeanFactoryUtils.createBeanOfType(this.appContext, DnsServerTcpChannelListener.class, this.dnsServerConfig));
+
+        super.startInternal();
     }
 
     @Override
