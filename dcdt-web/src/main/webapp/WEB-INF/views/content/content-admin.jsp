@@ -237,22 +237,22 @@
             </span>
         </div>
     </div>
-    <div id="dialog-admin-instance-config-rm" class="dialog-admin-instance-config" title="Remove Instance Configuration">
-        <tiles:insertDefinition name="component-glyph">
-            <tiles:putAttribute name="glyph-classes" value="glyphicon-trash glyphicon-type-error"/>
-        </tiles:insertDefinition>
+    <div id="dialog-admin-instance-config-rm" title="Remove Instance Configuration">
         <p>
+            <tiles:insertDefinition name="component-glyph">
+                <tiles:putAttribute name="glyph-classes" value="glyphicon-trash glyphicon-type-error"/>
+            </tiles:insertDefinition>
             Are you sure you want to remove the current instance configuration?
         </p>
         <p>
             <strong>Note</strong>: All generated credentials (private keys + certificates), including those of the trust anchor, will be permanently deleted.
         </p>
     </div>
-    <div id="dialog-admin-instance-config-set" class="dialog-admin-instance-config" title="Re-set Instance Configuration">
-        <tiles:insertDefinition name="component-glyph">
-            <tiles:putAttribute name="glyph-classes" value="glyphicon-edit glyphicon-type-success"/>
-        </tiles:insertDefinition>
+    <div id="dialog-admin-instance-config-set" title="Re-set Instance Configuration">
         <p>
+            <tiles:insertDefinition name="component-glyph">
+                <tiles:putAttribute name="glyph-classes" value="glyphicon-edit glyphicon-type-success"/>
+            </tiles:insertDefinition>
             Are you sure you want to set the instance configuration again?
         </p>
         <p>

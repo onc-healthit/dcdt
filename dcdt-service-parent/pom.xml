@@ -606,6 +606,7 @@
                                                 <extraArgument>-XX:MaxGCPauseMillis=50</extraArgument>
                                                 <extraArgument>-XX:ParallelGCThreads=4</extraArgument>
                                                 <extraArgument>-XX:ConcGCThreads=4</extraArgument>
+                                                <extraArgument>-Djava.net.preferIPv4Addresses=true</extraArgument>
                                                 <extraArgument>-Djava.net.preferIPv4Stack=true</extraArgument>
                                                 <extraArgument>-Djava.security.manager</extraArgument>
                                                 <extraArgument>-Djava.security.policy=conf/service/wrapper-service.policy</extraArgument>

@@ -248,6 +248,20 @@ div.input-group-sm div.form-group.form-group-buttons span.btn-group.btn-group-sm
     font-size: 13px;
 }
 
+div.ui-widget.ui-dialog {
+    display: none;
+    font-size: 11px;
+}
+
+div.ui-widget.ui-dialog span.glyphicon {
+    float: left;
+    margin-right: 6px;
+}
+
+div.ui-widget.ui-dialog p {
+    display: inline-block;
+}
+
 div#footer {
     height: 60px;
 }

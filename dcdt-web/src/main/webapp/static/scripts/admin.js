@@ -168,42 +168,48 @@
         instanceConfigDialogRm = $("div#dialog-admin-instance-config-rm", instanceConfigForm);
         instanceConfigDialogSet = $("div#dialog-admin-instance-config-set", instanceConfigForm);
         
+        instanceConfigDialogRm.dialog({
+            "autoOpen": false,
+            "buttons": {
+                "Remove Instance Configuration": function () {
+                    instanceConfigDialogRm.dialog("close");
+                    
+                    $.dcdt.admin.removeInstanceConfig();
+                },
+                "Cancel": function () {
+                    instanceConfigDialogRm.dialog("close");
+                }
+            },
+            "modal": true
+        });
+        
+        instanceConfigDialogSet.dialog({
+            "autoOpen": false,
+            "buttons": {
+                "Re-set Instance Configuration": function () {
+                    instanceConfigDialogSet.dialog("close");
+                    
+                    instanceConfig = {
+                        "@type": "instanceConfig",
+                        "domainName": instanceConfigInputDomainName.val(),
+                        "ipAddr": instanceConfigInputIpAddr.val()
+                    };
+                    
+                    $.dcdt.admin.setInstanceConfig();
+                },
+                "Cancel": function () {
+                    instanceConfigDialogSet.dialog("close");
+                }
+            },
+            "modal": true
+        });
+        
         instanceConfigForm.submit(function (event, instanceConfigButton) {
             if (instanceConfigButton.is(instanceConfigButtonRm)) {
-                instanceConfigDialogRm.dialog({
-                    "buttons": {
-                        "Remove Instance Configuration": function () {
-                            $(this).dialog("close");
-                            
-                            $.dcdt.admin.removeInstanceConfig();
-                        },
-                        "Cancel": function () {
-                            $(this).dialog("close");
-                        }
-                    },
-                    "modal": true
-                });
+                instanceConfigDialogRm.dialog("open");
             } else if (instanceConfigButton.is(instanceConfigButtonSet)) {
                 if (instanceConfig["domainName"] && instanceConfig["ipAddr"]) {
-                    instanceConfigDialogSet.dialog({
-                        "buttons": {
-                            "Re-set Instance Configuration": function () {
-                                $(this).dialog("close");
-                                
-                                instanceConfig = {
-                                    "@type": "instanceConfig",
-                                    "domainName": instanceConfigInputDomainName.val(),
-                                    "ipAddr": instanceConfigInputIpAddr.val()
-                                };
-                                
-                                $.dcdt.admin.setInstanceConfig();
-                            },
-                            "Cancel": function () {
-                                $(this).dialog("close");
-                            }
-                        },
-                        "modal": true
-                    });
+                    instanceConfigDialogSet.dialog("open");
                 } else {
                     instanceConfig = {
                         "@type": "instanceConfig",
