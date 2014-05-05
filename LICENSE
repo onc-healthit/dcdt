@@ -16,7 +16,7 @@ limitations under the License.
 The DCDT logo is a derivative work created by the modification and combination of two source images:
     1. The Direct Project logo, used under CC BY 3.0 (http://creativecommons.org/licenses/by/3.0/us/legalcode).
        For more information see http://directproject.org/.
-    2. The icon image certificate-server.svg (http://websvn.kde.org/*checkout*/trunk/kdesupport/oxygen-icons/128x128/places/certificate-server.png) from the
+    2. The icon image certificate-server.svg (http://websvn.kde.org/*checkout*/trunk/kdesupport/oxygen-icons/scalable/places/certificate-server.svgz) from the
        Oxygen Icon set (http://www.oxygen-icons.org/), a copy of which is made available in the top level of the DCDT source code, and is used under LGPL
        (https://www.gnu.org/licenses/lgpl.html).
 
