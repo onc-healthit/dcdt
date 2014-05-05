@@ -7,15 +7,22 @@ import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSerialNumberImpl;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
+import gov.hhs.onc.dcdt.mail.impl.LineOutputStream;
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
+import gov.hhs.onc.dcdt.mail.crypto.MailDigestAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.ToolSmimeException;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
@@ -23,6 +30,7 @@ import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,19 +40,25 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import javax.security.auth.x500.X500Principal;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1EncodableVector;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1OctetString;
 import org.bouncycastle.asn1.cms.AttributeTable;
+import org.bouncycastle.asn1.cms.CMSAttributes;
 import org.bouncycastle.asn1.smime.SMIMECapabilitiesAttribute;
 import org.bouncycastle.asn1.smime.SMIMECapabilityVector;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.jcajce.JcaCertStore;
 import org.bouncycastle.cms.CMSException;
+import org.bouncycastle.cms.CMSSignerDigestMismatchException;
 import org.bouncycastle.cms.KeyTransRecipientId;
 import org.bouncycastle.cms.KeyTransRecipientInformation;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
+import org.bouncycastle.cms.SignerInformationVerifier;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoGeneratorBuilder;
 import org.bouncycastle.cms.jcajce.JcaSimpleSignerInfoVerifierBuilder;
 import org.bouncycastle.cms.jcajce.JceCMSContentEncryptorBuilder;
@@ -58,6 +72,7 @@ import org.bouncycastle.mail.smime.SMIMESigned;
 import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.operator.OperatorCreationException;
+import org.bouncycastle.util.Arrays;
 import org.bouncycastle.util.Store;
 import org.springframework.util.MimeType;
 
@@ -80,34 +95,37 @@ public abstract class ToolSmimeUtils {
         JcaSimpleSignerInfoVerifierBuilder signerInfoVerifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
         Map<SignerId, SignerInformation> signerInfoMap = mapSigners(signed);
         Map<SignerId, CertificateInfo> signerCertMap = new LinkedHashMap<>(signerInfoMap.size());
-        SignerInformation signerInfo;
+        SignerInformation signerInfo = null;
 
         for (SignerId signerId : signerInfoMap.keySet()) {
-            signerInfo = signerInfoMap.get(signerId);
-
             for (X509CertificateHolder certHolder : ((Collection<X509CertificateHolder>) signedCerts.getMatches(signerId))) {
                 try {
-                    signerCertMap.put(signerId, new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)));
-                } catch (CertificateException e) {
-                    throw new ToolSmimeException(String.format("Unable to verify mail signed data signer (id={issuer=%s, serialNum=%s}).",
-                        signerId.getIssuer(), new CertificateSerialNumberImpl(signerId.getSerialNumber())), e);
-                }
+                    try {
+                        SignerInformationVerifier verifier = signerInfoVerifierBuilder.build(certHolder);
+                        signerInfo = signerInfoMap.get(signerId);
 
-                // @formatter:off
-                /*
-                try {
-                    if (signerInfo.verify(signerInfoVerifierBuilder.build(certHolder))) {
-                        signerCertMap.put(signerId, new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)));
+                        if (signerInfo.verify(verifier)) {
+                            signerCertMap.put(signerId, new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)));
+                        }
+                    } catch (CMSSignerDigestMismatchException e) {
+                        byte[] calculatedDigest = getMessageDigest(signed, signerInfo, signerId, certHolder);
+                        // noinspection ConstantConditions
+                        byte[] expectedDigest =
+                            ASN1OctetString.getInstance(signerInfo.getSignedAttributes().get(CMSAttributes.messageDigest).getAttrValues().getObjectAt(0))
+                                .getOctets();
 
-                        break;
+                        if (!Arrays.constantTimeAreEqual(expectedDigest, calculatedDigest)) {
+                            throw new ToolSmimeException(String.format("Expected message digest value: %s does not match the calculated message digest: %s",
+                                Hex.encodeHexString(expectedDigest), Hex.encodeHexString(calculatedDigest)), e);
+                        } else {
+                            signerCertMap.put(signerId, new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)));
+                        }
                     }
                 } catch (CertificateException | CMSException | OperatorCreationException e) {
                     throw new ToolSmimeException(String.format(
                         "Unable to verify mail signed data signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).", signerId.getIssuer(),
                         new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()), e);
                 }
-                */
-                // @formatter:on
             }
 
             if (!signerCertMap.containsKey(signerId)) {
@@ -117,6 +135,42 @@ public abstract class ToolSmimeUtils {
         }
 
         return signerCertMap;
+    }
+
+    @SuppressWarnings({ "unchecked" })
+    public static byte[] getMessageDigest(SMIMESigned signed, SignerInformation signerInfo, SignerId signerId, X509CertificateHolder certHolder)
+        throws ToolSmimeException {
+        try (ByteArrayOutputStream byteArrayOutStream = new ByteArrayOutputStream(); LineOutputStream lineOutStream = new LineOutputStream(byteArrayOutStream)) {
+            MimeBodyPart mp = signed.getContent();
+            Enumeration<String> headers = mp.getAllHeaderLines();
+
+            while (headers.hasMoreElements()) {
+                String header = headers.nextElement();
+                header = header.substring(0, header.indexOf(ToolMimePartUtils.DELIM_HEADER) + 1) + header.substring(header.indexOf(StringUtils.SPACE) + 1);
+                lineOutStream.writeln(header);
+            }
+
+            lineOutStream.writeln();
+
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(mp.getInputStream()))) {
+                String line;
+
+                while ((line = reader.readLine()) != null) {
+                    lineOutStream.writeln(line);
+                }
+            }
+
+            byteArrayOutStream.flush();
+
+            // noinspection ConstantConditions
+            return MessageDigest.getInstance(
+                CryptographyUtils.findObjectId(MailDigestAlgorithm.class, new ASN1ObjectIdentifier(signerInfo.getDigestAlgOID())).getId()).digest(
+                byteArrayOutStream.toByteArray());
+        } catch (NoSuchAlgorithmException | IOException | MessagingException e) {
+            throw new ToolSmimeException(String.format(
+                "Unable to calculate message digest for MIME message with signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).",
+                signerId.getIssuer(), new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()), e);
+        }
     }
 
     @SuppressWarnings({ "unchecked" })

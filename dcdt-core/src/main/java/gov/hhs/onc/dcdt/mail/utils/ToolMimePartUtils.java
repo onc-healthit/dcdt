@@ -22,6 +22,8 @@ import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
 public abstract class ToolMimePartUtils {
+    public final static String DELIM_HEADER = ":";
+
     public static Map<String, MimeBodyPart> mapAttachmentPartFileNames(MimeMultipart multipart) throws MessagingException {
         int numBodyParts = multipart.getCount();
         Map<String, MimeBodyPart> attachmentPartFileNameMap = new LinkedHashMap<>(numBodyParts);

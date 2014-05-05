@@ -276,8 +276,11 @@
                                         p:className="RemoteDelivery">
                                         <beans:property name="initParameters">
                                             <util:map>
+                                                <beans:entry key="connectiontimeout" value="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"/>
+                                                <beans:entry key="delayTime" value="1 minute"/>
                                                 <beans:entry key="deliveryThreads" value="20"/>
-                                                <beans:entry key="maxRetries" value="0"/>
+                                                <beans:entry key="maxRetries" value="5"/>
+                                                <beans:entry key="timeout" value="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 30 }"/>
                                             </util:map>
                                         </beans:property>
                                     </beans:bean>
