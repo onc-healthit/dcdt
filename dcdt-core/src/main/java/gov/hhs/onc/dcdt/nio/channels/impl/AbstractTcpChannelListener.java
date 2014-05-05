@@ -48,7 +48,11 @@ public abstract class AbstractTcpChannelListener<T extends SelectionAttachment, 
             readChannel.close();
             selKey.cancel();
         } else if (!reqBuffer.hasRemaining()) {
-            return super.processReadOperation(selKey, readChannel, selAttachment);
+            if (reqBuffer.position() > 0) {
+                return super.processReadOperation(selKey, readChannel, selAttachment);
+            } else {
+                selKey.cancel();
+            }
         }
 
         selKey.selector().wakeup();
