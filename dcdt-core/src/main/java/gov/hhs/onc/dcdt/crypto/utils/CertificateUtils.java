@@ -82,7 +82,7 @@ public abstract class CertificateUtils {
         try {
             byte[] data = cert.getEncoded();
 
-            return ((dataEnc == DataEncoding.DER) ? data : PemUtils.writePemContent(PemType.X509_CERTIFICATE, data));
+            return ((dataEnc == DataEncoding.DER) ? data : PemUtils.writePemContent(PemType.CERTIFICATE, data));
         } catch (CertificateEncodingException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format("Unable to write certificate instance (class=%s) to data.",
                 ToolClassUtils.getClass(cert)), e);

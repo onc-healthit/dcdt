@@ -1112,6 +1112,7 @@
                             <dcdt.data.dir>${project.build.directory}/surefire-data</dcdt.data.dir>
                             <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
                             <dcdt.log.dir>${project.build.directory}/surefire-logs</dcdt.log.dir>
+                            <java.net.preferIPv4Addresses>true</java.net.preferIPv4Addresses>
                             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                             <logback.configurationFile>${project.logback.config.file}</logback.configurationFile>
                         </systemPropertyVariables>
