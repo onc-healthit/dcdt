@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.entry.StringValue;
 import org.apache.directory.api.ldap.model.exception.LdapInvalidAttributeValueException;
@@ -60,14 +61,25 @@ public class LdapCertificateLookupStepImpl extends AbstractLdapLookupStep<Entry,
                 if ((lookupResult = this.lookupService.lookupEntries(baseDnConnConfig, baseDn, lookupFilter)).isSuccess() && lookupResult.hasItems()) {
                     for (Entry entry : lookupResult) {
                         try {
-                            this.certInfos.add((certInfo =
-                                new CertificateInfoImpl(CertificateUtils.readCertificate(
-                                    entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT).getBytes(), CertificateType.X509, DataEncoding.DER))));
+                            Attribute attr = entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT);
 
-                            this.execMsgs.add(String.format(
-                                "LDAP lookup (host=%s, port=%d, filter={%s}) entry certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
-                                baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter),
-                                certInfo.getSubjectName(), certInfo.getSerialNumber(), certInfo.getIssuerName()));
+                            if (attr == null) {
+                                attr = entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY);
+                            }
+
+                            if (attr != null) {
+                                this.certInfos.add(certInfo =
+                                    new CertificateInfoImpl(CertificateUtils.readCertificate(attr.getBytes(), CertificateType.X509, DataEncoding.DER)));
+                                this.execMsgs.add(String.format(
+                                    "LDAP lookup (host=%s, port=%d, filter={%s}) entry certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
+                                    baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter),
+                                    certInfo.getSubjectName(), certInfo.getSerialNumber(), certInfo.getIssuerName()));
+                            } else {
+                                this.execMsgs.add(String.format("LDAP lookup (host=%s, port=%d, filter={%s}) entry does not contain an %s or an %s attribute.",
+                                    baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter),
+                                    ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT, ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY));
+                                this.execSuccess = false;
+                            }
                         } catch (CryptographyException | LdapInvalidAttributeValueException e) {
                             this.execMsgs.add(String.format("LDAP lookup (host=%s, port=%d, filter={%s}) entry certificate processing failed: %s",
                                 baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter), e.getMessage()));

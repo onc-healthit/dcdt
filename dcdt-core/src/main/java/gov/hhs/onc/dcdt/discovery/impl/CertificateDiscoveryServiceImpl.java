@@ -23,11 +23,11 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
 
     @Override
     public List<CertificateDiscoveryStep> discoverCertificates(MailAddress directAddr) {
-        return this.discoverCertificates(this.defaultSteps, directAddr);
+        return this.discoverCertificates(this.defaultSteps, directAddr, true);
     }
 
     @Override
-    public List<CertificateDiscoveryStep> discoverCertificates(List<CertificateDiscoveryStep> steps, MailAddress directAddr) {
+    public List<CertificateDiscoveryStep> discoverCertificates(List<CertificateDiscoveryStep> steps, MailAddress directAddr, boolean processAllSteps) {
         Map<BindingType, MailAddress> directAddrBoundMap = new EnumMap<>(BindingType.class);
         MailAddress directAddrBound;
         Class<? extends CertificateDiscoveryStep> stepClass;
@@ -58,13 +58,13 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
                 }
             }
 
-            if (!skipStep && !processedStep.execute(processedSteps, directAddrBoundMap.get(stepBindingType))) {
+            boolean isCertLookupStep = ToolClassUtils.isAssignable(stepClass, CertificateLookupStep.class);
+
+            if (!skipStep && !processedStep.execute(processedSteps, directAddrBoundMap.get(stepBindingType)) && (!processAllSteps || !isCertLookupStep)) {
                 break;
             }
 
-            certDiscovered =
-                (!skipStep && ToolClassUtils.isAssignable(stepClass, CertificateLookupStep.class) && ((CertificateLookupStep<?, ?, ?, ?>) processedStep)
-                    .hasCertificateInfos());
+            certDiscovered = (!skipStep && isCertLookupStep && ((CertificateLookupStep<?, ?, ?, ?>) processedStep).hasCertificateInfos());
         }
 
         return processedSteps;

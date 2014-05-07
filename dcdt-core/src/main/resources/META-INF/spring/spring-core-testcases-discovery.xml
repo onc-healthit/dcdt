@@ -658,7 +658,7 @@
                         </beans:bean>
                     </beans:property>
                     <beans:property name="location">
-                        <beans:bean parent="discoveryTestcaseCredLoc5Ldap1"/>
+                        <beans:bean parent="discoveryTestcaseCredLoc5Ldap3"/>
                     </beans:property>
                 </beans:bean>
             </util:list>
