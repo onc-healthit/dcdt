@@ -21,6 +21,6 @@ public class HostingTestcaseProcessorImpl extends
         HostingTestcase testcase = submission.getTestcase();
 
         // noinspection ConstantConditions
-        return this.createResult(submission, this.certDiscoveryService.discoverCertificates(testcase.getSteps(), submission.getDirectAddress()));
+        return this.createResult(submission, this.certDiscoveryService.discoverCertificates(testcase.getSteps(), submission.getDirectAddress(), false));
     }
 }

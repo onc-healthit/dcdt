@@ -28,21 +28,21 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
 
     @Override
     public boolean execute(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr) {
-        CertificateLookupStep<?, ?, ?, ?> certLookupStep = ToolCollectionUtils.findAssignable(CertificateLookupStep.class, prevSteps);
+        for (CertificateLookupStep<?, ?, ?, ?> certLookupStep : CollectionUtils.collect(prevSteps, new ToolCollectionUtils.AssignableTransformer<>(
+            CertificateLookupStep.class))) {
+            if (certLookupStep != null && certLookupStep.isSuccess() && certLookupStep.hasCertificateInfos()) {
+                Pair<Boolean, List<String>> certInfoValidationResultPair;
+                this.invalidCertInfos = new ArrayList<>();
 
-        // noinspection ConstantConditions
-        if (certLookupStep.isSuccess() && certLookupStep.hasCertificateInfos()) {
-            Pair<Boolean, List<String>> certInfoValidationResultPair;
-            this.invalidCertInfos = new ArrayList<>();
+                // noinspection ConstantConditions
+                for (CertificateInfo certInfo : certLookupStep.getCertificateInfos()) {
+                    this.execMsgs.addAll((certInfoValidationResultPair = this.certInfoValidator.validate(directAddr, certInfo)).getRight());
 
-            // noinspection ConstantConditions
-            for (CertificateInfo certInfo : certLookupStep.getCertificateInfos()) {
-                this.execMsgs.addAll((certInfoValidationResultPair = this.certInfoValidator.validate(directAddr, certInfo)).getRight());
-
-                if (certInfoValidationResultPair.getLeft()) {
-                    this.validCertInfo = certInfo;
-                } else {
-                    this.invalidCertInfos.add(certInfo);
+                    if (certInfoValidationResultPair.getLeft()) {
+                        this.validCertInfo = certInfo;
+                    } else {
+                        this.invalidCertInfos.add(certInfo);
+                    }
                 }
             }
         }
