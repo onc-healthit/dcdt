@@ -9,8 +9,8 @@ import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import java.security.cert.X509Certificate;
-import java.util.Objects;
 import javax.validation.ConstraintValidatorContext;
+import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 
 public class CertificateInfoSubjectDnConstraintValidator extends AbstractCertificateInfoConstraintValidator<CertificateInfoSubjectDn> {
@@ -23,8 +23,9 @@ public class CertificateInfoSubjectDnConstraintValidator extends AbstractCertifi
 
         // noinspection ConstantConditions
         if (certSubjName.hasAttribute(BCStyle.EmailAddress)
-            && !Objects.equals((certSubjDnDirectAddr = new MailAddressImpl(certSubjName.getAttributeValueString(BCStyle.EmailAddress))), (directAddrBound =
-                directAddr.forBindingType(BindingType.ADDRESS)))) {
+            && (directAddrBound = directAddr.forBindingType(BindingType.ADDRESS)) != null
+            && (certSubjDnDirectAddr = new MailAddressImpl(certSubjName.getAttributeValueString(BCStyle.EmailAddress)).forBindingType(BindingType.ADDRESS)) != null
+            && !StringUtils.equalsIgnoreCase(certSubjDnDirectAddr.toAddress(), directAddrBound.toAddress())) {
             // noinspection ConstantConditions
             throw new CertificateException(String.format(
                 "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subject Distinguished Name EmailAddress value does not match: %s != %s", certSubjName,
