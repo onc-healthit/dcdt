@@ -22,10 +22,10 @@ public class CertificateInfoSubjectDnConstraintValidator extends AbstractCertifi
         MailAddress directAddr = certValidInfo.getDirectAddress(), directAddrBound, certSubjDnDirectAddr;
 
         // noinspection ConstantConditions
-        if (certSubjName.hasAttribute(BCStyle.EmailAddress)
+        if ((certSubjName.hasAttribute(BCStyle.EmailAddress)
             && (directAddrBound = directAddr.forBindingType(BindingType.ADDRESS)) != null
-            && (certSubjDnDirectAddr = new MailAddressImpl(certSubjName.getAttributeValueString(BCStyle.EmailAddress)).forBindingType(BindingType.ADDRESS)) != null
-            && !StringUtils.equalsIgnoreCase(certSubjDnDirectAddr.toAddress(), directAddrBound.toAddress())) {
+            && (certSubjDnDirectAddr = new MailAddressImpl(certSubjName.getAttributeValueString(BCStyle.EmailAddress)).forBindingType(BindingType.ADDRESS)) != null && !StringUtils
+                .equalsIgnoreCase(certSubjDnDirectAddr.toAddress(), directAddrBound.toAddress()))) {
             // noinspection ConstantConditions
             throw new CertificateException(String.format(
                 "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subject Distinguished Name EmailAddress value does not match: %s != %s", certSubjName,

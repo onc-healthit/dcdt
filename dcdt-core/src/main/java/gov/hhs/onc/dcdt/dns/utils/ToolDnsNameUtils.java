@@ -20,7 +20,7 @@ public abstract class ToolDnsNameUtils {
 
     public final static String PATTERN_STR_DNS_NAME_LBL_CHAR = "\\w\\-";
     public final static String PATTERN_STR_DNS_NAME_LBL_CHAR_ANY = PATTERN_STR_DNS_NAME_DELIM + PATTERN_STR_DNS_NAME_LBL_CHAR;
-    public final static String PATTERN_STR_DNS_NAME_LBL = "(?![\\-|_])[" + PATTERN_STR_DNS_NAME_LBL_CHAR + "]{1,63}(?<![\\-|_])";
+    public final static String PATTERN_STR_DNS_NAME_LBL = "(?!\\-)[" + PATTERN_STR_DNS_NAME_LBL_CHAR + "]{1,63}(?<!\\-)";
 
     /**
      * Derived from the rules defined in:
