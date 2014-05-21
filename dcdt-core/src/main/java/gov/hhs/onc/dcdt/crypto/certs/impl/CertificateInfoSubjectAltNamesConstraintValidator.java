@@ -25,9 +25,10 @@ public class CertificateInfoSubjectAltNamesConstraintValidator extends AbstractC
         // noinspection ConstantConditions
         if (certSubjName.hasAltName(CertificateAltNameType.RFC822_NAME)) {
             // noinspection ConstantConditions
-            if (!StringUtils.equalsIgnoreCase((certSubjAltNameDirectAddr =
-                new MailAddressImpl(certSubjName.getAltName(CertificateAltNameType.RFC822_NAME).getName().toString())).toAddress(), (directAddrBound =
-                directAddr.forBindingType(BindingType.ADDRESS)).toAddress())) {
+            certSubjAltNameDirectAddr = new MailAddressImpl(certSubjName.getAltName(CertificateAltNameType.RFC822_NAME).getName().toString());
+            // noinspection ConstantConditions
+            if ((directAddrBound = directAddr.forBindingType(BindingType.ADDRESS)) == null
+                || !StringUtils.equalsIgnoreCase(certSubjAltNameDirectAddr.toAddress(), directAddrBound.toAddress())) {
                 // noinspection ConstantConditions
                 throw new CertificateException(String.format(
                     "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension rfc822Name value does not match: %s != %s",
