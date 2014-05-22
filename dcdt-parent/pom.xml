@@ -7,7 +7,7 @@
     
     <groupId>gov.hhs.onc.dcdt</groupId>
     <artifactId>dcdt-parent</artifactId>
-    <version>3.0.1-RELEASE</version>
+    <version>3.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>dcdt-parent</name>
