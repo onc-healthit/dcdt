@@ -1,8 +1,8 @@
 package gov.hhs.onc.dcdt.net;
 
-import gov.hhs.onc.dcdt.ToolException;
+import java.io.IOException;
 
-public class ToolNetException extends ToolException {
+public class ToolNetException extends IOException {
     private final static long serialVersionUID = 0L;
 
     public ToolNetException() {

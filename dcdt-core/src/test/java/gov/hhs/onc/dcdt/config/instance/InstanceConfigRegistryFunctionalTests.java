@@ -50,7 +50,6 @@ public class InstanceConfigRegistryFunctionalTests extends AbstractToolFunctiona
 
         InstanceConfig instanceConfig = this.getInstanceConfig();
         Assert.assertNotEquals(instanceConfig.getDomainName(), this.testInstanceConfigDomainRmName, "Instance configuration domain names are equal.");
-        Assert.assertNotEquals(instanceConfig.getIpAddress(), this.testInstanceConfigIpAddr, "Instance configuration IP addresses are equal.");
     }
 
     private InstanceConfigService getInstanceConfigService() {
