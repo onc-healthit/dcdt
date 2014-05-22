@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 @JsonSubTypes({ @Type(DiscoveryTestcaseMailMappingJsonDtoImpl.class) })
 public interface DiscoveryTestcaseMailMappingJsonDto extends ToolBeanJsonDto<DiscoveryTestcaseMailMapping> {
     @HasMxRecord
-    @MailAddress
+    @MailAddress(message = "{dcdt.mail.validation.constraints.DirectAddress.msg}")
     @JsonProperty("directAddr")
     @Nullable
     public String getDirectAddress();
