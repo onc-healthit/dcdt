@@ -61,7 +61,7 @@ public @interface DirectAddress {
         DirectAddress[] value();
     }
 
-    String message() default "{dcdt.mail.validation.constraints.DirectAddress.msg} " + ToolMailAddressUtils.PATTERN_STR_MAIL_ADDR_DIRECT;
+    String message() default "{dcdt.mail.validation.constraints.DirectAddress.msg}";
 
     Class<?>[] groups() default {};
 
