@@ -28,14 +28,15 @@
         p:corePoolSize="#{ taskExecServiceDns.corePoolSize }"
         p:maxPoolSize="#{ taskExecServiceDns.maxPoolSize }"/>
     
-    <beans:bean id="taskExecServiceDnsServerChannel" parent="taskExecService"
-        p:corePoolSize="#{ taskExecServiceDnsServer.corePoolSize * 2 }"
-        p:maxPoolSize="#{ taskExecServiceDnsServer.maxPoolSize * 2 }"/>
+    <beans:bean id="taskExecServiceDnsServerReq" parent="taskExecService"
+        p:corePoolSize="#{ taskExecServiceDnsServer.corePoolSize * 5 }"
+        p:maxPoolSize="#{ taskExecServiceDnsServer.maxPoolSize * 10 }"
+        p:queueCapacity="#{ taskExecServiceDnsServer.maxPoolSize * 25 }"/>
     
-    <beans:bean id="taskExecServiceDnsServerChannelQuery" parent="taskExecService"
-        p:corePoolSize="#{ taskExecServiceDnsServer.corePoolSize * 10 }"
-        p:maxPoolSize="#{ taskExecServiceDnsServer.maxPoolSize * 20 }"
-        p:queueCapacity="#{ taskExecServiceDnsServer.maxPoolSize * 50 }"/>
+    <beans:bean id="taskExecServiceDnsServerReqQuery" parent="taskExecService"
+        p:corePoolSize="#{ taskExecServiceDnsServerReq.corePoolSize * 2 }"
+        p:maxPoolSize="#{ taskExecServiceDnsServerReq.maxPoolSize * 2 }"
+        p:queueCapacity="#{ taskExecServiceDnsServerReq.maxPoolSize * 2 }"/>
     
     <!--====================================================================================================
     = DNS SERVER CONFIG
