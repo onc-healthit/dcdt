@@ -276,7 +276,10 @@
                                         p:className="RemoteDelivery">
                                         <beans:property name="initParameters">
                                             <util:map>
+                                                <beans:entry key="bounceProcessor"
+                                                    value="#{ T(gov.hhs.onc.dcdt.service.mail.james.MailProcessorState).ERROR.state }"/>
                                                 <beans:entry key="connectiontimeout" value="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"/>
+                                                <beans:entry key="debug" value="true"/>
                                                 <beans:entry key="delayTime" value="1 minute"/>
                                                 <beans:entry key="deliveryThreads" value="20"/>
                                                 <beans:entry key="maxRetries" value="5"/>

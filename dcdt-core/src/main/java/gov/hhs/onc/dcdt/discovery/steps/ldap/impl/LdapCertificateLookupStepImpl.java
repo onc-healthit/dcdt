@@ -24,9 +24,10 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.entry.StringValue;
-import org.apache.directory.api.ldap.model.exception.LdapInvalidAttributeValueException;
+import org.apache.directory.api.ldap.model.entry.Value;
 import org.apache.directory.api.ldap.model.filter.AndNode;
 import org.apache.directory.api.ldap.model.filter.EqualityNode;
+import org.apache.directory.api.ldap.model.filter.OrNode;
 import org.apache.directory.api.ldap.model.filter.PresenceNode;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
@@ -49,9 +50,11 @@ public class LdapCertificateLookupStepImpl extends AbstractLdapLookupStep<Entry,
             // noinspection ConstantConditions
             LdapConnectionConfig baseDnConnConfig = baseDnLookupResult.getConnectionConfig();
             AndNode lookupFilter =
-                new AndNode(new EqualityNode<>(ToolCoreSchemaConstants.ATTR_TYPE_NAME_MAIL, new StringValue(directAddr.toAddress())), new PresenceNode(
-                    ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT));
+                new AndNode(new EqualityNode<>(ToolCoreSchemaConstants.ATTR_TYPE_NAME_MAIL, new StringValue(directAddr.toAddress())), new OrNode(
+                    new PresenceNode(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY), new PresenceNode(
+                        ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT)));
             LdapEntryLookupResult lookupResult = null;
+            Attribute attr;
             CertificateInfo certInfo;
 
             this.certInfos = new ArrayList<>();
@@ -60,32 +63,28 @@ public class LdapCertificateLookupStepImpl extends AbstractLdapLookupStep<Entry,
             for (Dn baseDn : baseDnLookupResult) {
                 if ((lookupResult = this.lookupService.lookupEntries(baseDnConnConfig, baseDn, lookupFilter)).isSuccess() && lookupResult.hasItems()) {
                     for (Entry entry : lookupResult) {
-                        try {
-                            Attribute attr = entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT);
-
-                            if (attr == null) {
-                                attr = entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY);
-                            }
-
-                            if (attr != null) {
+                        for (Value<?> attrValue : (attr =
+                            (entry.containsAttribute(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY) ? entry
+                                .get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY) : entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT)))) {
+                            try {
                                 this.certInfos.add(certInfo =
-                                    new CertificateInfoImpl(CertificateUtils.readCertificate(attr.getBytes(), CertificateType.X509, DataEncoding.DER)));
+                                    new CertificateInfoImpl(CertificateUtils.readCertificate(attrValue.getBytes(), CertificateType.X509, DataEncoding.DER)));
+                                this.execMsgs
+                                    .add(String
+                                        .format(
+                                            "LDAP lookup (host=%s, port=%d, filter={%s}) entry (dn={%s}) attribute (id=%s) value certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
+                                            baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter),
+                                            entry.getDn().getName(), attr.getId(), certInfo.getSubjectName(), certInfo.getSerialNumber(),
+                                            certInfo.getIssuerName()));
+                            } catch (CryptographyException e) {
                                 this.execMsgs.add(String.format(
-                                    "LDAP lookup (host=%s, port=%d, filter={%s}) entry certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
-                                    baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter),
-                                    certInfo.getSubjectName(), certInfo.getSerialNumber(), certInfo.getIssuerName()));
-                            } else {
-                                this.execMsgs.add(String.format("LDAP lookup (host=%s, port=%d, filter={%s}) entry does not contain an %s or an %s attribute.",
-                                    baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter),
-                                    ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT, ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY));
+                                    "LDAP lookup (host=%s, port=%d, filter={%s}) entry (dn={%s}) attribute (id=%s) value certificate processing failed: %s",
+                                    baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter), entry
+                                        .getDn().getName(), attr.getId(), e.getMessage()));
                                 this.execSuccess = false;
-                            }
-                        } catch (CryptographyException | LdapInvalidAttributeValueException e) {
-                            this.execMsgs.add(String.format("LDAP lookup (host=%s, port=%d, filter={%s}) entry certificate processing failed: %s",
-                                baseDnConnConfig.getLdapHost(), baseDnConnConfig.getLdapPort(), ToolLdapFilterUtils.writeFilter(lookupFilter), e.getMessage()));
-                            this.execSuccess = false;
 
-                            break;
+                                break;
+                            }
                         }
                     }
                 }

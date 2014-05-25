@@ -4,17 +4,14 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapBaseDnLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapEntryLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
-import gov.hhs.onc.dcdt.ldap.utils.ToolLdapAttributeUtils.LdapAttributeIdTransformer;
+import gov.hhs.onc.dcdt.ldap.utils.ToolLdapAttributeUtils;
 import gov.hhs.onc.dcdt.ldap.utils.ToolLdapFilterUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
@@ -78,12 +75,7 @@ public class LdapLookupServiceImpl extends AbstractToolBean implements LdapLooku
             conn = bind(connConfig, connect(connConfig));
 
             EntryCursor entryCursor =
-                conn.search(
-                    baseDn,
-                    filterExpr,
-                    scope,
-                    (!CollectionUtils.isEmpty(attrs) ? ToolCollectionUtils.toArray(CollectionUtils.collect(attrs, LdapAttributeIdTransformer.INSTANCE),
-                        String.class) : ArrayUtils.EMPTY_STRING_ARRAY));
+                conn.search(baseDn, filterExpr, scope, ToolLdapAttributeUtils.buildLookupAttributeIds(conn.getBinaryAttributeDetector(), attrs));
             List<Entry> entries = new ArrayList<>();
             Entry entry;
 
