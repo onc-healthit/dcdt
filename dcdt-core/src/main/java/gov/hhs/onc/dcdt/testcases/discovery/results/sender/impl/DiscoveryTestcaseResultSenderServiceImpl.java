@@ -23,13 +23,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Nullable;
-import javax.mail.internet.MimeMessage;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.ui.ModelMap;
 
 public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSenderService implements DiscoveryTestcaseResultSenderService {
     private final static DateFormat ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-    private final static String ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL = " mail sent at ";
+    private final static String ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL = " mail processed at ";
 
     private final static DateFormat ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HHmm_Z");
     private final static String ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL = "_mail_";
@@ -78,14 +77,13 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
         }
 
         ToolMimeMessageHelper msgHelper = discoveryTestcaseSubmission.getMessageHelper();
-        MimeMessage msg = msgHelper.getMimeMessage();
-        Date msgSentDate = msg.getSentDate();
+        Date msgProcDate = new Date();
 
         // noinspection ConstantConditions
         attachmentResources.add(new MimeAttachmentResource(msgHelper.write(),
-            (discoveryTestcaseName + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgSentDate)),
+            (discoveryTestcaseName + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgProcDate)),
             MailContentTypes.MSG_RFC822, MailContentTransferEncoding.QUOTED, (discoveryTestcaseName.toLowerCase() + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL
-                + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgSentDate) + ToolMimeMessageHelper.FILE_EXT_MAIL)));
+                + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgProcDate) + ToolMimeMessageHelper.FILE_EXT_MAIL)));
 
         this.send(modelMap, modelMap, to, attachmentResources);
     }
