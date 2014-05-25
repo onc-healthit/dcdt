@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration
     debug="false"
-    scan="true"
-    scanPeriod="5 seconds"
     xmlns="ch.qos.logback"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="ch.qos.logback /META-INF/logback/logback.xsd">
@@ -17,6 +15,11 @@
     <if condition='!isDefined("dcdt.log.dir") &amp;&amp; isDefined("jetty.logs")'>
         <then>
             <property name="dcdt.log.dir" value="${jetty.logs}" scope="context"/>
+        </then>
+    </if>
+    <if condition='!isDefined("dcdt.log.dir") &amp;&amp; isDefined("dcdt.web.webapp.dir")'>
+        <then>
+            <property name="dcdt.log.dir" value="${dcdt.web.webapp.dir}/WEB-INF/logs" scope="context"/>
         </then>
     </if>
     

@@ -23,6 +23,11 @@
     </context-param>
     
     <context-param>
+        <param-name>logbackExposeWebAppRoot</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    
+    <context-param>
         <param-name>org.apache.velocity.properties</param-name>
         <param-value>/WEB-INF/velocity/velocity-web.properties</param-value>
     </context-param>
@@ -68,13 +73,18 @@
         <url-pattern>/</url-pattern>
     </servlet-mapping>
     
+    <servlet>
+        <servlet-name>logbackStatusServlet</servlet-name>
+        <servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>logbackStatusServlet</servlet-name>
+        <url-pattern>/logback/status</url-pattern>
+    </servlet-mapping>
+    
     <!--====================================================================================================
     = LISTENERS
     =====================================================================================================-->
-    <listener>
-        <listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
-    </listener>
-    
     <listener>
         <listener-class>ch.qos.logback.ext.spring.web.LogbackConfigListener</listener-class>
     </listener>

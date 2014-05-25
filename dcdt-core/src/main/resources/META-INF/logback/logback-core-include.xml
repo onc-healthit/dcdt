@@ -7,6 +7,10 @@
     
     <statusListener class="ch.qos.logback.core.status.NopStatusListener"/>
     
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+    
     <conversionRule conversionWord="toolEx" converterClass="gov.hhs.onc.dcdt.logback.pattern.ToolThrowableProxyConverter"/>
     
     <if condition='isDefined("dcdt.log.console.term") &amp;&amp; org.apache.commons.lang3.BooleanUtils.toBoolean(p("dcdt.log.console.term"))'>
@@ -35,12 +39,12 @@
             <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${dcdt.log.dir}/${dcdt.log.file.name}${dcdt.log.file.ext}</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                    <fileNamePattern>${dcdt.log.dir}/${dcdt.log.file.name}.%d{yyyy-MM-dd}${dcdt.log.file.ext}</fileNamePattern>
+                    <cleanHistoryOnStart>true</cleanHistoryOnStart>
+                    <fileNamePattern>${dcdt.log.dir}/${dcdt.log.file.name}.%d{yyyy-MM-dd}.%i${dcdt.log.file.ext}</fileNamePattern>
                     <maxHistory>30</maxHistory>
                     <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                         <maxFileSize>10MB</maxFileSize>
                     </timeBasedFileNamingAndTriggeringPolicy>
-                    <cleanHistoryOnStart>true</cleanHistoryOnStart>
                 </rollingPolicy>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
                     <pattern>${dcdt.log.file.pattern}</pattern>
