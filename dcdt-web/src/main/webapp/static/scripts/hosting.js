@@ -38,13 +38,13 @@
                         testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseItem("Processing Message(s)", testcaseHostingResult["procMsgs"]));
                         testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseSteps("Processed Step(s)", testcaseHostingResult["procSteps"]));
                         testcaseHostingResultBodyElem.append($.fn.dcdt.testcases.buildTestcaseItem("Discovered Valid Certificate", (testcaseHostingCert
-                            ? $("<pre/>").enableClass("testcase-hosting-cert").text(testcaseHostingCert.replace(/ {4}/g, "  ")) : null)));
+                            ? $("<pre/>").enableClass("testcase-hosting-cert").text(testcaseHostingCert) : null)));
                         
                         var testcaseHostingCertsInvalidBodyElem = $("<span/>");
                         
                         if (testcaseHostingCertsInvalid.length > 0) {
                             testcaseHostingCertsInvalid.forEach(function (testcaseHostingCertInvalid) {
-                                testcaseHostingCertsInvalidBodyElem.append($("<pre/>").enableClass("testcase-hosting-cert").text(testcaseHostingCertInvalid.replace(/ {4}/g, "  ")))
+                                testcaseHostingCertsInvalidBodyElem.append($("<pre/>").enableClass("testcase-hosting-cert").text(testcaseHostingCertInvalid))
                             });
                         } else {
                             testcaseHostingCertsInvalidBodyElem = null;

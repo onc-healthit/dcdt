@@ -14,16 +14,27 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.jcajce.JcaJceHelper;
 import org.bouncycastle.jcajce.ProviderJcaJceHelper;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 public abstract class CryptographyUtils {
+    public static class ToolProviderJcaJceHelper extends ProviderJcaJceHelper {
+        public ToolProviderJcaJceHelper(Provider prov) {
+            super(prov);
+        }
+
+        public Provider getProvider() {
+            return this.provider;
+        }
+    }
+
     public final static Provider PROVIDER = new BouncyCastleProvider();
-
     public final static String PROVIDER_NAME = PROVIDER.getName();
+    public final static ToolProviderJcaJceHelper PROVIDER_HELPER = new ToolProviderJcaJceHelper(PROVIDER);
 
-    public final static JcaJceHelper PROVIDER_HELPER = new ProviderJcaJceHelper(PROVIDER);
+    public final static Provider JCE_PROVIDER = Security.getProvider("SUN");
+    public final static String JCE_PROVIDER_NAME = JCE_PROVIDER.getName();
+    public final static ToolProviderJcaJceHelper JCE_PROVIDER_HELPER = new ToolProviderJcaJceHelper(JCE_PROVIDER);
 
     static {
         initializeProvider();

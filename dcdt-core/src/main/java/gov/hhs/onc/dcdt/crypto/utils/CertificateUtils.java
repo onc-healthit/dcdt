@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.PemType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
+import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils.ToolProviderJcaJceHelper;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -15,7 +16,6 @@ import java.io.Reader;
 import java.io.Writer;
 import java.math.BigInteger;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -36,30 +36,54 @@ public abstract class CertificateUtils {
         return BigInteger.valueOf(SecureRandomUtils.getRandom(SERIAL_NUM_GEN_RAND_SEED_SIZE_DEFAULT).nextLong()).abs();
     }
 
+    public static String certificateToString(X509Certificate cert) throws CryptographyException {
+        try {
+            return readCertificate(CryptographyUtils.JCE_PROVIDER_HELPER, cert.getEncoded(), CertificateType.X509, DataEncoding.DER).toString();
+        } catch (CertificateEncodingException e) {
+            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format("Unable to write certificate instance (class=%s) to string.",
+                ToolClassUtils.getClass(cert)), e);
+        }
+    }
+
     public static X509Certificate readCertificate(InputStream inStream, CertificateType certType, DataEncoding dataEnc) throws CryptographyException {
-        return readCertificate(new InputStreamReader(inStream), certType, dataEnc);
+        return readCertificate(CryptographyUtils.PROVIDER_HELPER, inStream, certType, dataEnc);
+    }
+
+    public static X509Certificate readCertificate(ToolProviderJcaJceHelper provHelper, InputStream inStream, CertificateType certType, DataEncoding dataEnc)
+        throws CryptographyException {
+        return readCertificate(provHelper, new InputStreamReader(inStream), certType, dataEnc);
     }
 
     public static X509Certificate readCertificate(Reader reader, CertificateType certType, DataEncoding dataEnc) throws CryptographyException {
+        return readCertificate(CryptographyUtils.PROVIDER_HELPER, reader, certType, dataEnc);
+    }
+
+    public static X509Certificate readCertificate(ToolProviderJcaJceHelper provHelper, Reader reader, CertificateType certType, DataEncoding dataEnc)
+        throws CryptographyException {
         try {
-            return readCertificate(IOUtils.toByteArray(reader), certType, dataEnc);
+            return readCertificate(provHelper, IOUtils.toByteArray(reader), certType, dataEnc);
         } catch (IOException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format(
-                "Unable to read certificate instance of type (id=%s, providerName=%s) from reader (class=%s).", certType.getId(),
-                CryptographyUtils.PROVIDER_NAME, ToolClassUtils.getName(reader)), e);
+                "Unable to read certificate instance of type (id=%s, providerName=%s) from reader (class=%s).", certType.getId(), provHelper.getProvider()
+                    .getName(), ToolClassUtils.getName(reader)), e);
         }
     }
 
     public static X509Certificate readCertificate(byte[] data, CertificateType certType, DataEncoding dataEnc) throws CryptographyException {
+        return readCertificate(CryptographyUtils.PROVIDER_HELPER, data, certType, dataEnc);
+    }
+
+    public static X509Certificate readCertificate(ToolProviderJcaJceHelper provHelper, byte[] data, CertificateType certType, DataEncoding dataEnc)
+        throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
                 data = PemUtils.writePemContent(CryptographyUtils.findTypeId(PemType.class, certType.getType()), data);
             }
 
-            return (X509Certificate) getCertificateFactory(certType).generateCertificate(new ByteArrayInputStream(data));
+            return ((X509Certificate) getCertificateFactory(provHelper, certType).generateCertificate(new ByteArrayInputStream(data)));
         } catch (CertificateException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format(
-                "Unable to read certificate instance of type (id=%s, providerName=%s) from data.", certType.getId(), CryptographyUtils.PROVIDER_NAME), e);
+                "Unable to read certificate instance of type (id=%s, providerName=%s) from data.", certType.getId(), provHelper.getProvider().getName()), e);
         }
     }
 
@@ -90,12 +114,16 @@ public abstract class CertificateUtils {
     }
 
     public static CertificateFactory getCertificateFactory(CertificateType certType) throws CryptographyException {
+        return getCertificateFactory(CryptographyUtils.PROVIDER_HELPER, certType);
+    }
+
+    public static CertificateFactory getCertificateFactory(ToolProviderJcaJceHelper provHelper, CertificateType certType) throws CryptographyException {
         try {
-            return CryptographyUtils.PROVIDER_HELPER.createCertificateFactory(certType.getId());
-        } catch (CertificateException | NoSuchAlgorithmException | NoSuchProviderException e) {
-            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(
-                String.format("Unable to get certificate factory instance for certificate type (id=%s, providerName=%s).", certType.getId(),
-                    CryptographyUtils.PROVIDER_NAME), e);
+            return provHelper.createCertificateFactory(certType.getId());
+        } catch (CertificateException | NoSuchAlgorithmException e) {
+            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format(
+                "Unable to get certificate factory instance for certificate type (id=%s, providerName=%s).", certType.getId(), provHelper.getProvider()
+                    .getName()), e);
         }
     }
 }
