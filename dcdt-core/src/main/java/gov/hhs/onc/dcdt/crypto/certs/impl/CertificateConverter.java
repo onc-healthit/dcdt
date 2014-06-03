@@ -28,7 +28,8 @@ public class CertificateConverter extends AbstractToolConverter {
         if (sourceType.isAssignableTo(TYPE_DESC_CERT)) {
             X509Certificate sourceCert = ((X509Certificate) source);
 
-            return (targetType.isAssignableTo(TYPE_DESC_BYTE_ARR) ? CertificateUtils.writeCertificate(sourceCert, DataEncoding.PEM) : sourceCert.toString());
+            return (targetType.isAssignableTo(TYPE_DESC_BYTE_ARR) ? CertificateUtils.writeCertificate(sourceCert, DataEncoding.PEM) : CertificateUtils
+                .certificateToString(sourceCert));
         } else {
             return CertificateUtils.readCertificate((byte[]) source, CryptographyUtils.findTypeId(CertificateType.class, targetType.getObjectType()),
                 DataEncoding.PEM);

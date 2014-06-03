@@ -20,7 +20,6 @@ import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
 import java.security.KeyRep;
 import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
 import org.apache.commons.io.IOUtils;
@@ -96,7 +95,7 @@ public abstract class KeyUtils {
     public static KeyPairGenerator getKeyPairGenerator(KeyAlgorithm keyAlg) throws CryptographyException {
         try {
             return CryptographyUtils.PROVIDER_HELPER.createKeyPairGenerator(keyAlg.getId());
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new KeyException(String.format("Unable to get key pair generator for key algorithm (id=%s, providerName=%s).", keyAlg.getId(),
                 CryptographyUtils.PROVIDER_NAME), e);
         }
@@ -105,7 +104,7 @@ public abstract class KeyUtils {
     public static KeyFactory getKeyFactory(KeyAlgorithm keyAlg) throws CryptographyException {
         try {
             return CryptographyUtils.PROVIDER_HELPER.createKeyFactory(keyAlg.getId());
-        } catch (NoSuchAlgorithmException | NoSuchProviderException e) {
+        } catch (NoSuchAlgorithmException e) {
             throw new KeyException(String.format("Unable to get key factory for key algorithm (id=%s, providerName=%s).", keyAlg.getId(),
                 CryptographyUtils.PROVIDER_NAME), e);
         }
