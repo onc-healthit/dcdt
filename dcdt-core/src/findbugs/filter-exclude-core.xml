@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter>
+    <!--
+    * Reference: http://findbugs.sourceforge.net/manual/filter.html
+    * Uses bug patterns/codes from: http://findbugs.sourceforge.net/bugDescriptions.html
+    -->
+    
+    <Match>
+        <Bug code="BC,DP,DLS,Dm,EC,EI,EI2,Eq,FS,IS,MF,NP,PZLA,REC,Se,SF,SIC,SnVI,STCAL,UPM,UrF,UuF,UwF,WMI"/>
+    </Match>
+</FindBugsFilter>

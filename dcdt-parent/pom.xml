@@ -1703,12 +1703,13 @@
                         <artifactId>maven-pmd-plugin</artifactId>
                         <version>3.1</version>
                         <configuration>
-                            <includeXmlInSite>true</includeXmlInSite>
                             <includeTests>true</includeTests>
-                            <printFailingErrors>true</printFailingErrors>
+                            <includeXmlInSite>true</includeXmlInSite>
+                            <minimumTokens>200</minimumTokens>
                             <skipEmptyReport>false</skipEmptyReport>
+                            <skipPmdError>false</skipPmdError>
+                            <targetJdk>${project.java.version}</targetJdk>
                             <typeResolution>true</typeResolution>
-                            <verbose>true</verbose>
                         </configuration>
                         <reportSets>
                             <reportSet>
@@ -1718,6 +1719,9 @@
                                     <report>cpd</report>
                                 </reports>
                                 <configuration>
+                                    <rulesets>
+                                        <ruleset>${project.basedir.all}/dcdt-core/src/pmd/ruleset-java-core.xml</ruleset>
+                                    </rulesets>
                                     <skip>${project.build.sourceDirectoryNotExists}</skip>
                                 </configuration>
                             </reportSet>
@@ -1726,11 +1730,14 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>findbugs-maven-plugin</artifactId>
-                        <version>2.5.3</version>
+                        <version>2.5.4</version>
                         <configuration>
                             <effort>Max</effort>
+                            <excludeFilterFile>${project.basedir.all}/dcdt-core/src/findbugs/filter-exclude-core.xml</excludeFilterFile>
                             <includeTests>true</includeTests>
-                            <jvmArgs>-XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4</jvmArgs>
+                            <jvmArgs>
+                                -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4
+                            </jvmArgs>
                             <threshold>Low</threshold>
                             <xmlOutput>true</xmlOutput>
                         </configuration>
