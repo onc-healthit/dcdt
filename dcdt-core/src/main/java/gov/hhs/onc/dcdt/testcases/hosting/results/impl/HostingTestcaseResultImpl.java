@@ -14,4 +14,10 @@ public class HostingTestcaseResultImpl extends AbstractToolTestcaseResult<Hostin
     public HostingTestcaseResultImpl(HostingTestcaseSubmission submission, @Nullable List<CertificateDiscoveryStep> procSteps) {
         super(submission, procSteps);
     }
+
+    @Override
+    public boolean isSuccess() {
+        // noinspection ConstantConditions
+        return (this.submission.hasTestcase() && (this.submission.getTestcase().isNegative() != (this.isProcessingSuccess() && this.isDiscoverySuccess())));
+    }
 }
