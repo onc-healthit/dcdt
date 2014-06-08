@@ -57,6 +57,11 @@ public class DiscoveryTestcaseProcessorImpl extends
             if (testcase == null) {
                 throw new ToolSmimeException(String.format("Unable to find a matching Discovery testcase for mail MIME message (id=%s, from=%s, to=%s).",
                     msgId, msgFrom, msgTo));
+            } else if (testcase.isNegative()) {
+                procMsgs.add(String.format(
+                    "Matching Discovery testcase (name=%s) is negative; mail MIME message (id=%s, from=%s, to=%s) should not have been sent.",
+                    testcase.getName(), msgId, msgFrom, msgTo));
+                procSuccess = false;
             }
 
             MimeBodyPart decryptedBodyPart = this.decrypt(msgHelper, msgId, msgFrom, msgTo, testcase, result);
