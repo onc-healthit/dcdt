@@ -57,6 +57,9 @@
         <project.build.cloverOutputDirectory>${project.build.cloverDirectory}/classes-instrumented</project.build.cloverOutputDirectory>
         <project.build.cloverPomPropertiesFile>${project.build.directory}/maven/pom-clover.properties</project.build.cloverPomPropertiesFile>
         <project.build.cloverSourceDirectory>${project.build.cloverDirectory}/src-instrumented</project.build.cloverSourceDirectory>
+        <!-- Project build FindBugs properties -->
+        <project.build.findbugsResultsFile>${project.build.directory}/findbugs.xml</project.build.findbugsResultsFile>
+        <project.build.findbugsResultsPropertiesFile>${project.build.directory}/findbugs-properties.xml</project.build.findbugsResultsPropertiesFile>
         <!-- Project build POM properties -->
         <project.build.pomPropertiesFile>${project.build.directory}/maven/pom.properties</project.build.pomPropertiesFile>
         <!-- Project build POM source properties -->
@@ -1662,6 +1665,42 @@
                                         <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-test-compile"
                                             inheritRefs="true" useNativeBasedir="true"/>
                                     </target>
+                                </configuration>
+                            </execution>
+                            <execution>
+                                <id>findbugs-check</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>run</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <target>
+                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-findbugs.xml" target="findbugs-check"
+                                            inheritRefs="true" useNativeBasedir="true"/>
+                                    </target>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-pmd-plugin</artifactId>
+                        <version>3.1</version>
+                        <inherited>true</inherited>
+                        <executions>
+                            <execution>
+                                <id>pmd-check</id>
+                                <goals>
+                                    <goal>check</goal>
+                                    <goal>cpd-check</goal>
+                                </goals>
+                                <inherited>true</inherited>
+                                <configuration>
+                                    <printFailingErrors>true</printFailingErrors>
+                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
+                                    <targetDirectory>${project.reporting.outputDirectory}</targetDirectory>
+                                    <verbose>true</verbose>
                                 </configuration>
                             </execution>
                         </executions>
