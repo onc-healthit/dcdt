@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant">
+    
+    <macrodef name="process-results" description="Processes a FindBugs analysis results file.">
+        <attribute name="resultsFile"/>
+        <attribute name="resultsPropsFile"/>
+        <attribute name="resultsStyleFile"/>
+        <attribute name="prefix" default="project.findbugs"/>
+        <sequential>
+            <xslt in="@{resultsFile}" out="@{resultsPropsFile}" style="@{resultsStyleFile}"/>
+            <xmlproperty file="@{resultsPropsFile}" prefix="@{prefix}" keepRoot="false" collapseAttributes="true" delimiter="|"/>
+        </sequential>
+    </macrodef>
+</antlib>
