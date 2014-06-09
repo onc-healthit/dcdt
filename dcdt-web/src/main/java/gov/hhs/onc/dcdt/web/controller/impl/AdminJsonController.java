@@ -5,6 +5,9 @@ import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigJsonDto;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigRegistry;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigService;
+import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping;
+import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMappingJsonDto;
+import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMappingService;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.web.controller.JsonController;
 import gov.hhs.onc.dcdt.web.controller.JsonRequest;
@@ -14,6 +17,8 @@ import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.impl.ResponseJsonWrapperBuilder;
 import gov.hhs.onc.dcdt.web.service.ToolServiceHub;
 import gov.hhs.onc.dcdt.web.service.ToolServiceHubJsonDto;
+import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -31,6 +36,13 @@ public class AdminJsonController extends AbstractToolController {
 
     @Autowired
     private ToolServiceHub serviceHub;
+
+    @JsonRequest
+    @RequestMapping(value = { "/admin/mail/mappings" }, method = { RequestMethod.GET })
+    public ResponseJsonWrapper<DiscoveryTestcaseMailMapping, DiscoveryTestcaseMailMappingJsonDto> getMailMappings() throws Exception {
+        return new ResponseJsonWrapperBuilder<DiscoveryTestcaseMailMapping, DiscoveryTestcaseMailMappingJsonDto>().addItems(this.createMailMappingsJsonDtos())
+            .build();
+    }
 
     @JsonRequest
     @RequestMapping(value = { "/admin/service/hub" }, method = { RequestMethod.GET })
@@ -77,6 +89,23 @@ public class AdminJsonController extends AbstractToolController {
     public ResponseJsonWrapper<InstanceConfig, InstanceConfigJsonDto> getInstanceConfig() throws Exception {
         return new ResponseJsonWrapperBuilder<InstanceConfig, InstanceConfigJsonDto>().addItems(this.createInstanceConfigJsonDto(this.getInstanceConfigBean()))
             .build();
+    }
+
+    private List<DiscoveryTestcaseMailMappingJsonDto> createMailMappingsJsonDtos() throws Exception {
+        // noinspection ConstantConditions
+        List<DiscoveryTestcaseMailMapping> mailMappings =
+            ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseMailMappingService.class).getBeans();
+        List<DiscoveryTestcaseMailMappingJsonDto> mailMappingsJsonDtos = new ArrayList<>(mailMappings.size());
+        DiscoveryTestcaseMailMappingJsonDto mailMappingsJsonDto;
+
+        for (DiscoveryTestcaseMailMapping mailMapping : mailMappings) {
+            // noinspection ConstantConditions
+            (mailMappingsJsonDto = ToolBeanFactoryUtils.createBeanOfType(this.appContext, DiscoveryTestcaseMailMappingJsonDto.class)).fromBean(
+                this.convService, mailMapping);
+            mailMappingsJsonDtos.add(mailMappingsJsonDto);
+        }
+
+        return mailMappingsJsonDtos;
     }
 
     private ToolServiceHubJsonDto createServiceHubJsonDto() throws Exception {

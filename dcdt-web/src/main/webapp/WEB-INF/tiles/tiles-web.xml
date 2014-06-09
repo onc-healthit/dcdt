@@ -37,11 +37,6 @@
         <put-attribute name="content" value="/WEB-INF/views/content/content-version.jsp" type="template"/>
     </definition>
 
-    <definition name="expired" extends="layout">
-        <put-attribute name="name" value="expired" cascade="true" type="string"/>
-        <put-attribute name="content" value="/WEB-INF/views/content/content-expired.jsp" type="template"/>
-    </definition>
-
     <definition name="layout-testcases" extends="layout">
         <put-attribute name="head-common" value="/WEB-INF/views/include/head-testcases.jsp" type="template"/>
     </definition>

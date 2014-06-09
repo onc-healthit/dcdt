@@ -17,31 +17,54 @@
         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
-    <beans:bean id="anonAuthProvider" class="org.springframework.security.authentication.AnonymousAuthenticationProvider"
+    <!--====================================================================================================
+    = AUTHENTICATION PROVIDERS
+    =====================================================================================================-->
+    <beans:bean id="authProv" class="org.springframework.security.authentication.AuthenticationProvider" abstract="true"/>
+    
+    <beans:bean id="authProvAnon" class="org.springframework.security.authentication.AnonymousAuthenticationProvider" parent="authProv"
         c:key="AUTH_ANON"/>
-
-    <sec:authentication-manager id="toolAuthManager">
+    
+    <!--====================================================================================================
+    = AUTHENTICATION MANAGER
+    =====================================================================================================-->
+    <sec:authentication-manager id="authManager">
         <sec:authentication-provider>
-            <sec:user-service id="toolUserService">
+            <sec:user-service id="userService">
                 <sec:user name="${dcdt.web.user.admin.name}" authorities="ROLE_ADMIN" password="${dcdt.web.user.admin.secret}"/>
             </sec:user-service>
         </sec:authentication-provider>
-        <sec:authentication-provider ref="anonAuthProvider"/>
+        <sec:authentication-provider ref="authProvAnon"/>
     </sec:authentication-manager>
     
-    <sec:http authentication-manager-ref="toolAuthManager" use-expressions="true">
+    <!--====================================================================================================
+    = AUTHENTICATION SUCCESS HANDLERS
+    =====================================================================================================-->
+    <beans:bean id="authHandlerSuccess" class="org.springframework.security.web.authentication.AuthenticationSuccessHandler" abstract="true"/>
+    
+    <beans:bean id="authHandlerSuccessSavedReq" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"
+        parent="authHandlerSuccess"/>
+    
+    <!--====================================================================================================
+    = HTTP SECURITY
+    =====================================================================================================-->
+    <sec:http authentication-manager-ref="authManager" use-expressions="true">
         <sec:intercept-url pattern="/admin/login**" access="permitAll"/>
         <sec:intercept-url pattern="/admin/logout**" access="permitAll"/>
         <sec:intercept-url pattern="/admin**" access="hasAuthority('ROLE_ADMIN')"/>
+        <sec:intercept-url pattern="/logback**" access="hasAuthority('ROLE_ADMIN')"/>
         <sec:intercept-url pattern="/**" access="permitAll"/>
-        <sec:form-login authentication-failure-url="/admin/login?error" default-target-url="/admin" login-page="/admin/login"
-            login-processing-url="/admin/login/process" password-parameter="pass" username-parameter="user"/>
+        <sec:form-login authentication-failure-url="/admin/login?error" authentication-success-handler-ref="authHandlerSuccessSavedReq"
+            login-page="/admin/login" login-processing-url="/admin/login/process" password-parameter="pass" username-parameter="user"/>
         <sec:logout logout-url="/admin/logout" logout-success-url="/"/>
         <sec:remember-me key="AUTH_REMEMBERED"/>
         <sec:session-management>
-            <sec:concurrency-control max-sessions="1" expired-url="/expired"/>
+            <sec:concurrency-control expired-url="/admin/login?expired" max-sessions="1"/>
         </sec:session-management>
     </sec:http>
     
-    <sec:global-method-security authentication-manager-ref="toolAuthManager" pre-post-annotations="enabled" secured-annotations="enabled"/>
+    <!--====================================================================================================
+    = GLOBAL METHOD SECURITY
+    =====================================================================================================-->
+    <sec:global-method-security authentication-manager-ref="authManager" pre-post-annotations="enabled" secured-annotations="enabled"/>
 </beans:beans>

@@ -261,3 +261,52 @@
     </div>
 </form>
 <iframe id="admin-instance-config-target" class="hide" name="admin-instance-config-target" src="about:blank"></iframe>
+<h2>Mail Mappings</h2>
+<form name="admin-mail-mappings" action="about:blank" method="post" target="admin-mail-mappings-target">
+    <div class="input-group-sm">
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Invalid mail mappings</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+            <div class="has-success">
+                <div class="input-group-addon input-group-addon-msgs input-group-addon-msgs-global">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>Mail mappings modified</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group form-group-buttons">
+            <span class="btn-group btn-group-sm">
+                <tiles:insertDefinition name="component-glyph-button">
+                    <tiles:putAttribute name="attrs">id="admin-mail-mappings-view"</tiles:putAttribute>
+                    <tiles:putAttribute name="glyph-classes" value="glyphicon-envelope glyphicon-type-info"/>
+                    <tiles:putAttribute name="content" value="View Mail Mappings"/>
+                </tiles:insertDefinition>
+            </span>
+        </div>
+    </div>
+    <div id="dialog-admin-mail-mappings-view" title="View Mail Mappings">
+        <div class="panel panel-default">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Direct Address</th>
+                        <th>Results Address</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</form>
+<iframe id="admin-mail-mappings-target" class="hide" name="admin-mail-mappings-target" src="about:blank"></iframe>
