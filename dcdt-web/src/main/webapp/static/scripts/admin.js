@@ -3,6 +3,42 @@
         "admin": $.extend(function () {
             return this;
         }, {
+            "getMailMappings": function () {
+                return $.dcdt.beans.getBean({
+                    "queryBeanSuccess": function (data, status, jqXhr) {
+                        mailMappings = data["items"];
+                        
+                        var mailMappingsPanel = $("div.panel", mailMappingsDialogView), mailMappingsTableBody = $("table.table tbody", mailMappingsPanel);
+                        
+                        mailMappingsTableBody.empty();
+                        
+                        if (mailMappings) {
+                            $.each(mailMappings, function (mailMappingIndex, mailMapping) {
+                                var mailMappingTableRow = $("<tr/>");
+                                mailMappingTableRow.append($("<td/>").text((mailMappingIndex + 1)));
+                                mailMappingTableRow.append($("<td/>").text(mailMapping["directAddr"]));
+                                mailMappingTableRow.append($("<td/>").text(mailMapping["resultsAddr"]));
+                                mailMappingsTableBody.append(mailMappingTableRow);
+                            });
+                        }
+                        
+                        mailMappingsDialogView.dialog("open");
+                    },
+                    "queryBeanErrors": function (data, status, jqXhr) {
+                        $.dcdt.beans.addQueryErrors(mailMappingsForm, data);
+                    },
+                    "postQueryBean": function (jqXhr, status) {
+                        mailMappingsForm.dcdt.form.formReady();
+                    },
+                    "preQueryBean": function (jqXhr, settings) {
+                        mailMappings = null;
+                        
+                        $.dcdt.beans.clearBeanMessages(mailMappingsForm);
+                        mailMappingsForm.dcdt.form.formWait(mailMappingsButtonView);
+                    },
+                    "url": URL_ADMIN_MAIL_MAPPINGS_GET
+                });
+            },
             "getServiceHub": function (serviceStatusTypeExpected) {
                 return $.dcdt.beans.getBean({
                     "queryBeanSuccess": function (data, status, jqXhr) {
@@ -149,10 +185,16 @@
         })
     });
     
+    var mailMappingsForm, mailMappingsButtons, mailMappingsButtonView, mailMappingsDialogView, mailMappings;
     var serviceHubForm, serviceInputDnsStatus, serviceInputLdapStatus, serviceInputMailStatus, serviceHub;
     var instanceConfigForm, instanceConfigInputDomainName, instanceConfigInputIpAddr, instanceConfigButtons, instanceConfigButtonRm, instanceConfigButtonSet, instanceConfigButtonCreds, instanceConfigDialogRm, instanceConfigDialogSet, instanceConfig;
     
     $(document).ready(function () {
+        mailMappingsForm = $("form[name=\"admin-mail-mappings\"]");
+        mailMappingsButtons = mailMappingsForm.dcdt.form.formButtons();
+        mailMappingsButtonView = mailMappingsForm.dcdt.form.formButtons("#admin-mail-mappings-view");
+        mailMappingsDialogView = $("div#dialog-admin-mail-mappings-view", mailMappingsForm);
+        
         serviceHubForm = $("form[name=\"admin-service-hub\"]");
         serviceInputDnsStatus = serviceHubForm.dcdt.form.formInputs("serviceDnsStatus");
         serviceInputLdapStatus = serviceHubForm.dcdt.form.formInputs("serviceLdapStatus");
@@ -167,6 +209,32 @@
         instanceConfigButtonCreds = instanceConfigForm.dcdt.form.formButtons("#admin-instance-config-creds");
         instanceConfigDialogRm = $("div#dialog-admin-instance-config-rm", instanceConfigForm);
         instanceConfigDialogSet = $("div#dialog-admin-instance-config-set", instanceConfigForm);
+        
+        mailMappingsDialogView.dialog({
+            "autoOpen": false,
+            "buttons": {
+                "Close": function () {
+                    mailMappingsDialogView.dialog("close");
+                }
+            },
+            "height": 400,
+            "modal": true,
+            "width": 600
+        });
+        
+        mailMappingsForm.submit(function (event, mailMappingsButton) {
+            if (mailMappingsButton.is(mailMappingsButtonView)) {
+                $.dcdt.admin.getMailMappings();
+            }
+        });
+        
+        mailMappingsButtons.click(function (event) {
+            var mailMappingsButton = $(event.target);
+            
+            if (!mailMappingsButton.attr("disabled")) {
+                mailMappingsForm.trigger("submit", [ mailMappingsButton ]);
+            }
+        });
         
         instanceConfigDialogRm.dialog({
             "autoOpen": false,

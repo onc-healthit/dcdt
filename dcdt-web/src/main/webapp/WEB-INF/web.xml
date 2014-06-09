@@ -122,6 +122,12 @@
         <dispatcher>FORWARD</dispatcher>
         <dispatcher>REQUEST</dispatcher>
     </filter-mapping>
+    <filter-mapping>
+        <filter-name>filterUrlRewrite</filter-name>
+        <servlet-name>logbackStatusServlet</servlet-name>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
     
     <filter>
         <filter-name>springSecurityFilterChain</filter-name>
@@ -130,5 +136,9 @@
     <filter-mapping>
         <filter-name>springSecurityFilterChain</filter-name>
         <servlet-name>dispatcherServlet</servlet-name>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <servlet-name>logbackStatusServlet</servlet-name>
     </filter-mapping>
 </web-app>

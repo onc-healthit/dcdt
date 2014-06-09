@@ -23,6 +23,7 @@
 <spring:url var="urlAdminLogin" value="/admin/login" scope="request"/>
 <spring:url var="urlAdminLoginProcess" value="/admin/login/process" scope="request"/>
 <spring:url var="urlAdminLogout" value="/admin/logout" scope="request"/>
+<spring:url var="urlAdminMailMappingsGet" value="/admin/mail/mappings" scope="request"/>
 <spring:url var="urlAdminServiceHubGet" value="/admin/service/hub" scope="request"/>
 <spring:url var="urlError" value="/error" scope="request"/>
 <spring:url var="urlVersion" value="/version" scope="request"/>
