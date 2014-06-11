@@ -23,6 +23,22 @@
         p:maxPoolSize="5"/>
     
     <!--====================================================================================================
+    = CACHE SERVICE
+    =====================================================================================================-->
+    <beans:bean id="cacheService" class="gov.hhs.onc.dcdt.service.ldap.impl.ToolCacheService">
+        <beans:constructor-arg name="cacheManager">
+            <!--suppress SpringModelInspection -->
+            <beans:bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+                p:configLocation="classpath:ehcache/ehcache-service-ldap.xml"/>
+        </beans:constructor-arg>
+        <beans:constructor-arg name="disabledCacheNames">
+            <util:set>
+                <beans:value>dnCache</beans:value>
+            </util:set>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = SCHEMA MANAGER
     =====================================================================================================-->
     <beans:bean id="schemaManager" class="org.apache.directory.api.ldap.model.schema.SchemaManager" abstract="true"/>
@@ -155,6 +171,7 @@
     = DIRECTORY SERVICE CONFIG
     =====================================================================================================-->
     <beans:bean id="dirServiceBean" class="gov.hhs.onc.dcdt.service.ldap.config.impl.ToolDirectoryServiceBean" parent="adsBean" abstract="true"
+        p:cacheService-ref="cacheService"
         p:dsAccessControlEnabled="false"
         p:dsAllowAnonymousAccess="true">
         <beans:property name="interceptors">

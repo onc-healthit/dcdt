@@ -2,24 +2,36 @@ package gov.hhs.onc.dcdt.net.sockets.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLifecycleBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.concurrent.ToolListenableFutureCallback;
+import gov.hhs.onc.dcdt.concurrent.ToolListenableFutureTask;
+import gov.hhs.onc.dcdt.concurrent.impl.AbstractCancelRejectedFutureHandler;
+import gov.hhs.onc.dcdt.concurrent.impl.AbstractToolListenableFutureCallback;
+import gov.hhs.onc.dcdt.concurrent.impl.AbstractToolListenableFutureTask;
 import gov.hhs.onc.dcdt.net.InetProtocol;
 import gov.hhs.onc.dcdt.net.sockets.ClientSocketAdapter;
 import gov.hhs.onc.dcdt.net.sockets.SocketAdapter;
 import gov.hhs.onc.dcdt.net.sockets.SocketListener;
 import gov.hhs.onc.dcdt.net.sockets.SocketRequest;
 import gov.hhs.onc.dcdt.net.sockets.SocketRequestProcessor;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.Closeable;
 import java.io.IOException;
 import java.net.SocketAddress;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.ThreadPoolExecutor;
 import javax.annotation.Nullable;
 import org.apache.mina.util.ConcurrentHashSet;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.concurrent.ListenableFutureTask;
 
 public abstract class AbstractSocketListener<T extends Closeable, U extends SocketAdapter<T>, V extends Closeable, W extends ClientSocketAdapter<V>, X extends SocketRequest, Y extends SocketRequestProcessor<X>>
@@ -28,36 +40,77 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
         @Nullable
         @Override
         public Void call() throws Exception {
+            AbstractSocketListener.this.reqTaskExec.setRejectedExecutionHandler(new CancelSocketRequestDaemonHandler<>(SocketRequestDaemonTask.class));
+
             while ((AbstractSocketListener.this.listenSocketAdapter != null) && !AbstractSocketListener.this.listenSocketAdapter.isClosed()) {
                 X req = AbstractSocketListener.this.createRequest(AbstractSocketListener.this.listenSocketAdapter.getProtocol());
 
-                final W reqSocketAdapter = AbstractSocketListener.this.readRequest(AbstractSocketListener.this.listenSocketAdapter, req);
+                W reqSocketAdapter = AbstractSocketListener.this.readRequest(AbstractSocketListener.this.listenSocketAdapter, req);
                 AbstractSocketListener.this.reqSocketAdapters.add(reqSocketAdapter);
 
-                final ListenableFutureTask<Void> reqDaemonTask = AbstractSocketListener.this.createRequestDaemonTask(reqSocketAdapter, req);
+                ToolListenableFutureTask<Void> reqDaemonTask = AbstractSocketListener.this.createRequestDaemonTask(reqSocketAdapter, req);
+                reqDaemonTask.getCallbacks().addAll(AbstractSocketListener.this.createRequestDaemonCallbacks(reqSocketAdapter, reqDaemonTask));
                 AbstractSocketListener.this.reqDaemonTasks.add(reqDaemonTask);
 
-                reqDaemonTask.addCallback(new ListenableFutureCallback<Void>() {
-                    @Override
-                    public void onSuccess(@Nullable Void result) {
-                        this.processResponse();
-                    }
-
-                    @Override
-                    public void onFailure(Throwable th) {
-                        this.processResponse();
-                    }
-
-                    private void processResponse() {
-                        AbstractSocketListener.this.reqDaemonTasks.remove(reqDaemonTask);
-                        AbstractSocketListener.this.reqSocketAdapters.remove(reqSocketAdapter);
-                    }
-                });
-
-                AbstractSocketListener.this.taskExec.execute(reqDaemonTask);
+                AbstractSocketListener.this.reqTaskExec.execute(reqDaemonTask);
             }
 
             return null;
+        }
+    }
+
+    protected class CancelSocketRequestDaemonHandler<Z extends SocketRequestDaemonTask> extends AbstractCancelRejectedFutureHandler<Void, Z> {
+        public CancelSocketRequestDaemonHandler(Class<Z> taskClass) {
+            super(Void.class, taskClass);
+        }
+
+        @Override
+        protected void rejectedExecutionInternal(Z task, ThreadPoolExecutor executor) {
+            super.rejectedExecutionInternal(task, executor);
+
+            W reqSocketAdapter = task.getRequestDaemon().getRequestSocketAdapter();
+
+            AbstractSocketListener.LOGGER.warn(String.format(
+                "Cancelled socket (class=%s, adapterClass=%s, protocol=%s, localAddr={%s}, remoteAddr={%s}) for request daemon task (class=%s).",
+                ToolClassUtils.getName(reqSocketAdapter.getSocket()), ToolClassUtils.getName(reqSocketAdapter), reqSocketAdapter.getProtocol().name(),
+                reqSocketAdapter.getLocalSocketAddress(), reqSocketAdapter.getRemoteSocketAddress(), ToolClassUtils.getName(task)));
+        }
+    }
+
+    @Order(Ordered.HIGHEST_PRECEDENCE)
+    protected class SocketRequestDaemonCleanupCallback extends AbstractSocketRequestDaemonCallback {
+        public SocketRequestDaemonCleanupCallback(W reqSocketAdapter, ToolListenableFutureTask<Void> reqDaemonTask) {
+            super(reqSocketAdapter, reqDaemonTask);
+        }
+
+        @Override
+        protected void onPostDone(boolean status, @Nullable Void result, @Nullable Throwable th) {
+            AbstractSocketListener.this.reqDaemonTasks.remove(this.task);
+            AbstractSocketListener.this.reqSocketAdapters.remove(this.reqSocketAdapter);
+        }
+    }
+
+    protected abstract class AbstractSocketRequestDaemonCallback extends AbstractToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>> {
+        protected W reqSocketAdapter;
+
+        protected AbstractSocketRequestDaemonCallback(W reqSocketAdapter, ToolListenableFutureTask<Void> reqDaemonTask) {
+            super(reqDaemonTask);
+
+            this.reqSocketAdapter = reqSocketAdapter;
+        }
+    }
+
+    protected class SocketRequestDaemonTask extends AbstractToolListenableFutureTask<Void> {
+        private SocketRequestDaemon reqDaemon;
+
+        public SocketRequestDaemonTask(SocketRequestDaemon reqDaemon) {
+            super(reqDaemon);
+
+            this.reqDaemon = reqDaemon;
+        }
+
+        public SocketRequestDaemon getRequestDaemon() {
+            return this.reqDaemon;
         }
     }
 
@@ -78,6 +131,14 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
 
             return null;
         }
+
+        public X getRequest() {
+            return this.req;
+        }
+
+        public W getRequestSocketAdapter() {
+            return this.reqSocketAdapter;
+        }
     }
 
     protected Class<T> listenSocketClass;
@@ -91,7 +152,10 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
     protected U listenSocketAdapter;
     protected Set<W> reqSocketAdapters = new ConcurrentHashSet<>();
     protected ListenableFutureTask<Void> listenDaemonTask;
-    protected Set<ListenableFutureTask<Void>> reqDaemonTasks = new ConcurrentHashSet<>();
+    protected ThreadPoolTaskExecutor reqTaskExec;
+    protected Set<ToolListenableFutureTask<Void>> reqDaemonTasks = new ConcurrentHashSet<>();
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractSocketListener.class);
 
     protected AbstractSocketListener(Class<T> listenSocketClass, Class<U> listenSocketAdapterClass, Class<V> reqSocketClass, Class<W> reqSocketAdapterClass,
         Class<X> reqClass, Class<Y> reqProcClass, SocketAddress bindSocketAddr) {
@@ -120,7 +184,7 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
             this.listenSocketAdapter.close();
         }
 
-        for (FutureTask<Void> reqDaemonTask : this.reqDaemonTasks) {
+        for (ToolListenableFutureTask<Void> reqDaemonTask : this.reqDaemonTasks) {
             if (!reqDaemonTask.isDone()) {
                 reqDaemonTask.cancel(true);
             }
@@ -154,8 +218,14 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
         return ToolBeanFactoryUtils.createBeanOfType(this.appContext, this.reqClass, protocol);
     }
 
-    protected ListenableFutureTask<Void> createRequestDaemonTask(W respSocketAdapter, X req) {
-        return new ListenableFutureTask<>(new SocketRequestDaemon(respSocketAdapter, req));
+    protected List<ToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>>> createRequestDaemonCallbacks(W reqSocketAdapter,
+        ToolListenableFutureTask<Void> reqDaemonTask) {
+        return ToolArrayUtils.asList((ToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>>) new SocketRequestDaemonCleanupCallback(
+            reqSocketAdapter, reqDaemonTask));
+    }
+
+    protected SocketRequestDaemonTask createRequestDaemonTask(W reqSocketAdapter, X req) {
+        return new SocketRequestDaemonTask(new SocketRequestDaemon(reqSocketAdapter, req));
     }
 
     protected ListenableFutureTask<Void> createListenDaemonTask() {
@@ -177,5 +247,9 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
         this.appContext = ((AbstractApplicationContext) appContext);
+    }
+
+    protected void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
+        this.reqTaskExec = reqTaskExec;
     }
 }

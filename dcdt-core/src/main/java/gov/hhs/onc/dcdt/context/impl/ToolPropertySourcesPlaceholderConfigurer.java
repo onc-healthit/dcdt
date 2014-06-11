@@ -1,11 +1,14 @@
 package gov.hhs.onc.dcdt.context.impl;
 
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.io.IOException;
-import java.util.LinkedHashMap;
+import java.util.Collection;
 import java.util.Map;
 import java.util.Properties;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.map.CompositeMap;
+import org.apache.commons.collections4.map.CompositeMap.MapMutator;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanInitializationException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -20,6 +23,29 @@ import org.springframework.core.env.PropertySourcesPropertyResolver;
 import org.springframework.util.Assert;
 
 public class ToolPropertySourcesPlaceholderConfigurer extends PropertySourcesPlaceholderConfigurer {
+    private static class CompositePropertySourceMutator implements MapMutator<String, Object> {
+        public final static CompositePropertySourceMutator INSTANCE = new CompositePropertySourceMutator();
+
+        private final static long serialVersionUID = 0L;
+
+        @Override
+        public void resolveCollision(CompositeMap<String, Object> sourceComp, Map<String, Object> source, Map<String, Object> sourceAdd,
+            Collection<String> intersect) {
+        }
+
+        @Nullable
+        @Override
+        public Object put(CompositeMap<String, Object> sourceComp, Map<String, Object>[] sourceMaps, String propName, @Nullable Object propValue) {
+            throw new UnsupportedOperationException(String.format("Unable to put property (name=%s, valueClass=%s) into composite property source map.",
+                propName, ToolClassUtils.getName(propValue)));
+        }
+
+        @Override
+        public void putAll(CompositeMap<String, Object> sourceComp, Map<String, Object>[] sourceMaps, Map<? extends String, ?> sourceMapAdd) {
+            throw new UnsupportedOperationException(String.format("Unable to put all properties (num=%d) into composite property source.", sourceMapAdd.size()));
+        }
+    }
+
     private class CompositePropertySource extends EnumerablePropertySource<Map<String, Object>> {
         @SuppressWarnings({ "rawtypes", "unchecked" })
         public CompositePropertySource(String name, Properties source) {
@@ -39,22 +65,25 @@ public class ToolPropertySourcesPlaceholderConfigurer extends PropertySourcesPla
 
         @Override
         public Map<String, Object> getSource() {
-            Map<String, Object> source;
+            Map<String, Object> source = super.getSource();
 
             if (ToolPropertySourcesPlaceholderConfigurer.this.env != null) {
-                source = new LinkedHashMap<>();
+                Map<String, Object> sysProps = ToolPropertySourcesPlaceholderConfigurer.this.env.getSystemProperties();
+
+                CompositeMap<String, Object> sourceComp = new CompositeMap<>();
+                sourceComp.setMutator(CompositePropertySourceMutator.INSTANCE);
 
                 if (!ToolPropertySourcesPlaceholderConfigurer.this.envOverride) {
-                    source.putAll(ToolPropertySourcesPlaceholderConfigurer.this.env.getSystemProperties());
+                    sourceComp.addComposited(sysProps);
                 }
 
-                source.putAll(super.getSource());
+                sourceComp.addComposited(source);
 
                 if (ToolPropertySourcesPlaceholderConfigurer.this.envOverride) {
-                    source.putAll(ToolPropertySourcesPlaceholderConfigurer.this.env.getSystemProperties());
+                    sourceComp.addComposited(sysProps);
                 }
-            } else {
-                source = super.getSource();
+
+                source = sourceComp;
             }
 
             return source;

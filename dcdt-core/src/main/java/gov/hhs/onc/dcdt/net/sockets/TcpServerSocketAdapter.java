@@ -6,4 +6,10 @@ import java.net.Socket;
 
 public interface TcpServerSocketAdapter extends SocketAdapter<ServerSocket> {
     public Socket accept() throws IOException;
+
+    public boolean hasBacklog();
+
+    public int getBacklog();
+
+    public void setBacklog(int backlog);
 }

@@ -6,12 +6,14 @@ import gov.hhs.onc.dcdt.net.sockets.impl.AbstractUdpSocketListener;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequest;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessor;
+import gov.hhs.onc.dcdt.service.dns.server.DnsServerUdpSocketAdapter;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerUdpSocketListener;
 import javax.annotation.Resource;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 @AutoStartup(false)
@@ -19,12 +21,12 @@ import org.springframework.stereotype.Component;
 @Lazy
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST)
 @Scope("prototype")
-public class DnsServerUdpSocketListenerImpl extends AbstractUdpSocketListener<DnsServerRequest, DnsServerRequestProcessor> implements
+public class DnsServerUdpSocketListenerImpl extends AbstractUdpSocketListener<DnsServerUdpSocketAdapter, DnsServerRequest, DnsServerRequestProcessor> implements
     DnsServerUdpSocketListener {
     private DnsServerConfig serverConfig;
 
     public DnsServerUdpSocketListenerImpl(DnsServerConfig serverConfig) {
-        super(DnsServerRequest.class, DnsServerRequestProcessor.class, serverConfig.toSocketAddress());
+        super(DnsServerUdpSocketAdapter.class, DnsServerRequest.class, DnsServerRequestProcessor.class, serverConfig.toSocketAddress());
 
         this.serverConfig = serverConfig;
     }
@@ -35,7 +37,13 @@ public class DnsServerUdpSocketListenerImpl extends AbstractUdpSocketListener<Dn
     }
 
     @Override
-    @Resource(name = "taskExecServiceDnsServerReqQuery")
+    @Resource(name = "taskExecServiceDnsServerReq")
+    protected void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
+        super.setRequestTaskExecutor(reqTaskExec);
+    }
+
+    @Override
+    @Resource(name = "taskExecServiceDnsServer")
     protected void setTaskExecutor(AsyncListenableTaskExecutor taskExec) {
         super.setTaskExecutor(taskExec);
     }

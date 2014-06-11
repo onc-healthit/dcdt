@@ -27,6 +27,7 @@ import org.apache.directory.server.config.beans.DirectoryServiceBean;
 import org.apache.directory.server.config.beans.LdapServerBean;
 import org.apache.directory.server.config.beans.TcpTransportBean;
 import org.apache.directory.server.constants.ServerDNConstants;
+import org.apache.directory.server.core.api.CacheService;
 import org.apache.directory.server.core.api.InstanceLayout;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.InitializingBean;
@@ -87,6 +88,7 @@ public class ToolDirectoryServiceBean extends DirectoryServiceBean implements Ap
     }
 
     private AbstractApplicationContext appContext;
+    private CacheService cacheService;
     private Collection<Entry> dataEntries;
     private InstanceLayout instanceLayout;
     private InstanceLdapConfig ldapConfig;
@@ -125,6 +127,15 @@ public class ToolDirectoryServiceBean extends DirectoryServiceBean implements Ap
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
         this.appContext = (AbstractApplicationContext) appContext;
+    }
+
+    @Nullable
+    public CacheService getCacheService() {
+        return this.cacheService;
+    }
+
+    public void setCacheService(@Nullable CacheService cacheService) {
+        this.cacheService = cacheService;
     }
 
     public boolean hasDataEntries() {

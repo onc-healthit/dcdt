@@ -4,6 +4,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.net.SocketAddress;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
 
 public interface ClientSocketAdapter<T extends Closeable> extends SocketAdapter<T> {
@@ -14,6 +15,11 @@ public interface ClientSocketAdapter<T extends Closeable> extends SocketAdapter<
     public Pair<SocketAddress, byte[]> read(@Nonnegative int bufferLen) throws IOException;
 
     public Pair<SocketAddress, byte[]> read(byte[] buffer) throws IOException;
+
+    public boolean hasRemoteSocketAddress();
+
+    @Nullable
+    public SocketAddress getRemoteSocketAddress();
 
     @Nonnegative
     public int getSendBufferSize() throws IOException;

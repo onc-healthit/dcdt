@@ -24,7 +24,7 @@
     <!--====================================================================================================
     = INSTANCE CONFIG PERSISTENCE
     =====================================================================================================-->
-    <beans:bean parent="setSysProps">
+    <beans:bean id="setSysPropsInstanceConfig" parent="setSysProps">
         <beans:property name="arguments">
             <util:properties>
                 <beans:prop key="#{ T(org.apache.derby.iapi.reference.Property).ERRORLOG_METHOD_PROPERTY }">
@@ -35,7 +35,7 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceConfigDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"
+    <beans:bean id="instanceConfigDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="setSysPropsInstanceConfig" destroy-method="close"
         p:acquireIncrement="1"
         p:driverClass="org.apache.derby.jdbc.EmbeddedDriver"
         p:initialPoolSize="0"

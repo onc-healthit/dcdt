@@ -51,4 +51,9 @@ public abstract class AbstractSocketAdapter<T extends Closeable> extends Abstrac
                 ToolClassUtils.getName(this.socket), ToolClassUtils.getName(this), optKey, optValue));
         }
     }
+
+    @Override
+    public boolean hasLocalSocketAddress() {
+        return (this.getLocalSocketAddress() != null);
+    }
 }

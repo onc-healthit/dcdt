@@ -4,12 +4,12 @@ import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsMessageUtils;
 import gov.hhs.onc.dcdt.net.InetProtocol;
-import gov.hhs.onc.dcdt.net.sockets.TcpServerSocketAdapter;
-import gov.hhs.onc.dcdt.net.sockets.TcpSocketAdapter;
 import gov.hhs.onc.dcdt.net.sockets.impl.AbstractTcpSocketListener;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequest;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessor;
+import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpServerSocketAdapter;
+import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketAdapter;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketListener;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -18,6 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
 @AutoStartup(false)
@@ -25,12 +26,14 @@ import org.springframework.stereotype.Component;
 @Lazy
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST)
 @Scope("prototype")
-public class DnsServerTcpSocketListenerImpl extends AbstractTcpSocketListener<DnsServerRequest, DnsServerRequestProcessor> implements
+public class DnsServerTcpSocketListenerImpl extends
+    AbstractTcpSocketListener<DnsServerTcpServerSocketAdapter, DnsServerTcpSocketAdapter, DnsServerRequest, DnsServerRequestProcessor> implements
     DnsServerTcpSocketListener {
     private DnsServerConfig serverConfig;
 
     public DnsServerTcpSocketListenerImpl(DnsServerConfig serverConfig) {
-        super(DnsServerRequest.class, DnsServerRequestProcessor.class, serverConfig.toSocketAddress());
+        super(DnsServerTcpServerSocketAdapter.class, DnsServerTcpSocketAdapter.class, DnsServerRequest.class, DnsServerRequestProcessor.class, serverConfig
+            .toSocketAddress());
 
         this.serverConfig = serverConfig;
     }
@@ -41,8 +44,8 @@ public class DnsServerTcpSocketListenerImpl extends AbstractTcpSocketListener<Dn
     }
 
     @Override
-    protected TcpSocketAdapter readRequest(TcpServerSocketAdapter listenSocketAdapter, DnsServerRequest req) throws IOException {
-        TcpSocketAdapter reqSocketAdapter = super.readRequest(listenSocketAdapter, req);
+    protected DnsServerTcpSocketAdapter readRequest(DnsServerTcpServerSocketAdapter listenSocketAdapter, DnsServerRequest req) throws IOException {
+        DnsServerTcpSocketAdapter reqSocketAdapter = super.readRequest(listenSocketAdapter, req);
         ByteBuffer reqBuffer = req.getRequestBuffer();
         int reqQuerySize = req.setQuerySize(ToolDnsMessageUtils.parseQuerySizeData(reqBuffer.get(0), reqBuffer.get(1)));
 
@@ -61,7 +64,13 @@ public class DnsServerTcpSocketListenerImpl extends AbstractTcpSocketListener<Dn
     }
 
     @Override
-    @Resource(name = "taskExecServiceDnsServerReqQuery")
+    @Resource(name = "taskExecServiceDnsServerReq")
+    protected void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
+        super.setRequestTaskExecutor(reqTaskExec);
+    }
+
+    @Override
+    @Resource(name = "taskExecServiceDnsServer")
     protected void setTaskExecutor(AsyncListenableTaskExecutor taskExec) {
         super.setTaskExecutor(taskExec);
     }

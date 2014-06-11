@@ -45,7 +45,10 @@ public class LdapServiceConfiguration {
     public DirectoryService createDirectoryService(ToolDirectoryServiceBean dirServiceBean) throws Exception {
         SchemaManager schemaManager = dirServiceBean.getSchemaManager();
         InstanceLayout instanceLayout = dirServiceBean.getInstanceLayout();
+
         DirectoryService dirService = ServiceBuilder.createDirectoryService(dirServiceBean, instanceLayout, schemaManager);
+        dirService.setCacheService(dirServiceBean.getCacheService());
+
         Partition partition;
 
         for (PartitionBean partitionBean : dirServiceBean.getPartitions()) {

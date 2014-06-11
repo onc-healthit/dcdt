@@ -129,6 +129,6 @@
     <beans:bean id="methodInvoke" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"/>
     
     <beans:bean id="setSysProps" parent="methodInvoke" abstract="true"
-        p:targetObject="#{ systemProperties }"
+        p:targetObject="#{ T(java.lang.System).properties }"
         p:targetMethod="putAll"/>
 </beans:beans>

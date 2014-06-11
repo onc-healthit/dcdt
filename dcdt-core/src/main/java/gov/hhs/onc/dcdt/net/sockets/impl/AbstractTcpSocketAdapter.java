@@ -7,13 +7,14 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.net.SocketAddress;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nullable;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class TcpSocketAdapterImpl extends AbstractClientSocketAdapter<Socket> implements TcpSocketAdapter {
-    public TcpSocketAdapterImpl(Socket socket) {
+public abstract class AbstractTcpSocketAdapter extends AbstractClientSocketAdapter<Socket> implements TcpSocketAdapter {
+    protected AbstractTcpSocketAdapter(Socket socket) {
         super(socket);
     }
 
@@ -68,6 +69,12 @@ public class TcpSocketAdapterImpl extends AbstractClientSocketAdapter<Socket> im
         return this.socket.isClosed();
     }
 
+    @Nullable
+    @Override
+    public SocketAddress getLocalSocketAddress() {
+        return this.socket.getLocalSocketAddress();
+    }
+
     @Override
     public InetProtocol getProtocol() {
         return InetProtocol.TCP;
@@ -81,6 +88,12 @@ public class TcpSocketAdapterImpl extends AbstractClientSocketAdapter<Socket> im
     @Override
     public void setReceiveBufferSize(@Nonnegative int receiveBufferSize) throws IOException {
         this.socket.setReceiveBufferSize(receiveBufferSize);
+    }
+
+    @Nullable
+    @Override
+    public SocketAddress getRemoteSocketAddress() {
+        return this.socket.getRemoteSocketAddress();
     }
 
     @Override
