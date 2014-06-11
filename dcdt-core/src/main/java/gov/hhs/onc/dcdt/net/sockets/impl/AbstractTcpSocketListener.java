@@ -1,26 +1,62 @@
 package gov.hhs.onc.dcdt.net.sockets.impl;
 
+import gov.hhs.onc.dcdt.concurrent.ToolListenableFutureCallback;
+import gov.hhs.onc.dcdt.concurrent.ToolListenableFutureTask;
 import gov.hhs.onc.dcdt.net.sockets.SocketRequest;
 import gov.hhs.onc.dcdt.net.sockets.SocketRequestProcessor;
 import gov.hhs.onc.dcdt.net.sockets.TcpServerSocketAdapter;
 import gov.hhs.onc.dcdt.net.sockets.TcpSocketAdapter;
 import gov.hhs.onc.dcdt.net.sockets.TcpSocketListener;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.nio.ByteBuffer;
+import java.util.List;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 
-public class AbstractTcpSocketListener<T extends SocketRequest, U extends SocketRequestProcessor<T>> extends
-    AbstractSocketListener<ServerSocket, TcpServerSocketAdapter, Socket, TcpSocketAdapter, T, U> implements TcpSocketListener<T, U> {
-    protected AbstractTcpSocketListener(Class<T> reqClass, Class<U> reqProcClass, SocketAddress bindSocketAddr) {
-        super(ServerSocket.class, TcpServerSocketAdapter.class, Socket.class, TcpSocketAdapter.class, reqClass, reqProcClass, bindSocketAddr);
+public class AbstractTcpSocketListener<T extends TcpServerSocketAdapter, U extends TcpSocketAdapter, V extends SocketRequest, W extends SocketRequestProcessor<V>>
+    extends AbstractSocketListener<ServerSocket, T, Socket, U, V, W> implements TcpSocketListener<T, U, V, W> {
+    @Order(Ordered.HIGHEST_PRECEDENCE + 1)
+    protected class SocketRequestDaemonTcpCleanupCallback extends AbstractSocketRequestDaemonCallback {
+        public SocketRequestDaemonTcpCleanupCallback(U reqSocketAdapter, ToolListenableFutureTask<Void> reqDaemonTask) {
+            super(reqSocketAdapter, reqDaemonTask);
+        }
+
+        @Override
+        protected void onPostDone(boolean status, @Nullable Void result, @Nullable Throwable th) {
+            try {
+                reqSocketAdapter.close();
+            } catch (IOException e) {
+                AbstractTcpSocketListener.LOGGER
+                    .warn(
+                        String
+                            .format(
+                                "Unable to close socket (class=%s, adapterClass=%s, protocol=%s, localAddr={%s}, remoteAddr={%s}) after completion of request daemon task (class=%s, status=%s).",
+                                ToolClassUtils.getName(reqSocketAdapter.getSocket()), ToolClassUtils.getName(reqSocketAdapter), reqSocketAdapter.getProtocol()
+                                    .name(), reqSocketAdapter.getLocalSocketAddress(), reqSocketAdapter.getRemoteSocketAddress(), ToolClassUtils
+                                    .getName(this.task), status), e);
+            }
+        }
+    }
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(AbstractTcpSocketListener.class);
+
+    protected AbstractTcpSocketListener(Class<T> listenSocketAdapterClass, Class<U> reqSocketAdapterClass, Class<V> reqClass, Class<W> reqProcClass,
+        SocketAddress bindSocketAddr) {
+        super(ServerSocket.class, listenSocketAdapterClass, Socket.class, reqSocketAdapterClass, reqClass, reqProcClass, bindSocketAddr);
     }
 
     @Override
-    protected TcpSocketAdapter readRequest(TcpServerSocketAdapter listenSocketAdapter, T req) throws IOException {
-        TcpSocketAdapter reqSocketAdapter = this.createRequestSocketAdapter(listenSocketAdapter.accept());
+    protected U readRequest(T listenSocketAdapter, V req) throws IOException {
+        U reqSocketAdapter = this.createRequestSocketAdapter(listenSocketAdapter.accept());
         ByteBuffer reqBuffer = req.getRequestBuffer();
         Pair<SocketAddress, byte[]> reqPair = reqSocketAdapter.read(reqBuffer.remaining());
 
@@ -29,5 +65,12 @@ public class AbstractTcpSocketListener<T extends SocketRequest, U extends Socket
         reqBuffer.put(reqPair.getRight());
 
         return reqSocketAdapter;
+    }
+
+    @Override
+    protected List<ToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>>> createRequestDaemonCallbacks(U reqSocketAdapter,
+        ToolListenableFutureTask<Void> reqDaemonTask) {
+        return ToolCollectionUtils.add(super.createRequestDaemonCallbacks(reqSocketAdapter, reqDaemonTask),
+            ((ToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>>) new SocketRequestDaemonTcpCleanupCallback(reqSocketAdapter, reqDaemonTask)));
     }
 }

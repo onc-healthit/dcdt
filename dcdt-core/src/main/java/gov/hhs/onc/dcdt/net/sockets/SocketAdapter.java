@@ -8,6 +8,7 @@ import java.net.SocketAddress;
 import java.net.SocketOption;
 import java.util.Map;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nullable;
 
 public interface SocketAdapter<T extends Closeable> extends Closeable, ToolBean {
     public void bind(SocketAddress bindSocketAddr) throws IOException;
@@ -19,6 +20,11 @@ public interface SocketAdapter<T extends Closeable> extends Closeable, ToolBean 
     public boolean isBound();
 
     public boolean isClosed();
+
+    public boolean hasLocalSocketAddress();
+
+    @Nullable
+    public SocketAddress getLocalSocketAddress();
 
     public InetProtocol getProtocol();
 

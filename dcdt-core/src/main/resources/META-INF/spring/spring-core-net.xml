@@ -41,24 +41,24 @@
     </beans:bean>
     
     <!--====================================================================================================
-    = SOCKETS
+    = UDP SOCKETS
     =====================================================================================================-->
     <beans:bean id="socketUdp" class="java.net.DatagramSocket" lazy-init="true" scope="prototype"/>
     
-    <beans:bean id="socketTcp" class="java.net.Socket" lazy-init="true" scope="prototype"/>
-    
+    <!--====================================================================================================
+    = TCP SERVER SOCKETS
+    =====================================================================================================-->
     <beans:bean id="socketTcpServer" class="java.net.ServerSocket" lazy-init="true" scope="prototype"/>
+    
+    <!--====================================================================================================
+    = TCP SOCKETS
+    =====================================================================================================-->
+    <beans:bean id="socketTcp" class="java.net.Socket" lazy-init="true" scope="prototype"/>
     
     <!--====================================================================================================
     = SOCKET ADAPTERS
     =====================================================================================================-->
-    <beans:bean id="socketAdapter" class="gov.hhs.onc.dcdt.net.sockets.SocketAdapter" abstract="true">
-        <beans:property name="options">
-            <beans:map>
-                <beans:entry key="#{ T(java.net.StandardSocketOptions).SO_REUSEADDR }" value="true" value-type="java.lang.Boolean"/>
-            </beans:map>
-        </beans:property>
-    </beans:bean>
+    <beans:bean id="socketAdapter" class="gov.hhs.onc.dcdt.net.sockets.SocketAdapter" abstract="true"/>
     
     <beans:bean id="socketAdapterClient" class="gov.hhs.onc.dcdt.net.sockets.ClientSocketAdapter" parent="socketAdapter" abstract="true"/>
     
@@ -67,27 +67,15 @@
     =====================================================================================================-->
     <beans:bean id="socketAdapterUdp" class="gov.hhs.onc.dcdt.net.sockets.UdpSocketAdapter" parent="socketAdapterClient" abstract="true"/>
     
-    <!--suppress SpringBeanConstructorArgInspection -->
-    <beans:bean id="socketAdapterUdpImpl" class="gov.hhs.onc.dcdt.net.sockets.impl.UdpSocketAdapterImpl" parent="socketAdapterUdp" lazy-init="true"
-        scope="prototype"/>
-    
-    <!--====================================================================================================
-    = TCP SOCKET ADAPTERS
-    =====================================================================================================-->
-    <beans:bean id="socketAdapterTcp" class="gov.hhs.onc.dcdt.net.sockets.TcpSocketAdapter" parent="socketAdapterClient" abstract="true"/>
-    
-    <!--suppress SpringBeanConstructorArgInspection -->
-    <beans:bean id="socketAdapterTcpImpl" class="gov.hhs.onc.dcdt.net.sockets.impl.TcpSocketAdapterImpl" parent="socketAdapterTcp" lazy-init="true"
-        scope="prototype"/>
-    
     <!--====================================================================================================
     = TCP SERVER SOCKET ADAPTERS
     =====================================================================================================-->
     <beans:bean id="socketAdapterTcpServer" class="gov.hhs.onc.dcdt.net.sockets.TcpServerSocketAdapter" parent="socketAdapter" abstract="true"/>
     
-    <!--suppress SpringBeanConstructorArgInspection -->
-    <beans:bean id="socketAdapterTcpServerImpl" class="gov.hhs.onc.dcdt.net.sockets.impl.TcpServerSocketAdapterImpl" parent="socketAdapterTcpServer"
-        lazy-init="true" scope="prototype"/>
+    <!--====================================================================================================
+    = TCP SOCKET ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="socketAdapterTcp" class="gov.hhs.onc.dcdt.net.sockets.TcpSocketAdapter" parent="socketAdapterClient" abstract="true"/>
     
     <!--====================================================================================================
     = URI

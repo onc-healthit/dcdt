@@ -19,4 +19,9 @@ public abstract class AbstractClientSocketAdapter<T extends Closeable> extends A
             super.setOptionInternal(optKey, optValue);
         }
     }
+
+    @Override
+    public boolean hasRemoteSocketAddress() {
+        return (this.getRemoteSocketAddress() != null);
+    }
 }

@@ -10,14 +10,14 @@ import java.net.SocketAddress;
 import java.nio.ByteBuffer;
 import org.apache.commons.lang3.tuple.Pair;
 
-public abstract class AbstractUdpSocketListener<T extends SocketRequest, U extends SocketRequestProcessor<T>> extends
-    AbstractSocketListener<DatagramSocket, UdpSocketAdapter, DatagramSocket, UdpSocketAdapter, T, U> implements UdpSocketListener<T, U> {
-    protected AbstractUdpSocketListener(Class<T> reqClass, Class<U> reqProcClass, SocketAddress bindSocketAddr) {
-        super(DatagramSocket.class, UdpSocketAdapter.class, DatagramSocket.class, UdpSocketAdapter.class, reqClass, reqProcClass, bindSocketAddr);
+public abstract class AbstractUdpSocketListener<T extends UdpSocketAdapter, U extends SocketRequest, V extends SocketRequestProcessor<U>> extends
+    AbstractSocketListener<DatagramSocket, T, DatagramSocket, T, U, V> implements UdpSocketListener<T, U, V> {
+    protected AbstractUdpSocketListener(Class<T> socketAdapterClass, Class<U> reqClass, Class<V> reqProcClass, SocketAddress bindSocketAddr) {
+        super(DatagramSocket.class, socketAdapterClass, DatagramSocket.class, socketAdapterClass, reqClass, reqProcClass, bindSocketAddr);
     }
 
     @Override
-    protected UdpSocketAdapter readRequest(UdpSocketAdapter listenSocketAdapter, T req) throws IOException {
+    protected T readRequest(T listenSocketAdapter, U req) throws IOException {
         ByteBuffer reqBuffer = req.getRequestBuffer();
         Pair<SocketAddress, byte[]> reqPair = listenSocketAdapter.read(reqBuffer.remaining());
 

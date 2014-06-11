@@ -8,11 +8,12 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketAddress;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-public class UdpSocketAdapterImpl extends AbstractClientSocketAdapter<DatagramSocket> implements UdpSocketAdapter {
-    public UdpSocketAdapterImpl(DatagramSocket socket) {
+public abstract class AbstractUdpSocketAdapter extends AbstractClientSocketAdapter<DatagramSocket> implements UdpSocketAdapter {
+    protected AbstractUdpSocketAdapter(DatagramSocket socket) {
         super(socket);
     }
 
@@ -60,6 +61,12 @@ public class UdpSocketAdapterImpl extends AbstractClientSocketAdapter<DatagramSo
         return this.socket.isClosed();
     }
 
+    @Nullable
+    @Override
+    public SocketAddress getLocalSocketAddress() {
+        return this.socket.getLocalSocketAddress();
+    }
+
     @Override
     public InetProtocol getProtocol() {
         return InetProtocol.UDP;
@@ -73,6 +80,12 @@ public class UdpSocketAdapterImpl extends AbstractClientSocketAdapter<DatagramSo
     @Override
     public void setReceiveBufferSize(@Nonnegative int receiveBufferSize) throws IOException {
         this.socket.setReceiveBufferSize(receiveBufferSize);
+    }
+
+    @Nullable
+    @Override
+    public SocketAddress getRemoteSocketAddress() {
+        return this.socket.getRemoteSocketAddress();
     }
 
     @Override

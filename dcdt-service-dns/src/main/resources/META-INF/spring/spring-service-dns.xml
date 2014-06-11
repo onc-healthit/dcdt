@@ -24,19 +24,63 @@
         p:corePoolSize="1"
         p:maxPoolSize="5"/>
     
-    <beans:bean id="taskExecServiceDnsServer" parent="taskExecService"
+    <beans:bean id="taskExecServiceDnsServer" parent="taskExecService" lazy-init="true" scope="prototype"
         p:corePoolSize="#{ taskExecServiceDns.corePoolSize }"
         p:maxPoolSize="#{ taskExecServiceDns.maxPoolSize }"/>
     
-    <beans:bean id="taskExecServiceDnsServerReq" parent="taskExecService"
-        p:corePoolSize="#{ taskExecServiceDnsServer.corePoolSize * 5 }"
-        p:maxPoolSize="#{ taskExecServiceDnsServer.maxPoolSize * 10 }"
-        p:queueCapacity="#{ taskExecServiceDnsServer.maxPoolSize * 25 }"/>
+    <beans:bean id="taskExecServiceDnsServerReq" parent="taskExecService" lazy-init="true" scope="prototype"
+        p:allowCoreThreadTimeOut="true"
+        p:corePoolSize="#{ taskExecServiceDnsServer.corePoolSize * 10 }"
+        p:keepAliveSeconds="15"
+        p:maxPoolSize="#{ taskExecServiceDnsServer.maxPoolSize * 50 }"/>
     
-    <beans:bean id="taskExecServiceDnsServerReqQuery" parent="taskExecService"
-        p:corePoolSize="#{ taskExecServiceDnsServerReq.corePoolSize * 2 }"
-        p:maxPoolSize="#{ taskExecServiceDnsServerReq.maxPoolSize * 2 }"
-        p:queueCapacity="#{ taskExecServiceDnsServerReq.maxPoolSize * 2 }"/>
+    <!--====================================================================================================
+    = DNS UDP SOCKET ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="socketAdapterUdpDnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServerUdpSocketAdapter" parent="socketAdapterUdp" abstract="true"/>
+    
+    <!--suppress SpringBeanConstructorArgInspection -->
+    <beans:bean id="socketAdapterUdpDnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerUdpSocketAdapterImpl"
+        parent="socketAdapterUdpDnsServer" lazy-init="true" scope="prototype">
+        <beans:property name="options">
+            <beans:map>
+                <beans:entry key="#{ T(java.net.StandardSocketOptions).SO_REUSEADDR }" value="true" value-type="java.lang.Boolean"/>
+            </beans:map>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = DNS TCP SERVER SOCKET ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="socketAdapterTcpServerDnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpServerSocketAdapter" parent="socketAdapterTcpServer"
+        abstract="true"/>
+    
+    <!--suppress SpringBeanConstructorArgInspection -->
+    <beans:bean id="socketAdapterTcpServerDnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerTcpServerSocketAdapterImpl"
+        parent="socketAdapterTcpServerDnsServer" lazy-init="true" scope="prototype">
+        <beans:property name="options">
+            <beans:map>
+                <beans:entry key="#{ T(gov.hhs.onc.dcdt.net.sockets.SocketAdapterOptions).BACKLOG }" value="#{ taskExecServiceDnsServerReq.maxPoolSize }"
+                    value-type="java.lang.Integer"/>
+                <beans:entry key="#{ T(java.net.StandardSocketOptions).SO_REUSEADDR }" value="true" value-type="java.lang.Boolean"/>
+            </beans:map>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = DNS TCP SOCKET ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="socketAdapterTcpDnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketAdapter" parent="socketAdapterTcp" abstract="true"/>
+    
+    <!--suppress SpringBeanConstructorArgInspection -->
+    <beans:bean id="socketAdapterTcpDnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerTcpSocketAdapterImpl"
+        parent="socketAdapterTcpDnsServer" lazy-init="true" scope="prototype">
+        <beans:property name="options">
+            <beans:map>
+                <beans:entry key="#{ T(java.net.StandardSocketOptions).SO_REUSEADDR }" value="true" value-type="java.lang.Boolean"/>
+            </beans:map>
+        </beans:property>
+    </beans:bean>
     
     <!--====================================================================================================
     = DNS SERVER CONFIG
