@@ -7,8 +7,8 @@ import gov.hhs.onc.dcdt.dns.DnsServiceType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
+import javax.annotation.Resource;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -25,7 +25,7 @@ import org.xbill.DNS.SRVRecord;
 
 @Test(groups = { "dcdt.test.unit.dns.all", "dcdt.test.unit.dns.lookup.all", "dcdt.test.unit.dns.lookup.service" })
 public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
-    @Autowired
+    @Resource(name = "dnsLookupServiceExternal")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private DnsLookupService dnsLookupService;
 

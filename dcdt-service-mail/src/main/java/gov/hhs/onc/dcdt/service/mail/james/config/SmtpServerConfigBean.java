@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.config.ConfigurationNode;
 import javax.annotation.Nullable;
 
 @ConfigurationNode(name = "smtpserver")
-public interface SmtpServerConfigBean {
+public interface SmtpServerConfigBean extends JamesConfigBean {
     public boolean hasAuthorizedAddresses();
 
     @ConfigurationNode

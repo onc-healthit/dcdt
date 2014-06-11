@@ -8,13 +8,13 @@ import gov.hhs.onc.dcdt.mail.HasMxRecord;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.validation.constraints.impl.AbstractToolStringConstraintValidator;
+import javax.annotation.Resource;
 import javax.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.MXRecord;
 
 public class HasMxRecordConstraintValidator extends AbstractToolStringConstraintValidator<HasMxRecord> {
-    @Autowired
+    @Resource(name = "dnsLookupServiceExternal")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private DnsLookupService dnsLookupService;
 

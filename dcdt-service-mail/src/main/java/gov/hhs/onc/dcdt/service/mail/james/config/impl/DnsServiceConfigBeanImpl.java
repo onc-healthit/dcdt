@@ -1,77 +1,29 @@
 package gov.hhs.onc.dcdt.service.mail.james.config.impl;
 
+import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
 import gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceConfigBean;
-import javax.annotation.Nullable;
-import org.xbill.DNS.Cache;
-import org.xbill.DNS.Resolver;
 
 public class DnsServiceConfigBeanImpl extends AbstractJamesConfigBean implements DnsServiceConfigBean {
-    private Boolean autoDiscover;
-    private Cache cache;
-    private Resolver extResolver;
-    private Resolver localResolver;
+    private DnsLookupService extLookupService;
+    private DnsLookupService localLookupService;
 
     @Override
-    public boolean hasAutoDiscover() {
-        return (this.autoDiscover != null);
-    }
-
-    @Nullable
-    @Override
-    public Boolean isAutoDiscover() {
-        return this.autoDiscover;
+    public DnsLookupService getExternalLookupService() {
+        return this.extLookupService;
     }
 
     @Override
-    public void setAutoDiscover(@Nullable Boolean autoDiscover) {
-        this.autoDiscover = autoDiscover;
+    public void setExternalLookupService(DnsLookupService extLookupService) {
+        this.extLookupService = extLookupService;
     }
 
     @Override
-    public boolean hasCache() {
-        return (this.cache != null);
-    }
-
-    @Nullable
-    @Override
-    public Cache getCache() {
-        return this.cache;
+    public DnsLookupService getLocalLookupService() {
+        return this.localLookupService;
     }
 
     @Override
-    public void setCache(@Nullable Cache cache) {
-        this.cache = cache;
-    }
-
-    @Override
-    public boolean hasExternalResolver() {
-        return (this.extResolver != null);
-    }
-
-    @Nullable
-    @Override
-    public Resolver getExternalResolver() {
-        return this.extResolver;
-    }
-
-    @Override
-    public void setExternalResolver(@Nullable Resolver extResolver) {
-        this.extResolver = extResolver;
-    }
-
-    @Override
-    public boolean hasLocalResolver() {
-        return (this.localResolver != null);
-    }
-
-    @Nullable
-    @Override
-    public Resolver getLocalResolver() {
-        return this.localResolver;
-    }
-
-    @Override
-    public void setLocalResolver(@Nullable Resolver localResolver) {
-        this.localResolver = localResolver;
+    public void setLocalLookupService(DnsLookupService localLookupService) {
+        this.localLookupService = localLookupService;
     }
 }

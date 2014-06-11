@@ -73,7 +73,7 @@
     <!--====================================================================================================
     = DNS RESOLVERS
     =====================================================================================================-->
-    <beans:bean id="dnsResolver" class="org.xbill.DNS.ExtendedResolver" abstract="true"/>
+    <beans:bean id="dnsResolver" class="org.xbill.DNS.Resolver" abstract="true"/>
     <beans:bean id="dnsResolverExt" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver" abstract="true"/>
     
     <beans:bean id="dnsResolverExtLocal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt" factory-method="fromSocketAddresses">
@@ -96,17 +96,24 @@
     </beans:bean>
     
     <!--====================================================================================================
-    = DNS LOOKUP SERVICE
+    = DNS LOOKUP SERVICES
     =====================================================================================================-->
     <beans:bean id="dnsLookupService" class="gov.hhs.onc.dcdt.dns.lookup.DnsLookupService" abstract="true"/>
-    <beans:bean id="dnsLookupServiceImpl" class="gov.hhs.onc.dcdt.dns.lookup.impl.DnsLookupServiceImpl" parent="dnsLookupService" lazy-init="true"
-        scope="prototype">
+    
+    <beans:bean id="dnsLookupServiceImpl" class="gov.hhs.onc.dcdt.dns.lookup.impl.DnsLookupServiceImpl" parent="dnsLookupService" autowire-candidate="false"
+        lazy-init="true" scope="prototype">
         <beans:property name="cache">
             <beans:bean parent="dnsCacheNoOp"/>
         </beans:property>
+        <beans:property name="searchPaths">
+            <beans:set/>
+        </beans:property>
     </beans:bean>
     
-    <beans:bean id="dnsLookupServiceExternal" parent="dnsLookupServiceImpl" primary="true"
+    <beans:bean id="dnsLookupServiceLocal" parent="dnsLookupServiceImpl" autowire-candidate="false"
+        p:resolver-ref="dnsResolverExtLocal"/>
+    
+    <beans:bean id="dnsLookupServiceExternal" parent="dnsLookupServiceImpl" autowire-candidate="false"
         p:resolver-ref="dnsResolverExtExternal"/>
     
     <!--====================================================================================================
