@@ -92,7 +92,7 @@ public abstract class ToolSmimeUtils {
     @SuppressWarnings({ "unchecked" })
     public static Map<SignerId, CertificateInfo> verifySignatures(SMIMESigned signed) throws MessagingException {
         Store signedCerts = signed.getCertificates();
-        JcaSimpleSignerInfoVerifierBuilder signerInfoVerifierBuilder = new JcaSimpleSignerInfoVerifierBuilder();
+        JcaSimpleSignerInfoVerifierBuilder signerInfoVerifierBuilder = new JcaSimpleSignerInfoVerifierBuilder().setProvider(CryptographyUtils.PROVIDER);
         Map<SignerId, SignerInformation> signerInfoMap = mapSigners(signed);
         Map<SignerId, CertificateInfo> signerCertMap = new LinkedHashMap<>(signerInfoMap.size());
         SignerInformation signerInfo = null;
@@ -247,7 +247,8 @@ public abstract class ToolSmimeUtils {
         }
 
         try {
-            return SMIMEUtil.toMimeBodyPart(recipientInfoMap.get(recipientId).getContent(new JceKeyTransEnvelopedRecipient(privateKey)));
+            return SMIMEUtil.toMimeBodyPart(recipientInfoMap.get(recipientId).getContent(
+                new JceKeyTransEnvelopedRecipient(privateKey).setProvider(CryptographyUtils.PROVIDER)));
         } catch (CMSException | SMIMEException e) {
             throw new ToolSmimeException(String.format("Unable to decrypt mail MIME message (id=%s, from=%s, to=%s) enveloped content (type=%s).", msgHelper
                 .getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), ToolMimePartUtils.getContentType(enveloped.getEncryptedContent())), e);
@@ -321,7 +322,7 @@ public abstract class ToolSmimeUtils {
         try {
             SMIMEEnvelopedGenerator envelopedGen = new SMIMEEnvelopedGenerator();
             envelopedGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(cert));
-            JceCMSContentEncryptorBuilder encryptorBuilder = new JceCMSContentEncryptorBuilder(encryptionAlg.getOid());
+            JceCMSContentEncryptorBuilder encryptorBuilder = new JceCMSContentEncryptorBuilder(encryptionAlg.getOid()).setProvider(CryptographyUtils.PROVIDER);
 
             if (ToolSmimeContentTypeUtils.isSignedData(bodyPartContentType)) {
                 return envelopedGen.generate(unencryptedBodyPart, encryptorBuilder.build());
@@ -365,8 +366,8 @@ public abstract class ToolSmimeUtils {
 
             try {
                 signer.addCertificates(new JcaCertStore(certList));
-                signer.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build(
-                    sigAlg.getId(), privateKey, cert));
+                signer.addSignerInfoGenerator(new JcaSimpleSignerInfoGeneratorBuilder().setProvider(CryptographyUtils.PROVIDER)
+                    .setSignedAttributeGenerator(new AttributeTable(signedAttrs)).build(sigAlg.getId(), privateKey, cert));
 
                 return signer.generate(unsignedMsg);
             } catch (OperatorCreationException | CertificateEncodingException | SMIMEException e) {
