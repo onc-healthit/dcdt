@@ -7,6 +7,7 @@ import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
 import gov.hhs.onc.dcdt.dns.DnsServiceType;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.ARecord;
@@ -57,4 +58,11 @@ public interface DnsLookupService extends ToolBean {
     public Resolver getResolver();
 
     public void setResolver(@Nullable Resolver resolver);
+
+    public boolean hasSearchPaths();
+
+    @Nullable
+    public Set<Name> getSearchPaths();
+
+    public void setSearchPaths(@Nullable Set<Name> searchPaths);
 }

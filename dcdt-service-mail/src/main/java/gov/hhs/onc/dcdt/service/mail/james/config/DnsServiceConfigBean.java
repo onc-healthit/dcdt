@@ -1,38 +1,15 @@
 package gov.hhs.onc.dcdt.service.mail.james.config;
 
 import gov.hhs.onc.dcdt.config.ConfigurationNode;
-import javax.annotation.Nullable;
-import org.xbill.DNS.Cache;
-import org.xbill.DNS.Resolver;
+import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
 
 @ConfigurationNode(name = "dnsservice")
 public interface DnsServiceConfigBean extends JamesConfigBean {
-    public boolean hasAutoDiscover();
+    public DnsLookupService getExternalLookupService();
 
-    @ConfigurationNode(name = "autodiscover")
-    @Nullable
-    public Boolean isAutoDiscover();
+    public void setExternalLookupService(DnsLookupService extLookupService);
 
-    public void setAutoDiscover(@Nullable Boolean autoDiscover);
+    public DnsLookupService getLocalLookupService();
 
-    public boolean hasCache();
-
-    @Nullable
-    public Cache getCache();
-
-    public void setCache(@Nullable Cache cache);
-
-    public boolean hasExternalResolver();
-
-    @Nullable
-    public Resolver getExternalResolver();
-
-    public void setExternalResolver(@Nullable Resolver extResolver);
-
-    public boolean hasLocalResolver();
-
-    @Nullable
-    public Resolver getLocalResolver();
-
-    public void setLocalResolver(@Nullable Resolver localResolver);
+    public void setLocalLookupService(DnsLookupService localLookupService);
 }

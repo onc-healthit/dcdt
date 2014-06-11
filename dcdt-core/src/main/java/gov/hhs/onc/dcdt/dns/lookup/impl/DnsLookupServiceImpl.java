@@ -11,7 +11,10 @@ import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.CertRecordParameterPredicate;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import java.util.Set;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CERTRecord;
@@ -29,6 +32,7 @@ import org.xbill.DNS.SRVRecord;
 public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupService {
     private Cache cache;
     private Resolver resolver;
+    private Set<Name> searchPaths;
 
     @Override
     public DnsLookupResult<ARecord> lookupARecords(Name name) throws DnsException {
@@ -91,6 +95,8 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
             lookup.setResolver(this.resolver);
         }
 
+        lookup.setSearchPath(ToolCollectionUtils.toArray(this.searchPaths, Name.class));
+
         lookup.run();
 
         return new DnsLookupResultImpl<>(recordType, recordClass, name, lookup, recordPredicate);
@@ -126,5 +132,21 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
     @Override
     public void setResolver(@Nullable Resolver resolver) {
         this.resolver = resolver;
+    }
+
+    @Override
+    public boolean hasSearchPaths() {
+        return !CollectionUtils.isEmpty(this.searchPaths);
+    }
+
+    @Nullable
+    @Override
+    public Set<Name> getSearchPaths() {
+        return this.searchPaths;
+    }
+
+    @Override
+    public void setSearchPaths(@Nullable Set<Name> searchPaths) {
+        this.searchPaths = searchPaths;
     }
 }
