@@ -321,7 +321,7 @@ public abstract class ToolSmimeUtils {
 
         try {
             SMIMEEnvelopedGenerator envelopedGen = new SMIMEEnvelopedGenerator();
-            envelopedGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(cert));
+            envelopedGen.addRecipientInfoGenerator(new JceKeyTransRecipientInfoGenerator(cert).setProvider(CryptographyUtils.PROVIDER));
             JceCMSContentEncryptorBuilder encryptorBuilder = new JceCMSContentEncryptorBuilder(encryptionAlg.getOid()).setProvider(CryptographyUtils.PROVIDER);
 
             if (ToolSmimeContentTypeUtils.isSignedData(bodyPartContentType)) {
