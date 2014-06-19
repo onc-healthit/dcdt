@@ -48,6 +48,33 @@
     </context-param>
     
     <!--====================================================================================================
+    = FILTERS
+    =====================================================================================================-->
+    <filter>
+        <filter-name>filterUrlRewrite</filter-name>
+        <filter-class>gov.hhs.onc.dcdt.web.filter.impl.DispatcherServletFilterProxy</filter-class>
+        <init-param>
+            <param-name>targetFilterLifecycle</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>filterUrlRewrite</filter-name>
+        <url-pattern>/*</url-pattern>
+        <dispatcher>FORWARD</dispatcher>
+        <dispatcher>REQUEST</dispatcher>
+    </filter-mapping>
+    
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>gov.hhs.onc.dcdt.web.filter.impl.DispatcherServletFilterProxy</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    
+    <!--====================================================================================================
     = SERVLETS
     =====================================================================================================-->
     <servlet>
@@ -75,12 +102,8 @@
     
     <servlet>
         <servlet-name>logbackStatusServlet</servlet-name>
-        <servlet-class>ch.qos.logback.classic.ViewStatusMessagesServlet</servlet-class>
+        <servlet-class>gov.hhs.onc.dcdt.web.servlet.impl.LogbackStatusServlet</servlet-class>
     </servlet>
-    <servlet-mapping>
-        <servlet-name>logbackStatusServlet</servlet-name>
-        <url-pattern>/logback/status</url-pattern>
-    </servlet-mapping>
     
     <!--====================================================================================================
     = LISTENERS
@@ -104,41 +127,4 @@
     <listener>
         <listener-class>gov.hhs.onc.dcdt.web.context.impl.DriverManagerServletContextListener</listener-class>
     </listener>
-    
-    <!--====================================================================================================
-    = FILTERS
-    =====================================================================================================-->
-    <filter>
-        <filter-name>filterUrlRewrite</filter-name>
-        <filter-class>gov.hhs.onc.dcdt.web.filter.impl.DispatcherServletFilterProxy</filter-class>
-        <init-param>
-            <param-name>targetFilterLifecycle</param-name>
-            <param-value>true</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>filterUrlRewrite</filter-name>
-        <servlet-name>dispatcherServlet</servlet-name>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>filterUrlRewrite</filter-name>
-        <servlet-name>logbackStatusServlet</servlet-name>
-        <dispatcher>FORWARD</dispatcher>
-        <dispatcher>REQUEST</dispatcher>
-    </filter-mapping>
-    
-    <filter>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <filter-class>gov.hhs.onc.dcdt.web.filter.impl.DispatcherServletFilterProxy</filter-class>
-    </filter>
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <servlet-name>dispatcherServlet</servlet-name>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>springSecurityFilterChain</filter-name>
-        <servlet-name>logbackStatusServlet</servlet-name>
-    </filter-mapping>
 </web-app>

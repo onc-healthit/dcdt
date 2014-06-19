@@ -17,20 +17,32 @@
         http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <!--====================================================================================================
+    = RESOURCES
+    =====================================================================================================-->
     <mvc:resources mapping="/static/**" location="/static/"/>
+    
+    <!--====================================================================================================
+    = INTERCEPTORS
+    =====================================================================================================-->
+    <beans:bean id="interceptor" class="org.springframework.web.servlet.HandlerInterceptor" abstract="true"/>
+    
+    <beans:bean id="interceptorWebContent" class="org.springframework.web.servlet.mvc.WebContentInterceptor" parent="interceptor"
+        p:cacheSeconds="0"
+        p:useCacheControlHeader="true"
+        p:useCacheControlNoStore="true"
+        p:useExpiresHeader="true"/>
     
     <mvc:interceptors>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
-            <!-- Deactivating web content cache usage -->
-            <beans:bean id="webContentInterceptor" class="org.springframework.web.servlet.mvc.WebContentInterceptor"
-                p:cacheSeconds="0"
-                p:useCacheControlHeader="true"
-                p:useCacheControlNoStore="true"
-                p:useExpiresHeader="true"/>
+            <beans:ref bean="interceptorWebContent"/>
         </mvc:interceptor>
     </mvc:interceptors>
     
+    <!--====================================================================================================
+    = TILES
+    =====================================================================================================-->
     <beans:bean id="tilesViewResolver" class="org.springframework.web.servlet.view.tiles3.TilesViewResolver"
         p:exposePathVariables="true"/>
     

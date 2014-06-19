@@ -31,11 +31,19 @@
     <sec:authentication-manager id="authManager">
         <sec:authentication-provider>
             <sec:user-service id="userService">
-                <sec:user name="${dcdt.web.user.admin.name}" authorities="ROLE_ADMIN" password="${dcdt.web.user.admin.secret}"/>
+                <sec:user name="${dcdt.web.user.admin.name}" authorities="#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }"
+                    password="${dcdt.web.user.admin.secret}"/>
             </sec:user-service>
         </sec:authentication-provider>
         <sec:authentication-provider ref="authProvAnon"/>
     </sec:authentication-manager>
+    
+    <!--====================================================================================================
+    = AUTHENTICATION REQUEST CACHE
+    =====================================================================================================-->
+    <beans:bean id="authReqCache" class="org.springframework.security.web.savedrequest.RequestCache" abstract="true"/>
+    
+    <beans:bean id="authReqCacheSession" class="org.springframework.security.web.savedrequest.HttpSessionRequestCache" parent="authReqCache"/>
     
     <!--====================================================================================================
     = AUTHENTICATION SUCCESS HANDLERS
@@ -43,7 +51,8 @@
     <beans:bean id="authHandlerSuccess" class="org.springframework.security.web.authentication.AuthenticationSuccessHandler" abstract="true"/>
     
     <beans:bean id="authHandlerSuccessSavedReq" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"
-        parent="authHandlerSuccess"/>
+        parent="authHandlerSuccess"
+        p:requestCache-ref="authReqCacheSession"/>
     
     <!--====================================================================================================
     = HTTP SECURITY
@@ -51,8 +60,8 @@
     <sec:http authentication-manager-ref="authManager" use-expressions="true">
         <sec:intercept-url pattern="/admin/login**" access="permitAll"/>
         <sec:intercept-url pattern="/admin/logout**" access="permitAll"/>
-        <sec:intercept-url pattern="/admin**" access="hasAuthority('ROLE_ADMIN')"/>
-        <sec:intercept-url pattern="/logback**" access="hasAuthority('ROLE_ADMIN')"/>
+        <sec:intercept-url pattern="/admin**" access="hasAuthority('#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }')"/>
+        <sec:intercept-url pattern="/logback**" access="hasAuthority('#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }')"/>
         <sec:intercept-url pattern="/**" access="permitAll"/>
         <sec:form-login authentication-failure-url="/admin/login?error" authentication-success-handler-ref="authHandlerSuccessSavedReq"
             login-page="/admin/login" login-processing-url="/admin/login/process" password-parameter="pass" username-parameter="user"/>
