@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration
     debug="false"
+    scan="true"
+    scanPeriod="30 seconds"
     xmlns="ch.qos.logback"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="ch.qos.logback /META-INF/logback/logback.xsd">

@@ -61,7 +61,7 @@
     =====================================================================================================-->
     <beans:bean id="toolMsgSource" class="gov.hhs.onc.dcdt.context.ToolMessageSource" abstract="true"/>
     <beans:bean id="toolMsgSourceImpl" class="gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl" parent="toolMsgSource" abstract="true"
-        p:cacheSeconds="300"
+        p:cacheSeconds="30"
         p:defaultEncoding="#{ charsetUtf8.name() }"
         p:fallbackToSystemLocale="false"/>
     

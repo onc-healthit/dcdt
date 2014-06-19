@@ -20,6 +20,9 @@
     =====================================================================================================-->
     <beans:bean id="filter" class="javax.servlet.Filter" abstract="true"/>
     
+    <!--====================================================================================================
+    = URL REWRITE FILTER
+    =====================================================================================================-->
     <beans:bean id="filterUrlRewrite" class="gov.hhs.onc.dcdt.web.filter.impl.ToolUrlRewriteFilter"
         p:confPath="/WEB-INF/urlrewrite/urlrewrite-web.xml"
         p:confReloadCheckInterval="30"
