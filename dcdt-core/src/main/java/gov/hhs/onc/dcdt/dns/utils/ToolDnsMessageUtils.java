@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
 import gov.hhs.onc.dcdt.dns.DnsMessageFlag;
+import gov.hhs.onc.dcdt.dns.DnsMessageOpcode;
 import gov.hhs.onc.dcdt.dns.DnsMessageRcode;
 import gov.hhs.onc.dcdt.dns.DnsMessageSection;
 import gov.hhs.onc.dcdt.net.InetProtocol;
@@ -17,6 +18,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.xbill.DNS.Header;
 import org.xbill.DNS.Message;
+import org.xbill.DNS.OPTRecord;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.SOARecord;
 
@@ -93,6 +95,17 @@ public abstract class ToolDnsMessageUtils {
     }
 
     @Nullable
+    public static DnsMessageOpcode getOpcode(Message msg) {
+        return ToolDnsUtils.findByCode(DnsMessageOpcode.class, msg.getHeader().getOpcode());
+    }
+
+    public static Message setOpcode(Message msg, DnsMessageOpcode opcode) {
+        msg.getHeader().setOpcode(opcode.getCode());
+
+        return msg;
+    }
+
+    @Nullable
     public static DnsMessageRcode getRcode(Message msg) {
         return ToolDnsUtils.findByCode(DnsMessageRcode.class, msg.getRcode());
     }
@@ -101,6 +114,10 @@ public abstract class ToolDnsMessageUtils {
         msg.getHeader().setRcode(rcode.getCode());
 
         return msg;
+    }
+
+    public static boolean hasRecords(Message msg, DnsMessageSection section) {
+        return ToolNumberUtils.isPositive(msg.getHeader().getCount(section.getCode()));
     }
 
     public static Message copyRecords(Message msg1, Message msg2, DnsMessageSection section) {
@@ -121,8 +138,18 @@ public abstract class ToolDnsMessageUtils {
         return msg;
     }
 
-    public static boolean hasRecords(Message msg, DnsMessageSection section) {
-        return ToolNumberUtils.isPositive(msg.getHeader().getCount(section.getCode()));
+    public static Message removeRecords(Message msg, DnsMessageSection section, @Nullable Record ... records) {
+        return removeRecords(msg, section, ToolArrayUtils.asList(records));
+    }
+
+    public static Message removeRecords(Message msg, DnsMessageSection section, @Nullable Iterable<? extends Record> records) {
+        if (records != null) {
+            for (Record record : records) {
+                msg.removeRecord(record, section.getCode());
+            }
+        }
+
+        return msg;
     }
 
     public static Message copyFlags(Message msg1, Message msg2, @Nullable DnsMessageFlag ... flags) {
@@ -132,15 +159,15 @@ public abstract class ToolDnsMessageUtils {
     public static Message copyFlags(Message msg1, Message msg2, @Nullable Iterable<DnsMessageFlag> flags) {
         Set<DnsMessageFlag> flagsSet = ((flags != null) ? new HashSet<>(IteratorUtils.toList(flags.iterator())) : EnumSet.allOf(DnsMessageFlag.class));
         Header header1 = msg1.getHeader(), header2 = msg2.getHeader();
-        int flagBit;
+        int flagCode;
         boolean flagValue;
 
         for (DnsMessageFlag flag : flagsSet) {
-            if ((flagValue = header1.getFlag((flagBit = flag.getCode()))) != header2.getFlag(flagBit)) {
+            if ((flagValue = header1.getFlag((flagCode = flag.getCode()))) != header2.getFlag(flagCode)) {
                 if (flagValue) {
-                    header2.setFlag(flagBit);
+                    header2.setFlag(flagCode);
                 } else {
-                    header2.unsetFlag(flagBit);
+                    header2.unsetFlag(flagCode);
                 }
             }
         }
@@ -155,15 +182,32 @@ public abstract class ToolDnsMessageUtils {
     public static boolean hasFlags(Message msg, @Nullable Iterable<DnsMessageFlag> flags) {
         if (flags != null) {
             Header header = msg.getHeader();
+            OPTRecord optRecord = msg.getOPT();
 
             for (DnsMessageFlag flag : flags) {
-                if (!header.getFlag(flag.getCode())) {
+                if ((!flag.isExtended() && !header.getFlag(flag.getCode()))
+                    || (flag.isExtended() && ((optRecord == null) || ((optRecord.getFlags() & flag.getCode()) == 0)))) {
                     return false;
                 }
             }
         }
 
         return true;
+    }
+
+    public static Set<DnsMessageFlag> getFlags(Message msg) {
+        Header header = msg.getHeader();
+        OPTRecord optRecord = msg.getOPT();
+        Set<DnsMessageFlag> flags = EnumSet.noneOf(DnsMessageFlag.class);
+
+        for (DnsMessageFlag flag : EnumSet.allOf(DnsMessageFlag.class)) {
+            if ((!flag.isExtended() && header.getFlag(flag.getCode()))
+                || (flag.isExtended() && (optRecord != null) && ((optRecord.getFlags() & flag.getCode()) != 0))) {
+                flags.add(flag);
+            }
+        }
+
+        return flags;
     }
 
     public static Message setFlags(Message msg, @Nullable DnsMessageFlag ... flags) {
@@ -173,9 +217,19 @@ public abstract class ToolDnsMessageUtils {
     public static Message setFlags(Message msg, @Nullable Iterable<DnsMessageFlag> flags) {
         if (flags != null) {
             Header header = msg.getHeader();
+            OPTRecord optRecord = msg.getOPT();
 
             for (DnsMessageFlag flag : flags) {
-                header.setFlag(flag.getCode());
+                if (!flag.isExtended()) {
+                    header.setFlag(flag.getCode());
+                } else if (optRecord != null) {
+                    removeRecords(msg, DnsMessageSection.ADDITIONAL, optRecord);
+                    addRecords(msg, DnsMessageSection.ADDITIONAL, (optRecord =
+                        new OPTRecord(optRecord.getPayloadSize(), optRecord.getExtendedRcode(), optRecord.getVersion(),
+                            (optRecord.getFlags() | flag.getCode()), optRecord.getOptions())));
+                } else {
+                    addRecords(msg, DnsMessageSection.ADDITIONAL, (optRecord = new OPTRecord(0xff, 0, 0, flag.getCode())));
+                }
             }
         }
 

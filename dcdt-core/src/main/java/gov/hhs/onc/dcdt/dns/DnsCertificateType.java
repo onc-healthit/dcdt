@@ -1,26 +1,35 @@
 package gov.hhs.onc.dcdt.dns;
 
-import gov.hhs.onc.dcdt.crypto.CryptographyTaggedIdentifier;
+import javax.annotation.Nonnegative;
 import org.xbill.DNS.CERTRecord.CertificateType;
 
-public enum DnsCertificateType implements CryptographyTaggedIdentifier {
-    PKIX("PKIX", CertificateType.PKIX), IPKIX("IPKIX", CertificateType.IPKIX);
+/**
+ * @see org.xbill.DNS.CERTRecord.CertificateType
+ */
+public enum DnsCertificateType implements DnsMnemonicIdentifier {
+    PKIX(CertificateType.PKIX, "PKIX"), SPKI(CertificateType.SPKI, "SPKI"), PGP(CertificateType.PGP, "PGP"), IPKIX(CertificateType.IPKIX, "IPKIX"), ISPKI(
+        CertificateType.ISPKI, "ISPKI"), IPGP(CertificateType.IPGP, "IPGP"), ACPKIX(CertificateType.ACPKIX, "ACPKIX"), IACPKIX(CertificateType.IACPKIX,
+        "IACPKIX"), URI(CertificateType.URI), OID(CertificateType.OID);
 
+    private final int code;
     private final String id;
-    private final int tag;
 
-    private DnsCertificateType(String id, int tag) {
+    private DnsCertificateType(@Nonnegative int code) {
+        this(code, CertificateType.string(code));
+    }
+
+    private DnsCertificateType(@Nonnegative int code, String id) {
+        this.code = code;
         this.id = id;
-        this.tag = tag;
+    }
+
+    @Override
+    public int getCode() {
+        return this.code;
     }
 
     @Override
     public String getId() {
         return this.id;
-    }
-
-    @Override
-    public int getTag() {
-        return this.tag;
     }
 }

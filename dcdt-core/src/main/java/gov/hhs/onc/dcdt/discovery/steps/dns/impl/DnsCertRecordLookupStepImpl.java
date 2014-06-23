@@ -6,12 +6,9 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
-import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.discovery.steps.dns.DnsCertRecordLookupStep;
-import gov.hhs.onc.dcdt.dns.DnsCertificateType;
-import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.CertRecordParameterPredicate;
@@ -44,14 +41,12 @@ public class DnsCertRecordLookupStepImpl extends AbstractDnsLookupStep<CERTRecor
                         new CertificateInfoImpl(CertificateUtils.readCertificate(certRecord.getCert(), CertificateType.X509, DataEncoding.DER))));
 
                     this.execMsgs.add(String.format(
-                        "DNS lookup (directAddr=%s) CERT record (keyAlg=%s, certType=%s) certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
-                        directAddr.toAddress(), CryptographyUtils.findByTag(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()),
-                        CryptographyUtils.findByTag(DnsCertificateType.class, certRecord.getCertType()), certInfo.getSubjectName(),
-                        certInfo.getSerialNumber(), certInfo.getIssuerName()));
+                        "DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
+                        directAddr.toAddress(), certRecord.getCertType(), certRecord.getAlgorithm(), certInfo.getSubjectName(), certInfo.getSerialNumber(),
+                        certInfo.getIssuerName()));
                 } catch (CryptographyException e) {
-                    this.execMsgs.add(String.format("DNS lookup (directAddr=%s) CERT record (keyAlg=%s, certType=%s) certificate processing failed: %s",
-                        directAddr.toAddress(), CryptographyUtils.findByTag(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()),
-                        CryptographyUtils.findByTag(DnsCertificateType.class, certRecord.getCertType()), e.getMessage()));
+                    this.execMsgs.add(String.format("DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate processing failed: %s",
+                        directAddr.toAddress(), certRecord.getCertType(), certRecord.getAlgorithm(), e.getMessage()));
                     this.execSuccess = false;
 
                     break;

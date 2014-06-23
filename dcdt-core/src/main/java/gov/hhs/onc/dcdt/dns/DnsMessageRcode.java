@@ -14,7 +14,7 @@ public enum DnsMessageRcode implements DnsMnemonicIdentifier {
     private final int code;
     private final String id;
 
-    private DnsMessageRcode(int code) {
+    private DnsMessageRcode(@Nonnegative int code) {
         this.code = code;
         this.id = Rcode.string(code);
     }

@@ -11,10 +11,14 @@ public enum DnsMessageSection implements DnsMnemonicIdentifier {
 
     private final int code;
     private final String id;
+    private final String idDisplay;
+    private final String idUpdateDisplay;
 
-    private DnsMessageSection(int code) {
+    private DnsMessageSection(@Nonnegative int code) {
         this.code = code;
         this.id = Section.string(code);
+        this.idDisplay = Section.longString(code);
+        this.idUpdateDisplay = Section.updString(code);
     }
 
     @Nonnegative
@@ -26,5 +30,13 @@ public enum DnsMessageSection implements DnsMnemonicIdentifier {
     @Override
     public String getId() {
         return this.id;
+    }
+
+    public String getIdDisplay() {
+        return this.idDisplay;
+    }
+
+    public String getIdUpdateDisplay() {
+        return this.idUpdateDisplay;
     }
 }

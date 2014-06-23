@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.service.dns.server.impl;
 
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.dns.DnsException;
+import gov.hhs.onc.dcdt.dns.DnsMessageOpcode;
 import gov.hhs.onc.dcdt.dns.DnsMessageRcode;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsMessageUtils;
@@ -15,8 +16,10 @@ import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessor;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.stereotype.Component;
 import org.xbill.DNS.Message;
 import org.xbill.DNS.Name;
@@ -28,6 +31,9 @@ import org.xbill.DNS.Record;
 public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcessor<DnsServerRequest> implements DnsServerRequestProcessor {
     private final static Logger LOGGER = LoggerFactory.getLogger(DnsServerRequestProcessorImpl.class);
 
+    @Autowired
+    private ConversionService convService;
+
     private DnsServerConfig serverConfig;
 
     public DnsServerRequestProcessorImpl(DnsServerConfig serverConfig, DnsServerRequest req) {
@@ -38,6 +44,8 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
 
     @Override
     protected byte[] processError(byte[] reqData, Exception exception) {
+        LOGGER.error(exception.getMessage(), exception.getCause());
+
         return ToolDnsMessageUtils.createErrorResponse(((DnsServerRequestProcessingException) exception).getRequestMessage(), DnsMessageRcode.SERVFAIL)
             .toWire();
     }
@@ -52,7 +60,7 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
             respData = ToolDnsMessageUtils.toWire(protocol, (respMsg = this.resolveQuery((reqMsg = ToolDnsMessageUtils.fromWire(protocol, reqData)))));
 
             LOGGER.trace(String.format("Resolved (class=%s) DNS server request (protocol=%s, remoteSocketAddr={%s}):\n%s\n%s", ToolClassUtils.getName(this),
-                protocol.name(), this.req.getRemoteAddress(), reqMsg, respMsg));
+                protocol.name(), this.req.getRemoteAddress(), this.convService.convert(reqMsg, String.class), this.convService.convert(respMsg, String.class)));
 
             return respData;
         } catch (Exception e) {
@@ -66,7 +74,11 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         Message respMsg = ToolDnsMessageUtils.createResponse(reqMsg);
         Record questionRecord = reqMsg.getQuestion();
 
-        if (questionRecord == null) {
+        if (ToolDnsMessageUtils.getOpcode(reqMsg) != DnsMessageOpcode.QUERY) {
+            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.REFUSED);
+
+            return respMsg;
+        } else if (questionRecord == null) {
             ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.FORMERR);
 
             return respMsg;
@@ -75,7 +87,7 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         DnsRecordType questionRecordType = ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType());
         Name questionName;
 
-        if (questionRecordType == null) {
+        if ((questionRecordType == null) || !questionRecordType.isProcessed()) {
             ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NXRRSET);
 
             return respMsg;

@@ -45,9 +45,9 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
     }
 
     @Override
-    public DnsLookupResult<CERTRecord> lookupCertRecords(@Nullable DnsKeyAlgorithmType keyAlgType, @Nullable DnsCertificateType certType, Name name)
+    public DnsLookupResult<CERTRecord> lookupCertRecords(@Nullable DnsCertificateType certType, @Nullable Set<DnsKeyAlgorithmType> keyAlgTypes, Name name)
         throws DnsException {
-        return this.lookupRecords(DnsRecordType.CERT, CERTRecord.class, name, new CertRecordParameterPredicate(keyAlgType, certType));
+        return this.lookupRecords(DnsRecordType.CERT, CERTRecord.class, name, new CertRecordParameterPredicate(certType, keyAlgTypes));
     }
 
     @Override
