@@ -27,16 +27,6 @@
     <property name="dcdt.log.file.pattern" value="${dcdt.log.file.pattern:-%d{yyyy-MM-dd HH:mm:ss z} [%C:%L %t] %p - %m%n%toolEx}" scope="context"/>
     
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
-        <!--
-        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
-            <evaluator>
-                <expression>
-                    return message.contains("No properties file found for");
-                </expression>
-            </evaluator>
-            <onMatch>DENY</onMatch>
-        </filter>
-        -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${dcdt.log.console.pattern}</pattern>
         </encoder>
