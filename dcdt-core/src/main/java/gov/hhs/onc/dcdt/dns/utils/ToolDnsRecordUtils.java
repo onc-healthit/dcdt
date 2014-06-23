@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Set;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -68,20 +69,24 @@ public abstract class ToolDnsRecordUtils {
     }
 
     public static class CertRecordParameterPredicate extends AbstractToolPredicate<CERTRecord> {
-        public final static CertRecordParameterPredicate INSTANCE_PKIX = new CertRecordParameterPredicate(DnsKeyAlgorithmType.RSASHA1, DnsCertificateType.PKIX);
+        public final static CertRecordParameterPredicate INSTANCE_PKIX = new CertRecordParameterPredicate(DnsCertificateType.PKIX);
 
-        private DnsKeyAlgorithmType keyAlgType;
         private DnsCertificateType certType;
+        private Set<DnsKeyAlgorithmType> keyAlgTypes;
 
-        public CertRecordParameterPredicate(@Nullable DnsKeyAlgorithmType keyAlgType, @Nullable DnsCertificateType certType) {
-            this.keyAlgType = keyAlgType;
+        public CertRecordParameterPredicate(@Nullable DnsCertificateType certType) {
+            this(certType, null);
+        }
+
+        public CertRecordParameterPredicate(@Nullable DnsCertificateType certType, @Nullable Set<DnsKeyAlgorithmType> keyAlgTypes) {
             this.certType = certType;
+            this.keyAlgTypes = keyAlgTypes;
         }
 
         @Override
         protected boolean evaluateInternal(CERTRecord certRecord) throws Exception {
-            return (((this.keyAlgType == null) || (certRecord.getAlgorithm() == this.keyAlgType.getTag())) && ((this.certType == null) || (certRecord
-                .getCertType() == this.certType.getTag())));
+            return (((this.keyAlgTypes == null) || this.keyAlgTypes.contains(ToolDnsUtils.findByCode(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()))) && ((this.certType == null) || (certRecord
+                .getCertType() == this.certType.getCode())));
         }
     }
 
@@ -100,7 +105,7 @@ public abstract class ToolDnsRecordUtils {
     @Nonnegative
     public static int getKeyTag(DnsKeyAlgorithmType keyAlgType, PublicKey publicKey) throws DnsException {
         try {
-            return new DNSKEYRecord(Name.root, DnsDclassType.IN.getCode(), 0, 0, Protocol.DNSSEC, keyAlgType.getTag(), publicKey).getFootprint();
+            return new DNSKEYRecord(Name.root, DnsDclassType.IN.getCode(), 0, 0, Protocol.DNSSEC, keyAlgType.getCode(), publicKey).getFootprint();
         } catch (DNSSECException e) {
             throw new DnsException(String.format("Unable to get key tag for public key (class=%s, algType=%s).", ToolClassUtils.getName(publicKey),
                 keyAlgType.name()), e);

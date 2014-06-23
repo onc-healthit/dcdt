@@ -9,7 +9,7 @@ public enum DnsResultType implements DnsCodeIdentifier {
 
     private final int code;
 
-    private DnsResultType(int code) {
+    private DnsResultType(@Nonnegative int code) {
         this.code = code;
     }
 

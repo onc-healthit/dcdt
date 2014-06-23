@@ -27,7 +27,7 @@ public interface DnsLookupService extends ToolBean {
 
     public DnsLookupResult<CERTRecord> lookupCertRecords(Name name) throws DnsException;
 
-    public DnsLookupResult<CERTRecord> lookupCertRecords(@Nullable DnsKeyAlgorithmType keyAlgType, @Nullable DnsCertificateType certType, Name name)
+    public DnsLookupResult<CERTRecord> lookupCertRecords(@Nullable DnsCertificateType certType, @Nullable Set<DnsKeyAlgorithmType> keyAlgTypes, Name name)
         throws DnsException;
 
     public DnsLookupResult<CNAMERecord> lookupCnameRecords(Name name) throws DnsException;
