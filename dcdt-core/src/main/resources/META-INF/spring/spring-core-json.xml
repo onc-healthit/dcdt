@@ -16,11 +16,32 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = JSON DESERIALIZERS
+    =====================================================================================================-->
+    <beans:bean id="jsonDeserializer" class="com.fasterxml.jackson.databind.JsonDeserializer" abstract="true"/>
+    
+    <beans:bean id="jsonDeserializerConv" class="gov.hhs.onc.dcdt.json.impl.ConvertingJsonDeserializer" parent="jsonDeserializer" abstract="true"/>
+    
+    <beans:bean id="jsonDeserializerConvStr" parent="jsonDeserializerConv" abstract="true">
+        <beans:constructor-arg name="srcClass" value="java.lang.String"/>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = JSON SERIALIZERS
+    =====================================================================================================-->
+    <beans:bean id="jsonSerializer" class="com.fasterxml.jackson.databind.JsonSerializer" abstract="true"/>
+    
+    <beans:bean id="jsonSerializerConv" class="gov.hhs.onc.dcdt.json.impl.ConvertingJsonSerializer" parent="jsonSerializer" abstract="true"/>
+    
+    <beans:bean id="jsonSerializerConvStr" parent="jsonSerializerConv" abstract="true">
+        <beans:constructor-arg name="targetClass" value="java.lang.String"/>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = OBJECT MAPPER
     =====================================================================================================-->
     <beans:bean id="objMapper" class="gov.hhs.onc.dcdt.json.impl.ToolObjectMapper"
-        p:annotationIntrospector-ref="toolAnnoInspector"
-        p:converters-ref="convs">
+        p:annotationIntrospector-ref="toolAnnoInspector">
         <beans:property name="configFeatures">
             <util:map>
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.DeserializationFeature).READ_ENUMS_USING_TO_STRING }" value="true"/>
@@ -28,6 +49,66 @@
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.SerializationFeature).INDENT_OUTPUT }" value="true"/>
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.SerializationFeature).WRITE_ENUMS_USING_TO_STRING }" value="true"/>
             </util:map>
+        </beans:property>
+        <beans:property name="jsonDeserializers">
+            <util:set>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="org.apache.directory.api.ldap.model.name.Dn"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="org.xbill.DNS.Name"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="java.net.InetAddress"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="org.apache.directory.api.ldap.model.entry.Attribute"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="org.apache.directory.api.ldap.model.ldif.LdifEntry"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="gov.hhs.onc.dcdt.mail.MailAddress"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="org.springframework.util.MimeType"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="gov.hhs.onc.dcdt.beans.ToolNamedBean"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="java.nio.file.Path"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="org.apache.directory.api.ldap.model.name.Rdn"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="java.net.URI"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="java.net.URL"/>
+                <beans:bean parent="jsonDeserializerConvStr"
+                    c:targetClass="org.bouncycastle.asn1.x500.X500Name"/>
+            </util:set>
+        </beans:property>
+        <beans:property name="jsonSerializers">
+            <util:set>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="java.security.cert.X509Certificate"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="org.apache.directory.api.ldap.model.name.Dn"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="org.xbill.DNS.Name"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="java.net.InetAddress"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="org.apache.directory.api.ldap.model.entry.Attribute"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="org.apache.directory.api.ldap.model.ldif.LdifEntry"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="gov.hhs.onc.dcdt.mail.MailAddress"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="org.springframework.util.MimeType"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="java.nio.file.Path"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="org.apache.directory.api.ldap.model.name.Rdn"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="java.net.URI"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="java.net.URL"/>
+                <beans:bean parent="jsonSerializerConvStr"
+                    c:srcClass="org.bouncycastle.asn1.x500.X500Name"/>
+            </util:set>
         </beans:property>
         <beans:property name="modules">
             <util:set>

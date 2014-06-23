@@ -58,6 +58,7 @@
         abstract="true"
         p:processed="true">
         <beans:property name="gatewayConfig">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="mailGatewayConfigImpl"
                 p:port="${dcdt.instance.mail.james.smtp.1.port}"/>
         </beans:property>

@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.service.mail.james.impl;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import gov.hhs.onc.dcdt.service.mail.james.ToolDnsService;
 import gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceConfigBean;
@@ -81,7 +81,7 @@ public class ToolDnsServiceImpl extends DNSJavaService implements ToolDnsService
     @Nullable
     @Override
     protected Record[] lookup(String nameStr, int recordTypeId, String recordTypeDesc) throws TemporaryResolutionException {
-        DnsRecordType recordType = ToolDnsRecordUtils.findByType(recordTypeId);
+        DnsRecordType recordType = ToolDnsUtils.findByCode(DnsRecordType.class, recordTypeId);
 
         if (recordType == null) {
             LOGGER.error(String.format("Unable to perform DNS lookup (name=%s) for unknown record type (desc=%s): %d", nameStr, recordTypeDesc, recordTypeId));
@@ -94,7 +94,7 @@ public class ToolDnsServiceImpl extends DNSJavaService implements ToolDnsService
         try {
             name = Name.fromString(nameStr);
         } catch (TextParseException e) {
-            LOGGER.error(String.format("Unable to parse DNS lookup (recordType=%s) name: %s", recordType.getTypeDisplay(), nameStr), e);
+            LOGGER.error(String.format("Unable to parse DNS lookup (recordType=%s) name: %s", recordType.getId(), nameStr), e);
 
             return null;
         }
@@ -108,7 +108,7 @@ public class ToolDnsServiceImpl extends DNSJavaService implements ToolDnsService
                 lookupResult = this.configBean.getExternalLookupService().lookupRecords(recordType, recordType.getRecordClass(), name);
             }
         } catch (DnsException e) {
-            LOGGER.error(String.format("Unable to perform DNS lookup (recordType=%s, name=%s) name.", recordType.getTypeDisplay(), nameStr), e);
+            LOGGER.error(String.format("Unable to perform DNS lookup (recordType=%s, name=%s) name.", recordType.getId(), nameStr), e);
 
             return null;
         }
@@ -124,7 +124,7 @@ public class ToolDnsServiceImpl extends DNSJavaService implements ToolDnsService
             addrs = ArrayUtils.toArray((this.addrLocalhostNames.contains(name) ? this.addrLocalhost : Address.getByAddress(name, Address.IPv4)));
             addrs = (ToolNumberUtils.isPositive(limit) ? ArrayUtils.subarray(addrs, 0, limit) : addrs);
         } catch (UnknownHostException e) {
-            Record[] addrRecords = this.lookupNoException(name, DnsRecordType.A.getType(), DnsRecordType.A.getTypeDisplay());
+            Record[] addrRecords = this.lookupNoException(name, DnsRecordType.A.getCode(), DnsRecordType.A.getId());
 
             if (ArrayUtils.isEmpty((addrRecords = (ToolNumberUtils.isPositive(limit) ? ArrayUtils.subarray(addrRecords, 0, limit) : addrRecords)))) {
                 throw e;

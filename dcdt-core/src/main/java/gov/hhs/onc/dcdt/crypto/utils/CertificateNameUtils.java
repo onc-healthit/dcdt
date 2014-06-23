@@ -30,7 +30,7 @@ public abstract class CertificateNameUtils {
         @Nullable
         @Override
         protected Pair<CertificateAltNameType, GeneralName> transformInternal(List<?> altNameList) throws Exception {
-            CertificateAltNameType altNameType = CryptographyUtils.findTaggedId(CertificateAltNameType.class, ((Integer) altNameList.get(0)));
+            CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, ((Integer) altNameList.get(0)));
 
             return ((altNameType != null) ? new MutablePair<>(altNameType, new GeneralName(altNameType.getTag(), ((String) altNameList.get(1)))) : null);
         }
@@ -42,7 +42,7 @@ public abstract class CertificateNameUtils {
         @Nullable
         @Override
         protected Pair<CertificateAltNameType, GeneralName> transformInternal(GeneralName altName) throws Exception {
-            CertificateAltNameType altNameType = CryptographyUtils.findTaggedId(CertificateAltNameType.class, altName.getTagNo());
+            CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, altName.getTagNo());
 
             return ((altNameType != null) ? new MutablePair<>(altNameType, altName) : null);
         }

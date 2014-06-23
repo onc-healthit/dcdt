@@ -35,6 +35,7 @@
         </beans:property>
     </beans:bean>
     
+    <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="instanceConfigDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="setSysPropsInstanceConfig" destroy-method="close"
         p:acquireIncrement="1"
         p:driverClass="org.apache.derby.jdbc.EmbeddedDriver"
@@ -68,7 +69,6 @@
     </beans:bean>
     
     <beans:bean id="instanceConfigSessionFactory" class="gov.hhs.onc.dcdt.data.impl.ToolLocalSessionFactoryBean" destroy-method="destroy"
-        p:converters-ref="convs"
         p:dataSource-ref="instanceConfigDataSource"
         p:entityInterceptor-ref="compositeBeanInterceptor"
         p:packagesToScan="gov.hhs.onc.dcdt">
@@ -77,6 +77,18 @@
                 <beans:prop key="#{ T(org.hibernate.cfg.AvailableSettings).AUTO_CLOSE_SESSION }">true</beans:prop>
                 <beans:prop key="#{ T(org.hibernate.cfg.AvailableSettings).DIALECT }">org.hibernate.dialect.DerbyTenSevenDialect</beans:prop>
             </util:properties>
+        </beans:property>
+        <beans:property name="userTypes">
+            <util:set>
+                <beans:ref bean="certUserType"/>
+                <beans:ref bean="dnsNameUserType"/>
+                <beans:ref bean="inetAddrUserType"/>
+                <beans:ref bean="keyUserType"/>
+                <beans:ref bean="mailAddrUserType"/>
+                <beans:ref bean="uriUserType"/>
+                <beans:ref bean="urlUserType"/>
+                <beans:ref bean="x500NameUserType"/>
+            </util:set>
         </beans:property>
     </beans:bean>
     

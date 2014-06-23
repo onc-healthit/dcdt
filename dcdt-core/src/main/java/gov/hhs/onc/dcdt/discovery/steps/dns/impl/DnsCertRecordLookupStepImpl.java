@@ -45,13 +45,13 @@ public class DnsCertRecordLookupStepImpl extends AbstractDnsLookupStep<CERTRecor
 
                     this.execMsgs.add(String.format(
                         "DNS lookup (directAddr=%s) CERT record (keyAlg=%s, certType=%s) certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
-                        directAddr.toAddress(), CryptographyUtils.findTaggedId(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()),
-                        CryptographyUtils.findTaggedId(DnsCertificateType.class, certRecord.getCertType()), certInfo.getSubjectName(),
+                        directAddr.toAddress(), CryptographyUtils.findByTag(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()),
+                        CryptographyUtils.findByTag(DnsCertificateType.class, certRecord.getCertType()), certInfo.getSubjectName(),
                         certInfo.getSerialNumber(), certInfo.getIssuerName()));
                 } catch (CryptographyException e) {
                     this.execMsgs.add(String.format("DNS lookup (directAddr=%s) CERT record (keyAlg=%s, certType=%s) certificate processing failed: %s",
-                        directAddr.toAddress(), CryptographyUtils.findTaggedId(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()),
-                        CryptographyUtils.findTaggedId(DnsCertificateType.class, certRecord.getCertType()), e.getMessage()));
+                        directAddr.toAddress(), CryptographyUtils.findByTag(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()),
+                        CryptographyUtils.findByTag(DnsCertificateType.class, certRecord.getCertType()), e.getMessage()));
                     this.execSuccess = false;
 
                     break;

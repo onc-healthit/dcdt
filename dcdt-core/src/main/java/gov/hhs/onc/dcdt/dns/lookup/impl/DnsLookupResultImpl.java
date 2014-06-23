@@ -5,7 +5,7 @@ import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsResultType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordOrderUtils;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.util.ArrayList;
@@ -137,6 +137,6 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
 
     @Override
     public DnsResultType getType() {
-        return ToolDnsResolverUtils.findResultType(this.lookup.getResult());
+        return ToolDnsUtils.findByCode(DnsResultType.class, this.lookup.getResult());
     }
 }

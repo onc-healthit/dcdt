@@ -23,6 +23,7 @@ import gov.hhs.onc.dcdt.dns.config.SrvRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.TargetedDnsRecordConfig;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
@@ -103,7 +104,8 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements Ins
 
     @Override
     public <T extends Record> Collection<T> findAnswers(T questionRecord) {
-        return ToolDnsRecordUtils.findAnswers(questionRecord, this.mapRecordConfigs().get(ToolDnsRecordUtils.findByType(questionRecord.getType())));
+        return ToolDnsRecordUtils.findAnswers(questionRecord,
+            this.mapRecordConfigs().get(ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType())));
     }
 
     @Override

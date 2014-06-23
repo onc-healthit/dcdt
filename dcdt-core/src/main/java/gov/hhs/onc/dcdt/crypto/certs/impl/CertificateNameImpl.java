@@ -176,7 +176,7 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
 
     @Override
     public void setAltName(GeneralName altName) {
-        CertificateAltNameType altNameType = CryptographyUtils.findTaggedId(CertificateAltNameType.class, altName.getTagNo());
+        CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, altName.getTagNo());
 
         if (altNameType == null) {
             return;

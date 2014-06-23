@@ -23,6 +23,39 @@
     <context:spring-configured/>
     
     <!--====================================================================================================
+    = METHOD INVOCATIONS
+    =====================================================================================================-->
+    <beans:bean id="methodInvoke" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"/>
+    
+    <!--====================================================================================================
+    = SYSTEM PROPERTIES
+    =====================================================================================================-->
+    <beans:bean id="setSysProps" parent="methodInvoke" abstract="true"
+        p:targetObject="#{ T(java.lang.System).properties }"
+        p:targetMethod="putAll"/>
+    
+    <!--====================================================================================================
+    = LOCALES
+    =====================================================================================================-->
+    <beans:bean id="locale" class="java.util.Locale" abstract="true"/>
+    
+    <beans:bean id="localeRoot" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" parent="locale" autowire-candidate="false"
+        p:targetClass="java.util.Locale"
+        p:targetField="ROOT"/>
+    
+    <beans:bean id="setLocale" parent="methodInvoke"
+        p:targetClass="org.springframework.context.i18n.LocaleContextHolder"
+        p:targetMethod="setLocaleContext">
+        <beans:property name="arguments">
+            <util:list>
+                <beans:bean class="org.springframework.context.i18n.SimpleLocaleContext"
+                    c:locale-ref="localeRoot"/>
+                <beans:value>true</beans:value>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = CHARACTER SET
     =====================================================================================================-->
     <beans:bean id="charset" class="java.nio.charset.Charset" abstract="true"/>
@@ -65,7 +98,7 @@
         p:defaultEncoding="#{ charsetUtf8.name() }"
         p:fallbackToSystemLocale="false"/>
     
-    <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true">
+    <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true" depends-on="setLocale">
         <beans:property name="basenames">
             <beans:array>
                 <!--suppress SpringModelInspection -->
@@ -75,7 +108,7 @@
     </beans:bean>
     <beans:bean id="messageSource" parent="messageSourceBase" primary="true"/>
     
-    <beans:bean id="messageSourceValidationBase" parent="toolMsgSourceImpl" abstract="true">
+    <beans:bean id="messageSourceValidationBase" parent="toolMsgSourceImpl" abstract="true" depends-on="setLocale">
         <beans:property name="basenames">
             <beans:array>
                 <beans:value>org/hibernate/validator/ValidationMessages</beans:value>
@@ -113,7 +146,7 @@
     <!--====================================================================================================
     = VELOCITY ENGINE
     =====================================================================================================-->
-    <beans:bean id="velocityEngine" class="gov.hhs.onc.dcdt.velocity.impl.ToolVelocityEngineFactoryBean" abstract="true"
+    <beans:bean id="velocityEngine" class="gov.hhs.onc.dcdt.velocity.impl.ToolVelocityEngineFactoryBean" abstract="true"  depends-on="setLocale"
         p:preferFileSystemAccess="false"
         p:resourceLoaderPath="core/velocity">
         <beans:property name="velocimacroLibraries">
@@ -122,13 +155,4 @@
             </beans:list>
         </beans:property>
     </beans:bean>
-    
-    <!--====================================================================================================
-    = METHOD INVOCATIONS
-    =====================================================================================================-->
-    <beans:bean id="methodInvoke" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"/>
-    
-    <beans:bean id="setSysProps" parent="methodInvoke" abstract="true"
-        p:targetObject="#{ T(java.lang.System).properties }"
-        p:targetMethod="putAll"/>
 </beans:beans>

@@ -1,12 +1,9 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
 import gov.hhs.onc.dcdt.dns.DnsNameException;
-import gov.hhs.onc.dcdt.dns.DnsNameLabel;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import org.xbill.DNS.Name;
@@ -42,22 +39,6 @@ public abstract class ToolDnsNameUtils {
 
     public final static Pattern PATTERN_DNS_NAME_ABS = Pattern.compile(PATTERN_STR_DNS_NAME_ABS);
     public final static Pattern PATTERN_DNS_NAME_REL = Pattern.compile(PATTERN_STR_DNS_NAME_REL);
-
-    @Nullable
-    public static <T extends Enum<T> & DnsNameLabel> T findByLabel(Class<T> nameLblEnumClass, Name nameLbl) {
-        return findByLabelString(nameLblEnumClass, nameLbl.toString());
-    }
-
-    @Nullable
-    public static <T extends Enum<T> & DnsNameLabel> T findByLabelString(Class<T> nameLblEnumClass, String nameLblStr) {
-        for (T nameLblEnum : EnumSet.allOf(nameLblEnumClass)) {
-            if (Objects.equals(nameLblEnum.getDnsNameLabelString(), nameLblStr)) {
-                return nameLblEnum;
-            }
-        }
-
-        return null;
-    }
 
     public static Name toRelative(Name name) throws DnsNameException {
         return toRelative(name, Name.root);

@@ -43,7 +43,7 @@ public abstract class KeyUtils {
     public static Key readKey(KeyType keyType, byte[] data, KeyAlgorithm keyAlg, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.writePemContent(CryptographyUtils.findTypeId(PemType.class, keyType.getType()), data);
+                data = PemUtils.writePemContent(CryptographyUtils.findByType(PemType.class, keyType.getType()), data);
             }
 
             return ((Key) SerializationUtils.deserialize(SerializationUtils.serialize(new KeyRep(keyType.getKeyRepType(), keyAlg.getId(), keyAlg
@@ -68,8 +68,8 @@ public abstract class KeyUtils {
 
     public static <T extends Key> void writeKey(Writer writer, T key, DataEncoding dataEnc) throws CryptographyException {
         Class<? extends Key> keyClass = key.getClass();
-        KeyType keyType = CryptographyUtils.findTypeId(KeyType.class, keyClass);
-        KeyAlgorithm keyAlg = CryptographyUtils.findId(KeyAlgorithm.class, key.getAlgorithm());
+        KeyType keyType = CryptographyUtils.findByType(KeyType.class, keyClass);
+        KeyAlgorithm keyAlg = CryptographyUtils.findById(KeyAlgorithm.class, key.getAlgorithm());
         // noinspection ConstantConditions
         Class<? extends EncodedKeySpec> keySpecClass = keyAlg.getKeySpecClass(keyType);
 
@@ -78,7 +78,7 @@ public abstract class KeyUtils {
             byte[] data = keySpecClass.cast(getKeyFactory(keyAlg).getKeySpec(key, keySpecClass)).getEncoded();
 
             if (dataEnc == DataEncoding.PEM) {
-                PemUtils.writePemContent(writer, CryptographyUtils.findTypeId(PemType.class, keyClass), data);
+                PemUtils.writePemContent(writer, CryptographyUtils.findByType(PemType.class, keyClass), data);
             } else {
                 IOUtils.write(data, writer);
             }

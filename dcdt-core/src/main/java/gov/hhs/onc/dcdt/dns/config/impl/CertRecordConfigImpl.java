@@ -20,7 +20,7 @@ public class CertRecordConfigImpl extends AbstractDnsRecordConfig<CERTRecord> im
 
     @Override
     public CERTRecord toRecord() throws DnsException {
-        return new CERTRecord(this.name, this.recordType.getDclassType().getType(), this.ttl, this.certType.getTag(), this.keyTag, this.keyAlgType.getTag(),
+        return new CERTRecord(this.name, this.recordType.getDclassType().getCode(), this.ttl, this.certType.getTag(), this.keyTag, this.keyAlgType.getTag(),
             this.certData);
     }
 

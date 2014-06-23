@@ -3,31 +3,27 @@ package gov.hhs.onc.dcdt.dns;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import org.xbill.DNS.Name;
 
-public enum DnsServiceType implements DnsNameLabel {
+public enum DnsServiceType implements DnsNameLabelIdentifier {
     LDAP("_ldap");
 
-    private final String serviceType;
+    private final String id;
 
-    private DnsServiceType(String serviceType) {
-        this.serviceType = serviceType;
+    private DnsServiceType(String id) {
+        this.id = id;
     }
 
     @Override
-    public Name getDnsNameLabel() throws DnsNameException {
-        return ToolDnsNameUtils.fromLabelStrings(this.serviceType);
+    public Name getNameLabel() throws DnsNameException {
+        return ToolDnsNameUtils.fromLabelStrings(this.id);
     }
 
     @Override
-    public String getDnsNameLabelString() {
-        return this.serviceType;
+    public String getId() {
+        return this.id;
     }
 
     @Override
     public String toString() {
-        return this.serviceType;
-    }
-
-    public String getServiceType() {
-        return this.serviceType;
+        return this.id;
     }
 }

@@ -73,7 +73,7 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
     @Override
     public DnsLookupResult<SRVRecord> lookupSrvRecords(DnsServiceType serviceType, DnsServiceProtocol serviceProtocol, Name name) throws DnsException {
         return this.lookupRecords(DnsRecordType.SRV, SRVRecord.class,
-            ToolDnsNameUtils.fromLabels(serviceType.getDnsNameLabel(), serviceProtocol.getDnsNameLabel(), name));
+            ToolDnsNameUtils.fromLabels(serviceType.getNameLabel(), serviceProtocol.getNameLabel(), name));
     }
 
     @Override
@@ -85,7 +85,7 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
     @SuppressWarnings({ "unchecked" })
     public <T extends Record> DnsLookupResult<T>
         lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name, @Nullable Predicate<T> recordPredicate) throws DnsException {
-        Lookup lookup = new Lookup(name, recordType.getType(), recordType.getDclassType().getType());
+        Lookup lookup = new Lookup(name, recordType.getCode(), recordType.getDclassType().getCode());
 
         if (this.hasCache()) {
             lookup.setCache(this.cache);

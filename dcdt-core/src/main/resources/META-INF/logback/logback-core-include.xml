@@ -27,6 +27,16 @@
     <property name="dcdt.log.file.pattern" value="${dcdt.log.file.pattern:-%d{yyyy-MM-dd HH:mm:ss z} [%C:%L %t] %p - %m%n%toolEx}" scope="context"/>
     
     <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!--
+        <filter class="ch.qos.logback.core.filter.EvaluatorFilter">
+            <evaluator>
+                <expression>
+                    return message.contains("No properties file found for");
+                </expression>
+            </evaluator>
+            <onMatch>DENY</onMatch>
+        </filter>
+        -->
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${dcdt.log.console.pattern}</pattern>
         </encoder>
@@ -39,11 +49,9 @@
             <appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
                 <file>${dcdt.log.dir}/${dcdt.log.file.name}${dcdt.log.file.ext}</file>
                 <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-                    <cleanHistoryOnStart>true</cleanHistoryOnStart>
                     <fileNamePattern>${dcdt.log.dir}/${dcdt.log.file.name}.%d{yyyy-MM-dd}.%i${dcdt.log.file.ext}</fileNamePattern>
-                    <maxHistory>30</maxHistory>
                     <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
-                        <maxFileSize>10MB</maxFileSize>
+                        <maxFileSize>50MB</maxFileSize>
                     </timeBasedFileNamingAndTriggeringPolicy>
                 </rollingPolicy>
                 <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
@@ -81,6 +89,10 @@
         <appender-ref ref="file"/>
     </logger>
     <logger name="org.springframework.beans.factory.support.DefaultListableBeanFactory" level="warn" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="org.springframework.context.support.PostProcessorRegistrationDelegate$BeanPostProcessorChecker" level="warn" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>

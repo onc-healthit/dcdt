@@ -10,7 +10,7 @@ Based on:
     xmlns:xsd="http://www.w3.org/2001/XMLSchema">
     
     <xsd:element name="configuration" type="Configuration"/>
-    <xsd:element name="included" type="Configuration"/>
+    <xsd:element name="included" type="Included"/>
     
     <xsd:attributeGroup name="attrGroupClass">
         <xsd:attribute name="class" type="xsd:token"/>
@@ -50,6 +50,24 @@ Based on:
     </xsd:simpleType>
     
     <xsd:complexType name="Configuration">
+        <xsd:complexContent>
+            <xsd:extension base="Included">
+                <xsd:attribute name="scan" type="xsd:token" use="optional"/>
+                <xsd:attribute name="scanPeriod" type="xsd:token" use="optional"/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="Included">
+        <xsd:complexContent>
+            <xsd:extension base="ConfigurationContainer">
+                <xsd:attribute name="debug" type="xsd:boolean" use="optional"/>
+                <xsd:anyAttribute/>
+            </xsd:extension>
+        </xsd:complexContent>
+    </xsd:complexType>
+    
+    <xsd:complexType name="ConfigurationContainer">
         <xsd:sequence>
             <xsd:element name="statusListener" minOccurs="0" maxOccurs="unbounded" type="StatusListener"/>
             <xsd:element name="contextListener" minOccurs="0" maxOccurs="unbounded" type="ContextListener"/>
@@ -59,15 +77,13 @@ Based on:
             <xsd:element name="timestamp" minOccurs="0" maxOccurs="1" type="Timestamp"/>
             <xsd:element name="if" minOccurs="0" maxOccurs="unbounded" type="If"/>
             <xsd:element name="property" minOccurs="0" maxOccurs="unbounded" type="Property"/>
+            <xsd:element name="filter" type="Filter" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="turboFilter" type="Filter" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="appender" minOccurs="0" maxOccurs="unbounded" type="Appender"/>
             <xsd:element name="logger" minOccurs="0" maxOccurs="unbounded" type="Logger"/>
             <xsd:element name="root" minOccurs="0" maxOccurs="1" type="Root"/>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
-        <xsd:attribute name="debug" type="xsd:boolean" use="optional"/>
-        <xsd:attribute name="scan" type="xsd:token" use="optional"/>
-        <xsd:attribute name="scanPeriod" type="xsd:token" use="optional"/>
-        <xsd:anyAttribute/>
     </xsd:complexType>
 
     <xsd:complexType name="StatusListener">
@@ -77,7 +93,6 @@ Based on:
 
     <xsd:complexType name="ContextListener">
         <xsd:sequence>
-            <xsd:element name="resetJUL" type="xsd:boolean"/>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
         <xsd:attributeGroup ref="attrGroupClassReq"/>
@@ -130,8 +145,8 @@ Based on:
 
     <xsd:complexType name="If">
         <xsd:sequence>
-            <xsd:element type="Configuration" name="then"/>
-            <xsd:element type="Configuration" name="else" minOccurs="0"/>
+            <xsd:element type="ConfigurationContainer" name="then"/>
+            <xsd:element type="ConfigurationContainer" name="else" minOccurs="0"/>
             <xsd:any maxOccurs="unbounded" minOccurs="0"/>
         </xsd:sequence>
         <xsd:attribute name="condition" type="xsd:token"/>
@@ -162,7 +177,7 @@ Based on:
         <xsd:sequence>
             <xsd:element name="file" type="xsd:token" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="encoder" type="Encoder" minOccurs="0" maxOccurs="1"/>
-            <xsd:element name="filter" type="Filter" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="filter" type="Filter" minOccurs="0" maxOccurs="unbounded"/>
             <xsd:element name="append" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="prudent" type="xsd:boolean" minOccurs="0" maxOccurs="1"/>
             <xsd:element name="layout" type="Layout" minOccurs="0" maxOccurs="1"/>
@@ -176,13 +191,27 @@ Based on:
 
     <xsd:complexType name="Filter">
         <xsd:sequence>
-            <xsd:element name="level" type="xsd:token" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="name" type="xsd:token" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="level" type="LoggerLevels" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="onMatch" type="FilterReply" minOccurs="0" maxOccurs="1"/>
+            <xsd:element name="onMismatch" type="FilterReply" minOccurs="0" maxOccurs="1"/>
             <xsd:any minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
-        <xsd:attributeGroup ref="attrGroupClass"/>
+        <xsd:attributeGroup ref="attrGroupClassReq"/>
         <xsd:anyAttribute/>
     </xsd:complexType>
 
+    <xsd:simpleType name="FilterReply">
+        <xsd:restriction base="xsd:token">
+            <xsd:enumeration value="deny"/>
+            <xsd:enumeration value="DENY"/>
+            <xsd:enumeration value="neutral"/>
+            <xsd:enumeration value="NEUTRAL"/>
+            <xsd:enumeration value="accept"/>
+            <xsd:enumeration value="ACCEPT"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+    
     <xsd:complexType name="Pattern">
         <xsd:simpleContent>
             <xsd:restriction base="xsd:token">

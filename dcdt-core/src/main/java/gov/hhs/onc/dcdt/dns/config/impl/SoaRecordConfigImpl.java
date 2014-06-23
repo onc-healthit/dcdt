@@ -21,7 +21,7 @@ public class SoaRecordConfigImpl extends AbstractDnsRecordConfig<SOARecord> impl
 
     @Override
     public SOARecord toRecord() throws DnsException {
-        return new SOARecord(this.name, this.recordType.getDclassType().getType(), this.ttl, this.host, this.admin, this.serial, this.refresh, this.retry,
+        return new SOARecord(this.name, this.recordType.getDclassType().getCode(), this.ttl, this.host, this.admin, this.serial, this.refresh, this.retry,
             this.expire, this.min);
     }
 

@@ -16,7 +16,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
-import java.util.EnumSet;
 import java.util.Objects;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
@@ -101,7 +100,7 @@ public abstract class ToolDnsRecordUtils {
     @Nonnegative
     public static int getKeyTag(DnsKeyAlgorithmType keyAlgType, PublicKey publicKey) throws DnsException {
         try {
-            return new DNSKEYRecord(Name.root, DnsDclassType.IN.getType(), 0, 0, Protocol.DNSSEC, keyAlgType.getTag(), publicKey).getFootprint();
+            return new DNSKEYRecord(Name.root, DnsDclassType.IN.getCode(), 0, 0, Protocol.DNSSEC, keyAlgType.getTag(), publicKey).getFootprint();
         } catch (DNSSECException e) {
             throw new DnsException(String.format("Unable to get key tag for public key (class=%s, algType=%s).", ToolClassUtils.getName(publicKey),
                 keyAlgType.name()), e);
@@ -118,22 +117,11 @@ public abstract class ToolDnsRecordUtils {
     @SuppressWarnings({ "unchecked" })
     public static <T extends Record> Collection<T> findAnswers(T questionRecord,
         @Nullable Iterable<? extends Iterable<? extends DnsRecordConfig<? extends Record>>> recordConfigs) {
-        DnsRecordType questionRecordType = ToolDnsRecordUtils.findByType(questionRecord.getType());
+        DnsRecordType questionRecordType = ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType());
 
         return CollectionUtils.emptyIfNull(((questionRecordType != null) ? CollectionUtils.select(CollectionUtils.collect(
             ToolIteratorUtils.chainedIterator(recordConfigs),
             new DnsRecordConfigAnswerTransformer<>(questionRecordType, ((Class<T>) questionRecordType.getRecordClass()), questionRecord)), PredicateUtils
             .notNullPredicate()) : null));
-    }
-
-    @Nullable
-    public static DnsRecordType findByType(int recordType) {
-        for (DnsRecordType enumItem : EnumSet.allOf(DnsRecordType.class)) {
-            if (enumItem.getType() == recordType) {
-                return enumItem;
-            }
-        }
-
-        return null;
     }
 }

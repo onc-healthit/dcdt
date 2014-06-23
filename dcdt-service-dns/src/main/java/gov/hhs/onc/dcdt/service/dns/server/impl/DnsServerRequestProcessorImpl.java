@@ -5,15 +5,14 @@ import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsMessageRcode;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsMessageUtils;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.net.InetProtocol;
 import gov.hhs.onc.dcdt.net.sockets.impl.AbstractSocketRequestProcessor;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
-import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessingException;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequest;
+import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessingException;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessor;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Lazy;
@@ -39,26 +38,27 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
 
     @Override
     protected byte[] processError(byte[] reqData, Exception exception) {
-        return ToolDnsMessageUtils.createErrorResponse(((DnsServerRequestProcessingException) exception).getRequestMessage(), DnsMessageRcode.SERVFAIL).toWire();
+        return ToolDnsMessageUtils.createErrorResponse(((DnsServerRequestProcessingException) exception).getRequestMessage(), DnsMessageRcode.SERVFAIL)
+            .toWire();
     }
 
     @Override
     protected byte[] processRequestInternal(byte[] reqData) throws Exception {
         InetProtocol protocol = this.req.getProtocol();
         Message reqMsg = null, respMsg = null;
-        byte[] respData = null;
+        byte[] respData;
 
         try {
             respData = ToolDnsMessageUtils.toWire(protocol, (respMsg = this.resolveQuery((reqMsg = ToolDnsMessageUtils.fromWire(protocol, reqData)))));
 
-            LOGGER.trace(String.format("Resolved (class=%s) DNS server query (protocol=%s, reqDataSize=%d, reqMsg={%s}): respDataSize=%d, respMsg={%s}",
-                ToolClassUtils.getName(this), protocol.name(), reqData.length, reqMsg, ArrayUtils.getLength(respData), respMsg));
+            LOGGER.trace(String.format("Resolved (class=%s) DNS server request (protocol=%s, remoteSocketAddr={%s}):\n%s\n%s", ToolClassUtils.getName(this),
+                protocol.name(), this.req.getRemoteAddress(), reqMsg, respMsg));
 
             return respData;
         } catch (Exception e) {
             throw new DnsServerRequestProcessingException(reqMsg, respMsg, String.format(
-                "Unable to resolve (class=%s) DNS server query (protocol=%s, reqDataSize=%d, reqMsg={%s}): respDataSize=%d, respMsg={%s}",
-                ToolClassUtils.getName(this), protocol.name(), reqData.length, reqMsg, ArrayUtils.getLength(respData), respMsg), e);
+                "Unable to resolve (class=%s) DNS server request (protocol=%s, remoteSocketAddr={%s}):\n%s\n%s", ToolClassUtils.getName(this), protocol.name(),
+                this.req.getRemoteAddress(), reqMsg, respMsg), e);
         }
     }
 
@@ -72,7 +72,7 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
             return respMsg;
         }
 
-        DnsRecordType questionRecordType = ToolDnsRecordUtils.findByType(questionRecord.getType());
+        DnsRecordType questionRecordType = ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType());
         Name questionName;
 
         if (questionRecordType == null) {

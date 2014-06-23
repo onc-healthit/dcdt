@@ -12,6 +12,6 @@ public class NsRecordConfigImpl extends AbstractTargetedDnsRecordConfig<NSRecord
 
     @Override
     public NSRecord toRecord() throws DnsException {
-        return new NSRecord(this.name, this.recordType.getDclassType().getType(), this.ttl, this.target);
+        return new NSRecord(this.name, this.recordType.getDclassType().getCode(), this.ttl, this.target);
     }
 }

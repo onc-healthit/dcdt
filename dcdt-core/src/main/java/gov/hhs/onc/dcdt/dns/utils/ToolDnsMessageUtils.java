@@ -57,7 +57,7 @@ public abstract class ToolDnsMessageUtils {
     }
 
     public static Message setAuthorities(Message msg, boolean authoritative, @Nullable Iterable<SOARecord> authorityRecords) {
-        msg.removeAllRecords(DnsMessageSection.AUTHORITY.getSection());
+        msg.removeAllRecords(DnsMessageSection.AUTHORITY.getCode());
 
         if (authorityRecords != null) {
             addRecords(msg, DnsMessageSection.AUTHORITY, authorityRecords);
@@ -79,7 +79,7 @@ public abstract class ToolDnsMessageUtils {
     }
 
     public static Message setAnswers(Message msg, @Nullable Iterable<? extends Record> answerRecords) {
-        msg.removeAllRecords(DnsMessageSection.ANSWER.getSection());
+        msg.removeAllRecords(DnsMessageSection.ANSWER.getCode());
 
         if (answerRecords != null) {
             addRecords(msg, DnsMessageSection.ANSWER, answerRecords);
@@ -94,25 +94,17 @@ public abstract class ToolDnsMessageUtils {
 
     @Nullable
     public static DnsMessageRcode getRcode(Message msg) {
-        int rcode = msg.getRcode();
-
-        for (DnsMessageRcode enumItem : EnumSet.allOf(DnsMessageRcode.class)) {
-            if (enumItem.getRcode() == rcode) {
-                return enumItem;
-            }
-        }
-
-        return null;
+        return ToolDnsUtils.findByCode(DnsMessageRcode.class, msg.getRcode());
     }
 
     public static Message setRcode(Message msg, DnsMessageRcode rcode) {
-        msg.getHeader().setRcode(rcode.getRcode());
+        msg.getHeader().setRcode(rcode.getCode());
 
         return msg;
     }
 
     public static Message copyRecords(Message msg1, Message msg2, DnsMessageSection section) {
-        return addRecords(msg2, section, msg1.getSectionArray(section.getSection()));
+        return addRecords(msg2, section, msg1.getSectionArray(section.getCode()));
     }
 
     public static Message addRecords(Message msg, DnsMessageSection section, @Nullable Record ... records) {
@@ -122,7 +114,7 @@ public abstract class ToolDnsMessageUtils {
     public static Message addRecords(Message msg, DnsMessageSection section, @Nullable Iterable<? extends Record> records) {
         if (records != null) {
             for (Record record : records) {
-                msg.addRecord(record, section.getSection());
+                msg.addRecord(record, section.getCode());
             }
         }
 
@@ -130,7 +122,7 @@ public abstract class ToolDnsMessageUtils {
     }
 
     public static boolean hasRecords(Message msg, DnsMessageSection section) {
-        return ToolNumberUtils.isPositive(msg.getHeader().getCount(section.getSection()));
+        return ToolNumberUtils.isPositive(msg.getHeader().getCount(section.getCode()));
     }
 
     public static Message copyFlags(Message msg1, Message msg2, @Nullable DnsMessageFlag ... flags) {
@@ -144,7 +136,7 @@ public abstract class ToolDnsMessageUtils {
         boolean flagValue;
 
         for (DnsMessageFlag flag : flagsSet) {
-            if ((flagValue = header1.getFlag((flagBit = flag.getFlag()))) != header2.getFlag(flagBit)) {
+            if ((flagValue = header1.getFlag((flagBit = flag.getCode()))) != header2.getFlag(flagBit)) {
                 if (flagValue) {
                     header2.setFlag(flagBit);
                 } else {
@@ -165,7 +157,7 @@ public abstract class ToolDnsMessageUtils {
             Header header = msg.getHeader();
 
             for (DnsMessageFlag flag : flags) {
-                if (!header.getFlag(flag.getFlag())) {
+                if (!header.getFlag(flag.getCode())) {
                     return false;
                 }
             }
@@ -183,7 +175,7 @@ public abstract class ToolDnsMessageUtils {
             Header header = msg.getHeader();
 
             for (DnsMessageFlag flag : flags) {
-                header.setFlag(flag.getFlag());
+                header.setFlag(flag.getCode());
             }
         }
 

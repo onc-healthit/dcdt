@@ -21,27 +21,55 @@
     = CONVERTERS
     =====================================================================================================-->
     <util:set id="convs">
-        <beans:ref bean="certConv"/>
-        <beans:ref bean="dnConv"/>
-        <beans:ref bean="dnsNameConv"/>
-        <beans:ref bean="inetAddrConv"/>
-        <beans:ref bean="keyConv"/>
-        <beans:ref bean="ldapAttrConv"/>
-        <beans:ref bean="ldapFilterConv"/>
-        <beans:ref bean="ldifConv"/>
-        <beans:ref bean="mailAddrConv"/>
-        <beans:ref bean="mimeTypeConv"/>
-        <beans:ref bean="namedBeanConv"/>
-        <beans:ref bean="pathConv"/>
-        <beans:ref bean="rdnConv"/>
-        <beans:ref bean="uriConv"/>
-        <beans:ref bean="urlConv"/>
-        <beans:ref bean="x500NameConv"/>
+        <beans:ref bean="convCert"/>
+        <beans:ref bean="convDn"/>
+        <beans:ref bean="convDnsName"/>
+        <beans:ref bean="convInetAddr"/>
+        <beans:ref bean="convKey"/>
+        <beans:ref bean="convLdif"/>
+        <beans:ref bean="convMailAddr"/>
+        <beans:ref bean="convPath"/>
+        <beans:ref bean="convRdn"/>
     </util:set>
+    
+    <!--====================================================================================================
+    = FORMATTERS
+    =====================================================================================================-->
+    <util:set id="formatters">
+        <beans:ref bean="formatterCert"/>
+        <beans:ref bean="formatterDn"/>
+        <beans:ref bean="formatterDnsName"/>
+        <beans:ref bean="formatterInetAddr"/>
+        <beans:ref bean="formatterLdapAttr"/>
+        <beans:ref bean="formatterLdapFilter"/>
+        <beans:ref bean="formatterLdif"/>
+        <beans:ref bean="formatterMailAddr"/>
+        <beans:ref bean="formatterMimeType"/>
+        <beans:ref bean="formatterNamedBean"/>
+        <beans:ref bean="formatterPath"/>
+        <beans:ref bean="formatterRdn"/>
+        <beans:ref bean="formatterUri"/>
+        <beans:ref bean="formatterUrl"/>
+        <beans:ref bean="formatterX500Name"/>
+    </util:set>
+    
+    <!--====================================================================================================
+    = FORMATTER REGISTRARS
+    =====================================================================================================-->
+    <beans:bean id="formatterRegistrar" class="gov.hhs.onc.dcdt.format.ToolFormatterRegistrar" abstract="true"/>
+    
+    <beans:bean id="formatterRegistrarImpl" class="gov.hhs.onc.dcdt.format.impl.ToolFormatterRegistrarImpl" parent="formatterRegistrar" abstract="true"/>
     
     <!--====================================================================================================
     = CONVERSION SERVICE
     =====================================================================================================-->
     <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" primary="true"
-        p:converters-ref="convs"/>
+        p:converters-ref="convs">
+        <beans:property name="formatterRegistrars">
+            <util:set>
+                <beans:bean parent="formatterRegistrarImpl"
+                    c:formatters-ref="formatters"/>
+            </util:set>
+        </beans:property>
+    </beans:bean>
 </beans:beans>
