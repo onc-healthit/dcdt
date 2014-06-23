@@ -16,6 +16,12 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = LOCALE RESOLVER
+    =====================================================================================================-->
+    <beans:bean id="localeResolver" class="org.springframework.web.servlet.i18n.FixedLocaleResolver"
+        c:locale-ref="localeRoot"/>
+    
+    <!--====================================================================================================
     = PROPERTY SOURCES PLACEHOLDER CONFIGURER
     =====================================================================================================-->
     <beans:bean id="propSourcesPlaceholderConfigurer" parent="propSourcesPlaceholderConfigurerBase">

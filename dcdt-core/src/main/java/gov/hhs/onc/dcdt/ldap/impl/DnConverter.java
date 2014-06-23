@@ -1,8 +1,7 @@
 package gov.hhs.onc.dcdt.ldap.impl;
 
 import gov.hhs.onc.dcdt.convert.Converts;
-import gov.hhs.onc.dcdt.convert.Converts.List;
-import gov.hhs.onc.dcdt.convert.ConvertsJson;
+import gov.hhs.onc.dcdt.convert.Converts.Convert;
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.ldap.utils.ToolDnUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
@@ -12,25 +11,21 @@ import org.apache.directory.api.ldap.model.name.Rdn;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
 
-@Component("dnConv")
-@ConvertsJson(deserialize = { @Converts(from = String.class, to = Dn.class) }, serialize = { @Converts(from = Dn.class, to = String.class) })
-@List({ @Converts(from = String.class, to = Dn.class), @Converts(from = String[].class, to = Dn.class), @Converts(from = Rdn[].class, to = Dn.class),
-    @Converts(from = Dn.class, to = Rdn[].class), @Converts(from = Dn.class, to = String.class) })
+@Component("convDn")
+@Converts({ @Convert(from = String[].class, to = Dn.class), @Convert(from = Rdn[].class, to = Dn.class), @Convert(from = Dn.class, to = Rdn[].class) })
 public class DnConverter extends AbstractToolConverter {
     private final static TypeDescriptor TYPE_DESC_DN = TypeDescriptor.valueOf(Dn.class);
     private final static TypeDescriptor TYPE_DESC_RDN_ARR = TypeDescriptor.array(TypeDescriptor.valueOf(Rdn.class));
 
     @Nullable
     @Override
-    protected Object convertInternal(Object source, TypeDescriptor sourceType, TypeDescriptor targetType, ConvertiblePair convertPair) throws Exception {
-        if (sourceType.isAssignableTo(TYPE_DESC_DN)) {
-            return (targetType.isAssignableTo(TYPE_DESC_RDN_ARR) ? ToolCollectionUtils.toArray(((Dn) source).getRdns(), Rdn.class) : source.toString());
-        } else if (sourceType.isAssignableTo(TYPE_DESC_RDN_ARR)) {
-            return ToolDnUtils.fromRdns(((Rdn[]) source));
-        } else if (sourceType.isAssignableTo(TYPE_DESC_STR_ARR)) {
-            return ToolDnUtils.fromStrings(((String[]) source));
+    protected Object convertInternal(Object src, TypeDescriptor srcType, TypeDescriptor targetType, ConvertiblePair convPair) throws Exception {
+        if (srcType.isAssignableTo(TYPE_DESC_RDN_ARR)) {
+            return ToolDnUtils.fromRdns(((Rdn[]) src));
+        } else if (srcType.isAssignableTo(TYPE_DESC_STR_ARR)) {
+            return ToolDnUtils.fromStrings(((String[]) src));
         } else {
-            return ToolDnUtils.fromStrings(((String) source));
+            return ToolCollectionUtils.toArray(((Dn) src).getRdns(), Rdn.class);
         }
     }
 }

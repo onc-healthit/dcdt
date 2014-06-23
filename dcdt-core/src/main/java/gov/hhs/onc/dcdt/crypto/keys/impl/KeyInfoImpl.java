@@ -128,7 +128,7 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
     public KeyAlgorithm getKeyAlgorithm() {
         Key availKey = this.getAvailableKey();
 
-        return (availKey != null) ? CryptographyUtils.findId(KeyAlgorithm.class, availKey.getAlgorithm()) : null;
+        return (availKey != null) ? CryptographyUtils.findById(KeyAlgorithm.class, availKey.getAlgorithm()) : null;
     }
 
     @Override

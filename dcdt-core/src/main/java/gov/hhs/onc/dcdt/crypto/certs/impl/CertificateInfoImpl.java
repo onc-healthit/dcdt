@@ -165,7 +165,7 @@ public class CertificateInfoImpl extends AbstractCryptographyDescriptor implemen
     @Override
     @Transient
     public SignatureAlgorithm getSignatureAlgorithm() {
-        return this.hasCertificate() ? CryptographyUtils.findObjectId(SignatureAlgorithm.class, new ASN1ObjectIdentifier(this.cert.getSigAlgOID())) : null;
+        return this.hasCertificate() ? CryptographyUtils.findByOid(SignatureAlgorithm.class, new ASN1ObjectIdentifier(this.cert.getSigAlgOID())) : null;
     }
 
     @Override

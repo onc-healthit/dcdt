@@ -164,7 +164,7 @@ public abstract class ToolSmimeUtils {
 
             // noinspection ConstantConditions
             return MessageDigest.getInstance(
-                CryptographyUtils.findObjectId(MailDigestAlgorithm.class, new ASN1ObjectIdentifier(signerInfo.getDigestAlgOID())).getId()).digest(
+                CryptographyUtils.findByOid(MailDigestAlgorithm.class, new ASN1ObjectIdentifier(signerInfo.getDigestAlgOID())).getId()).digest(
                 byteArrayOutStream.toByteArray());
         } catch (NoSuchAlgorithmException | IOException | MessagingException e) {
             throw new ToolSmimeException(String.format(
@@ -295,7 +295,7 @@ public abstract class ToolSmimeUtils {
             SMIMEEnveloped enveloped = new SMIMEEnveloped(msg);
             ASN1ObjectIdentifier encAlgOid = new ASN1ObjectIdentifier(enveloped.getEncryptionAlgOID());
 
-            if (CryptographyUtils.findObjectId(MailEncryptionAlgorithm.class, encAlgOid) == null) {
+            if (CryptographyUtils.findByOid(MailEncryptionAlgorithm.class, encAlgOid) == null) {
                 throw new ToolSmimeException(String.format(
                     "Mail MIME message (id=%s, from=%s, to=%s) content (type=%s) has unknown/invalid content encryption algorithm: oid=%s", msg.getMessageID(),
                     msgHelper.getFrom(), msgHelper.getTo(), msgContentType, encAlgOid.getId()));

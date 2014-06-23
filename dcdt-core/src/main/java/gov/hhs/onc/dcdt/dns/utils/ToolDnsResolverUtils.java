@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.dns.utils;
 
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.dns.DnsException;
-import gov.hhs.onc.dcdt.dns.DnsResultType;
 import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
@@ -11,7 +10,6 @@ import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -69,16 +67,5 @@ public abstract class ToolDnsResolverUtils {
             throw new DnsException(String.format("Unable to create DNS resolver (socketConnAddr=%s, socketPort=%d).", socketConnAddr.getHostAddress(),
                 socketAddr.getPort()), e);
         }
-    }
-
-    @Nullable
-    public static DnsResultType findResultType(int result) {
-        for (DnsResultType enumItem : EnumSet.allOf(DnsResultType.class)) {
-            if (enumItem.getResult() == result) {
-                return enumItem;
-            }
-        }
-
-        return null;
     }
 }

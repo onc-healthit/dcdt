@@ -79,8 +79,10 @@
     <beans:bean id="dnsResolverExtLocal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt" factory-method="fromSocketAddresses">
         <beans:constructor-arg name="socketAddrs">
             <util:list>
-                <beans:bean parent="socketAddrLoopback"
-                    c:_1="${dcdt.instance.dns.server.1.port}"/>
+                <beans:bean parent="socketAddrLoopback">
+                    <!--suppress SpringPlaceholdersInspection -->
+                    <beans:constructor-arg index="1" value="${dcdt.instance.dns.server.1.port}"/>
+                </beans:bean>
             </util:list>
         </beans:constructor-arg>
     </beans:bean>

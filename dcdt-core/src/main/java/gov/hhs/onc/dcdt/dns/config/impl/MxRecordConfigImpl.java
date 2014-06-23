@@ -12,6 +12,6 @@ public class MxRecordConfigImpl extends AbstractPriorityTargetedDnsRecordConfig<
 
     @Override
     public MXRecord toRecord() throws DnsException {
-        return new MXRecord(this.name, this.recordType.getDclassType().getType(), this.ttl, this.priority, this.target);
+        return new MXRecord(this.name, this.recordType.getDclassType().getCode(), this.ttl, this.priority, this.target);
     }
 }

@@ -11,7 +11,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.ConfigFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import gov.hhs.onc.dcdt.convert.ToolConverter;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -32,7 +31,8 @@ public class ToolObjectMapper extends ObjectMapper implements InitializingBean {
     private Map<? extends ConfigFeature, Boolean> configFeatures = new LinkedHashMap<>();
     private Map<? extends Feature, Boolean> jsonGenFeatures = new LinkedHashMap<>();
     private Map<? extends JsonParser.Feature, Boolean> jsonParserFeatures = new LinkedHashMap<>();
-    private Set<ToolConverter> convs = new LinkedHashSet<>();
+    private Set<JsonDeserializer<?>> jsonDeserializers = new LinkedHashSet<>();
+    private Set<JsonSerializer<?>> jsonSerializers = new LinkedHashSet<>();
     private Set<Module> modules = new LinkedHashSet<>();
 
     public ToolObjectMapper() {
@@ -70,21 +70,19 @@ public class ToolObjectMapper extends ObjectMapper implements InitializingBean {
 
         SimpleModule convsModule = new SimpleModule();
 
-        for (ToolConverter conv : this.convs) {
-            for (JsonDeserializer<?> convJsonDeserializer : conv.getJsonDeserializers()) {
-                // noinspection RedundantCast
-                convsModule.addDeserializer(((Class<Object>) convJsonDeserializer.handledType()), ((JsonDeserializer<Object>) convJsonDeserializer));
+        for (JsonDeserializer<?> jsonDeserializer : this.jsonDeserializers) {
+            // noinspection RedundantCast
+            convsModule.addDeserializer(((Class<Object>) jsonDeserializer.handledType()), ((JsonDeserializer<Object>) jsonDeserializer));
 
-                LOGGER.debug(String.format("Added JSON deserializer (class=%s) for converter (class=%s, valueClass=%s).",
-                    ToolClassUtils.getName(convJsonDeserializer), ToolClassUtils.getName(this), ToolClassUtils.getName(convJsonDeserializer.handledType())));
-            }
+            LOGGER.debug(String.format("Added JSON deserializer (class=%s, valueClass=%s).", ToolClassUtils.getName(jsonDeserializer),
+                ToolClassUtils.getName(jsonDeserializer.handledType())));
+        }
 
-            for (JsonSerializer<?> convJsonSerializer : conv.getJsonSerializers()) {
-                convsModule.addSerializer(convJsonSerializer);
+        for (JsonSerializer<?> jsonSerializer : this.jsonSerializers) {
+            convsModule.addSerializer(jsonSerializer);
 
-                LOGGER.debug(String.format("Added JSON serializer (class=%s) for converter (class=%s, objClass=%s).",
-                    ToolClassUtils.getName(convJsonSerializer), ToolClassUtils.getName(this), ToolClassUtils.getName(convJsonSerializer.handledType())));
-            }
+            LOGGER.debug(String.format("Added JSON serializer (class=%s, objClass=%s).", ToolClassUtils.getName(jsonSerializer),
+                ToolClassUtils.getName(jsonSerializer.handledType())));
         }
 
         this.registerModule(convsModule);
@@ -98,12 +96,12 @@ public class ToolObjectMapper extends ObjectMapper implements InitializingBean {
         this.configFeatures = configFeatures;
     }
 
-    public Set<ToolConverter> getConverters() {
-        return this.convs;
+    public Set<JsonDeserializer<?>> getJsonDeserializers() {
+        return this.jsonDeserializers;
     }
 
-    public void setConverters(Set<ToolConverter> convs) {
-        this.convs = convs;
+    public void setJsonDeserializers(Set<JsonDeserializer<?>> jsonDeserializers) {
+        this.jsonDeserializers = jsonDeserializers;
     }
 
     public Map<? extends Feature, Boolean> getJsonGeneratorFeatures() {
@@ -120,6 +118,14 @@ public class ToolObjectMapper extends ObjectMapper implements InitializingBean {
 
     public void setJsonParserFeatures(Map<? extends JsonParser.Feature, Boolean> jsonParserFeatures) {
         this.jsonParserFeatures = jsonParserFeatures;
+    }
+
+    public Set<JsonSerializer<?>> getJsonSerializers() {
+        return this.jsonSerializers;
+    }
+
+    public void setJsonSerializers(Set<JsonSerializer<?>> jsonSerializers) {
+        this.jsonSerializers = jsonSerializers;
     }
 
     public Set<Module> getModules() {

@@ -5,13 +5,10 @@ import gov.hhs.onc.dcdt.crypto.CryptographyIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTaggedIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.security.Provider;
 import java.security.Security;
-import java.util.EnumSet;
-import java.util.Objects;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.jcajce.ProviderJcaJceHelper;
@@ -40,58 +37,28 @@ public abstract class CryptographyUtils {
         initializeProvider();
     }
 
-    public static <T extends Enum<T> & CryptographyAlgorithmIdentifier> T findAlgorithmId(Class<T> algEnumClass, AlgorithmIdentifier algId) {
-        for (T algEnum : EnumSet.allOf(algEnumClass)) {
-            if (Objects.equals(algEnum.getId(), algId)) {
-                return algEnum;
-            }
-        }
-
-        return null;
+    public static <T extends Enum<T> & CryptographyAlgorithmIdentifier> T findByAlgorithmId(Class<T> enumClass, AlgorithmIdentifier algId) {
+        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyAlgorithmIdentifier.PROP_NAME_ALG_ID, algId);
     }
 
     @Nullable
-    public static <T extends Enum<T> & CryptographyObjectIdentifier> T findObjectId(Class<T> idEnumClass, ASN1ObjectIdentifier oid) {
-        for (T idEnum : EnumSet.allOf(idEnumClass)) {
-            if (Objects.equals(idEnum.getOid(), oid)) {
-                return idEnum;
-            }
-        }
-
-        return null;
+    public static <T extends Enum<T> & CryptographyObjectIdentifier> T findByOid(Class<T> enumClass, ASN1ObjectIdentifier oid) {
+        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyObjectIdentifier.PROP_NAME_OID, oid);
     }
 
     @Nullable
-    public static <T extends Enum<T> & CryptographyTaggedIdentifier> T findTaggedId(Class<T> idEnumClass, int tag) {
-        for (T idEnum : EnumSet.allOf(idEnumClass)) {
-            if (Objects.equals(idEnum.getTag(), tag)) {
-                return idEnum;
-            }
-        }
-
-        return null;
+    public static <T extends Enum<T> & CryptographyTaggedIdentifier> T findByTag(Class<T> enumClass, int tag) {
+        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyTaggedIdentifier.PROP_NAME_TAG, tag);
     }
 
     @Nullable
-    public static <U extends Enum<U> & CryptographyTypeIdentifier> U findTypeId(Class<U> idEnumClass, Class<?> type) {
-        for (U idEnum : EnumSet.allOf(idEnumClass)) {
-            if (ToolClassUtils.isAssignable(type, idEnum.getType())) {
-                return idEnum;
-            }
-        }
-
-        return null;
+    public static <T extends Enum<T> & CryptographyTypeIdentifier> T findByType(Class<T> enumClass, Class<?> type) {
+        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyTypeIdentifier.PROP_NAME_TYPE, type);
     }
 
     @Nullable
-    public static <T extends Enum<T> & CryptographyIdentifier> T findId(Class<T> idEnumClass, String id) {
-        for (T idEnum : EnumSet.allOf(idEnumClass)) {
-            if (StringUtils.equalsIgnoreCase(idEnum.getId(), id)) {
-                return idEnum;
-            }
-        }
-
-        return null;
+    public static <T extends Enum<T> & CryptographyIdentifier> T findById(Class<T> enumClass, String id) {
+        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyIdentifier.PROP_NAME_ID, id);
     }
 
     public static void initializeProvider() {

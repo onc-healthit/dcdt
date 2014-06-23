@@ -17,4 +17,14 @@
         overflowToDisk="false"
         timeToIdleSeconds="1"
         timeToLiveSeconds="1"/>
+    
+    <!--====================================================================================================
+    = CACHE: GROUPS
+    =====================================================================================================-->
+    <cache name="groupCache"
+        diskPersistent="false"
+        eternal="true"
+        maxElementsInMemory="10000"
+        memoryStoreEvictionPolicy="LFU"
+        overflowToDisk="false"/>
 </ehcache>

@@ -36,15 +36,6 @@ public abstract class CertificateUtils {
         return BigInteger.valueOf(SecureRandomUtils.getRandom(SERIAL_NUM_GEN_RAND_SEED_SIZE_DEFAULT).nextLong()).abs();
     }
 
-    public static String certificateToString(X509Certificate cert) throws CryptographyException {
-        try {
-            return readCertificate(CryptographyUtils.JCE_PROVIDER_HELPER, cert.getEncoded(), CertificateType.X509, DataEncoding.DER).toString();
-        } catch (CertificateEncodingException e) {
-            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format("Unable to write certificate instance (class=%s) to string.",
-                ToolClassUtils.getClass(cert)), e);
-        }
-    }
-
     public static X509Certificate readCertificate(InputStream inStream, CertificateType certType, DataEncoding dataEnc) throws CryptographyException {
         return readCertificate(CryptographyUtils.PROVIDER_HELPER, inStream, certType, dataEnc);
     }
@@ -77,7 +68,7 @@ public abstract class CertificateUtils {
         throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.writePemContent(CryptographyUtils.findTypeId(PemType.class, certType.getType()), data);
+                data = PemUtils.writePemContent(CryptographyUtils.findByType(PemType.class, certType.getType()), data);
             }
 
             return ((X509Certificate) getCertificateFactory(provHelper, certType).generateCertificate(new ByteArrayInputStream(data)));

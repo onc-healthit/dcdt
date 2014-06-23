@@ -21,7 +21,7 @@ public class DnsSrvRecordLookupStepImpl extends AbstractDnsLookupStep<SRVRecord>
     
     @Override
     protected Name buildDirectAddressName(MailAddress directAddr) throws DnsException, ToolMailAddressException {
-        return ToolDnsNameUtils.toAbsolute(ToolDnsNameUtils.fromLabels(DnsServiceType.LDAP.getDnsNameLabel(), DnsServiceProtocol.TCP.getDnsNameLabel(),
+        return ToolDnsNameUtils.toAbsolute(ToolDnsNameUtils.fromLabels(DnsServiceType.LDAP.getNameLabel(), DnsServiceProtocol.TCP.getNameLabel(),
             super.buildDirectAddressName(directAddr)));
     }
 

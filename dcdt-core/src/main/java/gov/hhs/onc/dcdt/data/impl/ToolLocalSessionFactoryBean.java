@@ -3,9 +3,7 @@ package gov.hhs.onc.dcdt.data.impl;
 import com.mchange.v2.c3p0.C3P0Registry;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.mchange.v2.c3p0.PooledDataSource;
-import gov.hhs.onc.dcdt.convert.ToolConverter;
 import gov.hhs.onc.dcdt.data.types.ToolUserType;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
@@ -39,18 +37,14 @@ public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean impleme
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolLocalSessionFactoryBean.class);
 
     private AbstractApplicationContext appContext;
-    private Set<ToolConverter> convs = new LinkedHashSet<>();
+    private Set<ToolUserType<?, ?, ?, ?>> userTypes = new LinkedHashSet<>();
     private ComboPooledDataSource dataSource;
 
     @Override
     @SuppressWarnings({ "ConstantConditions" })
     protected SessionFactory buildSessionFactory(LocalSessionFactoryBuilder localSessionFactoryBuilder) {
-        ToolUserType<?, ?, ?, ?> convUserType;
-
-        for (ToolConverter conv : this.convs) {
-            if (conv.hasUserTypeClass() && ((convUserType = ToolBeanFactoryUtils.getBeanOfType(this.appContext, conv.getUserTypeClass())) != null)) {
-                localSessionFactoryBuilder.registerTypeOverride(convUserType, convUserType.getKeys());
-            }
+        for (ToolUserType<?, ?, ?, ?> userType : this.userTypes) {
+            localSessionFactoryBuilder.registerTypeOverride(userType, userType.getKeys());
         }
 
         return super.buildSessionFactory(localSessionFactoryBuilder);
@@ -89,16 +83,16 @@ public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean impleme
         this.appContext = (AbstractApplicationContext) appContext;
     }
 
-    public Set<ToolConverter> getConverters() {
-        return this.convs;
-    }
-
-    public void setConverters(Set<ToolConverter> convs) {
-        this.convs = convs;
-    }
-
     @Override
     public void setDataSource(DataSource dataSource) {
         super.setDataSource(this.dataSource = (ComboPooledDataSource) dataSource);
+    }
+
+    public Set<ToolUserType<?, ?, ?, ?>> getUserTypes() {
+        return this.userTypes;
+    }
+
+    public void setUserTypes(Set<ToolUserType<?, ?, ?, ?>> userTypes) {
+        this.userTypes = userTypes;
     }
 }

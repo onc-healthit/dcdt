@@ -16,11 +16,11 @@ public @interface Converts {
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.TYPE })
-    public @interface List {
-        Converts[] value();
+    public @interface Convert {
+        Class<?> from();
+
+        Class<?> to();
     }
 
-    Class<?> from();
-
-    Class<?> to();
+    Convert[] value();
 }
