@@ -119,6 +119,18 @@
         p:resolver-ref="dnsResolverExtExternal"/>
     
     <!--====================================================================================================
+    = DNS SENDER POLICY FRAMEWORK VALUES
+    =====================================================================================================-->
+    <beans:bean id="dnsSpf" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils" factory-method="buildSpf"
+        c:spfStrs="#{ T(org.apache.commons.lang3.ArrayUtils).EMPTY_STRING_ARRAY }"/>
+    
+    <beans:bean id="dnsSpfA" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils" factory-method="buildSpf"
+        c:spfStrs="#{ T(gov.hhs.onc.dcdt.dns.DnsSpfStrings).MECH_A }"/>
+    
+    <beans:bean id="dnsSpfMx" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils" factory-method="buildSpf"
+        c:spfStrs="#{ T(gov.hhs.onc.dcdt.dns.DnsSpfStrings).MECH_MX }"/>
+    
+    <!--====================================================================================================
     = DNS RECORD CONFIG
     =====================================================================================================-->
     <beans:bean id="dnsRecordConfig" class="gov.hhs.onc.dcdt.dns.config.DnsRecordConfig" abstract="true"
@@ -155,6 +167,12 @@
     <beans:bean id="nsRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.NsRecordConfigImpl" parent="nsRecordConfig" abstract="true"/>
     
     <!--====================================================================================================
+    = DNS PTR RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="ptrRecordConfig" class="gov.hhs.onc.dcdt.dns.config.PtrRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="ptrRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.PtrRecordConfigImpl" parent="ptrRecordConfig" abstract="true"/>
+    
+    <!--====================================================================================================
     = DNS SOA RECORD CONFIG
     =====================================================================================================-->
     <beans:bean id="soaRecordConfig" class="gov.hhs.onc.dcdt.dns.config.SoaRecordConfig" parent="dnsRecordConfig" abstract="true"/>
@@ -172,4 +190,10 @@
     <beans:bean id="srvRecordConfigLdap" parent="srvRecordConfigImpl" abstract="true"
         p:serviceProtocol="TCP"
         p:serviceType="LDAP"/>
+    
+    <!--====================================================================================================
+    = DNS TXT RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="txtRecordConfig" class="gov.hhs.onc.dcdt.dns.config.TxtRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="txtRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.TxtRecordConfigImpl" parent="txtRecordConfig" abstract="true"/>
 </beans:beans>

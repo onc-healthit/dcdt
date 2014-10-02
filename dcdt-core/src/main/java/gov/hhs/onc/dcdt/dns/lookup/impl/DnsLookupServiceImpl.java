@@ -24,10 +24,12 @@ import org.xbill.DNS.Lookup;
 import org.xbill.DNS.MXRecord;
 import org.xbill.DNS.NSRecord;
 import org.xbill.DNS.Name;
+import org.xbill.DNS.PTRRecord;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SOARecord;
 import org.xbill.DNS.SRVRecord;
+import org.xbill.DNS.TXTRecord;
 
 public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupService {
     private Cache cache;
@@ -66,6 +68,11 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
     }
 
     @Override
+    public DnsLookupResult<PTRRecord> lookupPtrRecords(Name name) throws DnsException {
+        return this.lookupRecords(DnsRecordType.PTR, PTRRecord.class, name);
+    }
+
+    @Override
     public DnsLookupResult<SOARecord> lookupSoaRecords(Name name) throws DnsException {
         return this.lookupRecords(DnsRecordType.SOA, SOARecord.class, name);
     }
@@ -74,6 +81,11 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
     public DnsLookupResult<SRVRecord> lookupSrvRecords(DnsServiceType serviceType, DnsServiceProtocol serviceProtocol, Name name) throws DnsException {
         return this.lookupRecords(DnsRecordType.SRV, SRVRecord.class,
             ToolDnsNameUtils.fromLabels(serviceType.getNameLabel(), serviceProtocol.getNameLabel(), name));
+    }
+
+    @Override
+    public DnsLookupResult<TXTRecord> lookupTxtRecords(Name name) throws DnsException {
+        return this.lookupRecords(DnsRecordType.TXT, TXTRecord.class, name);
     }
 
     @Override

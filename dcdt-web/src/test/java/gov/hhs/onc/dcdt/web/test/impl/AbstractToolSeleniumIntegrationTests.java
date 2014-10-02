@@ -24,14 +24,14 @@ public abstract class AbstractToolSeleniumIntegrationTests extends AbstractToolW
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    protected DesiredCapabilities seleniumWebDriverDesiredCapabilities;
+    protected DesiredCapabilities seleniumDesiredCapabilities;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolSeleniumIntegrationTests.class);
 
     @BeforeClass(groups = { "dcdt.test.it.web.all" }, timeOut = ToolDateUtils.MS_IN_SEC * 30)
     public void buildSeleniumWebDriver() throws Exception {
         if (seleniumWebDriver == null) {
-            seleniumWebDriver = new RemoteWebDriver(this.seleniumWebDriverUrlHub, this.seleniumWebDriverDesiredCapabilities);
+            seleniumWebDriver = new RemoteWebDriver(this.seleniumWebDriverUrlHub, this.seleniumDesiredCapabilities);
 
             LOGGER.info(String.format("Selenium web driver (class=%s) created.", ToolClassUtils.getName(seleniumWebDriver)));
         }

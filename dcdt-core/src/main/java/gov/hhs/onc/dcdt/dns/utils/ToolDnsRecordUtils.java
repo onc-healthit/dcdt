@@ -7,15 +7,19 @@ import gov.hhs.onc.dcdt.dns.DnsDclassType;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
+import gov.hhs.onc.dcdt.dns.DnsSpfStrings;
 import gov.hhs.onc.dcdt.dns.config.DnsRecordConfig;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
+import gov.hhs.onc.dcdt.utils.ToolListUtils;
+import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.security.PublicKey;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnegative;
@@ -90,7 +94,32 @@ public abstract class ToolDnsRecordUtils {
         }
     }
 
+    public static class DnsRecordDataStringTransformer extends AbstractToolTransformer<Record, String> {
+        public final static DnsRecordDataStringTransformer INSTANCE = new DnsRecordDataStringTransformer();
+
+        @Override
+        protected String transformInternal(Record record) throws Exception {
+            return record.rdataToString();
+        }
+    }
+
     public final static DateFormat DATE_FORMAT_SERIAL = new SimpleDateFormat("yyyyMMdd");
+
+    public static String buildSpf(String ... spfStrs) {
+        return buildSpf(ToolArrayUtils.asList(spfStrs));
+    }
+
+    public static String buildSpf(List<String> spfStrs) {
+        if (!Objects.equals(ToolListUtils.getFirst(spfStrs), DnsSpfStrings.MOD_VERSION_1)) {
+            ToolListUtils.addFirst(spfStrs, DnsSpfStrings.MOD_VERSION_1);
+        }
+
+        if (!Objects.equals(ToolListUtils.getLast(spfStrs), DnsSpfStrings.MECH_ALL_FAIL)) {
+            spfStrs.add(DnsSpfStrings.MECH_ALL_FAIL);
+        }
+
+        return ToolStringUtils.joinDelimit(spfStrs, DnsSpfStrings.DELIM);
+    }
 
     @Nonnegative
     public static int generateSerial() {

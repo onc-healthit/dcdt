@@ -607,6 +607,8 @@
             </extension>
         </extensions>
         
+        <defaultGoal>clean install</defaultGoal>
+        
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -701,6 +703,7 @@
                             -->
                             <arg>-Xlint:-try</arg>
                         </compilerArgs>
+                        <compilerVersion>${java.version}</compilerVersion>
                         <fork>true</fork>
                         <maxmem>256m</maxmem>
                         <meminitial>128m</meminitial>
@@ -1296,12 +1299,12 @@
                         <dependency>
                             <groupId>org.seleniumhq.selenium</groupId>
                             <artifactId>selenium-api</artifactId>
-                            <version>2.41.0</version>
+                            <version>2.43.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.seleniumhq.selenium</groupId>
                             <artifactId>selenium-java</artifactId>
-                            <version>2.41.0</version>
+                            <version>2.43.1</version>
                             <exclusions>
                                 <exclusion>
                                     <groupId>xerces</groupId>
@@ -1312,12 +1315,12 @@
                         <dependency>
                             <groupId>org.seleniumhq.selenium</groupId>
                             <artifactId>selenium-remote-driver</artifactId>
-                            <version>2.41.0</version>
+                            <version>2.43.1</version>
                         </dependency>
                         <dependency>
                             <groupId>org.seleniumhq.selenium</groupId>
                             <artifactId>selenium-server</artifactId>
-                            <version>2.41.0</version>
+                            <version>2.43.1</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -2003,7 +2006,7 @@
                 </property>
             </activation>
             <properties>
-                <tomcat.manager.password />
+                <tomcat.manager.password/>
             </properties>
         </profile>
     </profiles>

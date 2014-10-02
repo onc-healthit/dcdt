@@ -7,6 +7,7 @@
     </presetdef>
     
     <macrodef name="compile" description="Invokes the Java compiler.">
+        <attribute name="compiler"/>
         <attribute name="srcDir"/>
         <attribute name="outDir"/>
         <attribute name="source"/>
@@ -19,8 +20,8 @@
                 <available file="@{srcDir}" type="dir"/>
                 <then>
                     <mkdir dir="@{outDir}"/>
-                    <javac destdir="@{outDir}" source="@{source}" target="@{target}" memoryInitialSize="@{memInitial}" memoryMaximumSize="@{memMax}"
-                        debug="true" deprecation="true" includeAntRuntime="false" fork="true">
+                    <javac compiler="@{compiler}" destdir="@{outDir}" source="@{source}" target="@{target}" memoryInitialSize="@{memInitial}"
+                        memoryMaximumSize="@{memMax}" debug="true" deprecation="true" includeAntRuntime="false" fork="true">
                         <compilerarg value="-proc:none"/>
                         <compilerarg value="-Werror"/>
                         <compilerarg value="-Xlint"/>

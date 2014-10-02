@@ -1,4 +1,4 @@
-package gov.hhs.onc.dcdt.web.controller;
+package gov.hhs.onc.dcdt.web.controller.impl;
 
 import gov.hhs.onc.dcdt.web.test.ControllerTests;
 import gov.hhs.onc.dcdt.web.test.impl.AbstractToolControllerIntegrationTests;

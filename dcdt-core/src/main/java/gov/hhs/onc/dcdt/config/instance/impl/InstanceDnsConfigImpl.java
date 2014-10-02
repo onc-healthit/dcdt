@@ -1,7 +1,7 @@
 package gov.hhs.onc.dcdt.config.instance.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolDomainBean;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolDomainAddressBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
@@ -18,9 +18,11 @@ import gov.hhs.onc.dcdt.dns.config.CnameRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.DnsRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.MxRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.NsRecordConfig;
+import gov.hhs.onc.dcdt.dns.config.PtrRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.SoaRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.SrvRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.TargetedDnsRecordConfig;
+import gov.hhs.onc.dcdt.dns.config.TxtRecordConfig;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
@@ -47,9 +49,22 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
+import org.xbill.DNS.ReverseMap;
 
 @JsonTypeName("instanceDnsConfig")
-public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements InstanceDnsConfig {
+public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean implements InstanceDnsConfig {
+    private class ReverseMapPtrRecordConfigTransformer extends AbstractToolTransformer<ARecordConfig, PtrRecordConfig> {
+        @Override
+        protected PtrRecordConfig transformInternal(ARecordConfig aRecordConfig) throws Exception {
+            PtrRecordConfig ptrRecordConfig = ToolBeanFactoryUtils.createBeanOfType(InstanceDnsConfigImpl.this.appContext, PtrRecordConfig.class);
+            // noinspection ConstantConditions
+            ptrRecordConfig.setName(ReverseMap.fromAddress(aRecordConfig.getAddress()));
+            ptrRecordConfig.setTarget(aRecordConfig.getName());
+
+            return ptrRecordConfig;
+        }
+    }
+
     private class DiscoveryTestcaseCredentialCertRecordConfigTransformer extends AbstractToolTransformer<DiscoveryTestcaseCredential, CertRecordConfig> {
         @Override
         protected CertRecordConfig transformInternal(DiscoveryTestcaseCredential discoveryTestcaseCred) throws Exception {
@@ -99,8 +114,10 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements Ins
     private List<CnameRecordConfig> cnameRecordConfigs;
     private List<MxRecordConfig> mxRecordConfigs;
     private List<NsRecordConfig> nsRecordConfigs;
+    private List<PtrRecordConfig> ptrRecordConfigs;
     private SoaRecordConfig soaRecordConfig;
     private List<SrvRecordConfig> srvRecordConfigs;
+    private List<TxtRecordConfig> txtRecordConfigs;
 
     @Override
     public <T extends Record> Collection<T> findAnswers(T questionRecord) {
@@ -113,23 +130,25 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements Ins
         return ToolMapUtils.putAll(new LinkedHashMap<DnsRecordType, List<? extends DnsRecordConfig<? extends Record>>>(DnsRecordType.values().length),
             new MutablePair<>(DnsRecordType.A, this.aRecordsConfigs), new MutablePair<>(DnsRecordType.CERT, this.certRecordConfigs), new MutablePair<>(
                 DnsRecordType.CNAME, this.cnameRecordConfigs), new MutablePair<>(DnsRecordType.MX, this.mxRecordConfigs), new MutablePair<>(DnsRecordType.NS,
-                this.nsRecordConfigs), new MutablePair<>(DnsRecordType.SOA, ToolArrayUtils.asList(this.soaRecordConfig)), new MutablePair<>(DnsRecordType.SRV,
-                this.srvRecordConfigs));
+                this.nsRecordConfigs), new MutablePair<>(DnsRecordType.PTR, this.ptrRecordConfigs),
+            new MutablePair<>(DnsRecordType.SOA, ToolArrayUtils.asList(this.soaRecordConfig)), new MutablePair<>(DnsRecordType.SRV, this.srvRecordConfigs),
+            new MutablePair<>(DnsRecordType.TXT, this.txtRecordConfigs));
     }
 
     @Override
     public boolean isAuthoritative(Record questionRecord) {
-        return this.isAuthoritative() && questionRecord.getName().subdomain(this.domainName);
+        return (this.isAuthoritative() && questionRecord.getName().subdomain(
+            ((questionRecord.getType() != DnsRecordType.PTR.getCode()) ? this.domainName : ReverseMap.fromAddress(this.ipAddr))));
     }
 
     @Override
     public boolean isAuthoritative() {
-        return this.hasDomainName() && this.hasSoaRecordConfig();
+        return (this.hasDomainName() && this.hasIpAddress() && this.hasSoaRecordConfig());
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (this.hasDomainName()) {
+        if (this.hasDomainName() && this.hasIpAddress()) {
             this.domainName = ToolDnsNameUtils.toAbsolute(this.domainName);
 
             this.certRecordConfigs =
@@ -142,6 +161,7 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements Ins
             Map<DnsRecordType, List<? extends DnsRecordConfig<? extends Record>>> recordConfigsMap = this.mapRecordConfigs();
             List<? extends DnsRecordConfig<? extends Record>> recordConfigs;
             Name recordName;
+            ARecordConfig aRecordConfig;
             TargetedDnsRecordConfig<? extends Record> targetedRecordConfig;
             SoaRecordConfig soaRecordConfig;
 
@@ -151,11 +171,13 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements Ins
                 }
 
                 for (DnsRecordConfig<? extends Record> recordConfig : recordConfigs) {
-                    if (((recordName = recordConfig.getName()) == null) || !recordName.isAbsolute()) {
-                        recordConfig.setName(ToolDnsNameUtils.toAbsolute(ToolDnsNameUtils.fromLabels(recordName, this.domainName)));
-                    }
-
                     switch (recordType) {
+                        case A:
+                            if ((aRecordConfig = ((ARecordConfig) recordConfig)).getAddress() == null) {
+                                aRecordConfig.setAddress(this.ipAddr);
+                            }
+                            break;
+
                         case CNAME:
                         case MX:
                         case NS:
@@ -172,8 +194,20 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements Ins
                             soaRecordConfig.setHost(ToolDnsNameUtils.toAbsolute(soaRecordConfig.getHost()));
                             break;
                     }
+
+                    if (((recordName = recordConfig.getName()) == null) || !recordName.isAbsolute()) {
+                        recordConfig.setName(ToolDnsNameUtils.toAbsolute(ToolDnsNameUtils.fromLabels(recordName, this.domainName)));
+                    }
                 }
             }
+
+            // @formatter:off
+            /*
+            this.ptrRecordConfigs =
+                ToolCollectionUtils.nullIfEmpty(CollectionUtils.collect(this.aRecordsConfigs, new ReverseMapPtrRecordConfigTransformer(),
+                    new ArrayList<PtrRecordConfig>()));
+            */
+            // @formatter:on
         }
     }
 
@@ -258,6 +292,17 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements Ins
     }
 
     @Override
+    public boolean hasPtrRecordConfigs() {
+        return !CollectionUtils.isEmpty(this.ptrRecordConfigs);
+    }
+
+    @Nullable
+    @Override
+    public List<PtrRecordConfig> getPtrRecordConfigs() {
+        return this.ptrRecordConfigs;
+    }
+
+    @Override
     public boolean hasSoaRecordConfig() {
         return this.soaRecordConfig != null;
     }
@@ -287,5 +332,21 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainBean implements Ins
     @Override
     public void setSrvRecordConfigs(@Nullable List<SrvRecordConfig> srvRecordConfigs) {
         this.srvRecordConfigs = srvRecordConfigs;
+    }
+
+    @Override
+    public boolean hasTxtRecordConfigs() {
+        return !CollectionUtils.isEmpty(this.txtRecordConfigs);
+    }
+
+    @Nullable
+    @Override
+    public List<TxtRecordConfig> getTxtRecordConfigs() {
+        return this.txtRecordConfigs;
+    }
+
+    @Override
+    public void setTxtRecordConfigs(@Nullable List<TxtRecordConfig> txtRecordConfigs) {
+        this.txtRecordConfigs = txtRecordConfigs;
     }
 }

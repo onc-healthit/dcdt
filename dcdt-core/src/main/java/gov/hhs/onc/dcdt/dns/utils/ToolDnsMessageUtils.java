@@ -64,12 +64,8 @@ public abstract class ToolDnsMessageUtils {
         if (authorityRecords != null) {
             addRecords(msg, DnsMessageSection.AUTHORITY, authorityRecords);
 
-            if (hasRecords(msg, DnsMessageSection.AUTHORITY)) {
-                setFlags(msg, DnsMessageFlag.RA);
-
-                if (authoritative) {
-                    setFlags(msg, DnsMessageFlag.AA, DnsMessageFlag.AD);
-                }
+            if (authoritative && hasRecords(msg, DnsMessageSection.AUTHORITY)) {
+                setFlags(msg, DnsMessageFlag.AA);
             }
         }
 

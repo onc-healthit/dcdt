@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.config.instance.impl;
 
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolDomainBean;
+import gov.hhs.onc.dcdt.beans.impl.AbstractToolDomainAddressBean;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
 import java.net.InetAddress;
 import javax.annotation.Nullable;
@@ -13,9 +13,7 @@ import org.xbill.DNS.Name;
 
 @Entity(name = "instance_config")
 @Table(name = "instance_configs")
-public class InstanceConfigImpl extends AbstractToolDomainBean implements InstanceConfig {
-    private InetAddress ipAddr;
-
+public class InstanceConfigImpl extends AbstractToolDomainAddressBean implements InstanceConfig {
     @Override
     @Transient
     public boolean isConfigured() {
@@ -30,20 +28,10 @@ public class InstanceConfigImpl extends AbstractToolDomainBean implements Instan
         return super.getDomainName();
     }
 
-    @Override
-    public boolean hasIpAddress() {
-        return this.ipAddr != null;
-    }
-
     @Column(name = "ip_address", nullable = false)
     @Nullable
     @Override
     public InetAddress getIpAddress() {
-        return this.ipAddr;
-    }
-
-    @Override
-    public void setIpAddress(@Nullable InetAddress ipAddr) {
-        this.ipAddr = ipAddr;
+        return super.getIpAddress();
     }
 }
