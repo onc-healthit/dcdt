@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.config.instance;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
-import gov.hhs.onc.dcdt.beans.ToolDomainBean;
+import gov.hhs.onc.dcdt.beans.ToolDomainAddressBean;
 import gov.hhs.onc.dcdt.config.instance.impl.InstanceDnsConfigImpl;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.config.ARecordConfig;
@@ -11,8 +11,10 @@ import gov.hhs.onc.dcdt.dns.config.CnameRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.DnsRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.MxRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.NsRecordConfig;
+import gov.hhs.onc.dcdt.dns.config.PtrRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.SoaRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.SrvRecordConfig;
+import gov.hhs.onc.dcdt.dns.config.TxtRecordConfig;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +23,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.xbill.DNS.Record;
 
 @JsonSubTypes({ @Type(InstanceDnsConfigImpl.class) })
-public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainBean {
+public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainAddressBean {
     public <T extends Record> Collection<T> findAnswers(T questionRecord);
 
     public Map<DnsRecordType, List<? extends DnsRecordConfig<? extends Record>>> mapRecordConfigs();
@@ -48,7 +50,7 @@ public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainBe
     public List<CnameRecordConfig> getCnameRecordConfigs();
 
     public void setCnameRecordConfigs(@Nullable List<CnameRecordConfig> cnameRecordConfigs);
-
+    
     public boolean hasMxRecordConfigs();
 
     @Nullable
@@ -63,6 +65,11 @@ public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainBe
 
     public void setNsRecordConfigs(@Nullable List<NsRecordConfig> nsRecordConfigs);
 
+    public boolean hasPtrRecordConfigs();
+
+    @Nullable
+    public List<PtrRecordConfig> getPtrRecordConfigs();
+
     public boolean hasSoaRecordConfig();
 
     @Nullable
@@ -76,4 +83,11 @@ public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainBe
     public List<SrvRecordConfig> getSrvRecordConfigs();
 
     public void setSrvRecordConfigs(@Nullable List<SrvRecordConfig> srvRecordConfigs);
+
+    public boolean hasTxtRecordConfigs();
+
+    @Nullable
+    public List<TxtRecordConfig> getTxtRecordConfigs();
+
+    public void setTxtRecordConfigs(@Nullable List<TxtRecordConfig> txtRecordConfigs);
 }

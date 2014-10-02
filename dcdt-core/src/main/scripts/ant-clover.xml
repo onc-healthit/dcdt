@@ -17,8 +17,8 @@
             <not><ispropertytrue property="${maven.clover.skipProperty}"/></not>
             <then>
                 <dcdt:info>Compiling Clover instrumented test source files: ${project.build.cloverTestSourceDirectory} => ${project.build.cloverTestOutputDirectory}</dcdt:info>
-                <dcdt:compile srcDir="${project.build.cloverTestSourceDirectory}" outDir="${project.build.cloverTestOutputDirectory}" source="${java.version}"
-                    target="${java.version}">
+                <dcdt:compile srcDir="${project.build.cloverTestSourceDirectory}" outDir="${project.build.cloverTestOutputDirectory}"
+                    compiler="javac${java.version}" source="${java.version}" target="${java.version}">
                     <classpath>
                         <path refid="maven.test.classpath"/>
                         <path refid="maven.plugin.classpath"/>
@@ -49,8 +49,8 @@
             <not><ispropertytrue property="${maven.clover.skipProperty}"/></not>
             <then>
                 <dcdt:info>Compiling Clover instrumented source files: ${project.build.cloverSourceDirectory} => ${project.build.cloverOutputDirectory}</dcdt:info>
-                <dcdt:compile srcDir="${project.build.cloverSourceDirectory}" outDir="${project.build.cloverOutputDirectory}" source="${java.version}"
-                    target="${java.version}">
+                <dcdt:compile srcDir="${project.build.cloverSourceDirectory}" outDir="${project.build.cloverOutputDirectory}" compiler="javac${java.version}"
+                    source="${java.version}" target="${java.version}">
                     <classpath>
                         <path refid="maven.compile.classpath"/>
                         <path refid="maven.plugin.classpath"/>
@@ -90,7 +90,7 @@
                     </else>
                 </if>
                 <dcdt:info>Generating Clover instrumented source files: ${project.build.cloverSourceDirectory}, ${project.build.cloverTestSourceDirectory}</dcdt:info>
-                <dcdt-clover:instrument dbFile="${project.build.cloverDbFile}" srcDir="${project.build.sourceDirectory}"
+                <dcdt-clover:instrument dbFile="${project.build.cloverDbFile}" source="${java.version}" srcDir="${project.build.sourceDirectory}"
                     testSrcDir="${project.build.testSourceDirectory}" instrumentedSrcDir="${project.build.cloverSourceDirectory}"
                     testInstrumentedSrcDir="${project.build.cloverTestSourceDirectory}"/>
             </then>

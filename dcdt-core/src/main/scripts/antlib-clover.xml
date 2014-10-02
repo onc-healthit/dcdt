@@ -6,17 +6,18 @@
     
     <macrodef name="instrument" description="Generates Clover instrumented source files.">
         <attribute name="dbFile"/>
+        <attribute name="source"/>
         <attribute name="srcDir"/>
         <attribute name="testSrcDir"/>
         <attribute name="instrumentedSrcDir"/>
         <attribute name="testInstrumentedSrcDir"/>
         <sequential>
-            <clover:instr initstring="@{dbFile}" destdir="@{instrumentedSrcDir}" taskname="clover-instrument">
+            <clover:instr initstring="@{dbFile}" source="@{source}" destdir="@{instrumentedSrcDir}" taskname="clover-instrument">
                 <fileset dir="@{srcDir}" erroronmissingdir="false">
                     <patternset refid="patternset.java.files"/>
                 </fileset>
             </clover:instr>
-            <clover:instr initstring="@{dbFile}" destdir="@{testInstrumentedSrcDir}" taskname="clover-instrument">
+            <clover:instr initstring="@{dbFile}" source="@{source}" destdir="@{testInstrumentedSrcDir}" taskname="clover-instrument">
                 <testsources dir="@{testSrcDir}" erroronmissingdir="false">
                     <patternset refid="patternset.java.files"/>
                 </testsources>

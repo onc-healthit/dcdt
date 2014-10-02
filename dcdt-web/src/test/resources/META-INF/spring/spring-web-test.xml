@@ -14,14 +14,9 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
-    = SELENIUM
+    = SELENIUM DESIRED CAPABILITIES
     =====================================================================================================-->
-    <beans:bean id="seleniumWebDriverDesiredCapabilities" class="org.openqa.selenium.remote.DesiredCapabilities">
-        <beans:constructor-arg name="rawMap">
-            <util:map>
-                <beans:entry key="#{ T(org.openqa.selenium.remote.CapabilityType).BROWSER_NAME }"
-                    value="#{ T(org.openqa.selenium.remote.BrowserType).FIREFOX }"/>
-            </util:map>
-        </beans:constructor-arg>
-    </beans:bean>
+    <beans:bean id="seleniumDesiredCapabilities" class="org.openqa.selenium.remote.DesiredCapabilities" abstract="true"/>
+    
+    <beans:bean id="seleniumDesiredCapabilitiesFirefox" parent="seleniumDesiredCapabilities" factory-method="firefox"/>
 </beans:beans>

@@ -17,10 +17,12 @@ import org.xbill.DNS.Cache;
 import org.xbill.DNS.MXRecord;
 import org.xbill.DNS.NSRecord;
 import org.xbill.DNS.Name;
+import org.xbill.DNS.PTRRecord;
 import org.xbill.DNS.Record;
 import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SOARecord;
 import org.xbill.DNS.SRVRecord;
+import org.xbill.DNS.TXTRecord;
 
 public interface DnsLookupService extends ToolBean {
     public DnsLookupResult<ARecord> lookupARecords(Name name) throws DnsException;
@@ -36,9 +38,13 @@ public interface DnsLookupService extends ToolBean {
 
     public DnsLookupResult<NSRecord> lookupNsRecords(Name name) throws DnsException;
 
+    public DnsLookupResult<PTRRecord> lookupPtrRecords(Name name) throws DnsException;
+
     public DnsLookupResult<SOARecord> lookupSoaRecords(Name name) throws DnsException;
 
     public DnsLookupResult<SRVRecord> lookupSrvRecords(DnsServiceType serviceType, DnsServiceProtocol serviceProtocol, Name name) throws DnsException;
+
+    public DnsLookupResult<TXTRecord> lookupTxtRecords(Name name) throws DnsException;
 
     public <T extends Record> DnsLookupResult<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name) throws DnsException;
 

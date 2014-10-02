@@ -3,21 +3,25 @@ package gov.hhs.onc.dcdt.service.mail.james.impl;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.DnsRecordDataStringTransformer;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import gov.hhs.onc.dcdt.service.mail.james.ToolDnsService;
 import gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceConfigBean;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
@@ -28,7 +32,9 @@ import org.slf4j.LoggerFactory;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.Address;
 import org.xbill.DNS.Name;
+import org.xbill.DNS.PTRRecord;
 import org.xbill.DNS.Record;
+import org.xbill.DNS.ReverseMap;
 import org.xbill.DNS.TextParseException;
 
 public class ToolDnsServiceImpl extends DNSJavaService implements ToolDnsService {
@@ -55,12 +61,15 @@ public class ToolDnsServiceImpl extends DNSJavaService implements ToolDnsService
     @Nullable
     @Override
     public String getHostName(InetAddress addr) {
-        return addr.getHostAddress();
+        PTRRecord ptrRecord = ((PTRRecord) ToolListUtils.getFirst(this.lookupNoExceptionInternal(ReverseMap.fromAddress(addr).toString(), DnsRecordType.PTR)));
+
+        return ((ptrRecord != null) ? ptrRecord.getTarget().toString() : addr.getHostAddress());
     }
 
     @Override
     public Collection<String> findTXTRecords(String hostName) {
-        return new ArrayList<>(0);
+        return CollectionUtils.collect(this.lookupNoExceptionInternal(hostName, DnsRecordType.TXT), DnsRecordDataStringTransformer.INSTANCE,
+            new ArrayList<String>());
     }
 
     @Override
@@ -81,39 +90,49 @@ public class ToolDnsServiceImpl extends DNSJavaService implements ToolDnsService
     @Nullable
     @Override
     protected Record[] lookup(String nameStr, int recordTypeId, String recordTypeDesc) throws TemporaryResolutionException {
-        DnsRecordType recordType = ToolDnsUtils.findByCode(DnsRecordType.class, recordTypeId);
+        // noinspection ConstantConditions
+        return ToolCollectionUtils.toArray(this.lookupInternal(nameStr, ToolDnsUtils.findByCode(DnsRecordType.class, recordTypeId)), Record.class);
+    }
 
-        if (recordType == null) {
-            LOGGER.error(String.format("Unable to perform DNS lookup (name=%s) for unknown record type (desc=%s): %d", nameStr, recordTypeDesc, recordTypeId));
-
+    @Nullable
+    private List<? extends Record> lookupNoExceptionInternal(String nameStr, DnsRecordType recordType) {
+        try {
+            return this.lookupInternal(nameStr, recordType);
+        } catch (TemporaryResolutionException e) {
             return null;
         }
+    }
 
-        Name name;
-
+    @Nullable
+    private List<? extends Record> lookupInternal(String nameStr, DnsRecordType recordType) throws TemporaryResolutionException {
         try {
-            name = Name.fromString(nameStr);
+            return this.lookupInternal(Name.fromString(nameStr), recordType);
         } catch (TextParseException e) {
             LOGGER.error(String.format("Unable to parse DNS lookup (recordType=%s) name: %s", recordType.getId(), nameStr), e);
 
             return null;
         }
+    }
 
+    @Nullable
+    private List<? extends Record> lookupInternal(Name name, DnsRecordType recordType) throws TemporaryResolutionException {
         DnsLookupResult<? extends Record> lookupResult;
 
         try {
+            // noinspection ConstantConditions
             lookupResult = this.configBean.getLocalLookupService().lookupRecords(recordType, recordType.getRecordClass(), name);
 
             if (!lookupResult.isSuccess()) {
+                // noinspection ConstantConditions
                 lookupResult = this.configBean.getExternalLookupService().lookupRecords(recordType, recordType.getRecordClass(), name);
             }
         } catch (DnsException e) {
-            LOGGER.error(String.format("Unable to perform DNS lookup (recordType=%s, name=%s) name.", recordType.getId(), nameStr), e);
+            LOGGER.error(String.format("Unable to perform DNS lookup (recordType=%s, name=%s) name.", recordType.getId(), name), e);
 
             return null;
         }
 
-        return ToolCollectionUtils.toArray(lookupResult.getAnswers(), Record.class);
+        return lookupResult.getAnswers();
     }
 
     @Nullable
