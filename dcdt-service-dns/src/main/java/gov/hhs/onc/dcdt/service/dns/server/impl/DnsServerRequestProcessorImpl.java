@@ -14,6 +14,9 @@ import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequest;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessingException;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessor;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +27,7 @@ import org.springframework.stereotype.Component;
 import org.xbill.DNS.Message;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
+import org.xbill.DNS.SOARecord;
 
 @Component("dnsServerReqProcImpl")
 @Lazy
@@ -32,6 +36,7 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
     private final static Logger LOGGER = LoggerFactory.getLogger(DnsServerRequestProcessorImpl.class);
 
     @Autowired
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private ConversionService convService;
 
     private DnsServerConfig serverConfig;
@@ -97,15 +102,28 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
             return respMsg;
         }
 
-        InstanceDnsConfig authoritativeDnsConfig = this.serverConfig.findAuthoritativeDnsConfig(questionRecord);
+        List<InstanceDnsConfig> authoritativeDnsConfigs = this.serverConfig.findAuthoritativeDnsConfigs(questionRecord);
+        int numAuthoritativeDnsConfigs = authoritativeDnsConfigs.size();
 
-        if (authoritativeDnsConfig != null) {
-            ToolDnsMessageUtils.setAnswers(respMsg, authoritativeDnsConfig.findAnswers(questionRecord));
-            // noinspection ConstantConditions
-            ToolDnsMessageUtils.setAuthorities(respMsg, true, authoritativeDnsConfig.getSoaRecordConfig().toRecord());
-        } else {
+        if (numAuthoritativeDnsConfigs == 0) {
             ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.REFUSED);
+
+            return respMsg;
         }
+
+        Collection<Record> answerRecords = new ArrayList<>(numAuthoritativeDnsConfigs), configAnswerRecords;
+        List<SOARecord> authorityRecords = new ArrayList<>(numAuthoritativeDnsConfigs);
+
+        for (InstanceDnsConfig authoritativeDnsConfig : authoritativeDnsConfigs) {
+            if (!(configAnswerRecords = authoritativeDnsConfig.findAnswers(questionRecord)).isEmpty()) {
+                answerRecords.addAll(configAnswerRecords);
+                // noinspection ConstantConditions
+                authorityRecords.add(authoritativeDnsConfig.getSoaRecordConfig().toRecord());
+            }
+        }
+
+        ToolDnsMessageUtils.setAnswers(respMsg, answerRecords);
+        ToolDnsMessageUtils.setAuthorities(respMsg, true, authorityRecords);
 
         return respMsg;
     }

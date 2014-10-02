@@ -7,8 +7,7 @@ import javax.annotation.Nullable;
 import org.xbill.DNS.Record;
 
 public interface DnsServerConfig extends ToolConnectionBean {
-    @Nullable
-    public InstanceDnsConfig findAuthoritativeDnsConfig(Record questionRecord);
+    public List<InstanceDnsConfig> findAuthoritativeDnsConfigs(Record questionRecord);
 
     public boolean hasDnsConfigs();
 
