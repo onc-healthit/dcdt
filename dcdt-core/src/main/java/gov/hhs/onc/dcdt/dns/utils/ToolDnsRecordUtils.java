@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.dns.utils;
 
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
+import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.dns.DnsCertificateType;
 import gov.hhs.onc.dcdt.dns.DnsDclassType;
 import gov.hhs.onc.dcdt.dns.DnsException;
@@ -103,6 +104,19 @@ public abstract class ToolDnsRecordUtils {
         }
     }
 
+    public static class AuthoritativeDnsConfigPredicate extends AbstractToolPredicate<InstanceDnsConfig> {
+        private Record questionRecord;
+
+        public AuthoritativeDnsConfigPredicate(Record questionRecord) {
+            this.questionRecord = questionRecord;
+        }
+
+        @Override
+        protected boolean evaluateInternal(InstanceDnsConfig dnsConfig) throws Exception {
+            return dnsConfig.isAuthoritative(this.questionRecord);
+        }
+    }
+
     public final static DateFormat DATE_FORMAT_SERIAL = new SimpleDateFormat("yyyyMMdd");
 
     public static String buildSpf(String ... spfStrs) {
@@ -118,6 +132,7 @@ public abstract class ToolDnsRecordUtils {
             spfStrs.add(DnsSpfStrings.MECH_ALL_FAIL);
         }
 
+        // noinspection ConstantConditions
         return ToolStringUtils.joinDelimit(spfStrs, DnsSpfStrings.DELIM);
     }
 
@@ -153,6 +168,7 @@ public abstract class ToolDnsRecordUtils {
         @Nullable Iterable<? extends Iterable<? extends DnsRecordConfig<? extends Record>>> recordConfigs) {
         DnsRecordType questionRecordType = ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType());
 
+        // noinspection ConstantConditions
         return CollectionUtils.emptyIfNull(((questionRecordType != null) ? CollectionUtils.select(CollectionUtils.collect(
             ToolIteratorUtils.chainedIterator(recordConfigs),
             new DnsRecordConfigAnswerTransformer<>(questionRecordType, ((Class<T>) questionRecordType.getRecordClass()), questionRecord)), PredicateUtils

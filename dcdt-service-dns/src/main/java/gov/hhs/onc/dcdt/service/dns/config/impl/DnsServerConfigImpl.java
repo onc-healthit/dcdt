@@ -2,7 +2,9 @@ package gov.hhs.onc.dcdt.service.dns.config.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.AuthoritativeDnsConfigPredicate;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -13,22 +15,10 @@ public class DnsServerConfigImpl extends AbstractToolConnectionBean implements D
     @Autowired(required = false)
     private List<InstanceDnsConfig> dnsConfigs;
 
-    @Nullable
     @Override
-    public InstanceDnsConfig findAuthoritativeDnsConfig(Record questionRecord) {
-        InstanceDnsConfig dnsConfigAuthoritative = null;
-
-        if (this.hasDnsConfigs()) {
-            for (InstanceDnsConfig dnsConfig : this.dnsConfigs) {
-                // noinspection ConstantConditions
-                if (dnsConfig.isAuthoritative(questionRecord)
-                    && ((dnsConfigAuthoritative == null) || dnsConfig.getDomainName().subdomain(dnsConfigAuthoritative.getDomainName()))) {
-                    dnsConfigAuthoritative = dnsConfig;
-                }
-            }
-        }
-
-        return dnsConfigAuthoritative;
+    public List<InstanceDnsConfig> findAuthoritativeDnsConfigs(Record questionRecord) {
+        return CollectionUtils.select(this.dnsConfigs, new AuthoritativeDnsConfigPredicate(questionRecord),
+            new ArrayList<InstanceDnsConfig>(CollectionUtils.size(this.dnsConfigs)));
     }
 
     @Override

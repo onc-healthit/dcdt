@@ -14,6 +14,7 @@ import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -135,14 +136,20 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
         super.startService();
     }
 
+    @SuppressWarnings({ "unchecked" })
     private void assertLookupAnswerRecordsMatch(DnsServerConfig serverConfig, DnsRecordConfig<? extends Record> recordConfig) throws Exception {
         DnsRecordType recordType = recordConfig.getRecordType();
         Record record = recordConfig.toRecord();
+        // noinspection ConstantConditions
         DnsLookupResult<? extends Record> lookupResult =
             this.serverLookupServiceMap.get(serverConfig).lookupRecords(recordType, recordType.getRecordClass(), record.getName());
+        List<InstanceDnsConfig> authoritativeConfigs = serverConfig.findAuthoritativeDnsConfigs(record);
         // noinspection ConstantConditions
-        Collection<? extends Record> configAnswerRecords = serverConfig.findAuthoritativeDnsConfig(record).findAnswers(record), answerRecords =
-            lookupResult.getAnswers();
+        Collection<Record> configAnswerRecords = new ArrayList<>(authoritativeConfigs.size()), answerRecords = ((Collection<Record>) lookupResult.getAnswers());
+
+        for (InstanceDnsConfig authoritativeConfig : authoritativeConfigs) {
+            configAnswerRecords.addAll(authoritativeConfig.findAnswers(record));
+        }
 
         Assert.assertEqualsNoOrder(ToolCollectionUtils.toArray(answerRecords, Record.class), ToolCollectionUtils.toArray(configAnswerRecords, Record.class),
             String.format("DNS lookup result (type=%s) answer record(s) do not match: expected=[%s], actual=[%s]", lookupResult.getType().name(),

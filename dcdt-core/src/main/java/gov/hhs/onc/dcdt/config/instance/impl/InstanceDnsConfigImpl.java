@@ -127,6 +127,7 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
 
     @Override
     public Map<DnsRecordType, List<? extends DnsRecordConfig<? extends Record>>> mapRecordConfigs() {
+        // noinspection ConstantConditions
         return ToolMapUtils.putAll(new LinkedHashMap<DnsRecordType, List<? extends DnsRecordConfig<? extends Record>>>(DnsRecordType.values().length),
             new MutablePair<>(DnsRecordType.A, this.aRecordsConfigs), new MutablePair<>(DnsRecordType.CERT, this.certRecordConfigs), new MutablePair<>(
                 DnsRecordType.CNAME, this.cnameRecordConfigs), new MutablePair<>(DnsRecordType.MX, this.mxRecordConfigs), new MutablePair<>(DnsRecordType.NS,
@@ -201,13 +202,9 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
                 }
             }
 
-            // @formatter:off
-            /*
             this.ptrRecordConfigs =
                 ToolCollectionUtils.nullIfEmpty(CollectionUtils.collect(this.aRecordsConfigs, new ReverseMapPtrRecordConfigTransformer(),
                     new ArrayList<PtrRecordConfig>()));
-            */
-            // @formatter:on
         }
     }
 

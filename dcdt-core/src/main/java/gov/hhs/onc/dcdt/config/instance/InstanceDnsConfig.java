@@ -50,7 +50,7 @@ public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainAd
     public List<CnameRecordConfig> getCnameRecordConfigs();
 
     public void setCnameRecordConfigs(@Nullable List<CnameRecordConfig> cnameRecordConfigs);
-    
+
     public boolean hasMxRecordConfigs();
 
     @Nullable
