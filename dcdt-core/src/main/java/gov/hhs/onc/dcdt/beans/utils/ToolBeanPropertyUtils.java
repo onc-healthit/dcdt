@@ -1,12 +1,12 @@
 package gov.hhs.onc.dcdt.beans.utils;
 
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.beans.PropertyDescriptor;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Predicate;
@@ -15,19 +15,19 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanWrapper;
 
 public abstract class ToolBeanPropertyUtils {
-    public static class BeanPropertyValuePredicate<T> extends BeanPropertyReadablePredicate {
-        private T beanPropValue;
+    public static class BeanPropertyValueTransformer<T> extends AbstractToolTransformer<Object, T> {
+        private String beanPropName;
+        private Class<T> beanPropValueClass;
 
-        public BeanPropertyValuePredicate(String beanPropName, @Nullable T beanPropValue) {
-            super(beanPropName, ToolClassUtils.getClass(beanPropValue, Object.class));
-
-            this.beanPropValue = beanPropValue;
+        public BeanPropertyValueTransformer(String beanPropName, Class<T> beanPropValueClass) {
+            this.beanPropName = beanPropName;
+            this.beanPropValueClass = beanPropValueClass;
         }
 
+        @Nullable
         @Override
-        protected boolean evaluateInternal(@Nullable Object bean) throws Exception {
-            return super.evaluateInternal(bean)
-                && Objects.equals(getValue(ToolBeanUtils.wrap(bean), this.beanPropName, this.beanPropValueClass), this.beanPropValue);
+        protected T transformInternal(@Nullable Object bean) throws Exception {
+            return getValue(ToolBeanUtils.wrap(bean), this.beanPropName, this.beanPropValueClass);
         }
     }
 

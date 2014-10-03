@@ -1,24 +1,21 @@
 package gov.hhs.onc.dcdt.beans.utils;
 
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanPropertyUtils.BeanPropertyValuePredicate;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanPropertyUtils.BeanPropertyValueTransformer;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import java.beans.PropertyDescriptor;
 import java.io.Serializable;
 import javax.annotation.Nullable;
 import javax.persistence.Id;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.PredicateUtils;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.core.convert.ConversionService;
 
 public abstract class ToolBeanUtils {
-    public static class NamedBeanNamePredicate extends BeanPropertyValuePredicate<String> {
-        public NamedBeanNamePredicate(String namedBeanName) {
-            super("name", namedBeanName);
-        }
-    }
+    public final static String PROP_NAME_NAME = "name";
 
     @Nullable
     public static Serializable getId(BeanWrapper beanWrapper) {
@@ -38,7 +35,10 @@ public abstract class ToolBeanUtils {
 
     @Nullable
     public static <T extends ToolNamedBean> T findNamed(ListableBeanFactory beanFactory, String namedBeanName, Class<T> namedBeanClass) {
-        return CollectionUtils.find(ToolBeanFactoryUtils.getBeansOfType(beanFactory, namedBeanClass), new NamedBeanNamePredicate(namedBeanName));
+        return CollectionUtils.find(
+            ToolBeanFactoryUtils.getBeansOfType(beanFactory, namedBeanClass),
+            PredicateUtils.transformedPredicate(new BeanPropertyValueTransformer<>(PROP_NAME_NAME, Object.class),
+                PredicateUtils.equalPredicate(((Object) namedBeanName))));
     }
 
     @Nullable

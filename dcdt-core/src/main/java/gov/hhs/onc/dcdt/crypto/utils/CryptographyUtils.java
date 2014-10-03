@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.crypto.CryptographyIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTaggedIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils.IsAssignablePredicate;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.security.Provider;
 import java.security.Security;
@@ -37,6 +38,7 @@ public abstract class CryptographyUtils {
         initializeProvider();
     }
 
+    @Nullable
     public static <T extends Enum<T> & CryptographyAlgorithmIdentifier> T findByAlgorithmId(Class<T> enumClass, AlgorithmIdentifier algId) {
         return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyAlgorithmIdentifier.PROP_NAME_ALG_ID, algId);
     }
@@ -53,7 +55,7 @@ public abstract class CryptographyUtils {
 
     @Nullable
     public static <T extends Enum<T> & CryptographyTypeIdentifier> T findByType(Class<T> enumClass, Class<?> type) {
-        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyTypeIdentifier.PROP_NAME_TYPE, type);
+        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyTypeIdentifier.PROP_NAME_TYPE, new IsAssignablePredicate<>(type, true, true));
     }
 
     @Nullable
