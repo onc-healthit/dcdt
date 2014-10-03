@@ -87,7 +87,7 @@
         p:target="ldap-unavailable.#{ instanceConfig.domainName }"/>
     
     <!--====================================================================================================
-    = INSTANCE DNS PTR RECORD CONFIG
+    = INSTANCE DNS TXT RECORD CONFIG
     =====================================================================================================-->
     <beans:bean id="instanceDnsTxtRecordConfig" parent="txtRecordConfigImpl" abstract="true"/>
     

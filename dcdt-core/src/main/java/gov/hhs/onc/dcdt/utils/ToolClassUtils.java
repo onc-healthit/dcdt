@@ -14,14 +14,32 @@ import org.springframework.core.convert.TypeDescriptor;
 public abstract class ToolClassUtils {
     public static class IsAssignablePredicate<T> extends AbstractToolPredicate<Object> {
         private Class<T> clazz;
+        private boolean from;
+        private boolean castClass;
 
         public IsAssignablePredicate(Class<T> clazz) {
+            this(clazz, false);
+        }
+
+        public IsAssignablePredicate(Class<T> clazz, boolean from) {
+            this(clazz, from, false);
+        }
+
+        public IsAssignablePredicate(Class<T> clazz, boolean from, boolean castClass) {
             this.clazz = clazz;
+            this.from = from;
+            this.castClass = castClass;
         }
 
         @Override
         protected boolean evaluateInternal(@Nullable Object obj) throws Exception {
-            return isAssignable(ToolClassUtils.getClass(obj), this.clazz);
+            Class<?> objClass = ToolClassUtils.getClass(obj);
+
+            if (this.castClass && isAssignable(objClass, Class.class)) {
+                objClass = ((Class<?>) obj);
+            }
+
+            return isAssignable((from ? this.clazz : objClass), (from ? objClass : this.clazz));
         }
     }
 
