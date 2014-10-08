@@ -1,9 +1,11 @@
 package gov.hhs.onc.dcdt.service.mail.james.impl;
 
 import gov.hhs.onc.dcdt.ToolRuntimeException;
+import gov.hhs.onc.dcdt.service.mail.james.ToolDomainList;
 import gov.hhs.onc.dcdt.service.mail.james.config.BeanConfigurable;
 import gov.hhs.onc.dcdt.service.mail.james.config.SmtpServersConfigBean;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import javax.annotation.Resource;
 import javax.management.InstanceAlreadyExistsException;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.james.smtpserver.netty.SMTPServer;
@@ -13,6 +15,9 @@ import org.slf4j.LoggerFactory;
 
 public class ToolSmtpServerFactory extends SMTPServerFactory implements BeanConfigurable<SmtpServersConfigBean> {
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolSmtpServerFactory.class);
+
+    @Resource(name = "domainlist")
+    private ToolDomainList domainList;
 
     private SmtpServersConfigBean configBean;
 
@@ -42,6 +47,6 @@ public class ToolSmtpServerFactory extends SMTPServerFactory implements BeanConf
 
     @Override
     protected SMTPServer createServer() {
-        return new ToolSmtpServer();
+        return new ToolSmtpServer(this.domainList);
     }
 }

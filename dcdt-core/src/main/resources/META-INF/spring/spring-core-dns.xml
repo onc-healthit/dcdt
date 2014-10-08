@@ -124,9 +124,6 @@
     <beans:bean id="dnsSpf" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils" factory-method="buildSpf"
         c:spfStrs="#{ T(org.apache.commons.lang3.ArrayUtils).EMPTY_STRING_ARRAY }"/>
     
-    <beans:bean id="dnsSpfA" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils" factory-method="buildSpf"
-        c:spfStrs="#{ T(gov.hhs.onc.dcdt.dns.DnsSpfStrings).MECH_A }"/>
-    
     <beans:bean id="dnsSpfMx" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils" factory-method="buildSpf"
         c:spfStrs="#{ T(gov.hhs.onc.dcdt.dns.DnsSpfStrings).MECH_MX }"/>
     
@@ -178,7 +175,9 @@
     <beans:bean id="soaRecordConfig" class="gov.hhs.onc.dcdt.dns.config.SoaRecordConfig" parent="dnsRecordConfig" abstract="true"/>
     <beans:bean id="soaRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.SoaRecordConfigImpl" parent="soaRecordConfig" abstract="true"
         p:expire="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"
+        p:minimum="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"
         p:refresh="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"
+        p:retry="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"
         p:serial="#{ T(gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils).generateSerial() }"/>
     
     <!--====================================================================================================
