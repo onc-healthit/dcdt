@@ -20,7 +20,6 @@ import org.xbill.DNS.Header;
 import org.xbill.DNS.Message;
 import org.xbill.DNS.OPTRecord;
 import org.xbill.DNS.Record;
-import org.xbill.DNS.SOARecord;
 
 public abstract class ToolDnsMessageUtils {
     public final static int DATA_SIZE_DNS_MSG_QUERY_SIZE_PREFIX = 2;
@@ -54,22 +53,21 @@ public abstract class ToolDnsMessageUtils {
         return (((querySizePrefixData[0] & 0xFF) << 8) + (querySizePrefixData[1] & 0xFF));
     }
 
-    public static Message setAuthorities(Message msg, boolean authoritative, @Nullable SOARecord ... authorityRecords) {
+    public static Message setAdditional(Message msg, @Nullable Record ... additionalRecords) {
+        return setAdditional(msg, ToolArrayUtils.asList(additionalRecords));
+    }
+
+    public static Message setAdditional(Message msg, @Nullable Iterable<? extends Record> additionalRecords) {
+        return setRecords(msg, DnsMessageSection.ADDITIONAL, additionalRecords);
+    }
+
+    public static Message setAuthorities(Message msg, boolean authoritative, @Nullable Record ... authorityRecords) {
         return setAuthorities(msg, authoritative, ToolArrayUtils.asList(authorityRecords));
     }
 
-    public static Message setAuthorities(Message msg, boolean authoritative, @Nullable Iterable<SOARecord> authorityRecords) {
-        msg.removeAllRecords(DnsMessageSection.AUTHORITY.getCode());
-
-        if (authorityRecords != null) {
-            addRecords(msg, DnsMessageSection.AUTHORITY, authorityRecords);
-
-            if (authoritative && hasRecords(msg, DnsMessageSection.AUTHORITY)) {
-                setFlags(msg, DnsMessageFlag.AA);
-            }
-        }
-
-        return msg;
+    public static Message setAuthorities(Message msg, boolean authoritative, @Nullable Iterable<? extends Record> authorityRecords) {
+        return ((hasRecords(setRecords(msg, DnsMessageSection.AUTHORITY, authorityRecords), DnsMessageSection.AUTHORITY) && authoritative) ? setFlags(msg,
+            DnsMessageFlag.AA) : msg);
     }
 
     public static Message setAnswers(Message msg, @Nullable Record ... answerRecords) {
@@ -77,17 +75,7 @@ public abstract class ToolDnsMessageUtils {
     }
 
     public static Message setAnswers(Message msg, @Nullable Iterable<? extends Record> answerRecords) {
-        msg.removeAllRecords(DnsMessageSection.ANSWER.getCode());
-
-        if (answerRecords != null) {
-            addRecords(msg, DnsMessageSection.ANSWER, answerRecords);
-        }
-
-        if (!hasRecords(msg, DnsMessageSection.ANSWER)) {
-            setRcode(msg, DnsMessageRcode.NXDOMAIN);
-        }
-
-        return msg;
+        return (!hasRecords(setRecords(msg, DnsMessageSection.ANSWER, answerRecords), DnsMessageSection.ANSWER) ? setRcode(msg, DnsMessageRcode.NXDOMAIN) : msg);
     }
 
     @Nullable
@@ -118,6 +106,16 @@ public abstract class ToolDnsMessageUtils {
 
     public static Message copyRecords(Message msg1, Message msg2, DnsMessageSection section) {
         return addRecords(msg2, section, msg1.getSectionArray(section.getCode()));
+    }
+
+    public static Message setRecords(Message msg, DnsMessageSection section, @Nullable Record ... records) {
+        return setRecords(msg, section, ToolArrayUtils.asList(records));
+    }
+
+    public static Message setRecords(Message msg, DnsMessageSection section, @Nullable Iterable<? extends Record> records) {
+        msg.removeAllRecords(section.getCode());
+
+        return addRecords(msg, section, records);
     }
 
     public static Message addRecords(Message msg, DnsMessageSection section, @Nullable Record ... records) {

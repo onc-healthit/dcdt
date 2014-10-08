@@ -8,27 +8,30 @@ import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.config.ARecordConfig;
 import gov.hhs.onc.dcdt.dns.config.CertRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.CnameRecordConfig;
-import gov.hhs.onc.dcdt.dns.config.DnsRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.MxRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.NsRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.PtrRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.SoaRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.SrvRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.TxtRecordConfig;
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
 import org.springframework.context.ApplicationContextAware;
+import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 
 @JsonSubTypes({ @Type(InstanceDnsConfigImpl.class) })
 public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainAddressBean {
-    public <T extends Record> Collection<T> findAnswers(T questionRecord);
+    @Nullable
+    public List<Record> findAnswers(Record questionRecord);
 
-    public Map<DnsRecordType, List<? extends DnsRecordConfig<? extends Record>>> mapRecordConfigs();
+    @Nullable
+    public List<Record> findAnswers(DnsRecordType questionRecordType, Name questionName);
 
     public boolean isAuthoritative(Record questionRecord);
+
+    public boolean isAuthoritative(DnsRecordType questionRecordType, Name questionName);
 
     public boolean isAuthoritative();
 
@@ -57,6 +60,8 @@ public interface InstanceDnsConfig extends ApplicationContextAware, ToolDomainAd
     public List<MxRecordConfig> getMxRecordConfigs();
 
     public void setMxRecordConfigs(@Nullable List<MxRecordConfig> mxRecordConfigs);
+
+    public Map<Name, Map<DnsRecordType, List<Record>>> getNameRecordsMap();
 
     public boolean hasNsRecordConfigs();
 

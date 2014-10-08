@@ -6,6 +6,8 @@ import gov.hhs.onc.dcdt.dns.DnsMessageOpcode;
 import gov.hhs.onc.dcdt.dns.DnsMessageRcode;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsMessageUtils;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.DnsRecordConfigTransformer;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.DnsRecordTargetTransformer;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.net.InetProtocol;
 import gov.hhs.onc.dcdt.net.sockets.impl.AbstractSocketRequestProcessor;
@@ -14,9 +16,14 @@ import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequest;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessingException;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessor;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.PredicateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +34,6 @@ import org.springframework.stereotype.Component;
 import org.xbill.DNS.Message;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
-import org.xbill.DNS.SOARecord;
 
 @Component("dnsServerReqProcImpl")
 @Lazy
@@ -80,7 +86,7 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         Record questionRecord = reqMsg.getQuestion();
 
         if (ToolDnsMessageUtils.getOpcode(reqMsg) != DnsMessageOpcode.QUERY) {
-            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.REFUSED);
+            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NOTIMP);
 
             return respMsg;
         } else if (questionRecord == null) {
@@ -92,38 +98,53 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         DnsRecordType questionRecordType = ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType());
         Name questionName;
 
-        if ((questionRecordType == null) || !questionRecordType.isProcessed()) {
-            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NXRRSET);
-
-            return respMsg;
-        } else if (!(questionName = questionRecord.getName()).isAbsolute() || questionName.isWild()) {
-            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.REFUSED);
+        if ((questionRecordType == null) || (questionRecord.getDClass() != questionRecordType.getDclassType().getCode()) || !questionRecordType.isProcessed()
+            || !(questionName = questionRecord.getName()).isAbsolute() || questionName.isWild()) {
+            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NOTIMP);
 
             return respMsg;
         }
 
-        List<InstanceDnsConfig> authoritativeDnsConfigs = this.serverConfig.findAuthoritativeDnsConfigs(questionRecord);
-        int numAuthoritativeDnsConfigs = authoritativeDnsConfigs.size();
+        List<InstanceDnsConfig> authoritativeConfigs = this.serverConfig.findAuthoritativeConfigs(questionRecord);
+        int numAuthoritativeConfigs = authoritativeConfigs.size();
 
-        if (numAuthoritativeDnsConfigs == 0) {
-            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.REFUSED);
+        if (numAuthoritativeConfigs == 0) {
+            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NXDOMAIN);
 
             return respMsg;
         }
 
-        Collection<Record> answerRecords = new ArrayList<>(numAuthoritativeDnsConfigs), configAnswerRecords;
-        List<SOARecord> authorityRecords = new ArrayList<>(numAuthoritativeDnsConfigs);
+        List<Record> answerRecords = new ArrayList<>(numAuthoritativeConfigs), configAnswerRecords;
+        Set<Record> authorityRecords = new LinkedHashSet<>(2);
 
-        for (InstanceDnsConfig authoritativeDnsConfig : authoritativeDnsConfigs) {
-            if (!(configAnswerRecords = authoritativeDnsConfig.findAnswers(questionRecord)).isEmpty()) {
-                answerRecords.addAll(configAnswerRecords);
+        for (InstanceDnsConfig authoritativeConfig : authoritativeConfigs) {
+            if (!CollectionUtils.isEmpty((configAnswerRecords = authoritativeConfig.findAnswers(questionRecordType, questionName)))) {
                 // noinspection ConstantConditions
-                authorityRecords.add(authoritativeDnsConfig.getSoaRecordConfig().toRecord());
+                answerRecords.addAll(configAnswerRecords);
+
+                if (questionRecordType == DnsRecordType.SOA) {
+                    ToolCollectionUtils.addAll(authorityRecords,
+                        CollectionUtils.collect(authoritativeConfig.getNsRecordConfigs(), DnsRecordConfigTransformer.INSTANCE));
+                }
+            }
+        }
+
+        Set<Name> additionalNames =
+            CollectionUtils.select(CollectionUtils.collect(
+                IteratorUtils.asIterable(IteratorUtils.chainedIterator(answerRecords.iterator(), authorityRecords.iterator())),
+                DnsRecordTargetTransformer.INSTANCE), PredicateUtils.notNullPredicate(),
+                new LinkedHashSet<Name>((answerRecords.size() + authorityRecords.size())));
+        Set<Record> additionalRecords = new LinkedHashSet<>(additionalNames.size());
+
+        for (Name additionalName : additionalNames) {
+            for (InstanceDnsConfig additionalAuthoritativeConfig : this.serverConfig.findAuthoritativeConfigs(DnsRecordType.A, additionalName)) {
+                ToolCollectionUtils.addAll(additionalRecords, additionalAuthoritativeConfig.findAnswers(DnsRecordType.A, additionalName));
             }
         }
 
         ToolDnsMessageUtils.setAnswers(respMsg, answerRecords);
         ToolDnsMessageUtils.setAuthorities(respMsg, true, authorityRecords);
+        ToolDnsMessageUtils.setAdditional(respMsg, additionalRecords);
 
         return respMsg;
     }

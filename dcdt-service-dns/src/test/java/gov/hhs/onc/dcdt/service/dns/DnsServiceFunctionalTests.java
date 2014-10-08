@@ -11,6 +11,7 @@ import gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServer;
 import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
@@ -56,7 +57,7 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
 
         final DnsServerConfig serverConfig = this.serverLookupServiceMap.keySet().iterator().next();
         // noinspection ConstantConditions
-        final DnsRecordConfig<? extends Record> recordConfig = serverConfig.getDnsConfigs().get(0).mapRecordConfigs().values().iterator().next().get(0);
+        final DnsRecordConfig<? extends Record> recordConfig = serverConfig.getConfigs().get(0).getARecordConfigs().get(0);
         final CountDownLatch startLatch = new CountDownLatch(1);
         final CyclicBarrier stopBarrier = new CyclicBarrier((this.lookupConcurrentNumThreads + 1));
 
@@ -94,14 +95,16 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
     @Test
     public void testLookupDnsRecords() throws Exception {
         for (DnsServerConfig serverConfig : this.serverLookupServiceMap.keySet()) {
-            if (!serverConfig.hasDnsConfigs()) {
+            if (!serverConfig.hasConfigs()) {
                 continue;
             }
 
             // noinspection ConstantConditions
-            for (InstanceDnsConfig config : serverConfig.getDnsConfigs()) {
-                for (DnsRecordConfig<? extends Record> recordConfig : IteratorUtils.asIterable(ToolIteratorUtils.chainedIterator(config.mapRecordConfigs()
-                    .values()))) {
+            for (InstanceDnsConfig config : serverConfig.getConfigs()) {
+                for (DnsRecordConfig<? extends Record> recordConfig : IteratorUtils.asIterable(ToolIteratorUtils.chainedIterator(ToolArrayUtils.asList(
+                    config.getARecordConfigs(), config.getCertRecordConfigs(), config.getCnameRecordConfigs(), config.getMxRecordConfigs(),
+                    config.getNsRecordConfigs(), config.getPtrRecordConfigs(), ToolArrayUtils.asList(config.getSoaRecordConfig()),
+                    config.getSrvRecordConfigs(), config.getTxtRecordConfigs())))) {
                     this.assertLookupAnswerRecordsMatch(serverConfig, recordConfig);
                 }
             }
@@ -143,12 +146,13 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
         // noinspection ConstantConditions
         DnsLookupResult<? extends Record> lookupResult =
             this.serverLookupServiceMap.get(serverConfig).lookupRecords(recordType, recordType.getRecordClass(), record.getName());
-        List<InstanceDnsConfig> authoritativeConfigs = serverConfig.findAuthoritativeDnsConfigs(record);
+        List<InstanceDnsConfig> authoritativeConfigs = serverConfig.findAuthoritativeConfigs(record);
         // noinspection ConstantConditions
         Collection<Record> configAnswerRecords = new ArrayList<>(authoritativeConfigs.size()), answerRecords = ((Collection<Record>) lookupResult.getAnswers());
 
         for (InstanceDnsConfig authoritativeConfig : authoritativeConfigs) {
-            configAnswerRecords.addAll(authoritativeConfig.findAnswers(record));
+            // noinspection ConstantConditions
+            ToolCollectionUtils.addAll(configAnswerRecords, authoritativeConfig.findAnswers(record));
         }
 
         Assert.assertEqualsNoOrder(ToolCollectionUtils.toArray(answerRecords, Record.class), ToolCollectionUtils.toArray(configAnswerRecords, Record.class),

@@ -99,14 +99,6 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceDnsTxtRecordConfigSpfA" parent="instanceDnsTxtRecordConfig" abstract="true">
-        <beans:property name="strings">
-            <util:list>
-                <beans:ref bean="dnsSpfA"/>
-            </util:list>
-        </beans:property>
-    </beans:bean>
-    
     <beans:bean id="instanceDnsTxtRecordConfigSpfMx" parent="instanceDnsTxtRecordConfig" abstract="true">
         <beans:property name="strings">
             <util:list>
@@ -157,7 +149,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfA"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -217,7 +209,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -253,7 +245,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -289,7 +281,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -324,7 +316,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -360,7 +352,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -390,7 +382,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -425,7 +417,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
             </util:list>
         </beans:property>
     </beans:bean>
@@ -460,7 +452,7 @@
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>
-                <beans:bean parent="instanceDnsTxtRecordConfigSpfMx"/>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
             </util:list>
         </beans:property>
     </beans:bean>
