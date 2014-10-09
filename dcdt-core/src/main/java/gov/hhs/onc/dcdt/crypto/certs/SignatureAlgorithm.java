@@ -1,11 +1,10 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyAlgorithmIdentifier;
+import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
-import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
 
 public enum SignatureAlgorithm implements CryptographyAlgorithmIdentifier {
     SHA1_WITH_RSA_ENCRYPTION("sha1WithRSAEncryption", PKCSObjectIdentifiers.sha1WithRSAEncryption), SHA256_WITH_RSA_ENCRYPTION("sha256WithRSAEncryption",
@@ -20,8 +19,8 @@ public enum SignatureAlgorithm implements CryptographyAlgorithmIdentifier {
     private SignatureAlgorithm(String id, ASN1ObjectIdentifier oid) {
         this.id = id;
         this.oid = oid;
-        this.algId = new DefaultSignatureAlgorithmIdentifierFinder().find(this.id);
-        this.digestAlgId = new DefaultDigestAlgorithmIdentifierFinder().find(this.algId);
+        this.algId = CryptographyUtils.SIG_ALG_ID_FINDER.find(this.id);
+        this.digestAlgId = CryptographyUtils.DIGEST_ALG_ID_FINDER.find(this.algId);
     }
 
     @Override

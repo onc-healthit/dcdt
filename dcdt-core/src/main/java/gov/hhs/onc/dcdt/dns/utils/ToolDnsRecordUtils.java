@@ -24,6 +24,7 @@ import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.xbill.DNS.CERTRecord;
+import org.xbill.DNS.CNAMERecord;
 import org.xbill.DNS.DNSKEYRecord;
 import org.xbill.DNS.DNSKEYRecord.Protocol;
 import org.xbill.DNS.DNSSEC.DNSSECException;
@@ -73,6 +74,9 @@ public abstract class ToolDnsRecordUtils {
         protected Name transformInternal(Record record) throws Exception {
             // noinspection ConstantConditions
             switch (ToolDnsUtils.findByCode(DnsRecordType.class, record.getType())) {
+                case CNAME:
+                    return ((CNAMERecord) record).getTarget();
+
                 case MX:
                     return ((MXRecord) record).getTarget();
 

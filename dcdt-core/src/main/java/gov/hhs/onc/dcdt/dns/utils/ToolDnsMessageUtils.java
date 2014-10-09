@@ -66,8 +66,7 @@ public abstract class ToolDnsMessageUtils {
     }
 
     public static Message setAuthorities(Message msg, boolean authoritative, @Nullable Iterable<? extends Record> authorityRecords) {
-        return ((hasRecords(setRecords(msg, DnsMessageSection.AUTHORITY, authorityRecords), DnsMessageSection.AUTHORITY) && authoritative) ? setFlags(msg,
-            DnsMessageFlag.AA) : msg);
+        return setRecords((authoritative ? setFlags(msg, DnsMessageFlag.AA) : msg), DnsMessageSection.AUTHORITY, authorityRecords);
     }
 
     public static Message setAnswers(Message msg, @Nullable Record ... answerRecords) {
