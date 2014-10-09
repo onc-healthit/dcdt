@@ -131,8 +131,8 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
 
         List<Record> answerRecords = new ArrayList<>(numAuthoritativeConfigs), configAnswerRecords;
         Set<Record> authorityRecords = new LinkedHashSet<>(2);
-        SOARecord negAuthorityRecord = null, configNegAuthorityRecord = null;
-        Name negAuthorityName = null, configNegAuthorityName = null;
+        SOARecord negAuthorityRecord = null, configNegAuthorityRecord;
+        Name negAuthorityName = null, configNegAuthorityName;
 
         for (InstanceDnsConfig authoritativeConfig : authoritativeConfigs) {
             // noinspection ConstantConditions
@@ -147,10 +147,11 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
 
                     break;
                 }
-            } else
-            // Determining "most authoritative" available DNS SOA record for use as an authority if no answer(s) are resolved.
+            }
+
+            // Determining "most authoritative" available DNS SOA record for use as an authority if no answer(s) are resolvable.
             // noinspection ConstantConditions
-            if ((questionRecordType != DnsRecordType.PTR) && answerRecords.isEmpty()
+            if ((questionRecordType != DnsRecordType.PTR)
                 && ((configNegAuthorityName = (configNegAuthorityRecord = authoritativeConfig.getSoaRecordConfig().toRecord()).getName()) != null)
                 && (((negAuthorityRecord == null) && (negAuthorityName == null)) || configNegAuthorityName.subdomain(negAuthorityName))) {
                 // noinspection ConstantConditions
@@ -158,6 +159,27 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
                 // noinspection ConstantConditions
                 negAuthorityName = configNegAuthorityName;
             }
+        }
+
+        // @formatter:off
+        /*
+        Handling IPv6 questions by responding with "NODATA" pseudo-rcode as per:
+        - RFC 2308 - Negative Caching of DNS Queries (DNS NCACHE), Section 2 (http://tools.ietf.org/html/rfc2308#section-2)
+        - RFC 4074 - Common Misbehavior Against DNS Queries for IPv6 Addresses, Section 3 (http://tools.ietf.org/html/rfc4074#section-3)
+        */
+        // @formatter:on
+        if (questionRecordType == DnsRecordType.AAAA) {
+            if (negAuthorityRecord != null) {
+                authorityRecords.add(negAuthorityRecord);
+            }
+
+            boolean respNoData = !answerRecords.isEmpty();
+
+            if (!respNoData) {
+                ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NXDOMAIN);
+            }
+
+            return ToolDnsMessageUtils.setAuthorities(respMsg, !respNoData, authorityRecords);
         }
 
         Set<Name> additionalNames =
@@ -175,7 +197,6 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         }
 
         if ((questionRecordType != DnsRecordType.PTR) && answerRecords.isEmpty() && (negAuthorityRecord != null)) {
-            // noinspection ConstantConditions
             authorityRecords.add(negAuthorityRecord);
         }
 

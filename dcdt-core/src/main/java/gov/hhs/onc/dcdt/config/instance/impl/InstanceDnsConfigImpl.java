@@ -152,7 +152,7 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
     public List<Record> findAnswers(DnsRecordType questionRecordType, Name questionName) {
         Map<DnsRecordType, List<Record>> recordsMap = this.nameRecordsMap.get(questionName);
 
-        return ((recordsMap != null) ? recordsMap.get(questionRecordType) : null);
+        return ((recordsMap != null) ? recordsMap.get(((questionRecordType != DnsRecordType.AAAA) ? questionRecordType : DnsRecordType.A)) : null);
     }
 
     @Override
