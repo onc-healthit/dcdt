@@ -64,7 +64,7 @@ public enum DnsRecordType implements DnsMnemonicIdentifier {
         Type.MINFO, MINFORecord.class), MX(Type.MX, MXRecord.class, true), TXT(Type.TXT, TXTRecord.class, true), RP(Type.RP, RPRecord.class), AFSDB(Type.AFSDB,
         AFSDBRecord.class), X25(Type.X25, X25Record.class), ISDN(Type.ISDN, ISDNRecord.class), RT(Type.RT, RTRecord.class), NSAP(Type.NSAP, NSAPRecord.class),
     NSAP_PTR(Type.NSAP_PTR, NSAP_PTRRecord.class), SIG(Type.SIG, SIGRecord.class), KEY(Type.KEY, KEYRecord.class), PX(Type.PX, PXRecord.class), GPOS(Type.GPOS,
-        GPOSRecord.class), AAAA(Type.AAAA, AAAARecord.class), LOC(Type.LOC, LOCRecord.class), NXT(Type.NXT, NXTRecord.class), EID(Type.EID),
+        GPOSRecord.class), AAAA(Type.AAAA, AAAARecord.class, true), LOC(Type.LOC, LOCRecord.class), NXT(Type.NXT, NXTRecord.class), EID(Type.EID),
     NIMLOC(Type.NIMLOC), SRV(Type.SRV, SRVRecord.class, true), ATMA(Type.ATMA), NAPTR(Type.NAPTR, NAPTRRecord.class), KX(Type.KX, KXRecord.class), CERT(
         Type.CERT, CERTRecord.class, true), A6(Type.A6, A6Record.class), DNAME(Type.DNAME, DNAMERecord.class), OPT(Type.OPT, OPTRecord.class), APL(Type.APL,
         APLRecord.class), DS(Type.DS, DSRecord.class), SSHFP(Type.SSHFP, SSHFPRecord.class), IPSECKEY(Type.IPSECKEY, IPSECKEYRecord.class), RRSIG(Type.RRSIG,
