@@ -14,6 +14,10 @@ import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
 import org.bouncycastle.jcajce.ProviderJcaJceHelper;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
+import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
+import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;
+import org.bouncycastle.operator.DigestAlgorithmIdentifierFinder;
+import org.bouncycastle.operator.SignatureAlgorithmIdentifierFinder;
 
 public abstract class CryptographyUtils {
     public static class ToolProviderJcaJceHelper extends ProviderJcaJceHelper {
@@ -33,6 +37,9 @@ public abstract class CryptographyUtils {
     public final static Provider JCE_PROVIDER = Security.getProvider("SUN");
     public final static String JCE_PROVIDER_NAME = JCE_PROVIDER.getName();
     public final static ToolProviderJcaJceHelper JCE_PROVIDER_HELPER = new ToolProviderJcaJceHelper(JCE_PROVIDER);
+
+    public final static DigestAlgorithmIdentifierFinder DIGEST_ALG_ID_FINDER = new DefaultDigestAlgorithmIdentifierFinder();
+    public final static SignatureAlgorithmIdentifierFinder SIG_ALG_ID_FINDER = new DefaultSignatureAlgorithmIdentifierFinder();
 
     static {
         initializeProvider();

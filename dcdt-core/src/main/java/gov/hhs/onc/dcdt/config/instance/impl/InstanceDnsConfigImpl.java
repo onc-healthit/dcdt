@@ -7,6 +7,7 @@ import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
@@ -33,6 +34,7 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -88,15 +90,19 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
 
             // noinspection ConstantConditions
             KeyInfo discoveryTestcaseCredKeyInfo = discoveryTestcaseCred.getCredentialInfo().getKeyDescriptor();
+            CertificateInfo discoveryTestcaseCredCertInfo = discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor();
+
             // noinspection ConstantConditions
-            DnsKeyAlgorithmType discoveryTestcaseCredKeyAlgType = discoveryTestcaseCredKeyInfo.getKeyAlgorithm().getDnsAlgorithmType();
+            DnsKeyAlgorithmType discoveryTestcaseCredKeyAlgType =
+                ToolEnumUtils.findByPropertyValue(DnsKeyAlgorithmType.class, DnsKeyAlgorithmType.PROP_NAME_SIG_ALG,
+                    discoveryTestcaseCredCertInfo.getSignatureAlgorithm());
+            // noinspection ConstantConditions
             certRecordConfig.setKeyAlgorithmType(discoveryTestcaseCredKeyAlgType);
             // noinspection ConstantConditions
             certRecordConfig.setKeyTag(ToolDnsRecordUtils.getKeyTag(discoveryTestcaseCredKeyAlgType, discoveryTestcaseCredKeyInfo.getPublicKey()));
 
             // noinspection ConstantConditions
-            certRecordConfig.setCertificateData(CertificateUtils.writeCertificate(discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor()
-                .getCertificate(), DataEncoding.DER));
+            certRecordConfig.setCertificateData(CertificateUtils.writeCertificate(discoveryTestcaseCredCertInfo.getCertificate(), DataEncoding.DER));
 
             return certRecordConfig;
         }

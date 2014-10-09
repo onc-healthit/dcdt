@@ -34,6 +34,7 @@ import org.springframework.stereotype.Component;
 import org.xbill.DNS.Message;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
+import org.xbill.DNS.SOARecord;
 
 @Component("dnsServerReqProcImpl")
 @Lazy
@@ -85,11 +86,14 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         Message respMsg = ToolDnsMessageUtils.createResponse(reqMsg);
         Record questionRecord = reqMsg.getQuestion();
 
+        // DNS query operations are permitted / "implemented".
         if (ToolDnsMessageUtils.getOpcode(reqMsg) != DnsMessageOpcode.QUERY) {
             ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NOTIMP);
 
             return respMsg;
-        } else if (questionRecord == null) {
+        } else
+        // A DNS query without a question record does not make sense.
+        if (questionRecord == null) {
             ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.FORMERR);
 
             return respMsg;
@@ -98,6 +102,16 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         DnsRecordType questionRecordType = ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType());
         Name questionName;
 
+        // @formatter:off
+        /*
+        Rejecting DNS question record (as "not implemented"):
+        - Unknown type.
+        - Mismatched class.
+        - Not "processed" (i.e. not one of the types that can/will be served).
+        - Name is not absolute.
+        - Name is a wildcard.
+        */
+        // @formatter:on
         if ((questionRecordType == null) || (questionRecord.getDClass() != questionRecordType.getDclassType().getCode()) || !questionRecordType.isProcessed()
             || !(questionName = questionRecord.getName()).isAbsolute() || questionName.isWild()) {
             ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NOTIMP);
@@ -108,24 +122,41 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         List<InstanceDnsConfig> authoritativeConfigs = this.serverConfig.findAuthoritativeConfigs(questionRecord);
         int numAuthoritativeConfigs = authoritativeConfigs.size();
 
+        // Refusing to resolve vs. external domain(s).
         if (numAuthoritativeConfigs == 0) {
-            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.NXDOMAIN);
+            ToolDnsMessageUtils.setRcode(respMsg, DnsMessageRcode.REFUSED);
 
             return respMsg;
         }
 
         List<Record> answerRecords = new ArrayList<>(numAuthoritativeConfigs), configAnswerRecords;
         Set<Record> authorityRecords = new LinkedHashSet<>(2);
+        SOARecord negAuthorityRecord = null, configNegAuthorityRecord = null;
+        Name negAuthorityName = null, configNegAuthorityName = null;
 
         for (InstanceDnsConfig authoritativeConfig : authoritativeConfigs) {
+            // noinspection ConstantConditions
             if (!CollectionUtils.isEmpty((configAnswerRecords = authoritativeConfig.findAnswers(questionRecordType, questionName)))) {
                 // noinspection ConstantConditions
                 answerRecords.addAll(configAnswerRecords);
 
+                // If DNS SOA record answer resolved, add associated DNS NS record(s) as authorities.
                 if (questionRecordType == DnsRecordType.SOA) {
                     ToolCollectionUtils.addAll(authorityRecords,
                         CollectionUtils.collect(authoritativeConfig.getNsRecordConfigs(), DnsRecordConfigTransformer.INSTANCE));
+
+                    break;
                 }
+            } else
+            // Determining "most authoritative" available DNS SOA record for use as an authority if no answer(s) are resolved.
+            // noinspection ConstantConditions
+            if ((questionRecordType != DnsRecordType.PTR) && answerRecords.isEmpty()
+                && ((configNegAuthorityName = (configNegAuthorityRecord = authoritativeConfig.getSoaRecordConfig().toRecord()).getName()) != null)
+                && (((negAuthorityRecord == null) && (negAuthorityName == null)) || configNegAuthorityName.subdomain(negAuthorityName))) {
+                // noinspection ConstantConditions
+                negAuthorityRecord = configNegAuthorityRecord;
+                // noinspection ConstantConditions
+                negAuthorityName = configNegAuthorityName;
             }
         }
 
@@ -136,10 +167,16 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
                 new LinkedHashSet<Name>((answerRecords.size() + authorityRecords.size())));
         Set<Record> additionalRecords = new LinkedHashSet<>(additionalNames.size());
 
+        // Resolving IPv4 addresses (via DNS A record[s]) for all answer + authority DNS record(s) where a follow-up resolution can be avoided.
         for (Name additionalName : additionalNames) {
             for (InstanceDnsConfig additionalAuthoritativeConfig : this.serverConfig.findAuthoritativeConfigs(DnsRecordType.A, additionalName)) {
                 ToolCollectionUtils.addAll(additionalRecords, additionalAuthoritativeConfig.findAnswers(DnsRecordType.A, additionalName));
             }
+        }
+
+        if ((questionRecordType != DnsRecordType.PTR) && answerRecords.isEmpty() && (negAuthorityRecord != null)) {
+            // noinspection ConstantConditions
+            authorityRecords.add(negAuthorityRecord);
         }
 
         ToolDnsMessageUtils.setAnswers(respMsg, answerRecords);

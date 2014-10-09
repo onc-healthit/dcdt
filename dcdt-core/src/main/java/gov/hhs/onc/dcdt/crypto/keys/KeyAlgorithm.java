@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.keys;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyAlgorithmIdentifier;
-import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
 import gov.hhs.onc.dcdt.net.mime.CoreContentTypes;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
@@ -13,7 +12,7 @@ import org.springframework.util.MimeType;
 
 public enum KeyAlgorithm implements CryptographyAlgorithmIdentifier {
     RSA("RSA", PKCSObjectIdentifiers.rsaEncryption, "X.509", X509EncodedKeySpec.class, "PKCS#8", PKCS8EncodedKeySpec.class, 512, new MimeType(
-        CoreContentTypes.APP_TYPE, "pkcs8"), DnsKeyAlgorithmType.RSASHA1);
+        CoreContentTypes.APP_TYPE, "pkcs8"));
 
     private final String id;
     private final ASN1ObjectIdentifier oid;
@@ -24,10 +23,9 @@ public enum KeyAlgorithm implements CryptographyAlgorithmIdentifier {
     private final Class<? extends EncodedKeySpec> privateKeySpecClass;
     private final int keySizeMin;
     private final MimeType contentType;
-    private final DnsKeyAlgorithmType dnsAlgType;
 
     private KeyAlgorithm(String id, ASN1ObjectIdentifier oid, String publicFormat, Class<? extends EncodedKeySpec> publicKeySpecClass, String privateFormat,
-        Class<? extends EncodedKeySpec> privateKeySpecClass, int keySizeMin, MimeType contentType, DnsKeyAlgorithmType dnsAlgType) {
+        Class<? extends EncodedKeySpec> privateKeySpecClass, int keySizeMin, MimeType contentType) {
         this.id = id;
         this.oid = oid;
         this.algId = new AlgorithmIdentifier(this.oid);
@@ -37,7 +35,6 @@ public enum KeyAlgorithm implements CryptographyAlgorithmIdentifier {
         this.privateKeySpecClass = privateKeySpecClass;
         this.keySizeMin = keySizeMin;
         this.contentType = contentType;
-        this.dnsAlgType = dnsAlgType;
     }
 
     @Override
@@ -47,10 +44,6 @@ public enum KeyAlgorithm implements CryptographyAlgorithmIdentifier {
 
     public MimeType getContentType() {
         return this.contentType;
-    }
-
-    public DnsKeyAlgorithmType getDnsAlgorithmType() {
-        return this.dnsAlgType;
     }
 
     public String getFormat(KeyType keyType) {
