@@ -41,7 +41,7 @@ public class HostingTestcaseProcessorFunctionalTests extends AbstractToolFunctio
     @Value("${dcdt.test.instance.ip.addr}")
     private InetAddress testInstanceConfigIpAddr;
 
-    @Value("${dcdt.test.lookup.domain.name.3}")
+    @Value("${dcdt.test.lookup.domain.name}")
     private Name testLookupDomainName;
 
     @Autowired
