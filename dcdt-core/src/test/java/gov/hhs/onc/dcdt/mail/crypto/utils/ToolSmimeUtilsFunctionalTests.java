@@ -80,13 +80,13 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @Value("${dcdt.test.instance.ip.addr}")
     private InetAddress testInstanceConfigIpAddr;
 
-    @Value("${dcdt.test.crypto.key.public.dts500}")
+    @Value("${dcdt.test.crypto.key.public.d1}")
     private String testPublicKeyStr;
 
-    @Value("${dcdt.test.crypto.key.private.dts500}")
+    @Value("${dcdt.test.crypto.key.private.d1}")
     private String testPrivateKeyStr;
 
-    @Value("${dcdt.test.crypto.cert.dts500}")
+    @Value("${dcdt.test.crypto.cert.d1}")
     private String testCertStr;
 
     @Value("${dcdt.test.discovery.mail.mapping.results.addr}")

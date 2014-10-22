@@ -62,7 +62,7 @@ public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
 
     @Test
     public void testLookupCertRecords() throws DnsException {
-        DnsLookupResult<CERTRecord> result = assertResultValid(this.dnsLookupService.lookupCertRecords(this.testDnsLookupDomain1Name), 1);
+        DnsLookupResult<CERTRecord> result = assertResultValid(this.dnsLookupService.lookupCertRecords(this.testDnsLookupDomain1Name), 2);
         // noinspection ConstantConditions
         Assert.assertEquals(result.getAnswers().get(0).getCertType(), CertificateType.PKIX);
     }
