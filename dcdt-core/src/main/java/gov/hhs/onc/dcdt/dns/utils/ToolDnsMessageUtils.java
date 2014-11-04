@@ -74,7 +74,7 @@ public abstract class ToolDnsMessageUtils {
     }
 
     public static Message setAnswers(Message msg, @Nullable Iterable<? extends Record> answerRecords) {
-        return (!hasRecords(setRecords(msg, DnsMessageSection.ANSWER, answerRecords), DnsMessageSection.ANSWER) ? setRcode(msg, DnsMessageRcode.NXDOMAIN) : msg);
+        return (!hasRecords(setRecords(msg, DnsMessageSection.ANSWER, answerRecords), DnsMessageSection.ANSWER) ? setRcode(msg, DnsMessageRcode.NOERROR) : msg);
     }
 
     @Nullable
