@@ -12,7 +12,7 @@ import java.security.Security;
 import javax.annotation.Nullable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
-import org.bouncycastle.jcajce.ProviderJcaJceHelper;
+import org.bouncycastle.jcajce.util.ProviderJcaJceHelper;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.DefaultDigestAlgorithmIdentifierFinder;
 import org.bouncycastle.operator.DefaultSignatureAlgorithmIdentifierFinder;

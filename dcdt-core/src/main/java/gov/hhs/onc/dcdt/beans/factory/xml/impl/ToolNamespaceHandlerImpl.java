@@ -2,11 +2,8 @@ package gov.hhs.onc.dcdt.beans.factory.xml.impl;
 
 import gov.hhs.onc.dcdt.beans.factory.xml.ToolBeanDefinitionParser;
 import gov.hhs.onc.dcdt.beans.factory.xml.ToolNamespaceHandler;
-import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.xml.NamespaceHandlerSupport;
 import org.springframework.beans.factory.xml.ParserContext;

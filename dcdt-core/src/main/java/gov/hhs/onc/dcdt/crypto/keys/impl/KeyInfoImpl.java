@@ -8,6 +8,7 @@ import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
 import java.security.Key;
 import java.security.KeyPair;
+import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAKey;
@@ -22,6 +23,7 @@ import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
+import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 
 @Embeddable
 public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyInfo {
@@ -48,7 +50,13 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
     @Override
     @Transient
     public AuthorityKeyIdentifier getAuthorityKeyId() {
-        return this.hasSubjectPublicKeyInfo() ? new AuthorityKeyIdentifier(this.getSubjectPublicKeyInfo()) : null;
+        try {
+            // noinspection ConstantConditions
+            return this.hasSubjectPublicKeyInfo() ? new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(this.getSubjectPublicKeyInfo()) : null;
+        } catch (NoSuchAlgorithmException ignored) {
+        }
+
+        return null;
     }
 
     @Override

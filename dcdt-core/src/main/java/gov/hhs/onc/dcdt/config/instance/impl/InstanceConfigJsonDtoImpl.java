@@ -20,7 +20,6 @@ import org.springframework.stereotype.Component;
 public class InstanceConfigJsonDtoImpl extends AbstractToolBeanJsonDto<InstanceConfig> implements InstanceConfigJsonDto {
     private String domainName;
     private String ipAddr;
-    private String msg;
 
     public InstanceConfigJsonDtoImpl() {
         super(InstanceConfig.class, InstanceConfigImpl.class);

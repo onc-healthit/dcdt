@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.ConversionService;
 
 public class ConvertingJsonSerializer<T, U> extends StdSerializer<T> {
+    protected final static long serialVersionUID = 0L;
+
     @Autowired
     protected ConversionService convService;
 
