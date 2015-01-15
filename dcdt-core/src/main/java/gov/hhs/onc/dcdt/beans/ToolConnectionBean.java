@@ -3,7 +3,6 @@ package gov.hhs.onc.dcdt.beans;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
-import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 
 public interface ToolConnectionBean extends ToolNamedBean {

@@ -237,7 +237,6 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         throws MessagingException {
         boolean success = result.isSuccess();
         DiscoveryTestcaseCredential decryptCred = result.getDecryptionCredential();
-        CertificateInfo senderCertInfo = result.getSignerCertificateInfo();
         String msgs = ToolStringUtils.joinDelimit(result.getMessages(), "; ");
 
         Assert.assertEquals(success, testSuccess, String.format(

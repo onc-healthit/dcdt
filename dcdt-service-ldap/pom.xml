@@ -245,7 +245,7 @@
         </dependency>
         <!-- Test dependencies (inherited) -->
         <dependency>
-            <groupId>com.cenqua.clover</groupId>
+            <groupId>com.atlassian.clover</groupId>
             <artifactId>clover</artifactId>
             <scope>test</scope>
         </dependency>
