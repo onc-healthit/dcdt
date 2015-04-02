@@ -1,0 +1,8 @@
+div#testcase-discovery-direct-addr {
+    display: none;
+    font-size: 13px;
+}
+
+div#testcase-discovery-direct-addr span:last-of-type {
+    font-family: monospace;
+}

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:sec="http://www.springframework.org/schema/security"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!--====================================================================================================
+    = AUTHENTICATION PROVIDERS
+    =====================================================================================================-->
+    <beans:bean id="authProv" class="org.springframework.security.authentication.AuthenticationProvider" abstract="true"/>
+    
+    <beans:bean id="authProvAnon" class="org.springframework.security.authentication.AnonymousAuthenticationProvider" parent="authProv"
+        c:key="AUTH_ANON"/>
+    
+    <!--====================================================================================================
+    = AUTHENTICATION MANAGER
+    =====================================================================================================-->
+    <sec:authentication-manager id="authManager">
+        <sec:authentication-provider>
+            <sec:user-service id="userService">
+                <sec:user name="${dcdt.web.user.admin.name}" authorities="#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }"
+                    password="${dcdt.web.user.admin.secret}"/>
+            </sec:user-service>
+        </sec:authentication-provider>
+        <sec:authentication-provider ref="authProvAnon"/>
+    </sec:authentication-manager>
+    
+    <!--====================================================================================================
+    = AUTHENTICATION REQUEST CACHE
+    =====================================================================================================-->
+    <beans:bean id="authReqCache" class="org.springframework.security.web.savedrequest.RequestCache" abstract="true"/>
+    
+    <beans:bean id="authReqCacheSession" class="org.springframework.security.web.savedrequest.HttpSessionRequestCache" parent="authReqCache"/>
+    
+    <!--====================================================================================================
+    = AUTHENTICATION SUCCESS HANDLERS
+    =====================================================================================================-->
+    <beans:bean id="authHandlerSuccess" class="org.springframework.security.web.authentication.AuthenticationSuccessHandler" abstract="true"/>
+    
+    <beans:bean id="authHandlerSuccessSavedReq" class="org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler"
+        parent="authHandlerSuccess"
+        p:requestCache-ref="authReqCacheSession"/>
+    
+    <!--====================================================================================================
+    = HTTP SECURITY
+    =====================================================================================================-->
+    <sec:http authentication-manager-ref="authManager" use-expressions="true">
+        <sec:csrf disabled="true"/>
+        <sec:intercept-url pattern="/admin/login**" access="permitAll"/>
+        <sec:intercept-url pattern="/admin/logout**" access="permitAll"/>
+        <sec:intercept-url pattern="/admin**" access="hasAuthority('#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }')"/>
+        <sec:intercept-url pattern="/logback**" access="hasAuthority('#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }')"/>
+        <sec:intercept-url pattern="/**" access="permitAll"/>
+        <sec:form-login authentication-failure-url="/admin/login?error" authentication-success-handler-ref="authHandlerSuccessSavedReq"
+            login-page="/admin/login" login-processing-url="/admin/login/process" password-parameter="pass" username-parameter="user"/>
+        <sec:logout logout-url="/admin/logout" logout-success-url="/"/>
+        <sec:remember-me key="AUTH_REMEMBERED"/>
+        <sec:session-management>
+            <sec:concurrency-control expired-url="/admin/login?expired" max-sessions="1"/>
+        </sec:session-management>
+    </sec:http>
+    
+    <!--====================================================================================================
+    = GLOBAL METHOD SECURITY
+    =====================================================================================================-->
+    <sec:global-method-security authentication-manager-ref="authManager" pre-post-annotations="enabled" secured-annotations="enabled"/>
+</beans:beans>

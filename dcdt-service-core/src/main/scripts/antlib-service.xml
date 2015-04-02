@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<antlib
+    xmlns:current="ant:current"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant">
+    
+    <macrodef name="process-exec-file" description="Processes a service executable file.">
+        <attribute name="file"/>
+        <attribute name="binary"/>
+        <sequential>
+            <if>
+                <isfalse value="@{binary}"/>
+                <then>
+                    <if>
+                        <matches string="@{file}" pattern="\.bat$"/>
+                        <then>
+                            <replaceregexp file="@{file}" match="^(set\s+_WRAPPER_CONF=&quot;%_REALPATH%\.\.\\)etc(\\wrapper\.conf&quot;\r?)$"
+                                replace="\1conf\2" flags="m"/>
+                        </then>
+                        <else>
+                            <replaceregexp file="@{file}" match="^(WRAPPER_CONF=&quot;\$BASEDIR/)etc(/wrapper\.conf&quot;)$" replace="\1conf\2" flags="m"/>
+                        </else>
+                    </if>
+                </then>
+            </if>
+            
+            <chmod file="@{file}" perm="+x"/>
+            
+            <dcdt:info>Processed service executable file: @{file}</dcdt:info>
+        </sequential>
+    </macrodef>
+</antlib>

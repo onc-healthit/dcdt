@@ -1,0 +1,9 @@
+#* @vtlvariable name="discoveryTestcaseSubmission" type="gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission" *#
+#* @vtlmacrolibrary path="lib/core.vm" *#
+#define($head)
+    #includeStyle("include/mail-testcase-discovery-submission.css")
+#end
+#define($body)
+    $discoveryTestcaseSubmission.testcase.name
+#end
+#parse("mail.vm")

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = IP ADDRESSES
+    =====================================================================================================-->
+    <beans:bean id="ipAddr" class="java.net.InetAddress" abstract="true"/>
+    
+    <beans:bean id="ipAddrLocalAny" class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress">
+        <beans:constructor-arg name="str" value="0.0.0.0"/>
+    </beans:bean>
+    
+    <beans:bean id="ipAddrLocalhost" parent="ipAddr" factory-method="getLocalHost"/>
+    
+    <beans:bean id="ipAddrLoopback" parent="ipAddr" factory-method="getLoopbackAddress"/>
+    
+    <!--====================================================================================================
+    = SOCKET ADDRESSES
+    =====================================================================================================-->
+    <beans:bean id="socketAddr" class="java.net.InetSocketAddress" abstract="true"/>
+    
+    <beans:bean id="socketAddrLoopback" parent="socketAddr" abstract="true">
+        <!--suppress InjectionValueTypeInspection -->
+        <beans:constructor-arg index="0" ref="ipAddrLoopback"/>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = UDP SOCKETS
+    =====================================================================================================-->
+    <beans:bean id="socketUdp" class="java.net.DatagramSocket" lazy-init="true" scope="prototype"/>
+    
+    <!--====================================================================================================
+    = TCP SERVER SOCKETS
+    =====================================================================================================-->
+    <beans:bean id="socketTcpServer" class="java.net.ServerSocket" lazy-init="true" scope="prototype"/>
+    
+    <!--====================================================================================================
+    = TCP SOCKETS
+    =====================================================================================================-->
+    <beans:bean id="socketTcp" class="java.net.Socket" lazy-init="true" scope="prototype"/>
+    
+    <!--====================================================================================================
+    = SOCKET ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="socketAdapter" class="gov.hhs.onc.dcdt.net.sockets.SocketAdapter" abstract="true"/>
+    
+    <beans:bean id="socketAdapterClient" class="gov.hhs.onc.dcdt.net.sockets.ClientSocketAdapter" parent="socketAdapter" abstract="true"/>
+    
+    <!--====================================================================================================
+    = UDP SOCKET ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="socketAdapterUdp" class="gov.hhs.onc.dcdt.net.sockets.UdpSocketAdapter" parent="socketAdapterClient" abstract="true"/>
+    
+    <!--====================================================================================================
+    = TCP SERVER SOCKET ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="socketAdapterTcpServer" class="gov.hhs.onc.dcdt.net.sockets.TcpServerSocketAdapter" parent="socketAdapter" abstract="true"/>
+    
+    <!--====================================================================================================
+    = TCP SOCKET ADAPTERS
+    =====================================================================================================-->
+    <beans:bean id="socketAdapterTcp" class="gov.hhs.onc.dcdt.net.sockets.TcpSocketAdapter" parent="socketAdapterClient" abstract="true"/>
+    
+    <!--====================================================================================================
+    = URI
+    =====================================================================================================-->
+    <beans:bean id="uri" class="java.net.URI" abstract="true"/>
+    
+    <!--====================================================================================================
+    = URL
+    =====================================================================================================-->
+    <beans:bean id="url" class="java.net.URL" abstract="true"/>
+</beans:beans>

@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = DNSJAVA OPTIONS
+    =====================================================================================================-->
+    <beans:bean id="dnsJavaOptsFromMap" parent="methodInvoke"
+        p:targetClass="gov.hhs.onc.dcdt.dns.DnsJavaOptions"
+        p:targetMethod="fromMap">
+        <beans:property name="arguments">
+            <util:map>
+                <beans:entry key="#{ T(gov.hhs.onc.dcdt.dns.DnsJavaOptions).BIND_TTL }" value="true"/>
+            </util:map>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = DNS NAMES
+    =====================================================================================================-->
+    <beans:bean id="dnsName" class="org.xbill.DNS.Name" abstract="true"/>
+    
+    <beans:bean id="dnsNameLocalhost" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils" parent="dnsName" factory-method="fromString"
+        c:nameStr="#{ ipAddrLocalhost.hostName }"/>
+    
+    <!--====================================================================================================
+    = DNS CACHES
+    =====================================================================================================-->
+    <beans:bean id="dnsCache" class="org.xbill.DNS.Cache" abstract="true"/>
+    
+    <beans:bean id="dnsCacheNoOp" parent="dnsCache" abstract="true"
+        p:maxCache="0"
+        p:maxEntries="0"
+        p:maxNCache="0"/>
+    
+    <!--====================================================================================================
+    = DNS SERVER SOCKET ADDRESSES
+    =====================================================================================================-->
+    <beans:bean id="socketAddrDnsServer" parent="socketAddr" abstract="true">
+        <beans:constructor-arg index="1" value="#{ T(org.xbill.DNS.SimpleResolver).DEFAULT_PORT }"/>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = GOOGLE DNS SERVER SOCKET ADDRESSES
+    =====================================================================================================-->
+    <beans:bean id="socketAddrDnsServerGoogle1" parent="socketAddrDnsServer">
+        <beans:constructor-arg index="0">
+            <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress"
+                c:str="8.8.8.8"/>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+    <beans:bean id="socketAddrDnsServerGoogle2" parent="socketAddrDnsServer">
+        <beans:constructor-arg index="0">
+            <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress"
+                c:str="8.8.4.4"/>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = DNS RESOLVERS
+    =====================================================================================================-->
+    <beans:bean id="dnsResolver" class="org.xbill.DNS.Resolver" abstract="true"/>
+    <beans:bean id="dnsResolverExt" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver" abstract="true"/>
+    
+    <beans:bean id="dnsResolverExtLocal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt" factory-method="fromSocketAddresses">
+        <beans:constructor-arg name="socketAddrs">
+            <util:list>
+                <beans:bean parent="socketAddrLoopback">
+                    <!--suppress SpringPlaceholdersInspection -->
+                    <beans:constructor-arg index="1" value="${dcdt.instance.dns.server.1.port}"/>
+                </beans:bean>
+            </util:list>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+    <beans:bean id="dnsResolverExtExternal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt"
+        factory-method="fromSocketAddresses">
+        <beans:constructor-arg name="socketAddrs">
+            <util:list>
+                <beans:ref bean="socketAddrDnsServerGoogle1"/>
+                <beans:ref bean="socketAddrDnsServerGoogle2"/>
+            </util:list>
+        </beans:constructor-arg>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = DNS LOOKUP SERVICES
+    =====================================================================================================-->
+    <beans:bean id="dnsLookupService" class="gov.hhs.onc.dcdt.dns.lookup.DnsLookupService" abstract="true"/>
+    
+    <beans:bean id="dnsLookupServiceImpl" class="gov.hhs.onc.dcdt.dns.lookup.impl.DnsLookupServiceImpl" parent="dnsLookupService" autowire-candidate="false"
+        lazy-init="true" scope="prototype">
+        <beans:property name="cache">
+            <beans:bean parent="dnsCacheNoOp"/>
+        </beans:property>
+        <beans:property name="searchPaths">
+            <beans:set/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="dnsLookupServiceLocal" parent="dnsLookupServiceImpl" autowire-candidate="false"
+        p:resolver-ref="dnsResolverExtLocal"/>
+    
+    <beans:bean id="dnsLookupServiceExternal" parent="dnsLookupServiceImpl" autowire-candidate="false"
+        p:resolver-ref="dnsResolverExtExternal"/>
+    
+    <!--====================================================================================================
+    = DNS SENDER POLICY FRAMEWORK VALUES
+    =====================================================================================================-->
+    <beans:bean id="dnsSpf" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils" factory-method="buildSpf"
+        c:spfStrs="#{ T(org.apache.commons.lang3.ArrayUtils).EMPTY_STRING_ARRAY }"/>
+    
+    <beans:bean id="dnsSpfMx" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils" factory-method="buildSpf"
+        c:spfStrs="#{ T(gov.hhs.onc.dcdt.dns.DnsSpfStrings).MECH_MX }"/>
+    
+    <!--====================================================================================================
+    = DNS RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="dnsRecordConfig" class="gov.hhs.onc.dcdt.dns.config.DnsRecordConfig" abstract="true"
+        p:ttl="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"/>
+    
+    <!--====================================================================================================
+    = DNS A RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="aRecordConfig" class="gov.hhs.onc.dcdt.dns.config.ARecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="aRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.ARecordConfigImpl" parent="aRecordConfig" abstract="true"/>
+    
+    <!--====================================================================================================
+    = DNS CERT RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="certRecordConfig" class="gov.hhs.onc.dcdt.dns.config.CertRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="certRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.CertRecordConfigImpl" parent="certRecordConfig" abstract="true"/>
+    
+    <!--====================================================================================================
+    = DNS CNAME RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="cnameRecordConfig" class="gov.hhs.onc.dcdt.dns.config.CnameRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="cnameRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.CnameRecordConfigImpl" parent="cnameRecordConfig" abstract="true"/>
+    
+    <!--====================================================================================================
+    = DNS MX RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="mxRecordConfig" class="gov.hhs.onc.dcdt.dns.config.MxRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="mxRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.MxRecordConfigImpl" parent="mxRecordConfig" abstract="true"/>
+    
+    <!--====================================================================================================
+    = DNS NS RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="nsRecordConfig" class="gov.hhs.onc.dcdt.dns.config.NsRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="nsRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.NsRecordConfigImpl" parent="nsRecordConfig" abstract="true"/>
+    
+    <!--====================================================================================================
+    = DNS PTR RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="ptrRecordConfig" class="gov.hhs.onc.dcdt.dns.config.PtrRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="ptrRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.PtrRecordConfigImpl" parent="ptrRecordConfig" abstract="true"/>
+    
+    <!--====================================================================================================
+    = DNS SOA RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="soaRecordConfig" class="gov.hhs.onc.dcdt.dns.config.SoaRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="soaRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.SoaRecordConfigImpl" parent="soaRecordConfig" abstract="true"
+        p:expire="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"
+        p:minimum="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"
+        p:refresh="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"
+        p:retry="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).SEC_IN_MIN * 5 }"
+        p:serial="#{ T(gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils).generateSerial() }"/>
+    
+    <!--====================================================================================================
+    = DNS SRV RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="srvRecordConfig" class="gov.hhs.onc.dcdt.dns.config.SrvRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="srvRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.SrvRecordConfigImpl" parent="srvRecordConfig" abstract="true"/>
+    
+    <beans:bean id="srvRecordConfigLdap" parent="srvRecordConfigImpl" abstract="true"
+        p:serviceProtocol="TCP"
+        p:serviceType="LDAP"/>
+    
+    <!--====================================================================================================
+    = DNS TXT RECORD CONFIG
+    =====================================================================================================-->
+    <beans:bean id="txtRecordConfig" class="gov.hhs.onc.dcdt.dns.config.TxtRecordConfig" parent="dnsRecordConfig" abstract="true"/>
+    <beans:bean id="txtRecordConfigImpl" class="gov.hhs.onc.dcdt.dns.config.impl.TxtRecordConfigImpl" parent="txtRecordConfig" abstract="true"/>
+</beans:beans>

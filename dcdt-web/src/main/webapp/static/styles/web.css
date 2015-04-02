@@ -1,0 +1,279 @@
+body {
+    font-family: "Tahoma", sans-serif;
+    font-size: 11px;
+}
+
+.has-info .help-block, .has-info .control-label, .has-info .radio, .has-info .checkbox, .has-info .radio-inline, .has-info .checkbox-inline {
+    color: #3A87AD;
+}
+.has-info .form-control {
+    border-color: #3A87AD;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+}
+.has-info .form-control:focus {
+    border-color: #2D6987;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 6px #3AAED5;
+}
+.has-info .input-group-addon {
+    background-color: #D9EDF7;
+    border-color: #3A87AD;
+    color: #3A87AD;
+}
+
+span.glyphicon {
+    font-size: 13px;
+}
+
+a span.glyphicon,
+label span.glyphicon,
+button span.glyphicon {
+    margin-right: 6px;
+}
+
+a span.glyphicon:focus
+a span.glyphicon:hover {
+    text-decoration: none;
+}
+
+span.glyphicon.glyphicon-type-error,
+*.has-error label span.glyphicon,
+button span.glyphicon.glyphicon-type-error {
+    color: #B94A48;
+}
+
+a:focus span.glyphicon.glyphicon-type-error,
+button:focus span.glyphicon.glyphicon-type-error,
+a:hover span.glyphicon.glyphicon-type-error,
+button:hover span.glyphicon.glyphicon-type-error {
+    color: #953B39;
+}
+
+span.glyphicon.glyphicon-type-info,
+label span.glyphicon,
+button span.glyphicon {
+    color: #3A87AD;
+}
+
+a:focus span.glyphicon.glyphicon-type-info,
+button:focus span.glyphicon,
+a:hover span.glyphicon.glyphicon-type-info,
+button:hover span.glyphicon {
+    color: #2D6987;
+}
+
+span.glyphicon.glyphicon-type-link {
+    color: #428BCA;
+}
+
+a:focus span.glyphicon.glyphicon-type-link,
+button:focus span.glyphicon.glyphicon-type-link,
+a:hover span.glyphicon.glyphicon-type-link,
+button:hover span.glyphicon.glyphicon-type-link {
+    color: #2A6496;
+}
+
+span.glyphicon.glyphicon-type-success,
+*.has-success label span.glyphicon,
+button span.glyphicon.glyphicon-type-success {
+    color: #468847;
+}
+
+a:focus span.glyphicon.glyphicon-type-success,
+button:focus span.glyphicon.glyphicon-type-success,
+a:hover span.glyphicon.glyphicon-type-success,
+button:hover span.glyphicon.glyphicon-type-success {
+    color: #356635;
+}
+
+span.glyphicon.glyphicon-type-warning,
+*.has-warning label span.glyphicon,
+button span.glyphicon.glyphicon-type-warning {
+    color: #C09853;
+}
+
+a:focus span.glyphicon.glyphicon-type-warning,
+button:focus span.glyphicon.glyphicon-type-warning,
+a:hover span.glyphicon.glyphicon-type-warning,
+button:hover span.glyphicon.glyphicon-type-warning {
+    color: #A47E3C;
+}
+
+div#wrap {
+    height: auto;
+    min-height: 100%;
+    margin: 0 auto -52px;
+    padding: 0 0 52px;
+}
+
+div.navbar a.navbar-brand {
+    padding: 10px;
+    font-size: 17px;
+}
+
+a.navbar-brand > img {
+    display: inline-block;
+}
+
+ul.navbar-nav {
+    height: 52px;
+    padding: 10px;
+    line-height: 32px;
+}
+
+ul.navbar-nav li a {
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: inherit;
+    font-size: 13px;
+}
+
+ul.dropdown-menu,
+ul.dropdown-menu li.dropdown-header {
+    font-size: 11px;
+}
+
+ul.list-unstyled {
+    text-indent: 10px;
+}
+
+ul.list-unstyled li {
+    display: block;
+    line-height: 32px;
+}
+
+span.caret {
+    margin-left: 5px;
+}
+
+div#content div.container {
+    padding: 52px 15px 0;
+}
+
+h1, h2, h3 {
+    font-weight: bold;
+}
+
+h1 {
+    font-size: 18px;
+}
+
+h2 {
+    font-size: 16px;
+}
+
+h3 {
+    font-size: 14px;
+}
+
+ol, ul {
+    margin-bottom: 0;
+}
+
+div.input-group-sm div.form-group {
+    margin-bottom: 10px;
+}
+
+div.input-group-sm div.form-group.form-group-addons:not(:first-child),
+div.input-group-sm div.form-group.form-group-buttons,
+div.input-group-sm div.form-group.form-group-text {
+    margin-left: 35px;
+}
+
+div.input-group-sm div.form-group.form-group-addons div:not(:first-child) {
+    margin-top: 5px;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon,
+div.input-group-sm div.form-group.form-group-buttons span.button-group,
+div.input-group-sm div.form-group span.form-cell {
+    display: table-cell;
+    text-align: center;
+    vertical-align: middle;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon,
+div.input-group-sm div.form-group.form-group-buttons span.btn-group {
+    column-span: all;
+    -webkit-column-span: all;
+    -moz-column-span: all;
+    -ms-column-span: all;
+    -o-column-span: all;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon {
+    display: none;
+    width: 725px;
+    text-align: left;
+    font-size: 11px;
+    white-space: normal;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon.input-group-addon-active {
+    display: table-cell;
+}
+
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon:first-child,
+div.input-group-sm div.form-group.form-group-addons div.input-group-addon:last-child {
+    border: 1px solid;
+    border-radius: 4px;
+}
+
+div.input-group-sm div.form-group span.form-cell.form-cell-label {
+    min-width: 175px;
+    padding-right: 10px;
+    text-align: right;
+}
+
+div.input-group-sm div.form-group span.form-cell.form-cell-label label {
+    font-size: 13px;
+}
+
+div.input-group-sm div.form-group span.form-cell.form-cell-control input.form-control[type="password"],
+div.input-group-sm div.form-group span.form-cell.form-cell-control input.form-control[type="text"],
+div.input-group-sm div.form-group span.form-cell.form-cell-control select.form-control {
+    width: 500px;
+    padding: 5px;
+}
+
+div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn {
+    margin-left: 5px;
+}
+
+div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn:first-child,
+div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn:last-child {
+    border-radius: 3px;
+}
+
+div.input-group-sm div.form-group.form-group-buttons span.btn-group button.btn:first-child {
+    margin-left: 0;
+}
+
+div.input-group-sm div.form-group.form-group-buttons span.btn-group.btn-group-sm button.btn {
+    font-size: 13px;
+}
+
+div.ui-widget.ui-dialog {
+    display: none;
+    font-size: 11px;
+}
+
+div.ui-widget.ui-dialog span.glyphicon {
+    float: left;
+    margin-right: 6px;
+}
+
+div.ui-widget.ui-dialog p {
+    display: inline-block;
+}
+
+div#footer {
+    height: 60px;
+}
+
+div#footer div.footer-content {
+    text-align: center;
+}
+
+div#footer-version {
+    color: rgb(150, 150, 150);
+}

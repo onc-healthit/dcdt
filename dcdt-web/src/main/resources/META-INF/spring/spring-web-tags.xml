@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = HTMLCLEANER PROPERTIES
+    =====================================================================================================-->
+    <beans:bean id="cleanerProps" class="org.htmlcleaner.CleanerProperties"
+        p:charset="#{ charsetUtf8.name() }"
+        p:keepWhitespaceAndCommentsInHead="false"
+        p:omitCdataOutsideScriptAndStyle="true"
+        p:omitComments="true"
+        p:omitXmlDeclaration="true"
+        p:translateSpecialEntities="false"
+        p:useEmptyElementTags="false"/>
+    
+    <!--====================================================================================================
+    = HTMLCLEANER
+    =====================================================================================================-->
+    <beans:bean id="cleaner" class="org.htmlcleaner.HtmlCleaner"
+        c:properties-ref="cleanerProps"/>
+    
+    <!--====================================================================================================
+    = HTMLCLEANER SERIALIZER
+    =====================================================================================================-->
+    <beans:bean id="cleanerSerializer" class="org.htmlcleaner.PrettyHtmlSerializer"
+        c:indentString="#{ T(org.apache.commons.lang3.StringUtils).repeat(T(org.apache.commons.lang3.StringUtils).SPACE, 4) }"
+        c:props-ref="cleanerProps"/>
+</beans:beans>

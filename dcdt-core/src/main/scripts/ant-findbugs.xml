@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="findbugs"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:dcdt-findbugs="antlib:gov.hhs.onc.dcdt.ant.findbugs">
+    
+    <description>Ant project for Direct Certificate Discovery Tool (DCDT) FindBugs usage.</description>
+    
+    <import file="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" as="" prefixSeparator=""/>
+    
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-findbugs.xml" uri="antlib:gov.hhs.onc.dcdt.ant.findbugs"/>
+    
+    <target name="findbugs-check" description="Checks whether the FindBugs analysis results file contains any bugs." depends="core-init">
+        <if>
+            <available file="${project.build.findbugsResultsFile}" type="file"/>
+            <then>
+                <dcdt-findbugs:process-results resultsFile="${project.build.findbugsResultsFile}"
+                    resultsPropsFile="${project.build.findbugsResultsPropertiesFile}"
+                    resultsStyleFile="${project.basedir.all}/dcdt-core/src/findbugs/findbugs-results.xsl"/>
+                
+                <if>
+                    <isgreaterthan arg1="${project.findbugs.results.files.num}" arg2="0"/>
+                    <then>
+                        <var name="project.findbugs.results.bugs.num" value="0"/>
+                        <propertyselector property="findbugs-check.files.props" override="true" match="^(project\.findbugs\.results\.files\.file\d+)\.[^$]+$"
+                            select="\1" distinct="true"/>
+                        <for list="${findbugs-check.files.props}" param="findbugs-check.file.prop">
+                            <sequential>
+                                <math result="project.findbugs.results.bugs.num" datatype="int" operation="+" operand1="${project.findbugs.results.bugs.num}"
+                                    operand2="${@{findbugs-check.file.prop}.bugs.num}"/>
+                                <dcdt:error>Class (name=${@{findbugs-check.file.prop}.class}) contains ${@{findbugs-check.file.prop}.bugs.num} bug(s):</dcdt:error>
+                                <propertyselector property="findbugs-check.file.bugs.props" override="true"
+                                    match="^(\Q@{findbugs-check.file.prop}\E\.bugs\.bug\d+)\.[^$]+$" select="\1" distinct="true"/>
+                                <for list="${findbugs-check.file.bugs.props}" param="findbugs-check.file.bug.prop">
+                                    <sequential>
+                                        <dcdt:error>Bug (line=${@{findbugs-check.file.bug.prop}.line}, priority=${@{findbugs-check.file.bug.prop}.priority}, category=${@{findbugs-check.file.bug.prop}.category}, type=${@{findbugs-check.file.bug.prop}.type}): ${@{findbugs-check.file.bug.prop}.msg}</dcdt:error>
+                                    </sequential>
+                                </for>
+                            </sequential>
+                        </for>
+                        <fail>FindBugs analysis (effort=${project.findbugs.results.effort}, threshold=${project.findbugs.results.threshold}) results contain ${project.findbugs.results.bugs.num} bug(s) in ${project.findbugs.results.files.num} file(s).</fail>
+                    </then>
+                    <else>
+                        <dcdt:info>FindBugs analysis (effort=${project.findbugs.results.effort}, threshold=${project.findbugs.results.threshold}) results do not contain any bugs.</dcdt:info>
+                    </else>
+                </if>
+            </then>
+            <else>
+                <dcdt:info>Skipping checking of FindBugs analysis results.</dcdt:info>
+            </else>
+        </if>
+    </target>
+</project>

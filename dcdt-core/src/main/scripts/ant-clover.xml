@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="clover"
+    xmlns:clover="antlib:com.atlassian.clover.ant"
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
+    xmlns:dcdt-clover="antlib:gov.hhs.onc.dcdt.ant.clover">
+    
+    <description>Ant project for Direct Certificate Discovery Tool (DCDT) Clover usage.</description>
+    
+    <import file="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" as="" prefixSeparator=""/>
+    
+    <taskdef name="instr" classname="com.atlassian.clover.ant.tasks.CloverInstrTask" classpath="${maven.classpath}" uri="antlib:com.atlassian.clover.ant"/>
+    
+    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-clover.xml" uri="antlib:gov.hhs.onc.dcdt.ant.clover"/>
+    
+    <target name="clover-test-compile" description="Compiles Clover instrumented test source files." depends="core-init,clover-init">
+        <if>
+            <not><ispropertytrue property="${maven.clover.skipProperty}"/></not>
+            <then>
+                <dcdt:info>Compiling Clover instrumented test source files: ${project.build.cloverTestSourceDirectory} => ${project.build.cloverTestOutputDirectory}</dcdt:info>
+                <dcdt:compile srcDir="${project.build.cloverTestSourceDirectory}" outDir="${project.build.cloverTestOutputDirectory}"
+                    compiler="javac${java.version}" source="${java.version}" target="${java.version}">
+                    <classpath>
+                        <path refid="maven.test.classpath"/>
+                        <path refid="maven.plugin.classpath"/>
+                    </classpath>
+                </dcdt:compile>
+                <copy todir="${project.build.cloverTestOutputDirectory}" quiet="true">
+                    <fileset dir="${project.build.testOutputDirectory}" erroronmissingdir="false">
+                        <patternset>
+                            <invert>
+                                <patternset refid="patternset.java.files"/>
+                            </invert>
+                        </patternset>
+                    </fileset>
+                </copy>
+            </then>
+            <else>
+                <mkdir dir="${project.build.cloverTestOutputDirectory}"/>
+                <copy todir="${project.build.cloverTestOutputDirectory}" quiet="true">
+                    <fileset dir="${project.build.testOutputDirectory}" erroronmissingdir="false"/>
+                </copy>
+                <dcdt:info>Skipping compilation of Clover instrumented test source files.</dcdt:info>
+            </else>
+        </if>
+    </target>
+    
+    <target name="clover-compile" description="Compiles Clover instrumented source files." depends="core-init,clover-init">
+        <if>
+            <not><ispropertytrue property="${maven.clover.skipProperty}"/></not>
+            <then>
+                <dcdt:info>Compiling Clover instrumented source files: ${project.build.cloverSourceDirectory} => ${project.build.cloverOutputDirectory}</dcdt:info>
+                <dcdt:compile srcDir="${project.build.cloverSourceDirectory}" outDir="${project.build.cloverOutputDirectory}" compiler="javac${java.version}"
+                    source="${java.version}" target="${java.version}">
+                    <classpath>
+                        <path refid="maven.compile.classpath"/>
+                        <path refid="maven.plugin.classpath"/>
+                    </classpath>
+                </dcdt:compile>
+                <copy todir="${project.build.cloverOutputDirectory}" quiet="true">
+                    <fileset dir="${project.build.outputDirectory}" erroronmissingdir="false">
+                        <patternset>
+                            <invert>
+                                <patternset refid="patternset.java.files"/>
+                            </invert>
+                        </patternset>
+                    </fileset>
+                </copy>
+            </then>
+            <else>
+                <mkdir dir="${project.build.cloverOutputDirectory}"/>
+                <copy todir="${project.build.cloverOutputDirectory}" quiet="true">
+                    <fileset dir="${project.build.outputDirectory}" erroronmissingdir="false"/>
+                </copy>
+                <dcdt:info>Skipping compilation of Clover instrumented source files.</dcdt:info>
+            </else>
+        </if>
+    </target>
+    
+    <target name="clover-instrument" description="Generates Clover instrumented source files." depends="core-init,clover-init">
+        <if>
+            <not><ispropertytrue property="${maven.clover.skipProperty}"/></not>
+            <then>
+                <if>
+                    <equals arg1="${${maven.clover.licenseSourceProperty}}" arg2="location"/>
+                    <then>
+                        <var name="${maven.clover.licenseLocationInternalProperty}" value="${${maven.clover.licenseLocationProperty}}"/>
+                    </then>
+                    <else>
+                        <var name="${maven.clover.licenseValueInternalProperty}" value="${${maven.clover.licenseValueProperty}}"/>
+                    </else>
+                </if>
+                <dcdt:info>Generating Clover instrumented source files: ${project.build.cloverSourceDirectory}, ${project.build.cloverTestSourceDirectory}</dcdt:info>
+                <dcdt-clover:instrument dbFile="${project.build.cloverDbFile}" source="${java.version}" srcDir="${project.build.sourceDirectory}"
+                    testSrcDir="${project.build.testSourceDirectory}" instrumentedSrcDir="${project.build.cloverSourceDirectory}"
+                    testInstrumentedSrcDir="${project.build.cloverTestSourceDirectory}"/>
+            </then>
+            <else>
+                <mkdir dir="${project.build.cloverSourceDirectory}"/>
+                <mkdir dir="${project.build.cloverTestSourceDirectory}"/>
+                <dcdt:info>Skipping generation of Clover instrumented source files.</dcdt:info>
+            </else>
+        </if>
+    </target>
+    
+    <target name="clover-license" description="Checks if a Clover license is available." depends="core-init,clover-init">
+        <dcdt-clover:license licenseAvailableProperty="${maven.clover.licenseAvailableProperty}" licenseSourceProperty="${maven.clover.licenseSourceProperty}"
+            licenseLocationProperty="${maven.clover.licenseLocationProperty}" licenseValueProperty="${maven.clover.licenseValueProperty}"/>
+        <if>
+            <ispropertytrue property="${maven.clover.licenseAvailableProperty}"/>
+            <then>
+                <dcdt:info>Clover license available (source=${${maven.clover.licenseSourceProperty}}).</dcdt:info>
+            </then>
+            <else>
+                <var name="${maven.clover.skipProperty}" value="true"/>
+                <dcdt:warn>Clover license not available - skipping Clover Maven executions.</dcdt:warn>
+            </else>
+        </if>
+        <propertyset id="clover-license.props">
+            <propertyref name="${maven.clover.licenseAvailableProperty}"/>
+            <propertyref name="${maven.clover.licenseLocationProperty}"/>
+            <propertyref name="${maven.clover.licenseSourceProperty}"/>
+            <propertyref name="${maven.clover.licenseValueProperty}"/>
+            <propertyref name="${maven.clover.skipProperty}"/>
+        </propertyset>
+        <dcdt:write-properties file="${project.build.cloverPomPropertiesFile}">
+            ${toString:clover-license.props}
+        </dcdt:write-properties>
+    </target>
+    
+    <target name="clover-init" description="Initializes Clover variable(s).">
+        <!-- Clover variable(s) -->
+        <var name="maven.clover.licenseAvailableProperty" value="maven.clover.licenseAvailable"/>
+        <var name="maven.clover.licenseLocationProperty" value="maven.clover.licenseLocation"/>
+        <var name="maven.clover.licenseLocationInternalProperty" value="clover.license.path"/>
+        <var name="maven.clover.licenseSourceProperty" value="maven.clover.licenseSource"/>
+        <var name="maven.clover.licenseValueProperty" value="maven.clover.license"/>
+        <var name="maven.clover.licenseValueInternalProperty" value="clover.license"/>
+        <var name="maven.clover.skipProperty" value="maven.clover.skip"/>
+    </target>
+</project>
