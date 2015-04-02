@@ -2,17 +2,17 @@ package gov.hhs.onc.dcdt.service.mail.james.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
+import gov.hhs.onc.dcdt.collections.ToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceDomainConfig;
 import gov.hhs.onc.dcdt.service.mail.james.ToolDomainList;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.james.domainlist.api.DomainListException;
 import org.springframework.beans.BeansException;
@@ -21,16 +21,6 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.xbill.DNS.Name;
 
 public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainList {
-    private static class InstanceDomainConfigNameStringTransformer extends AbstractToolTransformer<InstanceDomainConfig, String> {
-        public final static InstanceDomainConfigNameStringTransformer INSTANCE = new InstanceDomainConfigNameStringTransformer();
-
-        @Nullable
-        @Override
-        protected String transformInternal(InstanceDomainConfig domainConfig) throws Exception {
-            return ToolDomainListImpl.getDomainNameString(domainConfig);
-        }
-    }
-
     private AbstractApplicationContext appContext;
     private Name defaultDomainName;
     private Name defaultDomainNameFallback;
@@ -60,10 +50,8 @@ public class ToolDomainListImpl extends AbstractToolBean implements ToolDomainLi
 
     @Override
     public String[] getDomains() throws DomainListException {
-        return ToolCollectionUtils.toArray(
-            CollectionUtils.select(
-                CollectionUtils.collect(this.domainConfigs, InstanceDomainConfigNameStringTransformer.INSTANCE,
-                    new LinkedHashSet<String>(this.domainConfigs.size())), PredicateUtils.notNullPredicate()), String.class);
+        return ToolCollectionUtils.toArray(ToolStreamUtils.filter(ToolStreamUtils.transform(this.domainConfigs, ToolTransformer.wrap(
+            ToolDomainListImpl::getDomainNameString), LinkedHashSet::new), Objects::nonNull), String.class);
     }
 
     @Override

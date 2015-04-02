@@ -20,10 +20,7 @@ public class ExceptionHandlerExceptionResolverBeanPostProcessor extends Abstract
     @Override
     protected List<HttpMessageConverter<?>> buildMessageConverters(ExceptionHandlerExceptionResolver bean) {
         List<HttpMessageConverter<?>> msgConvs = new ArrayList<>();
-
-        for (HttpMessageConverter<?> msgConv : ToolBeanFactoryUtils.getBeansOfType(this.appContext, HttpMessageConverter.class)) {
-            msgConvs.add(msgConv);
-        }
+        ToolBeanFactoryUtils.getBeansOfType(this.appContext, HttpMessageConverter.class).forEach(msgConvs::add);
 
         return ToolListUtils.addAllFirst(bean.getMessageConverters(), msgConvs);
     }

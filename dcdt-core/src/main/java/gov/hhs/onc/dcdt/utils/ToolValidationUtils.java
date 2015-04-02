@@ -40,10 +40,7 @@ public abstract class ToolValidationUtils {
             String fieldName;
 
             for (FieldError fieldError : errors.getFieldErrors()) {
-                if (!errorMsgsMap.containsKey(fieldName = fieldError.getField())) {
-                    errorMsgsMap.put(fieldName, new ArrayList<String>());
-                }
-
+                errorMsgsMap.putIfAbsent(fieldName = fieldError.getField(), new ArrayList<>());
                 errorMsgsMap.get(fieldName).add(buildErrorMessage(msgSource, fieldError));
             }
         }
@@ -52,13 +49,7 @@ public abstract class ToolValidationUtils {
     }
 
     public static List<String> buildErrorMessages(MessageSource msgSource, Iterable<ObjectError> errors) {
-        List<String> errorMsgs = new ArrayList<>();
-
-        for (ObjectError error : errors) {
-            errorMsgs.add(buildErrorMessage(msgSource, error));
-        }
-
-        return errorMsgs;
+        return (List<String>) ToolStreamUtils.transform(errors, error -> buildErrorMessage(msgSource, error));
     }
 
     public static String buildErrorMessage(MessageSource msgSource, ObjectError error) {

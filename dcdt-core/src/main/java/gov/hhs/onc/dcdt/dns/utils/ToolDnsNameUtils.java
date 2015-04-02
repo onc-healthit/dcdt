@@ -1,10 +1,14 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
+import gov.hhs.onc.dcdt.collections.ToolTransformer;
 import gov.hhs.onc.dcdt.dns.DnsNameException;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.NameTooLongException;
@@ -64,14 +68,7 @@ public abstract class ToolDnsNameUtils {
     }
 
     public static List<String> toLabelStrings(Name name) {
-        int numNameLbls = name.labels();
-        List<String> nameLblStrs = new ArrayList<>(numNameLbls);
-
-        for (int a = 0; a < numNameLbls; a++) {
-            nameLblStrs.add(name.getLabelString(a));
-        }
-
-        return nameLblStrs;
+        return IntStream.range(0, name.labels()).mapToObj(name::getLabelString).collect(Collectors.toList());
     }
 
     public static Name fromLabelStrings(String ... nameLblStrs) throws DnsNameException {
@@ -79,13 +76,7 @@ public abstract class ToolDnsNameUtils {
     }
 
     public static Name fromLabelStrings(Iterable<String> nameLblStrs) throws DnsNameException {
-        List<Name> nameLblNames = new ArrayList<>();
-
-        for (String nameLblStr : nameLblStrs) {
-            nameLblNames.add(fromString(nameLblStr));
-        }
-
-        return fromLabels(nameLblNames);
+        return fromLabels(ToolStreamUtils.transform(nameLblStrs, ToolTransformer.wrap(ToolDnsNameUtils::fromString)));
     }
 
     public static Name fromLabels(Name ... nameLbls) throws DnsNameException {

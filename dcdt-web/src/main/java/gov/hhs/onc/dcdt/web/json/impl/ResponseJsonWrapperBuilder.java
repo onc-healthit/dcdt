@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.json.ToolBeanJsonDto;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolMessageUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.web.json.ErrorJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ErrorsJsonWrapper;
 import gov.hhs.onc.dcdt.web.json.ResponseJsonWrapper;
@@ -16,8 +17,6 @@ import java.util.Map;
 import org.apache.commons.lang3.builder.Builder;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 
 public class ResponseJsonWrapperBuilder<T extends ToolBean, U extends ToolBeanJsonDto<T>> implements Builder<ResponseJsonWrapper<T, U>> {
     private ResponseJsonWrapper<T, U> respJsonWrapper = new ResponseJsonWrapperImpl<>();
@@ -41,15 +40,13 @@ public class ResponseJsonWrapperBuilder<T extends ToolBean, U extends ToolBeanJs
 
     public ResponseJsonWrapperBuilder<T, U> addBindingErrors(MessageSource msgSource, BindingResult bindingResult) {
         if (bindingResult.hasGlobalErrors()) {
-            for (ObjectError globalErrorObj : bindingResult.getGlobalErrors()) {
-                this.addGlobalErrors(new ErrorJsonWrapperImpl(ToolMessageUtils.getMessage(msgSource, globalErrorObj)));
-            }
+            bindingResult.getGlobalErrors().forEach(globalErrorObj -> this.addGlobalErrors(new ErrorJsonWrapperImpl(ToolMessageUtils.getMessage(msgSource,
+                globalErrorObj))));
         }
 
         if (bindingResult.hasFieldErrors()) {
-            for (FieldError fieldErrorObj : bindingResult.getFieldErrors()) {
-                this.addFieldErrors(fieldErrorObj.getField(), new ErrorJsonWrapperImpl(ToolMessageUtils.getMessage(msgSource, fieldErrorObj)));
-            }
+            bindingResult.getFieldErrors().forEach(fieldErrorObj -> this.addFieldErrors(fieldErrorObj.getField(), new ErrorJsonWrapperImpl(ToolMessageUtils
+                .getMessage(msgSource, fieldErrorObj))));
         }
 
         return this;
@@ -70,13 +67,7 @@ public class ResponseJsonWrapperBuilder<T extends ToolBean, U extends ToolBeanJs
     }
 
     public ResponseJsonWrapperBuilder<T, U> addGlobalErrorExceptions(Collection<Exception> globalErrorExceptions) {
-        List<ErrorJsonWrapper> globalErrorJsonWrappers = new ArrayList<>(globalErrorExceptions.size());
-
-        for (Exception globalErrorException : globalErrorExceptions) {
-            globalErrorJsonWrappers.add(new ErrorJsonWrapperImpl(globalErrorException));
-        }
-
-        return this.addGlobalErrors(globalErrorJsonWrappers);
+        return this.addGlobalErrors(ToolStreamUtils.transform(globalErrorExceptions, ErrorJsonWrapperImpl::new));
     }
 
     public ResponseJsonWrapperBuilder<T, U> addGlobalErrors(ErrorJsonWrapper ... globalErrorJsonWrappers) {
@@ -97,10 +88,7 @@ public class ResponseJsonWrapperBuilder<T extends ToolBean, U extends ToolBeanJs
 
     private List<ErrorJsonWrapper> getFieldErrorJsonWrappers(String fieldName) {
         Map<String, List<ErrorJsonWrapper>> fieldErrorJsonWrappersMap = this.getFieldErrorJsonWrappersMap();
-
-        if (!fieldErrorJsonWrappersMap.containsKey(fieldName)) {
-            fieldErrorJsonWrappersMap.put(fieldName, new ArrayList<ErrorJsonWrapper>());
-        }
+        fieldErrorJsonWrappersMap.putIfAbsent(fieldName, new ArrayList<>());
 
         return fieldErrorJsonWrappersMap.get(fieldName);
     }

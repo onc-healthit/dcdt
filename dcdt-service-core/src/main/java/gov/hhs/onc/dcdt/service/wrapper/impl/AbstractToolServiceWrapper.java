@@ -115,7 +115,7 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
         ToolContextLoader contextLoader = new ToolContextLoaderImpl();
         // noinspection ConstantConditions
         List<String> contextConfigLocs =
-            contextLoader.processLocations(ToolCollectionUtils.addAll(new ArrayList<String>(), IteratorUtils.asIterable(ToolIteratorUtils
+            contextLoader.processLocations(ToolCollectionUtils.addAll(new ArrayList<>(), IteratorUtils.asIterable(ToolIteratorUtils
                 .chainedArrayIterator(ToolAnnotationUtils.getValues(ServiceContextConfiguration.class, String[].class,
                     ToolListUtils.reverse(new ArrayList<>(ToolClassUtils.getHierarchy(this.serviceImplClass))))))));
 

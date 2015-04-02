@@ -10,7 +10,7 @@
 <%@page contentType="text/html; charset=UTF-8" isELIgnored="false" pageEncoding="UTF-8" %>
 <dcdt:htmlcleaner>
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
         <head>
             <tiles:insertAttribute name="head-common"/>
             <tiles:insertAttribute name="head" ignore="true"/>

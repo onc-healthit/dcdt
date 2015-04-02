@@ -3,8 +3,8 @@ package gov.hhs.onc.dcdt.config.instance.impl;
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolDomainAddressBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
+import gov.hhs.onc.dcdt.collections.ToolPredicate;
+import gov.hhs.onc.dcdt.collections.ToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
@@ -29,18 +29,19 @@ import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -54,78 +55,54 @@ import org.xbill.DNS.ReverseMap;
 
 @JsonTypeName("instanceDnsConfig")
 public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean implements InstanceDnsConfig {
-    public static class AuthoritativeDnsConfigPredicate extends AbstractToolPredicate<InstanceDnsConfig> {
-        private DnsRecordType questionRecordType;
-        private Name questionName;
+    private PtrRecordConfig transformReverseMapPtrRecordConfig(ARecordConfig aRecordConfig) {
+        PtrRecordConfig ptrRecordConfig = ToolBeanFactoryUtils.createBeanOfType(InstanceDnsConfigImpl.this.appContext, PtrRecordConfig.class);
+        // noinspection ConstantConditions
+        ptrRecordConfig.setName(ReverseMap.fromAddress(aRecordConfig.getAddress()));
+        ptrRecordConfig.setTarget(aRecordConfig.getName());
 
-        public AuthoritativeDnsConfigPredicate(DnsRecordType questionRecordType, Name questionName) {
-            this.questionRecordType = questionRecordType;
-            this.questionName = questionName;
-        }
-
-        @Override
-        protected boolean evaluateInternal(InstanceDnsConfig dnsConfig) throws Exception {
-            return dnsConfig.isAuthoritative(this.questionRecordType, this.questionName);
-        }
+        return ptrRecordConfig;
     }
 
-    private class ReverseMapPtrRecordConfigTransformer extends AbstractToolTransformer<ARecordConfig, PtrRecordConfig> {
-        @Override
-        protected PtrRecordConfig transformInternal(ARecordConfig aRecordConfig) throws Exception {
-            PtrRecordConfig ptrRecordConfig = ToolBeanFactoryUtils.createBeanOfType(InstanceDnsConfigImpl.this.appContext, PtrRecordConfig.class);
-            // noinspection ConstantConditions
-            ptrRecordConfig.setName(ReverseMap.fromAddress(aRecordConfig.getAddress()));
-            ptrRecordConfig.setTarget(aRecordConfig.getName());
+    private CertRecordConfig transformDiscoveryTestcaseCredentialCertRecordConfig(DiscoveryTestcaseCredential discoveryTestcaseCred) throws Exception {
+        CertRecordConfig certRecordConfig = ToolBeanFactoryUtils.createBeanOfType(InstanceDnsConfigImpl.this.appContext, CertRecordConfig.class);
+        // noinspection ConstantConditions
+        certRecordConfig.setName(ToolDnsNameUtils.toAbsolute(discoveryTestcaseCred.getLocation().getMailAddress().toAddressName()));
 
-            return ptrRecordConfig;
-        }
+        // noinspection ConstantConditions
+        KeyInfo discoveryTestcaseCredKeyInfo = discoveryTestcaseCred.getCredentialInfo().getKeyDescriptor();
+        CertificateInfo discoveryTestcaseCredCertInfo = discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor();
+
+        // noinspection ConstantConditions
+        DnsKeyAlgorithmType discoveryTestcaseCredKeyAlgType =
+            ToolEnumUtils.findByPredicate(DnsKeyAlgorithmType.class, sigAlgEnum -> Objects.equals(sigAlgEnum.getSignatureAlgorithm(),
+                discoveryTestcaseCredCertInfo.getSignatureAlgorithm()));
+        // noinspection ConstantConditions
+        certRecordConfig.setKeyAlgorithmType(discoveryTestcaseCredKeyAlgType);
+        // noinspection ConstantConditions
+        certRecordConfig.setKeyTag(ToolDnsRecordUtils.getKeyTag(discoveryTestcaseCredKeyAlgType, discoveryTestcaseCredKeyInfo.getPublicKey()));
+
+        // noinspection ConstantConditions
+        certRecordConfig.setCertificateData(CertificateUtils.writeCertificate(discoveryTestcaseCredCertInfo.getCertificate(), DataEncoding.DER));
+
+        return certRecordConfig;
     }
 
-    private class DiscoveryTestcaseCredentialCertRecordConfigTransformer extends AbstractToolTransformer<DiscoveryTestcaseCredential, CertRecordConfig> {
-        @Override
-        protected CertRecordConfig transformInternal(DiscoveryTestcaseCredential discoveryTestcaseCred) throws Exception {
-            CertRecordConfig certRecordConfig = ToolBeanFactoryUtils.createBeanOfType(InstanceDnsConfigImpl.this.appContext, CertRecordConfig.class);
-            // noinspection ConstantConditions
-            certRecordConfig.setName(ToolDnsNameUtils.toAbsolute(discoveryTestcaseCred.getLocation().getMailAddress().toAddressName()));
+    private boolean hasDiscoveryTestcaseCredentialCertRecord(DiscoveryTestcaseCredential discoveryTestcaseCred) throws Exception {
+        DiscoveryTestcaseCredentialLocation discoveryTestcaseCredLoc;
+        MailAddress discoveryTestcaseCredLocMailAddr;
+        CredentialInfo discoveryTestcaseCredInfo;
+        KeyInfo discoveryTestcaseCredKeyInfo;
 
-            // noinspection ConstantConditions
-            KeyInfo discoveryTestcaseCredKeyInfo = discoveryTestcaseCred.getCredentialInfo().getKeyDescriptor();
-            CertificateInfo discoveryTestcaseCredCertInfo = discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor();
-
-            // noinspection ConstantConditions
-            DnsKeyAlgorithmType discoveryTestcaseCredKeyAlgType =
-                ToolEnumUtils.findByPropertyValue(DnsKeyAlgorithmType.class, DnsKeyAlgorithmType.PROP_NAME_SIG_ALG,
-                    discoveryTestcaseCredCertInfo.getSignatureAlgorithm());
-            // noinspection ConstantConditions
-            certRecordConfig.setKeyAlgorithmType(discoveryTestcaseCredKeyAlgType);
-            // noinspection ConstantConditions
-            certRecordConfig.setKeyTag(ToolDnsRecordUtils.getKeyTag(discoveryTestcaseCredKeyAlgType, discoveryTestcaseCredKeyInfo.getPublicKey()));
-
-            // noinspection ConstantConditions
-            certRecordConfig.setCertificateData(CertificateUtils.writeCertificate(discoveryTestcaseCredCertInfo.getCertificate(), DataEncoding.DER));
-
-            return certRecordConfig;
-        }
-    }
-
-    private class DiscoveryTestcaseCredentialCertRecordPredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
-        @Override
-        protected boolean evaluateInternal(DiscoveryTestcaseCredential discoveryTestcaseCred) throws Exception {
-            DiscoveryTestcaseCredentialLocation discoveryTestcaseCredLoc;
-            MailAddress discoveryTestcaseCredLocMailAddr;
-            CredentialInfo discoveryTestcaseCredInfo;
-            KeyInfo discoveryTestcaseCredKeyInfo;
-
-            // noinspection ConstantConditions
-            return discoveryTestcaseCred.hasLocation() && (discoveryTestcaseCredLoc = discoveryTestcaseCred.getLocation()).getType().isDns()
-                && discoveryTestcaseCredLoc.hasMailAddress()
-                && (discoveryTestcaseCredLocMailAddr = discoveryTestcaseCredLoc.getMailAddress()).getBindingType().isBound()
-                && ToolDnsNameUtils.toAbsolute(discoveryTestcaseCredLocMailAddr.getDomainName()).equals(InstanceDnsConfigImpl.this.domainName)
-                && discoveryTestcaseCred.hasCredentialInfo() && (discoveryTestcaseCredInfo = discoveryTestcaseCred.getCredentialInfo()).hasKeyDescriptor()
-                && (discoveryTestcaseCredKeyInfo = discoveryTestcaseCredInfo.getKeyDescriptor()).hasKeyAlgorithm()
-                && discoveryTestcaseCredKeyInfo.hasPublicKey() && discoveryTestcaseCredInfo.hasCertificateDescriptor()
-                && discoveryTestcaseCredInfo.getCertificateDescriptor().hasCertificate();
-        }
+        // noinspection ConstantConditions
+        return discoveryTestcaseCred.hasLocation() && (discoveryTestcaseCredLoc = discoveryTestcaseCred.getLocation()).getType().isDns()
+            && discoveryTestcaseCredLoc.hasMailAddress()
+            && (discoveryTestcaseCredLocMailAddr = discoveryTestcaseCredLoc.getMailAddress()).getBindingType().isBound()
+            && ToolDnsNameUtils.toAbsolute(discoveryTestcaseCredLocMailAddr.getDomainName()).equals(InstanceDnsConfigImpl.this.domainName)
+            && discoveryTestcaseCred.hasCredentialInfo() && (discoveryTestcaseCredInfo = discoveryTestcaseCred.getCredentialInfo()).hasKeyDescriptor()
+            && (discoveryTestcaseCredKeyInfo = discoveryTestcaseCredInfo.getKeyDescriptor()).hasKeyAlgorithm()
+            && discoveryTestcaseCredKeyInfo.hasPublicKey() && discoveryTestcaseCredInfo.hasCertificateDescriptor()
+            && discoveryTestcaseCredInfo.getCertificateDescriptor().hasCertificate();
     }
 
     private AbstractApplicationContext appContext;
@@ -200,11 +177,13 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
 
                 case CERT:
                     recordConfigs =
-                        (this.certRecordConfigs =
-                            ToolCollectionUtils.nullIfEmpty(CollectionUtils.collect(CollectionUtils.select(IteratorUtils.asIterable(ToolIteratorUtils
-                                .chainedIterator(CollectionUtils.collect(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class),
-                                    DiscoveryTestcaseCredentialsExtractor.INSTANCE))), new DiscoveryTestcaseCredentialCertRecordPredicate()),
-                                new DiscoveryTestcaseCredentialCertRecordConfigTransformer(), new ArrayList<CertRecordConfig>())));
+                        this.certRecordConfigs =
+                            (List<CertRecordConfig>) ToolCollectionUtils.nullIfEmpty(ToolStreamUtils.transform(ToolStreamUtils.filter(IteratorUtils
+                                .asIterable(ToolIteratorUtils
+                                    .chainedIterator(ToolStreamUtils.transform(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class),
+                                        DiscoveryTestcase::extractCredentials))), ToolPredicate.wrap(
+                                this::hasDiscoveryTestcaseCredentialCertRecord)), ToolTransformer.wrap(
+                                this::transformDiscoveryTestcaseCredentialCertRecordConfig)));
                     break;
 
                 case CNAME:
@@ -221,9 +200,9 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
 
                 case PTR:
                     recordConfigs =
-                        (this.ptrRecordConfigs =
-                            ToolCollectionUtils.nullIfEmpty(CollectionUtils.collect(this.aRecordsConfigs, new ReverseMapPtrRecordConfigTransformer(),
-                                new ArrayList<PtrRecordConfig>())));
+                        this.ptrRecordConfigs =
+                            (List<PtrRecordConfig>) ToolCollectionUtils.nullIfEmpty(ToolStreamUtils.transform(this.aRecordsConfigs,
+                                this::transformReverseMapPtrRecordConfig));
                     break;
 
                 case SOA:
@@ -273,14 +252,9 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
                     recordConfig.setName(ToolDnsNameUtils.toAbsolute(ToolDnsNameUtils.fromLabels(recordName, this.domainName)));
                 }
 
-                if (!this.nameRecordsMap.containsKey((recordName = (record = recordConfig.toRecord()).getName()))) {
-                    this.nameRecordsMap.put(recordName, new EnumMap<DnsRecordType, List<Record>>(DnsRecordType.class));
-                }
+                this.nameRecordsMap.putIfAbsent((recordName = (record = recordConfig.toRecord()).getName()), new EnumMap<>(DnsRecordType.class));
 
-                if (!(recordsMap = this.nameRecordsMap.get(recordName)).containsKey(recordType)) {
-                    recordsMap.put(recordType, new ArrayList<Record>());
-                }
-
+                (recordsMap = this.nameRecordsMap.get(recordName)).putIfAbsent(recordType, new ArrayList<>());
                 recordsMap.get(recordType).add(record);
             }
         }

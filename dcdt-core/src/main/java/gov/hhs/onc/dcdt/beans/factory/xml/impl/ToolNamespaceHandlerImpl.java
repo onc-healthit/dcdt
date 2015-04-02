@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.beans.factory.xml.impl;
 
 import gov.hhs.onc.dcdt.beans.factory.xml.ToolBeanDefinitionParser;
 import gov.hhs.onc.dcdt.beans.factory.xml.ToolNamespaceHandler;
+import java.util.stream.Stream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -28,8 +29,6 @@ public class ToolNamespaceHandlerImpl extends NamespaceHandlerSupport implements
 
     @Override
     public void init() {
-        for (ToolBeanDefinitionParser<?> beanDefParser : BEAN_DEF_PARSERS) {
-            this.registerBeanDefinitionParser(beanDefParser.getElementName(), beanDefParser);
-        }
+        Stream.of(BEAN_DEF_PARSERS).forEach(beanDefParser -> this.registerBeanDefinitionParser(beanDefParser.getElementName(), beanDefParser));
     }
 }

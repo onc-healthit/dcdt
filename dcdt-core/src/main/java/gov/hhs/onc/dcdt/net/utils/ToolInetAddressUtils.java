@@ -5,6 +5,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
@@ -45,13 +46,8 @@ public abstract class ToolInetAddressUtils {
             return null;
         }
 
-        byte[] octetBytes = new byte[octets.length];
-
-        for (int a = 0; a < octetBytes.length; a++) {
-            octetBytes[a] = ((byte) Integer.parseInt(octets[a]));
-        }
-
-        return octetBytes;
+        return IntStream.range(0, octets.length).collect(() -> new byte[octets.length], (octetBytes, a) -> octetBytes[a] = ((byte) Integer.parseInt(
+            octets[a])), null);
     }
 
     @Nullable

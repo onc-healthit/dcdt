@@ -40,7 +40,6 @@ public interface ToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U 
 
     public void setProcessingMessages(List<String> procMsgs);
 
-    // @JsonProperty("submission")
     public V getSubmission();
 
     public void setSubmission(V submission);

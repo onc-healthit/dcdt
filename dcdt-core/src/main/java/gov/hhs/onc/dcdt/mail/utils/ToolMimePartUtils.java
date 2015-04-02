@@ -3,7 +3,6 @@ package gov.hhs.onc.dcdt.mail.utils;
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.ToolMailException;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
-import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils.MimeTypeComparator;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -70,14 +69,15 @@ public abstract class ToolMimePartUtils {
 
     public static Map<MimeType, List<MimeBodyPart>> mapBodyPartContentTypes(MimeMultipart multipart, boolean compareContentBaseType) throws MessagingException {
         Map<MimeType, List<MimeBodyPart>> bodyPartContentTypeMap =
-            new TreeMap<>((compareContentBaseType ? MimeTypeComparator.INSTANCE_BASE_TYPE : MimeTypeComparator.INSTANCE));
+            new TreeMap<>((compareContentBaseType ? ToolMimeTypeUtils.MIME_TYPE_COMPARATOR_INSTANCE_BASE_TYPE : ToolMimeTypeUtils
+                .MIME_TYPE_COMPARATOR_INSTANCE));
         MimeBodyPart bodyPart;
         MimeType bodyPartContentType;
 
         for (int a = 0; a < multipart.getCount(); a++) {
             if (!bodyPartContentTypeMap.containsKey((bodyPartContentType = getContentType((bodyPart = ((MimeBodyPart) multipart.getBodyPart(a))))))) {
                 bodyPartContentTypeMap.put((compareContentBaseType ? ToolMimeTypeUtils.forBaseType(bodyPartContentType) : bodyPartContentType),
-                    new ArrayList<MimeBodyPart>());
+                    new ArrayList<>());
             }
 
             bodyPartContentTypeMap.get(bodyPartContentType).add(bodyPart);

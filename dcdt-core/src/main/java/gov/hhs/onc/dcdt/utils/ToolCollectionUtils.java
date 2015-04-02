@@ -1,39 +1,19 @@
 package gov.hhs.onc.dcdt.utils;
 
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import java.lang.reflect.Array;
 import java.util.Collection;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.PredicateUtils;
 
 public abstract class ToolCollectionUtils {
-    public static class AssignableTransformer<T> extends AbstractToolTransformer<Object, T> {
-        private AssignablePredicate<T> predicate;
-
-        public AssignableTransformer(Class<T> clazz) {
-            this.predicate = new AssignablePredicate<>(clazz);
-        }
-
-        @Nullable
-        @Override
-        protected T transformInternal(@Nullable Object obj) throws Exception {
-            return (this.predicate.evaluate(obj) ? this.predicate.clazz.cast(obj) : null);
-        }
+    @Nullable
+    public static <T> T transformAssignable(@Nullable Object obj, Class<T> clazz) {
+        return isAssignable(obj, clazz) ? clazz.cast(obj) : null;
     }
 
-    public static class AssignablePredicate<T> extends AbstractToolPredicate<Object> {
-        private Class<T> clazz;
-
-        public AssignablePredicate(Class<T> clazz) {
-            this.clazz = clazz;
-        }
-
-        @Override
-        protected boolean evaluateInternal(@Nullable Object obj) throws Exception {
-            return ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), this.clazz);
-        }
+    public static <T> boolean isAssignable(@Nullable Object obj, Class<T> clazz) {
+        return ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), clazz);
     }
 
     @Nullable
@@ -43,7 +23,7 @@ public abstract class ToolCollectionUtils {
 
     @Nullable
     public static <T> T findAssignable(Class<T> clazz, @Nullable Iterable<?> objs) {
-        return clazz.cast(CollectionUtils.find(objs, new AssignablePredicate<>(clazz)));
+        return clazz.cast(ToolStreamUtils.find(objs, obj -> isAssignable(obj, clazz)));
     }
 
     public static <T, U extends Collection<T>> U collectAssignable(Class<T> clazz, U coll, Object ... objs) {
@@ -51,7 +31,9 @@ public abstract class ToolCollectionUtils {
     }
 
     public static <T, U extends Collection<T>> U collectAssignable(Class<T> clazz, U coll, @Nullable Iterable<?> objs) {
-        return CollectionUtils.select(CollectionUtils.collect(objs, new AssignableTransformer<>(clazz)), PredicateUtils.notNullPredicate(), coll);
+        ToolStreamUtils.stream(objs).map(obj -> transformAssignable(obj, clazz)).filter(Objects::nonNull).forEach(coll::add);
+
+        return coll;
     }
 
     @Nullable

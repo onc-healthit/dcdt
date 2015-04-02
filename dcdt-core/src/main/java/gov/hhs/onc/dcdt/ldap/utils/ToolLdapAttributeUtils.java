@@ -1,9 +1,9 @@
 package gov.hhs.onc.dcdt.ldap.utils;
 
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.ldap.ToolLdapException;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -20,19 +20,10 @@ import org.apache.directory.api.ldap.model.ldif.LdifReader;
 import org.apache.directory.api.ldap.model.ldif.LdifUtils;
 
 public abstract class ToolLdapAttributeUtils {
-    public static class LdapAttributeIdTransformer extends AbstractToolTransformer<Attribute, String[]> {
-        private BinaryAttributeDetector binaryAttrDetector;
+    public static String[] transformLdapAttributeId(Attribute attr, BinaryAttributeDetector binaryAttrDetector) {
+        String attrId = attr.getId();
 
-        public LdapAttributeIdTransformer(BinaryAttributeDetector binaryAttrDetector) {
-            this.binaryAttrDetector = binaryAttrDetector;
-        }
-
-        @Override
-        protected String[] transformInternal(Attribute attr) throws Exception {
-            String attrId = attr.getId();
-
-            return (this.binaryAttrDetector.isBinary(attrId) ? ArrayUtils.toArray(getBinaryAttributeId(attrId), attrId) : ArrayUtils.toArray(attrId));
-        }
+        return binaryAttrDetector.isBinary(attrId) ? ArrayUtils.toArray(getBinaryAttributeId(attrId), attrId) : ArrayUtils.toArray(attrId);
     }
 
     public final static String DELIM_ATTR = ":";
@@ -45,8 +36,8 @@ public abstract class ToolLdapAttributeUtils {
     public static String[] buildLookupAttributeIds(BinaryAttributeDetector binaryAttrDetector, @Nullable Set<Attribute> attrs) {
         // noinspection ConstantConditions
         return (!CollectionUtils.isEmpty(attrs) ? ToolCollectionUtils.toArray(CollectionUtils.select(IteratorUtils.asIterable(ToolIteratorUtils
-            .chainedArrayIterator(CollectionUtils.collect(attrs, new LdapAttributeIdTransformer(binaryAttrDetector)))), PredicateUtils.uniquePredicate()),
-            String.class) : ArrayUtils.EMPTY_STRING_ARRAY);
+            .chainedArrayIterator(ToolStreamUtils.transform(attrs, attr -> transformLdapAttributeId(attr, binaryAttrDetector)))), PredicateUtils
+            .uniquePredicate()), String.class) : ArrayUtils.EMPTY_STRING_ARRAY);
     }
 
     public static String getBinaryAttributeId(String attrId) {

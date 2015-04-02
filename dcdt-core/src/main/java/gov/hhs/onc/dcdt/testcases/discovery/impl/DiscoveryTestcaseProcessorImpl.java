@@ -13,15 +13,14 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialValidPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcaseProcessor;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import javax.mail.internet.MimeBodyPart;
-import org.apache.commons.collections4.CollectionUtils;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.mail.smime.SMIMEEnveloped;
 import org.bouncycastle.mail.smime.SMIMESigned;
@@ -128,7 +127,7 @@ public class DiscoveryTestcaseProcessorImpl extends
         SMIMEEnveloped enveloped = null;
 
         if (testcase.hasCredentials()) {
-            result.setExpectedDecryptionCredential(CollectionUtils.find(testcase.getTargetCredentials(), DiscoveryTestcaseCredentialValidPredicate.INSTANCE));
+            result.setExpectedDecryptionCredential(ToolStreamUtils.find(testcase.getTargetCredentials(), DiscoveryTestcaseCredential::isValid));
             enveloped = ToolSmimeUtils.getEnveloped(msgHelper);
 
             CredentialInfo credInfo;

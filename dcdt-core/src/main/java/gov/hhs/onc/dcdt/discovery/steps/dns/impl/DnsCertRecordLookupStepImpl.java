@@ -9,9 +9,10 @@ import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.discovery.steps.dns.DnsCertRecordLookupStep;
+import gov.hhs.onc.dcdt.dns.DnsCertificateType;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.CertRecordParameterPredicate;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,8 @@ public class DnsCertRecordLookupStepImpl extends AbstractDnsLookupStep<CERTRecor
     private List<CertificateInfo> certInfos;
 
     public DnsCertRecordLookupStepImpl(BindingType bindingType, DnsLookupService lookupService) {
-        super(bindingType, lookupService, DnsRecordType.CERT, CERTRecord.class, CertRecordParameterPredicate.INSTANCE_PKIX);
+        super(bindingType, lookupService, DnsRecordType.CERT, CERTRecord.class, certRecord -> ToolDnsRecordUtils.hasCertRecordParameter(certRecord,
+            DnsCertificateType.PKIX));
     }
 
     @Override

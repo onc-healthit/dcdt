@@ -64,24 +64,21 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
         for (int a = 0; a < this.lookupConcurrentNumThreads; a++) {
             final int taskId = a;
 
-            taskExec.execute(new Runnable() {
-                @Override
-                public void run() {
+            taskExec.execute(() -> {
+                try {
+                    startLatch.await();
+
+                    // noinspection ConstantConditions
+                    DnsServiceFunctionalTests.this.assertLookupAnswerRecordsMatch(serverConfig, recordConfig);
+
+                    DnsServiceFunctionalTests.LOGGER.trace(String.format("Concurrent DNS lookup task (id=%d) completed (total=%d).", taskId,
+                        stopBarrier.getNumberWaiting()));
+                } catch (Exception e) {
+                    throw new ToolRuntimeException(String.format("Unable to execute concurrent DNS lookup task (id=%d).", taskId), e);
+                } finally {
                     try {
-                        startLatch.await();
-
-                        // noinspection ConstantConditions
-                        DnsServiceFunctionalTests.this.assertLookupAnswerRecordsMatch(serverConfig, recordConfig);
-
-                        DnsServiceFunctionalTests.LOGGER.trace(String.format("Concurrent DNS lookup task (id=%d) completed (total=%d).", taskId,
-                            stopBarrier.getNumberWaiting()));
-                    } catch (Exception e) {
-                        throw new ToolRuntimeException(String.format("Unable to execute concurrent DNS lookup task (id=%d).", taskId), e);
-                    } finally {
-                        try {
-                            stopBarrier.await();
-                        } catch (Exception ignored) {
-                        }
+                        stopBarrier.await();
+                    } catch (Exception ignored) {
                     }
                 }
             });
@@ -150,10 +147,7 @@ public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTest
         // noinspection ConstantConditions
         Collection<Record> configAnswerRecords = new ArrayList<>(authoritativeConfigs.size()), answerRecords = ((Collection<Record>) lookupResult.getAnswers());
 
-        for (InstanceDnsConfig authoritativeConfig : authoritativeConfigs) {
-            // noinspection ConstantConditions
-            ToolCollectionUtils.addAll(configAnswerRecords, authoritativeConfig.findAnswers(record));
-        }
+        authoritativeConfigs.forEach(authoritativeConfig -> ToolCollectionUtils.addAll(configAnswerRecords, authoritativeConfig.findAnswers(record)));
 
         Assert.assertEqualsNoOrder(ToolCollectionUtils.toArray(answerRecords, Record.class), ToolCollectionUtils.toArray(configAnswerRecords, Record.class),
             String.format("DNS lookup result (type=%s) answer record(s) do not match: expected=[%s], actual=[%s]", lookupResult.getType().name(),

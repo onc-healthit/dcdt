@@ -21,9 +21,7 @@ public class CompositeBeanEntityInterceptor extends AbstractToolBeanDataIntercep
 
     @Override
     public void onDelete(Object entity, Serializable id, Object[] state, String[] propertyNames, Type[] types) {
-        for (ToolBeanEntityInterceptor<? extends ToolBean> beanEntityInterceptor : this.beanEntityInterceptors) {
-            beanEntityInterceptor.onDelete(entity, id, state, propertyNames, types);
-        }
+        this.beanEntityInterceptors.forEach(beanEntityInterceptor -> beanEntityInterceptor.onDelete(entity, id, state, propertyNames, types));
     }
 
     @Override
@@ -50,21 +48,16 @@ public class CompositeBeanEntityInterceptor extends AbstractToolBeanDataIntercep
 
     @Override
     public void afterTransactionBegin(Transaction tx) {
-        for (ToolBeanEntityInterceptor<? extends ToolBean> beanEntityInterceptor : beanEntityInterceptors) {
-            beanEntityInterceptor.afterTransactionBegin(tx);
-        }
+        this.beanEntityInterceptors.forEach(beanEntityInterceptor -> beanEntityInterceptor.afterTransactionBegin(tx));
     }
 
     @Override
     public void afterTransactionCompletion(Transaction tx) {
-        for (ToolBeanEntityInterceptor<? extends ToolBean> beanEntityInterceptor : beanEntityInterceptors) {
-            beanEntityInterceptor.afterTransactionCompletion(tx);
-        }
+        this.beanEntityInterceptors.forEach(beanEntityInterceptor -> beanEntityInterceptor.afterTransactionCompletion(tx));
     }
 
     @Autowired(required = false)
     private void setBeanEntityInterceptors(@Nullable List<ToolBeanEntityInterceptor<? extends ToolBean>> beanEntityInterceptors) {
-        this.beanEntityInterceptors =
-            ToolCollectionUtils.addAll(new PriorityOrderedQueue<ToolBeanEntityInterceptor<? extends ToolBean>>(), beanEntityInterceptors);
+        this.beanEntityInterceptors = ToolCollectionUtils.addAll(new PriorityOrderedQueue<>(), beanEntityInterceptors);
     }
 }

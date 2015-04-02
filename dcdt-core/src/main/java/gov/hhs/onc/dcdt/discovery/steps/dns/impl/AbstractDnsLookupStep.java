@@ -14,8 +14,8 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.util.List;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 

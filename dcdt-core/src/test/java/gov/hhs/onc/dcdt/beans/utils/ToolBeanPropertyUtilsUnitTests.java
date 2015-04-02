@@ -2,13 +2,13 @@ package gov.hhs.onc.dcdt.beans.utils;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.collections.ToolTransformer;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.beans.PropertyDescriptor;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.stream.Stream;
 import javax.persistence.Id;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -144,12 +144,7 @@ public class ToolBeanPropertyUtilsUnitTests extends AbstractToolUnitTests {
     }
 
     private PropertyDescriptor[] describeTestBeanPropUtilsBean(String ... beanPropNames) {
-        List<PropertyDescriptor> beanPropDescs = new ArrayList<>(beanPropNames.length);
-
-        for (String beanPropName : beanPropNames) {
-            beanPropDescs.add(this.testBeanPropUtilsBeanWrapper.getPropertyDescriptor(beanPropName));
-        }
-
-        return beanPropDescs.toArray(new PropertyDescriptor[beanPropDescs.size()]);
+        return Stream.of(beanPropNames).map(ToolTransformer.wrap(this.testBeanPropUtilsBeanWrapper::getPropertyDescriptor)).toArray(
+            PropertyDescriptor[]::new);
     }
 }

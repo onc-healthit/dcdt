@@ -1,13 +1,13 @@
 package gov.hhs.onc.dcdt.service.dns.server.impl;
 
+import gov.hhs.onc.dcdt.collections.ToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsMessageOpcode;
 import gov.hhs.onc.dcdt.dns.DnsMessageRcode;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsMessageUtils;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.DnsRecordConfigTransformer;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.DnsRecordTargetTransformer;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.net.InetProtocol;
 import gov.hhs.onc.dcdt.net.sockets.impl.AbstractSocketRequestProcessor;
@@ -17,13 +17,15 @@ import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessingException;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessor;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.PredicateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +145,8 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
                 // If DNS SOA record answer resolved, add associated DNS NS record(s) as authorities.
                 if (questionRecordType == DnsRecordType.SOA) {
                     ToolCollectionUtils.addAll(authorityRecords,
-                        CollectionUtils.collect(authoritativeConfig.getNsRecordConfigs(), DnsRecordConfigTransformer.INSTANCE));
+                        ToolStreamUtils.transform(authoritativeConfig.getNsRecordConfigs(), ToolTransformer.wrap(
+                            ToolDnsRecordUtils::transformDnsRecordConfig)));
 
                     break;
                 }
@@ -183,10 +186,8 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
         }
 
         Set<Name> additionalNames =
-            CollectionUtils.select(CollectionUtils.collect(
-                IteratorUtils.asIterable(IteratorUtils.chainedIterator(answerRecords.iterator(), authorityRecords.iterator())),
-                DnsRecordTargetTransformer.INSTANCE), PredicateUtils.notNullPredicate(),
-                new LinkedHashSet<Name>((answerRecords.size() + authorityRecords.size())));
+            ToolStreamUtils.stream(IteratorUtils.asIterable(IteratorUtils.chainedIterator(answerRecords.iterator(), authorityRecords
+                .iterator()))).map(ToolDnsRecordUtils::transformDnsRecordTarget).filter(Objects::nonNull).collect(Collectors.toCollection(LinkedHashSet::new));
         Set<Record> additionalRecords = new LinkedHashSet<>(additionalNames.size());
 
         // Resolving IPv4 addresses (via DNS A record[s]) for all answer + authority DNS record(s) where a follow-up resolution can be avoided.

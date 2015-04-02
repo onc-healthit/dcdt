@@ -22,9 +22,8 @@ public class MutableFilterConfig implements FilterConfig {
             this.filterName = filterConfig.getFilterName();
             this.servletContext = filterConfig.getServletContext();
 
-            for (String initParamName : EnumerationUtils.toList(filterConfig.getInitParameterNames())) {
-                this.initParams.put(initParamName, filterConfig.getInitParameter(initParamName));
-            }
+            EnumerationUtils.toList(filterConfig.getInitParameterNames()).forEach(initParamName ->
+                this.initParams.put(initParamName, filterConfig.getInitParameter(initParamName)));
         }
     }
 

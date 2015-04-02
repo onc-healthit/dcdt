@@ -5,10 +5,11 @@ import gov.hhs.onc.dcdt.crypto.CryptographyIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTaggedIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils.IsAssignablePredicate;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.security.Provider;
 import java.security.Security;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x509.AlgorithmIdentifier;
@@ -47,27 +48,27 @@ public abstract class CryptographyUtils {
 
     @Nullable
     public static <T extends Enum<T> & CryptographyAlgorithmIdentifier> T findByAlgorithmId(Class<T> enumClass, AlgorithmIdentifier algId) {
-        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyAlgorithmIdentifier.PROP_NAME_ALG_ID, algId);
+        return ToolEnumUtils.findByPredicate(enumClass, algEnum -> Objects.equals(algEnum.getAlgorithmId(), algId));
     }
 
     @Nullable
     public static <T extends Enum<T> & CryptographyObjectIdentifier> T findByOid(Class<T> enumClass, ASN1ObjectIdentifier oid) {
-        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyObjectIdentifier.PROP_NAME_OID, oid);
+        return ToolEnumUtils.findByPredicate(enumClass, oidEnum -> Objects.equals(oidEnum.getOid(), oid));
     }
 
     @Nullable
     public static <T extends Enum<T> & CryptographyTaggedIdentifier> T findByTag(Class<T> enumClass, int tag) {
-        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyTaggedIdentifier.PROP_NAME_TAG, tag);
+        return ToolEnumUtils.findByPredicate(enumClass, tagEnum -> Objects.equals(tagEnum.getTag(), tag));
     }
 
     @Nullable
     public static <T extends Enum<T> & CryptographyTypeIdentifier> T findByType(Class<T> enumClass, Class<?> type) {
-        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyTypeIdentifier.PROP_NAME_TYPE, new IsAssignablePredicate<>(type, true, true));
+        return ToolEnumUtils.findByPredicate(enumClass, typeEnum -> ToolClassUtils.isAssignable(typeEnum.getType(), type, true, true));
     }
 
     @Nullable
     public static <T extends Enum<T> & CryptographyIdentifier> T findById(Class<T> enumClass, String id) {
-        return ToolEnumUtils.findByPropertyValue(enumClass, CryptographyIdentifier.PROP_NAME_ID, id);
+        return ToolEnumUtils.findByPredicate(enumClass, idEnum -> Objects.equals(idEnum.getId(), id));
     }
 
     public static void initializeProvider() {

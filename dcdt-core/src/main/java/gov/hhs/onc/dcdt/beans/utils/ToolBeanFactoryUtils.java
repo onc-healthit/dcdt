@@ -1,10 +1,9 @@
 package gov.hhs.onc.dcdt.beans.utils;
 
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
-import java.util.ArrayList;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,67 +22,24 @@ import org.springframework.beans.factory.support.AbstractBeanDefinition;
 import org.springframework.beans.factory.support.AutowireCandidateQualifier;
 
 public abstract class ToolBeanFactoryUtils {
-    public static class QualifiedBeanNamePredicate extends AbstractToolPredicate<String> {
-        private ConfigurableListableBeanFactory beanFactory;
-        private Collection<AutowireCandidateQualifier> quals;
-
-        public QualifiedBeanNamePredicate(ConfigurableListableBeanFactory beanFactory, AutowireCandidateQualifier ... quals) {
-            this(beanFactory, ToolArrayUtils.asList(quals));
-        }
-
-        public QualifiedBeanNamePredicate(ConfigurableListableBeanFactory beanFactory, Collection<AutowireCandidateQualifier> quals) {
-            this.beanFactory = beanFactory;
-            this.quals = quals;
-        }
-
-        @Override
-        protected boolean evaluateInternal(String beanName) throws Exception {
-            return CollectionUtils.containsAll(ToolBeanFactoryUtils.getQualifiers(this.beanFactory, beanName), this.quals);
-        }
+    public static boolean isQualifiedBeanName(String beanName, ConfigurableListableBeanFactory beanFactory, AutowireCandidateQualifier... quals) {
+        return isQualifiedBeanName(beanName, beanFactory, ToolArrayUtils.asList(quals));
     }
 
-    public static class RegisteredScopedBeanNamePredicate extends AbstractScopedBeanNamePredicate<ConfigurableListableBeanFactory> {
-        public RegisteredScopedBeanNamePredicate(ConfigurableListableBeanFactory beanFactory, String beanScopeName) {
-            super(beanFactory, beanScopeName);
-        }
-
-        @Override
-        protected boolean evaluateInternal(@Nullable String beanName) throws Exception {
-            return Objects.equals(getRegisteredBeanScope(this.beanFactory, beanName), this.beanScopeName);
-        }
+    public static boolean isQualifiedBeanName(String beanName, ConfigurableListableBeanFactory beanFactory, Collection<AutowireCandidateQualifier> quals) {
+        return CollectionUtils.containsAll(ToolBeanFactoryUtils.getQualifiers(beanFactory, beanName), quals);
     }
 
-    public static class SingletonScopedBeanNamePredicate extends AbstractBuiltinScopedBeanNamePredicate {
-        public SingletonScopedBeanNamePredicate(ListableBeanFactory beanFactory) {
-            super(beanFactory, BeanDefinition.SCOPE_SINGLETON);
-        }
+    public static <T extends ListableBeanFactory> boolean isRegisteredScopedBeanName(@Nullable String beanName, T beanFactory, String beanScopeName) {
+        return Objects.equals(getRegisteredBeanScope((ConfigurableListableBeanFactory) beanFactory, beanName), beanScopeName);
     }
 
-    public static class PrototypeScopedBeanNamePredicate extends AbstractBuiltinScopedBeanNamePredicate {
-        public PrototypeScopedBeanNamePredicate(ListableBeanFactory beanFactory) {
-            super(beanFactory, BeanDefinition.SCOPE_PROTOTYPE);
-        }
+    public static <T extends ListableBeanFactory> boolean isSingletonScopedBeanName(@Nullable String beanName, T beanFactory) {
+        return Objects.equals(getBuiltinBeanScope(beanFactory, beanName), BeanDefinition.SCOPE_SINGLETON);
     }
 
-    private abstract static class AbstractBuiltinScopedBeanNamePredicate extends AbstractScopedBeanNamePredicate<ListableBeanFactory> {
-        protected AbstractBuiltinScopedBeanNamePredicate(ListableBeanFactory beanFactory, String beanScopeName) {
-            super(beanFactory, beanScopeName);
-        }
-
-        @Override
-        protected boolean evaluateInternal(@Nullable String beanName) throws Exception {
-            return Objects.equals(getBuiltinBeanScope(this.beanFactory, beanName), this.beanScopeName);
-        }
-    }
-
-    public static abstract class AbstractScopedBeanNamePredicate<T extends ListableBeanFactory> extends AbstractToolPredicate<String> {
-        protected T beanFactory;
-        protected String beanScopeName;
-
-        protected AbstractScopedBeanNamePredicate(T beanFactory, String beanScopeName) {
-            this.beanFactory = beanFactory;
-            this.beanScopeName = beanScopeName;
-        }
+    public static <T extends ListableBeanFactory> boolean isPrototypeScopedBeanName(@Nullable String beanName, T beanFactory) {
+        return Objects.equals(getBuiltinBeanScope(beanFactory, beanName), BeanDefinition.SCOPE_PROTOTYPE);
     }
 
     public final static Set<String> SCOPE_NAMES_BUILTIN = new HashSet<>(ToolArrayUtils.asList(BeanDefinition.SCOPE_SINGLETON, BeanDefinition.SCOPE_PROTOTYPE));
@@ -111,14 +67,10 @@ public abstract class ToolBeanFactoryUtils {
     }
 
     public static <T> List<T> createBeansOfType(ListableBeanFactory beanFactory, Class<T> beanClass, @Nullable Object ... beanCreationArgs) {
-        Collection<String> beanNames = CollectionUtils.select(getBeanNamesOfType(beanFactory, beanClass), new PrototypeScopedBeanNamePredicate(beanFactory));
-        List<T> beans = new ArrayList<>(beanNames.size());
+        Collection<String> beanNames = ToolStreamUtils.filter(getBeanNamesOfType(beanFactory, beanClass), beanName -> isPrototypeScopedBeanName(beanName,
+            beanFactory));
 
-        for (String beanName : beanNames) {
-            beans.add(createBean(beanFactory, beanName, beanClass, beanCreationArgs));
-        }
-
-        return beans;
+        return (List<T>) ToolStreamUtils.transform(beanNames, beanName -> createBean(beanFactory, beanName, beanClass, beanCreationArgs));
     }
 
     @Nullable
@@ -128,7 +80,7 @@ public abstract class ToolBeanFactoryUtils {
 
     @Nullable
     public static <T> T createBeanOfType(ListableBeanFactory beanFactory, Class<T> beanClass, @Nullable Object ... beanCreationArgs) {
-        String beanName = CollectionUtils.find(getBeanNamesOfType(beanFactory, beanClass), new PrototypeScopedBeanNamePredicate(beanFactory));
+        String beanName = ToolStreamUtils.find(getBeanNamesOfType(beanFactory, beanClass), name -> isPrototypeScopedBeanName(name, beanFactory));
 
         return ((beanName != null) ? createBean(beanFactory, beanName, beanClass, beanCreationArgs) : null);
     }
@@ -154,13 +106,8 @@ public abstract class ToolBeanFactoryUtils {
 
     public static <T> List<T> getBeansOfType(ListableBeanFactory beanFactory, Class<T> beanClass) {
         List<String> beanNames = getBeanNamesOfType(beanFactory, beanClass);
-        List<T> beans = new ArrayList<>(beanNames.size());
 
-        for (String beanName : beanNames) {
-            beans.add(beanFactory.getBean(beanName, beanClass));
-        }
-
-        return beans;
+        return (List<T>) ToolStreamUtils.transform(beanNames, beanName -> beanFactory.getBean(beanName, beanClass));
     }
 
     @Nullable

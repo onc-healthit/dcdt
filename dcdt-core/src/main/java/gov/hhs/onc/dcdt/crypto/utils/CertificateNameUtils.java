@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateAltNameType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSerialNumberImpl;
@@ -8,44 +7,32 @@ import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import gov.hhs.onc.dcdt.utils.ToolMapUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.bouncycastle.asn1.x509.GeneralName;
 import org.bouncycastle.asn1.x509.GeneralNames;
 
 public abstract class CertificateNameUtils {
-    public static class CertificateAltNameListEntryTransformer extends AbstractToolTransformer<List<?>, Pair<CertificateAltNameType, GeneralName>> {
-        public final static CertificateAltNameListEntryTransformer INSTANCE = new CertificateAltNameListEntryTransformer();
+    public static Pair<CertificateAltNameType, GeneralName> transformCertificateAltNameListEntry(List<?> altNameList) {
+        CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, ((Integer) altNameList.get(0)));
 
-        @Nullable
-        @Override
-        protected Pair<CertificateAltNameType, GeneralName> transformInternal(List<?> altNameList) throws Exception {
-            CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, ((Integer) altNameList.get(0)));
-
-            return ((altNameType != null) ? new MutablePair<>(altNameType, new GeneralName(altNameType.getTag(), ((String) altNameList.get(1)))) : null);
-        }
+        return ((altNameType != null) ? new MutablePair<>(altNameType, new GeneralName(altNameType.getTag(), ((String) altNameList.get(1)))) : null);
     }
 
-    public static class CertificateAltNameEntryTransformer extends AbstractToolTransformer<GeneralName, Pair<CertificateAltNameType, GeneralName>> {
-        public final static CertificateAltNameEntryTransformer INSTANCE = new CertificateAltNameEntryTransformer();
+    public static Pair<CertificateAltNameType, GeneralName> transformCertificateAltNameEntry(GeneralName altName) {
+        CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, altName.getTagNo());
 
-        @Nullable
-        @Override
-        protected Pair<CertificateAltNameType, GeneralName> transformInternal(GeneralName altName) throws Exception {
-            CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, altName.getTagNo());
-
-            return ((altNameType != null) ? new MutablePair<>(altNameType, altName) : null);
-        }
+        return ((altNameType != null) ? new MutablePair<>(altNameType, altName) : null);
     }
 
     @Nullable
@@ -104,17 +91,15 @@ public abstract class CertificateNameUtils {
 
     @Nullable
     public static Map<CertificateAltNameType, GeneralName> mapAltNames(@Nullable Collection<List<?>> altNames) {
-        return ((altNames != null)
-            ? ToolMapUtils.putAll(new LinkedHashMap<CertificateAltNameType, GeneralName>(CertificateAltNameType.values().length),
-                CollectionUtils.select(CollectionUtils.collect(altNames, CertificateAltNameListEntryTransformer.INSTANCE), PredicateUtils.notNullPredicate()))
-            : null);
+        return altNames != null ? ToolStreamUtils.stream(altNames).map(CertificateNameUtils::transformCertificateAltNameListEntry).filter(Objects::nonNull)
+            .collect(Collectors.toMap(Pair::getLeft, Pair::getRight, (a, b) -> b, LinkedHashMap::new)) : null;
     }
 
     @Nullable
     public static Map<CertificateAltNameType, GeneralName> mapAltNames(@Nullable GeneralNames altNames) {
-        return ((altNames != null) ? ToolMapUtils.putAll(new LinkedHashMap<CertificateAltNameType, GeneralName>(CertificateAltNameType.values().length),
-            CollectionUtils.select(CollectionUtils.collect(ToolArrayUtils.asList(altNames.getNames()), CertificateAltNameEntryTransformer.INSTANCE),
-                PredicateUtils.notNullPredicate())) : null);
+        return altNames != null ? ToolStreamUtils.stream(ToolArrayUtils.asList(altNames.getNames())).map(
+            CertificateNameUtils::transformCertificateAltNameEntry).filter(Objects::nonNull).collect(Collectors.toMap(Pair::getLeft, Pair::getRight, (a, b)
+            -> b, LinkedHashMap::new)) : null;
     }
 
     @Nullable

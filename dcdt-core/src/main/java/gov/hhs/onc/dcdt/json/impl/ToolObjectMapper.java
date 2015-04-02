@@ -58,13 +58,9 @@ public class ToolObjectMapper extends ObjectMapper implements InitializingBean {
             }
         }
 
-        for (Feature jsonGenFeature : this.jsonGenFeatures.keySet()) {
-            this.configure(jsonGenFeature, this.jsonGenFeatures.get(jsonGenFeature));
-        }
+        this.jsonGenFeatures.keySet().forEach(jsonGenFeature -> this.configure(jsonGenFeature, this.jsonGenFeatures.get(jsonGenFeature)));
 
-        for (JsonParser.Feature jsonParserFeature : this.jsonParserFeatures.keySet()) {
-            this.configure(jsonParserFeature, this.jsonParserFeatures.get(jsonParserFeature));
-        }
+        this.jsonParserFeatures.keySet().forEach(jsonParserFeature -> this.configure(jsonParserFeature, this.jsonParserFeatures.get(jsonParserFeature)));
 
         this.registerModules(this.modules);
 

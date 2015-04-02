@@ -4,10 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.ObjectUtils;
@@ -132,16 +134,8 @@ public abstract class ToolResourceUtils {
     }
 
     public static List<String> splitLocations(String resourceLocsStr) {
-        String[] resourceLocsArr = StringUtils.split(resourceLocsStr, DELIMS_RESOURCE_LOC);
-        List<String> resourceLocs = new ArrayList<>(resourceLocsArr.length);
-
-        for (String resourceLoc : resourceLocsArr) {
-            if (!StringUtils.isBlank(resourceLoc = resourceLoc.trim())) {
-                resourceLocs.add(resourceLoc);
-            }
-        }
-
-        return resourceLocs;
+        return Arrays.stream(StringUtils.split(resourceLocsStr, DELIMS_RESOURCE_LOC)).filter(resourceLoc -> !StringUtils.isBlank(resourceLoc.trim())).map(
+            String::trim).collect(Collectors.toList());
     }
 
     @Nullable

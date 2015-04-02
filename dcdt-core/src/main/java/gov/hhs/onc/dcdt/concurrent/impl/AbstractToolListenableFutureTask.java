@@ -22,9 +22,7 @@ public abstract class AbstractToolListenableFutureTask<T> extends ListenableFutu
 
     @Override
     public void run() {
-        for (ListenableFutureCallback<? super T> callback : this.callbacks) {
-            super.addCallback(callback);
-        }
+        this.callbacks.forEach(super::addCallback);
 
         super.run();
     }

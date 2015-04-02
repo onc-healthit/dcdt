@@ -11,13 +11,12 @@ import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.hosting.HostingTestcase.HostingTestcaseLocationBindingPredicate;
 import gov.hhs.onc.dcdt.testcases.hosting.results.HostingTestcaseResult;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.net.InetAddress;
 import java.util.List;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
@@ -63,8 +62,8 @@ public class HostingTestcaseProcessorFunctionalTests extends AbstractToolFunctio
 
                     // noinspection ConstantConditions
                     HostingTestcase hostingTestcase =
-                        CollectionUtils.find(this.getHostingTestcases(), new HostingTestcaseLocationBindingPredicate(discoveryTestcaseCred.getLocation()
-                            .getType(), discoveryTestcaseCred.getBindingType()));
+                        ToolStreamUtils.find(this.getHostingTestcases(), testcase -> HostingTestcase.hasLocationBinding(testcase, discoveryTestcaseCred
+                            .getLocation().getType(), discoveryTestcaseCred.getBindingType()));
                     HostingTestcaseResult hostingTestcaseResult =
                         this.hostingTestcaseProc.process(ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, HostingTestcaseSubmission.class,
                             hostingTestcase, directAddr));

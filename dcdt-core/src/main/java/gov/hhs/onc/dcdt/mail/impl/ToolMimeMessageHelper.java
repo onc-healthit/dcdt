@@ -6,7 +6,6 @@ import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.MailHeaderNames;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
-import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils.MimeTypeComparator;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.io.ByteArrayOutputStream;
@@ -106,7 +105,7 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     }
 
     public Map<String, MimeBodyPart> mapAttachmentPartFileNames() throws MessagingException {
-        return (isMultipart() ? ToolMimePartUtils.mapAttachmentPartFileNames(this.getRootMimeMultipart()) : new LinkedHashMap<String, MimeBodyPart>());
+        return (isMultipart() ? ToolMimePartUtils.mapAttachmentPartFileNames(this.getRootMimeMultipart()) : new LinkedHashMap<>());
     }
 
     public List<MimeBodyPart> getAttachmentParts() throws MessagingException {
@@ -114,7 +113,7 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     }
 
     public List<MimeBodyPart> getAttachmentParts(boolean requireFileName) throws MessagingException {
-        return (isMultipart() ? ToolMimePartUtils.getAttachmentParts(this.getRootMimeMultipart()) : new ArrayList<MimeBodyPart>());
+        return (isMultipart() ? ToolMimePartUtils.getAttachmentParts(this.getRootMimeMultipart()) : new ArrayList<>());
     }
 
     public Map<MimeType, List<MimePart>> mapPartContentTypes() throws MessagingException {
@@ -128,12 +127,13 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     public Map<MimeType, List<MimePart>> mapPartContentTypes(boolean fromRoot, boolean compareContentBaseType) throws MessagingException {
         List<? extends MimePart> parts = this.getParts(fromRoot);
         Map<MimeType, List<MimePart>> partContentTypeMap =
-            new TreeMap<>((compareContentBaseType ? MimeTypeComparator.INSTANCE_BASE_TYPE : MimeTypeComparator.INSTANCE));
+            new TreeMap<>((compareContentBaseType ? ToolMimeTypeUtils.MIME_TYPE_COMPARATOR_INSTANCE_BASE_TYPE : ToolMimeTypeUtils
+                .MIME_TYPE_COMPARATOR_INSTANCE));
         MimeType partContentType;
 
         for (MimePart part : parts) {
             if (!partContentTypeMap.containsKey((partContentType = ToolMimePartUtils.getContentType(part)))) {
-                partContentTypeMap.put((compareContentBaseType ? ToolMimeTypeUtils.forBaseType(partContentType) : partContentType), new ArrayList<MimePart>());
+                partContentTypeMap.put((compareContentBaseType ? ToolMimeTypeUtils.forBaseType(partContentType) : partContentType), new ArrayList<>());
             }
 
             partContentTypeMap.get(partContentType).add(part);

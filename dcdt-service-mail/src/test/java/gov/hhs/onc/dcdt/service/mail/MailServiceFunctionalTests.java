@@ -9,20 +9,19 @@ import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialValidPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMappingRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.sender.DiscoveryTestcaseSubmissionSenderService;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
 import gov.hhs.onc.dcdt.utils.ToolDateUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.nio.charset.Charset;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import javax.mail.Session;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.annotations.AfterGroups;
 import org.testng.annotations.BeforeClass;
@@ -58,7 +57,7 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
         DiscoveryTestcaseSubmission discoveryTestcaseSubmission;
 
         for (DiscoveryTestcase discoveryTestcase : this.discoveryTestcases) {
-            if ((discoveryTestcaseCred = CollectionUtils.find(discoveryTestcase.getTargetCredentials(), DiscoveryTestcaseCredentialValidPredicate.INSTANCE)) == null) {
+            if ((discoveryTestcaseCred = ToolStreamUtils.find(discoveryTestcase.getTargetCredentials(), DiscoveryTestcaseCredential::isValid)) == null) {
                 continue;
             }
 

@@ -59,7 +59,9 @@ public class MimeAttachmentResource extends ByteArrayResource {
         if (obj != null && ToolClassUtils.isAssignable(obj.getClass(), MimeAttachmentResource.class)) {
             MimeAttachmentResource mimeAttachmentResource = (MimeAttachmentResource) obj;
 
-            return super.equals(mimeAttachmentResource) && Objects.equals(this.contentType, mimeAttachmentResource.getContentType()) && Objects.equals(this.contentXferEnc, mimeAttachmentResource.getContentXferEncoding()) && Objects.equals(this.filename, mimeAttachmentResource.getFilename());
+            return super.equals(mimeAttachmentResource) && Objects.equals(this.contentType, mimeAttachmentResource.getContentType()) && Objects
+                .equals(this.contentXferEnc, mimeAttachmentResource.getContentXferEncoding()) && Objects
+                .equals(this.filename, mimeAttachmentResource.getFilename());
         }
 
         return false;

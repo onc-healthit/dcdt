@@ -10,12 +10,12 @@ import gov.hhs.onc.dcdt.dns.DnsServiceType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.CertRecordParameterPredicate;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.util.Set;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.CNAMERecord;
@@ -49,7 +49,8 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
     @Override
     public DnsLookupResult<CERTRecord> lookupCertRecords(@Nullable DnsCertificateType certType, @Nullable Set<DnsKeyAlgorithmType> keyAlgTypes, Name name)
         throws DnsException {
-        return this.lookupRecords(DnsRecordType.CERT, CERTRecord.class, name, new CertRecordParameterPredicate(certType, keyAlgTypes));
+        return this.lookupRecords(DnsRecordType.CERT, CERTRecord.class, name, certRecord -> ToolDnsRecordUtils.hasCertRecordParameter(certRecord,
+            certType, keyAlgTypes));
     }
 
     @Override

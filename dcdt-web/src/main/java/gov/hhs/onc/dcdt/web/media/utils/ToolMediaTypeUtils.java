@@ -1,40 +1,24 @@
 package gov.hhs.onc.dcdt.web.media.utils;
 
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.http.MediaType;
 import org.springframework.util.MimeType;
 
 public abstract class ToolMediaTypeUtils {
-    public static class IncludesMediaTypePredicate extends AbstractToolPredicate<MediaType> {
-        private Iterable<MediaType> mediaTypes;
-
-        public IncludesMediaTypePredicate(Iterable<MediaType> mediaTypes) {
-            this.mediaTypes = mediaTypes;
-        }
-
-        @Override
-        protected boolean evaluateInternal(MediaType mediaTypeEval) throws Exception {
-            for (MediaType mediaType : this.mediaTypes) {
-                if (mediaType.includes(mediaTypeEval)) {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-    }
-
     public static boolean isIncluded(Iterable<MediaType> mediaTypes, MediaType ... mediaTypesEval) {
         return isIncluded(mediaTypes, ToolArrayUtils.asList(mediaTypesEval));
     }
 
     public static boolean isIncluded(Iterable<MediaType> mediaTypes, Iterable<MediaType> mediaTypesEval) {
-        return CollectionUtils.exists(mediaTypesEval, new IncludesMediaTypePredicate(mediaTypes));
+        return ToolStreamUtils.exists(mediaTypesEval, mediaTypeEval -> isIncluded(mediaTypeEval, mediaTypes));
+    }
+
+    public static boolean isIncluded(MediaType mediaTypeEval, Iterable<MediaType> mediaTypes) {
+        return ToolStreamUtils.exists(mediaTypes, mediaType -> mediaType.includes(mediaTypeEval));
     }
 
     @Nullable
@@ -44,7 +28,7 @@ public abstract class ToolMediaTypeUtils {
 
     @Nullable
     public static MediaType findIncluded(Iterable<MediaType> mediaTypes, Iterable<MediaType> mediaTypesEval) {
-        return CollectionUtils.find(mediaTypesEval, new IncludesMediaTypePredicate(mediaTypes));
+        return ToolStreamUtils.find(mediaTypesEval, mediaTypeEval -> isIncluded(mediaTypeEval, mediaTypes));
     }
 
     @SafeVarargs

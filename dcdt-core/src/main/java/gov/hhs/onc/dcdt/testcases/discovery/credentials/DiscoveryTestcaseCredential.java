@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.discovery.BindingType;
@@ -13,34 +12,8 @@ import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
 public interface DiscoveryTestcaseCredential extends ToolNamedBean {
-    public final static class DiscoveryTestcaseCredentialValidPredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
-        public final static DiscoveryTestcaseCredentialValidPredicate INSTANCE = new DiscoveryTestcaseCredentialValidPredicate();
-
-        @Override
-        protected boolean evaluateInternal(DiscoveryTestcaseCredential cred) throws Exception {
-            return cred.isValid();
-        }
-    }
-
-    public final static class DiscoveryTestcaseCredentialTypePredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
-        public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_CA = new DiscoveryTestcaseCredentialTypePredicate(
-            DiscoveryTestcaseCredentialType.CA);
-        public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_BACKGROUND = new DiscoveryTestcaseCredentialTypePredicate(
-            DiscoveryTestcaseCredentialType.BACKGROUND);
-        public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_TARGET = new DiscoveryTestcaseCredentialTypePredicate(
-            DiscoveryTestcaseCredentialType.TARGET);
-
-        private DiscoveryTestcaseCredentialType credType;
-
-        private DiscoveryTestcaseCredentialTypePredicate(DiscoveryTestcaseCredentialType credType) {
-            this.credType = credType;
-        }
-
-        @Override
-        protected boolean evaluateInternal(DiscoveryTestcaseCredential cred) throws Exception {
-            // noinspection ConstantConditions
-            return (cred.getType() == this.credType);
-        }
+    public static boolean isInstanceCa(DiscoveryTestcaseCredential cred) {
+        return cred.getType() == DiscoveryTestcaseCredentialType.CA;
     }
 
     public boolean hasBindingType();

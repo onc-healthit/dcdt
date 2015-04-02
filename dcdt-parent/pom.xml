@@ -44,7 +44,7 @@
     
     <properties>
         <!-- Java properties -->
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
         <!-- Project properties -->
         <project.basedir>${project.basedir}</project.basedir>
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
@@ -398,17 +398,17 @@
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcmail-jdk15on</artifactId>
-                <version>1.51</version>
+                <version>1.52</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcpkix-jdk15on</artifactId>
-                <version>1.51</version>
+                <version>1.52</version>
             </dependency>
             <dependency>
                 <groupId>org.bouncycastle</groupId>
                 <artifactId>bcprov-jdk15on</artifactId>
-                <version>1.51</version>
+                <version>1.52</version>
             </dependency>
             <dependency>
                 <groupId>org.codehaus.janino</groupId>
@@ -479,32 +479,32 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -519,29 +519,29 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-bom</artifactId>
-                <version>3.2.5.RELEASE</version>
+                <version>4.0.0.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -560,13 +560,13 @@
             <dependency>
                 <groupId>com.atlassian.clover</groupId>
                 <artifactId>clover</artifactId>
-                <version>4.0.2</version>
+                <version>4.0.3</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
-                <version>2.44.0</version>
+                <version>2.45.0</version>
                 <scope>test</scope>
                 <exclusions>
                     <exclusion>
@@ -582,13 +582,13 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>4.1.3.RELEASE</version>
+                <version>4.1.6.RELEASE</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>6.8.13</version>
+                <version>6.8.21</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -631,7 +631,7 @@
                         <dependency>
                             <groupId>com.atlassian.clover</groupId>
                             <artifactId>clover</artifactId>
-                            <version>4.0.2</version>
+                            <version>4.0.3</version>
                         </dependency>
                         <dependency>
                             <groupId>org.apache.ant</groupId>
@@ -682,7 +682,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.2</version>
+                    <version>3.3</version>
                     <inherited>true</inherited>
                     <configuration>
                         <compilerArgs combine.children="append">
@@ -717,7 +717,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.9</version>
+                    <version>2.10</version>
                     <inherited>true</inherited>
                     <configuration>
                         <silent>true</silent>
@@ -762,7 +762,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>2.6</version>
                     <inherited>true</inherited>
                     <executions>
                         <execution>
@@ -1115,7 +1115,7 @@
                             <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
                             <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
-                        <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4</argLine>
+                        <argLine>-Xms128m -Xmx256m -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4</argLine>
                         <classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>
                         <parallel>all</parallel>
                         <reportFormat>plain</reportFormat>
@@ -1199,7 +1199,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-war-plugin</artifactId>
-                    <version>2.5</version>
+                    <version>2.6</version>
                     <inherited>true</inherited>
                     <configuration>
                         <archiveClasses>true</archiveClasses>
@@ -1299,12 +1299,12 @@
                         <dependency>
                             <groupId>org.seleniumhq.selenium</groupId>
                             <artifactId>selenium-api</artifactId>
-                            <version>2.44.0</version>
+                            <version>2.45.0</version>
                         </dependency>
                         <dependency>
                             <groupId>org.seleniumhq.selenium</groupId>
                             <artifactId>selenium-java</artifactId>
-                            <version>2.44.0</version>
+                            <version>2.45.0</version>
                             <exclusions>
                                 <exclusion>
                                     <groupId>xerces</groupId>
@@ -1315,12 +1315,12 @@
                         <dependency>
                             <groupId>org.seleniumhq.selenium</groupId>
                             <artifactId>selenium-remote-driver</artifactId>
-                            <version>2.44.0</version>
+                            <version>2.45.0</version>
                         </dependency>
                         <dependency>
                             <groupId>org.seleniumhq.selenium</groupId>
                             <artifactId>selenium-server</artifactId>
-                            <version>2.44.0</version>
+                            <version>2.45.0</version>
                         </dependency>
                     </dependencies>
                 </plugin>
@@ -1693,8 +1693,21 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-checkstyle-plugin</artifactId>
+                        <version>2.15</version>
+                        <inherited>true</inherited>
+                        <dependencies>
+                            <dependency>
+                                <groupId>com.puppycrawl.tools</groupId>
+                                <artifactId>checkstyle</artifactId>
+                                <version>6.5</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
-                        <version>3.3</version>
+                        <version>3.4</version>
                         <inherited>true</inherited>
                         <executions>
                             <execution>
@@ -1720,12 +1733,12 @@
                     <plugin>
                         <groupId>com.atlassian.maven.plugins</groupId>
                         <artifactId>maven-clover2-plugin</artifactId>
-                        <version>4.0.2</version>
+                        <version>4.0.3</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.13</version>
+                        <version>2.15</version>
                         <configuration>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
@@ -1748,7 +1761,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
-                        <version>3.3</version>
+                        <version>3.4</version>
                         <configuration>
                             <includeTests>true</includeTests>
                             <includeXmlInSite>true</includeXmlInSite>
@@ -1783,7 +1796,7 @@
                             <excludeFilterFile>${project.basedir.all}/dcdt-core/src/findbugs/filter-exclude-core.xml</excludeFilterFile>
                             <includeTests>true</includeTests>
                             <jvmArgs>
-                                -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4
+                                -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4
                             </jvmArgs>
                             <threshold>Low</threshold>
                             <xmlOutput>true</xmlOutput>
@@ -1833,11 +1846,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.1</version>
+                        <version>2.10.2</version>
                         <configuration>
                             <additionalJOptions>
-                                <additionalJOption>-J-XX:PermSize=64m</additionalJOption>
-                                <additionalJOption>-J-XX:MaxPermSize=128m</additionalJOption>
+                                <additionalJOption>-J-XX:MetaspaceSize=64m</additionalJOption>
+                                <additionalJOption>-J-XX:MaxMetaspaceSize=128m</additionalJOption>
                                 <additionalJOption>-J-XX:+UseG1GC</additionalJOption>
                                 <additionalJOption>-J-XX:MaxGCPauseMillis=50</additionalJOption>
                                 <additionalJOption>-J-XX:ParallelGCThreads=4</additionalJOption>

@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.IntStream;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -61,13 +62,7 @@ public abstract class ToolListUtils {
 
         int listStart = list1.size() - list2.size();
 
-        for (int a = 0; a < list2.size(); a++) {
-            if (!Objects.equals(list1.get(listStart + a), list2.get(a))) {
-                return false;
-            }
-        }
-
-        return true;
+        return !IntStream.range(0, list2.size()).anyMatch(a -> !Objects.equals(list1.get(listStart + a), list2.get(a)));
     }
 
     @Nullable
@@ -131,13 +126,7 @@ public abstract class ToolListUtils {
     @Nullable
     public static <T> List<T> addAll(@Nullable List<T> list, @Nonnegative int index, @Nullable Iterable<? extends Iterable<? extends T>> iterables) {
         if ((list != null) && (iterables != null)) {
-            for (Iterable<? extends T> iterable : iterables) {
-                if (iterable != null) {
-                    for (T item : iterable) {
-                        list.add(index, item);
-                    }
-                }
-            }
+            ToolStreamUtils.stream(iterables).filter(Objects::nonNull).flatMap(ToolStreamUtils::stream).forEach(item -> list.add(index, item));
         }
 
         return list;

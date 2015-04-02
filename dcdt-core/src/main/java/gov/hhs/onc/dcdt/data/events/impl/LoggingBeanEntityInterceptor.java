@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.io.Serializable;
+import java.util.stream.IntStream;
 import org.hibernate.Transaction;
 import org.hibernate.type.Type;
 import org.slf4j.Logger;
@@ -68,13 +69,6 @@ public class LoggingBeanEntityInterceptor extends AbstractToolBeanEntityIntercep
     }
 
     private static String[] getTypeNames(Type[] types) {
-        int numTypes = types.length;
-        String[] typeNames = new String[numTypes];
-
-        for (int a = 0; a < numTypes; a++) {
-            typeNames[a] = types[a].getName();
-        }
-
-        return typeNames;
+        return IntStream.range(0, types.length).mapToObj(a -> types[a].getName()).toArray(String[]::new);
     }
 }

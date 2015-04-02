@@ -9,9 +9,10 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialType;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.Collection;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -65,7 +66,7 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     @Override
     @Transient
     public Collection<DiscoveryTestcaseCredential> getTargetCredentials() {
-        return CollectionUtils.select(this.creds, DiscoveryTestcaseCredentialTypePredicate.INSTANCE_TARGET);
+        return ToolStreamUtils.filter(this.creds, cred -> cred.getType() == DiscoveryTestcaseCredentialType.TARGET);
     }
 
     @Override
@@ -76,7 +77,7 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     @Override
     @Transient
     public Collection<DiscoveryTestcaseCredential> getBackgroundCredentials() {
-        return CollectionUtils.select(this.creds, DiscoveryTestcaseCredentialTypePredicate.INSTANCE_BACKGROUND);
+        return ToolStreamUtils.filter(this.creds, cred -> cred.getType() == DiscoveryTestcaseCredentialType.BACKGROUND);
     }
 
     @Override

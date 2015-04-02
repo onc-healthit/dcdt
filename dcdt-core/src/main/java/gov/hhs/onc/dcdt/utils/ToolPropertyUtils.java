@@ -1,8 +1,6 @@
 package gov.hhs.onc.dcdt.utils;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -29,13 +27,7 @@ public abstract class ToolPropertyUtils {
             return StringUtils.EMPTY;
         }
 
-        List<String> valuesEscaped = new ArrayList<>();
-
-        // noinspection ConstantConditions
-        for (String value : values) {
-            valuesEscaped.add(StringUtils.replace(value, DELIM_PROP_VALUES, DELIM_PROP_VALUES_ESCAPED));
-        }
-
-        return ToolStringUtils.joinDelimit(valuesEscaped, DELIM_PROP_VALUES);
+        return ToolStringUtils.joinDelimit(ToolStreamUtils.transform(values, value -> StringUtils.replace(value, DELIM_PROP_VALUES,
+            DELIM_PROP_VALUES_ESCAPED)), DELIM_PROP_VALUES);
     }
 }

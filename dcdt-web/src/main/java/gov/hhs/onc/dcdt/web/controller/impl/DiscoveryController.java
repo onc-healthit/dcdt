@@ -8,14 +8,13 @@ import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.web.ToolWebException;
 import gov.hhs.onc.dcdt.web.controller.DisplayController;
 import gov.hhs.onc.dcdt.web.view.RequestView;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,8 +27,8 @@ public class DiscoveryController extends AbstractToolController {
     @RequestMapping(value = { "/discovery/anchor" }, method = { RequestMethod.GET })
     public void downloadAnchor(HttpServletResponse servletResp) throws ToolWebException {
         DiscoveryTestcaseCredential anchorCred =
-            CollectionUtils.find(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class),
-                DiscoveryTestcaseCredentialTypePredicate.INSTANCE_CA);
+            ToolStreamUtils.find(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class),
+                DiscoveryTestcaseCredential::isInstanceCa);
         CredentialInfo anchorCredInfo;
         CertificateInfo anchorCertInfo;
 

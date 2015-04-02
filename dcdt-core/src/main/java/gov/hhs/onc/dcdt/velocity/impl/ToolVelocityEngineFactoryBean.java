@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
@@ -32,9 +33,7 @@ public class ToolVelocityEngineFactoryBean extends VelocityEngineFactoryBean {
         if (!ArrayUtils.isEmpty(this.vmLibs)) {
             String[] vmLibPaths = ArrayUtils.clone(this.vmLibs);
 
-            for (int a = 0; a < vmLibPaths.length; a++) {
-                vmLibPaths[a] = StringUtils.appendIfMissing(vmLibPaths[a], ToolVelocityUtils.FILE_EXT_VM);
-            }
+            IntStream.range(0, vmLibPaths.length).forEach(a -> vmLibPaths[a] = StringUtils.appendIfMissing(vmLibPaths[a], ToolVelocityUtils.FILE_EXT_VM));
 
             velocityPropsMap.put(RuntimeConstants.VM_LIBRARY, ToolPropertyUtils.joinValues(vmLibPaths));
         }

@@ -5,8 +5,8 @@ import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsResultType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
+import java.util.function.Predicate;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.Record;
 
 public interface DnsLookupStep<T extends Record> extends LookupStep<T, DnsResultType, DnsLookupResult<T>, DnsLookupService> {
