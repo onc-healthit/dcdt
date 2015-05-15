@@ -56,6 +56,7 @@ import org.bouncycastle.cms.CMSException;
 import org.bouncycastle.cms.CMSSignerDigestMismatchException;
 import org.bouncycastle.cms.KeyTransRecipientId;
 import org.bouncycastle.cms.KeyTransRecipientInformation;
+import org.bouncycastle.cms.RecipientInformation;
 import org.bouncycastle.cms.SignerId;
 import org.bouncycastle.cms.SignerInformation;
 import org.bouncycastle.cms.SignerInformationVerifier;
@@ -91,14 +92,14 @@ import org.springframework.util.MimeType;
 public abstract class ToolSmimeUtils {
     @SuppressWarnings({ "unchecked" })
     public static Map<SignerId, CertificateInfo> verifySignatures(SMIMESigned signed) throws MessagingException {
-        Store signedCerts = signed.getCertificates();
+        Store<X509CertificateHolder> signedCerts = (Store<X509CertificateHolder>) signed.getCertificates();
         JcaSimpleSignerInfoVerifierBuilder signerInfoVerifierBuilder = new JcaSimpleSignerInfoVerifierBuilder().setProvider(CryptographyUtils.PROVIDER);
         Map<SignerId, SignerInformation> signerInfoMap = mapSigners(signed);
         Map<SignerId, CertificateInfo> signerCertMap = new LinkedHashMap<>(signerInfoMap.size());
         SignerInformation signerInfo = null;
 
         for (SignerId signerId : signerInfoMap.keySet()) {
-            for (X509CertificateHolder certHolder : ((Collection<X509CertificateHolder>) signedCerts.getMatches(signerId))) {
+            for (X509CertificateHolder certHolder : signedCerts.getMatches(signerId)) {
                 try {
                     try {
                         SignerInformationVerifier verifier = signerInfoVerifierBuilder.build(certHolder);
@@ -175,7 +176,7 @@ public abstract class ToolSmimeUtils {
 
     @SuppressWarnings({ "unchecked" })
     public static Map<SignerId, SignerInformation> mapSigners(SMIMESigned signed) throws MessagingException {
-        Collection<SignerInformation> signerInfos = ((Collection<SignerInformation>) signed.getSignerInfos().getSigners());
+        Collection<SignerInformation> signerInfos = signed.getSignerInfos().getSigners();
         Map<SignerId, SignerInformation> signerInfoMap = new LinkedHashMap<>(signerInfos.size());
 
         for (SignerInformation signerInfo : signerInfos) {
@@ -258,18 +259,19 @@ public abstract class ToolSmimeUtils {
     @SuppressWarnings({ "unchecked" })
     public static Map<KeyTransRecipientId, KeyTransRecipientInformation> mapRecipients(ToolMimeMessageHelper msgHelper, SMIMEEnveloped enveloped)
         throws MessagingException {
-        Collection<KeyTransRecipientInformation> recipientInfos = ((Collection<KeyTransRecipientInformation>) enveloped.getRecipientInfos().getRecipients());
+        Collection<RecipientInformation> recipientInfos = enveloped.getRecipientInfos().getRecipients();
         Map<KeyTransRecipientId, KeyTransRecipientInformation> recipientInfoMap = new LinkedHashMap<>(recipientInfos.size());
         KeyTransRecipientId recipientId;
         X500Name recipientIssuer;
         BigInteger recipientSerialNum;
 
-        for (KeyTransRecipientInformation recipientInfo : recipientInfos) {
+        for (RecipientInformation recipientInfo : recipientInfos) {
             recipientIssuer = (recipientId = ((KeyTransRecipientId) recipientInfo.getRID())).getIssuer();
             recipientSerialNum = recipientId.getSerialNumber();
 
             try {
-                recipientInfoMap.put(new JceKeyTransRecipientId(new X500Principal(recipientIssuer.getEncoded()), recipientSerialNum), recipientInfo);
+                recipientInfoMap.put(new JceKeyTransRecipientId(new X500Principal(recipientIssuer.getEncoded()), recipientSerialNum),
+                    (KeyTransRecipientInformation) recipientInfo);
             } catch (IOException e) {
                 throw new ToolSmimeException(String.format(
                     "Unable to map mail MIME message (id=%s, from=%s, to=%s) enveloped content (type=%s) recipient (issuer={%s}, serialNum=%s).", msgHelper
