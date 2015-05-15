@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.compress.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.compress.ArchiveType;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.io.ByteArrayOutputStream;
@@ -16,16 +17,26 @@ import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 public abstract class ArchiveUtils {
-    @SuppressWarnings({ "unchecked" })
-    public static <T extends ArchiveEntry> Pair<T, byte[]> transformZipArchiveEntryPair(Entry<String, byte[]> entryDescPair) {
-        return new MutablePair<>((T) createEntry(entryDescPair), entryDescPair.getValue());
+    public static class ZipArchiveEntryPairTransformer extends AbstractArchiveEntryPairTransformer<ZipArchiveEntry> {
+        public final static ZipArchiveEntryPairTransformer INSTANCE = new ZipArchiveEntryPairTransformer();
+
+        @Override
+        protected ZipArchiveEntry createEntry(Entry<String, byte[]> entryDescPair) {
+            ZipArchiveEntry entry = new ZipArchiveEntry(entryDescPair.getKey());
+            entry.setSize(entryDescPair.getValue().length);
+
+            return entry;
+        }
     }
 
-    protected static ZipArchiveEntry createEntry(Entry<String, byte[]> entryDescPair) {
-        ZipArchiveEntry entry = new ZipArchiveEntry(entryDescPair.getKey());
-        entry.setSize(entryDescPair.getValue().length);
+    public abstract static class AbstractArchiveEntryPairTransformer<T extends ArchiveEntry> extends
+        AbstractToolTransformer<Entry<String, byte[]>, Pair<T, byte[]>> {
+        @Override
+        protected Pair<T, byte[]> transformInternal(Entry<String, byte[]> entryDescPair) throws Exception {
+            return new MutablePair<>(this.createEntry(entryDescPair), entryDescPair.getValue());
+        }
 
-        return entry;
+        protected abstract T createEntry(Entry<String, byte[]> entryDescPair);
     }
 
     // @formatter:off

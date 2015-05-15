@@ -5,12 +5,10 @@ import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.service.mail.james.mailet.ToolMailet;
 import gov.hhs.onc.dcdt.service.mail.james.utils.ToolJamesUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.mail.MessagingException;
 import org.apache.commons.collections4.IteratorUtils;
@@ -40,8 +38,11 @@ public abstract class AbstractToolMailet extends GenericMailet implements ToolMa
     @Override
     @SuppressWarnings({ "unchecked" })
     public void init() throws MessagingException {
-        this.initParamMap = ToolStreamUtils.stream(IteratorUtils.asIterable(((Iterator<String>) this.getInitParameterNames()))).collect(Collectors.toMap(
-            Function.<String>identity(), this::getInitParameter));
+        this.initParamMap = new HashMap<>();
+
+        for (String initParamName : IteratorUtils.asIterable(((Iterator<String>) this.getInitParameterNames()))) {
+            initParamMap.put(initParamName, this.getInitParameter(initParamName));
+        }
     }
 
     protected abstract void serviceInternal(ToolMimeMessageHelper msgHelper) throws Exception;

@@ -44,7 +44,7 @@
     
     <properties>
         <!-- Java properties -->
-        <java.version>1.8</java.version>
+        <java.version>1.7</java.version>
         <!-- Project properties -->
         <project.basedir>${project.basedir}</project.basedir>
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
@@ -178,12 +178,12 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.1.2</version>
+                <version>1.1.3</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>1.1.2</version>
+                <version>1.1.3</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -317,7 +317,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-lang3</artifactId>
-                <version>3.3.2</version>
+                <version>3.4</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.derby</groupId>
@@ -413,7 +413,7 @@
             <dependency>
                 <groupId>org.codehaus.janino</groupId>
                 <artifactId>janino</artifactId>
-                <version>2.7.7</version>
+                <version>2.7.8</version>
             </dependency>
             <dependency>
                 <groupId>org.fusesource.jansi</groupId>
@@ -459,22 +459,22 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>1.7.10</version>
+                <version>1.7.12</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jul-to-slf4j</artifactId>
-                <version>1.7.10</version>
+                <version>1.7.12</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>log4j-over-slf4j</artifactId>
-                <version>1.7.10</version>
+                <version>1.7.12</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>1.7.10</version>
+                <version>1.7.12</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
@@ -717,7 +717,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.10</version>
+                    <version>2.9</version>
                     <inherited>true</inherited>
                     <configuration>
                         <silent>true</silent>
@@ -1115,7 +1115,7 @@
                             <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
                             <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
-                        <argLine>-Xms128m -Xmx256m -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4</argLine>
+                        <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4</argLine>
                         <classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>
                         <parallel>all</parallel>
                         <reportFormat>plain</reportFormat>
@@ -1255,12 +1255,12 @@
                         <dependency>
                             <groupId>org.apache.commons</groupId>
                             <artifactId>commons-lang3</artifactId>
-                            <version>3.3.2</version>
+                            <version>3.4</version>
                         </dependency>
                         <dependency>
                             <groupId>org.codehaus.janino</groupId>
                             <artifactId>janino</artifactId>
-                            <version>2.7.7</version>
+                            <version>2.7.8</version>
                         </dependency>
                         <dependency>
                             <groupId>org.fusesource.jansi</groupId>
@@ -1693,19 +1693,6 @@
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.15</version>
-                        <inherited>true</inherited>
-                        <dependencies>
-                            <dependency>
-                                <groupId>com.puppycrawl.tools</groupId>
-                                <artifactId>checkstyle</artifactId>
-                                <version>6.5</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
                         <version>3.4</version>
                         <inherited>true</inherited>
@@ -1796,7 +1783,7 @@
                             <excludeFilterFile>${project.basedir.all}/dcdt-core/src/findbugs/filter-exclude-core.xml</excludeFilterFile>
                             <includeTests>true</includeTests>
                             <jvmArgs>
-                                -XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4
+                                -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4
                             </jvmArgs>
                             <threshold>Low</threshold>
                             <xmlOutput>true</xmlOutput>
@@ -1849,8 +1836,8 @@
                         <version>2.10.2</version>
                         <configuration>
                             <additionalJOptions>
-                                <additionalJOption>-J-XX:MetaspaceSize=64m</additionalJOption>
-                                <additionalJOption>-J-XX:MaxMetaspaceSize=128m</additionalJOption>
+                                <additionalJOption>-J-XX:PermSize=64m</additionalJOption>
+                                <additionalJOption>-J-XX:MaxPermSize=128m</additionalJOption>
                                 <additionalJOption>-J-XX:+UseG1GC</additionalJOption>
                                 <additionalJOption>-J-XX:MaxGCPauseMillis=50</additionalJOption>
                                 <additionalJOption>-J-XX:ParallelGCThreads=4</additionalJOption>

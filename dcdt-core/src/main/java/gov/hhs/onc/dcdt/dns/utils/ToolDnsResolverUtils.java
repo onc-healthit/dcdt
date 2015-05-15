@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -18,8 +18,13 @@ import org.xbill.DNS.Resolver;
 import org.xbill.DNS.SimpleResolver;
 
 public abstract class ToolDnsResolverUtils {
-    public static InetSocketAddress transformResolverSocketAddress(InetAddress addr) {
-        return new InetSocketAddress(addr, SimpleResolver.DEFAULT_PORT);
+    public static class ResolverSocketAddressTransformer extends AbstractToolTransformer<InetAddress, InetSocketAddress> {
+        public final static ResolverSocketAddressTransformer INSTANCE = new ResolverSocketAddressTransformer();
+
+        @Override
+        protected InetSocketAddress transformInternal(InetAddress addr) throws Exception {
+            return new InetSocketAddress(addr, SimpleResolver.DEFAULT_PORT);
+        }
     }
 
     public static Resolver fromAddresses(@Nullable InetAddress ... addrs) throws DnsException {
@@ -27,7 +32,7 @@ public abstract class ToolDnsResolverUtils {
     }
 
     public static Resolver fromAddresses(@Nullable Iterable<InetAddress> addrs) throws DnsException {
-        return fromSocketAddresses(ToolStreamUtils.transform(addrs, ToolDnsResolverUtils::transformResolverSocketAddress));
+        return fromSocketAddresses(CollectionUtils.collect(addrs, ResolverSocketAddressTransformer.INSTANCE));
     }
 
     public static Resolver fromSocketAddresses(@Nullable InetSocketAddress ... socketAddrs) throws DnsException {

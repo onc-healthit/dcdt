@@ -37,7 +37,6 @@ import org.springframework.util.concurrent.ListenableFutureTask;
 public abstract class AbstractSocketListener<T extends Closeable, U extends SocketAdapter<T>, V extends Closeable, W extends ClientSocketAdapter<V>, X extends SocketRequest, Y extends SocketRequestProcessor<X>>
     extends AbstractToolLifecycleBean implements SocketListener<T, U, V, W, X, Y> {
     protected class SocketListenDaemon implements Callable<Void> {
-        @SuppressWarnings({ "unchecked" })
         @Nullable
         @Override
         public Void call() throws Exception {
@@ -185,7 +184,11 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
             this.listenSocketAdapter.close();
         }
 
-        this.reqDaemonTasks.stream().filter(reqDaemonTask -> !reqDaemonTask.isDone()).forEach(reqDaemonTask -> reqDaemonTask.cancel(true));
+        for (ToolListenableFutureTask<Void> reqDaemonTask : this.reqDaemonTasks) {
+            if (!reqDaemonTask.isDone()) {
+                reqDaemonTask.cancel(true);
+            }
+        }
 
         for (W reqSocketAdapter : this.reqSocketAdapters) {
             if (!reqSocketAdapter.isClosed()) {

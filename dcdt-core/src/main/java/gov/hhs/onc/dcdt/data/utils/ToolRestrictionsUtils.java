@@ -7,7 +7,9 @@ import org.hibernate.criterion.DetachedCriteria;
 public abstract class ToolRestrictionsUtils {
     public static DetachedCriteria addAll(DetachedCriteria detachedCriteria, @Nullable Iterable<Criterion> criterions) {
         if (criterions != null) {
-            criterions.forEach(detachedCriteria::add);
+            for (Criterion criterion : criterions) {
+                detachedCriteria.add(criterion);
+            }
         }
 
         return detachedCriteria;

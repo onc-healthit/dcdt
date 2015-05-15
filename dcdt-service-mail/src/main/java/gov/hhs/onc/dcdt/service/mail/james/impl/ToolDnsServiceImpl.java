@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.service.mail.james.impl;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
+import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.DnsRecordDataStringTransformer;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils;
 import gov.hhs.onc.dcdt.service.mail.james.ToolDnsService;
@@ -12,15 +12,16 @@ import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.HierarchicalConfiguration;
 import org.apache.commons.lang3.ArrayUtils;
@@ -67,7 +68,8 @@ public class ToolDnsServiceImpl extends DNSJavaService implements ToolDnsService
 
     @Override
     public Collection<String> findTXTRecords(String hostName) {
-        return ToolStreamUtils.transform(this.lookupNoExceptionInternal(hostName, DnsRecordType.TXT), ToolDnsRecordUtils::transformDnsRecordDataToString);
+        return CollectionUtils.collect(this.lookupNoExceptionInternal(hostName, DnsRecordType.TXT), DnsRecordDataStringTransformer.INSTANCE,
+            new ArrayList<String>());
     }
 
     @Override

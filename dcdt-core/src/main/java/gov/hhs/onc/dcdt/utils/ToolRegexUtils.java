@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.utils;
 
 import java.util.regex.Matcher;
-import java.util.stream.IntStream;
 import javax.annotation.Nullable;
 
 public abstract class ToolRegexUtils {
@@ -17,7 +16,12 @@ public abstract class ToolRegexUtils {
         }
 
         int groupOffset = (includeEntireMatch ? 1 : 0), groupNum = matcher.groupCount() + groupOffset;
+        String[] groups = new String[groupNum];
 
-        return IntStream.range(0, groupNum).mapToObj(a -> matcher.group((a + 1 - groupOffset))).toArray(String[]::new);
+        for (int a = 0; a < groupNum; a++) {
+            groups[a] = matcher.group((a + 1 - groupOffset));
+        }
+
+        return groups;
     }
 }

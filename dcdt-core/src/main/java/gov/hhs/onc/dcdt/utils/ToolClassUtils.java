@@ -1,29 +1,46 @@
 package gov.hhs.onc.dcdt.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ClassUtils;
 import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class ToolClassUtils {
-    public static <T> boolean isAssignable(@Nullable Object obj, Class<T> clazz, boolean from) {
-        return isAssignable(obj, clazz, from, false);
-    }
+    public static class IsAssignablePredicate<T> extends AbstractToolPredicate<Object> {
+        private Class<T> clazz;
+        private boolean from;
+        private boolean castClass;
 
-    public static <T> boolean isAssignable(@Nullable Object obj, Class<T> clazz, boolean from, boolean castClass) {
-        Class<?> objClass = ToolClassUtils.getClass(obj);
-
-        if (castClass && isAssignable(objClass, Class.class)) {
-            objClass = ((Class<?>) obj);
+        public IsAssignablePredicate(Class<T> clazz) {
+            this(clazz, false);
         }
 
-        return isAssignable((from ? clazz : objClass), (from ? objClass : clazz));
+        public IsAssignablePredicate(Class<T> clazz, boolean from) {
+            this(clazz, from, false);
+        }
+
+        public IsAssignablePredicate(Class<T> clazz, boolean from, boolean castClass) {
+            this.clazz = clazz;
+            this.from = from;
+            this.castClass = castClass;
+        }
+
+        @Override
+        protected boolean evaluateInternal(@Nullable Object obj) throws Exception {
+            Class<?> objClass = ToolClassUtils.getClass(obj);
+
+            if (this.castClass && isAssignable(objClass, Class.class)) {
+                objClass = ((Class<?>) obj);
+            }
+
+            return isAssignable((from ? this.clazz : objClass), (from ? objClass : this.clazz));
+        }
     }
 
     public static boolean isAssignable(@Nullable Collection<Class<?>> classes1, @Nullable Collection<Class<?>> classes2) {
@@ -134,7 +151,12 @@ public abstract class ToolClassUtils {
 
     public static List<Class<?>> filter(int mods, Iterable<Class<?>> classes) {
         List<Class<?>> classesFiltered = new ArrayList<>();
-        ToolStreamUtils.stream(classes).filter(clazz -> hasModifiers(clazz, mods)).forEach(classesFiltered::add);
+
+        for (Class<?> clazz : classes) {
+            if (hasModifiers(clazz, mods)) {
+                classesFiltered.add(clazz);
+            }
+        }
 
         return classesFiltered;
     }
@@ -193,7 +215,10 @@ public abstract class ToolClassUtils {
         }
 
         ToolCollectionUtils.addAll(classHierarchy, getHierarchy(clazz.getSuperclass()));
-        Stream.of(clazz.getInterfaces()).forEach(classInterface -> ToolCollectionUtils.addAll(classHierarchy, getHierarchy(classInterface)));
+
+        for (Class<?> classInterface : clazz.getInterfaces()) {
+            ToolCollectionUtils.addAll(classHierarchy, getHierarchy(classInterface));
+        }
 
         return classHierarchy;
     }

@@ -7,12 +7,12 @@ import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSerialNumberImpl;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
+import gov.hhs.onc.dcdt.mail.impl.LineOutputStream;
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.crypto.MailDigestAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.ToolSmimeException;
-import gov.hhs.onc.dcdt.mail.impl.LineOutputStream;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -34,8 +34,6 @@ import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
@@ -101,7 +99,7 @@ public abstract class ToolSmimeUtils {
         SignerInformation signerInfo = null;
 
         for (SignerId signerId : signerInfoMap.keySet()) {
-            for (X509CertificateHolder certHolder : ((Collection<X509CertificateHolder>) signedCerts.getMatches(signerId))) {
+            for (X509CertificateHolder certHolder : signedCerts.getMatches(signerId)) {
                 try {
                     try {
                         SignerInformationVerifier verifier = signerInfoVerifierBuilder.build(certHolder);
@@ -176,10 +174,16 @@ public abstract class ToolSmimeUtils {
         }
     }
 
+    @SuppressWarnings({ "unchecked" })
     public static Map<SignerId, SignerInformation> mapSigners(SMIMESigned signed) throws MessagingException {
         Collection<SignerInformation> signerInfos = signed.getSignerInfos().getSigners();
+        Map<SignerId, SignerInformation> signerInfoMap = new LinkedHashMap<>(signerInfos.size());
 
-        return signerInfos.stream().collect(Collectors.toMap(SignerInformation::getSID, Function.<SignerInformation>identity()));
+        for (SignerInformation signerInfo : signerInfos) {
+            signerInfoMap.put(signerInfo.getSID(), signerInfo);
+        }
+
+        return signerInfoMap;
     }
 
     public static SMIMESigned getSigned(ToolMimeMessageHelper msgHelper, MimeBodyPart bodyPart) throws MessagingException {
@@ -379,7 +383,9 @@ public abstract class ToolSmimeUtils {
         ASN1EncodableVector signedAttrs = new ASN1EncodableVector();
         SMIMECapabilityVector caps = new SMIMECapabilityVector();
 
-        EnumSet.allOf(MailEncryptionAlgorithm.class).forEach(alg -> caps.addCapability(alg.getOid()));
+        for (MailEncryptionAlgorithm alg : EnumSet.allOf(MailEncryptionAlgorithm.class)) {
+            caps.addCapability(alg.getOid());
+        }
 
         signedAttrs.add(new SMIMECapabilitiesAttribute(caps));
 

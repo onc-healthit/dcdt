@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.json.impl;
 
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
@@ -24,7 +25,7 @@ public class ConvertingJsonSerializer<T, U> extends StdSerializer<T> {
     }
 
     @Override
-    public void serialize(T src, JsonGenerator jsonGen, SerializerProvider serializerProvider) throws IOException {
+    public void serialize(T src, JsonGenerator jsonGen, SerializerProvider serializerProvider) throws IOException, JsonGenerationException {
         serializerProvider.defaultSerializeValue(this.convService.convert(src, this.targetClass), jsonGen);
     }
 }

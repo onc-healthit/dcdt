@@ -26,7 +26,16 @@ public abstract class ToolOrderUtils {
         }
 
         public PriorityOrderedQueue(int initialCapacity) {
-            super(initialCapacity, ToolOrderUtils::compare);
+            super(initialCapacity, OrderComparator.INSTANCE);
+        }
+    }
+
+    public static class OrderComparator implements Comparator<Object> {
+        public final static OrderComparator INSTANCE = new OrderComparator();
+
+        @Override
+        public int compare(Object obj1, Object obj2) {
+            return ToolOrderUtils.compare(obj1, obj2);
         }
     }
 

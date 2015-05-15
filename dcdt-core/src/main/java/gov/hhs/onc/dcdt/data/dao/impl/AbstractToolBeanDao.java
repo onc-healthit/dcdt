@@ -9,8 +9,8 @@ import gov.hhs.onc.dcdt.data.utils.ToolRestrictionsUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
@@ -107,7 +107,14 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @Override
     public List<T> loadBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
-        return (List<T>) ToolStreamUtils.transform(beans, bean -> this.loadBean(this.getCheckedSession(), bean));
+        Session session = this.getCheckedSession();
+        List<T> beansLoaded = new ArrayList<>();
+
+        for (T bean : beans) {
+            beansLoaded.add(this.loadBean(session, bean));
+        }
+
+        return beansLoaded;
     }
 
     @Override
@@ -123,7 +130,14 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @Override
     public List<T> refreshBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
-        return (List<T>) ToolStreamUtils.transform(beans, bean -> this.refreshBean(this.getCheckedSession(), bean));
+        Session session = this.getCheckedSession();
+        List<T> beansRefreshed = new ArrayList<>();
+
+        for (T bean : beans) {
+            beansRefreshed.add(this.refreshBean(session, bean));
+        }
+
+        return beansRefreshed;
     }
 
     @Override
@@ -139,7 +153,14 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @Override
     public List<T> setBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
-        return (List<T>) ToolStreamUtils.transform(beans, bean -> this.setBean(this.getCheckedSession(), bean));
+        Session session = this.getCheckedSession();
+        List<T> beansSet = new ArrayList<>();
+
+        for (T bean : beans) {
+            beansSet.add(this.setBean(session, bean));
+        }
+
+        return beansSet;
     }
 
     @Override
@@ -155,7 +176,14 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @Override
     public List<T> addBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
-        return (List<T>) ToolStreamUtils.transform(beans, bean -> this.addBean(this.getCheckedSession(), bean));
+        Session session = this.getCheckedSession();
+        List<T> beansAdded = new ArrayList<>();
+
+        for (T bean : beans) {
+            beansAdded.add(this.addBean(session, bean));
+        }
+
+        return beansAdded;
     }
 
     @Override
@@ -171,7 +199,14 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @Override
     public List<T> updateBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
-        return (List<T>) ToolStreamUtils.transform(beans, bean -> this.updateBean(this.getCheckedSession(), bean));
+        Session session = this.getCheckedSession();
+        List<T> beansUpdated = new ArrayList<>();
+
+        for (T bean : beans) {
+            beansUpdated.add(this.updateBean(session, bean));
+        }
+
+        return beansUpdated;
     }
 
     @Override
@@ -192,7 +227,14 @@ public abstract class AbstractToolBeanDao<T extends ToolBean> extends AbstractTo
 
     @Override
     public List<T> removeBeans(Iterable<T> beans) throws ToolBeanDataAccessException {
-        return (List<T>) ToolStreamUtils.transform(beans, bean -> this.removeBean(this.getCheckedSession(), bean));
+        Session session = this.getCheckedSession();
+        List<T> beansRemoved = new ArrayList<>();
+
+        for (T bean : beans) {
+            beansRemoved.add(this.removeBean(session, bean));
+        }
+
+        return beansRemoved;
     }
 
     @Override

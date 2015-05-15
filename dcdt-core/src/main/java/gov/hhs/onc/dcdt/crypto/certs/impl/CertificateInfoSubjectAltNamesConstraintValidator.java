@@ -23,7 +23,12 @@ public class CertificateInfoSubjectAltNamesConstraintValidator extends AbstractC
         MailAddress directAddr = certValidInfo.getDirectAddress(), directAddrBound, certSubjAltNameDirectAddr, certSubjDnDirectAddr;
 
         // noinspection ConstantConditions
-        if (certSubjName.hasAltName(CertificateAltNameType.RFC822_NAME)) {
+        if (!certSubjName.hasAltName(CertificateAltNameType.RFC822_NAME) && !certSubjName.hasAltName(CertificateAltNameType.DNS_NAME)) {
+            // noinspection ConstantConditions
+            throw new CertificateException(String.format(
+                "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension does not contain a rfc822Name or a dNSName",
+                    certSubjName, certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName()));
+        } else if (certSubjName.hasAltName(CertificateAltNameType.RFC822_NAME)) {
             // noinspection ConstantConditions
             certSubjAltNameDirectAddr = new MailAddressImpl(certSubjName.getAltName(CertificateAltNameType.RFC822_NAME).getName().toString());
             // noinspection ConstantConditions

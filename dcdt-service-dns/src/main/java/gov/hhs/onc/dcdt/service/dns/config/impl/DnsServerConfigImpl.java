@@ -2,10 +2,11 @@ package gov.hhs.onc.dcdt.service.dns.config.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
+import gov.hhs.onc.dcdt.config.instance.impl.InstanceDnsConfigImpl.AuthoritativeDnsConfigPredicate;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -25,7 +26,8 @@ public class DnsServerConfigImpl extends AbstractToolConnectionBean implements D
 
     @Override
     public List<InstanceDnsConfig> findAuthoritativeConfigs(DnsRecordType questionRecordType, Name questionName) {
-        return (List<InstanceDnsConfig>) ToolStreamUtils.filter(this.configs, dnsConfig -> dnsConfig.isAuthoritative(questionRecordType, questionName));
+        return CollectionUtils.select(this.configs, new AuthoritativeDnsConfigPredicate(questionRecordType, questionName), new ArrayList<InstanceDnsConfig>(
+            CollectionUtils.size(this.configs)));
     }
 
     @Override

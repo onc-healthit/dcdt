@@ -11,7 +11,7 @@ import org.springframework.context.support.DefaultMessageSourceResolvable;
 public abstract class ToolMessageUtils {
     @SuppressWarnings({ "NullArgumentToVariableArgMethod" })
     public static String getMessage(MessageSource msgSource, String code) throws NoSuchMessageException {
-        return getMessage(msgSource, code, (Object[]) null);
+        return getMessage(msgSource, code, null);
     }
 
     public static String getMessage(MessageSource msgSource, String code, @Nullable Object ... msgArgs) throws NoSuchMessageException {
@@ -20,7 +20,7 @@ public abstract class ToolMessageUtils {
 
     @SuppressWarnings({ "NullArgumentToVariableArgMethod" })
     public static String getMessage(MessageSource msgSource, String code, @Nullable String defaultMsg) throws NoSuchMessageException {
-        return getMessage(msgSource, code, defaultMsg, (Object) null);
+        return getMessage(msgSource, code, defaultMsg, null);
     }
 
     public static String getMessage(MessageSource msgSource, String code, @Nullable String defaultMsg, @Nullable Object ... msgArgs)

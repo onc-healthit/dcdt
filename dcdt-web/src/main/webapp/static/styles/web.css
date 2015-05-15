@@ -110,10 +110,6 @@ div.navbar a.navbar-brand {
     font-size: 17px;
 }
 
-a.navbar-brand > img {
-    display: inline-block;
-}
-
 ul.navbar-nav {
     height: 52px;
     padding: 10px;

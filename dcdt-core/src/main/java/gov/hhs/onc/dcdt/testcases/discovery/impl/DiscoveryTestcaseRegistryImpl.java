@@ -4,14 +4,15 @@ import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.data.registry.impl.AbstractToolBeanRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDao;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseService;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialRegistry;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.List;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.stereotype.Component;
 
@@ -40,7 +41,7 @@ public class DiscoveryTestcaseRegistryImpl extends AbstractToolBeanRegistry<Disc
     }
 
     protected List<DiscoveryTestcaseCredential> extractDiscoveryTestcaseCredentials(Iterable<DiscoveryTestcase> beans) {
-        return IteratorUtils.toList(ToolIteratorUtils.chainedIterator(ToolStreamUtils.transform(beans, DiscoveryTestcase::extractCredentials)));
+        return IteratorUtils.toList(ToolIteratorUtils.chainedIterator(CollectionUtils.collect(beans, DiscoveryTestcaseCredentialsExtractor.INSTANCE)));
     }
 
     protected DiscoveryTestcaseCredentialRegistry getDiscoveryTestcaseCredentialRegistry() {

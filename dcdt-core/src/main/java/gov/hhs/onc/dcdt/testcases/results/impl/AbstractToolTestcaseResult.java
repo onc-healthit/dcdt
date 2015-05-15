@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
-import gov.hhs.onc.dcdt.beans.ToolResultBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolResultBean;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
@@ -11,7 +10,6 @@ import gov.hhs.onc.dcdt.testcases.ToolTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -29,7 +27,7 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
         this.submission = submission;
 
         // noinspection ConstantConditions
-        this.procSteps = ToolCollectionUtils.addAll(new ArrayList<>(CollectionUtils.size(procSteps)), procSteps);
+        this.procSteps = ToolCollectionUtils.addAll(new ArrayList<CertificateDiscoveryStep>(CollectionUtils.size(procSteps)), procSteps);
     }
 
     @Override
@@ -60,7 +58,7 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
 
     @Override
     public List<String> getMessages() {
-        return ToolCollectionUtils.addAll(new ArrayList<>(), this.procMsgs, this.getDiscoveryMessages());
+        return ToolCollectionUtils.addAll(new ArrayList<String>(), this.procMsgs, this.getDiscoveryMessages());
     }
 
     @Override
@@ -76,7 +74,7 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
 
     @Override
     public List<String> getDiscoveryMessages() {
-        return ToolCollectionUtils.addAll(new ArrayList<>(), ToolStreamUtils.transform(this.procSteps, ToolResultBean::getMessages));
+        return ToolCollectionUtils.addAll(new ArrayList<String>(), CollectionUtils.collect(this.procSteps, ToolResultBeanMessageExtractor.INSTANCE));
     }
 
     @Override

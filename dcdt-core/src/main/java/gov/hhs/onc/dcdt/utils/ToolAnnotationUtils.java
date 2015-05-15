@@ -28,8 +28,14 @@ public abstract class ToolAnnotationUtils {
     @SuppressWarnings({ "unchecked" })
     public static <T extends Annotation, U> List<U> getValues(Class<T> annoClass, Class<U> annoValueClass, String annoAttrName,
         Iterable<? extends AnnotatedElement> annoElems) {
-        return (List<U>) ToolStreamUtils.transform(findAnnotations(annoClass, annoElems), anno -> annoValueClass.cast(AnnotationUtils.getValue(anno,
-            annoAttrName)));
+        List<T> annos = findAnnotations(annoClass, annoElems);
+        List<U> annoValues = new ArrayList<>(annos.size());
+
+        for (T anno : annos) {
+            annoValues.add(annoValueClass.cast(AnnotationUtils.getValue(anno, annoAttrName)));
+        }
+
+        return annoValues;
     }
 
     @Nullable

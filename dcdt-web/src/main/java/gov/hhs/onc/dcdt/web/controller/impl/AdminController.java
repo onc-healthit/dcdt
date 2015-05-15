@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.web.controller.impl;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.compress.ArchiveType;
 import gov.hhs.onc.dcdt.compress.utils.ArchiveUtils;
+import gov.hhs.onc.dcdt.compress.utils.ArchiveUtils.ZipArchiveEntryPairTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
@@ -12,9 +13,10 @@ import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.web.ToolWebException;
 import gov.hhs.onc.dcdt.web.controller.DisplayController;
 import gov.hhs.onc.dcdt.web.view.RequestView;
@@ -24,6 +26,7 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Map.Entry;
 import javax.servlet.http.HttpServletResponse;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -49,10 +52,10 @@ public class AdminController extends AbstractToolController {
 
         EnumSet<DataEncoding> dataEncs = EnumSet.allOf(DataEncoding.class);
         List<DiscoveryTestcaseCredential> creds =
-            IteratorUtils.toList(ToolIteratorUtils.chainedIterator(ToolStreamUtils.transform(
-                ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class), DiscoveryTestcase::extractCredentials)));
-        creds.add(ToolStreamUtils.find(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class),
-            DiscoveryTestcaseCredential::isInstanceCa));
+            IteratorUtils.toList(ToolIteratorUtils.chainedIterator(CollectionUtils.collect(
+                ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class), DiscoveryTestcaseCredentialsExtractor.INSTANCE)));
+        creds.add(CollectionUtils.find(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class),
+            DiscoveryTestcaseCredentialTypePredicate.INSTANCE_CA));
 
         List<Entry<String, byte[]>> credEntryDescPairs = new ArrayList<>(creds.size() * 3);
         String credName;
@@ -101,7 +104,7 @@ public class AdminController extends AbstractToolController {
         try {
             buildFileResponse(servletResp, (instanceConfig.getDomainName() + FILE_NAME_SUFFIX_CREDS_ARCHIVE + ArchiveType.ZIP.getFileExtension()),
                 ArchiveType.ZIP.getContentType(),
-                ArchiveUtils.writeArchive(ArchiveType.ZIP, ToolStreamUtils.transform(credEntryDescPairs, ArchiveUtils::transformZipArchiveEntryPair)));
+                ArchiveUtils.writeArchive(ArchiveType.ZIP, CollectionUtils.collect(credEntryDescPairs, ZipArchiveEntryPairTransformer.INSTANCE)));
         } catch (ArchiveException e) {
             throw new ToolWebException("Unable to write Discovery credentials archive data.", e);
         }

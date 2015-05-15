@@ -9,6 +9,7 @@ import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.exception.LdapInvalidAttributeValueException;
 import org.apache.directory.api.ldap.model.filter.ExprNode;
+import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,9 +45,10 @@ public class LdapLookupServiceUnitTests extends AbstractToolUnitTests {
     public void testLookupEntries() throws LdapInvalidAttributeValueException {
         List<Entry> entries = new ArrayList<>();
 
-        this.testLdapLookupBaseDnsResult.forEach(
-            testLdapLookupBaseDn -> ToolCollectionUtils.addAll(entries,
-                this.ldapLookupService.lookupEntries(this.testLdapLookupConnConfig, testLdapLookupBaseDn, this.testLdapLookupSearchFilter).getItems()));
+        for (Dn testLdapLookupBaseDn : this.testLdapLookupBaseDnsResult) {
+            ToolCollectionUtils.addAll(entries,
+                this.ldapLookupService.lookupEntries(this.testLdapLookupConnConfig, testLdapLookupBaseDn, this.testLdapLookupSearchFilter).getItems());
+        }
 
         Assert.assertFalse(entries.isEmpty(), String.format("No LDAP search (filter=%s) results found.", this.testLdapLookupSearchFilter));
 

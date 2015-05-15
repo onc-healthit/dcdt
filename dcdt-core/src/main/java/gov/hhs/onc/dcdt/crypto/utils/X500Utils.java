@@ -1,13 +1,10 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.list.SetUniqueList;
 import org.bouncycastle.asn1.ASN1Encodable;
@@ -38,7 +35,10 @@ public abstract class X500Utils {
 
     public static X500Name buildName(Map<ASN1ObjectIdentifier, ASN1Encodable> attrMap) {
         X500NameBuilder x500NameBuilder = new X500NameBuilder(BC_X500_NAME_STYLE);
-        attrMap.keySet().forEach(attrOid -> x500NameBuilder.addRDN(attrOid, attrMap.get(attrOid)));
+
+        for (ASN1ObjectIdentifier attrOid : attrMap.keySet()) {
+            x500NameBuilder.addRDN(attrOid, attrMap.get(attrOid));
+        }
 
         return x500NameBuilder.build();
     }
@@ -48,8 +48,15 @@ public abstract class X500Utils {
     }
 
     public static Map<ASN1ObjectIdentifier, ASN1Encodable> mapAttributes(Iterable<RDN> rdns) {
-        return ToolStreamUtils.stream(rdns).flatMap(rdn -> Stream.of(rdn.getTypesAndValues())).collect(Collectors.toMap(AttributeTypeAndValue::getType,
-            AttributeTypeAndValue::getValue, (a, b) -> b, LinkedHashMap::new));
+        Map<ASN1ObjectIdentifier, ASN1Encodable> attrMap = new LinkedHashMap<>();
+
+        for (RDN rdn : rdns) {
+            for (AttributeTypeAndValue attr : rdn.getTypesAndValues()) {
+                attrMap.put(attr.getType(), attr.getValue());
+            }
+        }
+
+        return attrMap;
     }
 
     @Nullable

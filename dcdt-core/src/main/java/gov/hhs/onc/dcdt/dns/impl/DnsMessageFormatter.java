@@ -14,7 +14,6 @@ import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import java.util.EnumSet;
 import java.util.Locale;
 import java.util.Set;
-import java.util.stream.Stream;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
@@ -119,7 +118,9 @@ public class DnsMessageFormatter extends AbstractToolFormatter<Message> {
             strBuilder.append(PREFIX_SEC);
             strBuilder.append(((op != DnsMessageOpcode.UPDATE) ? sec.getIdDisplay() : sec.getIdUpdateDisplay()));
 
-            Stream.of(obj.getSectionArray(secCode)).forEach(record -> printRecord(strBuilder, sec, record));
+            for (Record record : obj.getSectionArray(secCode)) {
+                printRecord(strBuilder, sec, record);
+            }
         }
 
         return strBuilder.build();

@@ -12,7 +12,6 @@ import org.springframework.core.Ordered;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractToolBeanEntityInterceptor<T extends ToolBean> extends AbstractToolBeanDataInterceptor implements ToolBeanEntityInterceptor<T> {
-    protected final static long serialVersionUID = 0L;
     protected int order = Ordered.LOWEST_PRECEDENCE;
     protected Class<T> beanEntityClass;
 

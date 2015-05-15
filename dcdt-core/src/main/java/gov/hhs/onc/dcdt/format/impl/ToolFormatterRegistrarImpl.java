@@ -2,14 +2,15 @@ package gov.hhs.onc.dcdt.format.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.convert.utils.ToolConversionUtils;
+import gov.hhs.onc.dcdt.convert.utils.ToolConversionUtils.IsAssignableConvertiblePredicate;
 import gov.hhs.onc.dcdt.format.ToolFormatter;
 import gov.hhs.onc.dcdt.format.ToolFormatterRegistrar;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.text.ParseException;
 import java.util.HashSet;
 import java.util.Set;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.core.convert.converter.ConditionalGenericConverter;
 import org.springframework.format.FormatterRegistry;
@@ -58,7 +59,7 @@ public class ToolFormatterRegistrarImpl extends AbstractToolBean implements Tool
 
         @Override
         public boolean matches(TypeDescriptor srcType, TypeDescriptor targetType) {
-            return ToolStreamUtils.exists(this.convTypes, convType -> ToolConversionUtils.isAssignable(srcType, targetType, convType));
+            return CollectionUtils.exists(this.convTypes, new IsAssignableConvertiblePredicate(srcType, targetType));
         }
 
         @Override
@@ -75,7 +76,9 @@ public class ToolFormatterRegistrarImpl extends AbstractToolBean implements Tool
 
     @Override
     public void registerFormatters(FormatterRegistry formatterReg) {
-        this.formatters.forEach(formatter -> formatterReg.addConverter(new ToolFormatterConverter<>(formatter)));
+        for (ToolFormatter<?> formatter : this.formatters) {
+            formatterReg.addConverter(new ToolFormatterConverter<>(formatter));
+        }
     }
 
     @Override
