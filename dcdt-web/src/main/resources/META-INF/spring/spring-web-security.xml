@@ -58,6 +58,7 @@
     = HTTP SECURITY
     =====================================================================================================-->
     <sec:http authentication-manager-ref="authManager" use-expressions="true">
+        <sec:csrf disabled="true"/>
         <sec:intercept-url pattern="/admin/login**" access="permitAll"/>
         <sec:intercept-url pattern="/admin/logout**" access="permitAll"/>
         <sec:intercept-url pattern="/admin**" access="hasAuthority('#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }')"/>

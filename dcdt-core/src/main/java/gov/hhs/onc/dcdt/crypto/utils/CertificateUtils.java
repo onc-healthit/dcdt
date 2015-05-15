@@ -15,7 +15,6 @@ import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -111,7 +110,7 @@ public abstract class CertificateUtils {
     public static CertificateFactory getCertificateFactory(ToolProviderJcaJceHelper provHelper, CertificateType certType) throws CryptographyException {
         try {
             return provHelper.createCertificateFactory(certType.getId());
-        } catch (CertificateException | NoSuchAlgorithmException e) {
+        } catch (CertificateException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format(
                 "Unable to get certificate factory instance for certificate type (id=%s, providerName=%s).", certType.getId(), provHelper.getProvider()
                     .getName()), e);

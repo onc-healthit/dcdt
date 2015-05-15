@@ -12,7 +12,7 @@
     <div class="container">
         <div class="navbar-header">
             <a href="${urlHome}" class="navbar-brand">
-                <img src="${urlStaticImages}/dcdt-logo-32x32.png"/>
+                <img src="${urlStaticImages}/dcdt-logo-32x32.png" alt="DCDT logo"/>
                 <strong><spring:message code="dcdt.web.title"/></strong>
             </a>
         </div>
