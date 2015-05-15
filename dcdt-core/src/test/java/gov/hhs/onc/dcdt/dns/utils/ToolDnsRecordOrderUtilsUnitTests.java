@@ -1,10 +1,9 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
-import gov.hhs.onc.dcdt.collections.ToolTransformer;
 import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.config.SrvRecordConfig;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Resource;
 import org.apache.commons.collections4.IteratorUtils;
@@ -37,6 +36,9 @@ public class ToolDnsRecordOrderUtilsUnitTests extends AbstractToolUnitTests {
 
     @BeforeClass
     public void createSrvRecords() throws DnsException {
-        this.srvRecords = (List<SRVRecord>) ToolStreamUtils.transform(this.srvRecordConfigs, ToolTransformer.wrap(SrvRecordConfig::toRecord));
+        this.srvRecords = new ArrayList<>(this.srvRecordConfigs.size());
+        for (SrvRecordConfig srvRecordConfig : this.srvRecordConfigs) {
+            srvRecords.add(srvRecordConfig.toRecord());
+        }
     }
 }

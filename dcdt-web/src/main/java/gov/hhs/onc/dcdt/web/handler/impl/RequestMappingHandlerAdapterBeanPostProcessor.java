@@ -21,7 +21,9 @@ public class RequestMappingHandlerAdapterBeanPostProcessor extends AbstractHandl
     protected List<HttpMessageConverter<?>> buildMessageConverters(RequestMappingHandlerAdapter bean) {
         List<HttpMessageConverter<?>> msgConvs = new ArrayList<>();
 
-        ToolBeanFactoryUtils.getBeansOfType(this.appContext, HttpMessageConverter.class).forEach(msgConvs::add);
+        for (HttpMessageConverter<?> msgConv : ToolBeanFactoryUtils.getBeansOfType(this.appContext, HttpMessageConverter.class)) {
+            msgConvs.add(msgConv);
+        }
 
         return ToolListUtils.addAllFirst(bean.getMessageConverters(), msgConvs);
     }

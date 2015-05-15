@@ -55,12 +55,12 @@ public abstract class ToolArrayUtils {
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T> List<T> asList(@Nullable T ... items) {
-        return (items != null) ? new ArrayList<>(Arrays.asList(items)) : new ArrayList<>();
+        return (items != null) ? new ArrayList<>(Arrays.asList(items)) : new ArrayList<T>();
     }
 
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T> Set<T> asSet(@Nullable T ... items) {
-        return (items != null) ? new HashSet<>(Arrays.asList(items)) : new HashSet<>();
+        return (items != null) ? new HashSet<>(Arrays.asList(items)) : new HashSet<T>();
     }
 }

@@ -1,19 +1,19 @@
 package gov.hhs.onc.dcdt.convert.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.convert.Converts;
 import gov.hhs.onc.dcdt.convert.Converts.Convert;
 import gov.hhs.onc.dcdt.convert.ToolConverter;
-import gov.hhs.onc.dcdt.convert.utils.ToolConversionUtils;
+import gov.hhs.onc.dcdt.convert.utils.ToolConversionUtils.IsAssignableConvertiblePredicate;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +21,13 @@ import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.TypeDescriptor;
 
 public abstract class AbstractToolConverter extends AbstractToolBean implements ToolConverter {
-    protected static ConvertiblePair transformConvertAnnotation(Convert convAnno) {
-        return new ConvertiblePair(convAnno.from(), convAnno.to());
+    protected static class ConvertAnnotationTransformer extends AbstractToolTransformer<Convert, ConvertiblePair> {
+        public final static ConvertAnnotationTransformer INSTANCE = new ConvertAnnotationTransformer();
+
+        @Override
+        protected ConvertiblePair transformInternal(Convert convAnno) throws Exception {
+            return new ConvertiblePair(convAnno.from(), convAnno.to());
+        }
     }
 
     protected final static TypeDescriptor TYPE_DESC_BYTE = TypeDescriptor.valueOf(byte.class);
@@ -72,21 +77,22 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     @Nullable
     @Override
     public ConvertiblePair findConvertibleType(@Nullable Object src, TypeDescriptor srcType, TypeDescriptor targetType) {
-        return ToolStreamUtils.find(this.convTypes, convType -> ToolConversionUtils.isAssignable(srcType, targetType, convType));
+        return CollectionUtils.find(this.convTypes, new IsAssignableConvertiblePredicate(srcType, targetType));
     }
 
     @Override
     public boolean matches(TypeDescriptor srcType, TypeDescriptor targetType) {
-        return ToolStreamUtils.exists(this.convTypes, convType -> ToolConversionUtils.isAssignable(srcType, targetType, convType));
+        return CollectionUtils.exists(this.convTypes, new IsAssignableConvertiblePredicate(srcType, targetType));
     }
 
     @Override
     public void afterPropertiesSet() throws Exception {
         Class<? extends ToolConverter> convClass = this.getClass();
 
-        ToolCollectionUtils.addAll(this.convTypes, (List<ConvertiblePair>) (ToolStreamUtils.transform(ToolCollectionUtils.addAll(ToolAnnotationUtils
-            .findAnnotations(Convert.class, convClass), IteratorUtils.asIterable(ToolIteratorUtils.chainedArrayIterator(ToolAnnotationUtils.getValues(
-            Converts.class, Convert[].class, convClass)))), AbstractToolConverter::transformConvertAnnotation)));
+        ToolCollectionUtils.addAll(this.convTypes, CollectionUtils.collect(
+            ToolCollectionUtils.addAll(ToolAnnotationUtils.findAnnotations(Convert.class, convClass),
+                IteratorUtils.asIterable(ToolIteratorUtils.chainedArrayIterator(ToolAnnotationUtils.getValues(Converts.class, Convert[].class, convClass)))),
+            ConvertAnnotationTransformer.INSTANCE));
     }
 
     @Nullable

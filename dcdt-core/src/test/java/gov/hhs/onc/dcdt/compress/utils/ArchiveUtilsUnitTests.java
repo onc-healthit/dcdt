@@ -1,10 +1,11 @@
 package gov.hhs.onc.dcdt.compress.utils;
 
 import gov.hhs.onc.dcdt.compress.ArchiveType;
+import gov.hhs.onc.dcdt.compress.utils.ArchiveUtils.ZipArchiveEntryPairTransformer;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.Collection;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.zip.ZipArchiveEntry;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -50,6 +51,7 @@ public class ArchiveUtilsUnitTests extends AbstractToolUnitTests {
     */
     // @formatter:on
 
+    @SuppressWarnings({ "unchecked" })
     @Test
     public void testWriteArchive() throws ArchiveException {
         Assert
@@ -58,10 +60,9 @@ public class ArchiveUtilsUnitTests extends AbstractToolUnitTests {
                     ArchiveUtils.writeArchive(
                         ArchiveType.ZIP,
                         (this.testEntryPairs =
-                            ToolStreamUtils.transform(ToolArrayUtils.asList(
+                            CollectionUtils.collect(ToolArrayUtils.asList(
                                 new ImmutablePair<>(this.testArchiveEntry1Name, this.testArchiveEntry1Value.getBytes()), new ImmutablePair<>(
-                                    this.testArchiveEntry2Name, this.testArchiveEntry2Value.getBytes())), ArchiveUtils::transformZipArchiveEntryPair))))
-                    .length > 0),
+                                    this.testArchiveEntry2Name, this.testArchiveEntry2Value.getBytes())), ZipArchiveEntryPairTransformer.INSTANCE)))).length > 0),
                 "No archive data written.");
     }
 }

@@ -2,18 +2,19 @@ package gov.hhs.onc.dcdt.service.mail.james.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
 import gov.hhs.onc.dcdt.service.mail.james.ToolUsersRepository;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.PredicateUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.james.user.api.UsersRepositoryException;
 import org.apache.james.user.api.model.User;
@@ -22,8 +23,27 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 
 public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUsersRepository {
-    private static boolean hasJamesUserName(InstanceMailAddressConfig mailAddrConfig, String userName) {
-        return Objects.equals(getUserName(mailAddrConfig), userName);
+    private static class ToolJamesUserNamePredicate extends AbstractToolPredicate<InstanceMailAddressConfig> {
+        protected String userName;
+
+        public ToolJamesUserNamePredicate(String userName) {
+            this.userName = userName;
+        }
+
+        @Override
+        protected boolean evaluateInternal(InstanceMailAddressConfig mailAddrConfig) throws Exception {
+            return Objects.equals(ToolUsersRepositoryImpl.getUserName(mailAddrConfig), this.userName);
+        }
+    }
+
+    private static class ToolJamesUserNameTransformer extends AbstractToolTransformer<InstanceMailAddressConfig, String> {
+        public final static ToolJamesUserNameTransformer INSTANCE = new ToolJamesUserNameTransformer();
+
+        @Nullable
+        @Override
+        protected String transformInternal(InstanceMailAddressConfig mailAddrConfig) throws Exception {
+            return ToolUsersRepositoryImpl.getUserName(mailAddrConfig);
+        }
     }
 
     private static class ToolJamesUser implements Comparable<ToolJamesUser>, User {
@@ -64,8 +84,7 @@ public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUse
 
     @Override
     public boolean isProcessed(String recipientMailAddrStr) {
-        InstanceMailAddressConfig recipientMailAddrConfig = ToolStreamUtils.find(this.mailAddrConfigs, mailAddrConfig -> hasJamesUserName(mailAddrConfig,
-            recipientMailAddrStr));
+        InstanceMailAddressConfig recipientMailAddrConfig = CollectionUtils.find(this.mailAddrConfigs, new ToolJamesUserNamePredicate(recipientMailAddrStr));
 
         return ((recipientMailAddrConfig != null) && recipientMailAddrConfig.isProcessed());
     }
@@ -98,7 +117,7 @@ public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUse
     @Nullable
     @Override
     public User getUserByName(String userName) throws UsersRepositoryException {
-        InstanceMailAddressConfig mailAddrConfig = ToolStreamUtils.find(this.mailAddrConfigs, config -> hasJamesUserName(config, userName));
+        InstanceMailAddressConfig mailAddrConfig = CollectionUtils.find(this.mailAddrConfigs, new ToolJamesUserNamePredicate(userName));
 
         return ((mailAddrConfig != null) ? getUser(mailAddrConfig) : null);
     }
@@ -129,7 +148,7 @@ public class ToolUsersRepositoryImpl extends AbstractToolBean implements ToolUse
     }
 
     private static Collection<String> getUserNames(List<InstanceMailAddressConfig> mailAddrConfigs) {
-        return ToolStreamUtils.stream(mailAddrConfigs).map(ToolUsersRepositoryImpl::getUserName).filter(Objects::nonNull).collect(Collectors.toList());
+        return CollectionUtils.select(CollectionUtils.collect(mailAddrConfigs, ToolJamesUserNameTransformer.INSTANCE), PredicateUtils.notNullPredicate());
     }
 
     @Nullable

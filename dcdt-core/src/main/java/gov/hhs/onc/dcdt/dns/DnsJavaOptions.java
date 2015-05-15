@@ -17,7 +17,10 @@ public final class DnsJavaOptions {
         Options.clear();
 
         if (!MapUtils.isEmpty(optMap)) {
-            optMap.keySet().forEach(optName -> Options.set(optName, optMap.get(optName)));
+            // noinspection ConstantConditions
+            for (String optName : optMap.keySet()) {
+                Options.set(optName, optMap.get(optName));
+            }
         }
     }
 }

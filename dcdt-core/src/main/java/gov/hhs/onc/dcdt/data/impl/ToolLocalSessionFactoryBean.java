@@ -43,7 +43,9 @@ public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean impleme
     @Override
     @SuppressWarnings({ "ConstantConditions" })
     protected SessionFactory buildSessionFactory(LocalSessionFactoryBuilder localSessionFactoryBuilder) {
-        this.userTypes.forEach(userType -> localSessionFactoryBuilder.registerTypeOverride(userType, userType.getKeys()));
+        for (ToolUserType<?, ?, ?, ?> userType : this.userTypes) {
+            localSessionFactoryBuilder.registerTypeOverride(userType, userType.getKeys());
+        }
 
         return super.buildSessionFactory(localSessionFactoryBuilder);
     }

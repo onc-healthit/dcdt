@@ -21,7 +21,7 @@ public abstract class ToolMapUtils {
     }
 
     public static <T, U> Map<T, U> toMap(Class<T> keyClass, Class<U> valueClass, @Nullable Object ... items) {
-        return putAll(new HashMap<>(ArrayUtils.getLength(items)), items);
+        return putAll(new HashMap<T, U>(ArrayUtils.getLength(items)), items);
     }
 
     @Nullable

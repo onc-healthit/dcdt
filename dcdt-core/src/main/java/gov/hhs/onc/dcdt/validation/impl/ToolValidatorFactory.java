@@ -29,7 +29,7 @@ public class ToolValidatorFactory extends LocalValidatorFactoryBean {
         BeanPropertyBindingResult bindingResult = new BeanPropertyBindingResult(obj, DataBinder.DEFAULT_OBJECT_NAME);
         bindingResult.initConversion(this.convService);
 
-        this.processConstraintViolations(ToolCollectionUtils.addAll(new LinkedHashSet<>(constraintViolations.size()),
+        this.processConstraintViolations(ToolCollectionUtils.addAll(new LinkedHashSet<ConstraintViolation<Object>>(constraintViolations.size()),
             ((Set<? extends ConstraintViolation<Object>>) constraintViolations)), bindingResult);
 
         return bindingResult;

@@ -8,7 +8,6 @@ import gov.hhs.onc.dcdt.discovery.steps.CertificateLookupStep;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateValidationStep;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -29,7 +28,7 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
 
     @Override
     public boolean execute(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr) {
-        for (CertificateLookupStep<?, ?, ?, ?> certLookupStep : ToolStreamUtils.transform(prevSteps, obj -> ToolCollectionUtils.transformAssignable(obj,
+        for (CertificateLookupStep<?, ?, ?, ?> certLookupStep : CollectionUtils.collect(prevSteps, new ToolCollectionUtils.AssignableTransformer<>(
             CertificateLookupStep.class))) {
             if (certLookupStep != null && certLookupStep.isSuccess() && certLookupStep.hasCertificateInfos()) {
                 Pair<Boolean, List<String>> certInfoValidationResultPair;

@@ -123,7 +123,9 @@ public abstract class ToolDnsMessageUtils {
 
     public static Message addRecords(Message msg, DnsMessageSection section, @Nullable Iterable<? extends Record> records) {
         if (records != null) {
-            records.forEach(record -> msg.addRecord(record, section.getCode()));
+            for (Record record : records) {
+                msg.addRecord(record, section.getCode());
+            }
         }
 
         return msg;
@@ -135,7 +137,9 @@ public abstract class ToolDnsMessageUtils {
 
     public static Message removeRecords(Message msg, DnsMessageSection section, @Nullable Iterable<? extends Record> records) {
         if (records != null) {
-            records.forEach(record -> msg.removeRecord(record, section.getCode()));
+            for (Record record : records) {
+                msg.removeRecord(record, section.getCode());
+            }
         }
 
         return msg;
@@ -189,8 +193,12 @@ public abstract class ToolDnsMessageUtils {
         OPTRecord optRecord = msg.getOPT();
         Set<DnsMessageFlag> flags = EnumSet.noneOf(DnsMessageFlag.class);
 
-        EnumSet.allOf(DnsMessageFlag.class).stream().filter(flag -> (!flag.isExtended() && header.getFlag(flag.getCode())) || (flag.isExtended()
-            && (optRecord != null) && ((optRecord.getFlags() & flag.getCode()) != 0))).forEach(flags::add);
+        for (DnsMessageFlag flag : EnumSet.allOf(DnsMessageFlag.class)) {
+            if ((!flag.isExtended() && header.getFlag(flag.getCode()))
+                || (flag.isExtended() && (optRecord != null) && ((optRecord.getFlags() & flag.getCode()) != 0))) {
+                flags.add(flag);
+            }
+        }
 
         return flags;
     }

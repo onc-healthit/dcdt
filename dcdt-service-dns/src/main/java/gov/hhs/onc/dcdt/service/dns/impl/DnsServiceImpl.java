@@ -24,7 +24,9 @@ public class DnsServiceImpl extends AbstractToolService implements DnsService {
     @Override
     protected void stopInternal() throws Exception {
         if (this.hasServers()) {
-            this.servers.forEach(DnsServer::stop);
+            for (DnsServer server : this.servers) {
+                server.stop();
+            }
         }
     }
 
@@ -33,7 +35,9 @@ public class DnsServiceImpl extends AbstractToolService implements DnsService {
         this.servers = ToolBeanFactoryUtils.getBeansOfType(this.appContext, DnsServer.class);
 
         if (this.hasServers()) {
-            this.servers.forEach(DnsServer::start);
+            for (DnsServer server : this.servers) {
+                server.start();
+            }
         }
     }
 

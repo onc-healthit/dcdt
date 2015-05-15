@@ -1,35 +1,95 @@
 package gov.hhs.onc.dcdt.net.mime.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.net.mime.CoreContentTypes;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolMapUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.Comparator;
 import java.util.Map.Entry;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.springframework.util.MimeType;
 
 public abstract class ToolMimeTypeUtils {
+    public static class MimeTypeParameterEntryTransformer extends AbstractToolTransformer<String, Entry<String, String>> {
+        private String paramName;
+
+        public MimeTypeParameterEntryTransformer(String paramName) {
+            this.paramName = paramName;
+        }
+
+        @Override
+        protected Entry<String, String> transformInternal(String paramValue) throws Exception {
+            return new MutablePair<>(this.paramName, paramValue);
+        }
+    }
+
+    public static class MimeTypeComparator implements Comparator<MimeType> {
+        public final static MimeTypeComparator INSTANCE = new MimeTypeComparator(true);
+        public final static MimeTypeComparator INSTANCE_BASE_TYPE = new MimeTypeComparator(false);
+
+        private boolean includeParams;
+
+        public MimeTypeComparator(boolean includeParams) {
+            this.includeParams = includeParams;
+        }
+
+        @Override
+        public int compare(MimeType mimeType1, MimeType mimeType2) {
+            return compareTo(this.includeParams, mimeType1, mimeType2);
+        }
+    }
+
+    public static class MimeTypeCompatabilityPredicate extends AbstractMimeTypePredicate {
+        public MimeTypeCompatabilityPredicate(MimeType mimeType) {
+            super(mimeType);
+        }
+
+        @Override
+        protected boolean evaluateInternal(MimeType mimeTypeEval) throws Exception {
+            return this.mimeType.isCompatibleWith(mimeTypeEval);
+        }
+    }
+
+    public static class MimeTypeEqualsPredicate extends AbstractMimeTypePredicate {
+        private boolean includeParams;
+
+        public MimeTypeEqualsPredicate(boolean includeParams, MimeType mimeType) {
+            super(mimeType);
+
+            this.includeParams = includeParams;
+        }
+
+        @Override
+        protected boolean evaluateInternal(MimeType mimeTypeEval) throws Exception {
+            return (compareTo(this.includeParams, this.mimeType, mimeTypeEval) == 0);
+        }
+    }
+
+    private abstract static class AbstractMimeTypePredicate extends AbstractToolPredicate<MimeType> {
+        protected MimeType mimeType;
+
+        protected AbstractMimeTypePredicate(MimeType mimeType) {
+            this.mimeType = mimeType;
+        }
+
+        @Override
+        protected abstract boolean evaluateInternal(MimeType mimeTypeEval) throws Exception;
+    }
+
     public final static String DELIM_TYPE = "/";
     public final static String DELIM_PARAM = "; ";
     public final static String DELIM_PARAM_VALUE = "=";
-
-    public final static Comparator<MimeType> MIME_TYPE_COMPARATOR_INSTANCE = (mimeType1, mimeType2) -> ToolMimeTypeUtils.compareTo(true, mimeType1, mimeType2);
-    public final static Comparator<MimeType> MIME_TYPE_COMPARATOR_INSTANCE_BASE_TYPE = (mimeType1, mimeType2) -> ToolMimeTypeUtils.compareTo(false,
-        mimeType1, mimeType2);
-
-    public static Entry<String, String> transformMimeTypeParameterEntry(String paramName, String paramValue) {
-        return new MutablePair<>(paramName, paramValue);
-    }
 
     public static boolean isCompatible(MimeType mimeType, MimeType ... mimeTypeEvals) {
         return isCompatible(mimeType, ToolArrayUtils.asList(mimeTypeEvals));
     }
 
     public static boolean isCompatible(MimeType mimeType, Iterable<MimeType> mimeTypeEvals) {
-        return ToolStreamUtils.exists(mimeTypeEvals, mimeType::isCompatibleWith);
+        return CollectionUtils.exists(mimeTypeEvals, new MimeTypeCompatabilityPredicate(mimeType));
     }
 
     public static boolean equals(MimeType mimeType, MimeType ... mimeTypeEvals) {
@@ -45,7 +105,7 @@ public abstract class ToolMimeTypeUtils {
     }
 
     public static boolean equals(boolean includeParams, MimeType mimeType, Iterable<MimeType> mimeTypeEvals) {
-        return ToolStreamUtils.exists(mimeTypeEvals, mimeTypeEval -> compareTo(includeParams, mimeType, mimeTypeEval) == 0);
+        return CollectionUtils.exists(mimeTypeEvals, new MimeTypeEqualsPredicate(includeParams, mimeType));
     }
 
     public static int compareTo(MimeType mimeType1, MimeType mimeType2) {

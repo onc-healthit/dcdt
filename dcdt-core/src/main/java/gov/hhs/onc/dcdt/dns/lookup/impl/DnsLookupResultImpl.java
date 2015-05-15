@@ -8,14 +8,13 @@ import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordOrderUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Predicate;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
+import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
@@ -63,9 +62,11 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
         List<Record> rawAnswers;
         List<T> answers =
             (this.isSuccess() ? ToolCollectionUtils.collectAssignable(this.recordClass,
-                new ArrayList<>(CollectionUtils.size((rawAnswers = this.getRawAnswers()))), rawAnswers) : null);
+                new ArrayList<T>(CollectionUtils.size((rawAnswers = this.getRawAnswers()))), rawAnswers) : null);
 
-        return ToolCollectionUtils.nullIfEmpty((List<T>) ToolStreamUtils.filter(answers, this.recordPredicate));
+        CollectionUtils.filter(answers, this.recordPredicate);
+
+        return answers;
     }
 
     @Override

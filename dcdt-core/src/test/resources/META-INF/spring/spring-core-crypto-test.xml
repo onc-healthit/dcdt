@@ -40,20 +40,42 @@
     <beans:bean id="testCertConfigAddr1" parent="testCertConfig">
         <beans:property name="subjectName">
             <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.1}"/>
+                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.1}"
+                c:altNames-ref="testCertConfigAddr1SubjAltName"/>
         </beans:property>
+    </beans:bean>
+    <beans:bean id="testCertConfigAddr1SubjAltName" class="org.bouncycastle.asn1.x509.GeneralName">
+        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).rfc822Name }"/>
+        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.direct.addr.1}"/>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
     <beans:bean id="testCredConfigAddr1" parent="credConfigImpl"
         p:certificateDescriptor-ref="testCertConfigAddr1"
         p:keyDescriptor-ref="testKeyPairConfigAddr1"/>
-    
+
+    <beans:bean id="testKeyPairConfigAddr2" parent="testKeyConfig"/>
+    <beans:bean id="testCertConfigAddr2" parent="testCertConfig">
+        <beans:property name="subjectName">
+            <beans:bean parent="certNameImpl"
+                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.2}"/>
+        </beans:property>
+    </beans:bean>
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testCredConfigAddr2" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testCertConfigAddr2"
+        p:keyDescriptor-ref="testKeyPairConfigAddr2"/>
+
     <beans:bean id="testKeyConfigDomain1" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigDomain1" parent="testCertConfig">
         <beans:property name="subjectName">
             <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.1}"/>
+                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.1}"
+                c:altNames-ref="testCertConfigDomain1SubjAltName"/>
         </beans:property>
+    </beans:bean>
+    <beans:bean id="testCertConfigDomain1SubjAltName" class="org.bouncycastle.asn1.x509.GeneralName">
+        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).dNSName }"/>
+        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.domain.1.name}"/>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
     <beans:bean id="testCredConfigDomain1" parent="credConfigImpl"

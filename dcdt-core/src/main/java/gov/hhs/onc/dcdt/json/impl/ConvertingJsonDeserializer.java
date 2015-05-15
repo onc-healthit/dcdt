@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.json.impl;
 
 import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import java.io.IOException;
@@ -25,7 +26,7 @@ public class ConvertingJsonDeserializer<T, U> extends StdDeserializer<U> {
 
     @Nullable
     @Override
-    public U deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
+    public U deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException, JsonProcessingException {
         return this.convService.convert(jsonParser.readValueAs(this.srcClass), this.targetClass);
     }
 }

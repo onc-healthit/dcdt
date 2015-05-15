@@ -71,6 +71,6 @@ public class AbstractTcpSocketListener<T extends TcpServerSocketAdapter, U exten
     protected List<ToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>>> createRequestDaemonCallbacks(U reqSocketAdapter,
         ToolListenableFutureTask<Void> reqDaemonTask) {
         return ToolCollectionUtils.add(super.createRequestDaemonCallbacks(reqSocketAdapter, reqDaemonTask),
-            new SocketRequestDaemonTcpCleanupCallback(reqSocketAdapter, reqDaemonTask));
+            ((ToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>>) new SocketRequestDaemonTcpCleanupCallback(reqSocketAdapter, reqDaemonTask)));
     }
 }

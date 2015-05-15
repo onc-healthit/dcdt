@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.dns.DnsCertificateType;
 import gov.hhs.onc.dcdt.dns.DnsDclassType;
 import gov.hhs.onc.dcdt.dns.DnsException;
@@ -19,6 +21,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import javax.annotation.Nonnegative;
+import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.CNAMERecord;
@@ -32,41 +35,70 @@ import org.xbill.DNS.Record;
 import org.xbill.DNS.SRVRecord;
 
 public abstract class ToolDnsRecordUtils {
-    public static boolean hasCertRecordParameter(CERTRecord certRecord, DnsCertificateType certType) {
-        return hasCertRecordParameter(certRecord, certType, null);
-    }
+    public static class CertRecordParameterPredicate extends AbstractToolPredicate<CERTRecord> {
+        public final static CertRecordParameterPredicate INSTANCE_PKIX = new CertRecordParameterPredicate(DnsCertificateType.PKIX);
 
-    public static boolean hasCertRecordParameter(CERTRecord certRecord, DnsCertificateType certType, Set<DnsKeyAlgorithmType> keyAlgTypes) {
-        return ((keyAlgTypes == null) || keyAlgTypes.contains(ToolDnsUtils.findByCode(DnsKeyAlgorithmType.class, certRecord.getAlgorithm())))
-            && ((certType == null) || (certRecord.getCertType() == certType.getCode()));
-    }
+        private DnsCertificateType certType;
+        private Set<DnsKeyAlgorithmType> keyAlgTypes;
 
-    public static String transformDnsRecordDataToString(Record record) {
-        return record.rdataToString();
-    }
+        public CertRecordParameterPredicate(@Nullable DnsCertificateType certType) {
+            this(certType, null);
+        }
 
-    public static Name transformDnsRecordTarget(Record record) {
-        // noinspection ConstantConditions
-        switch (ToolDnsUtils.findByCode(DnsRecordType.class, record.getType())) {
-            case CNAME:
-                return ((CNAMERecord) record).getTarget();
+        public CertRecordParameterPredicate(@Nullable DnsCertificateType certType, @Nullable Set<DnsKeyAlgorithmType> keyAlgTypes) {
+            this.certType = certType;
+            this.keyAlgTypes = keyAlgTypes;
+        }
 
-            case MX:
-                return ((MXRecord) record).getTarget();
-
-            case NS:
-                return ((NSRecord) record).getTarget();
-
-            case SRV:
-                return ((SRVRecord) record).getTarget();
-
-            default:
-                return null;
+        @Override
+        protected boolean evaluateInternal(CERTRecord certRecord) throws Exception {
+            return (((this.keyAlgTypes == null) || this.keyAlgTypes.contains(ToolDnsUtils.findByCode(DnsKeyAlgorithmType.class, certRecord.getAlgorithm()))) && ((this.certType == null) || (certRecord
+                .getCertType() == this.certType.getCode())));
         }
     }
 
-    public static Record transformDnsRecordConfig(DnsRecordConfig<? extends Record> recordConfig) throws DnsException {
-        return recordConfig.toRecord();
+    public static class DnsRecordDataStringTransformer extends AbstractToolTransformer<Record, String> {
+        public final static DnsRecordDataStringTransformer INSTANCE = new DnsRecordDataStringTransformer();
+
+        @Override
+        protected String transformInternal(Record record) throws Exception {
+            return record.rdataToString();
+        }
+    }
+
+    public static class DnsRecordTargetTransformer extends AbstractToolTransformer<Record, Name> {
+        public final static DnsRecordTargetTransformer INSTANCE = new DnsRecordTargetTransformer();
+
+        @Nullable
+        @Override
+        protected Name transformInternal(Record record) throws Exception {
+            // noinspection ConstantConditions
+            switch (ToolDnsUtils.findByCode(DnsRecordType.class, record.getType())) {
+                case CNAME:
+                    return ((CNAMERecord) record).getTarget();
+
+                case MX:
+                    return ((MXRecord) record).getTarget();
+
+                case NS:
+                    return ((NSRecord) record).getTarget();
+
+                case SRV:
+                    return ((SRVRecord) record).getTarget();
+
+                default:
+                    return null;
+            }
+        }
+    }
+
+    public static class DnsRecordConfigTransformer extends AbstractToolTransformer<DnsRecordConfig<? extends Record>, Record> {
+        public final static DnsRecordConfigTransformer INSTANCE = new DnsRecordConfigTransformer();
+
+        @Override
+        protected Record transformInternal(DnsRecordConfig<? extends Record> recordConfig) throws Exception {
+            return recordConfig.toRecord();
+        }
     }
 
     public final static DateFormat DATE_FORMAT_SERIAL = new SimpleDateFormat("yyyyMMdd");

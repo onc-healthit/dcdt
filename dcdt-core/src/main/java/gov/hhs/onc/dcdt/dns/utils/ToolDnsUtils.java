@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
-import gov.hhs.onc.dcdt.collections.ToolPredicate;
 import gov.hhs.onc.dcdt.dns.DnsCodeIdentifier;
 import gov.hhs.onc.dcdt.dns.DnsIdentifier;
 import gov.hhs.onc.dcdt.dns.DnsNameLabelIdentifier;
@@ -21,16 +20,16 @@ public abstract class ToolDnsUtils {
 
     @Nullable
     public static <T extends Enum<T> & DnsNameLabelIdentifier> T findByNameLabel(Class<T> enumClass, Name nameLbl) {
-        return ToolEnumUtils.findByPredicate(enumClass, ToolPredicate.wrap(nameLblEnum -> Objects.equals(nameLblEnum.getNameLabel(), nameLbl)));
+        return ToolEnumUtils.findByPropertyValue(enumClass, DnsNameLabelIdentifier.PROP_NAME_NAME_LBL, nameLbl);
     }
 
     @Nullable
     public static <T extends Enum<T> & DnsCodeIdentifier> T findByCode(Class<T> enumClass, @Nonnegative int code) {
-        return ToolEnumUtils.findByPredicate(enumClass, codeEnum -> Objects.equals(codeEnum.getCode(), code));
+        return ToolEnumUtils.findByPropertyValue(enumClass, DnsCodeIdentifier.PROP_NAME_CODE, code);
     }
 
     @Nullable
     public static <T extends Enum<T> & DnsIdentifier> T findById(Class<T> enumClass, String id) {
-        return ToolEnumUtils.findByPredicate(enumClass, idEnum -> Objects.equals(idEnum.getId(), id));
+        return ToolEnumUtils.findByPropertyValue(enumClass, DnsIdentifier.PROP_NAME_ID, id);
     }
 }

@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.mail.crypto.utils;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.collections.ToolPredicate;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
@@ -24,23 +23,24 @@ import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseMailAddressPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolMapUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.charset.Charset;
 import java.security.PrivateKey;
 import java.security.PublicKey;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 import javax.annotation.Resource;
 import javax.mail.Message.RecipientType;
 import javax.mail.MessagingException;
@@ -49,6 +49,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.comparators.FixedOrderComparator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -291,10 +292,10 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
 
     private static Map<String, String> reverseParameterOrder(MimeType mimeType) {
         Map<String, String> params = mimeType.getParameters();
-        List<String> paramOrder = ToolListUtils.reverse(ToolStreamUtils.stream(params.keySet()).collect(Collectors.toList()));
 
-        // noinspection ConstantConditions
-        return ToolMapUtils.putAll(new TreeMap<>(new FixedOrderComparator<>(paramOrder)), params.entrySet());
+        return ToolMapUtils.putAll(
+            new TreeMap<String, String>(new FixedOrderComparator<>(ToolListUtils.reverse(ToolCollectionUtils.addAll(new ArrayList<String>(params.size()),
+                params.keySet())))), params.entrySet());
     }
 
     private void assertMessageHeadersMatch(ToolMimeMessageHelper msgHelper1, ToolMimeMessageHelper msgHelper2) throws MessagingException {
@@ -308,7 +309,6 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
 
     private DiscoveryTestcaseResult processDiscoveryTestcaseSubmission(ToolMimeMessageHelper msgHelper) throws MessagingException {
         return this.testcaseProcessor.process(ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class,
-            ToolStreamUtils.find(this.testTestcases, ToolPredicate.wrap(discoveryTestcase -> DiscoveryTestcase.hasMailAddress(discoveryTestcase,
-                msgHelper.getTo()))), msgHelper));
+            CollectionUtils.find(this.testTestcases, new DiscoveryTestcaseMailAddressPredicate(msgHelper.getTo())), msgHelper));
     }
 }

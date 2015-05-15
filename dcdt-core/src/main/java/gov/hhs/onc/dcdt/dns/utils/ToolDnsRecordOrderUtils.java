@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.dns.utils;
 
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -13,8 +13,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.ComparatorUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.xbill.DNS.MXRecord;
@@ -51,13 +53,18 @@ public abstract class ToolDnsRecordOrderUtils {
             if (this.recordPriorityEntry == null) {
                 this.recordPriorityEntry = this.recordPriorityEntryIterator.next();
 
-                ToolListUtils.sort(this.recordPriorityEntry.getValue(), Comparator.comparing(SRVRecord::getWeight, Comparator.naturalOrder()));
+                ToolListUtils.sort(this.recordPriorityEntry.getValue(),
+                    ComparatorUtils.transformedComparator(((Comparator<Integer>) ComparatorUtils.NATURAL_COMPARATOR), SrvRecordWeightExtractor.INSTANCE));
             }
 
             List<SRVRecord> records = this.recordPriorityEntry.getValue();
-            List<Integer> recordWeights = records.stream().map(SRVRecord::getWeight).collect(Collectors.toList());
+            List<Integer> recordWeights = CollectionUtils.collect(records, SrvRecordWeightExtractor.INSTANCE, new ArrayList<Integer>(records.size()));
+            int recordWeightSum = 0;
 
-            int recordWeightSum = recordWeights.stream().reduce(0, Integer::sum);
+            for (Integer recordWeight : recordWeights) {
+                recordWeightSum += recordWeight;
+            }
+
             int recordWeightSelect = new Random().nextInt(recordWeightSum + 1), recordWeightRunningSum = 0;
             SRVRecord record = null;
 
@@ -82,9 +89,22 @@ public abstract class ToolDnsRecordOrderUtils {
         }
     }
 
-    private static <T extends Record> Pair<Integer, T> transformDnsRecordPriorityPair(T record) {
-        return new ImmutablePair<>((ToolClassUtils.isAssignable(record.getClass(), MXRecord.class)
-            ? ((MXRecord) record).getPriority() : ((SRVRecord) record).getPriority()), record);
+    private static class SrvRecordWeightExtractor extends AbstractToolTransformer<SRVRecord, Integer> {
+        public final static SrvRecordWeightExtractor INSTANCE = new SrvRecordWeightExtractor();
+
+        @Nonnegative
+        @Override
+        protected Integer transformInternal(SRVRecord srvRecord) throws Exception {
+            return srvRecord.getWeight();
+        }
+    }
+
+    private static class DnsRecordPriorityPairTransformer<T extends Record> extends AbstractToolTransformer<T, Pair<Integer, T>> {
+        @Override
+        protected Pair<Integer, T> transformInternal(T record) throws Exception {
+            return new ImmutablePair<>((ToolClassUtils.isAssignable(record.getClass(), MXRecord.class)
+                ? ((MXRecord) record).getPriority() : ((SRVRecord) record).getPriority()), record);
+        }
     }
 
     @SuppressWarnings({ "unchecked" })
@@ -113,8 +133,11 @@ public abstract class ToolDnsRecordOrderUtils {
         Map<Integer, List<T>> recordPriorityMap = new TreeMap<>();
         Integer recordPriority;
 
-        for (Pair<Integer, T> recordPriorityPair : ToolStreamUtils.transform(records, ToolDnsRecordOrderUtils::transformDnsRecordPriorityPair)) {
-            recordPriorityMap.putIfAbsent(recordPriority = recordPriorityPair.getKey(), new ArrayList<>());
+        for (Pair<Integer, T> recordPriorityPair : CollectionUtils.collect(records, new DnsRecordPriorityPairTransformer<T>())) {
+            if (!recordPriorityMap.containsKey((recordPriority = recordPriorityPair.getKey()))) {
+                recordPriorityMap.put(recordPriority, new ArrayList<T>());
+            }
+
             recordPriorityMap.get(recordPriority).add(recordPriorityPair.getValue());
         }
 

@@ -1,17 +1,18 @@
 package gov.hhs.onc.dcdt.service.ldap.config.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.collections.ToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.ldap.ToolCoreSchemaConstants;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
-import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import java.util.Collection;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
@@ -35,36 +36,55 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.support.AbstractApplicationContext;
 
 public class ToolDirectoryServiceBean extends DirectoryServiceBean implements ApplicationContextAware, InitializingBean {
-    private static Entry transformDiscoveryTestcaseCredentialEntry(DiscoveryTestcaseCredential discoveryTestcaseCred, SchemaManager schemaManager, Dn
-        dataPartitionSuffix) throws Exception {
-        String discoveryTestcaseCredName = discoveryTestcaseCred.getName();
+    private class DiscoveryTestcaseCredentialEntryTransformer extends AbstractToolTransformer<DiscoveryTestcaseCredential, Entry> {
+        private SchemaManager schemaManager;
+        private Dn dataPartitionSuffix;
 
-        Entry discoveryTestcaseCredEntry =
-            new DefaultEntry(schemaManager, dataPartitionSuffix.add(new Dn(new Rdn(SchemaConstants.CN_AT, discoveryTestcaseCredName))));
-        discoveryTestcaseCredEntry.add(SchemaConstants.OBJECT_CLASS_AT, SchemaConstants.INET_ORG_PERSON_OC, SchemaConstants.ORGANIZATIONAL_PERSON_OC,
-            SchemaConstants.PERSON_OC, SchemaConstants.TOP_OC);
-        discoveryTestcaseCredEntry.add(SchemaConstants.CN_AT, discoveryTestcaseCredName);
-        // noinspection ConstantConditions
-        discoveryTestcaseCredEntry.add(ToolCoreSchemaConstants.ATTR_TYPE_NAME_MAIL, discoveryTestcaseCred.getLocation().getMailAddress().toAddress());
-        discoveryTestcaseCredEntry.add(SchemaConstants.SN_AT, discoveryTestcaseCredName);
-        // noinspection ConstantConditions
-        discoveryTestcaseCredEntry.add(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT,
-            CertificateUtils.writeCertificate(discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor().getCertificate(), DataEncoding.DER));
+        public DiscoveryTestcaseCredentialEntryTransformer(SchemaManager schemaManager, Dn dataPartitionSuffix) {
+            this.schemaManager = schemaManager;
+            this.dataPartitionSuffix = dataPartitionSuffix;
+        }
 
-        return discoveryTestcaseCredEntry;
+        @Override
+        protected Entry transformInternal(DiscoveryTestcaseCredential discoveryTestcaseCred) throws Exception {
+            String discoveryTestcaseCredName = discoveryTestcaseCred.getName();
+
+            Entry discoveryTestcaseCredEntry =
+                new DefaultEntry(this.schemaManager, this.dataPartitionSuffix.add(new Dn(new Rdn(SchemaConstants.CN_AT, discoveryTestcaseCredName))));
+            discoveryTestcaseCredEntry.add(SchemaConstants.OBJECT_CLASS_AT, SchemaConstants.INET_ORG_PERSON_OC, SchemaConstants.ORGANIZATIONAL_PERSON_OC,
+                SchemaConstants.PERSON_OC, SchemaConstants.TOP_OC);
+            discoveryTestcaseCredEntry.add(SchemaConstants.CN_AT, discoveryTestcaseCredName);
+            // noinspection ConstantConditions
+            discoveryTestcaseCredEntry.add(ToolCoreSchemaConstants.ATTR_TYPE_NAME_MAIL, discoveryTestcaseCred.getLocation().getMailAddress().toAddress());
+            discoveryTestcaseCredEntry.add(SchemaConstants.SN_AT, discoveryTestcaseCredName);
+            // noinspection ConstantConditions
+            discoveryTestcaseCredEntry.add(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT,
+                CertificateUtils.writeCertificate(discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor().getCertificate(), DataEncoding.DER));
+
+            return discoveryTestcaseCredEntry;
+        }
     }
 
-    private static boolean hasDiscoveryTestcaseCredentialEntry(DiscoveryTestcaseCredential discoveryTestcaseCred, String dataPartitionId) {
-        DiscoveryTestcaseCredentialLocation discoveryTestcaseCredLoc;
-        CredentialInfo discoveryTestcaseCredInfo;
+    private class DiscoveryTestcaseCredentialEntryPredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
+        private String dataPartitionId;
 
-        // noinspection ConstantConditions
-        return discoveryTestcaseCred.hasBindingType() && discoveryTestcaseCred.getBindingType().isBound() && discoveryTestcaseCred.hasLocation()
-            && (discoveryTestcaseCredLoc = discoveryTestcaseCred.getLocation()).getType().isLdap() && discoveryTestcaseCredLoc.hasLdapConfig()
-            && discoveryTestcaseCredLoc.getLdapConfig().getDataPartitionId().equals(dataPartitionId) && discoveryTestcaseCredLoc.hasMailAddress()
-            && discoveryTestcaseCred.hasCredentialInfo()
-            && (discoveryTestcaseCredInfo = discoveryTestcaseCred.getCredentialInfo()).hasCertificateDescriptor()
-            && discoveryTestcaseCredInfo.getCertificateDescriptor().hasCertificate();
+        public DiscoveryTestcaseCredentialEntryPredicate(String dataPartitionId) {
+            this.dataPartitionId = dataPartitionId;
+        }
+
+        @Override
+        protected boolean evaluateInternal(@Nullable DiscoveryTestcaseCredential discoveryTestcaseCred) {
+            DiscoveryTestcaseCredentialLocation discoveryTestcaseCredLoc;
+            CredentialInfo discoveryTestcaseCredInfo;
+
+            // noinspection ConstantConditions
+            return discoveryTestcaseCred.hasBindingType() && discoveryTestcaseCred.getBindingType().isBound() && discoveryTestcaseCred.hasLocation()
+                && (discoveryTestcaseCredLoc = discoveryTestcaseCred.getLocation()).getType().isLdap() && discoveryTestcaseCredLoc.hasLdapConfig()
+                && discoveryTestcaseCredLoc.getLdapConfig().getDataPartitionId().equals(this.dataPartitionId) && discoveryTestcaseCredLoc.hasMailAddress()
+                && discoveryTestcaseCred.hasCredentialInfo()
+                && (discoveryTestcaseCredInfo = discoveryTestcaseCred.getCredentialInfo()).hasCertificateDescriptor()
+                && discoveryTestcaseCredInfo.getCertificateDescriptor().hasCertificate();
+        }
     }
 
     private AbstractApplicationContext appContext;
@@ -97,11 +117,11 @@ public class ToolDirectoryServiceBean extends DirectoryServiceBean implements Ap
         this.addPartitions(dataPartitionBean);
 
         this.dataEntries =
-            ToolStreamUtils.transform(ToolStreamUtils.filter(
-                IteratorUtils.asIterable(ToolIteratorUtils.chainedIterator(ToolStreamUtils.transform(
-                    ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class), DiscoveryTestcase::extractCredentials))),
-                cred -> ToolDirectoryServiceBean.hasDiscoveryTestcaseCredentialEntry(cred, dataPartitionId)), ToolTransformer.wrap(cred ->
-                ToolDirectoryServiceBean.transformDiscoveryTestcaseCredentialEntry(cred, this.schemaManager, dataPartitionSuffix)));
+            CollectionUtils.collect(CollectionUtils.select(
+                IteratorUtils.asIterable(ToolIteratorUtils.chainedIterator(CollectionUtils.collect(
+                    ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class), DiscoveryTestcaseCredentialsExtractor.INSTANCE))),
+                new DiscoveryTestcaseCredentialEntryPredicate(dataPartitionId)), new DiscoveryTestcaseCredentialEntryTransformer(this.schemaManager,
+                dataPartitionSuffix));
     }
 
     @Override

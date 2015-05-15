@@ -35,7 +35,11 @@ public class MailServiceImpl extends AbstractToolService implements MailService 
     @Override
     protected synchronized void stopInternal() throws Exception {
         if (this.hasServers()) {
-            this.servers.stream().filter(AbstractConfigurableAsyncServer::isStarted).forEach(AbstractConfigurableAsyncServer::stop);
+            for (AbstractConfigurableAsyncServer server : this.servers) {
+                if (server.isStarted()) {
+                    server.stop();
+                }
+            }
         }
     }
 
@@ -46,19 +50,21 @@ public class MailServiceImpl extends AbstractToolService implements MailService 
         if (!serverFactories.isEmpty()) {
             this.servers = new ArrayList<>(serverFactories.size());
 
-            serverFactories.stream().flatMap(serverFactory -> serverFactory.getServers().stream()).forEach(server -> {
-                this.servers.add(server);
+            for (AbstractServerFactory serverFactory : serverFactories) {
+                for (AbstractConfigurableAsyncServer server : serverFactory.getServers()) {
+                    this.servers.add(server);
 
-                if (!server.isStarted()) {
-                    server.start();
-                }
+                    if (!server.isStarted()) {
+                        server.start();
+                    }
 
-                if (server.isStarted()) {
-                    LOGGER.debug(String.format("Started mail service James server (class=%s, serviceType=%s, socketType=%s, boundAddrs=[%s]).",
-                        ToolClassUtils.getName(server), StringUtils.split(server.getServiceType())[0], server.getSocketType(),
-                        ToolStringUtils.joinDelimit(server.getBoundAddresses(), ", ")));
+                    if (server.isStarted()) {
+                        LOGGER.debug(String.format("Started mail service James server (class=%s, serviceType=%s, socketType=%s, boundAddrs=[%s]).",
+                            ToolClassUtils.getName(server), StringUtils.split(server.getServiceType())[0], server.getSocketType(),
+                            ToolStringUtils.joinDelimit(server.getBoundAddresses(), ", ")));
+                    }
                 }
-            });
+            }
         }
     }
 
