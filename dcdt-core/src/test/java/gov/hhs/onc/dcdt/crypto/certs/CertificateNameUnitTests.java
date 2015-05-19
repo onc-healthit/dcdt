@@ -64,17 +64,37 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private CredentialConfig testCredConfigAddr2;
 
+    @Resource(name = "testCredConfigAddr3")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private CredentialConfig testCredConfigAddr3;
+
+    @Resource(name = "testCredConfigAddr4")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private CredentialConfig testCredConfigAddr4;
+
     @Resource(name = "testCredConfigDomain1")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private CredentialConfig testCredConfigDomain1;
 
+    @Resource(name = "testCredConfigDomain2")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private CredentialConfig testCredConfigDomain2;
+
+    @Resource(name = "testCredConfigDomain3")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private CredentialConfig testCredConfigDomain3;
+
+    @Resource(name = "testCredConfigDomain4")
+    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
+    private CredentialConfig testCredConfigDomain4;
+
     @Resource(name = "testCertConfigAddr1SubjAltName")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private GeneralNames subjAltNamesAddr1;
+    private GeneralNames testSubjAltNamesAddr1;
 
     @Resource(name = "testCertConfigDomain1SubjAltName")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private GeneralNames subjAltNamesDomain1;
+    private GeneralNames testSubjAltNamesDomain1;
 
     @Value("${dcdt.test.instance.direct.addr.1}")
     private MailAddress testDirectAddr1;
@@ -82,54 +102,85 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
     @Value("${dcdt.test.instance.direct.addr.2}")
     private MailAddress testDirectAddr2;
 
-    private CertificateInfo testCertInfoAddr1;
-    private CertificateInfo testCertInfoAddr2;
-    private CertificateInfo testCertInfoDomain1;
+    @Value("${dcdt.test.instance.direct.addr.3}")
+    private MailAddress testDirectAddr3;
+
+    @Value("${dcdt.test.instance.direct.addr.4}")
+    private MailAddress testDirectAddr4;
+
+    @Value("${dcdt.test.instance.domain.1.name}")
+    private MailAddress testDomain1;
+
+    @Value("${dcdt.test.instance.domain.2.name}")
+    private MailAddress testDomain2;
+
+    @Value("${dcdt.test.instance.domain.3.name}")
+    private MailAddress testDomain3;
+
+    @Value("${dcdt.test.instance.domain.4.name}")
+    private MailAddress testDomain4;
+
+    private CredentialInfo testCredInfoCa1;
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private CertificateInfoValidator certInfoValidator;
 
     @BeforeClass
-    public void setupCertificateInfos() throws Exception {
+    public void setupCaCredentialInfo() throws Exception {
         KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor());
-        CredentialInfo testCredInfoCa1 =
+        this.testCredInfoCa1 =
             new CredentialInfoImpl(testCa1KeyPairInfo, this.certGen.generateCertificate(testCa1KeyPairInfo, this.testCredConfigCa1.getCertificateDescriptor()));
-
-        this.testCertInfoAddr1 = this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigAddr1);
-        this.testCertInfoAddr2 = this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigAddr2);
-        this.testCertInfoDomain1 = this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigDomain1);
     }
 
     @Test
     public void testX500Name() throws Exception {
         assertCertificateSubjectsMatch(this.testCertConfigCa1, this.testCertSubjX500NameCa1, null);
-        assertCertificateSubjectsMatch(this.testCertConfigAddr1, this.testCertSubjX500NameAddr1, this.subjAltNamesAddr1);
-        assertCertificateSubjectsMatch(this.testCertConfigDomain1, this.testCertSubjX500NameDomain1, this.subjAltNamesDomain1);
+        assertCertificateSubjectsMatch(this.testCertConfigAddr1, this.testCertSubjX500NameAddr1, this.testSubjAltNamesAddr1);
+        assertCertificateSubjectsMatch(this.testCertConfigDomain1, this.testCertSubjX500NameDomain1, this.testSubjAltNamesDomain1);
     }
 
     @Test
     public void testRfc822NamePresentInAddressBoundCertificate() throws Exception {
-        assertCertificateSubjectAltNameValues(this.testDirectAddr1, this.testCertInfoAddr1);
+        assertCertificateSubjectAltNameValues(this.testDirectAddr1, this.generateCertificateInfo(this.testCredInfoCa1, this.testCredConfigAddr1), 1, true);
     }
 
     @Test
     public void testDNSNamePresentInDomainBoundCertificate() throws Exception {
-        assertCertificateSubjectAltNameValues(this.testDirectAddr1, this.testCertInfoDomain1);
+        assertCertificateSubjectAltNameValues(this.testDomain1, this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigDomain1), 1, true);
     }
 
     @Test
     public void testNoRfc822OrDNSNamePresentInCertificate() throws Exception {
-        // noinspection ConstantConditions
-        Assert.assertFalse(this.testCertInfoAddr2.getSubjectName().hasAltNames(), "Certificate has subject alternative names.");
+        assertCertificateSubjectAltNameValues(this.testDirectAddr2, this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigAddr2), 0, false,
+            "subjectAltName X509v3 extension does not contain a rfc822Name or a dNSName");
+    }
 
-        Pair<Boolean, List<String>> result = this.certInfoValidator.validate(this.testDirectAddr2, this.testCertInfoAddr2);
-        List<String> errorMsgs = result.getRight();
+    @Test
+    public void testMultipleRfc822NamesPresentOneMatch() throws Exception {
+        assertCertificateSubjectAltNameValues(this.testDirectAddr3, this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigAddr3), 2, true);
+    }
 
-        Assert.assertFalse(result.getLeft(), "Certificate is valid.");
-        Assert.assertEquals(errorMsgs.size(), 1, String.format("Certificate validation result has %d error messages.", errorMsgs.size()));
-        Assert.assertTrue(errorMsgs.get(0).contains("subjectAltName X509v3 extension does not contain a rfc822Name or a dNSName"),
-            "subjectAltName X509v3 extension contains a rfc822Name or a dNSName.");
+    @Test
+    public void testMultipleRfc822NamesPresentNoneMatch() throws Exception {
+        assertCertificateSubjectAltNameValues(this.testDirectAddr4, this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigAddr4), 2, false,
+            String.format("subjectAltName X509v3 extension does not contain a rfc822Name value == %s", this.testDirectAddr4));
+    }
+
+    @Test
+    public void testMultipleDNSNamesPresentOneMatch() throws Exception {
+        assertCertificateSubjectAltNameValues(this.testDomain2, this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigDomain2), 2, true);
+    }
+
+    @Test
+    public void testMultipleDNSNamesPresentNoneMatch() throws Exception {
+        assertCertificateSubjectAltNameValues(this.testDomain3, this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigDomain3), 2, false,
+            String.format("subjectAltName X509v3 extension does not contain a dNSName value == %s", this.testDomain3));
+    }
+
+    @Test
+    public void testRfc822NameAndDNSNamePresentDNSNameMatch() throws Exception {
+        assertCertificateSubjectAltNameValues(this.testDomain4, this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigDomain4), 2, true);
     }
 
     private CertificateInfo generateCertificateInfo(CredentialInfo credInfoCa, CredentialConfig credConfig) throws Exception {
@@ -144,12 +195,34 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
         Assert.assertEquals(testCertSubj, new CertificateNameImpl(generalNames, testCertSubjX500Name), "Certificate subjects do not match.");
     }
 
-    private void assertCertificateSubjectAltNameValues(MailAddress directAddr, CertificateInfo certInfo) throws Exception {
-        // noinspection ConstantConditions
-        Assert.assertTrue(certInfo.getSubjectName().hasAltNames(), "Certificate does not have subject alternative names.");
+    private void assertCertificateSubjectAltNameValues(MailAddress directAddr, CertificateInfo certInfo, int numAltNames, boolean isValidCert,
+        String... errorMsgStrs) throws Exception {
+        CertificateName certName = certInfo.getSubjectName();
+
+        if (numAltNames > 0) {
+            // noinspection ConstantConditions
+            Assert.assertTrue(certName.hasAltNames(), "Certificate does not have subject alternative names.");
+            // noinspection ConstantConditions
+            Assert.assertEquals(certName.getAltNames().getNames().length, numAltNames);
+        } else {
+            // noinspection ConstantConditions
+            Assert.assertFalse(certInfo.getSubjectName().hasAltNames(), "Certificate has subject alternative names.");
+        }
 
         Pair<Boolean, List<String>> result = this.certInfoValidator.validate(directAddr, certInfo);
-        Assert.assertTrue(result.getLeft(), "Certificate is invalid.");
-        Assert.assertEquals(result.getRight().size(), 0, "Certificate validation result has error messages.");
+        List<String> errorMsgs = result.getRight();
+        int errorMsgSize = errorMsgs.size();
+
+        if (isValidCert) {
+            Assert.assertTrue(result.getLeft(), "Certificate is invalid.");
+            Assert.assertEquals(errorMsgSize, 0, String.format("Certificate validation result has %d error messages.", errorMsgSize));
+        } else {
+            Assert.assertFalse(result.getLeft(), "Certificate is valid.");
+            Assert.assertEquals(errorMsgSize, 1, String.format("Certificate validation result has %d error messages.", errorMsgSize));
+
+            if (errorMsgStrs.length > 0) {
+                Assert.assertTrue(errorMsgs.get(0).contains(errorMsgStrs[0]));
+            }
+        }
     }
 }

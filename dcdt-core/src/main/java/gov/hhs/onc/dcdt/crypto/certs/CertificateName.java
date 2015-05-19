@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.crypto.certs;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import java.security.Principal;
+import java.util.Set;
 import java.util.SortedMap;
 import javax.annotation.Nullable;
 import javax.security.auth.x500.X500Principal;
@@ -46,9 +47,9 @@ public interface CertificateName extends Principal, ToolBean {
     public boolean hasAltName(CertificateAltNameType altNameType);
 
     @Nullable
-    public GeneralName getAltName(CertificateAltNameType altNameType);
+    public Set<GeneralName> getAltNames(CertificateAltNameType altNameType);
 
-    public void setAltName(GeneralName altName);
+    public void setAltNames(Set<GeneralName> altName);
 
     public boolean hasAltNames();
 

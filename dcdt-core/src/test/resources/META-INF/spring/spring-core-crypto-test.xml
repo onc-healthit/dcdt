@@ -15,6 +15,9 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
 
+    <!--====================================================================================================
+    = CONFIGS
+    =====================================================================================================-->
     <beans:bean id="testKeyConfig" parent="keyConfigImpl" abstract="true" autowire-candidate="false"/>
     <beans:bean id="testKeyConfigCa" parent="keyConfigCa" abstract="true" autowire-candidate="false"/>
     
@@ -23,7 +26,7 @@
     
     <beans:bean id="testCredConfig" parent="credConfigImpl" abstract="true" autowire-candidate="false"/>
     <beans:bean id="testCredConfigCa" parent="credConfigCa" abstract="true" autowire-candidate="false"/>
-    
+
     <beans:bean id="testKeyConfigCa1" parent="testKeyConfigCa"/>
     <beans:bean id="testCertConfigCa1" parent="testCertConfigCa">
         <beans:property name="subjectName">
@@ -35,7 +38,10 @@
     <beans:bean id="testCredConfigCa1" parent="testCredConfigCa"
         p:certificateDescriptor-ref="testCertConfigCa1"
         p:keyDescriptor-ref="testKeyConfigCa1"/>
-    
+
+    <!--====================================================================================================
+    = ONE RFC822NAME VALUE MATCHING DIRECT ADDRESS
+    =====================================================================================================-->
     <beans:bean id="testKeyPairConfigAddr1" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigAddr1" parent="testCertConfig">
         <beans:property name="subjectName">
@@ -44,15 +50,14 @@
                 c:altNames-ref="testCertConfigAddr1SubjAltName"/>
         </beans:property>
     </beans:bean>
-    <beans:bean id="testCertConfigAddr1SubjAltName" class="org.bouncycastle.asn1.x509.GeneralName">
-        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).rfc822Name }"/>
-        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.direct.addr.1}"/>
-    </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
     <beans:bean id="testCredConfigAddr1" parent="credConfigImpl"
         p:certificateDescriptor-ref="testCertConfigAddr1"
         p:keyDescriptor-ref="testKeyPairConfigAddr1"/>
 
+    <!--====================================================================================================
+    = NO SUBJECT ALTERNATIVE NAME EXTENSION
+    =====================================================================================================-->
     <beans:bean id="testKeyPairConfigAddr2" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigAddr2" parent="testCertConfig">
         <beans:property name="subjectName">
@@ -65,6 +70,41 @@
         p:certificateDescriptor-ref="testCertConfigAddr2"
         p:keyDescriptor-ref="testKeyPairConfigAddr2"/>
 
+    <!--====================================================================================================
+    = MULTIPLE RFC822NAME VALUES PRESENT, ONE MATCHING DIRECT ADDRESS
+    =====================================================================================================-->
+    <beans:bean id="testKeyPairConfigAddr3" parent="testKeyConfig"/>
+    <beans:bean id="testCertConfigAddr3" parent="testCertConfig">
+        <beans:property name="subjectName">
+            <beans:bean parent="certNameImpl"
+                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.3}"
+                c:altNames-ref="testCertConfigAddr3SubjAltNames"/>
+        </beans:property>
+    </beans:bean>
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testCredConfigAddr3" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testCertConfigAddr3"
+        p:keyDescriptor-ref="testKeyPairConfigAddr3"/>
+
+    <!--====================================================================================================
+    = MULTIPLE RFC822NAME VALUES PRESENT, NONE MATCHING DIRECT ADDRESS
+    =====================================================================================================-->
+    <beans:bean id="testKeyPairConfigAddr4" parent="testKeyConfig"/>
+    <beans:bean id="testCertConfigAddr4" parent="testCertConfig">
+        <beans:property name="subjectName">
+            <beans:bean parent="certNameImpl"
+                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.4}"
+                c:altNames-ref="testCertConfigAddr4SubjAltNames"/>
+        </beans:property>
+    </beans:bean>
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testCredConfigAddr4" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testCertConfigAddr4"
+        p:keyDescriptor-ref="testKeyPairConfigAddr4"/>
+
+    <!--====================================================================================================
+    = ONE DNSNAME VALUE MATCHING DIRECT ADDRESS DOMAIN
+    =====================================================================================================-->
     <beans:bean id="testKeyConfigDomain1" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigDomain1" parent="testCertConfig">
         <beans:property name="subjectName">
@@ -73,12 +113,118 @@
                 c:altNames-ref="testCertConfigDomain1SubjAltName"/>
         </beans:property>
     </beans:bean>
-    <beans:bean id="testCertConfigDomain1SubjAltName" class="org.bouncycastle.asn1.x509.GeneralName">
-        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).dNSName }"/>
-        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.domain.1.name}"/>
-    </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
     <beans:bean id="testCredConfigDomain1" parent="credConfigImpl"
         p:certificateDescriptor-ref="testCertConfigDomain1"
         p:keyDescriptor-ref="testKeyConfigDomain1"/>
+
+    <!--====================================================================================================
+    = MULTIPLE DNSNAME VALUES PRESENT, ONE MATCHING DIRECT ADDRESS DOMAIN
+    =====================================================================================================-->
+    <beans:bean id="testKeyConfigDomain2" parent="testKeyConfig"/>
+    <beans:bean id="testCertConfigDomain2" parent="testCertConfig">
+        <beans:property name="subjectName">
+            <beans:bean parent="certNameImpl"
+                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.2}"
+                c:altNames-ref="testCertConfigDomain2SubjAltNames"/>
+        </beans:property>
+    </beans:bean>
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testCredConfigDomain2" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testCertConfigDomain2"
+        p:keyDescriptor-ref="testKeyConfigDomain2"/>
+
+    <!--====================================================================================================
+    = MULTIPLE DNSNAME VALUES PRESENT, NONE MATCHING DIRECT ADDRESS DOMAIN
+    =====================================================================================================-->
+    <beans:bean id="testKeyConfigDomain3" parent="testKeyConfig"/>
+    <beans:bean id="testCertConfigDomain3" parent="testCertConfig">
+        <beans:property name="subjectName">
+            <beans:bean parent="certNameImpl"
+                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.3}"
+                c:altNames-ref="testCertConfigDomain3SubjAltNames"/>
+        </beans:property>
+    </beans:bean>
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testCredConfigDomain3" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testCertConfigDomain3"
+        p:keyDescriptor-ref="testKeyConfigDomain3"/>
+
+    <!--====================================================================================================
+    = RFC822NAME AND DNSNAME VALUES PRESENT, DNSNAME VALUE MATCHING DIRECT ADDRESS DOMAIN
+    =====================================================================================================-->
+    <beans:bean id="testKeyConfigDomain4" parent="testKeyConfig"/>
+    <beans:bean id="testCertConfigDomain4" parent="testCertConfig">
+        <beans:property name="subjectName">
+            <beans:bean parent="certNameImpl"
+                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.4}"
+                c:altNames-ref="testCertConfigDomain4SubjAltNames"/>
+        </beans:property>
+    </beans:bean>
+    <!--suppress InjectionValueTypeInspection -->
+    <beans:bean id="testCredConfigDomain4" parent="credConfigImpl"
+        p:certificateDescriptor-ref="testCertConfigDomain4"
+        p:keyDescriptor-ref="testKeyConfigDomain4"/>
+
+    <!--====================================================================================================
+    = SUBJECT ALTERNATIVE NAMES
+    =====================================================================================================-->
+    <beans:bean id="generalName" class="org.bouncycastle.asn1.x509.GeneralName" abstract="true"/>
+    <beans:bean id="generalNames" class="org.bouncycastle.asn1.x509.GeneralNames" abstract="true"/>
+
+    <beans:bean id="testCertConfigAddr1SubjAltName" parent="generalName">
+        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).rfc822Name }"/>
+        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.direct.addr.1}"/>
+    </beans:bean>
+
+    <beans:bean id="testCertConfigAddr3SubjAltName" parent="generalName">
+        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).rfc822Name }"/>
+        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.direct.addr.3}"/>
+    </beans:bean>
+
+    <beans:bean id="testCertConfigAddr3SubjAltNames" parent="generalNames">
+        <beans:constructor-arg>
+            <beans:array value-type="org.bouncycastle.asn1.x509.GeneralName">
+                <beans:ref bean="testCertConfigAddr1SubjAltName"/>
+                <beans:ref bean="testCertConfigAddr3SubjAltName"/>
+            </beans:array>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <beans:bean id="testCertConfigAddr4SubjAltNames" parent="testCertConfigAddr3SubjAltNames"/>
+
+    <beans:bean id="testCertConfigDomain1SubjAltName" parent="generalName">
+        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).dNSName }"/>
+        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.domain.1.name}"/>
+    </beans:bean>
+
+    <beans:bean id="testCertConfigDomain2SubjAltName" parent="generalName">
+        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).dNSName }"/>
+        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.domain.2.name}"/>
+    </beans:bean>
+
+    <beans:bean id="testCertConfigDomain4SubjAltName" parent="generalName">
+        <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).dNSName }"/>
+        <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.domain.4.name}"/>
+    </beans:bean>
+
+    <beans:bean id="testCertConfigDomain2SubjAltNames" parent="generalNames">
+        <beans:constructor-arg>
+            <beans:array value-type="org.bouncycastle.asn1.x509.GeneralName">
+                <beans:ref bean="testCertConfigDomain1SubjAltName"/>
+                <beans:ref bean="testCertConfigDomain2SubjAltName"/>
+            </beans:array>
+        </beans:constructor-arg>
+    </beans:bean>
+
+    <beans:bean id="testCertConfigDomain3SubjAltNames" parent="testCertConfigDomain2SubjAltNames"/>
+
+    <beans:bean id="testCertConfigDomain4SubjAltNames" parent="generalNames">
+        <beans:constructor-arg>
+            <beans:array value-type="org.bouncycastle.asn1.x509.GeneralName">
+                <beans:ref bean="testCertConfigAddr1SubjAltName"/>
+                <beans:ref bean="testCertConfigDomain4SubjAltName"/>
+            </beans:array>
+        </beans:constructor-arg>
+    </beans:bean>
 </beans:beans>
