@@ -12,9 +12,11 @@ import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
@@ -33,7 +35,7 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
     private final static List<ASN1ObjectIdentifier> ATTR_OIDS_ORDER = ToolArrayUtils.asList(BCStyle.EmailAddress, BCStyle.CN);
 
     private SortedMap<ASN1ObjectIdentifier, ASN1Encodable> attrMap = new TreeMap<>(new OrderedOidComparator(ATTR_OIDS_ORDER));
-    private Map<CertificateAltNameType, GeneralName> altNameMap;
+    private Map<CertificateAltNameType, Set<GeneralName>> altNameMap;
 
     public CertificateNameImpl() {
         this(null, ((Iterable<RDN>) null));
@@ -146,10 +148,10 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
 
         // noinspection ConstantConditions
         return (((this.hasAltName(CertificateAltNameType.RFC822_NAME) && !StringUtils.isBlank((mailAddrStr =
-            Objects.toString(this.getAltName(CertificateAltNameType.RFC822_NAME).getName(), null))))
+            Objects.toString(this.getAltNames(CertificateAltNameType.RFC822_NAME).iterator().next().getName(), null))))
             || (this.hasAttribute(BCStyle.EmailAddress) && !StringUtils.isBlank((mailAddrStr = this.getAttributeValueString(BCStyle.EmailAddress)))) || (this
             .hasAltName(CertificateAltNameType.DNS_NAME) && !StringUtils.isBlank((mailAddrStr =
-            Objects.toString(this.getAltName(CertificateAltNameType.DNS_NAME).getName(), null))))) ? new MailAddressImpl(mailAddrStr) : null);
+            Objects.toString(this.getAltNames(CertificateAltNameType.DNS_NAME).iterator().next().getName(), null))))) ? new MailAddressImpl(mailAddrStr) : null);
     }
 
     @Override
@@ -165,27 +167,27 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
 
     @Override
     public boolean hasAltName(CertificateAltNameType altNameType) {
-        return (this.hasAltNames() && this.altNameMap.containsKey(altNameType));
+        return (this.hasAltNames() && this.altNameMap.containsKey(altNameType) && this.altNameMap.get(altNameType) != null);
     }
 
     @Nullable
     @Override
-    public GeneralName getAltName(CertificateAltNameType altNameType) {
+    public Set<GeneralName> getAltNames(CertificateAltNameType altNameType) {
         return (this.hasAltName(altNameType) ? this.altNameMap.get(altNameType) : null);
     }
 
     @Override
-    public void setAltName(GeneralName altName) {
-        CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, altName.getTagNo());
+    public void setAltNames(Set<GeneralName> altNames) {
+        CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, altNames.iterator().next().getTagNo());
 
         if (altNameType == null) {
             return;
         }
 
         if (!this.hasAltNames()) {
-            this.setAltNames(new GeneralNames(altName));
+            this.setAltNames(new GeneralNames(ToolCollectionUtils.toArray(new ArrayList<>(altNames), GeneralName.class)));
         } else {
-            this.altNameMap.put(altNameType, altName);
+            this.altNameMap.put(altNameType, altNames);
         }
     }
 
@@ -197,7 +199,8 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
     @Nullable
     @Override
     public GeneralNames getAltNames() {
-        return (this.hasAltNames() ? new GeneralNames(ToolCollectionUtils.toArray(this.altNameMap.values(), GeneralName.class)) : null);
+        return (this.hasAltNames() ? new GeneralNames(
+            ToolCollectionUtils.toArray(ToolCollectionUtils.addAll(new ArrayList<GeneralName>(), this.altNameMap.values()), GeneralName.class)) : null);
     }
 
     @Override

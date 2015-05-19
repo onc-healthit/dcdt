@@ -8,13 +8,15 @@ import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import gov.hhs.onc.dcdt.utils.ToolMapUtils;
 import java.security.cert.CertificateParsingException;
 import java.security.cert.X509Certificate;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.PredicateUtils;
@@ -56,17 +58,19 @@ public abstract class CertificateNameUtils {
             return altNames;
         }
 
-        Map<CertificateAltNameType, GeneralName> altNameMap = mapAltNames(altNames);
+        Map<CertificateAltNameType, Set<GeneralName>> altNameMap = mapAltNames(altNames);
+        Set<GeneralName> generalNames = new HashSet<>();
 
         if (altNameMap == null) {
             altNameMap = new LinkedHashMap<>();
         }
 
         if (mailAddrBindingType.isAddressBound()) {
-            altNameMap.put(CertificateAltNameType.RFC822_NAME,
-                new GeneralName(CertificateAltNameType.RFC822_NAME.getTag(), mailAddr.toAddress(mailAddrBindingType)));
+            generalNames.add(new GeneralName(CertificateAltNameType.RFC822_NAME.getTag(), mailAddr.toAddress(mailAddrBindingType)));
+            altNameMap.put(CertificateAltNameType.RFC822_NAME, generalNames);
         } else {
-            altNameMap.put(CertificateAltNameType.DNS_NAME, new GeneralName(CertificateAltNameType.DNS_NAME.getTag(), mailAddr.toAddress(mailAddrBindingType)));
+            generalNames.add(new GeneralName(CertificateAltNameType.DNS_NAME.getTag(), mailAddr.toAddress(mailAddrBindingType)));
+            altNameMap.put(CertificateAltNameType.DNS_NAME, generalNames);
         }
 
         return buildAltNames(altNameMap);
@@ -78,7 +82,7 @@ public abstract class CertificateNameUtils {
     }
 
     @Nullable
-    public static Map<CertificateAltNameType, GeneralName> mapIssuerAltNames(X509Certificate cert) throws CertificateException {
+    public static Map<CertificateAltNameType, Set<GeneralName>> mapIssuerAltNames(X509Certificate cert) throws CertificateException {
         try {
             return mapAltNames(cert.getIssuerAlternativeNames());
         } catch (CertificateParsingException e) {
@@ -93,7 +97,7 @@ public abstract class CertificateNameUtils {
     }
 
     @Nullable
-    public static Map<CertificateAltNameType, GeneralName> mapSubjectAltNames(X509Certificate cert) throws CertificateException {
+    public static Map<CertificateAltNameType, Set<GeneralName>> mapSubjectAltNames(X509Certificate cert) throws CertificateException {
         try {
             return mapAltNames(cert.getSubjectAlternativeNames());
         } catch (CertificateParsingException e) {
@@ -103,22 +107,38 @@ public abstract class CertificateNameUtils {
     }
 
     @Nullable
-    public static Map<CertificateAltNameType, GeneralName> mapAltNames(@Nullable Collection<List<?>> altNames) {
-        return ((altNames != null)
-            ? ToolMapUtils.putAll(new LinkedHashMap<CertificateAltNameType, GeneralName>(CertificateAltNameType.values().length),
-                CollectionUtils.select(CollectionUtils.collect(altNames, CertificateAltNameListEntryTransformer.INSTANCE), PredicateUtils.notNullPredicate()))
-            : null);
+    public static Map<CertificateAltNameType, Set<GeneralName>> mapAltNames(@Nullable Collection<List<?>> altNames) {
+        return (altNames != null) ? mapAltNamePairs(
+            CollectionUtils.select(CollectionUtils.collect(altNames, CertificateAltNameListEntryTransformer.INSTANCE), PredicateUtils.notNullPredicate()))
+            : null;
     }
 
     @Nullable
-    public static Map<CertificateAltNameType, GeneralName> mapAltNames(@Nullable GeneralNames altNames) {
-        return ((altNames != null) ? ToolMapUtils.putAll(new LinkedHashMap<CertificateAltNameType, GeneralName>(CertificateAltNameType.values().length),
+    public static Map<CertificateAltNameType, Set<GeneralName>> mapAltNames(@Nullable GeneralNames altNames) {
+        return ((altNames != null) ? mapAltNamePairs(
             CollectionUtils.select(CollectionUtils.collect(ToolArrayUtils.asList(altNames.getNames()), CertificateAltNameEntryTransformer.INSTANCE),
                 PredicateUtils.notNullPredicate())) : null);
     }
 
+    public static Map<CertificateAltNameType, Set<GeneralName>> mapAltNamePairs(Collection<Pair<CertificateAltNameType, GeneralName>> pairs) {
+        Map<CertificateAltNameType, Set<GeneralName>> altNameMap = new LinkedHashMap<>(CertificateAltNameType.values().length);
+
+        for (Pair<CertificateAltNameType, GeneralName> pair : pairs) {
+            CertificateAltNameType certAltNameType = pair.getLeft();
+
+            if (!altNameMap.containsKey(certAltNameType)) {
+                altNameMap.put(certAltNameType, new HashSet<GeneralName>());
+            }
+
+            altNameMap.get(certAltNameType).add(pair.getRight());
+        }
+
+        return altNameMap;
+    }
+
     @Nullable
-    public static GeneralNames buildAltNames(@Nullable Map<CertificateAltNameType, GeneralName> altNameMap) {
-        return ((altNameMap != null) ? new GeneralNames(ToolCollectionUtils.toArray(altNameMap.values(), GeneralName.class)) : null);
+    public static GeneralNames buildAltNames(@Nullable Map<CertificateAltNameType, Set<GeneralName>> altNameMap) {
+        return ((altNameMap != null) ? new GeneralNames(ToolCollectionUtils.toArray(
+            ToolCollectionUtils.addAll(new ArrayList<GeneralName>(), altNameMap.values()), GeneralName.class)) : null);
     }
 }
