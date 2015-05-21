@@ -40,7 +40,7 @@ public class CertificateInfoSubjectAltNamesConstraintValidator extends AbstractC
                         (certSubjDnDirectAddr = new MailAddressImpl(certSubjName.getAttributeValueString(BCStyle.EmailAddress))).toAddress())) {
                         // noinspection ConstantConditions
                         throw new CertificateException(String.format(
-                            "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension rf822Name value does not match subject Distinguished Name EmailAddress value: %s != %s",
+                            "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension rfc822Name value does not match subject Distinguished Name EmailAddress value: %s != %s",
                             certSubjName, certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName(), certSubjAltNameDirectAddr, certSubjDnDirectAddr));
                     }
 
