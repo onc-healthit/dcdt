@@ -7,6 +7,7 @@
     <suppress files="\.java$" checks="AvoidInlineConditionalsCheck"/>
     <suppress files="\.java$" checks="DesignForExtensionCheck"/>
     <suppress files="\.java$" checks="EmptyBlockCheck"/>
+    <suppress files="\.java$" checks="EqualsHashCode"/>
     <suppress files="\.java$" checks="FinalParametersCheck"/>
     <suppress files="\.java$" checks="HiddenFieldCheck"/>
     <suppress files="\.java$" checks="InnerAssignmentCheck"/>
