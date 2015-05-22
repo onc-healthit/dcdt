@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.mail.impl;
 
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
+import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.util.MimeType;
 
@@ -55,13 +55,12 @@ public class MimeAttachmentResource extends ByteArrayResource {
     }
 
     @Override
-    @SuppressWarnings({ "EqualsWhichDoesntCheckParameterClass" })
     public boolean equals(Object obj) {
-        return EqualsBuilder.reflectionEquals(this, obj, false);
-    }
+        MimeAttachmentResource mimeAttachmentResource;
 
-    @Override
-    public int hashCode() {
-        return HashCodeBuilder.reflectionHashCode(this, false);
+        return ((obj != null) && (this == obj) && ToolClassUtils.isAssignable(obj.getClass(), MimeAttachmentResource.class) && (new EqualsBuilder().appendSuper(
+            super.equals((mimeAttachmentResource = (MimeAttachmentResource) obj))).append(this.contentType, mimeAttachmentResource.getContentType())
+            .append(this.contentXferEnc, mimeAttachmentResource.getContentXferEncoding()).append(this.filename, mimeAttachmentResource.getFilename())
+            .isEquals()));
     }
 }
