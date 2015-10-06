@@ -44,13 +44,13 @@
                     </c:choose>
                 </li>
             </ul>
-            <h3>Mercurial</h3>
+            <h3>Git</h3>
             <ul>
                 <li>
                     <strong>author</strong>:
                     <c:choose>
-                        <c:when test="${moduleVersion.hasHgAuthor()}">
-                            ${moduleVersion.hgAuthor}
+                        <c:when test="${moduleVersion.hasGitAuthor()}">
+                            ${moduleVersion.gitAuthor}
                         </c:when>
                         <c:otherwise>
                             <i>unknown</i>
@@ -60,8 +60,8 @@
                 <li>
                     <strong>branch</strong>:
                     <c:choose>
-                        <c:when test="${moduleVersion.hasHgBranch()}">
-                            ${moduleVersion.hgBranch}
+                        <c:when test="${moduleVersion.hasGitBranch()}">
+                            ${moduleVersion.gitBranch}
                         </c:when>
                         <c:otherwise>
                             <i>unknown</i>
@@ -69,10 +69,10 @@
                     </c:choose>
                 </li>
                 <li>
-                    <strong>date</strong>:
+                    <strong>commit ID</strong>:
                     <c:choose>
-                        <c:when test="${moduleVersion.hasHgDateString()}">
-                            ${moduleVersion.hgDateString}
+                        <c:when test="${moduleVersion.hasGitCommitId()}">
+                            ${moduleVersion.gitCommitId}
                         </c:when>
                         <c:otherwise>
                             <i>unknown</i>
@@ -80,10 +80,10 @@
                     </c:choose>
                 </li>
                 <li>
-                    <strong>node</strong>:
+                    <strong>short commit ID</strong>:
                     <c:choose>
-                        <c:when test="${moduleVersion.hasHgNode()}">
-                            ${moduleVersion.hgNode}
+                        <c:when test="${moduleVersion.hasGitCommitIdShort()}">
+                            ${moduleVersion.gitCommitIdShort}
                         </c:when>
                         <c:otherwise>
                             <i>unknown</i>
@@ -91,10 +91,10 @@
                     </c:choose>
                 </li>
                 <li>
-                    <strong>nodeShort</strong>:
+                    <strong>commit timestamp</strong>:
                     <c:choose>
-                        <c:when test="${moduleVersion.hasHgNodeShort()}">
-                            ${moduleVersion.hgNodeShort}
+                        <c:when test="${moduleVersion.hasGitCommitTimestampString()}">
+                            ${moduleVersion.gitCommitTimestampString}
                         </c:when>
                         <c:otherwise>
                             <i>unknown</i>
@@ -102,32 +102,10 @@
                     </c:choose>
                 </li>
                 <li>
-                    <strong>path</strong>:
+                    <strong>URL</strong>:
                     <c:choose>
-                        <c:when test="${moduleVersion.hasHgPath()}">
-                            ${moduleVersion.hgPath}
-                        </c:when>
-                        <c:otherwise>
-                            <i>unknown</i>
-                        </c:otherwise>
-                    </c:choose>
-                </li>
-                <li>
-                    <strong>revision</strong>:
-                    <c:choose>
-                        <c:when test="${moduleVersion.hasHgRevision()}">
-                            ${moduleVersion.hgRevision}
-                        </c:when>
-                        <c:otherwise>
-                            <i>unknown</i>
-                        </c:otherwise>
-                    </c:choose>
-                </li>
-                <li>
-                    <strong>tag</strong>:
-                    <c:choose>
-                        <c:when test="${moduleVersion.hasHgTag()}">
-                            ${moduleVersion.hgTag}
+                        <c:when test="${moduleVersion.hasGitUrl()}">
+                            ${moduleVersion.gitUrl}
                         </c:when>
                         <c:otherwise>
                             <i>unknown</i>

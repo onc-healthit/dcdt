@@ -12,39 +12,60 @@
     
     <name>dcdt-parent</name>
     <description>Direct Certificate Discovery Tool (DCDT) parent project.</description>
-    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
+    <url>http://github.com/esacinc/dcdt/</url>
+    
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+    
+    <developers>
+        <developer>
+            <name>Michal Kotelba</name>
+            <email>mkotelba@users.noreply.github.com</email>
+            <organization>ESAC Inc.</organization>
+            <organizationUrl>http://www.esacinc.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Elizabeth So</name>
+            <email>elizabethso@users.noreply.github.com</email>
+            <organization>ESAC Inc.</organization>
+            <organizationUrl>http://www.esacinc.com</organizationUrl>
+        </developer>
+        <developer>
+            <name>Matthew Tiller</name>
+            <email>matthewtiller@users.noreply.github.com</email>
+            <organization>ESAC Inc.</organization>
+            <organizationUrl>http://www.esacinc.com</organizationUrl>
+        </developer>
+    </developers>
     
     <prerequisites>
-        <maven>3.0.4</maven>
+        <maven>3.0.5</maven>
     </prerequisites>
     
     <scm>
-        <connection>scm:hg:http://code.google.com/p/direct-certificate-discovery-tool/</connection>
-        <developerConnection>scm:hg:https://code.google.com/p/direct-certificate-discovery-tool/</developerConnection>
-        <url>http://code.google.com/p/direct-certificate-discovery-tool/source/browse/${project.artifactId}/</url>
+        <connection>scm:git:git://github.com/esacinc/dcdt.git</connection>
+        <developerConnection>scm:git:git://github.com/esacinc/dcdt.git</developerConnection>
+        <url>http://github.com/esacinc/dcdt/tree/master/</url>
     </scm>
     
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://jira.oncprojectracking.org/browse/DCDT/</url>
-    </issueManagement>
-    
-    <ciManagement>
-        <system>Jenkins</system>
-        <url>http://jenkins.direct-test.com/job/DCDT_DEV_CI/</url>
-    </ciManagement>
-    
     <distributionManagement>
-        <site>
-            <id>site.direct-test.com</id>
-            <name>site.direct-test.com</name>
-            <url>dav:http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
-        </site>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
     </distributionManagement>
     
     <properties>
         <!-- Java properties -->
-        <java.version>1.7</java.version>
+        <java.version>1.8</java.version>
         <!-- Project properties -->
         <project.basedir>${project.basedir}</project.basedir>
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
@@ -60,6 +81,8 @@
         <!-- Project build FindBugs properties -->
         <project.build.findbugsResultsFile>${project.build.directory}/findbugs.xml</project.build.findbugsResultsFile>
         <project.build.findbugsResultsPropertiesFile>${project.build.directory}/findbugs-properties.xml</project.build.findbugsResultsPropertiesFile>
+        <!-- Project build Git properties -->
+        <project.build.gitPropertiesFile>${project.build.directory}/maven/git.properties</project.build.gitPropertiesFile>
         <!-- Project build POM properties -->
         <project.build.pomPropertiesFile>${project.build.directory}/maven/pom.properties</project.build.pomPropertiesFile>
         <!-- Project build POM source properties -->
@@ -117,7 +140,7 @@
         <repository>
             <id>central</id>
             <name>Maven Repository Switchboard</name>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -152,7 +175,7 @@
         <pluginRepository>
             <id>central</id>
             <name>Maven Plugin Repository</name>
-            <url>http://repo1.maven.org/maven2</url>
+            <url>https://repo1.maven.org/maven2</url>
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
@@ -612,6 +635,35 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>pl.project13.maven</groupId>
+                    <artifactId>git-commit-id-plugin</artifactId>
+                    <version>2.2.0</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <dateFormat>yyyy-MM-dd HH:mm:ss Z</dateFormat>
+                        <dotGitDirectory>${project.basedir.all}/.git</dotGitDirectory>
+                        <generateGitPropertiesFile>true</generateGitPropertiesFile>
+                        <generateGitPropertiesFilename>${project.build.gitPropertiesFile}</generateGitPropertiesFilename>
+                        <includeOnlyProperties>
+                            <includeOnlyProperty>^project\.git\.build\.user\.name$</includeOnlyProperty>
+                            <includeOnlyProperty>^project\.git\.branch$</includeOnlyProperty>
+                            <includeOnlyProperty>^project\.git\.commit\.(?:(?:id(?:\.abbrev)?)?|time)$</includeOnlyProperty>
+                            <includeOnlyProperty>^project\.git\.remote\.origin\.url$</includeOnlyProperty>
+                        </includeOnlyProperties>
+                        <prefix>project.git</prefix>
+                        <skipPoms>false</skipPoms>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>process-git-properties</id>
+                            <goals>
+                                <goal>revision</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-antrun-plugin</artifactId>
                     <version>1.8</version>
@@ -676,7 +728,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
-                    <version>2.5.3</version>
+                    <version>2.5.5</version>
                     <inherited>true</inherited>
                 </plugin>
                 <plugin>
@@ -686,6 +738,11 @@
                     <inherited>true</inherited>
                     <configuration>
                         <compilerArgs combine.children="append">
+                            <arg>-J-XX:MetaspaceSize=64m</arg>
+                            <arg>-J-XX:MaxMetaspaceSize=128m</arg>
+                            <arg>-J-XX:+UseG1GC</arg>
+                            <arg>-J-XX:MaxGCPauseMillis=50</arg>
+                            <arg>-parameters</arg>
                             <!--
                             Annotation processing due to a bug in JPA.
                             See: https://issues.apache.org/jira/browse/OPENJPA-2300
@@ -717,7 +774,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
-                    <version>2.9</version>
+                    <version>2.10</version>
                     <inherited>true</inherited>
                     <configuration>
                         <silent>true</silent>
@@ -755,6 +812,28 @@
                                 <includeTypes>jar</includeTypes>
                                 <excludes>META-INF/maven/**/pom.*,META-INF/MANIFEST.MF,META-INF/spring.*</excludes>
                                 <outputDirectory>${project.build.testResourcesDependencyDirectory}</outputDirectory>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-enforcer-plugin</artifactId>
+                    <version>1.4.1</version>
+                    <inherited>true</inherited>
+                    <executions>
+                        <execution>
+                            <id>enforce-java-version</id>
+                            <goals>
+                                <goal>enforce</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <rules>
+                                    <requireJavaVersion>
+                                        <version>[${java.version},)</version>
+                                    </requireJavaVersion>
+                                </rules>
                             </configuration>
                         </execution>
                     </executions>
@@ -1115,7 +1194,7 @@
                             <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
                             <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
-                        <argLine>-Xms128m -Xmx256m -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4</argLine>
+                        <argLine>-Xms128m -Xmx256m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</argLine>
                         <classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>
                         <parallel>all</parallel>
                         <reportFormat>plain</reportFormat>
@@ -1327,7 +1406,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>versions-maven-plugin</artifactId>
-                    <version>2.1</version>
+                    <version>2.2</version>
                     <inherited>true</inherited>
                 </plugin>
                 <plugin>
@@ -1346,6 +1425,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <locations>
+                                    <location>${project.basedir.parent}/target/maven/git.properties</location>
                                     <location>${project.basedir.parent}/target/maven/pom.properties</location>
                                     <location>${project.build.pomPropertiesFile}</location>
                                 </locations>
@@ -1372,6 +1452,17 @@
         
         <plugins>
             <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>process-git-properties</id>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <inherited>false</inherited>
@@ -1395,6 +1486,17 @@
                     <execution>
                         <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>enforce-java-version</id>
                         <inherited>false</inherited>
                     </execution>
                 </executions>
@@ -1782,9 +1884,7 @@
                             <effort>Max</effort>
                             <excludeFilterFile>${project.basedir.all}/dcdt-core/src/findbugs/filter-exclude-core.xml</excludeFilterFile>
                             <includeTests>true</includeTests>
-                            <jvmArgs>
-                                -XX:PermSize=64m -XX:MaxPermSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50 -XX:ParallelGCThreads=4 -XX:ConcGCThreads=4
-                            </jvmArgs>
+                            <jvmArgs>-XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</jvmArgs>
                             <threshold>Low</threshold>
                             <xmlOutput>true</xmlOutput>
                         </configuration>
@@ -1836,12 +1936,10 @@
                         <version>2.10.2</version>
                         <configuration>
                             <additionalJOptions>
-                                <additionalJOption>-J-XX:PermSize=64m</additionalJOption>
-                                <additionalJOption>-J-XX:MaxPermSize=128m</additionalJOption>
+                                <additionalJOption>-J-XX:MetaspaceSize=64m</additionalJOption>
+                                <additionalJOption>-J-XX:MaxMetaspaceSize=128m</additionalJOption>
                                 <additionalJOption>-J-XX:+UseG1GC</additionalJOption>
                                 <additionalJOption>-J-XX:MaxGCPauseMillis=50</additionalJOption>
-                                <additionalJOption>-J-XX:ParallelGCThreads=4</additionalJOption>
-                                <additionalJOption>-J-XX:ConcGCThreads=4</additionalJOption>
                             </additionalJOptions>
                             <maxmemory>512m</maxmemory>
                             <minmemory>256m</minmemory>

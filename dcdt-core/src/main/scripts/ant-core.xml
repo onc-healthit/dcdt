@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="core"
     xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
-    xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg"
     xmlns:props="antlib:org.apache.ant.props">
     
     <description>Ant project for common components of Direct Certificate Discovery Tool (DCDT) Ant projects.</description>
@@ -15,7 +14,6 @@
     
     <taskdef resource="org/apache/ant/props/antlib.xml" classpath="${maven.classpath}" uri="antlib:org.apache.ant.props"/>
     <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-core.xml" uri="antlib:gov.hhs.onc.dcdt.ant"/>
-    <taskdef file="${project.basedir.all}/dcdt-core/src/main/scripts/antlib-core-hg.xml" uri="antlib:gov.hhs.onc.dcdt.ant.hg"/>
     
     <propertyhelper>
         <props:conditions/>

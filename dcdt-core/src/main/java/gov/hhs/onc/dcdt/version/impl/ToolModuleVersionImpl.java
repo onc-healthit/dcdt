@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.version.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
 import gov.hhs.onc.dcdt.version.ToolModuleVersion;
 import java.beans.ConstructorProperties;
 import java.text.DateFormat;
@@ -13,7 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModuleVersion {
     private final static DateFormat BUILD_TIMESTAMP_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
-    private final static DateFormat HG_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
+    private final static DateFormat GIT_COMMIT_TIMESTAMP_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
 
     private String groupId;
     private String artifactId;
@@ -21,16 +20,12 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
     private String name;
     private String description;
     private Date buildTimestamp;
-    private String hgAuthor;
-    private String hgAuthorMail;
-    private String hgAuthorPerson;
-    private String hgBranch;
-    private Date hgDate;
-    private String hgNode;
-    private String hgNodeShort;
-    private String hgPath;
-    private int hgRevision = -1;
-    private String hgTag;
+    private String gitAuthor;
+    private String gitBranch;
+    private Date gitCommitTimestamp;
+    private String gitCommitId;
+    private String gitCommitIdShort;
+    private String gitUrl;
 
     @ConstructorProperties({ "groupId", "artifactId", "version", "name", "description" })
     public ToolModuleVersionImpl(String groupId, String artifactId, String version, String name, String description) {
@@ -99,177 +94,114 @@ public class ToolModuleVersionImpl extends AbstractToolBean implements ToolModul
     }
 
     @Override
-    public boolean hasHgAuthor() {
-        return !StringUtils.isBlank(this.hgAuthor);
+    public boolean hasGitAuthor() {
+        return !StringUtils.isBlank(this.gitAuthor);
     }
 
     @Nullable
     @Override
-    public String getHgAuthor() {
-        return this.hgAuthor;
+    public String getGitAuthor() {
+        return this.gitAuthor;
     }
 
     @Override
-    public void setHgAuthor(@Nullable String hgAuthor) {
-        this.hgAuthor = hgAuthor;
+    public void setGitAuthor(@Nullable String hgAuthor) {
+        this.gitAuthor = hgAuthor;
     }
 
     @Override
-    public boolean hasHgAuthorMail() {
-        return !StringUtils.isBlank(this.hgAuthorMail);
-    }
-
-    @Nullable
-    @Override
-    public String getHgAuthorMail() {
-        return this.hgAuthorMail;
-    }
-
-    @Override
-    public void setHgAuthorMail(@Nullable String hgAuthorMail) {
-        this.hgAuthorMail = hgAuthorMail;
-    }
-
-    @Override
-    public boolean hasHgAuthorPerson() {
-        return !StringUtils.isBlank(this.hgAuthorPerson);
+    public boolean hasGitBranch() {
+        return !StringUtils.isBlank(this.gitBranch);
     }
 
     @Nullable
     @Override
-    public String getHgAuthorPerson() {
-        return this.hgAuthorPerson;
+    public String getGitBranch() {
+        return this.gitBranch;
     }
 
     @Override
-    public void setHgAuthorPerson(@Nullable String hgAuthorPerson) {
-        this.hgAuthorPerson = hgAuthorPerson;
+    public void setGitBranch(@Nullable String hgBranch) {
+        this.gitBranch = hgBranch;
     }
 
     @Override
-    public boolean hasHgBranch() {
-        return !StringUtils.isBlank(this.hgBranch);
-    }
-
-    @Nullable
-    @Override
-    public String getHgBranch() {
-        return this.hgBranch;
-    }
-
-    @Override
-    public void setHgBranch(@Nullable String hgBranch) {
-        this.hgBranch = hgBranch;
-    }
-
-    @Override
-    public boolean hasHgDate() {
-        return this.hgDate != null;
+    public boolean hasGitCommitId() {
+        return !StringUtils.isBlank(this.gitCommitId);
     }
 
     @Nullable
     @Override
-    public Date getHgDate() {
-        return this.hgDate;
+    public String getGitCommitId() {
+        return this.gitCommitId;
     }
 
     @Override
-    public void setHgDate(@Nullable Date hgDate) {
-        this.hgDate = hgDate;
+    public void setGitCommitId(@Nullable String hgNode) {
+        this.gitCommitId = hgNode;
     }
 
     @Override
-    public boolean hasHgDateString() {
-        return this.getHgDateString() != null;
-    }
-
-    @Nullable
-    @Override
-    public String getHgDateString() {
-        return this.hasHgDate() ? HG_DATE_FORMAT.format(this.hgDate) : null;
-    }
-
-    @Override
-    public void setHgDateString(@Nullable String hgDateStr) throws ParseException {
-        this.hgDate = (hgDateStr != null) ? HG_DATE_FORMAT.parse(hgDateStr) : null;
-    }
-
-    @Override
-    public boolean hasHgNode() {
-        return !StringUtils.isBlank(this.hgNode);
+    public boolean hasGitCommitIdShort() {
+        return !StringUtils.isBlank(this.gitCommitIdShort);
     }
 
     @Nullable
     @Override
-    public String getHgNode() {
-        return this.hgNode;
+    public String getGitCommitIdShort() {
+        return this.gitCommitIdShort;
     }
 
     @Override
-    public void setHgNode(@Nullable String hgNode) {
-        this.hgNode = hgNode;
+    public void setGitCommitIdShort(@Nullable String hgNodeShort) {
+        this.gitCommitIdShort = hgNodeShort;
     }
 
     @Override
-    public boolean hasHgNodeShort() {
-        return !StringUtils.isBlank(this.hgNodeShort);
-    }
-
-    @Nullable
-    @Override
-    public String getHgNodeShort() {
-        return this.hgNodeShort;
-    }
-
-    @Override
-    public void setHgNodeShort(@Nullable String hgNodeShort) {
-        this.hgNodeShort = hgNodeShort;
-    }
-
-    @Override
-    public boolean hasHgPath() {
-        return !StringUtils.isBlank(this.hgPath);
+    public boolean hasGitCommitTimestamp() {
+        return this.gitCommitTimestamp != null;
     }
 
     @Nullable
     @Override
-    public String getHgPath() {
-        return this.hgPath;
+    public Date getGitCommitTimestamp() {
+        return this.gitCommitTimestamp;
     }
 
     @Override
-    public void setHgPath(@Nullable String hgPath) {
-        this.hgPath = hgPath;
+    public void setGitCommitTimestamp(@Nullable Date hgDate) {
+        this.gitCommitTimestamp = hgDate;
     }
 
     @Override
-    public boolean hasHgRevision() {
-        return ToolNumberUtils.isPositive(this.hgRevision);
-    }
-
-    @Override
-    public int getHgRevision() {
-        return this.hgRevision;
-    }
-
-    @Override
-    public void setHgRevision(int hgRevision) {
-        this.hgRevision = hgRevision;
-    }
-
-    @Override
-    public boolean hasHgTag() {
-        return !StringUtils.isBlank(this.hgTag);
+    public boolean hasGitCommitTimestampString() {
+        return this.getGitCommitTimestampString() != null;
     }
 
     @Nullable
     @Override
-    public String getHgTag() {
-        return this.hgTag;
+    public String getGitCommitTimestampString() {
+        return this.hasGitCommitTimestamp() ? GIT_COMMIT_TIMESTAMP_DATE_FORMAT.format(this.gitCommitTimestamp) : null;
     }
 
     @Override
-    public void setHgTag(@Nullable String hgTag) {
-        this.hgTag = hgTag;
+    public void setGitCommitTimestampString(@Nullable String hgDateStr) throws ParseException {
+        this.gitCommitTimestamp = (hgDateStr != null) ? GIT_COMMIT_TIMESTAMP_DATE_FORMAT.parse(hgDateStr) : null;
+    }
+
+    @Override
+    public boolean hasGitUrl() {
+        return !StringUtils.isBlank(this.gitUrl);
+    }
+
+    @Nullable
+    @Override
+    public String getGitUrl() {
+        return this.gitUrl;
+    }
+
+    @Override
+    public void setGitUrl(@Nullable String hgPath) {
+        this.gitUrl = hgPath;
     }
 }

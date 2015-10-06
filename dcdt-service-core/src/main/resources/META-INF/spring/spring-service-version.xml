@@ -23,16 +23,12 @@
         c:name="${dcdt.module.dcdt-service-parent.name:}"
         c:description="${dcdt.module.dcdt-service-parent.description:}"
         p:buildTimestampString="${dcdt.module.dcdt-service-parent.build.timestamp:}"
-        p:hgAuthor="${dcdt.module.dcdt-service-parent.hg.author:}"
-        p:hgAuthorMail="${dcdt.module.dcdt-service-parent.hg.author.email:}"
-        p:hgAuthorPerson="${dcdt.module.dcdt-service-parent.hg.author.person:}"
-        p:hgBranch="${dcdt.module.dcdt-service-parent.hg.branch:}"
-        p:hgDateString="${dcdt.module.dcdt-service-parent.hg.date:}"
-        p:hgNode="${dcdt.module.dcdt-service-parent.hg.node:}"
-        p:hgNodeShort="${dcdt.module.dcdt-service-parent.hg.node.short:}"
-        p:hgPath="${dcdt.module.dcdt-service-parent.hg.path:}"
-        p:hgRevision="${dcdt.module.dcdt-service-parent.hg.rev:-1}"
-        p:hgTag="${dcdt.module.dcdt-service-parent.hg.tag:}"/>
+        p:gitAuthor="${dcdt.module.dcdt-service-parent.git.author:}"
+        p:gitBranch="${dcdt.module.dcdt-service-parent.git.branch:}"
+        p:gitCommitId="${dcdt.module.dcdt-service-parent.git.commit.id:}"
+        p:gitCommitIdShort="${dcdt.module.dcdt-service-parent.git.commit.id.short:}"
+        p:gitCommitTimestampString="${dcdt.module.dcdt-service-parent.git.commit.timestamp:}"
+        p:gitUrl="${dcdt.module.dcdt-service-parent.git.url:}"/>
     
     <!--suppress SpringModelInspection -->
     <beans:bean id="toolModuleVersionServiceCore" parent="toolModuleVersionImpl"
@@ -42,14 +38,10 @@
         c:name="${dcdt.module.dcdt-service-core.name:}"
         c:description="${dcdt.module.dcdt-service-core.description:}"
         p:buildTimestampString="${dcdt.module.dcdt-service-core.build.timestamp:}"
-        p:hgAuthor="${dcdt.module.dcdt-service-core.hg.author:}"
-        p:hgAuthorMail="${dcdt.module.dcdt-service-core.hg.author.email:}"
-        p:hgAuthorPerson="${dcdt.module.dcdt-service-core.hg.author.person:}"
-        p:hgBranch="${dcdt.module.dcdt-service-core.hg.branch:}"
-        p:hgDateString="${dcdt.module.dcdt-service-core.hg.date:}"
-        p:hgNode="${dcdt.module.dcdt-service-core.hg.node:}"
-        p:hgNodeShort="${dcdt.module.dcdt-service-core.hg.node.short:}"
-        p:hgPath="${dcdt.module.dcdt-service-core.hg.path:}"
-        p:hgRevision="${dcdt.module.dcdt-service-core.hg.rev:-1}"
-        p:hgTag="${dcdt.module.dcdt-service-core.hg.tag:}"/>
+        p:gitAuthor="${dcdt.module.dcdt-service-core.git.author:}"
+        p:gitBranch="${dcdt.module.dcdt-service-core.git.branch:}"
+        p:gitCommitId="${dcdt.module.dcdt-service-core.git.commit.id:}"
+        p:gitCommitIdShort="${dcdt.module.dcdt-service-core.git.commit.id.short:}"
+        p:gitCommitTimestampString="${dcdt.module.dcdt-service-core.git.commit.timestamp:}"
+        p:gitUrl="${dcdt.module.dcdt-service-core.git.url:}"/>
 </beans:beans>

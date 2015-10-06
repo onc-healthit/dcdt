@@ -23,14 +23,10 @@
         c:name="${dcdt.module.dcdt-service-mail.name:}"
         c:description="${dcdt.module.dcdt-service-mail.description:}"
         p:buildTimestampString="${dcdt.module.dcdt-service-mail.build.timestamp:}"
-        p:hgAuthor="${dcdt.module.dcdt-service-mail.hg.author:}"
-        p:hgAuthorMail="${dcdt.module.dcdt-service-mail.hg.author.email:}"
-        p:hgAuthorPerson="${dcdt.module.dcdt-service-mail.hg.author.person:}"
-        p:hgBranch="${dcdt.module.dcdt-service-mail.hg.branch:}"
-        p:hgDateString="${dcdt.module.dcdt-service-mail.hg.date:}"
-        p:hgNode="${dcdt.module.dcdt-service-mail.hg.node:}"
-        p:hgNodeShort="${dcdt.module.dcdt-service-mail.hg.node.short:}"
-        p:hgPath="${dcdt.module.dcdt-service-mail.hg.path:}"
-        p:hgRevision="${dcdt.module.dcdt-service-mail.hg.rev:-1}"
-        p:hgTag="${dcdt.module.dcdt-service-mail.hg.tag:}"/>
+        p:gitAuthor="${dcdt.module.dcdt-service-mail.git.author:}"
+        p:gitBranch="${dcdt.module.dcdt-service-mail.git.branch:}"
+        p:gitCommitId="${dcdt.module.dcdt-service-mail.git.commit.id:}"
+        p:gitCommitIdShort="${dcdt.module.dcdt-service-mail.git.commit.id.short:}"
+        p:gitCommitTimestampString="${dcdt.module.dcdt-service-mail.git.commit.timestamp:}"
+        p:gitUrl="${dcdt.module.dcdt-service-mail.git.url:}"/>
 </beans:beans>

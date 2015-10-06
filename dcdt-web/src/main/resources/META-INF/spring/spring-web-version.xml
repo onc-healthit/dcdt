@@ -23,14 +23,10 @@
         c:name="${dcdt.module.dcdt-web.name:}"
         c:description="${dcdt.module.dcdt-web.description:}"
         p:buildTimestampString="${dcdt.module.dcdt-web.build.timestamp:}"
-        p:hgAuthor="${dcdt.module.dcdt-web.hg.author:}"
-        p:hgAuthorMail="${dcdt.module.dcdt-web.hg.author.email:}"
-        p:hgAuthorPerson="${dcdt.module.dcdt-web.hg.author.person:}"
-        p:hgBranch="${dcdt.module.dcdt-web.hg.branch:}"
-        p:hgDateString="${dcdt.module.dcdt-web.hg.date:}"
-        p:hgNode="${dcdt.module.dcdt-web.hg.node:}"
-        p:hgNodeShort="${dcdt.module.dcdt-web.hg.node.short:}"
-        p:hgPath="${dcdt.module.dcdt-web.hg.path:}"
-        p:hgRevision="${dcdt.module.dcdt-web.hg.rev:-1}"
-        p:hgTag="${dcdt.module.dcdt-web.hg.tag:}"/>
+        p:gitAuthor="${dcdt.module.dcdt-web.git.author:}"
+        p:gitBranch="${dcdt.module.dcdt-web.git.branch:}"
+        p:gitCommitId="${dcdt.module.dcdt-web.git.commit.id:}"
+        p:gitCommitIdShort="${dcdt.module.dcdt-web.git.commit.id.short:}"
+        p:gitCommitTimestampString="${dcdt.module.dcdt-web.git.commit.timestamp:}"
+        p:gitUrl="${dcdt.module.dcdt-web.git.url:}"/>
 </beans:beans>

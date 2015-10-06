@@ -19,11 +19,8 @@
                 <tiles:putAttribute name="content"><strong>Version</strong></tiles:putAttribute>
             </tiles:insertDefinition>:
             ${moduleVersionDefault.version}
-            (<strong>Hg</strong>:
-            ${moduleVersionDefault.hgBranch}:${moduleVersionDefault.hgTag}
-            ${moduleVersionDefault.hgRevision}:${moduleVersionDefault.hgNodeShort})
-            (<strong>Build</strong>:
-            ${moduleVersionDefault.buildTimestampString})
+            (<strong>Git</strong>: ${moduleVersionDefault.gitBranch} ${moduleVersionDefault.gitCommitIdShort})
+            (<strong>Build</strong>: ${moduleVersionDefault.buildTimestampString})
         </div>
         <div id="footer-admin" class="footer-content">
             <tiles:insertDefinition name="component-glyph-link">

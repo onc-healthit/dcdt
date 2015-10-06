@@ -15,6 +15,8 @@ public abstract class AbstractToolBeanEntityInterceptor<T extends ToolBean> exte
     protected int order = Ordered.LOWEST_PRECEDENCE;
     protected Class<T> beanEntityClass;
 
+    private final static long serialVersionUID = 0L;
+
     protected AbstractToolBeanEntityInterceptor(Class<T> beanEntityClass) {
         this.beanEntityClass = beanEntityClass;
     }

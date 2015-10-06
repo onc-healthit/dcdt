@@ -18,7 +18,7 @@
                     resultsStyleFile="${project.basedir.all}/dcdt-core/src/findbugs/findbugs-results.xsl"/>
                 
                 <if>
-                    <isgreaterthan arg1="${project.findbugs.results.files.num}" arg2="0"/>
+                    <isgreaterthan arg1="${project.findbugs.results.bugs.num}" arg2="0"/>
                     <then>
                         <var name="project.findbugs.results.bugs.num" value="0"/>
                         <propertyselector property="findbugs-check.files.props" override="true" match="^(project\.findbugs\.results\.files\.file\d+)\.[^$]+$"

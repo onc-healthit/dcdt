@@ -23,14 +23,10 @@
         c:name="${dcdt.module.dcdt-service-dns.name:}"
         c:description="${dcdt.module.dcdt-service-dns.description:}"
         p:buildTimestampString="${dcdt.module.dcdt-service-dns.build.timestamp:}"
-        p:hgAuthor="${dcdt.module.dcdt-service-dns.hg.author:}"
-        p:hgAuthorMail="${dcdt.module.dcdt-service-dns.hg.author.email:}"
-        p:hgAuthorPerson="${dcdt.module.dcdt-service-dns.hg.author.person:}"
-        p:hgBranch="${dcdt.module.dcdt-service-dns.hg.branch:}"
-        p:hgDateString="${dcdt.module.dcdt-service-dns.hg.date:}"
-        p:hgNode="${dcdt.module.dcdt-service-dns.hg.node:}"
-        p:hgNodeShort="${dcdt.module.dcdt-service-dns.hg.node.short:}"
-        p:hgPath="${dcdt.module.dcdt-service-dns.hg.path:}"
-        p:hgRevision="${dcdt.module.dcdt-service-dns.hg.rev:-1}"
-        p:hgTag="${dcdt.module.dcdt-service-dns.hg.tag:}"/>
+        p:gitAuthor="${dcdt.module.dcdt-service-dns.git.author:}"
+        p:gitBranch="${dcdt.module.dcdt-service-dns.git.branch:}"
+        p:gitCommitId="${dcdt.module.dcdt-service-dns.git.commit.id:}"
+        p:gitCommitIdShort="${dcdt.module.dcdt-service-dns.git.commit.id.short:}"
+        p:gitCommitTimestampString="${dcdt.module.dcdt-service-dns.git.commit.timestamp:}"
+        p:gitUrl="${dcdt.module.dcdt-service-dns.git.url:}"/>
 </beans:beans>

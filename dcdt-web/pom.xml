@@ -412,6 +412,15 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>pl.project13.maven</groupId>
+                <artifactId>git-commit-id-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>process-git-properties</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
@@ -445,6 +454,15 @@
                     </execution>
                     <execution>
                         <id>unpack-test-dependency-resources</id>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>enforce-java-version</id>
                     </execution>
                 </executions>
             </plugin>
@@ -618,7 +636,9 @@
                         <id>read-pom-properties</id>
                         <configuration>
                             <locations combine.self="override">
+                                <location>${project.basedir.parent}/target/maven/git.properties</location>
                                 <location>${project.basedir.parent}/target/maven/pom.properties</location>
+                                <location>${project.basedir.all}/dcdt-service-parent/target/maven/git.properties</location>
                                 <location>${project.basedir.all}/dcdt-service-parent/target/maven/pom.properties</location>
                                 <location>${project.build.pomPropertiesFile}</location>
                             </locations>

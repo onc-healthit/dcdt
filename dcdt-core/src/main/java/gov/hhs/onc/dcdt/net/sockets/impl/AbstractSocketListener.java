@@ -39,6 +39,7 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
     protected class SocketListenDaemon implements Callable<Void> {
         @Nullable
         @Override
+        @SuppressWarnings("unchecked")
         public Void call() throws Exception {
             AbstractSocketListener.this.reqTaskExec.setRejectedExecutionHandler(new CancelSocketRequestDaemonHandler<>(SocketRequestDaemonTask.class));
 

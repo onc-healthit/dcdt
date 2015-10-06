@@ -89,10 +89,10 @@ public abstract class AbstractToolConverter extends AbstractToolBean implements 
     public void afterPropertiesSet() throws Exception {
         Class<? extends ToolConverter> convClass = this.getClass();
 
-        ToolCollectionUtils.addAll(this.convTypes, CollectionUtils.collect(
+        ToolCollectionUtils.addAll(this.convTypes, ((Iterable<? extends ConvertiblePair>) CollectionUtils.collect(
             ToolCollectionUtils.addAll(ToolAnnotationUtils.findAnnotations(Convert.class, convClass),
                 IteratorUtils.asIterable(ToolIteratorUtils.chainedArrayIterator(ToolAnnotationUtils.getValues(Converts.class, Convert[].class, convClass)))),
-            ConvertAnnotationTransformer.INSTANCE));
+            ConvertAnnotationTransformer.INSTANCE)));
     }
 
     @Nullable

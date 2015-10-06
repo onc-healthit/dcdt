@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="project"
-    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant"
-    xmlns:dcdt-hg="antlib:gov.hhs.onc.dcdt.ant.hg">
+    xmlns:dcdt="antlib:gov.hhs.onc.dcdt.ant">
     
     <description>Ant project for Direct Certificate Discovery Tool (DCDT) projects.</description>
     
@@ -47,12 +46,13 @@
         </dcdt:write-properties>
         
         <dcdt:timestamp property="project.build.timestamp"/>
-        <dcdt-hg:properties path="${project.basedir}" pathBase="${project.basedir.all}"/>
+        
+        <loadproperties srcfile="${project.build.gitPropertiesFile}"/>
         
         <propertyset id="project-process-props.props">
             <propertyref regex="^project\.(?:groupId|artifactId|version|name|description)$"/>
             <propertyref regex="^project\.build\.timestamp$"/>
-            <propertyref regex="^project\.hg\.(?:author(?:\.(?:email|person))?|branch|date|node(?:\.short)?|path\.[^$]+|rev|tag)$"/>
+            <propertyref regex="^project\.git\.[^$]+$"/>
         </propertyset>
         <propertyset id="project-process-props.props.module">
             <propertyset refid="project-process-props.props"/>

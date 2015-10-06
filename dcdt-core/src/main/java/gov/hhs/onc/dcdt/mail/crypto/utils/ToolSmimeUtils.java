@@ -74,6 +74,7 @@ import org.bouncycastle.mail.smime.SMIMESignedGenerator;
 import org.bouncycastle.mail.smime.SMIMEUtil;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.util.Arrays;
+import org.bouncycastle.util.Selector;
 import org.bouncycastle.util.Store;
 import org.springframework.util.MimeType;
 
@@ -99,7 +100,7 @@ public abstract class ToolSmimeUtils {
         SignerInformation signerInfo = null;
 
         for (SignerId signerId : signerInfoMap.keySet()) {
-            for (X509CertificateHolder certHolder : signedCerts.getMatches(signerId)) {
+            for (X509CertificateHolder certHolder : signedCerts.getMatches(((Selector<X509CertificateHolder>) signerId))) {
                 try {
                     try {
                         SignerInformationVerifier verifier = signerInfoVerifierBuilder.build(certHolder);

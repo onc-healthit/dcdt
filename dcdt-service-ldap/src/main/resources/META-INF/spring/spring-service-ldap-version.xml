@@ -23,14 +23,10 @@
         c:name="${dcdt.module.dcdt-service-ldap.name:}"
         c:description="${dcdt.module.dcdt-service-ldap.description:}"
         p:buildTimestampString="${dcdt.module.dcdt-service-ldap.build.timestamp:}"
-        p:hgAuthor="${dcdt.module.dcdt-service-ldap.hg.author:}"
-        p:hgAuthorMail="${dcdt.module.dcdt-service-ldap.hg.author.email:}"
-        p:hgAuthorPerson="${dcdt.module.dcdt-service-ldap.hg.author.person:}"
-        p:hgBranch="${dcdt.module.dcdt-service-ldap.hg.branch:}"
-        p:hgDateString="${dcdt.module.dcdt-service-ldap.hg.date:}"
-        p:hgNode="${dcdt.module.dcdt-service-ldap.hg.node:}"
-        p:hgNodeShort="${dcdt.module.dcdt-service-ldap.hg.node.short:}"
-        p:hgPath="${dcdt.module.dcdt-service-ldap.hg.path:}"
-        p:hgRevision="${dcdt.module.dcdt-service-ldap.hg.rev:-1}"
-        p:hgTag="${dcdt.module.dcdt-service-ldap.hg.tag:}"/>
+        p:gitAuthor="${dcdt.module.dcdt-service-ldap.git.author:}"
+        p:gitBranch="${dcdt.module.dcdt-service-ldap.git.branch:}"
+        p:gitCommitId="${dcdt.module.dcdt-service-ldap.git.commit.id:}"
+        p:gitCommitIdShort="${dcdt.module.dcdt-service-ldap.git.commit.id.short:}"
+        p:gitCommitTimestampString="${dcdt.module.dcdt-service-ldap.git.commit.timestamp:}"
+        p:gitUrl="${dcdt.module.dcdt-service-ldap.git.url:}"/>
 </beans:beans>

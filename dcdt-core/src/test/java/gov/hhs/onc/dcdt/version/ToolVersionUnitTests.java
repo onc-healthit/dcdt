@@ -30,33 +30,25 @@ public class ToolVersionUnitTests extends AbstractToolUnitTests {
 
             Assert.assertTrue(moduleVersion.hasBuildTimestamp(), String.format(
                 "Module (groupId=%s, artifactId=%s, version=%s) does not have a build timestamp.", moduleGroupId, moduleArtifactId, moduleProjectVersion));
-            Assert.assertTrue(moduleVersion.hasBuildTimestampString(), String
-                .format("Module (groupId=%s, artifactId=%s, version=%s) does not have a build timestamp string.", moduleGroupId, moduleArtifactId,
+            Assert.assertTrue(moduleVersion.hasBuildTimestampString(),
+                String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a build timestamp string.", moduleGroupId, moduleArtifactId,
                     moduleProjectVersion));
 
-            if (moduleVersion.hasHgAuthor()) {
-                Assert.assertTrue(moduleVersion.hasHgAuthorMail(), String.format(
-                    "Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial author mail address.", moduleGroupId, moduleArtifactId,
-                    moduleProjectVersion));
-                // Assertion for Mercurial author person should not be performed since its not guarenteed to exist.
-                Assert.assertTrue(moduleVersion.hasHgBranch(), String.format(
-                    "Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial branch.", moduleGroupId, moduleArtifactId, moduleProjectVersion));
-                Assert.assertTrue(moduleVersion.hasHgDate(), String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial date.",
+            if (moduleVersion.hasGitAuthor()) {
+                Assert.assertTrue(moduleVersion.hasGitBranch(), String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Git branch.",
                     moduleGroupId, moduleArtifactId, moduleProjectVersion));
-                Assert.assertTrue(moduleVersion.hasHgDateString(), String.format(
-                    "Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial date string.", moduleGroupId, moduleArtifactId,
-                    moduleProjectVersion));
-                Assert.assertTrue(moduleVersion.hasHgNode(), String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial node.",
+                Assert.assertTrue(moduleVersion.hasGitCommitId(), String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Git commit ID.",
                     moduleGroupId, moduleArtifactId, moduleProjectVersion));
-                Assert.assertTrue(moduleVersion.hasHgNodeShort(), String.format(
-                    "Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial short node.", moduleGroupId, moduleArtifactId,
-                    moduleProjectVersion));
-                Assert.assertTrue(moduleVersion.hasHgPath(), String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial path.",
-                    moduleGroupId, moduleArtifactId, moduleProjectVersion));
-                Assert.assertTrue(moduleVersion.hasHgRevision(), String
-                    .format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial revision.", moduleGroupId, moduleArtifactId,
+                Assert.assertTrue(moduleVersion.hasGitCommitIdShort(),
+                    String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Git short commit ID.", moduleGroupId, moduleArtifactId,
                         moduleProjectVersion));
-                Assert.assertTrue(moduleVersion.hasHgTag(), String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Mercurial tag.",
+                Assert.assertTrue(moduleVersion.hasGitCommitTimestamp(),
+                    String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Git commit timestamp.", moduleGroupId, moduleArtifactId,
+                        moduleProjectVersion));
+                Assert.assertTrue(moduleVersion.hasGitCommitTimestampString(),
+                    String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Git commit timestamp string.", moduleGroupId,
+                        moduleArtifactId, moduleProjectVersion));
+                Assert.assertTrue(moduleVersion.hasGitUrl(), String.format("Module (groupId=%s, artifactId=%s, version=%s) does not have a Git URL.",
                     moduleGroupId, moduleArtifactId, moduleProjectVersion));
             }
         }

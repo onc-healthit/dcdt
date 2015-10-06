@@ -30,79 +30,52 @@ public interface ToolModuleVersion extends ToolBean {
 
     public void setBuildTimestampString(@Nullable String buildTimestampStr) throws ParseException;
 
-    public boolean hasHgAuthor();
+    public boolean hasGitAuthor();
 
     @Nullable
-    public String getHgAuthor();
+    public String getGitAuthor();
 
-    public void setHgAuthor(@Nullable String hgAuthor);
+    public void setGitAuthor(@Nullable String gitAuthor);
 
-    public boolean hasHgAuthorMail();
-
-    @Nullable
-    public String getHgAuthorMail();
-
-    public void setHgAuthorMail(@Nullable String hgAuthorMail);
-
-    public boolean hasHgAuthorPerson();
+    public boolean hasGitBranch();
 
     @Nullable
-    public String getHgAuthorPerson();
+    public String getGitBranch();
 
-    public void setHgAuthorPerson(@Nullable String hgAuthorPerson);
+    public void setGitBranch(@Nullable String gitBranch);
 
-    public boolean hasHgBranch();
-
-    @Nullable
-    public String getHgBranch();
-
-    public void setHgBranch(@Nullable String hgBranch);
-
-    public boolean hasHgDate();
+    public boolean hasGitCommitId();
 
     @Nullable
-    public Date getHgDate();
+    public String getGitCommitId();
 
-    public void setHgDate(@Nullable Date hgDate);
+    public void setGitCommitId(@Nullable String gitCommitId);
 
-    public boolean hasHgDateString();
-
-    @Nullable
-    public String getHgDateString();
-
-    public void setHgDateString(@Nullable String hgDateStr) throws ParseException;
-
-    public boolean hasHgNode();
+    public boolean hasGitCommitIdShort();
 
     @Nullable
-    public String getHgNode();
+    public String getGitCommitIdShort();
 
-    public void setHgNode(@Nullable String hgNode);
+    public void setGitCommitIdShort(@Nullable String gitCommitIdShort);
 
-    public boolean hasHgNodeShort();
-
-    @Nullable
-    public String getHgNodeShort();
-
-    public void setHgNodeShort(@Nullable String hgNodeShort);
-
-    public boolean hasHgPath();
+    public boolean hasGitCommitTimestamp();
 
     @Nullable
-    public String getHgPath();
+    public Date getGitCommitTimestamp();
 
-    public void setHgPath(@Nullable String hgPath);
+    public void setGitCommitTimestamp(@Nullable Date gitCommitTimestamp);
 
-    public boolean hasHgRevision();
-
-    public int getHgRevision();
-
-    public void setHgRevision(int hgRevision);
-
-    public boolean hasHgTag();
+    public boolean hasGitCommitTimestampString();
 
     @Nullable
-    public String getHgTag();
+    public String getGitCommitTimestampString();
 
-    public void setHgTag(@Nullable String hgTag);
+    public void setGitCommitTimestampString(@Nullable String gitCommitTimestampStr) throws ParseException;
+
+    public boolean hasGitUrl();
+
+    @Nullable
+    public String getGitUrl();
+
+    public void setGitUrl(@Nullable String gitUrl);
 }
