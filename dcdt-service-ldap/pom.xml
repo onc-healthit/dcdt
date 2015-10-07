@@ -14,9 +14,7 @@
     
     <artifactId>dcdt-service-ldap</artifactId>
     
-    <name>dcdt-service-ldap</name>
     <description>Direct Certificate Discovery Tool (DCDT) LDAP service.</description>
-    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
         <!-- Project properties -->

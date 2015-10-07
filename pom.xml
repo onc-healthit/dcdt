@@ -15,9 +15,7 @@
     <artifactId>dcdt-all</artifactId>
     <packaging>pom</packaging>
     
-    <name>dcdt-all</name>
     <description>Direct Certificate Discovery Tool (DCDT) aggregate project.</description>
-    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
         <!-- Project properties -->

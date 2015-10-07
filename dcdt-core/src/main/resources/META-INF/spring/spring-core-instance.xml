@@ -39,7 +39,7 @@
     <beans:bean id="instanceConfigDataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" depends-on="setSysPropsInstanceConfig" destroy-method="close"
         p:acquireIncrement="1"
         p:driverClass="org.apache.derby.jdbc.EmbeddedDriver"
-        p:initialPoolSize="0"
+        p:initialPoolSize="1"
         p:jdbcUrl="#{ T(org.apache.derby.iapi.reference.Attribute).PROTOCOL }${dcdt.instance.db.name}"
         p:maxIdleTime="#{ T(com.mchange.v2.c3p0.impl.C3P0Defaults).maxIdleTime() }"
         p:maxPoolSize="#{ T(com.mchange.v2.c3p0.impl.C3P0Defaults).maxPoolSize() }"

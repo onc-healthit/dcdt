@@ -14,9 +14,7 @@
     
     <artifactId>dcdt-service-dns</artifactId>
     
-    <name>dcdt-service-dns</name>
     <description>Direct Certificate Discovery Tool (DCDT) DNS service.</description>
-    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
         <!-- Project properties -->

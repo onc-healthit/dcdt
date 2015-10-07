@@ -23,7 +23,7 @@
     <beans:bean id="keyConfig" class="gov.hhs.onc.dcdt.crypto.keys.KeyConfig" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="keyConfigImpl" class="gov.hhs.onc.dcdt.crypto.keys.impl.KeyConfigImpl" parent="keyConfig" abstract="true"
         p:keyAlgorithm="RSA"
-        p:keySize="#{ T(gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm).RSA.keySizeMin * 2 }"/>
+        p:keySize="#{ T(gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm).RSA.keySizeMin * 4 }"/>
     
     <beans:bean id="keyConfigCa" parent="keyConfigImpl" abstract="true">
         <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
@@ -51,7 +51,7 @@
     <beans:bean id="certConfig" class="gov.hhs.onc.dcdt.crypto.certs.CertificateConfig" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="certConfigImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateConfigImpl" parent="certConfig" abstract="true"
         p:certificateType="X509"
-        p:signatureAlgorithm="SHA1_WITH_RSA_ENCRYPTION">
+        p:signatureAlgorithm="SHA256_WITH_RSA_ENCRYPTION">
         <beans:property name="validInterval">
             <beans:bean parent="certValidIntervalImpl"/>
         </beans:property>

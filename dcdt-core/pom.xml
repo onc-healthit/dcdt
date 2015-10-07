@@ -2,22 +2,20 @@
     xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
+    
     <modelVersion>4.0.0</modelVersion>
-
+    
     <parent>
         <groupId>gov.hhs.onc.dcdt</groupId>
         <artifactId>dcdt-parent</artifactId>
         <version>3.0.5-SNAPSHOT</version>
         <relativePath>../dcdt-parent</relativePath>
     </parent>
-
+    
     <artifactId>dcdt-core</artifactId>
-
-    <name>dcdt-core</name>
+    
     <description>Direct Certificate Discovery Tool (DCDT) common component project.</description>
-    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
-
+    
     <properties>
         <!-- Project properties -->
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
@@ -26,7 +24,7 @@
         <!-- Project build Tomcat source properties -->
         <project.build.tomcatSourceDirectory>${project.basedir}/src/tomcat</project.build.tomcatSourceDirectory>
     </properties>
-
+    
     <dependencies>
         <!-- Runtime dependencies (inherited) -->
         <dependency>

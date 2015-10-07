@@ -10,7 +10,7 @@
     <version>3.0.5-SNAPSHOT</version>
     <packaging>pom</packaging>
     
-    <name>dcdt-parent</name>
+    <name>${project.artifactId}</name>
     <description>Direct Certificate Discovery Tool (DCDT) parent project.</description>
     <url>http://github.com/esacinc/dcdt/</url>
     
@@ -43,7 +43,7 @@
     </developers>
     
     <prerequisites>
-        <maven>3.0.5</maven>
+        <maven>3.1.1</maven>
     </prerequisites>
     
     <scm>

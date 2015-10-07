@@ -15,9 +15,7 @@
     <artifactId>dcdt-web</artifactId>
     <packaging>war</packaging>
     
-    <name>dcdt-web</name>
     <description>Direct Certificate Discovery Tool (DCDT) web application.</description>
-    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
         <!-- Project properties -->

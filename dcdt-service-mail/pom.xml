@@ -14,9 +14,7 @@
     
     <artifactId>dcdt-service-mail</artifactId>
     
-    <name>dcdt-service-mail</name>
     <description>Direct Certificate Discovery Tool (DCDT) mail service.</description>
-    <url>http://site.direct-test.com/${project.artifactId}/${project.version}/</url>
     
     <properties>
         <!-- Project properties -->
