@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessage;
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.json.impl.AbstractToolBeanJsonDto;
@@ -9,13 +11,14 @@ import gov.hhs.onc.dcdt.testcases.ToolTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResultJsonDto;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>, W extends ToolTestcaseResult<T, U, V>>
     extends AbstractToolBeanJsonDto<W> implements ToolTestcaseResultJsonDto<T, U, V, W> {
     protected CertificateInfo discoveredCertInfo;
     protected List<CertificateInfo> invalidDiscoveredCertInfos;
-    protected List<String> msgs;
-    protected List<String> procMsgs;
+    protected List<ToolMessage> msgs;
+    protected List<ToolMessage> procMsgs;
     protected List<CertificateDiscoveryStep> procSteps;
     protected V submission;
     protected boolean success;
@@ -45,17 +48,27 @@ public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDe
     }
 
     @Override
-    public boolean hasMessages() {
-        return !this.msgs.isEmpty();
+    public boolean hasMessages(ToolMessageLevel level) {
+        return (this.hasMessages() && this.getMessages().stream().anyMatch(msg -> (msg.getLevel() == level)));
     }
 
     @Override
-    public List<String> getMessages() {
+    public boolean hasMessages() {
+        return !this.getMessages().isEmpty();
+    }
+
+    @Override
+    public List<ToolMessage> getMessages(ToolMessageLevel level) {
+        return this.getMessages().stream().filter(msg -> (msg.getLevel() == level)).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ToolMessage> getMessages() {
         return msgs;
     }
 
     @Override
-    public void setMessages(List<String> msgs) {
+    public void setMessages(List<ToolMessage> msgs) {
         this.msgs = msgs;
     }
 
@@ -75,12 +88,12 @@ public abstract class AbstractToolTestcaseResultJsonDto<T extends ToolTestcaseDe
     }
 
     @Override
-    public List<String> getProcessingMessages() {
+    public List<ToolMessage> getProcessingMessages() {
         return procMsgs;
     }
 
     @Override
-    public void setProcessingMessages(List<String> procMsgs) {
+    public void setProcessingMessages(List<ToolMessage> procMsgs) {
         this.procMsgs = procMsgs;
     }
 

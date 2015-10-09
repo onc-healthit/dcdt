@@ -3,8 +3,11 @@ package gov.hhs.onc.dcdt.crypto.certs;
 import gov.hhs.onc.dcdt.crypto.CryptographyConfig;
 import javax.annotation.Nullable;
 import javax.validation.constraints.NotNull;
+import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 
 public interface CertificateConfig extends CertificateDescriptor, CryptographyConfig {
+    public void setAia(@Nullable AuthorityInformationAccess aia);
+
     public void setCertificateAuthority(boolean ca);
 
     @NotNull(message = "{dcdt.crypto.certs.validation.constraints.cert.type.NotNull.msg}", groups = { GenerateConstraintGroup.class })
@@ -26,7 +29,7 @@ public interface CertificateConfig extends CertificateDescriptor, CryptographyCo
     @NotNull(message = "{dcdt.crypto.certs.validation.constraints.cert.subj.NotNull.msg}", groups = { GenerateConstraintGroup.class })
     @Nullable
     @Override
-    public CertificateName getSubjectName() throws CertificateException;
+    public CertificateName getSubjectName();
 
     public void setSubjectName(@Nullable CertificateName subjName);
 

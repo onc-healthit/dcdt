@@ -1,27 +1,23 @@
 package gov.hhs.onc.dcdt.discovery.steps.impl;
 
-import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoValidator;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateValidatorContext;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateLookupStep;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateValidationStep;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
-import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.bouncycastle.asn1.x509.GeneralNames;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryStep implements CertificateValidationStep {
     @Autowired
-    private CertificateInfoValidator certInfoValidator;
+    private CertificateValidator certValidator;
 
     private CertificateInfo validCertInfo;
     private List<CertificateInfo> invalidCertInfos;
@@ -32,34 +28,18 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
 
     @Override
     public boolean execute(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr) {
-        for (CertificateLookupStep<?, ?, ?, ?> certLookupStep : CollectionUtils.collect(prevSteps, new ToolCollectionUtils.AssignableTransformer<>(
-            CertificateLookupStep.class))) {
+        for (CertificateLookupStep<?, ?, ?, ?> certLookupStep : CollectionUtils.collect(prevSteps,
+            new ToolCollectionUtils.AssignableTransformer<>(CertificateLookupStep.class))) {
             if (certLookupStep != null && certLookupStep.isSuccess() && certLookupStep.hasCertificateInfos()) {
-                Pair<Boolean, List<String>> certInfoValidationResultPair;
+                CertificateValidatorContext certValidatorContext;
+
                 this.invalidCertInfos = new ArrayList<>();
 
                 // noinspection ConstantConditions
                 for (CertificateInfo certInfo : certLookupStep.getCertificateInfos()) {
-                    this.execMsgs.addAll((certInfoValidationResultPair = this.certInfoValidator.validate(directAddr, certInfo)).getRight());
+                    this.execMsgs.addAll((certValidatorContext = this.certValidator.validate(directAddr, certInfo)).getMessages());
 
-                    if (certInfoValidationResultPair.getLeft()) {
-                        try {
-                            X509Certificate cert = certInfo.getCertificate();
-                            CertificateName certSubjName = certInfo.getSubjectName();
-                            // noinspection ConstantConditions
-                            GeneralNames altNames = certInfo.getSubjectName().getAltNames();
-
-                            if (altNames != null && altNames.getNames().length > 1) {
-                                // noinspection ConstantConditions
-                                this.execMsgs.add(String.format(
-                                    "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension contains multiple rfc822 and/or dNSName values.",
-                                    certSubjName, certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName()));
-                            }
-                        } catch (CertificateException e) {
-                        }
-                    }
-
-                    if (certInfoValidationResultPair.getLeft()) {
+                    if (certValidatorContext.isSuccess()) {
                         this.validCertInfo = certInfo;
                     } else {
                         this.invalidCertInfos.add(certInfo);

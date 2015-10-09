@@ -14,6 +14,7 @@ import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyGenerator;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
+import gov.hhs.onc.dcdt.crypto.utils.DigestUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import gov.hhs.onc.dcdt.utils.ToolValidationUtils;
@@ -24,6 +25,7 @@ import java.security.cert.X509Certificate;
 import javax.annotation.Nullable;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.Extension;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
@@ -46,16 +48,15 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
         BindingResult certConfigBindingResult = this.validateConfig(certConfig, GenerateConstraintGroup.class);
 
         if (certConfigBindingResult.hasErrors()) {
-            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format("Invalid certificate configuration (class=%s): %s",
-                ToolClassUtils.getName(certConfig),
-                ToolStringUtils.joinDelimit(ToolValidationUtils.mapErrorMessages(this.msgSourceValidation, certConfigBindingResult).entrySet(), ", ")));
+            throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(
+                String.format("Invalid certificate configuration (class=%s): %s", ToolClassUtils.getName(certConfig),
+                    ToolStringUtils.joinDelimit(ToolValidationUtils.mapErrorMessages(this.msgSourceValidation, certConfigBindingResult).entrySet(), ", ")));
         }
 
         boolean hasIssuerCredInfo = (issuerCredInfo != null);
         CertificateType certType = certConfig.getCertificateType();
-        X509v3CertificateBuilder certBuilder =
-            this.generateCertificateBuilder((hasIssuerCredInfo ? issuerCredInfo.getKeyDescriptor() : keyPairInfo),
-                (hasIssuerCredInfo ? issuerCredInfo.getCertificateDescriptor() : certConfig), keyPairInfo, certConfig);
+        X509v3CertificateBuilder certBuilder = this.generateCertificateBuilder((hasIssuerCredInfo ? issuerCredInfo.getKeyDescriptor() : keyPairInfo),
+            (hasIssuerCredInfo ? issuerCredInfo.getCertificateDescriptor() : certConfig), keyPairInfo, certConfig);
 
         try {
             SignatureAlgorithm certSigAlg = certConfig.getSignatureAlgorithm();
@@ -64,8 +65,8 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
                 certBuilder.build(new BcRSAContentSignerBuilder(certSigAlg.getAlgorithmId(), certSigAlg.getDigestAlgorithmId()).build(PrivateKeyFactory
                     .createKey(certConfig.isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo.getKeyDescriptor().getPrivateKeyInfo())));
 
-            return new CertificateInfoImpl((X509Certificate) CertificateUtils.getCertificateFactory(certType).generateCertificate(
-                new ByteArrayInputStream(certHolder.getEncoded())));
+            return new CertificateInfoImpl(
+                (X509Certificate) CertificateUtils.getCertificateFactory(certType).generateCertificate(new ByteArrayInputStream(certHolder.getEncoded())));
         } catch (CertificateException | IOException | OperatorCreationException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException("Unable to generate certificate.", e);
         }
@@ -78,17 +79,18 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
         CertificateValidInterval certValidInterval = certConfig.getValidInterval();
 
         // noinspection ConstantConditions
-        X509v3CertificateBuilder certBuilder =
-            new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubjectName().toX500Name(), (certConfig.hasSerialNumber() ? certConfig
-                .getSerialNumber().getValue() : CertificateUtils.generateSerialNumber()), certValidInterval.getNotBefore(), certValidInterval.getNotAfter(),
-                certSubj.toX500Name(), keyPairInfo.getSubjectPublicKeyInfo());
+        X509v3CertificateBuilder certBuilder = new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubjectName().toX500Name(),
+            (certConfig.hasSerialNumber() ? certConfig.getSerialNumber().getValue() : CertificateUtils.generateSerialNumber()),
+            certValidInterval.getNotBefore(), certValidInterval.getNotAfter(), certSubj.toX500Name(), keyPairInfo.getSubjectPublicKeyInfo());
 
         try {
             certBuilder.addExtension(Extension.basicConstraints, false, new BasicConstraints(certCa));
 
             if (!certCa) {
                 certBuilder.addExtension(Extension.authorityKeyIdentifier, false, issuerKeyPairInfo.getAuthorityKeyId());
-                certBuilder.addExtension(Extension.subjectKeyIdentifier, false, keyPairInfo.getSubjectKeyId());
+                // noinspection ConstantConditions
+                certBuilder.addExtension(Extension.subjectKeyIdentifier, false,
+                    new SubjectKeyIdentifier(DigestUtils.digest(certConfig.getSignatureAlgorithm().getDigestId(), keyPairInfo.getPublicKey().getEncoded())));
             }
 
             if (certSubj.hasAltNames()) {

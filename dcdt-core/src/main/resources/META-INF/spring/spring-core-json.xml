@@ -110,10 +110,5 @@
                     c:srcClass="org.bouncycastle.asn1.x500.X500Name"/>
             </util:set>
         </beans:property>
-        <beans:property name="modules">
-            <util:set>
-                <beans:bean class="com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module"/>
-            </util:set>
-        </beans:property>
     </beans:bean>
 </beans:beans>

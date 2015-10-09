@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import javax.annotation.Nullable;
@@ -35,7 +34,7 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
     private final static List<ASN1ObjectIdentifier> ATTR_OIDS_ORDER = ToolArrayUtils.asList(BCStyle.EmailAddress, BCStyle.CN);
 
     private SortedMap<ASN1ObjectIdentifier, ASN1Encodable> attrMap = new TreeMap<>(new OrderedOidComparator(ATTR_OIDS_ORDER));
-    private Map<CertificateAltNameType, Set<GeneralName>> altNameMap;
+    private Map<CertificateAltNameType, List<GeneralName>> altNameMap;
 
     public CertificateNameImpl() {
         this(null, ((Iterable<RDN>) null));
@@ -105,9 +104,8 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
     public boolean equals(Object obj) {
         CertificateName certName;
 
-        return ((this == obj) || (ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), CertificateName.class) && Objects.equals((certName =
-            ((CertificateName) obj)).getName(), this.getName()))
-            && Objects.equals(certName.getAltNames(), this.getAltNames()));
+        return ((this == obj) || (ToolClassUtils.isAssignable(ToolClassUtils.getClass(obj), CertificateName.class)
+            && Objects.equals((certName = ((CertificateName) obj)).getName(), this.getName())) && Objects.equals(certName.getAltNames(), this.getAltNames()));
     }
 
     @Override
@@ -147,11 +145,12 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
         String mailAddrStr;
 
         // noinspection ConstantConditions
-        return (((this.hasAltName(CertificateAltNameType.RFC822_NAME) && !StringUtils.isBlank((mailAddrStr =
-            Objects.toString(this.getAltNames(CertificateAltNameType.RFC822_NAME).iterator().next().getName(), null))))
-            || (this.hasAttribute(BCStyle.EmailAddress) && !StringUtils.isBlank((mailAddrStr = this.getAttributeValueString(BCStyle.EmailAddress)))) || (this
-            .hasAltName(CertificateAltNameType.DNS_NAME) && !StringUtils.isBlank((mailAddrStr =
-            Objects.toString(this.getAltNames(CertificateAltNameType.DNS_NAME).iterator().next().getName(), null))))) ? new MailAddressImpl(mailAddrStr) : null);
+        return (((this.hasAltName(CertificateAltNameType.RFC822_NAME)
+            && !StringUtils.isBlank((mailAddrStr = Objects.toString(this.getAltNames(CertificateAltNameType.RFC822_NAME).iterator().next().getName(), null))))
+            || (this.hasAttribute(BCStyle.EmailAddress) && !StringUtils.isBlank((mailAddrStr = this.getAttributeValueString(BCStyle.EmailAddress))))
+            || (this.hasAltName(CertificateAltNameType.DNS_NAME)
+                && !StringUtils.isBlank((mailAddrStr = Objects.toString(this.getAltNames(CertificateAltNameType.DNS_NAME).iterator().next().getName(), null)))))
+                    ? new MailAddressImpl(mailAddrStr) : null);
     }
 
     @Override
@@ -172,12 +171,12 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
 
     @Nullable
     @Override
-    public Set<GeneralName> getAltNames(CertificateAltNameType altNameType) {
+    public List<GeneralName> getAltNames(CertificateAltNameType altNameType) {
         return (this.hasAltName(altNameType) ? this.altNameMap.get(altNameType) : null);
     }
 
     @Override
-    public void setAltNames(Set<GeneralName> altNames) {
+    public void setAltNames(List<GeneralName> altNames) {
         CertificateAltNameType altNameType = CryptographyUtils.findByTag(CertificateAltNameType.class, altNames.iterator().next().getTagNo());
 
         if (altNameType == null) {
@@ -199,8 +198,8 @@ public class CertificateNameImpl extends AbstractToolBean implements Certificate
     @Nullable
     @Override
     public GeneralNames getAltNames() {
-        return (this.hasAltNames() ? new GeneralNames(
-            ToolCollectionUtils.toArray(ToolCollectionUtils.addAll(new ArrayList<GeneralName>(), this.altNameMap.values()), GeneralName.class)) : null);
+        return (this.hasAltNames()
+            ? new GeneralNames(ToolCollectionUtils.toArray(ToolCollectionUtils.addAll(new ArrayList<>(), this.altNameMap.values()), GeneralName.class)) : null);
     }
 
     @Override

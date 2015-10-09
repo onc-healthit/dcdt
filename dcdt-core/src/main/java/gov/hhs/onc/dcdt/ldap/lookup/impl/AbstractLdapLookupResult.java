@@ -1,6 +1,9 @@
 package gov.hhs.onc.dcdt.ldap.lookup.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
+import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLookupResultBean;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupResult;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.io.Externalizable;
@@ -52,8 +55,11 @@ public abstract class AbstractLdapLookupResult<T extends Externalizable> extends
 
     @Nullable
     @Override
-    public List<String> getMessages() {
-        return ToolArrayUtils.asList(this.getType().getMessage(), this.result.getDiagnosticMessage());
+    public List<ToolMessage> getMessages() {
+        ToolMessageLevel level = (this.isSuccess() ? ToolMessageLevel.INFO : ToolMessageLevel.ERROR);
+
+        return ToolArrayUtils.asList(new ToolMessageImpl(level, this.getType().getMessage()),
+            new ToolMessageImpl(level, this.result.getDiagnosticMessage()));
     }
 
     @Override

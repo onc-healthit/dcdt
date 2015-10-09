@@ -211,22 +211,22 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>2.3.2</version>
+                <version>2.6.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>2.3.2</version>
+                <version>2.6.1</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>2.3.2</version>
+                <version>2.6.1</version>
             </dependency>
             <dependency>
-                <groupId>com.fasterxml.jackson.datatype</groupId>
-                <artifactId>jackson-datatype-hibernate4</artifactId>
-                <version>2.3.2</version>
+                <groupId>com.github.sebhoss</groupId>
+                <artifactId>suppress-warnings</artifactId>
+                <version>1.0.0</version>
             </dependency>
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -241,7 +241,7 @@
             <dependency>
                 <groupId>com.sun.mail</groupId>
                 <artifactId>javax.mail</artifactId>
-                <version>1.5.2</version>
+                <version>1.5.4</version>
             </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
@@ -288,7 +288,7 @@
             <dependency>
                 <groupId>javax.mail</groupId>
                 <artifactId>javax.mail-api</artifactId>
-                <version>1.5.2</version>
+                <version>1.5.4</version>
             </dependency>
             <dependency>
                 <groupId>javax.servlet</groupId>
@@ -467,17 +467,17 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
-                <version>4.3.8.Final</version>
+                <version>4.3.11.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>5.1.3.Final</version>
+                <version>5.2.1.Final</version>
             </dependency>
             <dependency>
                 <groupId>org.logback-extensions</groupId>
                 <artifactId>logback-ext-spring</artifactId>
-                <version>0.1.2</version>
+                <version>0.1.4</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
@@ -502,32 +502,32 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -542,29 +542,29 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-bom</artifactId>
-                <version>4.0.0.RELEASE</version>
+                <version>4.0.2.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -583,7 +583,7 @@
             <dependency>
                 <groupId>com.atlassian.clover</groupId>
                 <artifactId>clover</artifactId>
-                <version>4.0.3</version>
+                <version>4.0.6</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
@@ -605,13 +605,13 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-test</artifactId>
-                <version>4.1.6.RELEASE</version>
+                <version>4.2.1.RELEASE</version>
                 <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
-                <version>6.8.21</version>
+                <version>6.9.6</version>
                 <scope>test</scope>
             </dependency>
         </dependencies>
@@ -683,12 +683,12 @@
                         <dependency>
                             <groupId>com.atlassian.clover</groupId>
                             <artifactId>clover</artifactId>
-                            <version>4.0.3</version>
+                            <version>4.0.6</version>
                         </dependency>
                         <dependency>
                             <groupId>org.apache.ant</groupId>
                             <artifactId>ant</artifactId>
-                            <version>1.9.4</version>
+                            <version>1.9.6</version>
                         </dependency>
                         <dependency>
                             <groupId>org.apache.ant.props</groupId>
@@ -738,8 +738,8 @@
                     <inherited>true</inherited>
                     <configuration>
                         <compilerArgs combine.children="append">
-                            <arg>-J-XX:MetaspaceSize=64m</arg>
-                            <arg>-J-XX:MaxMetaspaceSize=128m</arg>
+                            <arg>-J-XX:MetaspaceSize=128m</arg>
+                            <arg>-J-XX:MaxMetaspaceSize=256m</arg>
                             <arg>-J-XX:+UseG1GC</arg>
                             <arg>-J-XX:MaxGCPauseMillis=50</arg>
                             <arg>-parameters</arg>
@@ -762,8 +762,8 @@
                         </compilerArgs>
                         <compilerVersion>${java.version}</compilerVersion>
                         <fork>true</fork>
-                        <maxmem>256m</maxmem>
-                        <meminitial>128m</meminitial>
+                        <maxmem>512m</maxmem>
+                        <meminitial>256m</meminitial>
                         <optimize>true</optimize>
                         <showDeprecation>true</showDeprecation>
                         <showWarnings>true</showWarnings>
@@ -1194,7 +1194,7 @@
                             <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
                             <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
-                        <argLine>-Xms128m -Xmx256m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</argLine>
+                        <argLine>-Xms256m -Xmx512m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</argLine>
                         <classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>
                         <parallel>all</parallel>
                         <reportFormat>plain</reportFormat>
@@ -1358,7 +1358,7 @@
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>appassembler-maven-plugin</artifactId>
-                    <version>1.9</version>
+                    <version>1.10</version>
                     <inherited>true</inherited>
                     <configuration>
                         <repositoryLayout>flat</repositoryLayout>
@@ -1601,7 +1601,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.8</version>
+                <version>2.8.1</version>
                 <configuration>
                     <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
                     <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
@@ -1822,12 +1822,12 @@
                     <plugin>
                         <groupId>com.atlassian.maven.plugins</groupId>
                         <artifactId>maven-clover2-plugin</artifactId>
-                        <version>4.0.3</version>
+                        <version>4.0.6</version>
                     </plugin>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.15</version>
+                        <version>2.16</version>
                         <configuration>
                             <consoleOutput>true</consoleOutput>
                             <failsOnError>true</failsOnError>
@@ -1850,7 +1850,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-pmd-plugin</artifactId>
-                        <version>3.4</version>
+                        <version>3.5</version>
                         <configuration>
                             <includeTests>true</includeTests>
                             <includeXmlInSite>true</includeXmlInSite>
@@ -1879,12 +1879,12 @@
                     <plugin>
                         <groupId>org.codehaus.mojo</groupId>
                         <artifactId>findbugs-maven-plugin</artifactId>
-                        <version>3.0.0</version>
+                        <version>3.0.2</version>
                         <configuration>
                             <effort>Max</effort>
                             <excludeFilterFile>${project.basedir.all}/dcdt-core/src/findbugs/filter-exclude-core.xml</excludeFilterFile>
                             <includeTests>true</includeTests>
-                            <jvmArgs>-XX:MetaspaceSize=64m -XX:MaxMetaspaceSize=128m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</jvmArgs>
+                            <jvmArgs>-XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</jvmArgs>
                             <threshold>Low</threshold>
                             <xmlOutput>true</xmlOutput>
                         </configuration>
@@ -1933,11 +1933,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.2</version>
+                        <version>2.10.3</version>
                         <configuration>
                             <additionalJOptions>
-                                <additionalJOption>-J-XX:MetaspaceSize=64m</additionalJOption>
-                                <additionalJOption>-J-XX:MaxMetaspaceSize=128m</additionalJOption>
+                                <additionalJOption>-J-XX:MetaspaceSize=128m</additionalJOption>
+                                <additionalJOption>-J-XX:MaxMetaspaceSize=256m</additionalJOption>
                                 <additionalJOption>-J-XX:+UseG1GC</additionalJOption>
                                 <additionalJOption>-J-XX:MaxGCPauseMillis=50</additionalJOption>
                             </additionalJOptions>

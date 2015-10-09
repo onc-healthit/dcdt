@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.discovery.steps.dns.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.LocationType;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
@@ -19,8 +21,8 @@ import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 
-public abstract class AbstractDnsLookupStep<T extends Record> extends AbstractLookupStep<T, DnsResultType, DnsLookupResult<T>, DnsLookupService> implements
-    DnsLookupStep<T> {
+public abstract class AbstractDnsLookupStep<T extends Record> extends AbstractLookupStep<T, DnsResultType, DnsLookupResult<T>, DnsLookupService>
+    implements DnsLookupStep<T> {
     protected Class<T> recordClass;
     protected Predicate<T> recordPredicate;
     protected DnsRecordType recordType;
@@ -47,15 +49,17 @@ public abstract class AbstractDnsLookupStep<T extends Record> extends AbstractLo
             Name directAddrName = this.buildDirectAddressName(directAddr);
 
             if ((lookupResult = this.lookupService.lookupRecords(this.recordType, this.recordClass, directAddrName, this.recordPredicate)).isSuccess()) {
-                this.execMsgs.add(String.format("DNS lookup (recordType=%s, directAddrName=%s) was successful: [%s]", this.recordType.getId(), directAddrName,
-                    ToolStringUtils.joinDelimit(lookupResult, ", ")));
+                this.execMsgs
+                    .add(new ToolMessageImpl(ToolMessageLevel.INFO, String.format("DNS lookup (recordType=%s, directAddrName=%s) was successful: [%s]",
+                        this.recordType.getId(), directAddrName, ToolStringUtils.joinDelimit(lookupResult, ", "))));
             } else {
-                this.execMsgs.add(String.format("DNS lookup (recordType=%s, directAddrName=%s) failed (type=%s).", this.recordType.getId(), directAddrName,
-                    lookupResult.getType().name()));
+                this.execMsgs
+                    .add(new ToolMessageImpl(ToolMessageLevel.ERROR, String.format("DNS lookup (recordType=%s, directAddrName=%s) failed (type=%s).",
+                        this.recordType.getId(), directAddrName, lookupResult.getType().name())));
             }
         } catch (DnsException | ToolMailAddressException e) {
-            this.execMsgs.add(String.format("DNS lookup (recordType=%s, directAddr=%s) failed: %s", this.recordType.getId(), directAddr.toAddress(),
-                e.getMessage()));
+            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR,
+                String.format("DNS lookup (recordType=%s, directAddr=%s) failed: %s", this.recordType.getId(), directAddr.toAddress(), e.getMessage())));
             this.execSuccess = false;
         }
 

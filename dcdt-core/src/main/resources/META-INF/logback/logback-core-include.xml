@@ -58,7 +58,23 @@
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>
+    <logger name="gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl" level="info" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
     <logger name="gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="gov.hhs.onc.dcdt.data.events.impl.LoggingBeanEntityInterceptor" level="debug" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="gov.hhs.onc.dcdt.json.impl.ToolObjectMapper" level="info" additivity="false">
+        <appender-ref ref="console"/>
+        <appender-ref ref="file"/>
+    </logger>
+    <logger name="gov.hhs.onc.dcdt.velocity.impl.ToolVelocityEngineFactoryBean" level="info" additivity="false">
         <appender-ref ref="console"/>
         <appender-ref ref="file"/>
     </logger>

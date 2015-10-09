@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.discovery.steps.dns.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.crypto.CryptographyException;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
@@ -37,16 +39,18 @@ public class DnsCertRecordLookupStepImpl extends AbstractDnsLookupStep<CERTRecor
 
             for (CERTRecord certRecord : certRecords) {
                 try {
-                    this.certInfos.add((certInfo =
-                        new CertificateInfoImpl(CertificateUtils.readCertificate(certRecord.getCert(), CertificateType.X509, DataEncoding.DER))));
+                    this.certInfos.add(
+                        (certInfo = new CertificateInfoImpl(CertificateUtils.readCertificate(certRecord.getCert(), CertificateType.X509, DataEncoding.DER))));
 
-                    this.execMsgs.add(String.format(
-                        "DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
-                        directAddr.toAddress(), certRecord.getCertType(), certRecord.getAlgorithm(), certInfo.getSubjectName(), certInfo.getSerialNumber(),
-                        certInfo.getIssuerName()));
+                    this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.INFO,
+                        String.format(
+                            "DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
+                            directAddr.toAddress(), certRecord.getCertType(), certRecord.getAlgorithm(), certInfo.getSubjectName(), certInfo.getSerialNumber(),
+                            certInfo.getIssuerName())));
                 } catch (CryptographyException e) {
-                    this.execMsgs.add(String.format("DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate processing failed: %s",
-                        directAddr.toAddress(), certRecord.getCertType(), certRecord.getAlgorithm(), e.getMessage()));
+                    this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR,
+                        String.format("DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate processing failed: %s",
+                            directAddr.toAddress(), certRecord.getCertType(), certRecord.getAlgorithm(), e.getMessage())));
                     this.execSuccess = false;
 
                     break;

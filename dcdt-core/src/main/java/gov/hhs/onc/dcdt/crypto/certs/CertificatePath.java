@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
-import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoActiveIntervalConstraintValidator;
+import gov.hhs.onc.dcdt.crypto.certs.impl.CertificatePathConstraintValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -13,20 +13,20 @@ import javax.validation.ReportAsSingleViolation;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.ConstraintComposition;
 
-@Constraint(validatedBy = { CertificateInfoActiveIntervalConstraintValidator.class })
+@Constraint(validatedBy = { CertificatePathConstraintValidator.class })
 @ConstraintComposition
 @Documented
 @Inherited
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
-public @interface CertificateInfoActiveInterval {
+public @interface CertificatePath {
     @Documented
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
     public @interface List {
-        CertificateInfoActiveInterval[] value();
+        CertificatePath[] value();
     }
 
     String message() default StringUtils.EMPTY;

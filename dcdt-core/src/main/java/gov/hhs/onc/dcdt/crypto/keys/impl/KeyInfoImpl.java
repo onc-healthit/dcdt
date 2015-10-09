@@ -1,11 +1,9 @@
 package gov.hhs.onc.dcdt.crypto.keys.impl;
 
-import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
+import gov.hhs.onc.dcdt.crypto.keys.KeyException;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -17,51 +15,106 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.Lob;
 import javax.persistence.Transient;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
-import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 
 @Embeddable
-public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyInfo {
+public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
     private KeyPair keyPair;
+    private AuthorityKeyIdentifier authKeyInfo;
+    private PrivateKeyInfo privateKeyInfo;
+    private SubjectPublicKeyInfo subjPublicKeyInfo;
 
-    public KeyInfoImpl() {
+    public KeyInfoImpl() throws KeyException {
         this(null);
     }
 
-    public KeyInfoImpl(@Nullable PublicKey publicKey, @Nullable PrivateKey privateKey) {
+    public KeyInfoImpl(@Nullable PublicKey publicKey, @Nullable PrivateKey privateKey) throws KeyException {
         this(new KeyPair(publicKey, privateKey));
     }
 
-    public KeyInfoImpl(@Nullable KeyPair keyPair) {
-        this.keyPair = keyPair;
+    public KeyInfoImpl(@Nullable KeyPair keyPair) throws KeyException {
+        this.setKeyPair(keyPair);
+    }
+
+    @Override
+    protected void reset() {
+        super.reset();
+
+        this.authKeyInfo = null;
+        this.privateKeyInfo = null;
+        this.subjPublicKeyInfo = null;
+    }
+
+    private void processKeys() throws KeyException {
+        this.reset();
+
+        if (!this.hasAvailableKey()) {
+            return;
+        }
+
+        try {
+            Key availableKey = this.getAvailableKey();
+
+            // noinspection ConstantConditions
+            this.keyAlg = CryptographyUtils.findById(KeyAlgorithm.class, availableKey.getAlgorithm());
+            this.keySize = ((RSAKey) availableKey).getModulus().bitLength();
+
+            if (this.hasPublicKey()) {
+                // noinspection ConstantConditions
+                byte[] publicKeyData = this.getPublicKey().getEncoded();
+
+                this.subjPublicKeyInfo = SubjectPublicKeyInfo.getInstance(publicKeyData);
+
+                try {
+                    this.authKeyInfo = new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(this.subjPublicKeyInfo);
+                } catch (NoSuchAlgorithmException e) {
+                    throw new KeyException(String.format("Unable to build key (algId=%s, algOid=%s, size=%s) authority key information.", this.keyAlg.getId(),
+                        this.keyAlg.getOid(), this.keySize), e);
+                }
+            }
+
+            if (this.hasPrivateKey()) {
+                // noinspection ConstantConditions
+                this.privateKeyInfo = PrivateKeyInfo.getInstance(this.getPrivateKey().getEncoded());
+            }
+        } catch (Exception e) {
+            this.reset();
+
+            throw e;
+        }
     }
 
     @Override
     public boolean hasAuthorityKeyId() {
-        return this.getAuthorityKeyId() != null;
+        return (this.authKeyInfo != null);
     }
 
     @Nullable
     @Override
     @Transient
     public AuthorityKeyIdentifier getAuthorityKeyId() {
-        try {
-            // noinspection ConstantConditions
-            return this.hasSubjectPublicKeyInfo() ? new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(this.getSubjectPublicKeyInfo()) : null;
-        } catch (NoSuchAlgorithmException ignored) {
-        }
+        return this.authKeyInfo;
+    }
 
-        return null;
+    @Override
+    public boolean hasAvailableKey() {
+        return (this.getAvailableKey() != null);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public Key getAvailableKey() {
+        return ObjectUtils.defaultIfNull(this.getPublicKey(), this.getPrivateKey());
     }
 
     @Override
     public boolean hasKeyPair() {
-        return this.keyPair != null;
+        return (this.keyPair != null);
     }
 
     @Nullable
@@ -72,30 +125,32 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
     }
 
     @Override
-    public void setKeyPair(@Nullable KeyPair keyPair) {
+    public void setKeyPair(@Nullable KeyPair keyPair) throws KeyException {
         this.keyPair = keyPair;
+
+        this.processKeys();
     }
 
     @Override
     public boolean hasPublicKey() {
-        return this.getPublicKey() != null;
+        return (this.getPublicKey() != null);
     }
 
     @Nullable
     @Override
     @Transient
     public PublicKey getPublicKey() {
-        return this.hasKeyPair() ? this.keyPair.getPublic() : null;
+        return (this.hasKeyPair() ? this.keyPair.getPublic() : null);
     }
 
     @Override
-    public void setPublicKey(@Nullable PublicKey publicKey) {
-        this.keyPair = new KeyPair(publicKey, this.getPrivateKey());
+    public void setPublicKey(@Nullable PublicKey publicKey) throws KeyException {
+        this.setKeyPair(new KeyPair(publicKey, this.getPrivateKey()));
     }
 
     @Override
     public boolean hasPrivateKey() {
-        return this.getPrivateKey() != null;
+        return (this.getPrivateKey() != null);
     }
 
     @Column(name = "private_key_data", nullable = false)
@@ -103,86 +158,35 @@ public class KeyInfoImpl extends AbstractCryptographyDescriptor implements KeyIn
     @Nullable
     @Override
     public PrivateKey getPrivateKey() {
-        return this.hasKeyPair() ? this.keyPair.getPrivate() : null;
+        return (this.hasKeyPair() ? this.keyPair.getPrivate() : null);
     }
 
     @Override
-    public void setPrivateKey(@Nullable PrivateKey privateKey) {
-        this.keyPair = new KeyPair(this.getPublicKey(), privateKey);
+    public void setPrivateKey(@Nullable PrivateKey privateKey) throws KeyException {
+        this.setKeyPair(new KeyPair(this.getPublicKey(), privateKey));
     }
 
     @Override
     public boolean hasPrivateKeyInfo() {
-        return this.getPrivateKeyInfo() != null;
+        return (this.privateKeyInfo != null);
     }
 
     @Nullable
     @Override
     @Transient
     public PrivateKeyInfo getPrivateKeyInfo() {
-        PrivateKey privateKey = this.getPrivateKey();
-
-        return (privateKey != null) ? PrivateKeyInfo.getInstance(privateKey.getEncoded()) : null;
-    }
-
-    @Override
-    public boolean hasKeyAlgorithm() {
-        return this.getKeyAlgorithm() != null;
-    }
-
-    @Nullable
-    @Override
-    @Transient
-    public KeyAlgorithm getKeyAlgorithm() {
-        Key availKey = this.getAvailableKey();
-
-        return (availKey != null) ? CryptographyUtils.findById(KeyAlgorithm.class, availKey.getAlgorithm()) : null;
-    }
-
-    @Override
-    public boolean hasKeySize() {
-        return ToolNumberUtils.isPositive(this.getKeySize());
-    }
-
-    @Nullable
-    @Override
-    @Transient
-    public Integer getKeySize() {
-        Key availKey = this.getAvailableKey();
-
-        return ((availKey != null) && ToolClassUtils.isAssignable(availKey.getClass(), RSAKey.class)) ? ((RSAKey) availKey).getModulus().bitLength() : null;
-    }
-
-    @Override
-    public boolean hasSubjectKeyId() {
-        return this.getSubjectKeyId() != null;
-    }
-
-    @Nullable
-    @Override
-    @Transient
-    public SubjectKeyIdentifier getSubjectKeyId() {
-        // noinspection ConstantConditions
-        return this.hasPublicKey() ? new SubjectKeyIdentifier(DigestUtils.getSha1Digest().digest(this.getPublicKey().getEncoded())) : null;
+        return this.privateKeyInfo;
     }
 
     @Override
     public boolean hasSubjectPublicKeyInfo() {
-        return this.getSubjectPublicKeyInfo() != null;
+        return (this.subjPublicKeyInfo != null);
     }
 
     @Nullable
     @Override
     @Transient
     public SubjectPublicKeyInfo getSubjectPublicKeyInfo() {
-        PublicKey publicKey = this.getPublicKey();
-
-        return (publicKey != null) ? SubjectPublicKeyInfo.getInstance(publicKey.getEncoded()) : null;
-    }
-
-    @Nullable
-    @Transient
-    protected Key getAvailableKey() {
-        return ObjectUtils.defaultIfNull(this.getPublicKey(), this.getPrivateKey());
+        return this.subjPublicKeyInfo;
     }
 }

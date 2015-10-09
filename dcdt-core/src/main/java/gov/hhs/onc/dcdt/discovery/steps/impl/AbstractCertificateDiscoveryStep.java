@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.discovery.steps.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolResultBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.discovery.BindingType;
@@ -20,7 +21,7 @@ public abstract class AbstractCertificateDiscoveryStep extends AbstractToolResul
     protected BindingType bindingType;
     protected CertificateDiscoveryStepDescription desc;
     protected LocationType locType;
-    protected List<String> execMsgs = new ArrayList<>();
+    protected List<ToolMessage> execMsgs = new ArrayList<>();
     protected Boolean execSuccess;
 
     protected AbstractCertificateDiscoveryStep(BindingType bindingType) {
@@ -33,7 +34,7 @@ public abstract class AbstractCertificateDiscoveryStep extends AbstractToolResul
     }
 
     @Override
-    public List<String> getMessages() {
+    public List<ToolMessage> getMessages() {
         return new ArrayList<>(this.execMsgs);
     }
 
@@ -80,7 +81,7 @@ public abstract class AbstractCertificateDiscoveryStep extends AbstractToolResul
     }
 
     @Override
-    public List<String> getExecutionMessages() {
+    public List<ToolMessage> getExecutionMessages() {
         return this.execMsgs;
     }
 

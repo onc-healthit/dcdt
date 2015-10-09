@@ -2,9 +2,9 @@ package gov.hhs.onc.dcdt.crypto.certs.impl;
 
 import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoSubjectDn;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateSubjectDn;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateValidationInfo;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateValidatorContext;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
@@ -13,13 +13,13 @@ import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 
-public class CertificateInfoSubjectDnConstraintValidator extends AbstractCertificateInfoConstraintValidator<CertificateInfoSubjectDn> {
+public class CertificateSubjectDnConstraintValidator extends AbstractCertificateConstraintValidator<CertificateSubjectDn> {
     @Override
-    protected boolean isValidInternal(CertificateValidationInfo certValidInfo, ConstraintValidatorContext validatorContext) throws Exception {
-        CertificateInfo certInfo = certValidInfo.getCertificateInfo();
+    protected boolean isValidInternal(CertificateValidatorContext certValidatorContext, ConstraintValidatorContext validatorContext) throws Exception {
+        CertificateInfo certInfo = certValidatorContext.getCertificateInfo();
         X509Certificate cert = certInfo.getCertificate();
         CertificateName certSubjName = certInfo.getSubjectName();
-        MailAddress directAddr = certValidInfo.getDirectAddress(), directAddrBound, certSubjDnDirectAddr;
+        MailAddress directAddr = certValidatorContext.getDirectAddress(), directAddrBound, certSubjDnDirectAddr;
 
         // noinspection ConstantConditions
         if ((certSubjName.hasAttribute(BCStyle.EmailAddress)

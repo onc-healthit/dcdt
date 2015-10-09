@@ -64,12 +64,39 @@
                 testcaseSteps.forEach(function (testcaseStep) {
                     testcaseStepsList.append($("<li/>").append($.fn.dcdt.testcases.buildTestcaseItem(testcaseStep["desc"]["text"], [
                         $.fn.dcdt.testcases.buildTestcaseItem("Success", testcaseStep["success"]),
-                        $.fn.dcdt.testcases.buildTestcaseItem("Message(s)", testcaseStep["msgs"]),
                         $.fn.dcdt.testcases.buildTestcaseItem("Binding Type", testcaseStep["bindingType"]),
-                        $.fn.dcdt.testcases.buildTestcaseItem("Location Type", testcaseStep["locType"]) ])));
+                        $.fn.dcdt.testcases.buildTestcaseItem("Location Type", testcaseStep["locType"]),
+                        $.fn.dcdt.testcases.buildTestcaseItem("Message(s)", $.map(testcaseStep["msgs"], function (testcaseStepMsg) {
+                            return $.fn.dcdt.testcases.buildTestcaseMessage(testcaseStepMsg);
+                        })) ])));
                 });
                 
                 return $.fn.dcdt.testcases.buildTestcaseItem(testcaseStepsLbl, testcaseStepsList);
+            },
+            "buildTestcaseMessage": function (testcaseMsg) {
+                var testcaseMsgLevel = testcaseMsg.level, testcaseMsgLevelClassName = "text-";
+                
+                switch (testcaseMsgLevel) {
+                    case "ERROR":
+                        testcaseMsgLevelClassName += "danger";
+                        break;
+                    
+                    case "WARN":
+                        testcaseMsgLevelClassName += "warning";
+                        break;
+                    
+                    case "INFO":
+                        testcaseMsgLevelClassName += "info";
+                        break;
+                    
+                    default:
+                        testcaseMsgLevelClassName += "default";
+                        break;
+                }
+                
+                return $("<span/>").append($("<strong/>", {
+                    "class": testcaseMsgLevelClassName
+                }).text(testcaseMsg.level), ": ", testcaseMsg.text);
             },
             "buildTestcaseItem": function (testcaseItemLbl, testcaseItemValues) {
                 var testcaseItemElem = $("<div/>"), testcaseItemLblElem = $("<span/>");
@@ -87,8 +114,7 @@
                     
                     testcaseItemElem.append(testcaseItemValuesList);
                 } else {
-                    testcaseItemLblElem.append(($.isBoolean(testcaseItemValues) || $.isNumeric(testcaseItemValues)) ? testcaseItemValues.toString()
-                        : testcaseItemValues);
+                    testcaseItemLblElem.append(($.isBoolean(testcaseItemValues) || $.isNumeric(testcaseItemValues)) ? testcaseItemValues.toString() : testcaseItemValues);
                 }
                 
                 return testcaseItemElem;

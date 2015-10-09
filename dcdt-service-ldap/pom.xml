@@ -57,6 +57,10 @@
             <artifactId>logback-core</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.sebhoss</groupId>
+            <artifactId>suppress-warnings</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
         </dependency>

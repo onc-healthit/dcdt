@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import gov.hhs.onc.dcdt.beans.ToolResultBean;
+import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.LocationType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
@@ -15,7 +16,7 @@ import org.springframework.context.ApplicationContextAware;
 public interface CertificateDiscoveryStep extends ApplicationContextAware, Cloneable, ToolResultBean {
     @JsonProperty("msgs")
     @Override
-    public List<String> getMessages();
+    public List<ToolMessage> getMessages();
 
     @JsonProperty("success")
     @Override
@@ -36,7 +37,7 @@ public interface CertificateDiscoveryStep extends ApplicationContextAware, Clone
 
     public boolean hasExecutionMessages();
 
-    public List<String> getExecutionMessages();
+    public List<ToolMessage> getExecutionMessages();
 
     public boolean isExecutionSuccess();
 

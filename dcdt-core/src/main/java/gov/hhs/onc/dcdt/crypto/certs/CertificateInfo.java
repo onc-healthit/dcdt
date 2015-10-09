@@ -13,18 +13,7 @@ import org.bouncycastle.cert.X509CertificateHolder;
 
 @JsonTypeInfo(use = Id.NONE)
 public interface CertificateInfo extends CertificateDescriptor, CryptographyInfo {
-    public boolean hasExtension(ASN1ObjectIdentifier oid) throws CertificateException;
-    
-    @Nullable
-    public Extension getExtension(ASN1ObjectIdentifier oid) throws CertificateException;
-    
-    @Nullable
-    public Extensions getExtensions() throws CertificateException;
-    
-    @Nullable
-    public X509CertificateHolder getCertificateHolder() throws CertificateException;
-    
-    public boolean isSelfIssued() throws CertificateException;
+    public boolean isSelfIssued();
 
     public boolean hasCertificate();
 
@@ -32,10 +21,25 @@ public interface CertificateInfo extends CertificateDescriptor, CryptographyInfo
     @Nullable
     public X509Certificate getCertificate();
 
-    public void setCertificate(@Nullable X509Certificate cert);
+    public void setCertificate(@Nullable X509Certificate cert) throws CertificateException;
+
+    public boolean hasCertificateHolder();
+
+    @Nullable
+    public X509CertificateHolder getCertificateHolder();
+
+    public boolean hasExtension(ASN1ObjectIdentifier oid);
+
+    @Nullable
+    public Extension getExtension(ASN1ObjectIdentifier oid);
+
+    public boolean hasExtensions();
+
+    @Nullable
+    public Extensions getExtensions();
 
     public boolean hasIssuerName();
 
     @Nullable
-    public CertificateName getIssuerName() throws CertificateException;
+    public CertificateName getIssuerName();
 }

@@ -8,6 +8,7 @@ import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
+import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
@@ -93,9 +94,10 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
             CertificateInfo discoveryTestcaseCredCertInfo = discoveryTestcaseCred.getCredentialInfo().getCertificateDescriptor();
 
             // noinspection ConstantConditions
+            SignatureAlgorithm discoveryTestcaseCredCertSigAlg = discoveryTestcaseCredCertInfo.getSignatureAlgorithm();
+            // noinspection ConstantConditions
             DnsKeyAlgorithmType discoveryTestcaseCredKeyAlgType =
-                ToolEnumUtils.findByPropertyValue(DnsKeyAlgorithmType.class, DnsKeyAlgorithmType.PROP_NAME_SIG_ALG,
-                    discoveryTestcaseCredCertInfo.getSignatureAlgorithm());
+                ToolEnumUtils.findByPredicate(DnsKeyAlgorithmType.class, enumItem -> (enumItem.getSignatureAlgorithm() == discoveryTestcaseCredCertSigAlg));
             // noinspection ConstantConditions
             certRecordConfig.setKeyAlgorithmType(discoveryTestcaseCredKeyAlgType);
             // noinspection ConstantConditions
@@ -163,8 +165,8 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
 
     @Override
     public boolean isAuthoritative(DnsRecordType questionRecordType, Name questionName) {
-        return (this.isAuthoritative() && ((questionRecordType != DnsRecordType.PTR) ? questionName.subdomain(this.domainName) : questionName.equals(ReverseMap
-            .fromAddress(this.ipAddr))));
+        return (this.isAuthoritative() && ((questionRecordType != DnsRecordType.PTR)
+            ? questionName.subdomain(this.domainName) : questionName.equals(ReverseMap.fromAddress(this.ipAddr))));
     }
 
     @Override
@@ -201,10 +203,16 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
                 case CERT:
                     recordConfigs =
                         (this.certRecordConfigs =
-                            ToolCollectionUtils.nullIfEmpty(CollectionUtils.collect(CollectionUtils.select(IteratorUtils.asIterable(ToolIteratorUtils
-                                .chainedIterator(CollectionUtils.collect(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class),
-                                    DiscoveryTestcaseCredentialsExtractor.INSTANCE))), new DiscoveryTestcaseCredentialCertRecordPredicate()),
-                                new DiscoveryTestcaseCredentialCertRecordConfigTransformer(), new ArrayList<CertRecordConfig>())));
+                            ToolCollectionUtils
+                                .nullIfEmpty(
+                                    CollectionUtils
+                                        .collect(
+                                            CollectionUtils.select(
+                                                IteratorUtils.asIterable(ToolIteratorUtils.chainedIterator(
+                                                    CollectionUtils.collect(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class),
+                                                        DiscoveryTestcaseCredentialsExtractor.INSTANCE))),
+                                new DiscoveryTestcaseCredentialCertRecordPredicate()), new DiscoveryTestcaseCredentialCertRecordConfigTransformer(),
+                        new ArrayList<CertRecordConfig>())));
                     break;
 
                 case CNAME:
@@ -220,10 +228,8 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
                     break;
 
                 case PTR:
-                    recordConfigs =
-                        (this.ptrRecordConfigs =
-                            ToolCollectionUtils.nullIfEmpty(CollectionUtils.collect(this.aRecordsConfigs, new ReverseMapPtrRecordConfigTransformer(),
-                                new ArrayList<PtrRecordConfig>())));
+                    recordConfigs = (this.ptrRecordConfigs = ToolCollectionUtils.nullIfEmpty(
+                        CollectionUtils.collect(this.aRecordsConfigs, new ReverseMapPtrRecordConfigTransformer(), new ArrayList<PtrRecordConfig>())));
                     break;
 
                 case SOA:

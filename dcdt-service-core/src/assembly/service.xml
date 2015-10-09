@@ -15,27 +15,27 @@
         <!-- Executable file(s) (project) -->
         <fileSet>
             <directory>${project.build.serviceBinDirectory}</directory>
-            <outputDirectory>/bin</outputDirectory>
+            <outputDirectory>bin</outputDirectory>
         </fileSet>
         <!-- Configuration file(s) (project) -->
         <fileSet>
             <directory>${project.build.serviceConfDirectory}</directory>
-            <outputDirectory>/conf</outputDirectory>
+            <outputDirectory>conf</outputDirectory>
         </fileSet>
         <!-- Library file(s) (project) -->
         <fileSet>
             <directory>${project.build.serviceLibDirectory}</directory>
-            <outputDirectory>/lib</outputDirectory>
+            <outputDirectory>lib</outputDirectory>
         </fileSet>
         <!-- Log file(s) (project) -->
         <fileSet>
             <directory>${project.build.serviceLogDirectory}</directory>
-            <outputDirectory>/log</outputDirectory>
+            <outputDirectory>log</outputDirectory>
         </fileSet>
         <!-- Runtime file(s) (project) -->
         <fileSet>
             <directory>${project.build.serviceVarDirectory}</directory>
-            <outputDirectory>/var</outputDirectory>
+            <outputDirectory>var</outputDirectory>
         </fileSet>
     </fileSets>
 </assembly>

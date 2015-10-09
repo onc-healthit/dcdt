@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.testcases.results;
 
 import gov.hhs.onc.dcdt.beans.ToolResultBean;
+import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.testcases.ToolTestcase;
@@ -23,7 +24,7 @@ public interface ToolTestcaseResult<T extends ToolTestcaseDescription, U extends
 
     public boolean hasDiscoveryMessages();
 
-    public List<String> getDiscoveryMessages();
+    public List<ToolMessage> getDiscoveryMessages();
 
     public boolean isDiscoverySuccess();
 
@@ -33,9 +34,9 @@ public interface ToolTestcaseResult<T extends ToolTestcaseDescription, U extends
 
     public boolean hasProcessingMessages();
 
-    public List<String> getProcessingMessages();
+    public List<ToolMessage> getProcessingMessages();
 
-    public void setProcessingMessages(List<String> procMsgs);
+    public void setProcessingMessages(List<ToolMessage> procMsgs);
 
     public boolean isProcessingSuccess();
 

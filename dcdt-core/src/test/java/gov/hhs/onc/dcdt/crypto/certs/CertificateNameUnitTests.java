@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
+import gov.hhs.onc.dcdt.beans.ToolMessage;
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateNameImpl;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
@@ -11,7 +13,6 @@ import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
-import org.apache.commons.lang3.tuple.Pair;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,7 +125,7 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private CertificateInfoValidator certInfoValidator;
+    private CertificateValidator certInfoValidator;
 
     @BeforeClass
     public void setupCaCredentialInfo() throws Exception {
@@ -196,7 +197,7 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
     }
 
     private void assertCertificateSubjectAltNameValues(MailAddress directAddr, CertificateInfo certInfo, int numAltNames, boolean isValidCert,
-        String... errorMsgStrs) throws Exception {
+        String ... errorMsgStrs) throws Exception {
         CertificateName certName = certInfo.getSubjectName();
 
         if (numAltNames > 0) {
@@ -209,19 +210,19 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
             Assert.assertFalse(certInfo.getSubjectName().hasAltNames(), "Certificate has subject alternative names.");
         }
 
-        Pair<Boolean, List<String>> result = this.certInfoValidator.validate(directAddr, certInfo);
-        List<String> errorMsgs = result.getRight();
-        int errorMsgSize = errorMsgs.size();
+        CertificateValidatorContext context = this.certInfoValidator.validate(directAddr, certInfo);
+        List<ToolMessage> errorMsgs = context.getMessages(ToolMessageLevel.ERROR);
+        int numErrorMsgs = errorMsgs.size();
 
         if (isValidCert) {
-            Assert.assertTrue(result.getLeft(), "Certificate is invalid.");
-            Assert.assertEquals(errorMsgSize, 0, String.format("Certificate validation result has %d error messages.", errorMsgSize));
+            Assert.assertTrue(context.isSuccess(), "Certificate is invalid.");
+            Assert.assertEquals(numErrorMsgs, 0, String.format("Certificate validation result has %d error messages.", numErrorMsgs));
         } else {
-            Assert.assertFalse(result.getLeft(), "Certificate is valid.");
-            Assert.assertEquals(errorMsgSize, 1, String.format("Certificate validation result has %d error messages.", errorMsgSize));
+            Assert.assertFalse(context.isSuccess(), "Certificate is valid.");
+            Assert.assertEquals(numErrorMsgs, 1, String.format("Certificate validation result has %d error messages.", numErrorMsgs));
 
             if (errorMsgStrs.length > 0) {
-                Assert.assertTrue(errorMsgs.get(0).contains(errorMsgStrs[0]));
+                Assert.assertTrue(errorMsgs.get(0).getText().contains(errorMsgStrs[0]));
             }
         }
     }

@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.discovery.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.CertificateDiscoveryService;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
@@ -47,8 +49,8 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
 
             if (!directAddrBoundMap.containsKey((stepBindingType = step.getBindingType()))) {
                 if ((directAddrBound = directAddr.forBindingType(stepBindingType)) == null) {
-                    processedStep.getExecutionMessages().add(
-                        String.format("Direct address cannot be converted to binding type (%s): %s", stepBindingType.name(), directAddr.toAddress()));
+                    processedStep.getExecutionMessages().add(new ToolMessageImpl(ToolMessageLevel.WARN,
+                        String.format("Direct address cannot be converted to binding type (%s): %s", stepBindingType.name(), directAddr.toAddress())));
 
                     skipStep = true;
                 }

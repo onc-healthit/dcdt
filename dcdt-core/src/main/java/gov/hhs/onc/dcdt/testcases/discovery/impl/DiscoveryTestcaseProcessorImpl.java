@@ -1,5 +1,8 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
+import gov.hhs.onc.dcdt.beans.ToolMessage;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
@@ -30,9 +33,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component("discoveryTestcaseProcImpl")
-public class DiscoveryTestcaseProcessorImpl extends
-    AbstractToolTestcaseProcessor<DiscoveryTestcaseDescription, DiscoveryTestcase, DiscoveryTestcaseSubmission, DiscoveryTestcaseResult> implements
-    DiscoveryTestcaseProcessor {
+public class DiscoveryTestcaseProcessorImpl
+    extends AbstractToolTestcaseProcessor<DiscoveryTestcaseDescription, DiscoveryTestcase, DiscoveryTestcaseSubmission, DiscoveryTestcaseResult>
+    implements DiscoveryTestcaseProcessor {
     private final static Logger LOGGER = LoggerFactory.getLogger(DiscoveryTestcaseProcessorImpl.class);
 
     public DiscoveryTestcaseProcessorImpl() {
@@ -46,7 +49,7 @@ public class DiscoveryTestcaseProcessorImpl extends
         ToolMimeMessageHelper msgHelper = submission.getMessageHelper();
         String msgId = null;
         MailAddress msgFrom = null, msgTo = null;
-        List<String> procMsgs = new ArrayList<>();
+        List<ToolMessage> procMsgs = new ArrayList<>();
         boolean procSuccess = true;
 
         try {
@@ -55,12 +58,12 @@ public class DiscoveryTestcaseProcessorImpl extends
             msgTo = msgHelper.getTo();
 
             if (testcase == null) {
-                throw new ToolSmimeException(String.format("Unable to find a matching Discovery testcase for mail MIME message (id=%s, from=%s, to=%s).",
-                    msgId, msgFrom, msgTo));
+                throw new ToolSmimeException(
+                    String.format("Unable to find a matching Discovery testcase for mail MIME message (id=%s, from=%s, to=%s).", msgId, msgFrom, msgTo));
             } else if (testcase.isNegative()) {
-                procMsgs.add(String.format(
-                    "Matching Discovery testcase (name=%s) is negative; mail MIME message (id=%s, from=%s, to=%s) should not have been sent.",
-                    testcase.getName(), msgId, msgFrom, msgTo));
+                procMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR,
+                    String.format("Matching Discovery testcase (name=%s) is negative; mail MIME message (id=%s, from=%s, to=%s) should not have been sent.",
+                        testcase.getName(), msgId, msgFrom, msgTo)));
                 procSuccess = false;
             }
 
@@ -68,16 +71,15 @@ public class DiscoveryTestcaseProcessorImpl extends
 
             this.verifySender(msgId, msgFrom, msgTo, result, decryptedBodyPart, this.verifySigners(msgHelper, msgId, msgFrom, msgTo, decryptedBodyPart));
         } catch (Exception e) {
-            procMsgs.add(e.getMessage());
+            procMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR, e.getMessage()));
             procSuccess = false;
         }
 
         result.setProcessingMessages(procMsgs);
         result.setProcessingSuccess((procSuccess && (result.getDecryptionCredential() == result.getExpectedDecryptionCredential())));
 
-        LOGGER.info(String.format("Processed (success=%s) Discovery testcase (name=%s) for mail MIME message (id=%s, from=%s, to=%s): [%s]",
-            result.isSuccess(), ((testcase != null) ? testcase.getName() : null), msgId, msgFrom, msgTo,
-            ToolStringUtils.joinDelimit(result.getMessages(), "; ")));
+        LOGGER.info(String.format("Processed (success=%s) Discovery testcase (name=%s) for mail MIME message (id=%s, from=%s, to=%s): [%s]", result.isSuccess(),
+            ((testcase != null) ? testcase.getName() : null), msgId, msgFrom, msgTo, ToolStringUtils.joinDelimit(result.getMessages(), "; ")));
 
         return result;
     }
@@ -87,20 +89,18 @@ public class DiscoveryTestcaseProcessorImpl extends
         result.getProcessedSteps().addAll(this.certDiscoveryService.discoverCertificates(msgFrom));
 
         if (!result.isSuccess() || !result.hasDiscoveredCertificateInfo()) {
-            throw new ToolSmimeException(String.format("Unable to discover mail MIME message (id=%s, from=%s, to=%s) sender certificate.", msgId, msgFrom,
-                msgTo));
+            throw new ToolSmimeException(
+                String.format("Unable to discover mail MIME message (id=%s, from=%s, to=%s) sender certificate.", msgId, msgFrom, msgTo));
         }
 
         CertificateInfo senderCertInfo = result.getDiscoveredCertificateInfo();
 
         if (!signerCertMap.containsValue(senderCertInfo)) {
             // noinspection ConstantConditions
-            throw new ToolSmimeException(
-                String
-                    .format(
-                        "Mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s) was not signed by the discovered sender certificate (subj={%s}, issuer={%s}, serialNum=%s).",
-                        msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(decryptedBodyPart), senderCertInfo.getSubjectName(),
-                        senderCertInfo.getIssuerName(), senderCertInfo.getSerialNumber()));
+            throw new ToolSmimeException(String.format(
+                "Mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s) was not signed by the discovered sender certificate (subj={%s}, issuer={%s}, serialNum=%s).",
+                msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(decryptedBodyPart), senderCertInfo.getSubjectName(), senderCertInfo.getIssuerName(),
+                senderCertInfo.getSerialNumber()));
         }
 
         result.setSignerCertificateInfo(senderCertInfo);

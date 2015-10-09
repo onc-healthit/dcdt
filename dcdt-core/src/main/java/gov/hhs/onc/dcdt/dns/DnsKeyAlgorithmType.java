@@ -16,8 +16,6 @@ public enum DnsKeyAlgorithmType implements DnsMnemonicIdentifier {
         Algorithm.RSA_NSEC3_SHA1), RSASHA256(Algorithm.RSASHA256), RSASHA512(Algorithm.RSASHA512), ECDSAP256SHA256(Algorithm.ECDSAP256SHA256), ECDSAP384SHA384(
         Algorithm.ECDSAP384SHA384), INDIRECT(Algorithm.INDIRECT), PRIVATEDNS(Algorithm.PRIVATEDNS), PRIVATEOID(Algorithm.PRIVATEOID);
 
-    public final static String PROP_NAME_SIG_ALG = "signatureAlgorithm";
-
     private final int code;
     private final String id;
     private SignatureAlgorithm sigAlg;

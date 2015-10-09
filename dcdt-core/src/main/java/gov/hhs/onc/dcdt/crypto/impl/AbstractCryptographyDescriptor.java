@@ -6,4 +6,6 @@ import javax.persistence.MappedSuperclass;
 
 @MappedSuperclass
 public abstract class AbstractCryptographyDescriptor extends AbstractToolBean implements CryptographyDescriptor {
+    protected void reset() {
+    }
 }

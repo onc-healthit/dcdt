@@ -1,24 +1,24 @@
 package gov.hhs.onc.dcdt.crypto.certs.impl;
 
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateInfoPath;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateValidationInfo;
+import gov.hhs.onc.dcdt.crypto.certs.CertificatePath;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateValidatorContext;
 import gov.hhs.onc.dcdt.crypto.certs.path.CertificatePathResolver;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import java.security.cert.X509Certificate;
 import javax.validation.ConstraintValidatorContext;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class CertificateInfoPathConstraintValidator extends AbstractCertificateInfoConstraintValidator<CertificateInfoPath> {
+public class CertificatePathConstraintValidator extends AbstractCertificateConstraintValidator<CertificatePath> {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private CertificatePathResolver certPathResolver;
 
     @Override
-    protected boolean isValidInternal(CertificateValidationInfo certValidInfo, ConstraintValidatorContext validatorContext) throws Exception {
-        CertificateInfo certInfo = certValidInfo.getCertificateInfo();
+    protected boolean isValidInternal(CertificateValidatorContext certValidatorContext, ConstraintValidatorContext validatorContext) throws Exception {
+        CertificateInfo certInfo = certValidatorContext.getCertificateInfo();
         X509Certificate cert = certInfo.getCertificate();
-        MailAddress directAddr = certValidInfo.getDirectAddress(), directAddrBound;
+        MailAddress directAddr = certValidatorContext.getDirectAddress(), directAddrBound;
 
         // TODO: implement
 

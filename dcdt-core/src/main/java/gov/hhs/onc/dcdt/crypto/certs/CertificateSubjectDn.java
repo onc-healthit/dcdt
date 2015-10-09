@@ -1,6 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.certs;
 
-import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoSubjectAltNamesConstraintValidator;
+import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSubjectDnConstraintValidator;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -13,20 +13,20 @@ import javax.validation.ReportAsSingleViolation;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.ConstraintComposition;
 
-@Constraint(validatedBy = { CertificateInfoSubjectAltNamesConstraintValidator.class })
+@Constraint(validatedBy = { CertificateSubjectDnConstraintValidator.class })
 @ConstraintComposition
 @Documented
 @Inherited
 @ReportAsSingleViolation
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
-public @interface CertificateInfoSubjectAltNames {
+public @interface CertificateSubjectDn {
     @Documented
     @Inherited
     @Retention(RetentionPolicy.RUNTIME)
     @Target({ ElementType.TYPE, ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.CONSTRUCTOR, ElementType.ANNOTATION_TYPE })
     public @interface List {
-        CertificateInfoSubjectAltNames[] value();
+        CertificateSubjectDn[] value();
     }
 
     String message() default StringUtils.EMPTY;

@@ -1,5 +1,8 @@
 package gov.hhs.onc.dcdt.utils;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
+import gov.hhs.onc.dcdt.beans.ToolMessage;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,8 +32,8 @@ public abstract class ToolValidationUtils {
         return PATTERN_MSG_MACRO_AFFIX.matcher(msg).replaceAll(REPLACEMENT_STR_MSG_MACRO_ESCAPE);
     }
 
-    public static Map<String, List<String>> mapErrorMessages(MessageSource msgSource, Errors errors) {
-        Map<String, List<String>> errorMsgsMap = new LinkedHashMap<>();
+    public static Map<String, List<ToolMessage>> mapErrorMessages(MessageSource msgSource, Errors errors) {
+        Map<String, List<ToolMessage>> errorMsgsMap = new LinkedHashMap<>();
 
         if (errors.hasGlobalErrors()) {
             errorMsgsMap.put(null, buildErrorMessages(msgSource, errors.getGlobalErrors()));
@@ -41,7 +44,7 @@ public abstract class ToolValidationUtils {
 
             for (FieldError fieldError : errors.getFieldErrors()) {
                 if (!errorMsgsMap.containsKey(fieldName = fieldError.getField())) {
-                    errorMsgsMap.put(fieldName, new ArrayList<String>());
+                    errorMsgsMap.put(fieldName, new ArrayList<>());
                 }
 
                 errorMsgsMap.get(fieldName).add(buildErrorMessage(msgSource, fieldError));
@@ -51,8 +54,8 @@ public abstract class ToolValidationUtils {
         return errorMsgsMap;
     }
 
-    public static List<String> buildErrorMessages(MessageSource msgSource, Iterable<ObjectError> errors) {
-        List<String> errorMsgs = new ArrayList<>();
+    public static List<ToolMessage> buildErrorMessages(MessageSource msgSource, Iterable<ObjectError> errors) {
+        List<ToolMessage> errorMsgs = new ArrayList<>();
 
         for (ObjectError error : errors) {
             errorMsgs.add(buildErrorMessage(msgSource, error));
@@ -61,8 +64,8 @@ public abstract class ToolValidationUtils {
         return errorMsgs;
     }
 
-    public static String buildErrorMessage(MessageSource msgSource, ObjectError error) {
-        return ToolMessageUtils.getMessage(msgSource, error);
+    public static ToolMessage buildErrorMessage(MessageSource msgSource, ObjectError error) {
+        return new ToolMessageImpl(ToolMessageLevel.ERROR, ToolMessageUtils.getMessage(msgSource, error));
     }
 
     public static BindingResult bind(Validator validator, Object obj, Object ... validationHints) {

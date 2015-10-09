@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.mail.crypto.utils;
 
+import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
@@ -7,12 +8,12 @@ import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSerialNumberImpl;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
-import gov.hhs.onc.dcdt.mail.impl.LineOutputStream;
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.crypto.MailDigestAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.ToolSmimeException;
+import gov.hhs.onc.dcdt.mail.impl.LineOutputStream;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -25,7 +26,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
-import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -112,9 +112,8 @@ public abstract class ToolSmimeUtils {
                     } catch (CMSSignerDigestMismatchException e) {
                         byte[] calculatedDigest = getMessageDigest(signed, signerInfo, signerId, certHolder);
                         // noinspection ConstantConditions
-                        byte[] expectedDigest =
-                            ASN1OctetString.getInstance(signerInfo.getSignedAttributes().get(CMSAttributes.messageDigest).getAttrValues().getObjectAt(0))
-                                .getOctets();
+                        byte[] expectedDigest = ASN1OctetString
+                            .getInstance(signerInfo.getSignedAttributes().get(CMSAttributes.messageDigest).getAttrValues().getObjectAt(0)).getOctets();
 
                         if (!Arrays.constantTimeAreEqual(expectedDigest, calculatedDigest)) {
                             throw new ToolSmimeException(String.format("Expected message digest value: %s does not match the calculated message digest: %s",
@@ -123,10 +122,11 @@ public abstract class ToolSmimeUtils {
                             signerCertMap.put(signerId, new CertificateInfoImpl(CertificateUtils.CERT_CONV.getCertificate(certHolder)));
                         }
                     }
-                } catch (CertificateException | CMSException | OperatorCreationException e) {
-                    throw new ToolSmimeException(String.format(
-                        "Unable to verify mail signed data signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).", signerId.getIssuer(),
-                        new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()), e);
+                } catch (CertificateException | java.security.cert.CertificateException | CMSException | OperatorCreationException e) {
+                    throw new ToolSmimeException(
+                        String.format("Unable to verify mail signed data signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).", signerId.getIssuer(),
+                            new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()),
+                        e);
                 }
             }
 
@@ -142,7 +142,8 @@ public abstract class ToolSmimeUtils {
     @SuppressWarnings({ "unchecked" })
     public static byte[] getMessageDigest(SMIMESigned signed, SignerInformation signerInfo, SignerId signerId, X509CertificateHolder certHolder)
         throws ToolSmimeException {
-        try (ByteArrayOutputStream byteArrayOutStream = new ByteArrayOutputStream(); LineOutputStream lineOutStream = new LineOutputStream(byteArrayOutStream)) {
+        try (
+            ByteArrayOutputStream byteArrayOutStream = new ByteArrayOutputStream(); LineOutputStream lineOutStream = new LineOutputStream(byteArrayOutStream)) {
             MimeBodyPart mp = signed.getContent();
             Enumeration<String> headers = mp.getAllHeaderLines();
 
@@ -165,13 +166,14 @@ public abstract class ToolSmimeUtils {
             byteArrayOutStream.flush();
 
             // noinspection ConstantConditions
-            return MessageDigest.getInstance(
-                CryptographyUtils.findByOid(MailDigestAlgorithm.class, new ASN1ObjectIdentifier(signerInfo.getDigestAlgOID())).getId()).digest(
-                byteArrayOutStream.toByteArray());
+            return MessageDigest
+                .getInstance(CryptographyUtils.findByOid(MailDigestAlgorithm.class, new ASN1ObjectIdentifier(signerInfo.getDigestAlgOID())).getId())
+                .digest(byteArrayOutStream.toByteArray());
         } catch (NoSuchAlgorithmException | IOException | MessagingException e) {
-            throw new ToolSmimeException(String.format(
-                "Unable to calculate message digest for MIME message with signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).",
-                signerId.getIssuer(), new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()), e);
+            throw new ToolSmimeException(
+                String.format("Unable to calculate message digest for MIME message with signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).",
+                    signerId.getIssuer(), new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()),
+                e);
         }
     }
 
@@ -193,12 +195,10 @@ public abstract class ToolSmimeUtils {
 
             if (ToolSmimeContentTypeUtils.getMicalg(bodyPartContentType) == null) {
                 // noinspection ConstantConditions
-                throw new ToolSmimeException(
-                    String
-                        .format(
-                            "Mail MIME message (id=%s, from=%s, to=%s) signed data content type (type=%s) has unknown/invalid Message Integrity Check algorithm (micalg) value: %s",
-                            msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType,
-                            bodyPartContentType.getParameter(MailContentTypes.MICALG_PARAM_NAME)));
+                throw new ToolSmimeException(String.format(
+                    "Mail MIME message (id=%s, from=%s, to=%s) signed data content type (type=%s) has unknown/invalid Message Integrity Check algorithm (micalg) value: %s",
+                    msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType,
+                    bodyPartContentType.getParameter(MailContentTypes.MICALG_PARAM_NAME)));
             }
 
             SMIMESigned signed;
@@ -209,8 +209,8 @@ public abstract class ToolSmimeUtils {
 
                 if (!ToolSmimeContentTypeUtils.isDetachedSignature(sigPartContentType)) {
                     throw new ToolSmimeException(String.format(
-                        "Mail MIME message (id=%s, from=%s, to=%s) signed data signature body part content (type=%s) is not a detached signature.", msgHelper
-                            .getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), sigPartContentType));
+                        "Mail MIME message (id=%s, from=%s, to=%s) signed data signature body part content (type=%s) is not a detached signature.",
+                        msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), sigPartContentType));
                 }
 
                 signed = new SMIMESigned(bodyMultipart);
@@ -218,23 +218,24 @@ public abstract class ToolSmimeUtils {
                 signed = new SMIMESigned(bodyPart);
 
                 if (ToolMimePartUtils.getContentXferEncoding(bodyPart) != MailContentTransferEncoding.BASE64) {
-                    throw new ToolSmimeException(String.format(
-                        "Mail MIME message (id=%s, from=%s, to=%s) signed data content (type=%s) transfer encoding is not base64: %s", msgHelper
-                            .getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType, bodyPart.getEncoding()));
+                    throw new ToolSmimeException(
+                        String.format("Mail MIME message (id=%s, from=%s, to=%s) signed data content (type=%s) transfer encoding is not base64: %s",
+                            msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType, bodyPart.getEncoding()));
                 }
             } else {
-                throw new ToolSmimeException(String.format(
-                    "Decrypted mail MIME message (id=%s, from=%s, to=%s) body part content (type=%s) is not signed data.", msgHelper.getMimeMessage()
-                        .getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType));
+                throw new ToolSmimeException(
+                    String.format("Decrypted mail MIME message (id=%s, from=%s, to=%s) body part content (type=%s) is not signed data.",
+                        msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPartContentType));
             }
 
             return signed;
         } catch (ToolSmimeException e) {
             throw e;
         } catch (CMSException | IOException | MessagingException | SMIMEException e) {
-            throw new ToolSmimeException(String.format(
-                "Unable to get signed data wrapper for mail MIME message (id=%s, from=%s, to=%s) body part content (type=%s).", msgHelper.getMimeMessage()
-                    .getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPart.getContentType()), e);
+            throw new ToolSmimeException(
+                String.format("Unable to get signed data wrapper for mail MIME message (id=%s, from=%s, to=%s) body part content (type=%s).",
+                    msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), bodyPart.getContentType()),
+                e);
         }
     }
 
@@ -249,11 +250,12 @@ public abstract class ToolSmimeUtils {
         }
 
         try {
-            return SMIMEUtil.toMimeBodyPart(recipientInfoMap.get(recipientId).getContent(
-                new JceKeyTransEnvelopedRecipient(privateKey).setProvider(CryptographyUtils.PROVIDER)));
+            return SMIMEUtil.toMimeBodyPart(
+                recipientInfoMap.get(recipientId).getContent(new JceKeyTransEnvelopedRecipient(privateKey).setProvider(CryptographyUtils.PROVIDER)));
         } catch (CMSException | SMIMEException e) {
-            throw new ToolSmimeException(String.format("Unable to decrypt mail MIME message (id=%s, from=%s, to=%s) enveloped content (type=%s).", msgHelper
-                .getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), ToolMimePartUtils.getContentType(enveloped.getEncryptedContent())), e);
+            throw new ToolSmimeException(String.format("Unable to decrypt mail MIME message (id=%s, from=%s, to=%s) enveloped content (type=%s).",
+                msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(),
+                ToolMimePartUtils.getContentType(enveloped.getEncryptedContent())), e);
         }
     }
 
@@ -274,10 +276,12 @@ public abstract class ToolSmimeUtils {
                 recipientInfoMap.put(new JceKeyTransRecipientId(new X500Principal(recipientIssuer.getEncoded()), recipientSerialNum),
                     (KeyTransRecipientInformation) recipientInfo);
             } catch (IOException e) {
-                throw new ToolSmimeException(String.format(
-                    "Unable to map mail MIME message (id=%s, from=%s, to=%s) enveloped content (type=%s) recipient (issuer={%s}, serialNum=%s).", msgHelper
-                        .getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), ToolMimePartUtils.getContentType(enveloped
-                        .getEncryptedContent()), recipientIssuer, new CertificateSerialNumberImpl(recipientSerialNum)), e);
+                throw new ToolSmimeException(
+                    String.format("Unable to map mail MIME message (id=%s, from=%s, to=%s) enveloped content (type=%s) recipient (issuer={%s}, serialNum=%s).",
+                        msgHelper.getMimeMessage().getMessageID(), msgHelper.getFrom(), msgHelper.getTo(),
+                        ToolMimePartUtils.getContentType(enveloped.getEncryptedContent()), recipientIssuer,
+                        new CertificateSerialNumberImpl(recipientSerialNum)),
+                    e);
             }
         }
 
@@ -299,15 +303,15 @@ public abstract class ToolSmimeUtils {
             ASN1ObjectIdentifier encAlgOid = new ASN1ObjectIdentifier(enveloped.getEncryptionAlgOID());
 
             if (CryptographyUtils.findByOid(MailEncryptionAlgorithm.class, encAlgOid) == null) {
-                throw new ToolSmimeException(String.format(
-                    "Mail MIME message (id=%s, from=%s, to=%s) content (type=%s) has unknown/invalid content encryption algorithm: oid=%s", msg.getMessageID(),
-                    msgHelper.getFrom(), msgHelper.getTo(), msgContentType, encAlgOid.getId()));
+                throw new ToolSmimeException(
+                    String.format("Mail MIME message (id=%s, from=%s, to=%s) content (type=%s) has unknown/invalid content encryption algorithm: oid=%s",
+                        msg.getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), msgContentType, encAlgOid.getId()));
             }
 
             if (msgHelper.getContentXferEncoding() != MailContentTransferEncoding.BASE64) {
-                throw new ToolSmimeException(String.format(
-                    "Mail MIME message (id=%s, from=%s, to=%s) enveloped data content (type=%s) transfer encoding is not base64: %s", msg.getMessageID(),
-                    msgHelper.getFrom(), msgHelper.getTo(), msgContentType, msg.getEncoding()));
+                throw new ToolSmimeException(
+                    String.format("Mail MIME message (id=%s, from=%s, to=%s) enveloped data content (type=%s) transfer encoding is not base64: %s",
+                        msg.getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), msgContentType, msg.getEncoding()));
             }
 
             return enveloped;
@@ -319,7 +323,8 @@ public abstract class ToolSmimeUtils {
         }
     }
 
-    public static MimeBodyPart encrypt(MimeBodyPart unencryptedBodyPart, X509Certificate cert, MailEncryptionAlgorithm encryptionAlg) throws MessagingException {
+    public static MimeBodyPart encrypt(MimeBodyPart unencryptedBodyPart, X509Certificate cert, MailEncryptionAlgorithm encryptionAlg)
+        throws MessagingException {
         MimeType bodyPartContentType = ToolMimePartUtils.getContentType(unencryptedBodyPart);
 
         try {
@@ -336,13 +341,11 @@ public abstract class ToolSmimeUtils {
                 if (ToolSmimeContentTypeUtils.isMultipartSigned(multipartContentType)) {
                     return envelopedGen.generate(unencryptedBodyPart, encryptorBuilder.build());
                 } else {
-                    throw new ToolSmimeException(
-                        String
-                            .format(
-                                "Content (type=%s) of MIME body part (class=%s), content (type=%s) of MIME multipart (class=%s) is not of a signed-data type=(%s or %s) or of a multipart/signed type=(%s or %s).",
-                                bodyPartContentType, ToolClassUtils.getName(unencryptedBodyPart), multipartContentType, ToolClassUtils.getName(multipartBody),
-                                MailContentTypes.APP_PKCS7_MIME_SIGNED, MailContentTypes.APP_X_PKCS7_MIME_SIGNED,
-                                MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG, MailContentTypes.MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG));
+                    throw new ToolSmimeException(String.format(
+                        "Content (type=%s) of MIME body part (class=%s), content (type=%s) of MIME multipart (class=%s) is not of a signed-data type=(%s or %s) or of a multipart/signed type=(%s or %s).",
+                        bodyPartContentType, ToolClassUtils.getName(unencryptedBodyPart), multipartContentType, ToolClassUtils.getName(multipartBody),
+                        MailContentTypes.APP_PKCS7_MIME_SIGNED, MailContentTypes.APP_X_PKCS7_MIME_SIGNED, MailContentTypes.MULTIPART_SIGNED_PROTOCOL_PKCS7_SIG,
+                        MailContentTypes.MULTIPART_SIGNED_PROTOCOL_X_PKCS7_SIG));
                 }
             }
         } catch (CMSException | SMIMEException | CertificateEncodingException | IOException e) {
@@ -353,13 +356,23 @@ public abstract class ToolSmimeUtils {
 
     public static MimeMultipart sign(ToolMimeMessageHelper unsignedMsgHelper, PrivateKey privateKey, X509Certificate cert) throws MessagingException {
         MimeMessage unsignedMsg = unsignedMsgHelper.getMimeMessage();
-        CertificateInfo certInfo = new CertificateInfoImpl(cert);
+        CertificateInfo certInfo;
+
+        try {
+            certInfo = new CertificateInfoImpl(cert);
+        } catch (CertificateException e) {
+            throw new ToolSmimeException(
+                String.format("Unable to certificate container for signing the MIME message (id=%s, from=%s, to=%s) content (type=%s).",
+                    unsignedMsg.getMessageID(), unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()),
+                e);
+        }
+
         SignatureAlgorithm sigAlg = certInfo.getSignatureAlgorithm();
 
         if (sigAlg == null) {
-            throw new ToolSmimeException(String.format(
-                "Unable to find a signature algorithm for signing the MIME message (id=%s, from=%s, to=%s) content (type=%s).", unsignedMsg.getMessageID(),
-                unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()));
+            throw new ToolSmimeException(
+                String.format("Unable to find a signature algorithm for signing the MIME message (id=%s, from=%s, to=%s) content (type=%s).",
+                    unsignedMsg.getMessageID(), unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()));
         } else {
             SMIMESignedGenerator signer = new SMIMESignedGenerator();
             ASN1EncodableVector signedAttrs = getSignedAttributes();
@@ -374,8 +387,8 @@ public abstract class ToolSmimeUtils {
 
                 return signer.generate(unsignedMsg);
             } catch (OperatorCreationException | CertificateEncodingException | SMIMEException e) {
-                throw new ToolSmimeException(String.format("Unable to sign MIME message (id=%s, from=%s, to=%s) content (type=%s).",
-                    unsignedMsg.getMessageID(), unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()), e);
+                throw new ToolSmimeException(String.format("Unable to sign MIME message (id=%s, from=%s, to=%s) content (type=%s).", unsignedMsg.getMessageID(),
+                    unsignedMsgHelper.getFrom(), unsignedMsgHelper.getTo(), unsignedMsg.getContentType()), e);
             }
         }
     }
@@ -398,8 +411,8 @@ public abstract class ToolSmimeUtils {
         MimeMessage msg = msgHelper.getMimeMessage();
         MimeBodyPart signedBodyPart = new MimeBodyPart();
         // noinspection ConstantConditions
-        signedBodyPart.setContent(ToolSmimeUtils.sign(msgHelper, signerCredInfo.getKeyDescriptor().getPrivateKey(), signerCredInfo.getCertificateDescriptor()
-            .getCertificate()));
+        signedBodyPart.setContent(
+            ToolSmimeUtils.sign(msgHelper, signerCredInfo.getKeyDescriptor().getPrivateKey(), signerCredInfo.getCertificateDescriptor().getCertificate()));
 
         MimeBodyPart encryptedBodyPart = ToolSmimeUtils.encrypt(signedBodyPart, encryptionCertInfo.getCertificate(), encryptionAlg);
         MimeMessage encryptedMsg = new MimeMessage(msg.getSession());

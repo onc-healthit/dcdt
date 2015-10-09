@@ -1,6 +1,9 @@
 package gov.hhs.onc.dcdt.dns.lookup.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
+import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLookupResultBean;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsResultType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
@@ -60,9 +63,9 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
     @Override
     public List<T> getAnswers() {
         List<Record> rawAnswers;
-        List<T> answers =
-            (this.isSuccess() ? ToolCollectionUtils.collectAssignable(this.recordClass,
-                new ArrayList<T>(CollectionUtils.size((rawAnswers = this.getRawAnswers()))), rawAnswers) : null);
+        List<T> answers = (this.isSuccess()
+            ? ToolCollectionUtils.collectAssignable(this.recordClass, new ArrayList<T>(CollectionUtils.size((rawAnswers = this.getRawAnswers()))), rawAnswers)
+            : null);
 
         CollectionUtils.filter(answers, this.recordPredicate);
 
@@ -126,8 +129,8 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
     }
 
     @Override
-    public List<String> getMessages() {
-        return ToolArrayUtils.asList(this.lookup.getErrorString());
+    public List<ToolMessage> getMessages() {
+        return ToolArrayUtils.asList(new ToolMessageImpl(ToolMessageLevel.ERROR, this.lookup.getErrorString()));
     }
 
     @Override

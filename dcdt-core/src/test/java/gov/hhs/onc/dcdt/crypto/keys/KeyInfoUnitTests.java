@@ -34,11 +34,6 @@ public class KeyInfoUnitTests extends AbstractToolUnitTests {
     }
 
     @Test
-    public void testGetSubjectKeyId() {
-        Assert.assertNotNull(this.testKeyInfo.getSubjectKeyId(), "Key pair subject key ID is null.");
-    }
-
-    @Test
     public void testGetSubjectPublicKeyInfo() {
         Assert.assertNotNull(this.testKeyInfo.getSubjectPublicKeyInfo(), "Key pair subject public key information is null.");
     }

@@ -2,13 +2,15 @@ package gov.hhs.onc.dcdt.json.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo.Id;
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import com.fasterxml.jackson.databind.DatabindContext;
 import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.type.SimpleType;
+import com.github.sebhoss.warnings.CompilerWarnings;
 import gov.hhs.onc.dcdt.beans.ToolBean;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.json.ToolTypeNameIdResolver;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -22,6 +24,7 @@ import org.springframework.stereotype.Component;
 @Component("toolTypeNameIdResolverImpl")
 @Lazy
 @Scope("prototype")
+@SuppressWarnings({ CompilerWarnings.DEPRECATION })
 public class ToolTypeNameIdResolverImpl extends AbstractToolBean implements ToolTypeNameIdResolver {
     private AbstractApplicationContext appContext;
     private JavaType baseType;
@@ -58,8 +61,13 @@ public class ToolTypeNameIdResolverImpl extends AbstractToolBean implements Tool
     public String idFromType(Class<?> valueClass) {
         String valueTypeName;
 
-        return ((valueTypeName = ToolAnnotationUtils.getValue(JsonTypeName.class, String.class, valueClass)) != null) ? valueTypeName : ToolBeanFactoryUtils
-            .getBeanNameOfType(this.appContext, valueClass);
+        return ((valueTypeName = ToolAnnotationUtils.getValue(JsonTypeName.class, String.class, valueClass)) != null)
+            ? valueTypeName : ToolBeanFactoryUtils.getBeanNameOfType(this.appContext, valueClass);
+    }
+
+    @Override
+    public JavaType typeFromId(DatabindContext context, String valueId) {
+        return this.typeFromId(valueId);
     }
 
     @Override

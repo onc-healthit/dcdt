@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.testcases.results.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolResultBean;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
@@ -12,14 +13,15 @@ import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.ObjectUtils;
 
-public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>> extends
-    AbstractToolResultBean implements ToolTestcaseResult<T, U, V> {
+public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescription, U extends ToolTestcase<T>, V extends ToolTestcaseSubmission<T, U>>
+    extends AbstractToolResultBean implements ToolTestcaseResult<T, U, V> {
     protected List<CertificateDiscoveryStep> procSteps;
-    protected List<String> procMsgs = new ArrayList<>();
+    protected List<ToolMessage> procMsgs = new ArrayList<>();
     protected Boolean procSuccess;
     protected V submission;
 
@@ -27,7 +29,7 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
         this.submission = submission;
 
         // noinspection ConstantConditions
-        this.procSteps = ToolCollectionUtils.addAll(new ArrayList<CertificateDiscoveryStep>(CollectionUtils.size(procSteps)), procSteps);
+        this.procSteps = ToolCollectionUtils.addAll(new ArrayList<>(CollectionUtils.size(procSteps)), procSteps);
     }
 
     @Override
@@ -57,8 +59,8 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
     }
 
     @Override
-    public List<String> getMessages() {
-        return ToolCollectionUtils.addAll(new ArrayList<String>(), this.procMsgs, this.getDiscoveryMessages());
+    public List<ToolMessage> getMessages() {
+        return ToolCollectionUtils.addAll(new ArrayList<>(), this.procMsgs, this.getDiscoveryMessages());
     }
 
     @Override
@@ -73,8 +75,8 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
     }
 
     @Override
-    public List<String> getDiscoveryMessages() {
-        return ToolCollectionUtils.addAll(new ArrayList<String>(), CollectionUtils.collect(this.procSteps, ToolResultBeanMessageExtractor.INSTANCE));
+    public List<ToolMessage> getDiscoveryMessages() {
+        return this.procSteps.stream().flatMap(procStep -> procStep.getMessages().stream()).collect(Collectors.toList());
     }
 
     @Override
@@ -99,12 +101,12 @@ public abstract class AbstractToolTestcaseResult<T extends ToolTestcaseDescripti
     }
 
     @Override
-    public List<String> getProcessingMessages() {
+    public List<ToolMessage> getProcessingMessages() {
         return procMsgs;
     }
 
     @Override
-    public void setProcessingMessages(List<String> procMsgs) {
+    public void setProcessingMessages(List<ToolMessage> procMsgs) {
         this.procMsgs = procMsgs;
     }
 

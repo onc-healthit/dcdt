@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.testcases.results;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gov.hhs.onc.dcdt.beans.ToolResultBean;
+import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.json.ToolBeanJsonDto;
@@ -24,9 +25,9 @@ public interface ToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U 
 
     @JsonProperty("msgs")
     @Override
-    public List<String> getMessages();
+    public List<ToolMessage> getMessages();
 
-    public void setMessages(List<String> msgs);
+    public void setMessages(List<ToolMessage> msgs);
 
     @JsonProperty("procSteps")
     public List<CertificateDiscoveryStep> getProcessedSteps();
@@ -36,9 +37,9 @@ public interface ToolTestcaseResultJsonDto<T extends ToolTestcaseDescription, U 
     public boolean hasProcessingMessages();
 
     @JsonProperty("procMsgs")
-    public List<String> getProcessingMessages();
+    public List<ToolMessage> getProcessingMessages();
 
-    public void setProcessingMessages(List<String> procMsgs);
+    public void setProcessingMessages(List<ToolMessage> procMsgs);
 
     // @JsonProperty("submission")
     public V getSubmission();

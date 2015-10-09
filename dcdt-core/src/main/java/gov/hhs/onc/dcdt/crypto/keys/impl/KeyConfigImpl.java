@@ -1,40 +1,13 @@
 package gov.hhs.onc.dcdt.crypto.keys.impl;
 
-import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyConfig;
-import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
 import javax.annotation.Nullable;
 
-public class KeyConfigImpl extends AbstractCryptographyDescriptor implements KeyConfig {
-    private KeyAlgorithm keyAlg;
-    private Integer keySize;
-
-    @Override
-    public boolean hasKeyAlgorithm() {
-        return this.keyAlg != null;
-    }
-
-    @Nullable
-    @Override
-    public KeyAlgorithm getKeyAlgorithm() {
-        return this.keyAlg;
-    }
-
+public class KeyConfigImpl extends AbstractKeyDescriptor implements KeyConfig {
     @Override
     public void setKeyAlgorithm(@Nullable KeyAlgorithm keyAlg) {
         this.keyAlg = keyAlg;
-    }
-
-    @Override
-    public boolean hasKeySize() {
-        return ToolNumberUtils.isPositive(this.keySize);
-    }
-
-    @Nullable
-    @Override
-    public Integer getKeySize() {
-        return this.keySize;
     }
 
     @Override

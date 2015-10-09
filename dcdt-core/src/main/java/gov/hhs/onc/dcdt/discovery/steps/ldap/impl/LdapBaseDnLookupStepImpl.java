@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.discovery.steps.ldap.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.discovery.steps.dns.DnsSrvRecordLookupStep;
@@ -52,12 +54,14 @@ public class LdapBaseDnLookupStepImpl extends AbstractLdapLookupStep<Dn, LdapBas
                         if ((srvRecordTargetLookupResult = srvRecordLookupStep.getLookupService().lookupARecords((connTarget = srvRecord.getTarget())))
                             .isSuccess() && srvRecordTargetLookupResult.hasAnswers()) {
                             // noinspection ConstantConditions
-                            this.execMsgs.add(String.format("DNS SRV record (name=%s, target=%s, port=%d) target address resolution was successful: [%s]", connName,
-                                connTarget, connPort, (connHost =
-                                    ToolListUtils.getFirst(srvRecordTargetLookupResult.getAnswers()).getAddress().getHostAddress())));
+                            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.INFO,
+                                String.format("DNS SRV record (name=%s, target=%s, port=%d) target address resolution was successful: [%s]", connName,
+                                    connTarget, connPort,
+                                    (connHost = ToolListUtils.getFirst(srvRecordTargetLookupResult.getAnswers()).getAddress().getHostAddress()))));
                         } else {
-                            this.execMsgs.add(String.format("DNS SRV record (name=%s, target=%s, port=%d) target address resolution failed: [%s]", connName,
-                                connTarget, connPort, ToolStringUtils.joinDelimit(srvRecordTargetLookupResult.getMessages(), ", ")));
+                            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR,
+                                String.format("DNS SRV record (name=%s, target=%s, port=%d) target address resolution failed: [%s]", connName, connTarget,
+                                    connPort, ToolStringUtils.joinDelimit(srvRecordTargetLookupResult.getMessages(), ", "))));
 
                             continue;
                         }
@@ -67,17 +71,19 @@ public class LdapBaseDnLookupStepImpl extends AbstractLdapLookupStep<Dn, LdapBas
                         connConfig.setLdapHost(connHost);
 
                         if ((lookupResult = this.lookupService.lookupBaseDns(connConfig)).isSuccess()) {
-                            this.execMsgs.add(String.format("LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) was successful: [%s]", connHost, connPort,
-                                ToolStringUtils.joinDelimit(lookupResult, ", ")));
+                            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.INFO,
+                                String.format("LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) was successful: [%s]", connHost, connPort,
+                                    ToolStringUtils.joinDelimit(lookupResult, ", "))));
 
                             return lookupResult;
                         } else {
-                            this.execMsgs.add(String.format("Attempted LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) failed: [%s]", connHost,
-                                connPort, ToolStringUtils.joinDelimit(lookupResult.getMessages(), ", ")));
+                            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR,
+                                String.format("Attempted LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) failed: [%s]", connHost, connPort,
+                                    ToolStringUtils.joinDelimit(lookupResult.getMessages(), ", "))));
                         }
                     } catch (DnsException e) {
-                        this.execMsgs.add(String.format("DNS SRV record (name=%s, target=%s, port=%d) processing failed: %s", connName, connTarget, connPort,
-                            e.getMessage()));
+                        this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR, String
+                            .format("DNS SRV record (name=%s, target=%s, port=%d) processing failed: %s", connName, connTarget, connPort, e.getMessage())));
                         this.execSuccess = false;
 
                         break;
