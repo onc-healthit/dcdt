@@ -384,22 +384,16 @@
     <beans:alias name="fileSysImpl" alias="filesystem"/>
     
     <!--====================================================================================================
-    = JAMES DNS SERVICE CONFIGURATION
-    =====================================================================================================-->
-    <beans:bean id="configBeanDnsService" class="gov.hhs.onc.dcdt.service.mail.james.config.DnsServiceConfigBean" parent="configBeanJames" abstract="true"/>
-    <beans:bean id="configBeanDnsServiceImpl" class="gov.hhs.onc.dcdt.service.mail.james.config.impl.DnsServiceConfigBeanImpl" parent="configBeanDnsService"
-        abstract="true"/>
-    
-    <!--====================================================================================================
     = JAMES DNS SERVICE
     =====================================================================================================-->
     <beans:bean id="dnsServiceJames" class="gov.hhs.onc.dcdt.service.mail.james.ToolDnsService" abstract="true"/>
     
     <beans:bean id="dnsServiceJamesImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.ToolDnsServiceImpl" parent="dnsServiceJames">
-        <beans:property name="configBean">
-            <beans:bean parent="configBeanDnsServiceImpl"
-                p:externalLookupService-ref="dnsLookupServiceExternal"
-                p:localLookupService-ref="dnsLookupServiceLocal"/>
+        <beans:property name="lookupServices">
+            <beans:array>
+                <beans:ref bean="dnsLookupServiceLocal"/>
+                <beans:ref bean="dnsLookupServiceExternal"/>
+            </beans:array>
         </beans:property>
     </beans:bean>
     <beans:alias name="dnsServiceJamesImpl" alias="dnsservice"/>

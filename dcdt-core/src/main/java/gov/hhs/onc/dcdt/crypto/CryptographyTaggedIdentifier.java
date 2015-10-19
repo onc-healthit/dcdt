@@ -1,5 +1,7 @@
 package gov.hhs.onc.dcdt.crypto;
 
-public interface CryptographyTaggedIdentifier extends CryptographyIdentifier {
+import gov.hhs.onc.dcdt.beans.ToolIdentifier;
+
+public interface CryptographyTaggedIdentifier extends ToolIdentifier {
     public int getTag();
 }

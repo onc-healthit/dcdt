@@ -20,14 +20,10 @@ import org.apache.derby.shared.common.reference.SQLState;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBuilder;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBuilder;
 
-public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean implements ApplicationContextAware {
+public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean {
     private final static Properties CONN_PROPS_SHUTDOWN = (Properties) MapUtils.putAll(
         new Properties(),
         ArrayUtils.toArray(ArrayUtils.toArray(Attribute.SHUTDOWN_ATTR, Boolean.toString(true)),
@@ -36,7 +32,6 @@ public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean impleme
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolLocalSessionFactoryBean.class);
 
-    private AbstractApplicationContext appContext;
     private Set<ToolUserType<?, ?, ?, ?>> userTypes = new LinkedHashSet<>();
     private ComboPooledDataSource dataSource;
 
@@ -76,11 +71,6 @@ public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean impleme
                 LOGGER.warn(String.format("Unable to destroy C3P0 pooled data source (class=%s).", ToolClassUtils.getName(pooledDataSource)), e);
             }
         }
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
-        this.appContext = (AbstractApplicationContext) appContext;
     }
 
     @Override

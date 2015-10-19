@@ -16,8 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.ldap.utils.all" }, groups = { "dcdt.test.unit.ldap.all", "dcdt.test.unit.ldap.lookup.all",
-    "dcdt.test.unit.ldap.lookup.service" })
+@Test(dependsOnGroups = { "dcdt.test.unit.ldap.utils.all" },
+    groups = { "dcdt.test.unit.ldap.all", "dcdt.test.unit.ldap.lookup.all", "dcdt.test.unit.ldap.lookup.service" })
 public class LdapLookupServiceUnitTests extends AbstractToolUnitTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -45,7 +45,8 @@ public class LdapLookupServiceUnitTests extends AbstractToolUnitTests {
     public void testLookupEntries() throws LdapInvalidAttributeValueException {
         List<Entry> entries = new ArrayList<>();
 
-        for (Dn testLdapLookupBaseDn : this.testLdapLookupBaseDnsResult) {
+        // noinspection ConstantConditions
+        for (Dn testLdapLookupBaseDn : this.testLdapLookupBaseDnsResult.getItems()) {
             ToolCollectionUtils.addAll(entries,
                 this.ldapLookupService.lookupEntries(this.testLdapLookupConnConfig, testLdapLookupBaseDn, this.testLdapLookupSearchFilter).getItems());
         }

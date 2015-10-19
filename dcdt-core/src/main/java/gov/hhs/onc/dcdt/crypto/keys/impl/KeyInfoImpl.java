@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.crypto.keys.impl;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyException;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
-import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.security.Key;
 import java.security.KeyPair;
 import java.security.NoSuchAlgorithmException;
@@ -60,7 +60,7 @@ public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
             Key availableKey = this.getAvailableKey();
 
             // noinspection ConstantConditions
-            this.keyAlg = CryptographyUtils.findById(KeyAlgorithm.class, availableKey.getAlgorithm());
+            this.keyAlg = ToolEnumUtils.findById(KeyAlgorithm.class, availableKey.getAlgorithm());
             this.keySize = ((RSAKey) availableKey).getModulus().bitLength();
 
             if (this.hasPublicKey()) {

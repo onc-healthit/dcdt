@@ -16,6 +16,36 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = KEYS
+    =====================================================================================================-->
+    <beans:bean id="discoveryTestcaseKeyConfigCa" parent="keyConfigImpl" abstract="true"/>
+    
+    <beans:bean id="discoveryTestcaseKeyConfigLeaf" parent="keyConfigImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseKeyConfigLeaf4kb" parent="discoveryTestcaseKeyConfigLeaf" abstract="true"
+        p:keySize="#{ T(gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm).RSA.keySizeMin * 8 }"/>
+    
+    <!--====================================================================================================
+    = CERTIFICATES
+    =====================================================================================================-->
+    <beans:bean id="discoveryTestcaseCertConfigCaRoot" parent="certConfigCaRoot">
+        <beans:property name="subjectName">
+            <beans:bean parent="certNameImpl"
+                p:commonName="#{ instanceConfig.domainName }_ca_root"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="discoveryTestcaseCertConfigCaIntermediate1" parent="certConfigCa">
+        <beans:property name="subjectName">
+            <beans:bean parent="certNameImpl"
+                p:commonName="#{ instanceConfig.domainName }_ca_intermediate_1"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="discoveryTestcaseCertConfigLeaf" parent="certConfigImpl" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCertConfigLeafExpired" parent="discoveryTestcaseCertConfigLeaf" abstract="true"
+        p:validInterval-ref="certValidIntervalExpired"/>
+    
+    <!--====================================================================================================
     = DISCOVERY TESTCASE CREDENTIAL LOCATIONS
     =====================================================================================================-->
     <beans:bean id="discoveryTestcaseCredLoc" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation" abstract="true"/>
@@ -93,45 +123,53 @@
         p:ldapConfig-ref="instanceLdapConfig1"/>
     
     <!--====================================================================================================
+    = DISCOVERY TESTCASE CREDENTIAL DESCRIPTIONS
+    =====================================================================================================-->
+    <beans:bean id="discoveryTestcaseCredDesc" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDescription" abstract="true"/>
+    <beans:bean id="discoveryTestcaseCredDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialDescriptionImpl"
+        parent="discoveryTestcaseCredDesc" abstract="true"/>
+    
+    <!--====================================================================================================
     = DISCOVERY TESTCASE CREDENTIALS
     =====================================================================================================-->
     <beans:bean id="discoveryTestcaseCred" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential" abstract="true"/>
     <beans:bean id="discoveryTestcaseCredImpl" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialImpl"
         parent="discoveryTestcaseCred" abstract="true"/>
     
-    <beans:bean id="discoveryTestcaseCredDesc" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDescription" abstract="true"/>
-    <beans:bean id="discoveryTestcaseCredDescImpl" class="gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialDescriptionImpl"
-        parent="discoveryTestcaseCredDesc" abstract="true"/>
-    
-    <beans:bean id="discoveryTestcaseKeyConfigCa" parent="keyConfigCa"/>
-    
-    <beans:bean id="discoveryTestcaseCertConfigCa" parent="certConfigCa">
-        <beans:property name="subjectName">
-            <beans:bean parent="certNameImpl"
-                p:commonName="#{ instanceConfig.domainName }_ca"/>
-        </beans:property>
-    </beans:bean>
-    
-    <beans:bean id="discoveryTestcaseCredCa" parent="discoveryTestcaseCredImpl"
+    <beans:bean id="discoveryTestcaseCredCa" parent="discoveryTestcaseCredImpl" abstract="true"
         p:bindingType="NONE"
-        p:name="#{ instanceConfig.domainName }_ca"
-        p:nameDisplay="#{ instanceConfig.domainName }_ca"
-        p:type="CA">
+        p:type="CA"/>
+    
+    <beans:bean id="discoveryTestcaseCredCaRoot" parent="discoveryTestcaseCredCa"
+        p:name="#{ instanceConfig.domainName }_ca_root"
+        p:nameDisplay="#{ instanceConfig.domainName }_ca_root"
+        p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }">
         <beans:property name="credentialConfig">
-            <beans:bean parent="credConfigCa"
-                p:certificateDescriptor-ref="discoveryTestcaseCertConfigCa"
-                p:keyDescriptor-ref="discoveryTestcaseKeyConfigCa"/>
+            <beans:bean parent="credConfigImpl"
+                p:certificateDescriptor-ref="discoveryTestcaseCertConfigCaRoot">
+                <beans:property name="keyDescriptor">
+                    <beans:bean parent="discoveryTestcaseKeyConfigCa"/>
+                </beans:property>
+            </beans:bean>
         </beans:property>
-        <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
     </beans:bean>
     
-    <beans:bean id="discoveryTestcaseKeyConfigLeaf" parent="keyConfigImpl" abstract="true"/>
-    <beans:bean id="discoveryTestcaseKeyConfigLeaf4kb" parent="discoveryTestcaseKeyConfigLeaf" abstract="true"
-        p:keySize="#{ T(gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm).RSA.keySizeMin * 8 }"/>
+    <beans:bean id="discoveryTestcaseCredCaIntermediate" parent="discoveryTestcaseCredCa" abstract="true"
+        p:issuerCredential-ref="discoveryTestcaseCredCaRoot"
+        p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE + 1 }"/>
     
-    <beans:bean id="discoveryTestcaseCertConfigLeaf" parent="certConfigImpl" abstract="true"/>
-    <beans:bean id="discoveryTestcaseCertConfigLeafExpired" parent="discoveryTestcaseCertConfigLeaf" abstract="true"
-        p:validInterval-ref="certValidIntervalExpired"/>
+    <beans:bean id="discoveryTestcaseCredCaIntermediate1" parent="discoveryTestcaseCredCaIntermediate"
+        p:name="#{ instanceConfig.domainName }_ca_intermediate1"
+        p:nameDisplay="#{ instanceConfig.domainName }_ca_intermediate1">
+        <beans:property name="credentialConfig">
+            <beans:bean parent="credConfigImpl"
+                p:certificateDescriptor-ref="discoveryTestcaseCertConfigCaIntermediate1">
+                <beans:property name="keyDescriptor">
+                    <beans:bean parent="discoveryTestcaseKeyConfigCa"/>
+                </beans:property>
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="discoveryTestcaseCredConfigLeaf" parent="credConfigImpl" abstract="true">
         <beans:property name="keyDescriptor">
@@ -140,7 +178,7 @@
     </beans:bean>
     
     <beans:bean id="discoveryTestcaseCredLeaf" parent="discoveryTestcaseCredImpl" abstract="true"
-        p:issuerCredential-ref="discoveryTestcaseCredCa"/>
+        p:issuerCredential-ref="discoveryTestcaseCredCaRoot"/>
     <beans:bean id="discoveryTestcaseCredLeafBackground" parent="discoveryTestcaseCredLeaf" abstract="true"
         p:type="BACKGROUND"/>
     <beans:bean id="discoveryTestcaseCredLeafBackgroundInvalid" parent="discoveryTestcaseCredLeafBackground" abstract="true"

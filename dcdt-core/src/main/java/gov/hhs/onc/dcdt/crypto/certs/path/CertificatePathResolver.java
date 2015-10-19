@@ -1,13 +1,10 @@
 package gov.hhs.onc.dcdt.crypto.certs.path;
 
 import gov.hhs.onc.dcdt.beans.ToolBean;
-import gov.hhs.onc.dcdt.crypto.CryptographyException;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
-import java.util.List;
-import javax.annotation.Nonnegative;
-import javax.annotation.Nullable;
 
 public interface CertificatePathResolver extends ToolBean {
+    // @formatter:off
+    /*
     public List<CertificateInfo> resolvePath(CertificateInfo certInfo) throws CryptographyException;
 
     public List<CertificateInfo> resolveIssuers(CertificateInfo certInfo) throws CryptographyException;
@@ -24,4 +21,6 @@ public interface CertificatePathResolver extends ToolBean {
     public int getIssuerAccessLocationUrlReadTimeout();
 
     public void setIssuerAccessLocationUrlReadTimeout(@Nonnegative int issuerAccessLocUrlReadTimeout);
+    */
+    // @formatter:on
 }

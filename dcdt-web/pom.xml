@@ -7,9 +7,9 @@
     
     <parent>
         <groupId>gov.hhs.onc.dcdt</groupId>
-        <artifactId>dcdt-parent</artifactId>
+        <artifactId>dcdt-web-parent</artifactId>
         <version>3.0.5-SNAPSHOT</version>
-        <relativePath>../dcdt-parent</relativePath>
+        <relativePath>../dcdt-web-parent</relativePath>
     </parent>
     
     <artifactId>dcdt-web</artifactId>
@@ -20,12 +20,6 @@
     <properties>
         <!-- Project properties -->
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
-        <!-- Project build resources properties -->
-        <project.build.resourcesDirectory>${project.build.webappClassesDirectory}</project.build.resourcesDirectory>
-        <project.build.resourcesDependencyDirectory>${project.build.directory}/resources-dependency</project.build.resourcesDependencyDirectory>
-        <!-- Project build test resources properties -->
-        <project.build.testResourcesDirectory>${project.build.testWebappClassesDirectory}</project.build.testResourcesDirectory>
-        <project.build.testResourcesDependencyDirectory>${project.build.directory}/test-resources-dependency</project.build.testResourcesDependencyDirectory>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}.web</project.java.package>
     </properties>
@@ -137,6 +131,10 @@
             <artifactId>dnsjava</artifactId>
         </dependency>
         <dependency>
+            <groupId>dom4j</groupId>
+            <artifactId>dom4j</artifactId>
+        </dependency>
+        <dependency>
             <groupId>javax.el</groupId>
             <artifactId>javax.el-api</artifactId>
             <scope>provided</scope>
@@ -162,6 +160,10 @@
         <dependency>
             <groupId>net.sourceforge.htmlcleaner</groupId>
             <artifactId>htmlcleaner</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -206,6 +208,10 @@
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-tools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.groovy</groupId>
+            <artifactId>groovy-all</artifactId>
         </dependency>
         <dependency>
             <groupId>org.codehaus.janino</groupId>
@@ -437,18 +443,8 @@
                     <execution>
                         <id>unpack-dependency-resources</id>
                     </execution>
-                    <!-- Copying test web dependencies -->
                     <execution>
                         <id>copy-test-dependencies-web</id>
-                        <phase>generate-test-resources</phase>
-                        <goals>
-                            <goal>copy-dependencies</goal>
-                        </goals>
-                        <configuration>
-                            <excludeClassifiers>sources,test-sources</excludeClassifiers>
-                            <includeScope>test</includeScope>
-                            <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>unpack-test-dependency-resources</id>
@@ -470,15 +466,9 @@
                 <executions>
                     <execution>
                         <id>default-jar</id>
-                        <configuration>
-                            <outputDirectory>${project.build.webappLibDirectory}</outputDirectory>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>test-jar</id>
-                        <configuration>
-                            <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -494,59 +484,18 @@
                     </execution>
                     <execution>
                         <id>copy-resources-spring</id>
-                        <configuration>
-                            <outputDirectory>${project.build.webappWebInfDirectory}/spring</outputDirectory>
-                        </configuration>
                     </execution>
-                    <!-- Copying web resources -->
                     <execution>
                         <id>copy-resources-web</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.webappWebInfDirectory}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.webappWebInfSourceDirectory}</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>views/**/*.jsp</include>
-                                        <include>web.xml</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>copy-test-resources</id>
                     </execution>
                     <execution>
                         <id>copy-test-resources-spring</id>
-                        <configuration>
-                            <outputDirectory>${project.build.testWebappWebInfDirectory}/spring</outputDirectory>
-                        </configuration>
                     </execution>
-                    <!-- Copying test web resources -->
                     <execution>
                         <id>copy-test-resources-web</id>
-                        <phase>process-test-resources</phase>
-                        <goals>
-                            <goal>copy-resources</goal>
-                        </goals>
-                        <configuration>
-                            <outputDirectory>${project.build.testWebappWebInfDirectory}</outputDirectory>
-                            <resources>
-                                <resource>
-                                    <directory>${project.build.testWebappWebInfSourceDirectory}</directory>
-                                    <filtering>true</filtering>
-                                    <includes>
-                                        <include>views/**/*.jsp</include>
-                                    </includes>
-                                </resource>
-                            </resources>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>copy-resources-site</id>
@@ -568,16 +517,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <additionalClasspathElements combine.children="override">
-                        <additionalClasspathElement>${project.build.testWebappWebinfDirectory}</additionalClasspathElement>
-                        <additionalClasspathElement>${project.build.webappWebinfDirectory}</additionalClasspathElement>
-                        <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
-                        <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
-                    </additionalClasspathElements>
-                    <threadCount>1</threadCount>
-                    <workingDirectory>${project.build.testWebappDirectory}</workingDirectory>
-                </configuration>
                 <executions>
                     <execution>
                         <id>test-unit</id>
@@ -615,32 +554,11 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.apache.tomcat.maven</groupId>
-                <artifactId>tomcat7-maven-plugin</artifactId>
-                <dependencies>
-                    <dependency>
-                        <groupId>${project.groupId}</groupId>
-                        <artifactId>dcdt-core</artifactId>
-                        <version>${project.version}</version>
-                        <classifier>tomcat</classifier>
-                    </dependency>
-                </dependencies>
-            </plugin>
-            <plugin>
                 <groupId>org.kuali.maven.plugins</groupId>
                 <artifactId>properties-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <id>read-pom-properties</id>
-                        <configuration>
-                            <locations combine.self="override">
-                                <location>${project.basedir.parent}/target/maven/git.properties</location>
-                                <location>${project.basedir.parent}/target/maven/pom.properties</location>
-                                <location>${project.basedir.all}/dcdt-service-parent/target/maven/git.properties</location>
-                                <location>${project.basedir.all}/dcdt-service-parent/target/maven/pom.properties</location>
-                                <location>${project.build.pomPropertiesFile}</location>
-                            </locations>
-                        </configuration>
                     </execution>
                     <execution>
                         <id>translate-pom-properties</id>

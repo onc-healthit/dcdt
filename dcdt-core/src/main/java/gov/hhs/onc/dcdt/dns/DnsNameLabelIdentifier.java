@@ -1,9 +1,8 @@
 package gov.hhs.onc.dcdt.dns;
 
+import gov.hhs.onc.dcdt.beans.ToolIdentifier;
 import org.xbill.DNS.Name;
 
-public interface DnsNameLabelIdentifier extends DnsIdentifier {
-    public final static String PROP_NAME_NAME_LBL = "nameLabel";
-
+public interface DnsNameLabelIdentifier extends ToolIdentifier {
     public Name getNameLabel() throws DnsNameException;
 }

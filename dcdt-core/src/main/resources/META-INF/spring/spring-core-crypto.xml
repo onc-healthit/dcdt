@@ -15,19 +15,19 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
+    <!--====================================================================================================
+    = DESCRIPTORS
+    =====================================================================================================-->
     <beans:bean id="cryptoDesc" class="gov.hhs.onc.dcdt.crypto.CryptographyDescriptor" abstract="true"/>
     
     <!--====================================================================================================
     = KEYS
     =====================================================================================================-->
-    <beans:bean id="keyConfig" class="gov.hhs.onc.dcdt.crypto.keys.KeyConfig" parent="cryptoDesc" abstract="true"/>
+    <beans:bean id="keyDesc" class="gov.hhs.onc.dcdt.crypto.keys.KeyDescriptor" parent="cryptoDesc" abstract="true"/>
+    <beans:bean id="keyConfig" class="gov.hhs.onc.dcdt.crypto.keys.KeyConfig" parent="keyDesc" abstract="true"/>
     <beans:bean id="keyConfigImpl" class="gov.hhs.onc.dcdt.crypto.keys.impl.KeyConfigImpl" parent="keyConfig" abstract="true"
         p:keyAlgorithm="RSA"
         p:keySize="#{ T(gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm).RSA.keySizeMin * 4 }"/>
-    
-    <beans:bean id="keyConfigCa" parent="keyConfigImpl" abstract="true">
-        <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
-    </beans:bean>
     
     <!--====================================================================================================
     = CERTIFICATE NAMES
@@ -48,7 +48,8 @@
     <!--====================================================================================================
     = CERTIFICATES
     =====================================================================================================-->
-    <beans:bean id="certConfig" class="gov.hhs.onc.dcdt.crypto.certs.CertificateConfig" parent="cryptoDesc" abstract="true"/>
+    <beans:bean id="certDesc" class="gov.hhs.onc.dcdt.crypto.certs.CertificateDescriptor" parent="cryptoDesc" abstract="true"/>
+    <beans:bean id="certConfig" class="gov.hhs.onc.dcdt.crypto.certs.CertificateConfig" parent="certDesc" abstract="true"/>
     <beans:bean id="certConfigImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateConfigImpl" parent="certConfig" abstract="true"
         p:certificateType="X509"
         p:signatureAlgorithm="SHA256_WITH_RSA_ENCRYPTION">
@@ -58,26 +59,25 @@
     </beans:bean>
     
     <beans:bean id="certConfigCa" parent="certConfigImpl" abstract="true"
-        p:certificateAuthority="true">
-        <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
-    </beans:bean>
+        p:certificateAuthority="true"/>
+    
+    <beans:bean id="certConfigCaRoot" parent="certConfigCa" abstract="true"
+        p:selfIssued="true"/>
     
     <!--====================================================================================================
     = CERTIFICATE PATH RESOLVER
     =====================================================================================================-->
+    <!--
     <beans:bean id="certPathResolver" class="gov.hhs.onc.dcdt.crypto.certs.path.CertificatePathResolver" abstract="true"/>
     
     <beans:bean id="certPathResolverImpl" class="gov.hhs.onc.dcdt.crypto.certs.path.impl.CertificatePathResolverImpl" parent="certPathResolver"
         p:issuerAccessLocationUrlConnectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
         p:issuerAccessLocationUrlReadTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"/>
+    -->
     
     <!--====================================================================================================
     = CREDENTIALS
     =====================================================================================================-->
     <beans:bean id="credConfig" class="gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="credConfigImpl" class="gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialConfigImpl" parent="credConfig" abstract="true"/>
-    
-    <beans:bean id="credConfigCa" parent="credConfigImpl" abstract="true">
-        <beans:qualifier type="gov.hhs.onc.dcdt.crypto.CertificateAuthority"/>
-    </beans:bean>
 </beans:beans>

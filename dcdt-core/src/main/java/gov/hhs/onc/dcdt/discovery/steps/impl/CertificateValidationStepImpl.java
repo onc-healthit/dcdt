@@ -28,7 +28,7 @@ public class CertificateValidationStepImpl extends AbstractCertificateDiscoveryS
 
     @Override
     public boolean execute(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr) {
-        for (CertificateLookupStep<?, ?, ?, ?> certLookupStep : CollectionUtils.collect(prevSteps,
+        for (CertificateLookupStep<?, ?> certLookupStep : CollectionUtils.collect(prevSteps,
             new ToolCollectionUtils.AssignableTransformer<>(CertificateLookupStep.class))) {
             if (certLookupStep != null && certLookupStep.isSuccess() && certLookupStep.hasCertificateInfos()) {
                 CertificateValidatorContext certValidatorContext;

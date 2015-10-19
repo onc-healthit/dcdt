@@ -61,9 +61,10 @@ public class LdapCertificateLookupStepImpl extends AbstractLdapLookupStep<Entry,
             this.certInfos = new ArrayList<>();
 
             // noinspection ConstantConditions
-            for (Dn baseDn : baseDnLookupResult) {
+            for (Dn baseDn : baseDnLookupResult.getItems()) {
                 if ((lookupResult = this.lookupService.lookupEntries(baseDnConnConfig, baseDn, lookupFilter)).isSuccess() && lookupResult.hasItems()) {
-                    for (Entry entry : lookupResult) {
+                    // noinspection ConstantConditions
+                    for (Entry entry : lookupResult.getItems()) {
                         for (Value<?> attrValue : (attr = (entry.containsAttribute(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY)
                             ? entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT_BINARY)
                             : entry.get(ToolCoreSchemaConstants.ATTR_TYPE_NAME_USER_CERT)))) {

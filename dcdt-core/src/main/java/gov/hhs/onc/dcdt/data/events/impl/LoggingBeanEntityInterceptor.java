@@ -54,15 +54,14 @@ public class LoggingBeanEntityInterceptor extends AbstractToolBeanEntityIntercep
 
     @Override
     protected void afterTransactionBeginInternal(Transaction tx) {
-        LOGGER.trace(String.format("Bean entity transaction (initiator=%s) begun.", tx.isInitiator()));
+        LOGGER.trace("Bean entity transaction begun.");
 
         super.afterTransactionBeginInternal(tx);
     }
 
     @Override
     protected void afterTransactionCompletionInternal(Transaction tx) {
-        LOGGER.trace(String.format("Bean entity transaction (initiator=%s) completed: committed=%s, rolledBack=%s", tx.isInitiator(), tx.wasCommitted(),
-            tx.wasRolledBack()));
+        LOGGER.trace(String.format("Bean entity transaction completed: status=%s", tx.getStatus().name()));
 
         super.afterTransactionCompletionInternal(tx);
     }

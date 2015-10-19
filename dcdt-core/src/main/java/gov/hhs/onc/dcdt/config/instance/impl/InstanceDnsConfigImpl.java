@@ -27,7 +27,6 @@ import gov.hhs.onc.dcdt.dns.config.TargetedDnsRecordConfig;
 import gov.hhs.onc.dcdt.dns.config.TxtRecordConfig;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
@@ -146,7 +145,7 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
     @Override
     public List<Record> findAnswers(Record questionRecord) {
         // noinspection ConstantConditions
-        return this.findAnswers(ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType()), questionRecord.getName());
+        return this.findAnswers(ToolEnumUtils.findByCode(DnsRecordType.class, questionRecord.getType()), questionRecord.getName());
     }
 
     @Nullable
@@ -160,7 +159,7 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
     @Override
     public boolean isAuthoritative(Record questionRecord) {
         // noinspection ConstantConditions
-        return this.isAuthoritative(ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType()), questionRecord.getName());
+        return this.isAuthoritative(ToolEnumUtils.findByCode(DnsRecordType.class, questionRecord.getType()), questionRecord.getName());
     }
 
     @Override

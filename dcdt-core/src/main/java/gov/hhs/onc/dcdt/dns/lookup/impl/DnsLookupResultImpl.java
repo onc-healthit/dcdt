@@ -1,94 +1,82 @@
 package gov.hhs.onc.dcdt.dns.lookup.impl;
 
-import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLookupResultBean;
-import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsResultType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordOrderUtils;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
-import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
-import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.IteratorUtils;
-import org.apache.commons.collections4.Predicate;
-import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 
-public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupResultBean<T, DnsResultType> implements DnsLookupResult<T> {
-    private Lookup lookup;
+public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupResultBean implements DnsLookupResult<T> {
+    private List<Name> aliases;
+    private List<T> answers;
+    private List<ToolMessage> msgs = new ArrayList<>();
+    private List<T> orderedAnswers;
     private Name questionName;
+    private List<Record> rawAnswers;
     private Class<T> recordClass;
-    private Predicate<T> recordPredicate;
     private DnsRecordType recordType;
+    private DnsResultType type;
 
-    public DnsLookupResultImpl(DnsRecordType recordType, Class<T> recordClass, Name questionName, Lookup lookup, @Nullable Predicate<T> recordPredicate) {
+    public DnsLookupResultImpl(DnsRecordType recordType, Class<T> recordClass, Name questionName, DnsResultType type) {
+        this(recordType, recordClass, questionName, type, null, null);
+    }
+
+    public DnsLookupResultImpl(DnsRecordType recordType, Class<T> recordClass, Name questionName, DnsResultType type, @Nullable List<Name> aliases,
+        @Nullable List<Record> rawAnswers) {
         this.recordType = recordType;
         this.recordClass = recordClass;
         this.questionName = questionName;
-        this.lookup = lookup;
-        this.recordPredicate = recordPredicate;
-    }
+        this.type = type;
+        this.aliases = aliases;
+        this.rawAnswers = rawAnswers;
 
-    @Override
-    @SuppressWarnings({ "unchecked" })
-    public Iterator<T> iterator() {
-        return ((Iterator<T>) IteratorUtils.getIterator(this.getAnswers()));
+        if (this.isSuccess() && (this.rawAnswers != null)) {
+            this.answers = ToolStreamUtils.asInstances(this.rawAnswers.stream(), this.recordClass).collect(Collectors.toList());
+            this.orderedAnswers = IteratorUtils.toList(ToolDnsRecordOrderUtils.buildOrderedIterator(this.recordType, answers));
+        }
     }
 
     @Override
     public boolean hasAliases() {
-        return !CollectionUtils.isEmpty(this.getAliases());
+        return !CollectionUtils.isEmpty(this.aliases);
     }
 
     @Nullable
     @Override
     public List<Name> getAliases() {
-        return (this.isSuccess() ? ToolArrayUtils.asList(this.lookup.getAliases()) : null);
+        return this.aliases;
     }
 
     @Override
     public boolean hasAnswers() {
-        return !CollectionUtils.isEmpty(this.getAnswers());
+        return !CollectionUtils.isEmpty(this.answers);
     }
 
     @Nullable
     @Override
     public List<T> getAnswers() {
-        List<Record> rawAnswers;
-        List<T> answers = (this.isSuccess()
-            ? ToolCollectionUtils.collectAssignable(this.recordClass, new ArrayList<T>(CollectionUtils.size((rawAnswers = this.getRawAnswers()))), rawAnswers)
-            : null);
-
-        CollectionUtils.filter(answers, this.recordPredicate);
-
-        return answers;
-    }
-
-    @Override
-    public Lookup getLookup() {
-        return this.lookup;
+        return this.answers;
     }
 
     @Override
     public boolean hasOrderedAnswers() {
-        return !CollectionUtils.isEmpty(this.getOrderedAnswers());
+        return !CollectionUtils.isEmpty(this.orderedAnswers);
     }
 
     @Nullable
     @Override
-    @SuppressWarnings({ "unchecked" })
     public List<T> getOrderedAnswers() {
-        List<T> answers = this.getAnswers();
-
-        return ((answers != null) ? IteratorUtils.toList(ToolDnsRecordOrderUtils.buildOrderedIterator(this.recordType, answers)) : null);
+        return this.orderedAnswers;
     }
 
     @Override
@@ -98,29 +86,18 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
 
     @Override
     public boolean hasRawAnswers() {
-        return !CollectionUtils.isEmpty(this.getRawAnswers());
+        return !CollectionUtils.isEmpty(this.rawAnswers);
     }
 
     @Nullable
     @Override
     public List<Record> getRawAnswers() {
-        return (this.isSuccess() ? ToolArrayUtils.asList(this.lookup.getAnswers()) : null);
+        return this.rawAnswers;
     }
 
     @Override
     public Class<T> getRecordClass() {
         return this.recordClass;
-    }
-
-    @Override
-    public boolean hasRecordPredicate() {
-        return (this.recordPredicate != null);
-    }
-
-    @Nullable
-    @Override
-    public Predicate<T> getRecordPredicate() {
-        return this.recordPredicate;
     }
 
     @Override
@@ -130,7 +107,7 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
 
     @Override
     public List<ToolMessage> getMessages() {
-        return ToolArrayUtils.asList(new ToolMessageImpl(ToolMessageLevel.ERROR, this.lookup.getErrorString()));
+        return this.msgs;
     }
 
     @Override
@@ -140,6 +117,6 @@ public class DnsLookupResultImpl<T extends Record> extends AbstractToolLookupRes
 
     @Override
     public DnsResultType getType() {
-        return ToolDnsUtils.findByCode(DnsResultType.class, this.lookup.getResult());
+        return this.type;
     }
 }

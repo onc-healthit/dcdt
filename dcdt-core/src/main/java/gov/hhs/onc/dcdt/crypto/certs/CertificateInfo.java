@@ -13,8 +13,6 @@ import org.bouncycastle.cert.X509CertificateHolder;
 
 @JsonTypeInfo(use = Id.NONE)
 public interface CertificateInfo extends CertificateDescriptor, CryptographyInfo {
-    public boolean isSelfIssued();
-
     public boolean hasCertificate();
 
     @JsonProperty("cert")

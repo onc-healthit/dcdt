@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
+import gov.hhs.onc.dcdt.beans.ToolOrderedBean;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
@@ -12,7 +13,7 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCr
 import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
-public interface DiscoveryTestcaseCredential extends ToolNamedBean {
+public interface DiscoveryTestcaseCredential extends ToolNamedBean, ToolOrderedBean {
     public final static class DiscoveryTestcaseCredentialValidPredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
         public final static DiscoveryTestcaseCredentialValidPredicate INSTANCE = new DiscoveryTestcaseCredentialValidPredicate();
 

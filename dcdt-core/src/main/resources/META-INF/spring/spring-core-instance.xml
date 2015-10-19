@@ -92,7 +92,7 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceConfigTransactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager"
+    <beans:bean id="instanceConfigTransactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager"
         p:entityInterceptor-ref="compositeBeanInterceptor"
         p:nestedTransactionAllowed="true"
         p:rollbackOnCommitFailure="true"

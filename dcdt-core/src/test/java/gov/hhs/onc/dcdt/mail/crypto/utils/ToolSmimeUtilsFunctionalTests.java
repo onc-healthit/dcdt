@@ -17,7 +17,7 @@ import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.MailHeaderNames;
-import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
+import gov.hhs.onc.dcdt.crypto.EncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.mail.utils.ToolMimePartUtils;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
@@ -130,7 +130,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     public void testDecryptMailPkcs7MimeDiffMimeTypeParamOrder() throws IOException, MessagingException {
         ToolMimeMessageHelper encryptedMsgHelper =
             this.createSignedAndEncryptedMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo,
-                MailEncryptionAlgorithm.AES256, MailContentTypes.APP_PKCS7_SIG_BASETYPE, MailContentTypes.APP_PKCS7_MIME_BASETYPE, true);
+                EncryptionAlgorithm.AES256, MailContentTypes.APP_PKCS7_SIG_BASETYPE, MailContentTypes.APP_PKCS7_MIME_BASETYPE, true);
         this.assertDiscoveryTestcaseResultProperties(this.processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testTargetCred);
     }
 
@@ -138,7 +138,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     public void testDecryptMailXPkcs7MimeValid() throws IOException, MessagingException {
         ToolMimeMessageHelper encryptedMsgHelper =
             this.createSignedAndEncryptedMessage(this.testToAddr, this.testFromAddr, this.testSignerCredInfo, this.testTargetCertInfo,
-                MailEncryptionAlgorithm.AES256, MailContentTypes.APP_X_PKCS7_SIG_BASETYPE, MailContentTypes.APP_X_PKCS7_MIME_BASETYPE, false);
+                EncryptionAlgorithm.AES256, MailContentTypes.APP_X_PKCS7_SIG_BASETYPE, MailContentTypes.APP_X_PKCS7_MIME_BASETYPE, false);
         this.assertDiscoveryTestcaseResultProperties(this.processDiscoveryTestcaseSubmission(encryptedMsgHelper), true, this.testTargetCred);
     }
 
@@ -193,7 +193,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     }
 
     private static ToolMimeMessageHelper signAndEncrypt(ToolMimeMessageHelper msgHelper, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
-        MailEncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams) throws MessagingException, IOException {
+        EncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams) throws MessagingException, IOException {
         MimeMessage msg = msgHelper.getMimeMessage();
         MimeBodyPart signedBodyPart = new MimeBodyPart();
         // noinspection ConstantConditions
@@ -250,11 +250,11 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
 
     private ToolMimeMessageHelper createSignedAndEncryptedMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo,
         CertificateInfo encryptionCertInfo) throws MessagingException, IOException {
-        return this.createSignedAndEncryptedMessage(to, from, signerCredInfo, encryptionCertInfo, MailEncryptionAlgorithm.AES256);
+        return this.createSignedAndEncryptedMessage(to, from, signerCredInfo, encryptionCertInfo, EncryptionAlgorithm.AES256);
     }
 
     private ToolMimeMessageHelper createSignedAndEncryptedMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo,
-        CertificateInfo encryptionCertInfo, MailEncryptionAlgorithm encryptionAlg) throws MessagingException, IOException {
+        CertificateInfo encryptionCertInfo, EncryptionAlgorithm encryptionAlg) throws MessagingException, IOException {
         MimeMessage msg = this.createMimeMessage(to, from);
         ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);
         ToolMimeMessageHelper encryptedMsgHelper = ToolSmimeUtils.signAndEncrypt(unencryptedMsgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg);
@@ -265,7 +265,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     }
 
     private ToolMimeMessageHelper createSignedAndEncryptedMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo,
-        CertificateInfo encryptionCertInfo, MailEncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams)
+        CertificateInfo encryptionCertInfo, EncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams)
         throws MessagingException, IOException {
         MimeMessage msg = this.createMimeMessage(to, from);
         ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);

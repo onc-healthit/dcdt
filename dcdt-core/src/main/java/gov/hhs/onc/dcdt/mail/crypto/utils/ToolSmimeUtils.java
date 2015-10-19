@@ -1,5 +1,8 @@
 package gov.hhs.onc.dcdt.mail.crypto.utils;
 
+import gov.hhs.onc.dcdt.crypto.CryptographyException;
+import gov.hhs.onc.dcdt.crypto.DigestAlgorithm;
+import gov.hhs.onc.dcdt.crypto.EncryptionAlgorithm;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
@@ -8,10 +11,9 @@ import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateSerialNumberImpl;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
+import gov.hhs.onc.dcdt.crypto.utils.DigestUtils;
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
-import gov.hhs.onc.dcdt.mail.crypto.MailDigestAlgorithm;
-import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.ToolSmimeException;
 import gov.hhs.onc.dcdt.mail.impl.LineOutputStream;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
@@ -22,14 +24,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.math.BigInteger;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -165,11 +164,9 @@ public abstract class ToolSmimeUtils {
 
             byteArrayOutStream.flush();
 
-            // noinspection ConstantConditions
-            return MessageDigest
-                .getInstance(CryptographyUtils.findByOid(MailDigestAlgorithm.class, new ASN1ObjectIdentifier(signerInfo.getDigestAlgOID())).getId())
-                .digest(byteArrayOutStream.toByteArray());
-        } catch (NoSuchAlgorithmException | IOException | MessagingException e) {
+            return DigestUtils.digest(CryptographyUtils.findByOid(DigestAlgorithm.class, new ASN1ObjectIdentifier(signerInfo.getDigestAlgOID())),
+                byteArrayOutStream.toByteArray());
+        } catch (CryptographyException | IOException | MessagingException e) {
             throw new ToolSmimeException(
                 String.format("Unable to calculate message digest for MIME message with signer (id={issuer=%s, serialNum=%s}) certificate (subj={%s}).",
                     signerId.getIssuer(), new CertificateSerialNumberImpl(signerId.getSerialNumber()), certHolder.getSubject()),
@@ -302,7 +299,7 @@ public abstract class ToolSmimeUtils {
             SMIMEEnveloped enveloped = new SMIMEEnveloped(msg);
             ASN1ObjectIdentifier encAlgOid = new ASN1ObjectIdentifier(enveloped.getEncryptionAlgOID());
 
-            if (CryptographyUtils.findByOid(MailEncryptionAlgorithm.class, encAlgOid) == null) {
+            if (CryptographyUtils.findByOid(EncryptionAlgorithm.class, encAlgOid) == null) {
                 throw new ToolSmimeException(
                     String.format("Mail MIME message (id=%s, from=%s, to=%s) content (type=%s) has unknown/invalid content encryption algorithm: oid=%s",
                         msg.getMessageID(), msgHelper.getFrom(), msgHelper.getTo(), msgContentType, encAlgOid.getId()));
@@ -323,8 +320,7 @@ public abstract class ToolSmimeUtils {
         }
     }
 
-    public static MimeBodyPart encrypt(MimeBodyPart unencryptedBodyPart, X509Certificate cert, MailEncryptionAlgorithm encryptionAlg)
-        throws MessagingException {
+    public static MimeBodyPart encrypt(MimeBodyPart unencryptedBodyPart, X509Certificate cert, EncryptionAlgorithm encryptionAlg) throws MessagingException {
         MimeType bodyPartContentType = ToolMimePartUtils.getContentType(unencryptedBodyPart);
 
         try {
@@ -397,7 +393,7 @@ public abstract class ToolSmimeUtils {
         ASN1EncodableVector signedAttrs = new ASN1EncodableVector();
         SMIMECapabilityVector caps = new SMIMECapabilityVector();
 
-        for (MailEncryptionAlgorithm alg : EnumSet.allOf(MailEncryptionAlgorithm.class)) {
+        for (EncryptionAlgorithm alg : EncryptionAlgorithm.class.getEnumConstants()) {
             caps.addCapability(alg.getOid());
         }
 
@@ -407,7 +403,7 @@ public abstract class ToolSmimeUtils {
     }
 
     public static ToolMimeMessageHelper signAndEncrypt(ToolMimeMessageHelper msgHelper, CredentialInfo signerCredInfo, CertificateInfo encryptionCertInfo,
-        MailEncryptionAlgorithm encryptionAlg) throws MessagingException, IOException {
+        EncryptionAlgorithm encryptionAlg) throws MessagingException, IOException {
         MimeMessage msg = msgHelper.getMimeMessage();
         MimeBodyPart signedBodyPart = new MimeBodyPart();
         // noinspection ConstantConditions

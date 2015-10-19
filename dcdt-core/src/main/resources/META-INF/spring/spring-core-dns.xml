@@ -74,7 +74,10 @@
     = DNS RESOLVERS
     =====================================================================================================-->
     <beans:bean id="dnsResolver" class="org.xbill.DNS.Resolver" abstract="true"/>
-    <beans:bean id="dnsResolverExt" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver" abstract="true"/>
+    
+    <beans:bean id="dnsResolverExt" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver" abstract="true"
+        p:retries="0"
+        p:timeout="5"/>
     
     <beans:bean id="dnsResolverExtLocal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExt" factory-method="fromSocketAddresses">
         <beans:constructor-arg name="socketAddrs">
@@ -117,6 +120,38 @@
     
     <beans:bean id="dnsLookupServiceExternal" parent="dnsLookupServiceImpl" autowire-candidate="false"
         p:resolver-ref="dnsResolverExtExternal"/>
+    
+    <!--====================================================================================================
+    = DNS NAME SERVICES
+    =====================================================================================================-->
+    <beans:bean id="dnsNameService" class="gov.hhs.onc.dcdt.dns.lookup.DnsNameService" abstract="true"/>
+    
+    <beans:bean id="dnsNameServiceImpl" class="gov.hhs.onc.dcdt.dns.lookup.impl.DnsNameServiceImpl" parent="dnsNameService" abstract="true"/>
+    
+    <beans:bean id="dnsNameServiceLocal" parent="dnsNameServiceImpl" autowire-candidate="false">
+        <beans:property name="lookupServices">
+            <beans:array>
+                <beans:ref bean="dnsLookupServiceLocal"/>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="dnsNameServiceExternal" parent="dnsNameServiceImpl" autowire-candidate="false">
+        <beans:property name="lookupServices">
+            <beans:array>
+                <beans:ref bean="dnsLookupServiceExternal"/>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="dnsNameServiceCombined" parent="dnsNameServiceImpl" autowire-candidate="false">
+        <beans:property name="lookupServices">
+            <beans:array>
+                <beans:ref bean="dnsLookupServiceLocal"/>
+                <beans:ref bean="dnsLookupServiceExternal"/>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
     
     <!--====================================================================================================
     = DNS SENDER POLICY FRAMEWORK VALUES

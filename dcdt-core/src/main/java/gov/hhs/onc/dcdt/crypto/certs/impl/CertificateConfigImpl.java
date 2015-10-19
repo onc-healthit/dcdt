@@ -26,6 +26,11 @@ public class CertificateConfigImpl extends AbstractCertificateDescriptor impleme
     }
 
     @Override
+    public void setSelfIssued(boolean selfIssued) {
+        this.selfIssued = selfIssued;
+    }
+
+    @Override
     public void setSerialNumber(@Nullable CertificateSerialNumber serialNum) {
         this.serialNum = serialNum;
     }

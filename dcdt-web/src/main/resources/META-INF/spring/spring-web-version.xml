@@ -16,6 +16,21 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--suppress SpringModelInspection -->
+    <beans:bean id="toolModuleVersionWebParent" parent="toolModuleVersionImpl"
+        c:groupId="${dcdt.module.dcdt-web-parent.groupId:}"
+        c:artifactId="${dcdt.module.dcdt-web-parent.artifactId:}"
+        c:version="${dcdt.module.dcdt-web-parent.version:}"
+        c:name="${dcdt.module.dcdt-web-parent.name:}"
+        c:description="${dcdt.module.dcdt-web-parent.description:}"
+        p:buildTimestampString="${dcdt.module.dcdt-web-parent.build.timestamp:}"
+        p:gitAuthor="${dcdt.module.dcdt-web-parent.git.author:}"
+        p:gitBranch="${dcdt.module.dcdt-web-parent.git.branch:}"
+        p:gitCommitId="${dcdt.module.dcdt-web-parent.git.commit.id:}"
+        p:gitCommitIdShort="${dcdt.module.dcdt-web-parent.git.commit.id.short:}"
+        p:gitCommitTimestampString="${dcdt.module.dcdt-web-parent.git.commit.timestamp:}"
+        p:gitUrl="${dcdt.module.dcdt-web-parent.git.url:}"/>
+    
+    <!--suppress SpringModelInspection -->
     <beans:bean id="toolModuleVersionWeb" parent="toolModuleVersionImpl"
         c:groupId="${dcdt.module.dcdt-web.groupId:}"
         c:artifactId="${dcdt.module.dcdt-web.artifactId:}"

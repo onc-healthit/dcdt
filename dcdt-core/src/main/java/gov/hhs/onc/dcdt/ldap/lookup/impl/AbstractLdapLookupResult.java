@@ -1,25 +1,24 @@
 package gov.hhs.onc.dcdt.ldap.lookup.impl;
 
-import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.beans.ToolMessage;
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLookupResultBean;
 import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupResult;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.io.Externalizable;
-import java.util.Iterator;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
 import org.apache.directory.api.ldap.model.message.LdapResult;
 import org.apache.directory.api.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
-public abstract class AbstractLdapLookupResult<T extends Externalizable> extends AbstractToolLookupResultBean<T, ResultCodeEnum> implements LdapLookupResult<T> {
+public abstract class AbstractLdapLookupResult<T extends Externalizable> extends AbstractToolLookupResultBean implements LdapLookupResult<T> {
     protected LdapConnectionConfig connConfig;
     protected LdapResult result;
     protected List<T> items;
+    protected List<ToolMessage> msgs;
 
     protected AbstractLdapLookupResult(LdapConnectionConfig connConfig, LdapResult result) {
         this(connConfig, result, null);
@@ -29,12 +28,16 @@ public abstract class AbstractLdapLookupResult<T extends Externalizable> extends
         this.connConfig = connConfig;
         this.result = result;
         this.items = items;
+
+        ResultCodeEnum code = this.getCode();
+
+        this.msgs = ToolArrayUtils.asList(new ToolMessageImpl((this.isSuccess() ? ToolMessageLevel.INFO : ToolMessageLevel.ERROR),
+            String.format("code=%d, msg=%s, diagnosticMsg=%s", code.getResultCode(), code.getMessage(), this.result.getDiagnosticMessage())));
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })
-    public Iterator<T> iterator() {
-        return ((Iterator<T>) IteratorUtils.getIterator(this.items));
+    public ResultCodeEnum getCode() {
+        return this.result.getResultCode();
     }
 
     @Override
@@ -56,19 +59,11 @@ public abstract class AbstractLdapLookupResult<T extends Externalizable> extends
     @Nullable
     @Override
     public List<ToolMessage> getMessages() {
-        ToolMessageLevel level = (this.isSuccess() ? ToolMessageLevel.INFO : ToolMessageLevel.ERROR);
-
-        return ToolArrayUtils.asList(new ToolMessageImpl(level, this.getType().getMessage()),
-            new ToolMessageImpl(level, this.result.getDiagnosticMessage()));
+        return this.msgs;
     }
 
     @Override
     public boolean isSuccess() {
-        return (this.getType() == ResultCodeEnum.SUCCESS);
-    }
-
-    @Override
-    public ResultCodeEnum getType() {
-        return this.result.getResultCode();
+        return (this.getCode() == ResultCodeEnum.SUCCESS);
     }
 }

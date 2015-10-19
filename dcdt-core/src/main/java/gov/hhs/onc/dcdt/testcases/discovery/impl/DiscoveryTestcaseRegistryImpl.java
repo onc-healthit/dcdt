@@ -24,19 +24,19 @@ public class DiscoveryTestcaseRegistryImpl extends AbstractToolBeanRegistry<Disc
     }
 
     @Override
-    protected void preRemoveBeans(Iterable<DiscoveryTestcase> beans) throws ToolBeanRegistryException {
+    protected void preRemoveBeans(List<DiscoveryTestcase> beans) throws ToolBeanRegistryException {
         this.getDiscoveryTestcaseCredentialRegistry().removeBeans(this.extractDiscoveryTestcaseCredentials(beans));
     }
 
     @Override
-    protected void postRegisterBeans(Iterable<DiscoveryTestcase> beans) throws ToolBeanRegistryException {
+    protected void postRegisterBeans(List<DiscoveryTestcase> beans) throws ToolBeanRegistryException {
         this.getDiscoveryTestcaseCredentialRegistry().registerBeans(this.extractDiscoveryTestcaseCredentials(beans));
 
         this.appContext.refresh();
     }
 
     @Override
-    protected void postRemoveBeans(Iterable<DiscoveryTestcase> beans) throws ToolBeanRegistryException {
+    protected void postRemoveBeans(List<DiscoveryTestcase> beans) throws ToolBeanRegistryException {
         this.appContext.refresh();
     }
 

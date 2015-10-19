@@ -7,7 +7,9 @@ import javax.annotation.Nullable;
 import org.apache.directory.api.ldap.model.message.ResultCodeEnum;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
-public interface LdapLookupResult<T extends Externalizable> extends ToolLookupResultBean<T, ResultCodeEnum> {
+public interface LdapLookupResult<T extends Externalizable> extends ToolLookupResultBean {
+    public ResultCodeEnum getCode();
+
     public LdapConnectionConfig getConnectionConfig();
 
     public boolean hasItems();

@@ -47,7 +47,7 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
     }
 
     @Override
-    public void registerBeans(Iterable<T> beans) throws ToolBeanRegistryException {
+    public void registerBeans(List<T> beans) throws ToolBeanRegistryException {
         this.preRegisterBeans(beans);
 
         for (T bean : beans) {
@@ -77,7 +77,7 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
     }
 
     @Override
-    public void removeBeans(Iterable<T> beans) throws ToolBeanRegistryException {
+    public void removeBeans(List<T> beans) throws ToolBeanRegistryException {
         this.preRemoveBeans(beans);
 
         for (T bean : beans) {
@@ -103,16 +103,16 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
         this.getBeanService().removeBean(bean);
     }
 
-    protected void preRegisterBeans(Iterable<T> beans) throws ToolBeanRegistryException {
+    protected void preRegisterBeans(List<T> beans) throws ToolBeanRegistryException {
     }
 
-    protected void postRegisterBeans(Iterable<T> beans) throws ToolBeanRegistryException {
+    protected void postRegisterBeans(List<T> beans) throws ToolBeanRegistryException {
     }
 
-    protected void preRemoveBeans(Iterable<T> beans) throws ToolBeanRegistryException {
+    protected void preRemoveBeans(List<T> beans) throws ToolBeanRegistryException {
     }
 
-    protected void postRemoveBeans(Iterable<T> beans) throws ToolBeanRegistryException {
+    protected void postRemoveBeans(List<T> beans) throws ToolBeanRegistryException {
     }
 
     protected V getBeanService() {

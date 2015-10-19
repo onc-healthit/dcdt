@@ -4,8 +4,8 @@ import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.config.instance.impl.InstanceDnsConfigImpl.AuthoritativeDnsConfigPredicate;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.Nullable;
@@ -21,7 +21,7 @@ public class DnsServerConfigImpl extends AbstractToolConnectionBean implements D
     @Override
     public List<InstanceDnsConfig> findAuthoritativeConfigs(Record questionRecord) {
         // noinspection ConstantConditions
-        return this.findAuthoritativeConfigs(ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType()), questionRecord.getName());
+        return this.findAuthoritativeConfigs(ToolEnumUtils.findByCode(DnsRecordType.class, questionRecord.getType()), questionRecord.getName());
     }
 
     @Override

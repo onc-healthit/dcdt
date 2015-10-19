@@ -3,16 +3,18 @@ package gov.hhs.onc.dcdt.crypto.certs.impl;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificatePath;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidatorContext;
-import gov.hhs.onc.dcdt.crypto.certs.path.CertificatePathResolver;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import java.security.cert.X509Certificate;
 import javax.validation.ConstraintValidatorContext;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class CertificatePathConstraintValidator extends AbstractCertificateConstraintValidator<CertificatePath> {
+    // @formatter:off
+    /*
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private CertificatePathResolver certPathResolver;
+    */
+    // @formatter:on
 
     @Override
     protected boolean isValidInternal(CertificateValidatorContext certValidatorContext, ConstraintValidatorContext validatorContext) throws Exception {

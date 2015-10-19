@@ -8,8 +8,8 @@ import gov.hhs.onc.dcdt.dns.DnsMessageOpcode;
 import gov.hhs.onc.dcdt.dns.DnsMessageSection;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsMessageUtils;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.format.impl.AbstractToolFormatter;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils.ToolStrBuilder;
 import java.util.EnumSet;
 import java.util.Locale;
@@ -101,7 +101,7 @@ public class DnsMessageFormatter extends AbstractToolFormatter<Message> {
         strBuilder.append(SEC_ITEM_NAME_HEADER_STATUS);
         strBuilder.append(DELIM_SEC_ITEM);
         // noinspection ConstantConditions
-        strBuilder.append(ToolDnsUtils.getId(ToolDnsMessageUtils.getRcode(obj), header.getRcode()));
+        strBuilder.append(ToolEnumUtils.getId(ToolDnsMessageUtils.getRcode(obj), header.getRcode()));
 
         if (obj.isSigned()) {
             printTsigSection(strBuilder, obj.isVerified());
@@ -128,7 +128,7 @@ public class DnsMessageFormatter extends AbstractToolFormatter<Message> {
 
     private static void printRecord(ToolStrBuilder strBuilder, DnsMessageSection sec, Record record) {
         int recordTypeCode = record.getType();
-        DnsRecordType recordType = ToolDnsUtils.findByCode(DnsRecordType.class, recordTypeCode);
+        DnsRecordType recordType = ToolEnumUtils.findByCode(DnsRecordType.class, recordTypeCode);
 
         printRecordInfo(strBuilder, sec, recordTypeCode, recordType, record);
 
@@ -146,7 +146,7 @@ public class DnsMessageFormatter extends AbstractToolFormatter<Message> {
     private static void printCertRecordData(ToolStrBuilder strBuilder, CERTRecord certRecord) {
         int certTypeCode = certRecord.getCertType();
         // noinspection ConstantConditions
-        strBuilder.append(ToolDnsUtils.getId(ToolDnsUtils.findByCode(DnsCertificateType.class, certTypeCode), certTypeCode));
+        strBuilder.append(ToolEnumUtils.getId(ToolEnumUtils.findByCode(DnsCertificateType.class, certTypeCode), certTypeCode));
 
         strBuilder.append(DELIM_RECORD_DATA);
         strBuilder.append(certRecord.getKeyTag());
@@ -154,7 +154,7 @@ public class DnsMessageFormatter extends AbstractToolFormatter<Message> {
         int keyAlgTypeCode = certRecord.getAlgorithm();
         strBuilder.append(DELIM_RECORD_DATA);
         // noinspection ConstantConditions
-        strBuilder.append(ToolDnsUtils.getId(ToolDnsUtils.findByCode(DnsKeyAlgorithmType.class, keyAlgTypeCode), keyAlgTypeCode));
+        strBuilder.append(ToolEnumUtils.getId(ToolEnumUtils.findByCode(DnsKeyAlgorithmType.class, keyAlgTypeCode), keyAlgTypeCode));
 
         strBuilder.appendWithDelimiter(Base64.encodeBase64String(certRecord.getCert()), DELIM_RECORD_DATA);
     }
@@ -188,9 +188,9 @@ public class DnsMessageFormatter extends AbstractToolFormatter<Message> {
         int dclassTypeCode = record.getDClass();
         strBuilder.append(DELIM_RECORD);
         // noinspection ConstantConditions
-        strBuilder.append(ToolDnsUtils.getId(ToolDnsUtils.findByCode(DnsDclassType.class, dclassTypeCode), dclassTypeCode));
+        strBuilder.append(ToolEnumUtils.getId(ToolEnumUtils.findByCode(DnsDclassType.class, dclassTypeCode), dclassTypeCode));
         strBuilder.append(DELIM_RECORD);
-        strBuilder.append(ToolDnsUtils.getId(recordType, recordTypeCode));
+        strBuilder.append(ToolEnumUtils.getId(recordType, recordTypeCode));
     }
 
     private static void printTsigSection(ToolStrBuilder strBuilder, boolean verified) {

@@ -66,7 +66,7 @@ public class CertificateDiscoveryServiceImpl extends AbstractToolBean implements
                 break;
             }
 
-            certDiscovered = (!skipStep && isCertLookupStep && ((CertificateLookupStep<?, ?, ?, ?>) processedStep).hasCertificateInfos());
+            certDiscovered = (!skipStep && isCertLookupStep && ((CertificateLookupStep<?, ?>) processedStep).hasCertificateInfos());
         }
 
         return processedSteps;

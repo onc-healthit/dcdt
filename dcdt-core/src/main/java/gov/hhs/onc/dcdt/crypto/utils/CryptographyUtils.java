@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.utils;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyAlgorithmIdentifier;
-import gov.hhs.onc.dcdt.crypto.CryptographyIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTaggedIdentifier;
 import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
@@ -62,11 +61,6 @@ public abstract class CryptographyUtils {
     @Nullable
     public static <T extends Enum<T> & CryptographyTypeIdentifier> T findByType(Class<T> enumClass, Class<?> type) {
         return ToolEnumUtils.findByPredicate(enumClass, enumItem -> enumItem.getType().isAssignableFrom(type));
-    }
-
-    @Nullable
-    public static <T extends Enum<T> & CryptographyIdentifier> T findById(Class<T> enumClass, String id) {
-        return ToolEnumUtils.findByPredicate(enumClass, enumItem -> enumItem.getId().equals(id));
     }
 
     public static void initializeProvider() {

@@ -8,7 +8,6 @@ import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsMessageUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.DnsRecordConfigTransformer;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.DnsRecordTargetTransformer;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsUtils;
 import gov.hhs.onc.dcdt.net.InetProtocol;
 import gov.hhs.onc.dcdt.net.sockets.impl.AbstractSocketRequestProcessor;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
@@ -17,6 +16,7 @@ import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessingException;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerRequestProcessor;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -99,7 +99,7 @@ public class DnsServerRequestProcessorImpl extends AbstractSocketRequestProcesso
             return respMsg;
         }
 
-        DnsRecordType questionRecordType = ToolDnsUtils.findByCode(DnsRecordType.class, questionRecord.getType());
+        DnsRecordType questionRecordType = ToolEnumUtils.findByCode(DnsRecordType.class, questionRecord.getType());
         Name questionName;
 
         // @formatter:off

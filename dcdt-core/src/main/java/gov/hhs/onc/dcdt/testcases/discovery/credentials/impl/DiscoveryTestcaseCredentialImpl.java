@@ -22,6 +22,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.hibernate.annotations.Target;
+import org.springframework.core.Ordered;
 
 @Entity(name = "discovery_testcase_cred")
 @JsonTypeName("discoveryTestcaseCred")
@@ -33,6 +34,7 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     private DiscoveryTestcaseCredentialDescription desc;
     private DiscoveryTestcaseCredential issuerCred;
     private DiscoveryTestcaseCredentialLocation loc;
+    private int order = Ordered.LOWEST_PRECEDENCE;
     private DiscoveryTestcaseCredentialType type;
     private boolean valid = true;
 
@@ -160,6 +162,17 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     @Override
     public String getName() {
         return super.getName();
+    }
+
+    @Override
+    @Transient
+    public int getOrder() {
+        return this.order;
+    }
+
+    @Override
+    public void setOrder(int order) {
+        this.order = order;
     }
 
     @Override

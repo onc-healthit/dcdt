@@ -1,4 +1,7 @@
 package gov.hhs.onc.dcdt.dns;
 
-public interface DnsMnemonicIdentifier extends DnsCodeIdentifier, DnsIdentifier {
+import gov.hhs.onc.dcdt.beans.ToolCodeIdentifier;
+import gov.hhs.onc.dcdt.beans.ToolIdentifier;
+
+public interface DnsMnemonicIdentifier extends ToolCodeIdentifier, ToolIdentifier {
 }

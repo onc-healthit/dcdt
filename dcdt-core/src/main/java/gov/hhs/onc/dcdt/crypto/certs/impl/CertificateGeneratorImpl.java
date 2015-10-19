@@ -61,8 +61,8 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
         try {
             SignatureAlgorithm certSigAlg = certConfig.getSignatureAlgorithm();
             // noinspection ConstantConditions
-            X509CertificateHolder certHolder =
-                certBuilder.build(new BcRSAContentSignerBuilder(certSigAlg.getAlgorithmId(), certSigAlg.getDigestAlgorithmId()).build(PrivateKeyFactory
+            X509CertificateHolder certHolder = certBuilder
+                .build(new BcRSAContentSignerBuilder(certSigAlg.getAlgorithmId(), certSigAlg.getDigestAlgorithm().getAlgorithmId()).build(PrivateKeyFactory
                     .createKey(certConfig.isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo.getKeyDescriptor().getPrivateKeyInfo())));
 
             return new CertificateInfoImpl(
@@ -89,8 +89,8 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
             if (!certCa) {
                 certBuilder.addExtension(Extension.authorityKeyIdentifier, false, issuerKeyPairInfo.getAuthorityKeyId());
                 // noinspection ConstantConditions
-                certBuilder.addExtension(Extension.subjectKeyIdentifier, false,
-                    new SubjectKeyIdentifier(DigestUtils.digest(certConfig.getSignatureAlgorithm().getDigestId(), keyPairInfo.getPublicKey().getEncoded())));
+                certBuilder.addExtension(Extension.subjectKeyIdentifier, false, new SubjectKeyIdentifier(
+                    DigestUtils.digest(certConfig.getSignatureAlgorithm().getDigestAlgorithm(), keyPairInfo.getPublicKey().getEncoded())));
             }
 
             if (certSubj.hasAltNames()) {

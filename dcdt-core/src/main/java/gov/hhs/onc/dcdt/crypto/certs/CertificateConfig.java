@@ -17,6 +17,8 @@ public interface CertificateConfig extends CertificateDescriptor, CryptographyCo
 
     public void setCertificateType(@Nullable CertificateType certType);
 
+    public void setSelfIssued(boolean selfIssued);
+
     public void setSerialNumber(@Nullable CertificateSerialNumber serialNum);
 
     @NotNull(message = "{dcdt.crypto.certs.validation.constraints.cert.sig.alg.NotNull.msg}", groups = { GenerateConstraintGroup.class })

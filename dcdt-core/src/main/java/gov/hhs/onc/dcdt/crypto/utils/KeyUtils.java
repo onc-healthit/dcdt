@@ -7,6 +7,7 @@ import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyException;
 import gov.hhs.onc.dcdt.crypto.keys.KeyType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,7 +70,7 @@ public abstract class KeyUtils {
     public static <T extends Key> void writeKey(Writer writer, T key, DataEncoding dataEnc) throws CryptographyException {
         Class<? extends Key> keyClass = key.getClass();
         KeyType keyType = CryptographyUtils.findByType(KeyType.class, keyClass);
-        KeyAlgorithm keyAlg = CryptographyUtils.findById(KeyAlgorithm.class, key.getAlgorithm());
+        KeyAlgorithm keyAlg = ToolEnumUtils.findById(KeyAlgorithm.class, key.getAlgorithm());
         // noinspection ConstantConditions
         Class<? extends EncodedKeySpec> keySpecClass = keyAlg.getKeySpecClass(keyType);
 

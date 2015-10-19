@@ -7,17 +7,16 @@ import gov.hhs.onc.dcdt.discovery.LocationType;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.discovery.steps.LookupStep;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import java.io.Serializable;
 import java.util.List;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 
-public abstract class AbstractLookupStep<T extends Serializable, U extends Enum<U>, V extends ToolLookupResultBean<T, U>, W extends ToolBean> extends
-    AbstractCertificateDiscoveryStep implements LookupStep<T, U, V, W> {
-    protected W lookupService;
-    protected V result;
+public abstract class AbstractLookupStep<T extends ToolLookupResultBean, U extends ToolBean> extends AbstractCertificateDiscoveryStep
+    implements LookupStep<T, U> {
+    protected U lookupService;
+    protected T result;
 
-    protected AbstractLookupStep(BindingType bindingType, @Nullable LocationType locType, W lookupService) {
+    protected AbstractLookupStep(BindingType bindingType, @Nullable LocationType locType, U lookupService) {
         super(bindingType, locType);
 
         this.lookupService = lookupService;
@@ -34,10 +33,10 @@ public abstract class AbstractLookupStep<T extends Serializable, U extends Enum<
     }
 
     @Nullable
-    protected abstract V executeLookup(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr);
+    protected abstract T executeLookup(List<CertificateDiscoveryStep> prevSteps, MailAddress directAddr);
 
     @Override
-    public W getLookupService() {
+    public U getLookupService() {
         return this.lookupService;
     }
 
@@ -48,7 +47,7 @@ public abstract class AbstractLookupStep<T extends Serializable, U extends Enum<
 
     @Nullable
     @Override
-    public V getResult() {
+    public T getResult() {
         return this.result;
     }
 

@@ -30,6 +30,7 @@
         <module>dcdt-service-dns</module>
         <module>dcdt-service-ldap</module>
         <module>dcdt-service-mail</module>
+        <module>dcdt-web-parent</module>
         <module>dcdt-web</module>
     </modules>
     

@@ -9,7 +9,6 @@ import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.web.service.ToolServiceHub;
 import gov.hhs.onc.dcdt.web.service.ToolServiceType;
 import java.util.EnumMap;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
@@ -34,7 +33,7 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
 
         ToolService service;
 
-        for (ToolServiceType serviceType : EnumSet.allOf(ToolServiceType.class)) {
+        for (ToolServiceType serviceType : ToolServiceType.class.getEnumConstants()) {
             if (!this.serviceMap.containsKey(serviceType) || ((service = this.serviceMap.get(serviceType)) == null)) {
                 continue;
             }
@@ -57,7 +56,7 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
     protected void startInternal() throws Exception {
         ToolService service;
 
-        for (ToolServiceType serviceType : EnumSet.allOf(ToolServiceType.class)) {
+        for (ToolServiceType serviceType : ToolServiceType.class.getEnumConstants()) {
             this.serviceMap.put(serviceType, (service = ToolBeanFactoryUtils.getBeanOfType(this.appContext, serviceType.getServiceClass())));
 
             try {

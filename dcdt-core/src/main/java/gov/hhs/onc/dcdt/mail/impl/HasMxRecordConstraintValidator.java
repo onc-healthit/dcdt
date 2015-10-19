@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.mail.impl;
 
 import gov.hhs.onc.dcdt.discovery.BindingType;
-import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
 import gov.hhs.onc.dcdt.mail.HasMxRecord;
@@ -39,7 +38,7 @@ public class HasMxRecordConstraintValidator extends AbstractToolStringConstraint
                 validatorContext.disableDefaultConstraintViolation();
                 validatorContext.buildConstraintViolationWithTemplate(this.anno.messageLookupTargets()).addConstraintViolation();
             }
-        } catch (DnsException | ToolMailAddressException e) {
+        } catch (ToolMailAddressException e) {
             validatorContext.disableDefaultConstraintViolation();
             validatorContext.buildConstraintViolationWithTemplate(this.anno.messageLookup()).addConstraintViolation();
         }

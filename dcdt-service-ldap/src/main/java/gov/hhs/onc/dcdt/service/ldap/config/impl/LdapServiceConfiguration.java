@@ -89,9 +89,7 @@ public class LdapServiceConfiguration {
 
     private static AvlPartition createAvlPartitionInternal(SchemaManager schemaManager, AvlPartitionBean avlPartitionBean) throws Exception {
         AvlPartition avlPartition = createAvlPartitionInternal(schemaManager);
-        avlPartition.setCacheSize(avlPartitionBean.getPartitionCacheSize());
         avlPartition.setId(avlPartitionBean.getPartitionId());
-        avlPartition.setSyncOnWrite(avlPartitionBean.isPartitionSyncOnWrite());
 
         String contextEntry = avlPartitionBean.getContextEntry();
 

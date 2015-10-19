@@ -105,7 +105,8 @@ public class DnsLookupServiceUnitTests extends AbstractToolUnitTests {
     @Test
     public void testLookupSrvRecords() throws DnsException {
         DnsLookupResult<SRVRecord> result =
-            assertResultValid(this.dnsLookupService.lookupSrvRecords(DnsServiceType.LDAP, DnsServiceProtocol.TCP, this.testDnsLookupDomain1Name), 1);
+            assertResultValid(this.dnsLookupService.lookupSrvRecords(ToolDnsNameUtils.fromLabels(DnsServiceType.LDAP.getNameLabel(),
+                DnsServiceProtocol.TCP.getNameLabel(), this.testDnsLookupDomain1Name)), 1);
         // noinspection ConstantConditions
         Assert.assertEquals(result.getAnswers().get(0).getTarget(), ToolDnsNameUtils.toAbsolute(this.testDnsLookupDomainSrv1));
     }

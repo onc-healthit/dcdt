@@ -1,0 +1,2 @@
+gov.hhs.onc.dcdt.logging.LoggingInitializer=\
+    gov.hhs.onc.dcdt.service.dns.logging.impl.DnsServiceLoggingInitializer

@@ -6,6 +6,7 @@ import gov.hhs.onc.dcdt.dns.DnsMessageRcode;
 import gov.hhs.onc.dcdt.dns.DnsMessageSection;
 import gov.hhs.onc.dcdt.net.InetProtocol;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import gov.hhs.onc.dcdt.utils.ToolNumberUtils;
 import java.io.IOException;
 import java.util.EnumSet;
@@ -79,7 +80,7 @@ public abstract class ToolDnsMessageUtils {
 
     @Nullable
     public static DnsMessageOpcode getOpcode(Message msg) {
-        return ToolDnsUtils.findByCode(DnsMessageOpcode.class, msg.getHeader().getOpcode());
+        return ToolEnumUtils.findByCode(DnsMessageOpcode.class, msg.getHeader().getOpcode());
     }
 
     public static Message setOpcode(Message msg, DnsMessageOpcode opcode) {
@@ -90,7 +91,7 @@ public abstract class ToolDnsMessageUtils {
 
     @Nullable
     public static DnsMessageRcode getRcode(Message msg) {
-        return ToolDnsUtils.findByCode(DnsMessageRcode.class, msg.getRcode());
+        return ToolEnumUtils.findByCode(DnsMessageRcode.class, msg.getRcode());
     }
 
     public static Message setRcode(Message msg, DnsMessageRcode rcode) {

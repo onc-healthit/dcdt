@@ -17,10 +17,23 @@ public abstract class AbstractCertificateDescriptor extends AbstractCryptography
     protected AuthorityInformationAccess aia;
     protected boolean ca;
     protected CertificateType certType;
+    protected boolean selfIssued;
     protected CertificateSerialNumber serialNum;
     protected SignatureAlgorithm sigAlg;
     protected CertificateName subjName;
     protected CertificateValidInterval validInterval;
+
+    @Override
+    @Transient
+    public boolean isIntermediateCertificateAuthority() {
+        return (this.ca && !this.selfIssued);
+    }
+
+    @Override
+    @Transient
+    public boolean isRootCertificateAuthority() {
+        return (this.ca && this.selfIssued);
+    }
 
     @Override
     protected void reset() {
@@ -61,6 +74,12 @@ public abstract class AbstractCertificateDescriptor extends AbstractCryptography
     @Transient
     public CertificateType getCertificateType() {
         return this.certType;
+    }
+
+    @Override
+    @Transient
+    public boolean isSelfIssued() {
+        return this.selfIssued;
     }
 
     @Override

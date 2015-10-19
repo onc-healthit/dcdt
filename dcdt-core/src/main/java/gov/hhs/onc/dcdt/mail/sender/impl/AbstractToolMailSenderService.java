@@ -10,7 +10,7 @@ import gov.hhs.onc.dcdt.mail.JavaMailProperties;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
-import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
+import gov.hhs.onc.dcdt.crypto.EncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.crypto.utils.ToolSmimeUtils;
 import gov.hhs.onc.dcdt.mail.impl.MimeAttachmentResource;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
@@ -41,7 +41,7 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
         }
 
         public void send(ToolMimeMailMessage mimeMailMsg, @Nullable CredentialInfo signerCredInfo, @Nullable CertificateInfo encryptionCertInfo,
-            @Nullable MailEncryptionAlgorithm encryptionAlg, ToolMimeMessagePreparator ... mimeMsgPreps) throws MailException, MessagingException, IOException {
+            @Nullable EncryptionAlgorithm encryptionAlg, ToolMimeMessagePreparator ... mimeMsgPreps) throws MailException, MessagingException, IOException {
             for (ToolMimeMessagePreparator mimeMsgPrep : mimeMsgPreps) {
                 try {
                     mimeMsgPrep.prepare();
@@ -89,13 +89,13 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
 
     protected void
         send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable CredentialInfo signerCredInfo,
-            @Nullable CertificateInfo encryptionCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg,
+            @Nullable CertificateInfo encryptionCertInfo, @Nullable EncryptionAlgorithm encryptionAlg,
             @Nullable MimeAttachmentResource ... attachmentResources) throws Exception {
         this.send(subjModelMap, textModelMap, to, signerCredInfo, encryptionCertInfo, encryptionAlg, ToolArrayUtils.asList(attachmentResources));
     }
 
     protected void send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable CredentialInfo signerCredInfo,
-        @Nullable CertificateInfo encryptionCertInfo, @Nullable MailEncryptionAlgorithm encryptionAlg,
+        @Nullable CertificateInfo encryptionCertInfo, @Nullable EncryptionAlgorithm encryptionAlg,
         @Nullable Iterable<MimeAttachmentResource> attachmentResources) throws Exception {
         MailGatewayConfig mailGatewayConfig = fromConfig.getGatewayConfig();
         MailGatewayCredentialConfig mailGatewayCredConfig = fromConfig.getGatewayCredentialConfig();

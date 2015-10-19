@@ -5,12 +5,10 @@ import gov.hhs.onc.dcdt.dns.DnsRecordType;
 import gov.hhs.onc.dcdt.dns.DnsResultType;
 import java.util.List;
 import javax.annotation.Nullable;
-import org.apache.commons.collections4.Predicate;
-import org.xbill.DNS.Lookup;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 
-public interface DnsLookupResult<T extends Record> extends ToolLookupResultBean<T, DnsResultType> {
+public interface DnsLookupResult<T extends Record> extends ToolLookupResultBean {
     public boolean hasAliases();
 
     @Nullable
@@ -20,8 +18,6 @@ public interface DnsLookupResult<T extends Record> extends ToolLookupResultBean<
 
     @Nullable
     public List<T> getAnswers();
-
-    public Lookup getLookup();
 
     public boolean hasOrderedAnswers();
 
@@ -37,10 +33,7 @@ public interface DnsLookupResult<T extends Record> extends ToolLookupResultBean<
 
     public Class<T> getRecordClass();
 
-    public boolean hasRecordPredicate();
-
-    @Nullable
-    public Predicate<T> getRecordPredicate();
-
     public DnsRecordType getRecordType();
+
+    public DnsResultType getType();
 }

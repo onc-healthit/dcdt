@@ -6,7 +6,6 @@ import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.discovery.steps.CertificateDiscoveryStep;
 import gov.hhs.onc.dcdt.discovery.steps.dns.DnsSrvRecordLookupStep;
 import gov.hhs.onc.dcdt.discovery.steps.ldap.LdapBaseDnLookupStep;
-import gov.hhs.onc.dcdt.dns.DnsException;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapBaseDnLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
@@ -47,46 +46,37 @@ public class LdapBaseDnLookupStepImpl extends AbstractLdapLookupStep<Dn, LdapBas
             if ((srvRecordLookupResult = srvRecordLookupStep.getResult()).hasOrderedAnswers()) {
                 // noinspection ConstantConditions
                 for (SRVRecord srvRecord : srvRecordLookupResult.getOrderedAnswers()) {
-                    try {
-                        connName = srvRecord.getName();
-                        connPort = srvRecord.getPort();
+                    connName = srvRecord.getName();
+                    connPort = srvRecord.getPort();
 
-                        if ((srvRecordTargetLookupResult = srvRecordLookupStep.getLookupService().lookupARecords((connTarget = srvRecord.getTarget())))
-                            .isSuccess() && srvRecordTargetLookupResult.hasAnswers()) {
-                            // noinspection ConstantConditions
-                            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.INFO,
-                                String.format("DNS SRV record (name=%s, target=%s, port=%d) target address resolution was successful: [%s]", connName,
-                                    connTarget, connPort,
-                                    (connHost = ToolListUtils.getFirst(srvRecordTargetLookupResult.getAnswers()).getAddress().getHostAddress()))));
-                        } else {
-                            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR,
-                                String.format("DNS SRV record (name=%s, target=%s, port=%d) target address resolution failed: [%s]", connName, connTarget,
-                                    connPort, ToolStringUtils.joinDelimit(srvRecordTargetLookupResult.getMessages(), ", "))));
+                    if ((srvRecordTargetLookupResult = srvRecordLookupStep.getLookupService().lookupARecords((connTarget = srvRecord.getTarget())))
+                        .isSuccess() && srvRecordTargetLookupResult.hasAnswers()) {
+                        // noinspection ConstantConditions
+                        this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.INFO, String.format(
+                            "DNS SRV record (name=%s, target=%s, port=%d) target address resolution was successful: [%s]", connName, connTarget, connPort,
+                            (connHost = ToolListUtils.getFirst(srvRecordTargetLookupResult.getAnswers()).getAddress().getHostAddress()))));
+                    } else {
+                        this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.WARN, String.format(
+                            "DNS SRV record (name=%s, target=%s, port=%d) target address resolution failed: [%s]", connName, connTarget, connPort,
+                            ToolStringUtils.joinDelimit(srvRecordTargetLookupResult.getMessages(), ", "))));
 
-                            continue;
-                        }
+                        continue;
+                    }
 
-                        connConfig = new LdapConnectionConfig();
-                        connConfig.setLdapPort(connPort);
-                        connConfig.setLdapHost(connHost);
+                    connConfig = new LdapConnectionConfig();
+                    connConfig.setLdapPort(connPort);
+                    connConfig.setLdapHost(connHost);
 
-                        if ((lookupResult = this.lookupService.lookupBaseDns(connConfig)).isSuccess()) {
-                            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.INFO,
-                                String.format("LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) was successful: [%s]", connHost, connPort,
-                                    ToolStringUtils.joinDelimit(lookupResult, ", "))));
+                    if ((lookupResult = this.lookupService.lookupBaseDns(connConfig)).isSuccess()) {
+                        this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.INFO, String.format(
+                            "LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) was successful: [%s]", connHost, connPort,
+                            ToolStringUtils.joinDelimit(lookupResult.getItems(), ", "))));
 
-                            return lookupResult;
-                        } else {
-                            this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR,
-                                String.format("Attempted LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) failed: [%s]", connHost, connPort,
-                                    ToolStringUtils.joinDelimit(lookupResult.getMessages(), ", "))));
-                        }
-                    } catch (DnsException e) {
-                        this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR, String
-                            .format("DNS SRV record (name=%s, target=%s, port=%d) processing failed: %s", connName, connTarget, connPort, e.getMessage())));
-                        this.execSuccess = false;
-
-                        break;
+                        return lookupResult;
+                    } else {
+                        this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR, String.format(
+                            "Attempted LDAP base Distinguished Name (DN) lookup (host=%s, port=%d) failed: [%s]", connHost, connPort,
+                            ToolStringUtils.joinDelimit(lookupResult.getMessages(), ", "))));
                     }
                 }
             }

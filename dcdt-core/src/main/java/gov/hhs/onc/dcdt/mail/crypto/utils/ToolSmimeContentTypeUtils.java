@@ -1,10 +1,10 @@
 package gov.hhs.onc.dcdt.mail.crypto.utils;
 
+import gov.hhs.onc.dcdt.crypto.DigestAlgorithm;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
-import gov.hhs.onc.dcdt.mail.crypto.MailDigestAlgorithm;
 import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
-import java.util.EnumSet;
 import javax.annotation.Nullable;
 import org.springframework.util.MimeType;
 
@@ -14,15 +14,11 @@ public abstract class ToolSmimeContentTypeUtils {
     }
 
     @Nullable
-    public static MailDigestAlgorithm getMicalg(MimeType contentType) {
+    public static DigestAlgorithm getMicalg(MimeType contentType) {
         if (ToolMimeTypeUtils.hasParameter(contentType, MailContentTypes.MICALG_PARAM_NAME)) {
             String micalgStr = ToolStringUtils.unquote(contentType.getParameter(MailContentTypes.MICALG_PARAM_NAME));
 
-            for (MailDigestAlgorithm micalg : EnumSet.allOf(MailDigestAlgorithm.class)) {
-                if (micalg.getMicalg().contains(micalgStr)) {
-                    return micalg;
-                }
-            }
+            return ToolEnumUtils.findByPredicate(DigestAlgorithm.class, enumItem -> enumItem.getMicalgs().contains(micalgStr));
         }
 
         return null;

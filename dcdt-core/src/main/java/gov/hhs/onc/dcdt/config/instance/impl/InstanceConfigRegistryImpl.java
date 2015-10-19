@@ -8,6 +8,7 @@ import gov.hhs.onc.dcdt.config.instance.InstanceConfigService;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.data.registry.impl.AbstractToolBeanRegistry;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseRegistry;
+import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component("instanceConfigRegistryImpl")
@@ -18,19 +19,19 @@ public class InstanceConfigRegistryImpl extends AbstractToolBeanRegistry<Instanc
     }
 
     @Override
-    protected void preRemoveBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
+    protected void preRemoveBeans(List<InstanceConfig> beans) throws ToolBeanRegistryException {
         this.getDiscoveryTestcaseRegistry().removeAllBeans();
     }
 
     @Override
-    protected void postRegisterBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
+    protected void postRegisterBeans(List<InstanceConfig> beans) throws ToolBeanRegistryException {
         this.appContext.refresh();
 
         this.getDiscoveryTestcaseRegistry().registerAllBeans();
     }
 
     @Override
-    protected void postRemoveBeans(Iterable<InstanceConfig> beans) throws ToolBeanRegistryException {
+    protected void postRemoveBeans(List<InstanceConfig> beans) throws ToolBeanRegistryException {
         this.appContext.refresh();
     }
 

@@ -3,7 +3,7 @@ package gov.hhs.onc.dcdt.service.mail;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.crypto.MailEncryptionAlgorithm;
+import gov.hhs.onc.dcdt.crypto.EncryptionAlgorithm;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
@@ -70,7 +70,7 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
             // noinspection ConstantConditions
             this.discoveryTestcaseSubmissionSenderService.send(discoveryTestcaseSubmission, to, (discoveryTestcaseCredInfo =
                 (discoveryTestcaseCred != null) ? discoveryTestcaseCred.getCredentialInfo() : null), ((discoveryTestcaseCredInfo != null)
-                ? discoveryTestcaseCredInfo.getCertificateDescriptor() : null), MailEncryptionAlgorithm.AES256);
+                ? discoveryTestcaseCredInfo.getCertificateDescriptor() : null), EncryptionAlgorithm.AES256);
         }
     }
 

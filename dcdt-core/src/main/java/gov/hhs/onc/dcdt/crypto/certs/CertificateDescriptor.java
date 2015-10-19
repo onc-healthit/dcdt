@@ -5,6 +5,10 @@ import javax.annotation.Nullable;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 
 public interface CertificateDescriptor extends CryptographyDescriptor {
+    public boolean isIntermediateCertificateAuthority();
+
+    public boolean isRootCertificateAuthority();
+
     public boolean hasAia();
 
     @Nullable
@@ -16,6 +20,8 @@ public interface CertificateDescriptor extends CryptographyDescriptor {
 
     @Nullable
     public CertificateType getCertificateType();
+
+    public boolean isSelfIssued();
 
     public boolean hasSerialNumber();
 

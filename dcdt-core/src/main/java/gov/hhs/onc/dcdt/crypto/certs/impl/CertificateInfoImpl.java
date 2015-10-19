@@ -38,13 +38,6 @@ public class CertificateInfoImpl extends AbstractCertificateDescriptor implement
     }
 
     @Override
-    @Transient
-    public boolean isSelfIssued() {
-        // noinspection ConstantConditions
-        return (this.hasCertificate() && this.getSubjectName().equals(this.getIssuerName()));
-    }
-
-    @Override
     public boolean equals(@Nullable Object obj) {
         CertificateInfo certInfo;
 
@@ -87,9 +80,10 @@ public class CertificateInfoImpl extends AbstractCertificateDescriptor implement
             this.ca = new BasicConstraints(this.cert.getBasicConstraints()).isCA();
             this.certType = CertificateType.X509;
             this.issuerName = new CertificateNameImpl(CertificateNameUtils.buildIssuerAltNames(this.cert), this.cert.getIssuerX500Principal());
+            this.subjName = new CertificateNameImpl(CertificateNameUtils.buildSubjectAltNames(this.cert), this.cert.getSubjectX500Principal());
+            this.selfIssued = this.subjName.equals(this.issuerName);
             this.serialNum = new CertificateSerialNumberImpl(this.cert.getSerialNumber());
             this.sigAlg = CryptographyUtils.findByOid(SignatureAlgorithm.class, new ASN1ObjectIdentifier(this.cert.getSigAlgOID()));
-            this.subjName = new CertificateNameImpl(CertificateNameUtils.buildSubjectAltNames(this.cert), this.cert.getSubjectX500Principal());
             this.validInterval = new CertificateValidIntervalImpl(this.cert.getNotBefore(), this.cert.getNotAfter());
         } catch (Exception e) {
             this.reset();

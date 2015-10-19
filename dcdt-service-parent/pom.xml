@@ -252,6 +252,10 @@
                 <version>3.0-beta4</version>
                 <exclusions>
                     <exclusion>
+                        <groupId>commons-logging</groupId>
+                        <artifactId>commons-logging</artifactId>
+                    </exclusion>
+                    <exclusion>
                         <groupId>javax.mail</groupId>
                         <artifactId>mail</artifactId>
                     </exclusion>
@@ -614,8 +618,6 @@
                                             <extraArguments>
                                                 <extraArgument>-XX:+UseG1GC</extraArgument>
                                                 <extraArgument>-XX:MaxGCPauseMillis=50</extraArgument>
-                                                <extraArgument>-XX:ParallelGCThreads=4</extraArgument>
-                                                <extraArgument>-XX:ConcGCThreads=4</extraArgument>
                                                 <extraArgument>-Djava.net.preferIPv4Addresses=true</extraArgument>
                                                 <extraArgument>-Djava.net.preferIPv4Stack=true</extraArgument>
                                                 <extraArgument>-Djava.security.manager</extraArgument>
@@ -624,7 +626,6 @@
                                             <systemProperties>
                                                 <systemProperty>dcdt.data.dir=var</systemProperty>
                                                 <systemProperty>dcdt.log.dir=log</systemProperty>
-                                                <systemProperty>logback.configurationFile=${project.logback.config.file}</systemProperty>
                                                 <systemProperty>spring.profiles.active=${project.service.standalone.spring.profiles.active}</systemProperty>
                                             </systemProperties>
                                         </jvmSettings>

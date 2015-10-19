@@ -1,21 +1,19 @@
 package gov.hhs.onc.dcdt.dns.lookup.impl;
 
+import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
-import gov.hhs.onc.dcdt.dns.DnsCertificateType;
-import gov.hhs.onc.dcdt.dns.DnsException;
-import gov.hhs.onc.dcdt.dns.DnsKeyAlgorithmType;
+import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
-import gov.hhs.onc.dcdt.dns.DnsServiceProtocol;
-import gov.hhs.onc.dcdt.dns.DnsServiceType;
+import gov.hhs.onc.dcdt.dns.DnsResultType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
-import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils.CertRecordParameterPredicate;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
+import java.util.List;
 import java.util.Set;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.Predicate;
 import org.xbill.DNS.ARecord;
 import org.xbill.DNS.CERTRecord;
 import org.xbill.DNS.CNAMERecord;
@@ -37,81 +35,79 @@ public class DnsLookupServiceImpl extends AbstractToolBean implements DnsLookupS
     private Set<Name> searchPaths;
 
     @Override
-    public DnsLookupResult<ARecord> lookupARecords(Name name) throws DnsException {
+    public DnsLookupResult<ARecord> lookupARecords(Name name) {
         return this.lookupRecords(DnsRecordType.A, ARecord.class, name);
     }
 
     @Override
-    public DnsLookupResult<CERTRecord> lookupCertRecords(Name name) throws DnsException {
-        return this.lookupCertRecords(null, null, name);
+    public DnsLookupResult<CERTRecord> lookupCertRecords(Name name) {
+        return this.lookupRecords(DnsRecordType.CERT, CERTRecord.class, name);
     }
 
     @Override
-    public DnsLookupResult<CERTRecord> lookupCertRecords(@Nullable DnsCertificateType certType, @Nullable Set<DnsKeyAlgorithmType> keyAlgTypes, Name name)
-        throws DnsException {
-        return this.lookupRecords(DnsRecordType.CERT, CERTRecord.class, name, new CertRecordParameterPredicate(certType, keyAlgTypes));
-    }
-
-    @Override
-    public DnsLookupResult<CNAMERecord> lookupCnameRecords(Name name) throws DnsException {
+    public DnsLookupResult<CNAMERecord> lookupCnameRecords(Name name) {
         return this.lookupRecords(DnsRecordType.CNAME, CNAMERecord.class, name);
     }
 
     @Override
-    public DnsLookupResult<MXRecord> lookupMxRecords(Name name) throws DnsException {
+    public DnsLookupResult<MXRecord> lookupMxRecords(Name name) {
         return this.lookupRecords(DnsRecordType.MX, MXRecord.class, name);
     }
 
     @Override
-    public DnsLookupResult<NSRecord> lookupNsRecords(Name name) throws DnsException {
+    public DnsLookupResult<NSRecord> lookupNsRecords(Name name) {
         return this.lookupRecords(DnsRecordType.NS, NSRecord.class, name);
     }
 
     @Override
-    public DnsLookupResult<PTRRecord> lookupPtrRecords(Name name) throws DnsException {
+    public DnsLookupResult<PTRRecord> lookupPtrRecords(Name name) {
         return this.lookupRecords(DnsRecordType.PTR, PTRRecord.class, name);
     }
 
     @Override
-    public DnsLookupResult<SOARecord> lookupSoaRecords(Name name) throws DnsException {
+    public DnsLookupResult<SOARecord> lookupSoaRecords(Name name) {
         return this.lookupRecords(DnsRecordType.SOA, SOARecord.class, name);
     }
 
     @Override
-    public DnsLookupResult<SRVRecord> lookupSrvRecords(DnsServiceType serviceType, DnsServiceProtocol serviceProtocol, Name name) throws DnsException {
-        return this.lookupRecords(DnsRecordType.SRV, SRVRecord.class,
-            ToolDnsNameUtils.fromLabels(serviceType.getNameLabel(), serviceProtocol.getNameLabel(), name));
+    public DnsLookupResult<SRVRecord> lookupSrvRecords(Name name) {
+        return this.lookupRecords(DnsRecordType.SRV, SRVRecord.class, name);
     }
 
     @Override
-    public DnsLookupResult<TXTRecord> lookupTxtRecords(Name name) throws DnsException {
+    public DnsLookupResult<TXTRecord> lookupTxtRecords(Name name) {
         return this.lookupRecords(DnsRecordType.TXT, TXTRecord.class, name);
     }
 
     @Override
-    public <T extends Record> DnsLookupResult<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name) throws DnsException {
-        return this.lookupRecords(recordType, recordClass, name, null);
-    }
+    public <T extends Record> DnsLookupResult<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name) {
+        DnsLookupResult<T> result;
 
-    @Override
-    @SuppressWarnings({ "unchecked" })
-    public <T extends Record> DnsLookupResult<T>
-        lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name name, @Nullable Predicate<T> recordPredicate) throws DnsException {
-        Lookup lookup = new Lookup(name, recordType.getCode(), recordType.getDclassType().getCode());
+        try {
+            Lookup lookup = new Lookup(name, recordType.getCode(), recordType.getDclassType().getCode());
 
-        if (this.hasCache()) {
-            lookup.setCache(this.cache);
+            if (this.hasCache()) {
+                lookup.setCache(this.cache);
+            }
+
+            if (this.hasResolver()) {
+                lookup.setResolver(this.resolver);
+            }
+
+            lookup.setSearchPath(ToolCollectionUtils.toArray(this.searchPaths, Name.class));
+
+            List<Record> rawAnswers = ToolArrayUtils.asList(lookup.run());
+            DnsResultType resultType = ToolEnumUtils.findByCode(DnsResultType.class, lookup.getResult());
+
+            // noinspection ConstantConditions
+            (result = new DnsLookupResultImpl<>(recordType, recordClass, name, resultType, ToolArrayUtils.asList(lookup.getAliases()), rawAnswers))
+                .getMessages().add(new ToolMessageImpl((resultType.isSuccess() ? ToolMessageLevel.INFO : ToolMessageLevel.ERROR), lookup.getErrorString()));
+        } catch (Exception e) {
+            (result = new DnsLookupResultImpl<>(recordType, recordClass, name, DnsResultType.UNRECOVERABLE)).getMessages().add(
+                new ToolMessageImpl(ToolMessageLevel.ERROR, e.getMessage()));
         }
 
-        if (this.hasResolver()) {
-            lookup.setResolver(this.resolver);
-        }
-
-        lookup.setSearchPath(ToolCollectionUtils.toArray(this.searchPaths, Name.class));
-
-        lookup.run();
-
-        return new DnsLookupResultImpl<>(recordType, recordClass, name, lookup, recordPredicate);
+        return result;
     }
 
     @Override

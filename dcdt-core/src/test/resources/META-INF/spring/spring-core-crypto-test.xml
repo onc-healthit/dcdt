@@ -19,17 +19,18 @@
     = CONFIGS
     =====================================================================================================-->
     <beans:bean id="testKeyConfig" parent="keyConfigImpl" abstract="true" autowire-candidate="false"/>
-    <beans:bean id="testKeyConfigCa" parent="keyConfigCa" abstract="true" autowire-candidate="false"/>
+    <beans:bean id="testKeyConfigCa" parent="keyConfigImpl" abstract="true" autowire-candidate="false"/>
     
     <beans:bean id="testCertConfig" parent="certConfigImpl" abstract="true" autowire-candidate="false"/>
     <beans:bean id="testCertConfigCa" parent="certConfigCa" abstract="true" autowire-candidate="false"/>
     
     <beans:bean id="testCredConfig" parent="credConfigImpl" abstract="true" autowire-candidate="false"/>
-    <beans:bean id="testCredConfigCa" parent="credConfigCa" abstract="true" autowire-candidate="false"/>
+    <beans:bean id="testCredConfigCa" parent="credConfigImpl" abstract="true" autowire-candidate="false"/>
 
     <beans:bean id="testKeyConfigCa1" parent="testKeyConfigCa"/>
     <beans:bean id="testCertConfigCa1" parent="testCertConfigCa">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.ca.1}"/>
         </beans:property>
@@ -45,6 +46,7 @@
     <beans:bean id="testKeyPairConfigAddr1" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigAddr1" parent="testCertConfig">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.1}"
                 c:altNames-ref="testCertConfigAddr1SubjAltName"/>
@@ -61,6 +63,7 @@
     <beans:bean id="testKeyPairConfigAddr2" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigAddr2" parent="testCertConfig">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.2}"/>
         </beans:property>
@@ -76,6 +79,7 @@
     <beans:bean id="testKeyPairConfigAddr3" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigAddr3" parent="testCertConfig">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.3}"
                 c:altNames-ref="testCertConfigAddr3SubjAltNames"/>
@@ -92,6 +96,7 @@
     <beans:bean id="testKeyPairConfigAddr4" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigAddr4" parent="testCertConfig">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.4}"
                 c:altNames-ref="testCertConfigAddr4SubjAltNames"/>
@@ -108,6 +113,7 @@
     <beans:bean id="testKeyConfigDomain1" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigDomain1" parent="testCertConfig">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.1}"
                 c:altNames-ref="testCertConfigDomain1SubjAltName"/>
@@ -124,6 +130,7 @@
     <beans:bean id="testKeyConfigDomain2" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigDomain2" parent="testCertConfig">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.2}"
                 c:altNames-ref="testCertConfigDomain2SubjAltNames"/>
@@ -140,6 +147,7 @@
     <beans:bean id="testKeyConfigDomain3" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigDomain3" parent="testCertConfig">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.3}"
                 c:altNames-ref="testCertConfigDomain3SubjAltNames"/>
@@ -156,6 +164,7 @@
     <beans:bean id="testKeyConfigDomain4" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigDomain4" parent="testCertConfig">
         <beans:property name="subjectName">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="certNameImpl"
                 c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.4}"
                 c:altNames-ref="testCertConfigDomain4SubjAltNames"/>
@@ -174,11 +183,13 @@
 
     <beans:bean id="testCertConfigAddr1SubjAltName" parent="generalName">
         <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).rfc822Name }"/>
+        <!--suppress SpringPlaceholdersInspection -->
         <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.direct.addr.1}"/>
     </beans:bean>
 
     <beans:bean id="testCertConfigAddr3SubjAltName" parent="generalName">
         <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).rfc822Name }"/>
+        <!--suppress SpringPlaceholdersInspection -->
         <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.direct.addr.3}"/>
     </beans:bean>
 
@@ -195,16 +206,19 @@
 
     <beans:bean id="testCertConfigDomain1SubjAltName" parent="generalName">
         <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).dNSName }"/>
+        <!--suppress SpringPlaceholdersInspection -->
         <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.domain.1.name}"/>
     </beans:bean>
 
     <beans:bean id="testCertConfigDomain2SubjAltName" parent="generalName">
         <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).dNSName }"/>
+        <!--suppress SpringPlaceholdersInspection -->
         <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.domain.2.name}"/>
     </beans:bean>
 
     <beans:bean id="testCertConfigDomain4SubjAltName" parent="generalName">
         <beans:constructor-arg index="0" type="int" value="#{ T(org.bouncycastle.asn1.x509.GeneralName).dNSName }"/>
+        <!--suppress SpringPlaceholdersInspection -->
         <beans:constructor-arg index="1" type="java.lang.String" value="${dcdt.test.instance.domain.4.name}"/>
     </beans:bean>
 
