@@ -127,8 +127,6 @@ public class HttpLookupServiceImpl extends AbstractToolBean implements HttpLooku
     private DnsNameService dnsNameService;
     private int maxContentLen;
     private int readTimeout;
-    private Bootstrap clientBootstrap;
-    private EventLoopGroup clientEventLoopGroup;
 
     @Override
     public HttpLookupResult getUri(URI reqUri) {
@@ -158,73 +156,66 @@ public class HttpLookupServiceImpl extends AbstractToolBean implements HttpLooku
         InetSocketAddress remoteSocketAddr = new InetSocketAddress(remoteAddr, remotePort);
         result.setRemoteSocketAddress(remoteSocketAddr);
 
+        EventLoopGroup clientEventLoopGroup = new NioEventLoopGroup(1);
         ChannelFuture connFuture;
 
         try {
-            connFuture = this.clientBootstrap.connect(remoteSocketAddr).await();
-        } catch (InterruptedException e) {
-            buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt interrupted.",
-                reqMethod.name(), reqUri, remoteSocketAddr);
+            try {
+                connFuture =
+                    new Bootstrap().group(clientEventLoopGroup).channel(NioSocketChannel.class).handler(new HttpLookupClientChannelInitializer())
+                        .connect(remoteSocketAddr).await();
+            } catch (InterruptedException e) {
+                buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt interrupted.",
+                    reqMethod.name(), reqUri, remoteSocketAddr);
 
-            return result;
-        }
+                return result;
+            }
 
-        if (connFuture.isCancelled()) {
-            buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt cancelled.", reqMethod.name(),
-                reqUri, result.getRemoteSocketAddress());
+            if (connFuture.isCancelled()) {
+                buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt cancelled.",
+                    reqMethod.name(), reqUri, result.getRemoteSocketAddress());
 
-            return result;
-        } else if (!connFuture.isSuccess()) {
-            // noinspection ThrowableResultOfMethodCallIgnored
-            Throwable connFailureCause = connFuture.cause();
+                return result;
+            } else if (!connFuture.isSuccess()) {
+                // noinspection ThrowableResultOfMethodCallIgnored
+                Throwable connFailureCause = connFuture.cause();
 
-            if (connFailureCause instanceof ConnectTimeoutException) {
-                buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt timed out: %s",
-                    reqMethod.name(), reqUri, result.getRemoteSocketAddress(), connFailureCause.getMessage());
-            } else if (connFailureCause instanceof ConnectException) {
-                buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt refused: %s",
-                    reqMethod.name(), reqUri, result.getRemoteSocketAddress(), connFailureCause.getMessage());
-            } else {
-                buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt failed: %s",
-                    reqMethod.name(), reqUri, result.getRemoteSocketAddress(), connFailureCause.getMessage());
+                if (connFailureCause instanceof ConnectTimeoutException) {
+                    buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt timed out: %s",
+                        reqMethod.name(), reqUri, result.getRemoteSocketAddress(), connFailureCause.getMessage());
+                } else if (connFailureCause instanceof ConnectException) {
+                    buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt refused: %s",
+                        reqMethod.name(), reqUri, result.getRemoteSocketAddress(), connFailureCause.getMessage());
+                } else {
+                    buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) attempt failed: %s",
+                        reqMethod.name(), reqUri, result.getRemoteSocketAddress(), connFailureCause.getMessage());
+                }
+
+                return result;
+            }
+
+            Channel channel = connFuture.channel();
+            channel.pipeline().addLast(new HttpLookupClientResponseHandler(result));
+
+            channel.writeAndFlush(buildRequest(result, reqUri, reqMethod));
+
+            try {
+                channel.closeFuture().sync();
+            } catch (InterruptedException e) {
+                buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) interrupted.", reqMethod.name(),
+                    reqUri, remoteSocketAddr);
             }
 
             return result;
+        } finally {
+            clientEventLoopGroup.shutdownGracefully();
         }
-
-        Channel channel = connFuture.channel();
-        channel.pipeline().addLast(new HttpLookupClientResponseHandler(result));
-
-        channel.writeAndFlush(buildRequest(result, reqUri, reqMethod));
-
-        try {
-            channel.closeFuture().sync();
-        } catch (InterruptedException e) {
-            buildMessage(result, ToolMessageLevel.ERROR, "HTTP %s lookup (reqUri=%s) remote connection (socketAddr={%s}) interrupted.", reqMethod.name(),
-                reqUri, remoteSocketAddr);
-        }
-
-        return result;
-    }
-
-    @Override
-    public void destroy() throws Exception {
-        if (this.clientEventLoopGroup != null) {
-            this.clientEventLoopGroup.shutdownGracefully().sync();
-        }
-    }
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        (this.clientBootstrap = new Bootstrap()).group((this.clientEventLoopGroup = new NioEventLoopGroup())).channel(NioSocketChannel.class)
-            .handler(new HttpLookupClientChannelInitializer());
     }
 
     private static FullHttpRequest buildRequest(HttpLookupResult result, URI reqUri, HttpMethod reqMethod) {
         FullHttpRequest req = new DefaultFullHttpRequest(HttpVersion.HTTP_1_1, reqMethod, reqUri.toString());
 
         HttpHeaders reqHeaders = req.headers();
-        reqHeaders.set(Names.ACCEPT_ENCODING, Values.GZIP);
         reqHeaders.set(Names.HOST, reqUri.getHost());
         reqHeaders.set(Names.CONNECTION, Values.CLOSE);
         result.setRequestHeaders(reqHeaders);

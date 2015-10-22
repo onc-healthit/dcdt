@@ -34,7 +34,11 @@
                 <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:service/**/service-*.properties</beans:value>
                 <!--suppress SpringModelInspection -->
+                <beans:value>classpath*:META-INF/web/web.properties</beans:value>
+                <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:web/web.properties</beans:value>
+                <!--suppress SpringModelInspection -->
+                <beans:value>classpath*:META-INF/web/web-*.properties</beans:value>
                 <!--suppress SpringModelInspection -->
                 <beans:value>classpath*:web/web-*.properties</beans:value>
             </beans:array>

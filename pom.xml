@@ -28,6 +28,7 @@
         <module>dcdt-service-parent</module>
         <module>dcdt-service-core</module>
         <module>dcdt-service-dns</module>
+        <module>dcdt-service-http</module>
         <module>dcdt-service-ldap</module>
         <module>dcdt-service-mail</module>
         <module>dcdt-web-parent</module>
@@ -36,45 +37,6 @@
     
     <build>
         <plugins>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>process-git-properties</id>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>process-properties</id>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>unpack-dependency-resources</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>unpack-test-dependency-resources</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -117,6 +79,11 @@
                         <inherited>false</inherited>
                     </execution>
                     <execution>
+                        <id>copy-test-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
                         <inherited>false</inherited>
                     </execution>
@@ -144,9 +111,21 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>process-project-properties</id>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     
+    <!--
     <reporting>
         <plugins>
             <plugin>
@@ -166,8 +145,10 @@
             </plugin>
         </plugins>
     </reporting>
+    -->
     
     <profiles>
+        <!--
         <profile>
             <id>site-check</id>
             <reporting>
@@ -331,5 +312,6 @@
                 </plugins>
             </reporting>
         </profile>
+        -->
     </profiles>
 </project>

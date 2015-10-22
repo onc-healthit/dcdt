@@ -72,6 +72,43 @@
             <div>
                 <span class="form-cell form-cell-label">
                     <tiles:insertDefinition name="component-glyph-label">
+                        <tiles:putAttribute name="attrs">for="admin-service-http-status"</tiles:putAttribute>
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-cloud"/>
+                        <tiles:putAttribute name="content" value="HTTP Service"/>
+                    </tiles:insertDefinition>:
+                </span>
+                <span class="form-cell form-cell-control">
+                    <input id="admin-service-http-status" class="input-sm form-control form-control-service-status" name="serviceHttpStatus" type="text"
+                        disabled="disabled"/>
+                </span>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-error">
+                <div class="input-group-addon input-group-addon-msgs">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-exclamation-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>HTTP service status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group form-group-addons">
+            <div class="has-success">
+                <div class="input-group-addon input-group-addon-msgs">
+                    <tiles:insertDefinition name="component-glyph">
+                        <tiles:putAttribute name="glyph-classes" value="glyphicon-ok-sign"/>
+                    </tiles:insertDefinition>
+                    <strong>HTTP service status</strong>:
+                    <ul></ul>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div>
+                <span class="form-cell form-cell-label">
+                    <tiles:insertDefinition name="component-glyph-label">
                         <tiles:putAttribute name="attrs">for="admin-service-ldap-status"</tiles:putAttribute>
                         <tiles:putAttribute name="glyph-classes" value="glyphicon-th-list"/>
                         <tiles:putAttribute name="content" value="LDAP Service"/>

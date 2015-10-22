@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xmlns:beans="http://www.springframework.org/schema/beans"
+    xmlns:c="http://www.springframework.org/schema/c"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="
+        http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    
+    <!--====================================================================================================
+    = TASK EXECUTION
+    =====================================================================================================-->
+    <beans:bean id="taskExecServiceHttp" parent="taskExecService"
+        p:corePoolSize="1"
+        p:maxPoolSize="5"/>
+    
+    <beans:bean id="taskExecServiceHttpServer" parent="taskExecService" lazy-init="true" scope="prototype"
+        p:corePoolSize="#{ taskExecServiceHttp.corePoolSize }"
+        p:maxPoolSize="#{ taskExecServiceHttp.maxPoolSize }"/>
+    
+    <beans:bean id="taskExecServiceHttpServerReq" parent="taskExecService" lazy-init="true" scope="prototype"
+        p:allowCoreThreadTimeOut="true"
+        p:corePoolSize="#{ taskExecServiceHttpServer.corePoolSize * 10 }"
+        p:keepAliveSeconds="15"
+        p:maxPoolSize="#{ taskExecServiceHttpServer.maxPoolSize * 50 }"/>
+    
+    <!--====================================================================================================
+    = HTTP SERVER CONFIG
+    =====================================================================================================-->
+    <beans:bean id="httpServerConfig" class="gov.hhs.onc.dcdt.service.http.config.HttpServerConfig" abstract="true"/>
+    
+    <beans:bean id="httpServerConfigImpl" class="gov.hhs.onc.dcdt.service.http.config.impl.HttpServerConfigImpl" parent="httpServerConfig" abstract="true"
+        p:connectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
+        p:maxContentLength="#{ T(org.apache.commons.io.FileUtils).ONE_MB * 5 }"
+        p:readTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"
+        p:writeTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"/>
+    
+    <!--====================================================================================================
+    = HTTP SERVER
+    =====================================================================================================-->
+    <beans:bean id="httpServer" class="gov.hhs.onc.dcdt.service.http.server.HttpServer" abstract="true"/>
+    
+    <beans:bean id="httpServerImpl" class="gov.hhs.onc.dcdt.service.http.server.impl.HttpServerImpl" parent="httpServer" abstract="true"/>
+    
+    <beans:bean id="httpServer1" parent="httpServerImpl">
+        <beans:constructor-arg name="config">
+            <!--suppress SpringPlaceholdersInspection -->
+            <beans:bean parent="httpServerConfigImpl"
+                p:host-ref="ipAddrLocalAny"
+                p:port="${dcdt.instance.http.server.1.port}"
+                p:name="httpServer1"
+                p:nameDisplay="HTTP Server 1"/>
+        </beans:constructor-arg>
+    </beans:bean>
+</beans:beans>

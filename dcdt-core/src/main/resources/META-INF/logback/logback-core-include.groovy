@@ -3,6 +3,7 @@ import ch.qos.logback.core.ConsoleAppender
 import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
+import ch.qos.logback.core.status.NopStatusListener
 import gov.hhs.onc.dcdt.context.ToolProperties
 import gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter
@@ -46,7 +47,7 @@ conversionRule("pColor", PriorityColorCompositeConverter)
 /*====================================================================================================
 = STATUS LISTENERS
 =====================================================================================================*/
-// statusListener(NopStatusListener)
+statusListener(NopStatusListener)
 
 /*====================================================================================================
 = APPENDER: CONSOLE
@@ -100,7 +101,7 @@ logger("org.apache", INFO, [ "console", "file" ], false)
 =====================================================================================================*/
 logger("org.hibernate", INFO, [ "console", "file" ], false)
 
-logger("org.hibernate.SQL", DEBUG, [ "console", "file" ], false)
+// logger("org.hibernate.SQL", DEBUG, [ "console", "file" ], false)
 
 // logger("org.hibernate.type", TRACE, [ "console", "file" ], false)
 

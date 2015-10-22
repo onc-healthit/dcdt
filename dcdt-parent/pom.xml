@@ -81,15 +81,10 @@
         <!-- Project build FindBugs properties -->
         <project.build.findbugsResultsFile>${project.build.directory}/findbugs.xml</project.build.findbugsResultsFile>
         <project.build.findbugsResultsPropertiesFile>${project.build.directory}/findbugs-properties.xml</project.build.findbugsResultsPropertiesFile>
-        <!-- Project build Git properties -->
-        <project.build.gitPropertiesFile>${project.build.directory}/maven/git.properties</project.build.gitPropertiesFile>
-        <!-- Project build POM properties -->
-        <project.build.pomPropertiesFile>${project.build.directory}/maven/pom.properties</project.build.pomPropertiesFile>
-        <!-- Project build POM source properties -->
-        <project.build.pomPropertiesSourceFile>${project.basedir}/pom.properties</project.build.pomPropertiesSourceFile>
-        <!-- Project build resources properties -->
-        <project.build.resourcesDirectory>${project.build.directory}/resources</project.build.resourcesDirectory>
-        <project.build.resourcesDependencyDirectory>${project.build.resourcesDirectory}-dependency</project.build.resourcesDependencyDirectory>
+        <!-- Project build Groovy source properties -->
+        <project.build.groovyScriptSourceDirectory>${project.build.scriptSourceDirectory}/groovy</project.build.groovyScriptSourceDirectory>
+        <!-- Project build module properties -->
+        <project.build.modulePropertiesFile>${project.build.directory}/maven/${project.groupId}/${project.artifactId}/module.properties</project.build.modulePropertiesFile>
         <!-- Project build resources source properties -->
         <project.build.resourcesSourceDirectory>${project.basedir}/src/main/resources</project.build.resourcesSourceDirectory>
         <!-- Project build source properties -->
@@ -97,9 +92,6 @@
         <!-- Project build test Clover properties -->
         <project.build.cloverTestOutputDirectory>${project.build.cloverDirectory}/test-classes-instrumented</project.build.cloverTestOutputDirectory>
         <project.build.cloverTestSourceDirectory>${project.build.cloverDirectory}/test-src-instrumented</project.build.cloverTestSourceDirectory>
-        <!-- Project build test resources properties -->
-        <project.build.testResourcesDirectory>${project.build.directory}/test-resources</project.build.testResourcesDirectory>
-        <project.build.testResourcesDependencyDirectory>${project.build.testResourcesDirectory}-dependency</project.build.testResourcesDependencyDirectory>
         <!-- Project build test resources source properties -->
         <project.build.testResourcesSourceDirectory>${project.basedir}/src/test/resources</project.build.testResourcesSourceDirectory>
         <!-- Project build test script source properties -->
@@ -522,12 +514,14 @@
                 <version>4.2.1.RELEASE</version>
             </dependency>
             <!-- Test dependencies -->
+            <!--
             <dependency>
                 <groupId>com.atlassian.clover</groupId>
                 <artifactId>clover</artifactId>
                 <version>4.0.6</version>
                 <scope>test</scope>
             </dependency>
+            -->
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -542,97 +536,6 @@
         
         <pluginManagement>
             <plugins>
-                <plugin>
-                    <groupId>pl.project13.maven</groupId>
-                    <artifactId>git-commit-id-plugin</artifactId>
-                    <version>2.2.0</version>
-                    <inherited>true</inherited>
-                    <configuration>
-                        <dateFormat>yyyy-MM-dd HH:mm:ss Z</dateFormat>
-                        <dotGitDirectory>${project.basedir.all}/.git</dotGitDirectory>
-                        <generateGitPropertiesFile>true</generateGitPropertiesFile>
-                        <generateGitPropertiesFilename>${project.build.gitPropertiesFile}</generateGitPropertiesFilename>
-                        <includeOnlyProperties>
-                            <includeOnlyProperty>^project\.git\.build\.user\.name$</includeOnlyProperty>
-                            <includeOnlyProperty>^project\.git\.branch$</includeOnlyProperty>
-                            <includeOnlyProperty>^project\.git\.commit\.(?:(?:id(?:\.abbrev)?)?|time)$</includeOnlyProperty>
-                            <includeOnlyProperty>^project\.git\.remote\.origin\.url$</includeOnlyProperty>
-                        </includeOnlyProperties>
-                        <prefix>project.git</prefix>
-                        <skipPoms>false</skipPoms>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>process-git-properties</id>
-                            <goals>
-                                <goal>revision</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <version>1.8</version>
-                    <inherited>true</inherited>
-                    <dependencies>
-                        <dependency>
-                            <groupId>ant-contrib</groupId>
-                            <artifactId>ant-contrib</artifactId>
-                            <version>1.0b3</version>
-                            <exclusions>
-                                <exclusion>
-                                    <groupId>ant</groupId>
-                                    <artifactId>ant</artifactId>
-                                </exclusion>
-                            </exclusions>
-                        </dependency>
-                        <dependency>
-                            <groupId>com.atlassian.clover</groupId>
-                            <artifactId>clover</artifactId>
-                            <version>4.0.6</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant</groupId>
-                            <artifactId>ant</artifactId>
-                            <version>1.9.6</version>
-                        </dependency>
-                        <dependency>
-                            <groupId>org.apache.ant.props</groupId>
-                            <artifactId>ant-props</artifactId>
-                            <version>1.0Alpha</version>
-                        </dependency>
-                    </dependencies>
-                    <configuration>
-                        <customTaskPrefix>mvn</customTaskPrefix>
-                        <target>
-                            <path id="maven.classpath">
-                                <path refid="maven.compile.classpath"/>
-                                <path refid="maven.plugin.classpath"/>
-                                <path refid="maven.runtime.classpath"/>
-                                <path refid="maven.test.classpath"/>
-                            </path>
-                        </target>
-                    </configuration>
-                    <executions>
-                        <!-- Processing Maven project properties -->
-                        <execution>
-                            <id>process-properties</id>
-                            <phase>initialize</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
-                                <target>
-                                    <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-project.xml" target="project-process-props"
-                                        inheritRefs="true" useNativeBasedir="true"/>
-                                </target>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
@@ -687,42 +590,6 @@
                     <configuration>
                         <silent>true</silent>
                     </configuration>
-                    <executions>
-                        <!-- Unpacking dependency resources -->
-                        <execution>
-                            <id>unpack-dependency-resources</id>
-                            <phase>generate-resources</phase>
-                            <goals>
-                                <goal>unpack-dependencies</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
-                                <includeClassifiers>sources</includeClassifiers>
-                                <includeGroupIds>${project.groupId}</includeGroupIds>
-                                <includes>META-INF/**</includes>
-                                <includeTypes>jar</includeTypes>
-                                <excludes>META-INF/maven/**/pom.*,META-INF/MANIFEST.MF,META-INF/spring.*</excludes>
-                                <outputDirectory>${project.build.resourcesDependencyDirectory}</outputDirectory>
-                            </configuration>
-                        </execution>
-                        <!-- Unpacking test dependency resources -->
-                        <execution>
-                            <id>unpack-test-dependency-resources</id>
-                            <phase>generate-test-resources</phase>
-                            <goals>
-                                <goal>unpack-dependencies</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
-                                <includeClassifiers>test-sources</includeClassifiers>
-                                <includeGroupIds>${project.groupId}</includeGroupIds>
-                                <includes>META-INF/**</includes>
-                                <includeTypes>jar</includeTypes>
-                                <excludes>META-INF/maven/**/pom.*,META-INF/MANIFEST.MF,META-INF/spring.*</excludes>
-                                <outputDirectory>${project.build.testResourcesDependencyDirectory}</outputDirectory>
-                            </configuration>
-                        </execution>
-                    </executions>
                 </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
@@ -754,11 +621,6 @@
                     <executions>
                         <execution>
                             <id>default-jar</id>
-                            <configuration>
-                                <excludes>
-                                    <exclude>META-INF/maven/module*.properties</exclude>
-                                </excludes>
-                            </configuration>
                         </execution>
                         <execution>
                             <id>test-jar</id>
@@ -791,34 +653,9 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <outputDirectory>${project.build.resourcesDirectory}</outputDirectory>
+                                <outputDirectory>${project.build.outputDirectory}/META-INF</outputDirectory>
                                 <resources>
                                     <resource>
-                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>**/*.conf</include>
-                                            <include>**/*.properties</include>
-                                            <include>**/*.xml</include>
-                                        </includes>
-                                        <excludes>
-                                            <exclude>maven/**</exclude>
-                                            <exclude>spring/**</exclude>
-                                            <exclude>spring.*</exclude>
-                                        </excludes>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF</directory>
-                                        <excludes>
-                                            <exclude>maven/**</exclude>
-                                            <exclude>spring/**</exclude>
-                                            <exclude>spring.*</exclude>
-                                            <exclude>**/*.conf</exclude>
-                                            <exclude>**/*.properties</exclude>
-                                            <exclude>**/*.xml</exclude>
-                                        </excludes>
-                                    </resource>
-                                    <resource>
                                         <directory>${project.build.resourcesSourceDirectory}/META-INF</directory>
                                         <filtering>true</filtering>
                                         <includes>
@@ -827,7 +664,6 @@
                                             <include>**/*.xml</include>
                                         </includes>
                                         <excludes>
-                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
                                             <exclude>spring.*</exclude>
                                         </excludes>
@@ -835,7 +671,6 @@
                                     <resource>
                                         <directory>${project.build.resourcesSourceDirectory}/META-INF</directory>
                                         <excludes>
-                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
                                             <exclude>spring.*</exclude>
                                             <exclude>**/*.conf</exclude>
@@ -855,20 +690,12 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <outputDirectory>${project.build.outputDirectory}/META-INF/maven/${project.groupId}/${project.artifactId}</outputDirectory>
-                                <resources>
+                                <outputDirectory>${project.build.outputDirectory}/META-INF/maven</outputDirectory>
+                                <resources combine.children="append">
                                     <resource>
-                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF/maven</directory>
-                                        <filtering>true</filtering>
+                                        <directory>${project.build.directory}/maven</directory>
                                         <includes>
-                                            <include>module*.properties</include>
-                                        </includes>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.build.resourcesSourceDirectory}/META-INF/maven</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>module*.properties</include>
+                                            <exclude>**/*.properties</exclude>
                                         </includes>
                                     </resource>
                                 </resources>
@@ -883,21 +710,8 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <outputDirectory>${project.build.resourcesDirectory}/spring</outputDirectory>
+                                <outputDirectory>${project.build.outputDirectory}/META-INF/spring</outputDirectory>
                                 <resources>
-                                    <resource>
-                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF/spring</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>**/*.xml</include>
-                                        </includes>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.build.resourcesDependencyDirectory}/META-INF/spring</directory>
-                                        <excludes>
-                                            <exclude>**/*.xml</exclude>
-                                        </excludes>
-                                    </resource>
                                     <resource>
                                         <directory>${project.build.resourcesSourceDirectory}/META-INF/spring</directory>
                                         <filtering>true</filtering>
@@ -923,34 +737,9 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <outputDirectory>${project.build.testResourcesDirectory}</outputDirectory>
+                                <outputDirectory>${project.build.testOutputDirectory}/META-INF</outputDirectory>
                                 <resources>
                                     <resource>
-                                        <directory>${project.build.testResourcesDependencyDirectory}/META-INF</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>**/*.conf</include>
-                                            <include>**/*.properties</include>
-                                            <include>**/*.xml</include>
-                                        </includes>
-                                        <excludes>
-                                            <exclude>maven/**</exclude>
-                                            <exclude>spring/**</exclude>
-                                            <exclude>spring.*</exclude>
-                                        </excludes>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.build.testResourcesDependencyDirectory}/META-INF</directory>
-                                        <excludes>
-                                            <exclude>maven/**</exclude>
-                                            <exclude>spring/**</exclude>
-                                            <exclude>spring.*</exclude>
-                                            <exclude>**/*.conf</exclude>
-                                            <exclude>**/*.properties</exclude>
-                                            <exclude>**/*.xml</exclude>
-                                        </excludes>
-                                    </resource>
-                                    <resource>
                                         <directory>${project.build.testResourcesSourceDirectory}/META-INF</directory>
                                         <filtering>true</filtering>
                                         <includes>
@@ -959,7 +748,6 @@
                                             <include>**/*.xml</include>
                                         </includes>
                                         <excludes>
-                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
                                             <exclude>spring.*</exclude>
                                         </excludes>
@@ -967,7 +755,6 @@
                                     <resource>
                                         <directory>${project.build.testResourcesSourceDirectory}/META-INF</directory>
                                         <excludes>
-                                            <exclude>maven/**</exclude>
                                             <exclude>spring/**</exclude>
                                             <exclude>spring.*</exclude>
                                             <exclude>**/*.conf</exclude>
@@ -987,22 +774,9 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <outputDirectory>${project.build.testResourcesDirectory}/spring</outputDirectory>
+                                <outputDirectory>${project.build.testOutputDirectory}/META-INF/spring</outputDirectory>
                                 <resources>
                                     <resource>
-                                        <directory>${project.build.testResourcesDependencyDirectory}/META-INF/spring</directory>
-                                        <filtering>true</filtering>
-                                        <includes>
-                                            <include>**/*.xml</include>
-                                        </includes>
-                                    </resource>
-                                    <resource>
-                                        <directory>${project.build.testResourcesDependencyDirectory}/META-INF/spring</directory>
-                                        <excludes>
-                                            <exclude>**/*.xml</exclude>
-                                        </excludes>
-                                    </resource>
-                                    <resource>
                                         <directory>${project.build.testResourcesSourceDirectory}/META-INF/spring</directory>
                                         <filtering>true</filtering>
                                         <includes>
@@ -1014,6 +788,27 @@
                                         <excludes>
                                             <exclude>**/*.xml</exclude>
                                         </excludes>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                        <!-- Copying test TestNG resources -->
+                        <execution>
+                            <id>copy-test-resources-testng</id>
+                            <phase>process-test-resources</phase>
+                            <goals>
+                                <goal>copy-resources</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <outputDirectory>${project.build.directory}/testng</outputDirectory>
+                                <resources>
+                                    <resource>
+                                        <directory>${project.basedir.all}/dcdt-core/src/testng</directory>
+                                        <filtering>true</filtering>
+                                        <includes>
+                                            <include>*.xml</include>
+                                        </includes>
                                     </resource>
                                 </resources>
                             </configuration>
@@ -1049,6 +844,7 @@
                         </execution>
                     </executions>
                 </plugin>
+                <!--
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
@@ -1061,7 +857,6 @@
                         <validate>true</validate>
                     </configuration>
                     <executions>
-                        <!-- Attaching site descriptor -->
                         <execution>
                             <id>attach-descriptor</id>
                             <goals>
@@ -1070,6 +865,7 @@
                         </execution>
                     </executions>
                 </plugin>
+                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
@@ -1098,12 +894,9 @@
                     <version>2.18.1</version>
                     <inherited>true</inherited>
                     <configuration>
-                        <additionalClasspathElements combine.children="append">
-                            <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
-                            <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
-                        </additionalClasspathElements>
+                        <additionalClasspathElements combine.children="append"/>
                         <argLine>-Xms256m -Xmx512m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</argLine>
-                        <classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>
+                        <!--<classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>-->
                         <parallel>all</parallel>
                         <reportFormat>plain</reportFormat>
                         <systemPropertyVariables combine.children="append">
@@ -1114,8 +907,8 @@
                             <java.net.preferIPv4Addresses>true</java.net.preferIPv4Addresses>
                             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                         </systemPropertyVariables>
-                        <testClassesDirectory>${project.build.cloverTestOutputDirectory}</testClassesDirectory>
-                        <testSourceDirectory>${project.build.cloverTestSourceDirectory}</testSourceDirectory>
+                        <!--<testClassesDirectory>${project.build.cloverTestOutputDirectory}</testClassesDirectory>-->
+                        <!--<testSourceDirectory>${project.build.cloverTestSourceDirectory}</testSourceDirectory>-->
                         <threadCount>8</threadCount>
                         <trimStackTrace>false</trimStackTrace>
                         <workingDirectory>${project.build.directory}</workingDirectory>
@@ -1136,7 +929,7 @@
                                 <reportNameSuffix>unit</reportNameSuffix>
                                 <skipTests>${skipTestsUnit}</skipTests>
                                 <suiteXmlFiles>
-                                    <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-unit.xml</suiteXmlFile>
+                                    <suiteXmlFile>${project.build.directory}/testng/testng-unit.xml</suiteXmlFile>
                                 </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.instance.dir>$${dcdt.data.dir}/instance-unit</dcdt.instance.dir>
@@ -1154,7 +947,7 @@
                                 <reportNameSuffix>func</reportNameSuffix>
                                 <skipTests>${skipTestsFunc}</skipTests>
                                 <suiteXmlFiles>
-                                    <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-func.xml</suiteXmlFile>
+                                    <suiteXmlFile>${project.build.directory}/testng/testng-func.xml</suiteXmlFile>
                                 </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.instance.dir>$${dcdt.data.dir}/instance-func</dcdt.instance.dir>
@@ -1173,7 +966,7 @@
                                 <reportNameSuffix>it</reportNameSuffix>
                                 <skipTests>${skipTestsIt}</skipTests>
                                 <suiteXmlFiles>
-                                    <suiteXmlFile>${project.build.testResourcesDirectory}/testng/testng-it.xml</suiteXmlFile>
+                                    <suiteXmlFile>${project.build.directory}/testng/testng-it.xml</suiteXmlFile>
                                 </suiteXmlFiles>
                                 <systemPropertyVariables>
                                     <dcdt.instance.dir>$${dcdt.data.dir}/instance-it</dcdt.instance.dir>
@@ -1184,12 +977,106 @@
                     </executions>
                 </plugin>
                 <plugin>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
+                    <version>1.5</version>
+                    <inherited>true</inherited>
+                    <dependencies>
+                        <dependency>
+                            <groupId>commons-io</groupId>
+                            <artifactId>commons-io</artifactId>
+                            <version>2.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.ant</groupId>
+                            <artifactId>ant</artifactId>
+                            <version>1.9.6</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.commons</groupId>
+                            <artifactId>commons-lang3</artifactId>
+                            <version>3.4</version>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.apache.maven</groupId>
+                            <artifactId>maven-core</artifactId>
+                            <version>3.1.1</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>jcl-over-slf4j</artifactId>
+                                </exclusion>
+                                <exclusion>
+                                    <groupId>org.slf4j</groupId>
+                                    <artifactId>slf4j-jdk14</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.codehaus.groovy</groupId>
+                            <artifactId>groovy-all</artifactId>
+                            <version>2.4.5</version>
+                            <scope>runtime</scope>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>commons-logging</groupId>
+                                    <artifactId>commons-logging</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                        <dependency>
+                            <groupId>org.springframework</groupId>
+                            <artifactId>spring-core</artifactId>
+                            <version>4.2.1.RELEASE</version>
+                            <exclusions>
+                                <exclusion>
+                                    <groupId>commons-logging</groupId>
+                                    <artifactId>commons-logging</artifactId>
+                                </exclusion>
+                                <exclusion>
+                                    <groupId>javax.el</groupId>
+                                    <artifactId>javax.el-api</artifactId>
+                                </exclusion>
+                            </exclusions>
+                        </dependency>
+                        <dependency>
+                            <groupId>pl.project13.maven</groupId>
+                            <artifactId>git-commit-id-plugin</artifactId>
+                            <version>2.2.0</version>
+                        </dependency>
+                    </dependencies>
+                    <configuration>
+                        <properties combine.children="append"/>
+                        <scripts combine.children="append"/>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>process-project-properties</id>
+                            <phase>initialize</phase>
+                            <goals>
+                                <goal>execute</goal>
+                            </goals>
+                            <inherited>true</inherited>
+                            <configuration>
+                                <scripts>
+                                    <script>file://${project.basedir.all}/dcdt-core/src/main/scripts/groovy/process-project-properties.groovy</script>
+                                </scripts>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
                     <groupId>org.codehaus.mojo</groupId>
                     <artifactId>appassembler-maven-plugin</artifactId>
                     <version>1.10</version>
                     <inherited>true</inherited>
                     <configuration>
+                        <configurationDirectory>conf</configurationDirectory>
+                        <generateRepository>false</generateRepository>
                         <repositoryLayout>flat</repositoryLayout>
+                        <repositoryName>lib</repositoryName>
+                        <useTimestampInSnapshotFileName>false</useTimestampInSnapshotFileName>
+                        <useWildcardClassPath>true</useWildcardClassPath>
                     </configuration>
                 </plugin>
                 <plugin>
@@ -1198,87 +1085,10 @@
                     <version>2.2</version>
                     <inherited>true</inherited>
                 </plugin>
-                <plugin>
-                    <groupId>org.kuali.maven.plugins</groupId>
-                    <artifactId>properties-maven-plugin</artifactId>
-                    <version>2.0.1</version>
-                    <inherited>true</inherited>
-                    <executions>
-                        <!-- Reading Maven project POM properties files -->
-                        <execution>
-                            <id>read-pom-properties</id>
-                            <phase>initialize</phase>
-                            <goals>
-                                <goal>read-project-properties</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
-                                <locations>
-                                    <location>${project.basedir.parent}/target/maven/git.properties</location>
-                                    <location>${project.basedir.parent}/target/maven/pom.properties</location>
-                                    <location>${project.build.pomPropertiesFile}</location>
-                                </locations>
-                            </configuration>
-                        </execution>
-                        <!-- Translating Maven project POM properties -->
-                        <execution>
-                            <id>translate-pom-properties</id>
-                            <phase>initialize</phase>
-                            <goals>
-                                <goal>translate-properties</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
-                                <properties>
-                                    <property>project.java.package</property>
-                                </properties>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
         
         <plugins>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>process-git-properties</id>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>process-properties</id>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-dependency-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>unpack-dependency-resources</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>unpack-test-dependency-resources</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
@@ -1321,11 +1131,17 @@
                         <inherited>false</inherited>
                     </execution>
                     <execution>
+                        <id>copy-test-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
                         <inherited>false</inherited>
                     </execution>
                 </executions>
             </plugin>
+            <!--
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -1337,6 +1153,7 @@
                     </execution>
                 </executions>
             </plugin>
+            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -1360,24 +1177,20 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.kuali.maven.plugins</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>read-pom-properties</id>
+                        <id>process-project-properties</id>
                         <inherited>false</inherited>
-                        <configuration>
-                            <locations combine.self="override">
-                                <location>${project.build.pomPropertiesFile}</location>
-                            </locations>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
     </build>
     
+    <!--
     <reporting>
         <excludeDefaults>true</excludeDefaults>
         
@@ -1398,6 +1211,7 @@
             </plugin>
         </plugins>
     </reporting>
+    -->
     
     <profiles>
         <!-- Set properties specific to the operating system -->
@@ -1457,6 +1271,7 @@
             </properties>
         </profile>
         <!-- Check if a Clover license is available -->
+        <!--
         <profile>
             <id>clover-license</id>
             <activation>
@@ -1490,7 +1305,6 @@
                         <groupId>org.kuali.maven.plugins</groupId>
                         <artifactId>properties-maven-plugin</artifactId>
                         <executions>
-                            <!-- Reading Maven project POM Clover properties files -->
                             <execution>
                                 <id>read-pom-properties-clover</id>
                                 <phase>initialize</phase>
@@ -1510,7 +1324,9 @@
                 </plugins>
             </build>
         </profile>
+        -->
         <!-- Configure code checking / verification oriented reporting plugins -->
+        <!--
         <profile>
             <id>site-check</id>
             <activation>
@@ -1692,7 +1508,9 @@
                 </plugins>
             </reporting>
         </profile>
+        -->
         <!-- Configure documentation-oriented reporting plugins -->
+        <!--
         <profile>
             <id>site-doc</id>
             <properties>
@@ -1780,7 +1598,9 @@
                 </plugins>
             </reporting>
         </profile>
+        -->
         <!-- Configure testing-oriented reporting plugins -->
+        <!--
         <profile>
             <id>site-test</id>
             <activation>
@@ -1806,7 +1626,9 @@
                 </plugins>
             </reporting>
         </profile>
+        -->
         <!-- Configuring reporting -->
+        <!--
         <profile>
             <id>site</id>
             <activation>
@@ -1833,6 +1655,7 @@
                 </plugins>
             </build>
         </profile>
+        -->
         <!-- Set tier properties if a tier is not defined already -->
         <profile>
             <id>default-tier</id>
@@ -1849,6 +1672,7 @@
             </properties>
         </profile>
         <!-- Set Clover license location property if not defined already -->
+        <!--
         <profile>
             <id>default-maven.clover.licenseLocation</id>
             <activation>
@@ -1860,5 +1684,6 @@
                 <maven.clover.licenseLocation>${project.basedir.all}/clover.license</maven.clover.licenseLocation>
             </properties>
         </profile>
+        -->
     </profiles>
 </project>

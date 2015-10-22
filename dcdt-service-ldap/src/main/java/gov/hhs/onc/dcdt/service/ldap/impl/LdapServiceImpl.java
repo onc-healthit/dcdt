@@ -41,7 +41,7 @@ import org.springframework.stereotype.Component;
 
 @AutoStartup(false)
 @Component("ldapServiceImpl")
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 1)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
 @ServiceContextConfiguration({ "spring/spring-service-ldap.xml", "spring/spring-service-ldap-*.xml" })
 public class LdapServiceImpl extends AbstractToolService implements LdapService {
     private final static Logger LOGGER = LoggerFactory.getLogger(LdapServiceImpl.class);

@@ -20,9 +20,9 @@
     <properties>
         <!-- Project properties -->
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
-        <!-- Project build resources properties -->
-        <project.build.resourcesDirectory>${project.build.directory}/${project.artifactId}/conf</project.build.resourcesDirectory>
-        <project.build.resourcesDependencyDirectory>${project.build.directory}/resources-dependency</project.build.resourcesDependencyDirectory>
+        <!-- Project service properties -->
+        <project.service.description>${project.description}</project.service.description>
+        <project.service.name>${project.artifactId}</project.service.name>
         <!-- Project build service properties -->
         <project.build.serviceDirectory>${project.build.directory}/${project.artifactId}</project.build.serviceDirectory>
         <project.build.serviceBinDirectory>${project.build.serviceDirectory}/bin</project.build.serviceBinDirectory>
@@ -30,9 +30,6 @@
         <project.build.serviceLibDirectory>${project.build.serviceDirectory}/lib</project.build.serviceLibDirectory>
         <project.build.serviceLogDirectory>${project.build.serviceDirectory}/log</project.build.serviceLogDirectory>
         <project.build.serviceVarDirectory>${project.build.serviceDirectory}/var</project.build.serviceVarDirectory>
-        <!-- Project build test resources properties -->
-        <project.build.testResourcesDirectory>${project.build.directory}/${project.artifactId}-test/conf</project.build.testResourcesDirectory>
-        <project.build.testResourcesDependencyDirectory>${project.build.directory}/test-resources-dependency</project.build.testResourcesDependencyDirectory>
         <!-- Project build service test properties -->
         <project.build.testServiceDirectory>${project.build.serviceDirectory}-test</project.build.testServiceDirectory>
         <project.build.testServiceBinDirectory>${project.build.testServiceDirectory}/bin</project.build.testServiceBinDirectory>
@@ -336,26 +333,6 @@
             <plugins>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-antrun-plugin</artifactId>
-                    <executions>
-                        <!-- Processing service executable file(s) -->
-                        <execution>
-                            <id>process-executables-service</id>
-                            <phase>prepare-package</phase>
-                            <goals>
-                                <goal>run</goal>
-                            </goals>
-                            <inherited>true</inherited>
-                            <configuration>
-                                <target>
-                                    <ant antfile="${project.basedir.all}/dcdt-service-core/src/main/scripts/ant-service.xml" target="service-process-exec-files" inheritRefs="true" useNativeBasedir="true"/>
-                                </target>
-                            </configuration>
-                        </execution>
-                    </executions>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-assembly-plugin</artifactId>
                     <executions>
                         <!-- Building service assembly -->
@@ -388,13 +365,9 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <excludeClassifiers>sources</excludeClassifiers>
                                 <includeScope>runtime</includeScope>
                                 <outputDirectory>${project.build.serviceLibDirectory}</outputDirectory>
                             </configuration>
-                        </execution>
-                        <execution>
-                            <id>unpack-dependency-resources</id>
                         </execution>
                         <!-- Copying test service dependencies -->
                         <execution>
@@ -405,13 +378,9 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <excludeClassifiers>test-sources</excludeClassifiers>
                                 <includeScope>test</includeScope>
                                 <outputDirectory>${project.build.testServiceLibDirectory}</outputDirectory>
                             </configuration>
-                        </execution>
-                        <execution>
-                            <id>unpack-test-dependency-resources</id>
                         </execution>
                     </executions>
                 </plugin>
@@ -463,7 +432,7 @@
                                         <targetPath>bin</targetPath>
                                     </resource>
                                     <resource>
-                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/etc</directory>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/conf</directory>
                                         <filtering>true</filtering>
                                         <includes>
                                             <include>**/*.conf</include>
@@ -473,7 +442,7 @@
                                         <targetPath>conf</targetPath>
                                     </resource>
                                     <resource>
-                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/etc</directory>
+                                        <directory>${project.build.directory}/${project.artifactId}-daemons/jsw/${project.artifactId}/conf</directory>
                                         <excludes>
                                             <exclude>**/*.conf</exclude>
                                             <exclude>**/*.properties</exclude>
@@ -570,6 +539,10 @@
                                                         <value>${project.service.name.display}</value>
                                                     </property>
                                                     <property>
+                                                        <name>wrapper.java.classpath.1</name>
+                                                        <value>%REPO_DIR%/wrapper-*.jar</value>
+                                                    </property>
+                                                    <property>
                                                         <name>wrapper.logfile</name>
                                                         <value>log/wrapper-${project.service.name}.log</value>
                                                     </property>
@@ -612,17 +585,18 @@
                                             </generatorConfiguration>
                                         </generatorConfigurations>
                                         <jvmSettings>
-                                            <initialMemorySize>128M</initialMemorySize>
-                                            <maxMemorySize>256M</maxMemorySize>
-                                            <maxStackSize>128M</maxStackSize>
+                                            <initialMemorySize>256M</initialMemorySize>
+                                            <maxMemorySize>512M</maxMemorySize>
                                             <extraArguments>
+                                                <extraArgument>-XX:MetaspaceSize=128m</extraArgument>
                                                 <extraArgument>-XX:+UseG1GC</extraArgument>
                                                 <extraArgument>-XX:MaxGCPauseMillis=50</extraArgument>
                                                 <extraArgument>-Djava.net.preferIPv4Addresses=true</extraArgument>
                                                 <extraArgument>-Djava.net.preferIPv4Stack=true</extraArgument>
                                                 <extraArgument>-Djava.security.manager</extraArgument>
-                                                <extraArgument>-Djava.security.policy=conf/service/wrapper-service.policy</extraArgument>
+                                                <extraArgument>-Djava.security.policy=META-INF/conf/service/wrapper-service.policy</extraArgument>
                                             </extraArguments>
+                                            <maxStackSize>256m</maxStackSize>
                                             <systemProperties>
                                                 <systemProperty>dcdt.data.dir=var</systemProperty>
                                                 <systemProperty>dcdt.log.dir=log</systemProperty>
@@ -636,29 +610,26 @@
                                     </daemon>
                                 </daemons>
                                 <target>${project.build.directory}/${project.artifactId}-daemons</target>
-                                <useWildcardClassPath>true</useWildcardClassPath>
                             </configuration>
                         </execution>
                     </executions>
                 </plugin>
                 <plugin>
-                    <groupId>org.kuali.maven.plugins</groupId>
-                    <artifactId>properties-maven-plugin</artifactId>
+                    <groupId>org.codehaus.gmavenplus</groupId>
+                    <artifactId>gmavenplus-plugin</artifactId>
                     <executions>
                         <execution>
-                            <id>read-pom-properties</id>
+                            <id>process-service-executable-files</id>
+                            <phase>prepare-package</phase>
+                            <goals>
+                                <goal>execute</goal>
+                            </goals>
+                            <inherited>true</inherited>
                             <configuration>
-                                <locations combine.self="override">
-                                    <location>${project.basedir.all}/dcdt-parent/target/maven/git.properties</location>
-                                    <location>${project.basedir.all}/dcdt-parent/target/maven/pom.properties</location>
-                                    <location>${project.basedir.parent}/target/maven/git.properties</location>
-                                    <location>${project.basedir.parent}/target/maven/pom.properties</location>
-                                    <location>${project.build.pomPropertiesFile}</location>
-                                </locations>
+                                <scripts>
+                                    <script>file://${project.basedir.all}/dcdt-service-core/src/main/scripts/groovy/process-service-executable-files.groovy</script>
+                                </scripts>
                             </configuration>
-                        </execution>
-                        <execution>
-                            <id>translate-pom-properties</id>
                         </execution>
                     </executions>
                 </plugin>
@@ -666,33 +637,6 @@
         </pluginManagement>
         
         <plugins>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>process-git-properties</id>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>process-properties</id>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>process-executables-service</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
@@ -705,16 +649,6 @@
                     </execution>
                     <execution>
                         <id>copy-test-dependencies-service</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>unpack-dependency-resources</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>
@@ -767,6 +701,11 @@
                         <inherited>false</inherited>
                     </execution>
                     <execution>
+                        <id>copy-test-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
                         <inherited>false</inherited>
                     </execution>
@@ -789,6 +728,22 @@
                     </execution>
                     <execution>
                         <id>test-integration</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>process-project-properties</id>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
+                        <id>process-service-executable-files</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>

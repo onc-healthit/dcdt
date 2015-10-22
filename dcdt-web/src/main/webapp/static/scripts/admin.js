@@ -49,6 +49,7 @@
                     },
                     "postQueryBean": function (jqXhr, status) {
                         $.dcdt.admin.addServiceData(serviceStatusTypeExpected, "DNS", "DNS", serviceInputDnsStatus);
+                        $.dcdt.admin.addServiceData(serviceStatusTypeExpected, "HTTP", "HTTP", serviceInputHttpStatus);
                         $.dcdt.admin.addServiceData(serviceStatusTypeExpected, "LDAP", "LDAP", serviceInputLdapStatus);
                         $.dcdt.admin.addServiceData(serviceStatusTypeExpected, "MAIL", "mail", serviceInputMailStatus);
                     },
@@ -186,7 +187,7 @@
     });
     
     var mailMappingsForm, mailMappingsButtons, mailMappingsButtonView, mailMappingsDialogView, mailMappings;
-    var serviceHubForm, serviceInputDnsStatus, serviceInputLdapStatus, serviceInputMailStatus, serviceHub;
+    var serviceHubForm, serviceInputDnsStatus, serviceInputHttpStatus, serviceInputLdapStatus, serviceInputMailStatus, serviceHub;
     var instanceConfigForm, instanceConfigInputDomainName, instanceConfigInputIpAddr, instanceConfigButtons, instanceConfigButtonRm, instanceConfigButtonSet, instanceConfigButtonCreds, instanceConfigDialogRm, instanceConfigDialogSet, instanceConfig;
     
     $(document).ready(function () {
@@ -197,6 +198,7 @@
         
         serviceHubForm = $("form[name=\"admin-service-hub\"]");
         serviceInputDnsStatus = serviceHubForm.dcdt.form.formInputs("serviceDnsStatus");
+        serviceInputHttpStatus = serviceHubForm.dcdt.form.formInputs("serviceHttpStatus");
         serviceInputLdapStatus = serviceHubForm.dcdt.form.formInputs("serviceLdapStatus");
         serviceInputMailStatus = serviceHubForm.dcdt.form.formInputs("serviceMailStatus");
         

@@ -30,6 +30,7 @@
         <param-value>
             serviceEmbedded
             serviceDnsEmbedded
+            serviceHttpEmbedded
             serviceLdapEmbedded
             serviceMailEmbedded
         </param-value>
@@ -81,9 +82,9 @@
             <param-name>contextConfigLocation</param-name>
             <!--suppress XmlPathReference -->
             <param-value>
-                /WEB-INF/spring/spring-core*.xml
-                /WEB-INF/spring/spring-service*.xml
-                /WEB-INF/spring/spring-web*.xml
+                classpath*:META-INF/spring/spring-core*.xml
+                classpath*:META-INF/spring/spring-service*.xml
+                classpath*:META-INF/spring/spring-web*.xml
             </param-value>
         </init-param>
         <load-on-startup>1</load-on-startup>

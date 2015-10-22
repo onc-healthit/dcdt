@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
 
 @AutoStartup(false)
 @Component("mailServiceImpl")
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 3)
 @ServiceContextConfiguration({ "spring/spring-service-mail.xml", "spring/spring-service-mail-*.xml" })
 public class MailServiceImpl extends AbstractToolService implements MailService {
     private final static Logger LOGGER = LoggerFactory.getLogger(MailServiceImpl.class);

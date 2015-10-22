@@ -31,6 +31,7 @@
     =====================================================================================================-->
     <beans:bean id="resourcePatternResolverJames" class="gov.hhs.onc.dcdt.service.mail.james.JamesResourcePatternResolver" abstract="true"/>
     
+    <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="resourcePatternResolverJamesImpl" class="gov.hhs.onc.dcdt.service.mail.james.impl.JamesResourcePatternResolverImpl"
         parent="resourcePatternResolverJames"
         p:absoluteDirectory="${dcdt.service.mail.james.abs.dir}"
@@ -302,6 +303,7 @@
                                     <beans:bean parent="configBeanMailetAllToRepo">
                                         <beans:property name="initParameters">
                                             <util:map>
+                                                <!--suppress SpringPlaceholdersInspection -->
                                                 <beans:entry key="repositoryPath" value="${dcdt.service.mail.james.repo.error}"/>
                                             </util:map>
                                         </beans:property>

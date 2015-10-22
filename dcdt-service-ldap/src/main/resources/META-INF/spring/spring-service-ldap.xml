@@ -29,7 +29,7 @@
         <beans:constructor-arg name="cacheManager">
             <!--suppress SpringModelInspection -->
             <beans:bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
-                p:configLocation="classpath:ehcache/ehcache-service-ldap.xml"/>
+                p:configLocation="classpath:META-INF/ehcache/ehcache-service-ldap.xml"/>
         </beans:constructor-arg>
         <beans:constructor-arg name="disabledCacheNames">
             <util:set>
@@ -219,6 +219,7 @@
         p:directoryServiceId="ds1"
         p:ldapConfig-ref="instanceLdapConfig1">
         <beans:property name="instanceLayout">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="instanceLayout"
                 c:instanceDirectory="${dcdt.service.ldap.1.dir}"/>
         </beans:property>
@@ -228,6 +229,7 @@
         p:directoryServiceId="ds2"
         p:ldapConfig-ref="instanceLdapConfig2">
         <beans:property name="instanceLayout">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="instanceLayout"
                 c:instanceDirectory="${dcdt.service.ldap.2.dir}"/>
         </beans:property>
@@ -237,6 +239,7 @@
         p:directoryServiceId="ds3"
         p:ldapConfig-ref="instanceLdapConfig3">
         <beans:property name="instanceLayout">
+            <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="instanceLayout"
                 c:instanceDirectory="${dcdt.service.ldap.3.dir}"/>
         </beans:property>

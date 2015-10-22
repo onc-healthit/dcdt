@@ -44,12 +44,6 @@
         <project.build.testWebappWebInfDirectory>${project.build.testWebappDirectory}/WEB-INF</project.build.testWebappWebInfDirectory>
         <project.build.testWebappClassesDirectory>${project.build.testWebappWebInfDirectory}/classes</project.build.testWebappClassesDirectory>
         <project.build.testWebappLibDirectory>${project.build.testWebappWebInfDirectory}/lib</project.build.testWebappLibDirectory>
-        <!-- Project build resources properties -->
-        <project.build.resourcesDirectory>${project.build.webappClassesDirectory}</project.build.resourcesDirectory>
-        <project.build.resourcesDependencyDirectory>${project.build.directory}/resources-dependency</project.build.resourcesDependencyDirectory>
-        <!-- Project build test resources properties -->
-        <project.build.testResourcesDirectory>${project.build.testWebappClassesDirectory}</project.build.testResourcesDirectory>
-        <project.build.testResourcesDependencyDirectory>${project.build.directory}/test-resources-dependency</project.build.testResourcesDependencyDirectory>
     </properties>
     
     <dependencyManagement>
@@ -224,7 +218,6 @@
                             </goals>
                             <inherited>true</inherited>
                             <configuration>
-                                <excludeClassifiers>sources,test-sources</excludeClassifiers>
                                 <includeScope>test</includeScope>
                                 <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
                             </configuration>
@@ -264,9 +257,6 @@
                         </execution>
                         <execution>
                             <id>copy-resources-spring</id>
-                            <configuration>
-                                <outputDirectory>${project.build.webappWebInfDirectory}/spring</outputDirectory>
-                            </configuration>
                         </execution>
                         <!-- Copying web resources -->
                         <execution>
@@ -295,9 +285,6 @@
                         </execution>
                         <execution>
                             <id>copy-test-resources-spring</id>
-                            <configuration>
-                                <outputDirectory>${project.build.testWebappWebInfDirectory}/spring</outputDirectory>
-                            </configuration>
                         </execution>
                         <!-- Copying test web resources -->
                         <execution>
@@ -332,8 +319,6 @@
                         <additionalClasspathElements combine.children="override">
                             <additionalClasspathElement>${project.build.testWebappWebinfDirectory}</additionalClasspathElement>
                             <additionalClasspathElement>${project.build.webappWebinfDirectory}</additionalClasspathElement>
-                            <additionalClasspathElement>${project.build.testResourcesDirectory}</additionalClasspathElement>
-                            <additionalClasspathElement>${project.build.resourcesDirectory}</additionalClasspathElement>
                         </additionalClasspathElements>
                         <threadCount>1</threadCount>
                         <workingDirectory>${project.build.testWebappDirectory}</workingDirectory>
@@ -357,7 +342,6 @@
                     <inherited>true</inherited>
                     <configuration>
                         <archiveClasses>true</archiveClasses>
-                        <packagingExcludes>WEB-INF/lib/*-sources.jar</packagingExcludes>
                     </configuration>
                     <executions>
                         <execution>
@@ -365,7 +349,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <warSourceDirectory>${project.build.webappSourceDirectory}</warSourceDirectory>
-                                <warSourceExcludes>WEB-INF/classes/**,WEB-INF/spring/**,WEB-INF/views/**/*.jsp,WEB-INF/web.xml</warSourceExcludes>
+                                <warSourceExcludes>WEB-INF/views/**/*.jsp,WEB-INF/web.xml</warSourceExcludes>
                                 <webappDirectory>${project.build.webappDirectory}</webappDirectory>
                             </configuration>
                         </execution>
@@ -390,6 +374,13 @@
                     <artifactId>tomcat7-maven-plugin</artifactId>
                     <version>2.2</version>
                     <inherited>true</inherited>
+                    <dependencies>
+                        <dependency>
+                            <groupId>com.github.akiraly.reusable-poms</groupId>
+                            <artifactId>tomcat-juli-over-slf4j</artifactId>
+                            <version>4</version>
+                        </dependency>
+                    </dependencies>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -430,72 +421,17 @@
                         </dependency>
                     </dependencies>
                 </plugin>
-                <plugin>
-                    <groupId>org.kuali.maven.plugins</groupId>
-                    <artifactId>properties-maven-plugin</artifactId>
-                    <executions>
-                        <execution>
-                            <id>read-pom-properties</id>
-                            <configuration>
-                                <locations combine.self="override">
-                                    <location>${project.basedir.all}/dcdt-parent/target/maven/git.properties</location>
-                                    <location>${project.basedir.all}/dcdt-parent/target/maven/pom.properties</location>
-                                    <location>${project.basedir.parent}/target/maven/git.properties</location>
-                                    <location>${project.basedir.parent}/target/maven/pom.properties</location>
-                                    <location>${project.basedir.all}/dcdt-service-parent/target/maven/git.properties</location>
-                                    <location>${project.basedir.all}/dcdt-service-parent/target/maven/pom.properties</location>
-                                    <location>${project.build.pomPropertiesFile}</location>
-                                </locations>
-                            </configuration>
-                        </execution>
-                        <execution>
-                            <id>translate-pom-properties</id>
-                        </execution>
-                    </executions>
-                </plugin>
             </plugins>
         </pluginManagement>
         
         <plugins>
-            <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>process-git-properties</id>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>process-properties</id>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <inherited>false</inherited>
                 <executions>
                     <execution>
-                        <id>unpack-dependency-resources</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
                         <id>copy-test-dependencies-web</id>
-                        <phase>none</phase>
-                        <inherited>false</inherited>
-                    </execution>
-                    <execution>
-                        <id>unpack-test-dependency-resources</id>
                         <phase>none</phase>
                         <inherited>false</inherited>
                     </execution>
@@ -553,6 +489,11 @@
                         <inherited>false</inherited>
                     </execution>
                     <execution>
+                        <id>copy-test-resources-testng</id>
+                        <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                    <execution>
                         <id>copy-resources-site</id>
                         <inherited>false</inherited>
                     </execution>
@@ -576,6 +517,17 @@
                     <execution>
                         <id>test-integration</id>
                         <phase>none</phase>
+                        <inherited>false</inherited>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
+                <inherited>false</inherited>
+                <executions>
+                    <execution>
+                        <id>process-project-properties</id>
                         <inherited>false</inherited>
                     </execution>
                 </executions>

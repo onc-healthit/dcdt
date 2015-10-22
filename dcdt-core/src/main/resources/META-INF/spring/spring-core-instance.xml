@@ -61,7 +61,7 @@
                 p:ignoreFailedDrops="true">
                 <beans:property name="scripts">
                     <util:list>
-                        <beans:value>classpath*:core/db/db-instance-init.sql</beans:value>
+                        <beans:value>classpath*:META-INF/core/db/db-instance-init.sql</beans:value>
                     </util:list>
                 </beans:property>
             </beans:bean>

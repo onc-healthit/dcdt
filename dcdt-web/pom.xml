@@ -22,6 +22,19 @@
         <project.basedir.all>${project.basedir}/..</project.basedir.all>
         <!-- Project Java properties -->
         <project.java.package>${project.groupId}.web</project.java.package>
+        <!-- Project test Tomcat server properties -->
+        <project.test.server.1.tomcat.1.scheme>http</project.test.server.1.tomcat.1.scheme>
+        <project.test.server.1.tomcat.1.host>localhost</project.test.server.1.tomcat.1.host>
+        <project.test.server.1.tomcat.1.port.http>18080</project.test.server.1.tomcat.1.port.http>
+        <project.test.server.1.tomcat.1.context>/${project.artifactId}</project.test.server.1.tomcat.1.context>
+        <project.test.server.1.tomcat.1.url.base>${project.test.server.1.tomcat.1.scheme}://${project.test.server.1.tomcat.1.host}:${project.test.server.1.tomcat.1.port.http}${project.test.server.1.tomcat.1.context}/</project.test.server.1.tomcat.1.url.base>
+        <!-- Project test Selenium server properties -->
+        <project.test.server.1.selenium.1.scheme>http</project.test.server.1.selenium.1.scheme>
+        <project.test.server.1.selenium.1.host>localhost</project.test.server.1.selenium.1.host>
+        <project.test.server.1.selenium.1.port>10444</project.test.server.1.selenium.1.port>
+        <project.test.server.1.selenium.1.web.driver.url.base>${project.test.server.1.tomcat.1.url.base}</project.test.server.1.selenium.1.web.driver.url.base>
+        <project.test.server.1.selenium.1.web.driver.url.hub>${project.test.server.1.selenium.1.scheme}://${project.test.server.1.selenium.1.host}:${project.test.server.1.selenium.1.port}/wd/hub</project.test.server.1.selenium.1.web.driver.url.hub>
+        <project.test.server.1.selenium.1.xvfb.display>:20</project.test.server.1.selenium.1.xvfb.display>
     </properties>
     
     <dependencies>
@@ -33,20 +46,8 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-core</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-core</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-service-core</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -55,31 +56,18 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-service-dns</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-service-ldap</artifactId>
+            <artifactId>dcdt-service-http</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-ldap</artifactId>
             <version>${project.version}</version>
-            <classifier>sources</classifier>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-mail</artifactId>
             <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-service-mail</artifactId>
-            <version>${project.version}</version>
-            <classifier>sources</classifier>
         </dependency>
         <!-- Runtime dependencies (inherited) -->
         <dependency>
@@ -111,6 +99,10 @@
             <artifactId>annotations</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.mchange</groupId>
+            <artifactId>c3p0</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.sun.mail</groupId>
             <artifactId>javax.mail</artifactId>
         </dependency>
@@ -133,6 +125,26 @@
         <dependency>
             <groupId>dom4j</groupId>
             <artifactId>dom4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-buffer</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-http</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-handler</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-transport</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
@@ -171,11 +183,31 @@
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
+            <artifactId>commons-compress</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.derby</groupId>
             <artifactId>derby</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-ldap-client-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-ldap-codec-standalone</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.api</groupId>
+            <artifactId>api-ldap-schema-data</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.directory.server</groupId>
+            <artifactId>apacheds-core-api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.tiles</groupId>
@@ -208,6 +240,18 @@
         <dependency>
             <groupId>org.apache.velocity</groupId>
             <artifactId>velocity-tools</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcmail-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk15on</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk15on</artifactId>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
@@ -329,23 +373,9 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-core</artifactId>
-            <version>${project.version}</version>
-            <classifier>test-sources</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-core</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-service-core</artifactId>
-            <version>${project.version}</version>
-            <classifier>test-sources</classifier>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -357,9 +387,9 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-service-dns</artifactId>
+            <artifactId>dcdt-service-http</artifactId>
             <version>${project.version}</version>
-            <classifier>test-sources</classifier>
+            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -371,31 +401,19 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-service-ldap</artifactId>
-            <version>${project.version}</version>
-            <classifier>test-sources</classifier>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
             <artifactId>dcdt-service-mail</artifactId>
             <version>${project.version}</version>
             <type>test-jar</type>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>dcdt-service-mail</artifactId>
-            <version>${project.version}</version>
-            <classifier>test-sources</classifier>
             <scope>test</scope>
         </dependency>
         <!-- Test dependencies (inherited) -->
+        <!--
         <dependency>
             <groupId>com.atlassian.clover</groupId>
             <artifactId>clover</artifactId>
             <scope>test</scope>
         </dependency>
+        -->
         <dependency>
             <groupId>org.seleniumhq.selenium</groupId>
             <artifactId>selenium-java</artifactId>
@@ -416,38 +434,11 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>pl.project13.maven</groupId>
-                <artifactId>git-commit-id-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>process-git-properties</id>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>process-properties</id>
-                    </execution>
-                    <execution>
-                        <id>prepare-archive</id>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>unpack-dependency-resources</id>
-                    </execution>
-                    <execution>
                         <id>copy-test-dependencies-web</id>
-                    </execution>
-                    <execution>
-                        <id>unpack-test-dependency-resources</id>
                     </execution>
                 </executions>
             </plugin>
@@ -481,6 +472,17 @@
                     </execution>
                     <execution>
                         <id>copy-resources-module</id>
+                        <configuration>
+                            <outputDirectory>${project.build.outputDirectory}/META-INF/maven</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>${project.basedir.parent}/target/maven</directory>
+                                    <includes>
+                                        <exclude>**/*.properties</exclude>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
                     </execution>
                     <execution>
                         <id>copy-resources-spring</id>
@@ -496,6 +498,9 @@
                     </execution>
                     <execution>
                         <id>copy-test-resources-web</id>
+                    </execution>
+                    <execution>
+                        <id>copy-test-resources-testng</id>
                     </execution>
                     <execution>
                         <id>copy-resources-site</id>
@@ -554,14 +559,11 @@
                 </executions>
             </plugin>
             <plugin>
-                <groupId>org.kuali.maven.plugins</groupId>
-                <artifactId>properties-maven-plugin</artifactId>
+                <groupId>org.codehaus.gmavenplus</groupId>
+                <artifactId>gmavenplus-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>read-pom-properties</id>
-                    </execution>
-                    <execution>
-                        <id>translate-pom-properties</id>
+                        <id>process-project-properties</id>
                     </execution>
                 </executions>
             </plugin>
@@ -595,7 +597,7 @@
                                     <fork>true</fork>
                                     <hostName>${project.test.server.1.tomcat.1.host}</hostName>
                                     <jarScanAllDirectories>false</jarScanAllDirectories>
-                                    <path>/</path>
+                                    <path>${project.test.server.1.tomcat.1.context}</path>
                                     <port>${project.test.server.1.tomcat.1.port.http}</port>
                                     <systemProperties>
                                         <dcdt.log.context.name>${project.artifactId}-test</dcdt.log.context.name>
@@ -605,16 +607,7 @@
                                         <java.net.preferIPv4Addresses>true</java.net.preferIPv4Addresses>
                                         <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                                     </systemProperties>
-                                    <webapps>
-                                        <webapp>
-                                            <asWebapp>true</asWebapp>
-                                            <groupId>${project.groupId}</groupId>
-                                            <artifactId>${project.artifactId}</artifactId>
-                                            <version>${project.version}</version>
-                                            <classifier>test</classifier>
-                                            <contextPath>/${project.test.server.1.tomcat.1.context}</contextPath>
-                                        </webapp>
-                                    </webapps>
+                                    <warDirectory>${project.build.testWebappDirectory}</warDirectory>
                                 </configuration>
                             </execution>
                             <execution>

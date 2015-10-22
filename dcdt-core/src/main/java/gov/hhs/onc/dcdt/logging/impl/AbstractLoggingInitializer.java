@@ -12,7 +12,7 @@ import org.springframework.context.ApplicationContextException;
 import org.springframework.util.ResourceUtils;
 
 public abstract class AbstractLoggingInitializer implements LoggingInitializer {
-    protected final static String CONFIG_FILE_URL_PATH_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX + "logback/logback-";
+    protected final static String CONFIG_FILE_URL_PATH_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX + "META-INF/logback/logback-";
 
     protected final static String CONFIG_FILE_URL_PATH_SUFFIX = FilenameUtils.EXTENSION_SEPARATOR + "groovy";
 
