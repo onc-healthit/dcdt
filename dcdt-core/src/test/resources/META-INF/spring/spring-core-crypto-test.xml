@@ -22,17 +22,17 @@
     <beans:bean id="testKeyConfigCa" parent="keyConfigImpl" abstract="true" autowire-candidate="false"/>
     
     <beans:bean id="testCertConfig" parent="certConfigImpl" abstract="true" autowire-candidate="false"/>
-    <beans:bean id="testCertConfigCa" parent="certConfigCa" abstract="true" autowire-candidate="false"/>
+    <beans:bean id="testCertConfigCa" parent="certConfigCaRoot" abstract="true" autowire-candidate="false"/>
     
     <beans:bean id="testCredConfig" parent="credConfigImpl" abstract="true" autowire-candidate="false"/>
     <beans:bean id="testCredConfigCa" parent="credConfigImpl" abstract="true" autowire-candidate="false"/>
 
     <beans:bean id="testKeyConfigCa1" parent="testKeyConfigCa"/>
     <beans:bean id="testCertConfigCa1" parent="testCertConfigCa">
-        <beans:property name="subjectName">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.ca.1}"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.ca.1}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
@@ -44,12 +44,12 @@
     = ONE RFC822NAME VALUE MATCHING DIRECT ADDRESS
     =====================================================================================================-->
     <beans:bean id="testKeyPairConfigAddr1" parent="testKeyConfig"/>
-    <beans:bean id="testCertConfigAddr1" parent="testCertConfig">
-        <beans:property name="subjectName">
+    <beans:bean id="testCertConfigAddr1" parent="testCertConfig"
+        p:subjectAltNames="#{ T(gov.hhs.onc.dcdt.crypto.utils.GeneralNameUtils).toMap(testCertConfigAddr1SubjAltName) }">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.1}"
-                c:altNames-ref="testCertConfigAddr1SubjAltName"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.addr.1}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
@@ -62,10 +62,10 @@
     =====================================================================================================-->
     <beans:bean id="testKeyPairConfigAddr2" parent="testKeyConfig"/>
     <beans:bean id="testCertConfigAddr2" parent="testCertConfig">
-        <beans:property name="subjectName">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.2}"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.addr.2}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
@@ -77,12 +77,12 @@
     = MULTIPLE RFC822NAME VALUES PRESENT, ONE MATCHING DIRECT ADDRESS
     =====================================================================================================-->
     <beans:bean id="testKeyPairConfigAddr3" parent="testKeyConfig"/>
-    <beans:bean id="testCertConfigAddr3" parent="testCertConfig">
-        <beans:property name="subjectName">
+    <beans:bean id="testCertConfigAddr3" parent="testCertConfig"
+        p:subjectAltNames="#{ T(gov.hhs.onc.dcdt.crypto.utils.GeneralNameUtils).toMap(testCertConfigAddr3SubjAltNames) }">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.3}"
-                c:altNames-ref="testCertConfigAddr3SubjAltNames"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.addr.3}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
@@ -94,12 +94,12 @@
     = MULTIPLE RFC822NAME VALUES PRESENT, NONE MATCHING DIRECT ADDRESS
     =====================================================================================================-->
     <beans:bean id="testKeyPairConfigAddr4" parent="testKeyConfig"/>
-    <beans:bean id="testCertConfigAddr4" parent="testCertConfig">
-        <beans:property name="subjectName">
+    <beans:bean id="testCertConfigAddr4" parent="testCertConfig"
+        p:subjectAltNames="#{ T(gov.hhs.onc.dcdt.crypto.utils.GeneralNameUtils).toMap(testCertConfigAddr4SubjAltNames) }">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.addr.4}"
-                c:altNames-ref="testCertConfigAddr4SubjAltNames"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.addr.4}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
@@ -111,12 +111,12 @@
     = ONE DNSNAME VALUE MATCHING DIRECT ADDRESS DOMAIN
     =====================================================================================================-->
     <beans:bean id="testKeyConfigDomain1" parent="testKeyConfig"/>
-    <beans:bean id="testCertConfigDomain1" parent="testCertConfig">
-        <beans:property name="subjectName">
+    <beans:bean id="testCertConfigDomain1" parent="testCertConfig"
+        p:subjectAltNames="#{ T(gov.hhs.onc.dcdt.crypto.utils.GeneralNameUtils).toMap(testCertConfigDomain1SubjAltName) }">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.1}"
-                c:altNames-ref="testCertConfigDomain1SubjAltName"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.domain.1}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
@@ -128,12 +128,12 @@
     = MULTIPLE DNSNAME VALUES PRESENT, ONE MATCHING DIRECT ADDRESS DOMAIN
     =====================================================================================================-->
     <beans:bean id="testKeyConfigDomain2" parent="testKeyConfig"/>
-    <beans:bean id="testCertConfigDomain2" parent="testCertConfig">
-        <beans:property name="subjectName">
+    <beans:bean id="testCertConfigDomain2" parent="testCertConfig"
+        p:subjectAltNames="#{ T(gov.hhs.onc.dcdt.crypto.utils.GeneralNameUtils).toMap(testCertConfigDomain2SubjAltNames) }">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.2}"
-                c:altNames-ref="testCertConfigDomain2SubjAltNames"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.domain.2}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
@@ -145,12 +145,12 @@
     = MULTIPLE DNSNAME VALUES PRESENT, NONE MATCHING DIRECT ADDRESS DOMAIN
     =====================================================================================================-->
     <beans:bean id="testKeyConfigDomain3" parent="testKeyConfig"/>
-    <beans:bean id="testCertConfigDomain3" parent="testCertConfig">
-        <beans:property name="subjectName">
+    <beans:bean id="testCertConfigDomain3" parent="testCertConfig"
+        p:subjectAltNames="#{ T(gov.hhs.onc.dcdt.crypto.utils.GeneralNameUtils).toMap(testCertConfigDomain3SubjAltNames) }">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.3}"
-                c:altNames-ref="testCertConfigDomain3SubjAltNames"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.domain.3}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->
@@ -162,12 +162,12 @@
     = RFC822NAME AND DNSNAME VALUES PRESENT, DNSNAME VALUE MATCHING DIRECT ADDRESS DOMAIN
     =====================================================================================================-->
     <beans:bean id="testKeyConfigDomain4" parent="testKeyConfig"/>
-    <beans:bean id="testCertConfigDomain4" parent="testCertConfig">
-        <beans:property name="subjectName">
+    <beans:bean id="testCertConfigDomain4" parent="testCertConfig"
+        p:subjectAltNames="#{ T(gov.hhs.onc.dcdt.crypto.utils.GeneralNameUtils).toMap(testCertConfigDomain4SubjAltNames) }">
+        <beans:property name="subjectDn">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="certNameImpl"
-                c:x500Name="${dcdt.test.crypto.subject.x500.name.domain.4}"
-                c:altNames-ref="testCertConfigDomain4SubjAltNames"/>
+            <beans:bean parent="certDnImpl"
+                c:name="${dcdt.test.crypto.subject.x500.name.domain.4}"/>
         </beans:property>
     </beans:bean>
     <!--suppress InjectionValueTypeInspection -->

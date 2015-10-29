@@ -29,22 +29,21 @@ import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsRecordUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
-import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -164,8 +163,8 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
 
     @Override
     public boolean isAuthoritative(DnsRecordType questionRecordType, Name questionName) {
-        return (this.isAuthoritative() && ((questionRecordType != DnsRecordType.PTR)
-            ? questionName.subdomain(this.domainName) : questionName.equals(ReverseMap.fromAddress(this.ipAddr))));
+        return (this.isAuthoritative() && ((questionRecordType != DnsRecordType.PTR) ? questionName.subdomain(this.domainName) : questionName.equals(ReverseMap
+            .fromAddress(this.ipAddr))));
     }
 
     @Override
@@ -200,18 +199,18 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
                     break;
 
                 case CERT:
+                    // noinspection ConstantConditions
                     recordConfigs =
                         (this.certRecordConfigs =
-                            ToolCollectionUtils
-                                .nullIfEmpty(
-                                    CollectionUtils
-                                        .collect(
-                                            CollectionUtils.select(
-                                                IteratorUtils.asIterable(ToolIteratorUtils.chainedIterator(
-                                                    CollectionUtils.collect(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class),
-                                                        DiscoveryTestcaseCredentialsExtractor.INSTANCE))),
-                                new DiscoveryTestcaseCredentialCertRecordPredicate()), new DiscoveryTestcaseCredentialCertRecordConfigTransformer(),
-                        new ArrayList<CertRecordConfig>())));
+                            ToolCollectionUtils.nullIfEmpty(CollectionUtils.collect(
+                                CollectionUtils.select(
+                                    ToolBeanFactoryUtils
+                                        .getBeansOfType(this.appContext, DiscoveryTestcase.class)
+                                        .stream()
+                                        .flatMap(
+                                            discoveryTestcase -> (discoveryTestcase.hasCredentials() ? discoveryTestcase.getCredentials().stream() : Stream
+                                                .empty())).collect(Collectors.toList()), new DiscoveryTestcaseCredentialCertRecordPredicate()),
+                                new DiscoveryTestcaseCredentialCertRecordConfigTransformer(), new ArrayList<>())));
                     break;
 
                 case CNAME:
@@ -227,8 +226,10 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
                     break;
 
                 case PTR:
-                    recordConfigs = (this.ptrRecordConfigs = ToolCollectionUtils.nullIfEmpty(
-                        CollectionUtils.collect(this.aRecordsConfigs, new ReverseMapPtrRecordConfigTransformer(), new ArrayList<PtrRecordConfig>())));
+                    recordConfigs =
+                        (this.ptrRecordConfigs =
+                            ToolCollectionUtils.nullIfEmpty(CollectionUtils.collect(this.aRecordsConfigs, new ReverseMapPtrRecordConfigTransformer(),
+                                new ArrayList<>())));
                     break;
 
                 case SOA:
@@ -279,11 +280,11 @@ public class InstanceDnsConfigImpl extends AbstractToolDomainAddressBean impleme
                 }
 
                 if (!this.nameRecordsMap.containsKey((recordName = (record = recordConfig.toRecord()).getName()))) {
-                    this.nameRecordsMap.put(recordName, new EnumMap<DnsRecordType, List<Record>>(DnsRecordType.class));
+                    this.nameRecordsMap.put(recordName, new EnumMap<>(DnsRecordType.class));
                 }
 
                 if (!(recordsMap = this.nameRecordsMap.get(recordName)).containsKey(recordType)) {
-                    recordsMap.put(recordType, new ArrayList<Record>());
+                    recordsMap.put(recordType, new ArrayList<>());
                 }
 
                 recordsMap.get(recordType).add(record);

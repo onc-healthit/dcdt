@@ -7,19 +7,6 @@ import java.util.Objects;
 import javax.annotation.Nullable;
 
 public interface DiscoveryTestcaseMailMapping extends ToolDirectAddressBean {
-    public final static class DiscoveryTestcaseMailMappingPredicate extends AbstractToolPredicate<DiscoveryTestcaseMailMapping> {
-        private MailAddress mailAddr;
-
-        public DiscoveryTestcaseMailMappingPredicate(MailAddress mailAddr) {
-            this.mailAddr = mailAddr;
-        }
-
-        @Override
-        protected boolean evaluateInternal(DiscoveryTestcaseMailMapping mailMapping) throws Exception {
-            return Objects.equals(mailMapping.getDirectAddress(), this.mailAddr);
-        }
-    }
-
     public boolean hasResultsAddress();
 
     @Nullable

@@ -8,42 +8,14 @@ import gov.hhs.onc.dcdt.beans.ToolOrderedBean;
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
+import gov.hhs.onc.dcdt.crypto.crl.CrlConfig;
+import gov.hhs.onc.dcdt.crypto.crl.CrlEntryConfig;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialImpl;
 import javax.annotation.Nullable;
 
 @JsonSubTypes({ @Type(DiscoveryTestcaseCredentialImpl.class) })
 public interface DiscoveryTestcaseCredential extends ToolNamedBean, ToolOrderedBean {
-    public final static class DiscoveryTestcaseCredentialValidPredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
-        public final static DiscoveryTestcaseCredentialValidPredicate INSTANCE = new DiscoveryTestcaseCredentialValidPredicate();
-
-        @Override
-        protected boolean evaluateInternal(DiscoveryTestcaseCredential cred) throws Exception {
-            return cred.isValid();
-        }
-    }
-
-    public final static class DiscoveryTestcaseCredentialTypePredicate extends AbstractToolPredicate<DiscoveryTestcaseCredential> {
-        public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_CA = new DiscoveryTestcaseCredentialTypePredicate(
-            DiscoveryTestcaseCredentialType.CA);
-        public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_BACKGROUND = new DiscoveryTestcaseCredentialTypePredicate(
-            DiscoveryTestcaseCredentialType.BACKGROUND);
-        public final static DiscoveryTestcaseCredentialTypePredicate INSTANCE_TARGET = new DiscoveryTestcaseCredentialTypePredicate(
-            DiscoveryTestcaseCredentialType.TARGET);
-
-        private DiscoveryTestcaseCredentialType credType;
-
-        private DiscoveryTestcaseCredentialTypePredicate(DiscoveryTestcaseCredentialType credType) {
-            this.credType = credType;
-        }
-
-        @Override
-        protected boolean evaluateInternal(DiscoveryTestcaseCredential cred) throws Exception {
-            // noinspection ConstantConditions
-            return (cred.getType() == this.credType);
-        }
-    }
-
     public boolean hasBindingType();
 
     @JsonProperty("bindingType")
@@ -65,6 +37,20 @@ public interface DiscoveryTestcaseCredential extends ToolNamedBean, ToolOrderedB
     public CredentialInfo getCredentialInfo();
 
     public void setCredentialInfo(@Nullable CredentialInfo credInfo);
+
+    public boolean hasCrlConfig();
+
+    @Nullable
+    public CrlConfig getCrlConfig();
+
+    public void setCrlConfig(@Nullable CrlConfig crlConfig);
+
+    public boolean hasCrlEntryConfig();
+
+    @Nullable
+    public CrlEntryConfig getCrlEntryConfig();
+
+    public void setCrlEntryConfig(@Nullable CrlEntryConfig crlEntryConfig);
 
     public boolean hasDescription();
 

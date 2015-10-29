@@ -8,14 +8,12 @@ import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
 import gov.hhs.onc.dcdt.web.ToolWebException;
 import gov.hhs.onc.dcdt.web.controller.DisplayController;
 import gov.hhs.onc.dcdt.web.view.RequestView;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,8 +26,8 @@ public class DiscoveryController extends AbstractToolController {
     @RequestMapping(value = { "/discovery/anchor" }, method = { RequestMethod.GET })
     public void downloadAnchor(HttpServletResponse servletResp) throws ToolWebException {
         DiscoveryTestcaseCredential anchorCred =
-            CollectionUtils.find(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class),
-                DiscoveryTestcaseCredentialTypePredicate.INSTANCE_CA);
+            ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class).stream()
+                .filter(discoveryTestcaseCred -> !discoveryTestcaseCred.hasIssuerCredential()).findFirst().orElse(null);
         CredentialInfo anchorCredInfo;
         CertificateInfo anchorCertInfo;
 
@@ -48,8 +46,8 @@ public class DiscoveryController extends AbstractToolController {
                 CertificateUtils.writeCertificate(anchorCert, DataEncoding.DER));
         } catch (CryptographyException e) {
             // noinspection ConstantConditions
-            throw new ToolWebException(String.format("Unable to write Discovery trust anchor certificate (subj={%s}, serialNum=%s, issuer={%s}) data.",
-                anchorCert.getSubjectX500Principal().getName(), anchorCertInfo.getSerialNumber(), anchorCert.getIssuerX500Principal().getName()), e);
+            throw new ToolWebException(String.format("Unable to write Discovery trust anchor certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) data.",
+                anchorCertInfo.getSubjectDn(), anchorCertInfo.getSerialNumber(), anchorCertInfo.getIssuerDn()), e);
         }
     }
 

@@ -14,7 +14,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
-import java.math.BigInteger;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -23,17 +22,11 @@ import org.apache.commons.io.IOUtils;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 
 public abstract class CertificateUtils {
-    public final static JcaX509CertificateConverter CERT_CONV = new JcaX509CertificateConverter();
-
-    private final static int SERIAL_NUM_GEN_RAND_SEED_SIZE_DEFAULT = 8;
-
-    static {
-        CERT_CONV.setProvider(CryptographyUtils.PROVIDER);
-    }
-
-    public static BigInteger generateSerialNumber() throws CryptographyException {
-        return BigInteger.valueOf(SecureRandomUtils.getRandom(SERIAL_NUM_GEN_RAND_SEED_SIZE_DEFAULT).nextLong()).abs();
-    }
+    public final static JcaX509CertificateConverter CERT_CONV = new JcaX509CertificateConverter() {
+        {
+            this.setProvider(CryptographyUtils.PROVIDER);
+        }
+    };
 
     public static X509Certificate readCertificate(InputStream inStream, CertificateType certType, DataEncoding dataEnc) throws CryptographyException {
         return readCertificate(CryptographyUtils.PROVIDER_HELPER, inStream, certType, dataEnc);

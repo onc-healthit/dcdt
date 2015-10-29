@@ -11,10 +11,6 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 
 public abstract class ToolUrlUtils {
-    public final static String DELIM_URL = "/";
-    public final static String DELIM_URL_PROTOCOL = ":" + StringUtils.repeat(DELIM_URL, 2);
-    public final static String DELIM_URL_PORT = ":";
-
     public static URL contextRelative(URL url, @Nullable String urlStrRelative) throws ToolUrlException {
         return join(getContextUrlString(url), urlStrRelative);
     }
@@ -28,7 +24,7 @@ public abstract class ToolUrlUtils {
 
         if (hasProtocol(url)) {
             contextUrlStrBuilder.append(url.getProtocol());
-            contextUrlStrBuilder.appendDelimiter(DELIM_URL_PROTOCOL);
+            contextUrlStrBuilder.appendDelimiter(ToolUriUtils.PROTOCOL_DELIM);
         }
 
         if (hasHost(url)) {
@@ -36,11 +32,11 @@ public abstract class ToolUrlUtils {
         }
 
         if (hasPort(url)) {
-            contextUrlStrBuilder.appendWithDelimiter(url.getPort(), DELIM_URL_PORT);
+            contextUrlStrBuilder.appendWithDelimiter(url.getPort(), ToolUriUtils.PORT_DELIM);
         }
 
         if (hasContextPath(url)) {
-            contextUrlStrBuilder.appendWithDelimiter(getContextPath(url), DELIM_URL);
+            contextUrlStrBuilder.appendWithDelimiter(getContextPath(url), ToolUriUtils.PATH_DELIM);
         }
 
         return contextUrlStrBuilder.build();
@@ -57,7 +53,7 @@ public abstract class ToolUrlUtils {
 
     @Nullable
     public static String[] getPathParts(URL url) {
-        return StringUtils.split(url.getPath(), DELIM_URL);
+        return StringUtils.split(url.getPath(), ToolUriUtils.PATH_DELIM);
     }
 
     public static URL join(String ... urlStrs) throws ToolUrlException {
@@ -73,7 +69,7 @@ public abstract class ToolUrlUtils {
     }
 
     public static String joinString(Iterable<String> urlStrs) {
-        return ToolStringUtils.joinDelimit(urlStrs, DELIM_URL);
+        return ToolStringUtils.joinDelimit(urlStrs, ToolUriUtils.PATH_DELIM);
     }
 
     public static boolean hasProtocol(URL url) {
@@ -100,7 +96,7 @@ public abstract class ToolUrlUtils {
         try {
             return new URL(urlStr);
         } catch (MalformedURLException e) {
-            throw new ToolUrlException(String.format("Unable to create URL from string: %s", urlStr), e);
+            throw new ToolUrlException(String.format("Unable to create URL from string (%s): %s", urlStr, e.getMessage()), e);
         }
     }
 }

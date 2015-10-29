@@ -179,6 +179,31 @@
         </beans:property>
     </beans:bean>
     
+    <beans:bean id="instanceDnsConfigPki" parent="instanceDnsConfigImpl"
+        p:domainName="#{ instanceDomainConfigPki.domainName }"
+        p:name="#{ instanceDomainConfigPki.name }Dns"
+        p:nameDisplay="#{ instanceDomainConfigPki.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
+        <beans:property name="txtRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
     <beans:bean id="instanceDnsConfig1" parent="instanceDnsConfigImpl"
         p:domainName="#{ instanceDomainConfig1.domainName }"
         p:name="#{ instanceDomainConfig1.name }Dns"
@@ -449,6 +474,66 @@
             <util:list>
                 <beans:bean parent="instanceDnsSrvRecordConfigLdap1"/>
             </util:list>
+        </beans:property>
+        <beans:property name="txtRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceDnsConfig9" parent="instanceDnsConfigImpl"
+        p:domainName="#{ instanceDnsConfig9.domainName }"
+        p:name="#{ instanceDnsConfig9.name }Dns"
+        p:nameDisplay="#{ instanceDnsConfig9.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
+        </beans:property>
+        <beans:property name="txtRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsTxtRecordConfigSpf"/>
+            </util:list>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceDnsConfig10" parent="instanceDnsConfigImpl"
+        p:domainName="#{ instanceDnsConfig10.domainName }"
+        p:name="#{ instanceDnsConfig10.name }Dns"
+        p:nameDisplay="#{ instanceDnsConfig10.nameDisplay } DNS">
+        <beans:property name="ARecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsARecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="mxRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsMxRecordConfig"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="nsRecordConfigs">
+            <util:list>
+                <beans:bean parent="instanceDnsNsRecordConfig1"/>
+                <beans:bean parent="instanceDnsNsRecordConfig2"/>
+            </util:list>
+        </beans:property>
+        <beans:property name="soaRecordConfig">
+            <beans:bean parent="instanceDnsSoaRecordConfig"/>
         </beans:property>
         <beans:property name="txtRecordConfigs">
             <util:list>

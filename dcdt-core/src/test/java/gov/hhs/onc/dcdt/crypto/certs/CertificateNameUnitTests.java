@@ -2,7 +2,8 @@ package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.beans.ToolMessage;
 import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
-import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateNameImpl;
+import gov.hhs.onc.dcdt.crypto.GeneralNameType;
+import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateDnImpl;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
@@ -10,9 +11,10 @@ import gov.hhs.onc.dcdt.crypto.keys.KeyGenerator;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolUnitTests;
+import gov.hhs.onc.dcdt.utils.ToolMapUtils.ToolMultiValueMap;
 import java.util.List;
-import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.GeneralNames;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,8 +23,8 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-@Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all", "dcdt.test.unit.crypto.certs.gen" },
-    groups = { "dcdt.test.unit.crypto.all", "dcdt.test.unit.crypto.certs.all", "dcdt.test.unit.crypto.certs.name" })
+@Test(dependsOnGroups = { "dcdt.test.unit.crypto.keys.all", "dcdt.test.unit.crypto.certs.gen" }, groups = { "dcdt.test.unit.crypto.all",
+    "dcdt.test.unit.crypto.certs.all", "dcdt.test.unit.crypto.certs.name" })
 public class CertificateNameUnitTests extends AbstractToolUnitTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -136,9 +138,9 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
 
     @Test
     public void testX500Name() throws Exception {
-        assertCertificateSubjectsMatch(this.testCertConfigCa1, this.testCertSubjX500NameCa1, null);
-        assertCertificateSubjectsMatch(this.testCertConfigAddr1, this.testCertSubjX500NameAddr1, this.testSubjAltNamesAddr1);
-        assertCertificateSubjectsMatch(this.testCertConfigDomain1, this.testCertSubjX500NameDomain1, this.testSubjAltNamesDomain1);
+        assertCertificateSubjectsMatch(this.testCertConfigCa1, this.testCertSubjX500NameCa1);
+        assertCertificateSubjectsMatch(this.testCertConfigAddr1, this.testCertSubjX500NameAddr1);
+        assertCertificateSubjectsMatch(this.testCertConfigDomain1, this.testCertSubjX500NameDomain1);
     }
 
     @Test
@@ -154,7 +156,7 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
     @Test
     public void testNoRfc822OrDNSNamePresentInCertificate() throws Exception {
         assertCertificateSubjectAltNameValues(this.testDirectAddr2, this.generateCertificateInfo(testCredInfoCa1, this.testCredConfigAddr2), 0, false,
-            "subjectAltName X509v3 extension does not contain a rfc822Name or a dNSName");
+            "does not contain a subjectAltName X509v3 extension.");
     }
 
     @Test
@@ -188,26 +190,25 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
         return this.certGen.generateCertificate(credInfoCa, this.keyGen.generateKeys(credConfig.getKeyDescriptor()), credConfig.getCertificateDescriptor());
     }
 
-    private static void assertCertificateSubjectsMatch(CertificateConfig testCertConfig, X500Name testCertSubjX500Name, @Nullable GeneralNames generalNames)
-        throws Exception {
-        CertificateName testCertSubj = testCertConfig.getSubjectName();
+    private static void assertCertificateSubjectsMatch(CertificateConfig testCertConfig, X500Name testCertSubjX500Name) throws Exception {
+        CertificateDn testCertSubjDn = testCertConfig.getSubjectDn();
 
-        Assert.assertNotNull(testCertSubj, "Certificate subject is null.");
-        Assert.assertEquals(testCertSubj, new CertificateNameImpl(generalNames, testCertSubjX500Name), "Certificate subjects do not match.");
+        Assert.assertNotNull(testCertSubjDn, "Certificate subject Distinguished Name (DN) is null.");
+        Assert.assertEquals(testCertSubjDn, new CertificateDnImpl(testCertSubjX500Name), "Certificate subject Distinguished Name(s) (DNs) do not match.");
     }
 
     private void assertCertificateSubjectAltNameValues(MailAddress directAddr, CertificateInfo certInfo, int numAltNames, boolean isValidCert,
         String ... errorMsgStrs) throws Exception {
-        CertificateName certName = certInfo.getSubjectName();
+        ToolMultiValueMap<GeneralNameType, ASN1Encodable> certSubjAltNames = certInfo.getSubjectAltNames();
 
         if (numAltNames > 0) {
             // noinspection ConstantConditions
-            Assert.assertTrue(certName.hasAltNames(), "Certificate does not have subject alternative names.");
+            Assert.assertTrue(certInfo.hasSubjectAltNames(), "Certificate does not have subject alternative names.");
             // noinspection ConstantConditions
-            Assert.assertEquals(certName.getAltNames().getNames().length, numAltNames);
+            Assert.assertEquals(certSubjAltNames.totalSize(), numAltNames);
         } else {
             // noinspection ConstantConditions
-            Assert.assertFalse(certInfo.getSubjectName().hasAltNames(), "Certificate has subject alternative names.");
+            Assert.assertFalse(certInfo.hasSubjectAltNames(), "Certificate has subject alternative names.");
         }
 
         CertificateValidatorContext context = this.certInfoValidator.validate(directAddr, certInfo);

@@ -1,13 +1,45 @@
 package gov.hhs.onc.dcdt.utils;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.collections4.MapUtils;
+import org.apache.commons.collections4.map.MultiValueMap;
 import org.apache.commons.lang3.ArrayUtils;
 
 public abstract class ToolMapUtils {
+    public static class ToolMultiValueMap<T, U> extends MultiValueMap<T, U> {
+        private final static long serialVersionUID = 0L;
+
+        public ToolMultiValueMap() {
+            this(new HashMap<>());
+        }
+
+        public ToolMultiValueMap(Map<T, ? super Collection<U>> map) {
+            this(map, ArrayList::new);
+        }
+
+        public ToolMultiValueMap(Supplier<Collection<U>> collSupplier) {
+            this(new HashMap<>(), collSupplier);
+        }
+
+        public ToolMultiValueMap(Map<T, ? super Collection<U>> map, Supplier<Collection<U>> collSupplier) {
+            super(map, collSupplier::get);
+        }
+
+        public boolean isEmpty(T key) {
+            return (this.size(key) == 0);
+        }
+
+        public boolean totalIsEmpty() {
+            return (this.totalSize() == 0);
+        }
+    }
+
     public static Map<?, ?> toMap(@Nullable Iterable<?> items) {
         return toMap(IteratorUtils.toArray(IteratorUtils.getIterator(items)));
     }

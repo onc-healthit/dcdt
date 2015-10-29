@@ -49,6 +49,12 @@
     <beans:bean id="instanceMailAddr8" parent="instanceMailAddr" abstract="true"
         p:domainName="#{ instanceDomainConfig8.domainName }"/>
     
+    <beans:bean id="instanceMailAddr9" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig9.domainName }"/>
+    
+    <beans:bean id="instanceMailAddr10" parent="instanceMailAddr" abstract="true"
+        p:domainName="#{ instanceDomainConfig10.domainName }"/>
+    
     <!--====================================================================================================
     = INSTANCE MAIL CONFIG
     =====================================================================================================-->
@@ -219,6 +225,22 @@
         p:nameDisplay="D16">
         <beans:property name="mailAddress">
             <beans:bean parent="instanceMailAddr5"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig17" parent="instanceMailAddrConfigImpl"
+        p:name="d17"
+        p:nameDisplay="D17">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr9"/>
+        </beans:property>
+    </beans:bean>
+    
+    <beans:bean id="instanceMailAddrConfig18" parent="instanceMailAddrConfigImpl"
+        p:name="d18"
+        p:nameDisplay="D18">
+        <beans:property name="mailAddress">
+            <beans:bean parent="instanceMailAddr10"/>
         </beans:property>
     </beans:bean>
 </beans:beans>

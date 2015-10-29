@@ -25,7 +25,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import org.xbill.DNS.Name;
 
-@Test(groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.hosting.all", "dcdt.test.func.testcases.hosting.proc" })
+@Test(enabled = false, groups = { "dcdt.test.func.testcases.all", "dcdt.test.func.testcases.hosting.all", "dcdt.test.func.testcases.hosting.proc" })
 public class HostingTestcaseProcessorFunctionalTests extends AbstractToolFunctionalTests {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -48,7 +48,7 @@ public class HostingTestcaseProcessorFunctionalTests extends AbstractToolFunctio
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     protected InstanceConfigRegistry instanceConfigReg;
 
-    @Test
+    @Test(enabled = false)
     public void testProcess() {
         for (DiscoveryTestcase discoveryTestcase : ToolBeanFactoryUtils.getBeansOfType(this.applicationContext, DiscoveryTestcase.class)) {
             // noinspection ConstantConditions

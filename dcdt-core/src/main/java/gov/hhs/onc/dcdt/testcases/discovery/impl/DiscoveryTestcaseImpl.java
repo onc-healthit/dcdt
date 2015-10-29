@@ -1,24 +1,31 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
+import gov.hhs.onc.dcdt.crypto.GeneralNameType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateDn;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialType;
 import gov.hhs.onc.dcdt.testcases.impl.AbstractToolTestcase;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolMapUtils.ToolMultiValueMap;
 import java.util.Collection;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.Nullable;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 import org.apache.commons.collections4.CollectionUtils;
+import org.bouncycastle.asn1.ASN1Encodable;
+import org.bouncycastle.asn1.DERIA5String;
 
 @Entity(name = "discovery_testcase")
 @JsonTypeName("discoveryTestcase")
@@ -31,21 +38,31 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     public void afterPropertiesSet() throws Exception {
         if (this.hasCredentials() && this.hasMailAddress()) {
             BindingType credBindingType;
+            GeneralNameType credNameType;
             MailAddress credMailAddrBound;
             CredentialConfig credConfig;
             CertificateConfig credCertConfig;
-            CertificateName credCertConfigSubj;
+            CertificateDn credCertConfigSubjDn;
+            ToolMultiValueMap<GeneralNameType, ASN1Encodable> credCertConfigSubjAltNames;
             DiscoveryTestcaseCredentialLocation credLoc;
 
             for (DiscoveryTestcaseCredential cred : this.creds) {
                 // noinspection ConstantConditions
-                if (cred.hasBindingType() && (credBindingType = cred.getBindingType()).isBound()
+                if (cred.hasBindingType() && (credBindingType = cred.getBindingType()).isBound() && ((credNameType = credBindingType.getNameType()) != null)
                     && ((credMailAddrBound = this.mailAddr.forBindingType(credBindingType)) != null)) {
                     // noinspection ConstantConditions
                     if (cred.hasCredentialConfig() && (credConfig = cred.getCredentialConfig()).hasCertificateDescriptor()
-                        && (credCertConfig = credConfig.getCertificateDescriptor()).hasSubjectName()
-                        && !(credCertConfigSubj = credCertConfig.getSubjectName()).hasMailAddress()) {
-                        credCertConfigSubj.setMailAddress(credMailAddrBound);
+                        && (credCertConfig = credConfig.getCertificateDescriptor()).hasSubjectDn()
+                        && !(credCertConfigSubjDn = credCertConfig.getSubjectDn()).hasMailAddress()
+                        && (!credCertConfig.hasSubjectAltNames() || credCertConfig.getSubjectAltNames().isEmpty(credNameType))) {
+                        credCertConfigSubjDn.setMailAddress(credMailAddrBound);
+
+                        if ((credCertConfigSubjAltNames = credCertConfig.getSubjectAltNames()) == null) {
+                            credCertConfig.setSubjectAltNames((credCertConfigSubjAltNames = new ToolMultiValueMap<>(new LinkedHashMap<>(1))));
+                        }
+
+                        // noinspection ConstantConditions
+                        credCertConfigSubjAltNames.put(credNameType, new DERIA5String(credMailAddrBound.toAddress()));
                     }
 
                     // noinspection ConstantConditions
@@ -65,7 +82,8 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     @Override
     @Transient
     public Collection<DiscoveryTestcaseCredential> getTargetCredentials() {
-        return CollectionUtils.select(this.creds, DiscoveryTestcaseCredentialTypePredicate.INSTANCE_TARGET);
+        return (this.hasCredentials() ? this.creds.stream().filter(cred -> (cred.getType() == DiscoveryTestcaseCredentialType.TARGET))
+            .collect(Collectors.toList()) : ToolArrayUtils.asList());
     }
 
     @Override
@@ -76,7 +94,8 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     @Override
     @Transient
     public Collection<DiscoveryTestcaseCredential> getBackgroundCredentials() {
-        return CollectionUtils.select(this.creds, DiscoveryTestcaseCredentialTypePredicate.INSTANCE_BACKGROUND);
+        return (this.hasCredentials() ? this.creds.stream().filter(cred -> (cred.getType() == DiscoveryTestcaseCredentialType.BACKGROUND))
+            .collect(Collectors.toList()) : ToolArrayUtils.asList());
     }
 
     @Override

@@ -86,7 +86,6 @@
                 <beans:ref bean="keyUserType"/>
                 <beans:ref bean="mailAddrUserType"/>
                 <beans:ref bean="uriUserType"/>
-                <beans:ref bean="urlUserType"/>
                 <beans:ref bean="x500NameUserType"/>
             </util:set>
         </beans:property>

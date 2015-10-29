@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.crypto.credentials.impl;
 
+import gov.hhs.onc.dcdt.crypto.certs.CertificateIntervalInfo;
 import gov.hhs.onc.dcdt.crypto.certs.impl.CertificateInfoImpl;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
@@ -11,7 +12,7 @@ import javax.persistence.Embedded;
 import org.hibernate.annotations.Target;
 
 @Embeddable
-public class CredentialInfoImpl extends AbstractCredentialDescriptor<KeyInfo, CertificateInfo> implements CredentialInfo {
+public class CredentialInfoImpl extends AbstractCredentialDescriptor<KeyInfo, CertificateIntervalInfo, CertificateInfo> implements CredentialInfo {
     public CredentialInfoImpl() {
         super();
     }

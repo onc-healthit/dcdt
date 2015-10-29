@@ -1,0 +1,3 @@
+org.springframework.context.ApplicationContextInitializer=\
+    gov.hhs.onc.dcdt.context.impl.MetadataApplicationContextInitializer,\
+    gov.hhs.onc.dcdt.logging.impl.LoggingApplicationContextInitializer

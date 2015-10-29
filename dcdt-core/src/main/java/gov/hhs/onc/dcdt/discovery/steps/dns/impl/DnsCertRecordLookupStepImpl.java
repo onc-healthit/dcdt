@@ -51,9 +51,9 @@ public class DnsCertRecordLookupStepImpl extends AbstractDnsLookupStep<CERTRecor
                         new CertificateInfoImpl(CertificateUtils.readCertificate(certRecord.getCert(), CertificateType.X509, DataEncoding.DER))));
 
                     this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.INFO, String.format(
-                        "DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate (subj={%s}, serialNum=%s, issuer={%s}) processed.",
-                        directAddr.toAddress(), certRecord.getCertType(), certRecord.getAlgorithm(), certInfo.getSubjectName(), certInfo.getSerialNumber(),
-                        certInfo.getIssuerName())));
+                        "DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) processed.",
+                        directAddr.toAddress(), certRecord.getCertType(), certRecord.getAlgorithm(), certInfo.getSubjectDn(), certInfo.getSerialNumber(),
+                        certInfo.getIssuerDn())));
                 } catch (CryptographyException e) {
                     this.execMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR, String.format(
                         "DNS lookup (directAddr=%s) CERT record (certType=%d, keyAlg=%d) certificate processing failed: %s", directAddr.toAddress(),

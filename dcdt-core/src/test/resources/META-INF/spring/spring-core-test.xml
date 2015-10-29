@@ -21,6 +21,7 @@
     <beans:bean id="messageSource" parent="messageSourceBase" primary="true">
         <beans:property name="basenames">
             <beans:array merge="true">
+                <!--suppress SpringModelInspection -->
                 <beans:value>core/core-messages-test</beans:value>
             </beans:array>
         </beans:property>
@@ -29,6 +30,7 @@
     <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase">
         <beans:property name="basenames">
             <beans:array merge="true">
+                <!--suppress SpringModelInspection -->
                 <beans:value>core/core-messages-validation-test</beans:value>
             </beans:array>
         </beans:property>

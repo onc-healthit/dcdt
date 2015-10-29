@@ -2,16 +2,28 @@ package gov.hhs.onc.dcdt.testcases.discovery.credentials.impl;
 
 import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolNamedBean;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
+import gov.hhs.onc.dcdt.crypto.crl.CrlConfig;
+import gov.hhs.onc.dcdt.crypto.crl.CrlEntryConfig;
+import gov.hhs.onc.dcdt.crypto.crl.CrlType;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
+import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.discovery.BindingType;
+import gov.hhs.onc.dcdt.net.utils.ToolUriUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialType;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
+import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
+import java.math.BigInteger;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.Map;
 import javax.annotation.Nullable;
 import javax.persistence.AttributeOverride;
 import javax.persistence.AttributeOverrides;
@@ -21,6 +33,8 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.annotations.Target;
 import org.springframework.core.Ordered;
 
@@ -31,6 +45,8 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     private BindingType bindingType;
     private CredentialConfig credConfig;
     private CredentialInfo credInfo;
+    private CrlConfig crlConfig;
+    private CrlEntryConfig crlEntryConfig;
     private DiscoveryTestcaseCredentialDescription desc;
     private DiscoveryTestcaseCredential issuerCred;
     private DiscoveryTestcaseCredentialLocation loc;
@@ -40,14 +56,72 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        KeyInfo credKeyInfo;
+        CertificateConfig credCertConfig;
+
+        // noinspection ConstantConditions
+        if (!this.hasCredentialInfo() && this.hasIssuerCredential() && this.issuerCred.hasName() && this.hasCredentialConfig()
+            && this.credConfig.hasCertificateDescriptor() && (credCertConfig = this.credConfig.getCertificateDescriptor()).hasCrlDistributionUris()) {
+            String credCertConfigCrlDistribUriPath =
+                (ToolUriUtils.PATH_DELIM + this.issuerCred.getName() + FilenameUtils.EXTENSION_SEPARATOR + CrlType.X509.getFileNameExtension());
+            URI[] credCertConfigCrlDistribUris = ToolCollectionUtils.toArray(credCertConfig.getCrlDistributionUris(), URI.class);
+            URI credCertConfigCrlDistribUri;
+
+            // noinspection ConstantConditions
+            for (int a = 0; a < credCertConfigCrlDistribUris.length; a++) {
+                if (!StringUtils.isEmpty((credCertConfigCrlDistribUri = credCertConfigCrlDistribUris[a]).getPath())) {
+                    continue;
+                }
+
+                try {
+                    credCertConfigCrlDistribUris[a] =
+                        new URI(credCertConfigCrlDistribUri.getScheme(), null, credCertConfigCrlDistribUri.getHost(), credCertConfigCrlDistribUri.getPort(),
+                            credCertConfigCrlDistribUriPath, null, null);
+                } catch (URISyntaxException e) {
+                    throw new ToolBeanRegistryException(String.format("Unable to build Discovery testcase credential (name=%s) CRL distribution URI.",
+                        this.name), e);
+                }
+            }
+
+            credCertConfig.setCrlDistributionUris(ToolArrayUtils.asSet(credCertConfigCrlDistribUris));
+        }
+
         CertificateInfo credCertInfo;
 
         // noinspection ConstantConditions
-        if (this.hasCredentialInfo() && this.credInfo.hasKeyDescriptor() && !(credKeyInfo = this.credInfo.getKeyDescriptor()).hasPublicKey()
-            && this.credInfo.hasCertificateDescriptor() && (credCertInfo = this.credInfo.getCertificateDescriptor()).hasCertificate()) {
+        if (this.hasCredentialInfo() && this.credInfo.hasCertificateDescriptor() && (credCertInfo = this.credInfo.getCertificateDescriptor()).hasCertificate()) {
+            KeyInfo credKeyInfo;
+
             // noinspection ConstantConditions
-            credKeyInfo.setPublicKey(credCertInfo.getCertificate().getPublicKey());
+            if (this.credInfo.hasKeyDescriptor() && !(credKeyInfo = this.credInfo.getKeyDescriptor()).hasPublicKey()) {
+                // noinspection ConstantConditions
+                credKeyInfo.setPublicKey(credCertInfo.getCertificate().getPublicKey());
+            }
+
+            if (this.hasCrlConfig() && !this.crlConfig.hasIssuerDn()) {
+                this.crlConfig.setIssuerDn(credCertInfo.getSubjectDn());
+            }
+
+            if (this.hasCrlEntryConfig()) {
+                // noinspection ConstantConditions
+                BigInteger credCertSerialNum = credCertInfo.getSerialNumber().getValue();
+
+                if (!this.crlEntryConfig.hasSerialNumber()) {
+                    this.crlEntryConfig.setSerialNumber(credCertSerialNum);
+                }
+
+                if (!this.crlEntryConfig.hasRevocationDate()) {
+                    // noinspection ConstantConditions
+                    this.crlEntryConfig.setRevocationDate(credCertInfo.getInterval().getNotAfter());
+                }
+
+                Map<BigInteger, CrlEntryConfig> issuerCredCrlConfigEntries;
+
+                // noinspection ConstantConditions
+                if (this.hasIssuerCredential() && this.issuerCred.hasCrlConfig()
+                    && !(issuerCredCrlConfigEntries = this.issuerCred.getCrlConfig().getEntries()).containsKey(credCertSerialNum)) {
+                    issuerCredCrlConfigEntries.put(credCertSerialNum, this.crlEntryConfig);
+                }
+            }
         }
     }
 
@@ -103,6 +177,40 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
     @Override
     public void setCredentialInfo(@Nullable CredentialInfo credInfo) {
         this.credInfo = credInfo;
+    }
+
+    @Override
+    public boolean hasCrlConfig() {
+        return (this.crlConfig != null);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public CrlConfig getCrlConfig() {
+        return this.crlConfig;
+    }
+
+    @Override
+    public void setCrlConfig(@Nullable CrlConfig crlConfig) {
+        this.crlConfig = crlConfig;
+    }
+
+    @Override
+    public boolean hasCrlEntryConfig() {
+        return (this.crlEntryConfig != null);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public CrlEntryConfig getCrlEntryConfig() {
+        return this.crlEntryConfig;
+    }
+
+    @Override
+    public void setCrlEntryConfig(@Nullable CrlEntryConfig crlEntryConfig) {
+        this.crlEntryConfig = crlEntryConfig;
     }
 
     @Override

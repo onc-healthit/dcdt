@@ -13,21 +13,18 @@ import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
-import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential.DiscoveryTestcaseCredentialTypePredicate;
-import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import gov.hhs.onc.dcdt.web.ToolWebException;
 import gov.hhs.onc.dcdt.web.controller.DisplayController;
 import gov.hhs.onc.dcdt.web.view.RequestView;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
 import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.stereotype.Controller;
@@ -50,12 +47,15 @@ public class AdminController extends AbstractToolController {
             throw new ToolWebException("Instance configuration is not set.");
         }
 
-        EnumSet<DataEncoding> dataEncs = EnumSet.allOf(DataEncoding.class);
+        // noinspection ConstantConditions
         List<DiscoveryTestcaseCredential> creds =
-            IteratorUtils.toList(ToolIteratorUtils.chainedIterator(CollectionUtils.collect(
-                ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class), DiscoveryTestcaseCredentialsExtractor.INSTANCE)));
-        creds.add(CollectionUtils.find(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class),
-            DiscoveryTestcaseCredentialTypePredicate.INSTANCE_CA));
+            Stream
+                .concat(
+                    ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class).stream()
+                        .flatMap(discoveryTestcase -> (discoveryTestcase.hasCredentials() ? discoveryTestcase.getCredentials().stream() : Stream.empty())),
+                    ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class).stream()
+                        .filter(discoveryTestcaseCred -> discoveryTestcaseCred.getType().isCa())).filter(DiscoveryTestcaseCredential::hasCredentialInfo)
+                .collect(Collectors.toList());
 
         List<Entry<String, byte[]>> credEntryDescPairs = new ArrayList<>(creds.size() * 3);
         String credName;
@@ -65,15 +65,11 @@ public class AdminController extends AbstractToolController {
         X509Certificate cert;
 
         for (DiscoveryTestcaseCredential cred : creds) {
-            if (!cred.hasCredentialInfo()) {
-                continue;
-            }
-
             credName = cred.getName();
 
             // noinspection ConstantConditions
             if ((credInfo = cred.getCredentialInfo()).hasKeyDescriptor() && (keyInfo = credInfo.getKeyDescriptor()).hasPrivateKey()) {
-                for (DataEncoding dataEnc : dataEncs) {
+                for (DataEncoding dataEnc : DataEncoding.values()) {
                     try {
                         credEntryDescPairs.add(new ImmutablePair<>((credName + FILE_NAME_SUFFIX_CRED_KEY + dataEnc.getFileExtension()), KeyUtils.writeKey(
                             keyInfo.getPrivateKey(), dataEnc)));
@@ -87,15 +83,15 @@ public class AdminController extends AbstractToolController {
             if ((certInfo = credInfo.getCertificateDescriptor()).hasCertificate()) {
                 cert = certInfo.getCertificate();
 
-                for (DataEncoding dataEnc : dataEncs) {
+                for (DataEncoding dataEnc : DataEncoding.values()) {
                     try {
                         credEntryDescPairs.add(new ImmutablePair<>((credName + dataEnc.getFileExtension()), CertificateUtils.writeCertificate(
                             certInfo.getCertificate(), dataEnc)));
                     } catch (CryptographyException e) {
                         // noinspection ConstantConditions
                         throw new ToolWebException(String.format(
-                            "Unable to write Discovery credential (name=%s) certificate (subj={%s}, serialNum=%s, issuer={%s}) data.", credName, cert
-                                .getSubjectX500Principal().getName(), certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName()), e);
+                            "Unable to write Discovery credential (name=%s) certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) data.", credName,
+                            cert.getSubjectDN(), certInfo.getSerialNumber(), cert.getIssuerDN()), e);
                     }
                 }
             }

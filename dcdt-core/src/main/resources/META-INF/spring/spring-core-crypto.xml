@@ -16,6 +16,16 @@
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
     
     <!--====================================================================================================
+    = SECURE RANDOMS
+    =====================================================================================================-->
+    <beans:bean id="secureRandom" class="java.security.SecureRandom" abstract="true"/>
+    
+    <beans:bean id="secureRandomSha1" class="gov.hhs.onc.dcdt.crypto.utils.SecureRandomUtils" parent="secureRandom" factory-method="getRandom" lazy-init="true"
+        scope="prototype"
+        c:prov="#{ T(gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils).JCE_PROVIDER }"
+        c:type="#{ T(gov.hhs.onc.dcdt.crypto.SecureRandomType).SHA1PRNG }"/>
+    
+    <!--====================================================================================================
     = DESCRIPTORS
     =====================================================================================================-->
     <beans:bean id="cryptoDesc" class="gov.hhs.onc.dcdt.crypto.CryptographyDescriptor" abstract="true"/>
@@ -27,23 +37,25 @@
     <beans:bean id="keyConfig" class="gov.hhs.onc.dcdt.crypto.keys.KeyConfig" parent="keyDesc" abstract="true"/>
     <beans:bean id="keyConfigImpl" class="gov.hhs.onc.dcdt.crypto.keys.impl.KeyConfigImpl" parent="keyConfig" abstract="true"
         p:keyAlgorithm="RSA"
-        p:keySize="#{ T(gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm).RSA.keySizeMin * 4 }"/>
+        p:keySize="2048"/>
     
     <!--====================================================================================================
-    = CERTIFICATE NAMES
+    = CERTIFICATE DISTINGUISHED NAMES
     =====================================================================================================-->
-    <beans:bean id="certName" class="gov.hhs.onc.dcdt.crypto.certs.CertificateName" abstract="true"/>
-    <beans:bean id="certNameImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateNameImpl" parent="certName" abstract="true"/>
+    <beans:bean id="certDn" class="gov.hhs.onc.dcdt.crypto.certs.CertificateDn" abstract="true"/>
+    <beans:bean id="certDnImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateDnImpl" parent="certDn" abstract="true"/>
     
     <!--====================================================================================================
-    = CERTIFICATE VALID INTERVALS
+    = CERTIFICATE INTERVALS
     =====================================================================================================-->
-    <beans:bean id="certValidInterval" class="gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval" abstract="true"/>
-    <beans:bean id="certValidIntervalImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateValidIntervalImpl" parent="certValidInterval" abstract="true"/>
+    <beans:bean id="certIntervalDesc" class="gov.hhs.onc.dcdt.crypto.certs.CertificateIntervalDescriptor" abstract="true"/>
+    <beans:bean id="certIntervalConfig" class="gov.hhs.onc.dcdt.crypto.certs.CertificateIntervalConfig" parent="certIntervalDesc" abstract="true"/>
+    <beans:bean id="certIntervalConfigImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateIntervalConfigImpl" parent="certIntervalConfig"
+        p:duration="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_YEAR * 10 }"/>
     
-    <beans:bean id="certValidIntervalExpired" parent="certValidIntervalImpl"
-        c:notBefore="#{ T(org.apache.commons.lang3.time.DateUtils).addYears(new java.util.Date(), -1) }"
-        c:intervalYears="0"/>
+    <beans:bean id="certIntervalConfigExpired" parent="certIntervalConfigImpl"
+        p:duration="0"
+        p:offset="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_YEAR * -1 }"/>
     
     <!--====================================================================================================
     = CERTIFICATES
@@ -52,28 +64,42 @@
     <beans:bean id="certConfig" class="gov.hhs.onc.dcdt.crypto.certs.CertificateConfig" parent="certDesc" abstract="true"/>
     <beans:bean id="certConfigImpl" class="gov.hhs.onc.dcdt.crypto.certs.impl.CertificateConfigImpl" parent="certConfig" abstract="true"
         p:certificateType="X509"
+        p:interval-ref="certIntervalConfigImpl"
         p:signatureAlgorithm="SHA256_WITH_RSA_ENCRYPTION">
-        <beans:property name="validInterval">
-            <beans:bean parent="certValidIntervalImpl"/>
+        <beans:property name="keyUsages">
+            <beans:set>
+                <beans:value>DIGITAL_SIGNATURE</beans:value>
+                <beans:value>KEY_ENCIPHERMENT</beans:value>
+            </beans:set>
         </beans:property>
     </beans:bean>
     
     <beans:bean id="certConfigCa" parent="certConfigImpl" abstract="true"
-        p:certificateAuthority="true"/>
+        p:certificateAuthority="true">
+        <beans:property name="keyUsages">
+            <beans:set merge="true">
+                <beans:value>KEY_CERT_SIGN</beans:value>
+            </beans:set>
+        </beans:property>
+    </beans:bean>
     
     <beans:bean id="certConfigCaRoot" parent="certConfigCa" abstract="true"
         p:selfIssued="true"/>
     
     <!--====================================================================================================
-    = CERTIFICATE PATH RESOLVER
+    = CERTIFICATE REVOCATION LISTS
     =====================================================================================================-->
-    <!--
-    <beans:bean id="certPathResolver" class="gov.hhs.onc.dcdt.crypto.certs.path.CertificatePathResolver" abstract="true"/>
+    <beans:bean id="crlDesc" class="gov.hhs.onc.dcdt.crypto.crl.CrlDescriptor" parent="cryptoDesc" abstract="true"/>
+    <beans:bean id="crlConfig" class="gov.hhs.onc.dcdt.crypto.crl.CrlConfig" parent="crlDesc" abstract="true"/>
+    <beans:bean id="crlConfigImpl" class="gov.hhs.onc.dcdt.crypto.crl.impl.CrlConfigImpl" parent="crlConfig" abstract="true"
+        p:signatureAlgorithm="SHA256_WITH_RSA_ENCRYPTION"/>
     
-    <beans:bean id="certPathResolverImpl" class="gov.hhs.onc.dcdt.crypto.certs.path.impl.CertificatePathResolverImpl" parent="certPathResolver"
-        p:issuerAccessLocationUrlConnectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
-        p:issuerAccessLocationUrlReadTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"/>
-    -->
+    <beans:bean id="crlEntryDesc" class="gov.hhs.onc.dcdt.crypto.crl.CrlEntryDescriptor" parent="cryptoDesc" abstract="true"/>
+    <beans:bean id="crlEntryConfig" class="gov.hhs.onc.dcdt.crypto.crl.CrlEntryConfig" parent="crlEntryDesc" abstract="true"/>
+    <beans:bean id="crlEntryConfigImpl" class="gov.hhs.onc.dcdt.crypto.crl.impl.CrlEntryConfigImpl" parent="crlEntryConfig" abstract="true"/>
+    
+    <beans:bean id="crlEntryConfigKeyCompromise" parent="crlEntryConfigImpl" abstract="true"
+        p:revocationReason="KEY_COMPROMISE"/>
     
     <!--====================================================================================================
     = CREDENTIALS

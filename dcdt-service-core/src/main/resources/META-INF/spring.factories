@@ -1,2 +1,5 @@
+gov.hhs.onc.dcdt.context.MetadataInitializer=\
+    gov.hhs.onc.crigtt.service.context.impl.ServiceMetadataInitializer
+
 gov.hhs.onc.dcdt.logging.LoggingInitializer=\
     gov.hhs.onc.dcdt.service.logging.impl.ServiceLoggingInitializer

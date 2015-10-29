@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.net.impl;
 
 import gov.hhs.onc.dcdt.format.impl.AbstractToolFormatter;
+import gov.hhs.onc.dcdt.net.utils.ToolUriUtils;
 import java.net.URI;
 import java.util.Locale;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,6 @@ public class UriFormatter extends AbstractToolFormatter<URI> {
 
     @Override
     protected URI parseInternal(String str, Locale locale) throws Exception {
-        return new URI(str);
+        return ToolUriUtils.fromString(str);
     }
 }

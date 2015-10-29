@@ -33,6 +33,11 @@
         p:name="ldap"
         p:nameDisplay="LDAP Domain"/>
     
+    <beans:bean id="instanceDomainConfigPki" parent="instanceDomainConfigImpl"
+        p:domainName="pki.#{ instanceConfig.domainName }"
+        p:name="pki"
+        p:nameDisplay="PKI Domain"/>
+    
     <beans:bean id="instanceDomainConfig1" parent="instanceDomainConfigImpl"
         p:domainName="domain1.#{ instanceConfig.domainName }"
         p:name="domain1"
@@ -72,4 +77,14 @@
         p:domainName="domain8.#{ instanceConfig.domainName }"
         p:name="domain8"
         p:nameDisplay="Domain 8"/>
+    
+    <beans:bean id="instanceDomainConfig9" parent="instanceDomainConfigImpl"
+        p:domainName="domain9.#{ instanceConfig.domainName }"
+        p:name="domain9"
+        p:nameDisplay="Domain 9"/>
+    
+    <beans:bean id="instanceDomainConfig10" parent="instanceDomainConfigImpl"
+        p:domainName="domain10.#{ instanceConfig.domainName }"
+        p:name="domain10"
+        p:nameDisplay="Domain 10"/>
 </beans:beans>

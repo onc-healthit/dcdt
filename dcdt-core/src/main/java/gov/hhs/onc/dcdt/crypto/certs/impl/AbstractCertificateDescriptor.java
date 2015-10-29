@@ -1,27 +1,38 @@
 package gov.hhs.onc.dcdt.crypto.certs.impl;
 
+import gov.hhs.onc.dcdt.crypto.GeneralNameType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateDescriptor;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateDn;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateIntervalDescriptor;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateSerialNumber;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateValidInterval;
+import gov.hhs.onc.dcdt.crypto.certs.KeyUsageType;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.impl.AbstractCryptographyDescriptor;
+import gov.hhs.onc.dcdt.utils.ToolMapUtils.ToolMultiValueMap;
+import java.net.URI;
+import java.util.Set;
 import javax.annotation.Nullable;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Transient;
-import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
+import org.bouncycastle.asn1.ASN1Encodable;
 
 @MappedSuperclass
-public abstract class AbstractCertificateDescriptor extends AbstractCryptographyDescriptor implements CertificateDescriptor {
-    protected AuthorityInformationAccess aia;
+public abstract class AbstractCertificateDescriptor<T extends CertificateIntervalDescriptor> extends AbstractCryptographyDescriptor implements
+    CertificateDescriptor<T> {
     protected boolean ca;
     protected CertificateType certType;
+    protected Set<URI> crlDistribUris;
+    protected T interval;
+    protected Set<URI> issuerAccessUris;
+    protected Set<KeyUsageType> keyUsages;
     protected boolean selfIssued;
     protected CertificateSerialNumber serialNum;
     protected SignatureAlgorithm sigAlg;
-    protected CertificateName subjName;
-    protected CertificateValidInterval validInterval;
+    protected ToolMultiValueMap<GeneralNameType, ASN1Encodable> subjAltNames;
+    protected CertificateDn subjDn;
 
     @Override
     @Transient
@@ -37,25 +48,16 @@ public abstract class AbstractCertificateDescriptor extends AbstractCryptography
 
     @Override
     protected void reset() {
-        this.aia = null;
         this.ca = false;
         this.certType = null;
+        this.crlDistribUris = null;
+        this.interval = null;
+        this.issuerAccessUris = null;
+        this.keyUsages = null;
         this.serialNum = null;
         this.sigAlg = null;
-        this.subjName = null;
-        this.validInterval = null;
-    }
-
-    @Override
-    public boolean hasAia() {
-        return (this.aia != null);
-    }
-
-    @Nullable
-    @Override
-    @Transient
-    public AuthorityInformationAccess getAia() {
-        return this.aia;
+        this.subjAltNames = null;
+        this.subjDn = null;
     }
 
     @Override
@@ -74,6 +76,54 @@ public abstract class AbstractCertificateDescriptor extends AbstractCryptography
     @Transient
     public CertificateType getCertificateType() {
         return this.certType;
+    }
+
+    @Override
+    public boolean hasCrlDistributionUris() {
+        return !CollectionUtils.isEmpty(this.crlDistribUris);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public Set<URI> getCrlDistributionUris() {
+        return this.crlDistribUris;
+    }
+
+    @Override
+    public boolean hasInterval() {
+        return this.interval != null;
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public T getInterval() {
+        return this.interval;
+    }
+
+    @Override
+    public boolean hasIssuerAccessUris() {
+        return !CollectionUtils.isEmpty(this.issuerAccessUris);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public Set<URI> getIssuerAccessUris() {
+        return this.issuerAccessUris;
+    }
+
+    @Override
+    public boolean hasKeyUsages() {
+        return !CollectionUtils.isEmpty(this.keyUsages);
+    }
+
+    @Nullable
+    @Override
+    @Transient
+    public Set<KeyUsageType> getKeyUsages() {
+        return this.keyUsages;
     }
 
     @Override
@@ -107,26 +157,26 @@ public abstract class AbstractCertificateDescriptor extends AbstractCryptography
     }
 
     @Override
-    public boolean hasSubjectName() {
-        return this.subjName != null;
+    public boolean hasSubjectAltNames() {
+        return !MapUtils.isEmpty(this.subjAltNames);
     }
 
     @Nullable
     @Override
     @Transient
-    public CertificateName getSubjectName() {
-        return this.subjName;
+    public ToolMultiValueMap<GeneralNameType, ASN1Encodable> getSubjectAltNames() {
+        return this.subjAltNames;
     }
 
     @Override
-    public boolean hasValidInterval() {
-        return this.validInterval != null;
+    public boolean hasSubjectDn() {
+        return (this.subjDn != null);
     }
 
     @Nullable
     @Override
     @Transient
-    public CertificateValidInterval getValidInterval() {
-        return this.validInterval;
+    public CertificateDn getSubjectDn() {
+        return this.subjDn;
     }
 }

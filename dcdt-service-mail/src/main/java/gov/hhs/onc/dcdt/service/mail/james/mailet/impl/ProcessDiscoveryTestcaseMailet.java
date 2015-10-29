@@ -4,16 +4,14 @@ import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseMailAddressPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping;
-import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping.DiscoveryTestcaseMailMappingPredicate;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMappingService;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import org.apache.commons.collections4.CollectionUtils;
+import java.util.Objects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +23,8 @@ public class ProcessDiscoveryTestcaseMailet extends AbstractToolMailet {
         DiscoveryTestcaseProcessor discoveryTestcaseProc = ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseProcessor.class);
         MailAddress to = mimeMsgHelper.getTo(), from = mimeMsgHelper.getFrom();
         DiscoveryTestcase discoveryTestcase =
-            CollectionUtils.find(ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class), new DiscoveryTestcaseMailAddressPredicate(to));
+            ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class).stream()
+                .filter(discoveryTestcaseSearch -> Objects.equals(discoveryTestcaseSearch.getMailAddress(), to)).findFirst().orElse(null);
         DiscoveryTestcaseSubmission discoveryTestcaseSubmission =
             ToolBeanFactoryUtils.createBeanOfType(this.appContext, DiscoveryTestcaseSubmission.class, discoveryTestcase, mimeMsgHelper);
         // noinspection ConstantConditions
@@ -33,8 +32,8 @@ public class ProcessDiscoveryTestcaseMailet extends AbstractToolMailet {
 
         // noinspection ConstantConditions
         DiscoveryTestcaseMailMapping mailMapping =
-            CollectionUtils.find(ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseMailMappingService.class).getBeans(),
-                new DiscoveryTestcaseMailMappingPredicate(from));
+            ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseMailMappingService.class).getBeans().stream()
+                .filter(discoveryTestcaseMailMapping -> Objects.equals(discoveryTestcaseMailMapping.getDirectAddress(), from)).findFirst().orElse(null);
 
         if (mailMapping != null) {
             this.sendResultMail(to, discoveryTestcase, discoveryTestcaseResult, mailMapping);

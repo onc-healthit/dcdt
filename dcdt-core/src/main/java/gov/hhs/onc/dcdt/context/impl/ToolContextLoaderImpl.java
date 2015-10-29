@@ -1,12 +1,16 @@
 package gov.hhs.onc.dcdt.context.impl;
 
+import com.github.sebhoss.warnings.CompilerWarnings;
 import gov.hhs.onc.dcdt.context.ToolContextLoader;
+import gov.hhs.onc.dcdt.context.utils.ToolContextUtils;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolResourceUtils;
 import java.util.Collection;
 import java.util.List;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextInitializer;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class ToolContextLoaderImpl implements ToolContextLoader {
@@ -16,8 +20,14 @@ public class ToolContextLoaderImpl implements ToolContextLoader {
     }
 
     @Override
+    @SuppressWarnings({ CompilerWarnings.UNCHECKED })
     public ApplicationContext loadContext(String ... configLocs) throws Exception {
         ClassPathXmlApplicationContext appContext = new ClassPathXmlApplicationContext(configLocs);
+
+        for (Object appContextInit : ToolContextUtils.buildComponents(ApplicationContextInitializer.class)) {
+            ((ApplicationContextInitializer<ConfigurableApplicationContext>) appContextInit).initialize(appContext);
+        }
+
         appContext.start();
 
         return appContext;

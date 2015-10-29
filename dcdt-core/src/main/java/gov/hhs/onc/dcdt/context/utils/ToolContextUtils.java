@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.context.utils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 import org.apache.commons.lang3.ClassUtils;
@@ -31,5 +33,29 @@ public final class ToolContextUtils {
         } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
             throw new ApplicationContextException(String.format("Unable to instantiate component (class=%s).", primaryComponentClass.getName()), e);
         }
+    }
+
+    public static <T> List<T> buildComponents(Class<T> componentClass, Object ... args) {
+        List<String> componentClassNames = SpringFactoriesLoader.loadFactoryNames(componentClass, ToolContextUtils.class.getClassLoader());
+
+        if (componentClassNames.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Class<?>> componentClasses = ClassUtils.convertClassNamesToClasses(componentClassNames);
+
+        componentClasses.sort(AnnotationAwareOrderComparator.INSTANCE);
+
+        List<T> components = new ArrayList<>(componentClasses.size());
+
+        for (Class<?> componentItemClass : componentClasses) {
+            try {
+                components.add(componentClass.cast(ConstructorUtils.invokeConstructor(componentItemClass, args)));
+            } catch (IllegalAccessException | InstantiationException | InvocationTargetException | NoSuchMethodException e) {
+                throw new ApplicationContextException(String.format("Unable to instantiate component (class=%s).", componentItemClass.getName()), e);
+            }
+        }
+
+        return components;
     }
 }

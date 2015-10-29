@@ -2,61 +2,69 @@ package gov.hhs.onc.dcdt.crypto.certs.impl;
 
 import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateAltNameType;
+import gov.hhs.onc.dcdt.crypto.GeneralNameType;
+import gov.hhs.onc.dcdt.crypto.certs.CertificateDn;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateException;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
-import gov.hhs.onc.dcdt.crypto.certs.CertificateName;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateSubjectAltNames;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateValidatorContext;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
-import java.security.cert.X509Certificate;
+import gov.hhs.onc.dcdt.utils.ToolMapUtils.ToolMultiValueMap;
 import javax.validation.ConstraintValidatorContext;
 import org.apache.commons.lang3.StringUtils;
-import org.bouncycastle.asn1.x500.style.BCStyle;
-import org.bouncycastle.asn1.x509.GeneralName;
+import org.bouncycastle.asn1.ASN1Encodable;
 
 public class CertificateSubjectAltNamesConstraintValidator extends AbstractCertificateConstraintValidator<CertificateSubjectAltNames> {
     @Override
     protected boolean isValidInternal(CertificateValidatorContext certValidatorContext, ConstraintValidatorContext validatorContext) throws Exception {
         CertificateInfo certInfo = certValidatorContext.getCertificateInfo();
-        X509Certificate cert = certInfo.getCertificate();
-        CertificateName certSubjName = certInfo.getSubjectName();
+        CertificateDn certSubjDn = certInfo.getSubjectDn(), certIssuerDn = certInfo.getIssuerDn();
+
+        if (!certInfo.hasSubjectAltNames()) {
+            // noinspection ConstantConditions
+            throw new CertificateException(String.format(
+                "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) does not contain a subjectAltName X509v3 extension.", certSubjDn,
+                certInfo.getSerialNumber(), certIssuerDn));
+        }
+
+        ToolMultiValueMap<GeneralNameType, ASN1Encodable> certSubjAltNames = certInfo.getSubjectAltNames();
         // noinspection ConstantConditions
-        boolean certSubjNameAddrAvailable = certSubjName.hasAltName(CertificateAltNameType.RFC822_NAME),
-            certSubjDomainAvailable = certSubjName.hasAltName(CertificateAltNameType.DNS_NAME);
+        boolean certSubjAltNamesAddrAvailable = !certSubjAltNames.isEmpty(GeneralNameType.RFC822_NAME), certSubjAltNamesDomainAvailable =
+            !certSubjAltNames.isEmpty(GeneralNameType.DNS_NAME);
         MailAddress directAddr = certValidatorContext.getDirectAddress(), directAddrBound = null, certSubjAltNameDirectAddr, certSubjDnDirectAddr;
 
-        // noinspection ConstantConditions
-        if (!certSubjNameAddrAvailable && !certSubjDomainAvailable) {
+        if (!certSubjAltNamesAddrAvailable && !certSubjAltNamesDomainAvailable) {
             // noinspection ConstantConditions
-            throw new CertificateException(
-                String.format("Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension does not contain a rfc822Name or a dNSName",
-                    certSubjName, certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName()));
+            throw new CertificateException(String.format(
+                "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) subjectAltName X509v3 extension does not contain a rfc822Name or a dNSName.",
+                certSubjDn, certInfo.getSerialNumber(), certIssuerDn));
         }
 
-        if (certSubjNameAddrAvailable && certSubjDomainAvailable) {
+        if (certSubjAltNamesAddrAvailable && certSubjAltNamesDomainAvailable) {
             // noinspection ConstantConditions
-            certValidatorContext.getMessages()
-                .add(new ToolMessageImpl(ToolMessageLevel.WARN,
-                    String.format(
-                        "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension contains multiple rfc822 and/or dNSName values.",
-                        certSubjName, certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName())));
+            certValidatorContext.getMessages().add(
+                new ToolMessageImpl(ToolMessageLevel.WARN, String.format(
+                    "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) subjectAltName X509v3 extension contains multiple rfc822 and/or dNSName values.",
+                    certSubjDn, certInfo.getSerialNumber(), certIssuerDn)));
         }
 
-        if (certSubjNameAddrAvailable && (directAddrBound = directAddr.forBindingType(BindingType.ADDRESS)) != null) {
+        if (certSubjAltNamesAddrAvailable && (directAddrBound = directAddr.forBindingType(BindingType.ADDRESS)) != null) {
             // noinspection ConstantConditions
-            for (GeneralName altName : certSubjName.getAltNames(CertificateAltNameType.RFC822_NAME)) {
-                if (StringUtils.equalsIgnoreCase((certSubjAltNameDirectAddr = new MailAddressImpl(altName.getName().toString())).toAddress(),
-                    directAddrBound.toAddress())) {
-                    if (certSubjName.hasAttribute(BCStyle.EmailAddress) && !StringUtils.equalsIgnoreCase(certSubjAltNameDirectAddr.toAddress(),
-                        (certSubjDnDirectAddr = new MailAddressImpl(certSubjName.getAttributeValueString(BCStyle.EmailAddress))).toAddress())) {
+            for (ASN1Encodable altName : certSubjAltNames.getCollection(GeneralNameType.RFC822_NAME)) {
+                if (StringUtils
+                    .equalsIgnoreCase((certSubjAltNameDirectAddr = new MailAddressImpl(altName.toString())).toAddress(), directAddrBound.toAddress())) {
+                    // noinspection ConstantConditions
+                    if (certSubjDn.hasMailAddress()
+                        && !StringUtils.equalsIgnoreCase(certSubjAltNameDirectAddr.toAddress(),
+                            (certSubjDnDirectAddr = certSubjDn.getMailAddress()).toAddress())) {
                         // noinspection ConstantConditions
-                        throw new CertificateException(String.format(
-                            "Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension rfc822Name value does not match subject Distinguished Name EmailAddress value: %s != %s",
-                            certSubjName, certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName(), certSubjAltNameDirectAddr,
-                            certSubjDnDirectAddr));
+                        throw new CertificateException(
+                            String
+                                .format(
+                                    "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) subjectAltName X509v3 extension rfc822Name value does not match subject Distinguished Name EmailAddress value: %s != %s",
+                                    certSubjDn, certInfo.getSerialNumber(), certIssuerDn, certSubjAltNameDirectAddr, certSubjDnDirectAddr));
                     }
 
                     return true;
@@ -65,12 +73,12 @@ public class CertificateSubjectAltNamesConstraintValidator extends AbstractCerti
         }
 
         // noinspection ConstantConditions
-        if (certSubjDomainAvailable) {
+        if (certSubjAltNamesDomainAvailable) {
             directAddrBound = directAddr.forBindingType(BindingType.DOMAIN);
             // noinspection ConstantConditions
-            for (GeneralName altName : certSubjName.getAltNames(CertificateAltNameType.DNS_NAME)) {
+            for (ASN1Encodable altName : certSubjAltNames.getCollection(GeneralNameType.DNS_NAME)) {
                 // noinspection ConstantConditions
-                if (StringUtils.equalsIgnoreCase(new MailAddressImpl(altName.getName().toString()).toAddress(), directAddrBound.toAddress())) {
+                if (StringUtils.equalsIgnoreCase(new MailAddressImpl(altName.toString()).toAddress(), directAddrBound.toAddress())) {
                     return true;
                 }
             }
@@ -79,14 +87,14 @@ public class CertificateSubjectAltNamesConstraintValidator extends AbstractCerti
         // noinspection ConstantConditions
         if (directAddrBound.getBindingType() == BindingType.ADDRESS) {
             // noinspection ConstantConditions
-            throw new CertificateException(
-                String.format("Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension does not contain a rfc822Name value == %s",
-                    certSubjName, certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName(), directAddrBound));
+            throw new CertificateException(String.format(
+                "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) subjectAltName X509v3 extension does not contain a rfc822Name value == %s", certSubjDn,
+                certInfo.getSerialNumber(), certIssuerDn, directAddrBound));
         } else {
             // noinspection ConstantConditions
-            throw new CertificateException(
-                String.format("Certificate (subj={%s}, serialNum=%s, issuer={%s}) subjectAltName X509v3 extension does not contain a dNSName value == %s",
-                    certSubjName, certInfo.getSerialNumber(), cert.getIssuerX500Principal().getName(), directAddrBound));
+            throw new CertificateException(String.format(
+                "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) subjectAltName X509v3 extension does not contain a dNSName value == %s", certSubjDn,
+                certInfo.getSerialNumber(), certIssuerDn, directAddrBound));
         }
     }
 }

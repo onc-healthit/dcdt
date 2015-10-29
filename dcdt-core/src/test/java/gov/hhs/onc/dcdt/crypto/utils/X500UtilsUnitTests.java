@@ -20,7 +20,7 @@ public class X500UtilsUnitTests extends AbstractToolUnitTests {
 
     private Map<ASN1ObjectIdentifier, ASN1Encodable> testX500NameAttrMap = new LinkedHashMap<>(2);
 
-    @Test(dependsOnMethods = { "testToEncodeableValue" })
+    @Test(dependsOnMethods = { "testToEncodableValue" })
     public void testBuildName() {
         X500Name testX500Name = X500Utils.buildName(this.testX500NameAttrMap);
         Assert.assertNotNull(testX500Name, "X500 name is null");
@@ -31,7 +31,7 @@ public class X500UtilsUnitTests extends AbstractToolUnitTests {
     }
 
     @Test
-    public void testToEncodeableValue() {
+    public void testToEncodableValue() {
         testX500NameAttrMap.put(TEST_X500_NAME_MAIL_ADDR_OID, X500Utils.toEncodableValue(TEST_X500_NAME_MAIL_ADDR_OID, TEST_X500_NAME_MAIL_ADDR_VALUE_STR));
         testX500NameAttrMap.put(TEST_X500_NAME_COMMON_NAME_OID,
             X500Utils.toEncodableValue(TEST_X500_NAME_COMMON_NAME_OID, TEST_X500_NAME_COMMON_NAME_VALUE_STR));

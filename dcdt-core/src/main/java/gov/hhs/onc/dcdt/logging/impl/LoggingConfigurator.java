@@ -1,28 +1,8 @@
 package gov.hhs.onc.dcdt.logging.impl;
 
-import ch.qos.logback.classic.ClassicConstants;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
-import ch.qos.logback.classic.LoggerContext;
-import ch.qos.logback.classic.gaffer.GafferConfigurator;
-import ch.qos.logback.classic.jul.LevelChangePropagator;
-import ch.qos.logback.classic.spi.Configurator;
-import ch.qos.logback.classic.spi.LoggerContextAwareBase;
-import ch.qos.logback.classic.spi.LoggerContextListener;
-import ch.qos.logback.core.status.Status;
-import ch.qos.logback.core.status.StatusManager;
-import ch.qos.logback.core.status.StatusUtil;
-import ch.qos.logback.core.util.StatusPrinter;
-import gov.hhs.onc.dcdt.context.ToolProperties;
-import gov.hhs.onc.dcdt.context.utils.ToolContextUtils;
-import gov.hhs.onc.dcdt.logging.LoggingInitializer;
-import java.io.IOException;
-import java.net.URL;
-import org.apache.commons.io.IOUtils;
-import org.slf4j.bridge.SLF4JBridgeHandler;
-import org.springframework.context.ApplicationContextException;
-
-public class LoggingConfigurator extends LoggerContextAwareBase implements Configurator, LoggerContextListener {
+public class LoggingConfigurator /*extends LoggerContextAwareBase implements Configurator, LoggerContextListener*/ {
+    // @formatter:off
+    /*
     private static class DefaultLoggingInitializer extends AbstractLoggingInitializer {
         public DefaultLoggingInitializer() {
             super("dcdt-core", "core");
@@ -40,6 +20,8 @@ public class LoggingConfigurator extends LoggerContextAwareBase implements Confi
 
         LoggingInitializer initializer = ToolContextUtils.buildComponent(LoggingInitializer.class, DefaultLoggingInitializer::new);
 
+        ((SubstituteLoggerFactory) LoggerFactory.getILoggerFactory()).clear();
+        
         loggerContext.setName(initializer.buildLogContextName());
 
         String consoleTerm = System.getProperty(ToolProperties.LOG_CONSOLE_TERM_NAME);
@@ -94,4 +76,6 @@ public class LoggingConfigurator extends LoggerContextAwareBase implements Confi
     public boolean isResetResistant() {
         return false;
     }
+    */
+    // @formatter:on
 }

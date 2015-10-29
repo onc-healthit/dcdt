@@ -42,6 +42,8 @@ public class HttpServerImpl extends AbstractToolLifecycleBean implements HttpSer
         public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
             // TEMP: dev
             LOGGER.error(String.format("exceptionCaught"), cause);
+            
+            context.channel().pipeline().get(HttpRequestDecoder.class).exceptionCaught();
 
             context.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.INTERNAL_SERVER_ERROR)).addListener(
                 ChannelFutureListener.CLOSE);

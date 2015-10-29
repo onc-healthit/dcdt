@@ -3,8 +3,7 @@ package gov.hhs.onc.dcdt.testcases.discovery.mail;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.test.impl.AbstractToolFunctionalTests;
-import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping.DiscoveryTestcaseMailMappingPredicate;
-import org.apache.commons.collections4.CollectionUtils;
+import java.util.Objects;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.testng.Assert;
@@ -68,6 +67,7 @@ public class DiscoveryTestcaseMailMappingFunctionalTests extends AbstractToolFun
     }
 
     private DiscoveryTestcaseMailMapping getMailMapping(MailAddress mailAddr) {
-        return CollectionUtils.find(discoveryTestcaseMailMappingService.getBeans(), new DiscoveryTestcaseMailMappingPredicate(mailAddr));
+        return discoveryTestcaseMailMappingService.getBeans().stream()
+            .filter(discoveryTestcaseMailMapping -> Objects.equals(discoveryTestcaseMailMapping.getDirectAddress(), mailAddr)).findFirst().orElse(null);
     }
 }

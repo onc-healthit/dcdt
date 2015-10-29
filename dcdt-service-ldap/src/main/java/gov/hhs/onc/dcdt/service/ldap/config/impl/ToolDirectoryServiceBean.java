@@ -1,22 +1,21 @@
 package gov.hhs.onc.dcdt.service.ldap.config.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
+import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.ldap.ToolCoreSchemaConstants;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase.DiscoveryTestcaseCredentialsExtractor;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialLocation;
-import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import java.util.Collection;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.collections4.IteratorUtils;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
 import org.apache.directory.api.ldap.model.entry.Entry;
@@ -116,12 +115,14 @@ public class ToolDirectoryServiceBean extends DirectoryServiceBean implements Ap
         dataPartitionBean.setPartitionSuffix(dataPartitionSuffix);
         this.addPartitions(dataPartitionBean);
 
+        // noinspection ConstantConditions
         this.dataEntries =
-            CollectionUtils.collect(CollectionUtils.select(
-                IteratorUtils.asIterable(ToolIteratorUtils.chainedIterator(CollectionUtils.collect(
-                    ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class), DiscoveryTestcaseCredentialsExtractor.INSTANCE))),
-                new DiscoveryTestcaseCredentialEntryPredicate(dataPartitionId)), new DiscoveryTestcaseCredentialEntryTransformer(this.schemaManager,
-                dataPartitionSuffix));
+            CollectionUtils.collect(
+                CollectionUtils.select(
+                    ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class).stream()
+                        .flatMap(discoveryTestcase -> (discoveryTestcase.hasCredentials() ? discoveryTestcase.getCredentials().stream() : Stream.empty()))
+                        .collect(Collectors.toList()), new DiscoveryTestcaseCredentialEntryPredicate(dataPartitionId)),
+                new DiscoveryTestcaseCredentialEntryTransformer(this.schemaManager, dataPartitionSuffix));
     }
 
     @Override
