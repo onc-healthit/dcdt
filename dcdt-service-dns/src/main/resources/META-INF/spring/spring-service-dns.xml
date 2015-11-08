@@ -85,13 +85,13 @@
     <!--====================================================================================================
     = DNS SERVER CONFIG
     =====================================================================================================-->
-    <beans:bean id="dnsServerConfig" class="gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig" abstract="true"/>
+    <beans:bean id="dnsServerConfig" class="gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig" parent="serverConfig" abstract="true"/>
     <beans:bean id="dnsServerConfigImpl" class="gov.hhs.onc.dcdt.service.dns.config.impl.DnsServerConfigImpl" parent="dnsServerConfig" abstract="true"/>
     
     <!--====================================================================================================
     = DNS SERVER
     =====================================================================================================-->
-    <beans:bean id="dnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServer" abstract="true"/>
+    <beans:bean id="dnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServer" parent="server" abstract="true"/>
     <beans:bean id="dnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerImpl" parent="dnsServer" abstract="true"/>
     
     <beans:bean id="dnsServer1" parent="dnsServerImpl">

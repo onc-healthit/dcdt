@@ -14,13 +14,12 @@ import org.springframework.context.ApplicationContextException;
 import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.util.ResourceUtils;
 
-public abstract class AbstractLoggingInitializer<T extends AbstractRefreshableConfigApplicationContext> extends AbstractToolInitializer<T> implements
-    LoggingInitializer<T> {
+public abstract class AbstractLoggingInitializer extends AbstractToolInitializer implements LoggingInitializer {
     protected final static String CONFIG_FILE_URL_PATH_PREFIX = ResourceUtils.CLASSPATH_URL_PREFIX + "META-INF/logback/logback-";
 
     protected final static String CONFIG_FILE_URL_PATH_SUFFIX = FilenameUtils.EXTENSION_SEPARATOR + "groovy";
 
-    protected AbstractLoggingInitializer(T appContext) {
+    protected AbstractLoggingInitializer(AbstractRefreshableConfigApplicationContext appContext) {
         super(appContext);
     }
 

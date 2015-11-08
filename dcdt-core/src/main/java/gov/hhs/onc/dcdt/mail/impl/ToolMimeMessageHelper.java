@@ -40,7 +40,7 @@ import org.springframework.util.MimeType;
 import org.springframework.util.MimeTypeUtils;
 
 public class ToolMimeMessageHelper extends MimeMessageHelper {
-    public final static String FILE_EXT_MAIL = ".eml";
+    public final static String FILE_EXT_MAIL = "eml";
 
     public ToolMimeMessageHelper(Session mailSession, Charset mailEnc) throws MessagingException {
         this(new MimeMessage(mailSession), MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, mailEnc);
@@ -106,7 +106,7 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     }
 
     public Map<String, MimeBodyPart> mapAttachmentPartFileNames() throws MessagingException {
-        return (isMultipart() ? ToolMimePartUtils.mapAttachmentPartFileNames(this.getRootMimeMultipart()) : new LinkedHashMap<String, MimeBodyPart>());
+        return (isMultipart() ? ToolMimePartUtils.mapAttachmentPartFileNames(this.getRootMimeMultipart()) : new LinkedHashMap<>());
     }
 
     public List<MimeBodyPart> getAttachmentParts() throws MessagingException {
@@ -114,7 +114,7 @@ public class ToolMimeMessageHelper extends MimeMessageHelper {
     }
 
     public List<MimeBodyPart> getAttachmentParts(boolean requireFileName) throws MessagingException {
-        return (isMultipart() ? ToolMimePartUtils.getAttachmentParts(this.getRootMimeMultipart()) : new ArrayList<MimeBodyPart>());
+        return (isMultipart() ? ToolMimePartUtils.getAttachmentParts(this.getRootMimeMultipart()) : new ArrayList<>());
     }
 
     public Map<MimeType, List<MimePart>> mapPartContentTypes() throws MessagingException {

@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Nullable;
+import org.apache.commons.io.FilenameUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.springframework.ui.ModelMap;
 
@@ -80,10 +81,12 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
         Date msgProcDate = new Date();
 
         // noinspection ConstantConditions
-        attachmentResources.add(new MimeAttachmentResource(msgHelper.write(),
-            (discoveryTestcaseName + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgProcDate)),
-            MailContentTypes.MSG_RFC822, MailContentTransferEncoding.QUOTED, (discoveryTestcaseName.toLowerCase() + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL
-                + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgProcDate) + ToolMimeMessageHelper.FILE_EXT_MAIL)));
+        attachmentResources
+            .add(new MimeAttachmentResource(msgHelper.write(),
+                (discoveryTestcaseName + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgProcDate)),
+                MailContentTypes.MSG_RFC822, MailContentTransferEncoding.QUOTED, (discoveryTestcaseName.toLowerCase()
+                    + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgProcDate)
+                    + FilenameUtils.EXTENSION_SEPARATOR + ToolMimeMessageHelper.FILE_EXT_MAIL)));
 
         this.send(modelMap, modelMap, to, attachmentResources);
     }

@@ -4,10 +4,16 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateDn;
 import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.crl.CrlConfig;
 import gov.hhs.onc.dcdt.crypto.crl.CrlEntryConfig;
+import gov.hhs.onc.dcdt.crypto.crl.CrlType;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
 public class CrlConfigImpl extends AbstractCrlDescriptor<CrlEntryConfig> implements CrlConfig {
+    @Override
+    public void setCrlType(@Nullable CrlType crlType) {
+        this.crlType = crlType;
+    }
+
     @Override
     public void setEntries(@Nullable CrlEntryConfig ... entries) {
         this.entries.clear();

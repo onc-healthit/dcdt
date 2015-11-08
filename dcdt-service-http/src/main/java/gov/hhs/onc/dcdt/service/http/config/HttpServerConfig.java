@@ -1,14 +1,9 @@
 package gov.hhs.onc.dcdt.service.http.config;
 
-import gov.hhs.onc.dcdt.beans.ToolConnectionBean;
+import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
 import javax.annotation.Nonnegative;
 
-public interface HttpServerConfig extends ToolConnectionBean {
-    @Nonnegative
-    public int getConnectTimeout();
-
-    public void setConnectTimeout(@Nonnegative int connTimeout);
-
+public interface HttpServerConfig extends ToolServerConfig {
     @Nonnegative
     public int getMaxContentLength();
 

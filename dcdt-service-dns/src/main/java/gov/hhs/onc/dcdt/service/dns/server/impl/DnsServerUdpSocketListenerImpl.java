@@ -12,7 +12,6 @@ import javax.annotation.Resource;
 import org.apache.commons.lang3.ArrayUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
-import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
@@ -44,7 +43,7 @@ public class DnsServerUdpSocketListenerImpl extends AbstractUdpSocketListener<Dn
 
     @Override
     @Resource(name = "taskExecServiceDnsServer")
-    protected void setTaskExecutor(AsyncListenableTaskExecutor taskExec) {
+    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
         super.setTaskExecutor(taskExec);
     }
 }

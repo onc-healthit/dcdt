@@ -92,6 +92,13 @@ logger(ToolObjectMapper.name, INFO, [ "console", "file" ], false)
 logger(ToolVelocityEngineFactoryBean.name, INFO, [ "console", "file" ], false)
 
 /*====================================================================================================
+= LOGGERS: JAVA MAIL
+=====================================================================================================*/
+logger("com.sun.mail", ALL, [ "console", "file" ], false)
+
+logger("javax.mail", ALL, [ "console", "file" ], false)
+
+/*====================================================================================================
 = LOGGERS: APACHE
 =====================================================================================================*/
 logger("org.apache", INFO, [ "console", "file" ], false)

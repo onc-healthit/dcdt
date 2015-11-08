@@ -31,7 +31,7 @@ public class AbstractTcpSocketListener<T extends TcpServerSocketAdapter, U exten
         }
 
         @Override
-        protected void onPostDone(boolean status, @Nullable Void result, @Nullable Throwable th) {
+        protected void onPostDone(@Nullable Void result, @Nullable Throwable th) {
             try {
                 reqSocketAdapter.close();
             } catch (IOException e) {
@@ -70,7 +70,7 @@ public class AbstractTcpSocketListener<T extends TcpServerSocketAdapter, U exten
     @Override
     protected List<ToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>>> createRequestDaemonCallbacks(U reqSocketAdapter,
         ToolListenableFutureTask<Void> reqDaemonTask) {
-        return ToolCollectionUtils.add(super.createRequestDaemonCallbacks(reqSocketAdapter, reqDaemonTask),
-            ((ToolListenableFutureCallback<Void, ToolListenableFutureTask<Void>>) new SocketRequestDaemonTcpCleanupCallback(reqSocketAdapter, reqDaemonTask)));
+        return ToolCollectionUtils.add(super.createRequestDaemonCallbacks(reqSocketAdapter, reqDaemonTask), new SocketRequestDaemonTcpCleanupCallback(
+            reqSocketAdapter, reqDaemonTask));
     }
 }

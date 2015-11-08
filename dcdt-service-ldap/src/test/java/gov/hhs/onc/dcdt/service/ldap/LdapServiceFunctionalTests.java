@@ -2,9 +2,12 @@ package gov.hhs.onc.dcdt.service.ldap;
 
 import gov.hhs.onc.dcdt.ldap.lookup.LdapEntryLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
+import gov.hhs.onc.dcdt.service.ldap.config.LdapServerConfig;
 import gov.hhs.onc.dcdt.service.ldap.config.impl.ToolDirectoryServiceBean;
+import gov.hhs.onc.dcdt.service.ldap.server.LdapServer;
 import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
 import java.util.List;
+import java.util.stream.Stream;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.directory.api.ldap.model.entry.Attribute;
 import org.apache.directory.api.ldap.model.entry.Entry;
@@ -20,7 +23,7 @@ import org.testng.annotations.Test;
 @ContextConfiguration({ "spring/spring-service-ldap.xml", "spring/spring-service-ldap-*.xml" })
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.ldap" })
-public class LdapServiceFunctionalTests extends AbstractToolServiceFunctionalTests<LdapService> {
+public class LdapServiceFunctionalTests extends AbstractToolServiceFunctionalTests<LdapServerConfig, LdapServer, LdapService> {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private LdapLookupService ldapLookupService;
@@ -31,14 +34,16 @@ public class LdapServiceFunctionalTests extends AbstractToolServiceFunctionalTes
 
     @Test
     public void testLookupLdapEntries() throws Exception {
-        if (!this.service.hasDirectoryServiceBeans()) {
+        if (!this.service.hasServers()) {
             return;
         }
 
         LdapConnectionConfig ldapSearchConnConfig;
 
         // noinspection ConstantConditions
-        for (ToolDirectoryServiceBean dirServiceBean : this.service.getDirectoryServiceBeans()) {
+        for (ToolDirectoryServiceBean dirServiceBean : this.service.getServers().stream()
+            .flatMap(ldapServer -> (ldapServer.hasDirectoryServiceBeans() ? ldapServer.getDirectoryServiceBeans().stream() : Stream.empty()))
+            .toArray(ToolDirectoryServiceBean[]::new)) {
             if (!dirServiceBean.hasDataEntries()) {
                 continue;
             }

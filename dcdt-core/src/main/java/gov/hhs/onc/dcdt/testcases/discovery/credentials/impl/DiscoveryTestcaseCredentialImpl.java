@@ -9,7 +9,6 @@ import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
 import gov.hhs.onc.dcdt.crypto.crl.CrlConfig;
 import gov.hhs.onc.dcdt.crypto.crl.CrlEntryConfig;
-import gov.hhs.onc.dcdt.crypto.crl.CrlType;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.discovery.BindingType;
@@ -56,33 +55,65 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        CertificateConfig credCertConfig;
-
-        // noinspection ConstantConditions
         if (!this.hasCredentialInfo() && this.hasIssuerCredential() && this.issuerCred.hasName() && this.hasCredentialConfig()
-            && this.credConfig.hasCertificateDescriptor() && (credCertConfig = this.credConfig.getCertificateDescriptor()).hasCrlDistributionUris()) {
-            String credCertConfigCrlDistribUriPath =
-                (ToolUriUtils.PATH_DELIM + this.issuerCred.getName() + FilenameUtils.EXTENSION_SEPARATOR + CrlType.X509.getFileNameExtension());
-            URI[] credCertConfigCrlDistribUris = ToolCollectionUtils.toArray(credCertConfig.getCrlDistributionUris(), URI.class);
-            URI credCertConfigCrlDistribUri;
+            && this.credConfig.hasCertificateDescriptor()) {
+            CertificateConfig credCertConfig = this.credConfig.getCertificateDescriptor();
+            String issuerCredName = this.issuerCred.getName();
 
             // noinspection ConstantConditions
-            for (int a = 0; a < credCertConfigCrlDistribUris.length; a++) {
-                if (!StringUtils.isEmpty((credCertConfigCrlDistribUri = credCertConfigCrlDistribUris[a]).getPath())) {
-                    continue;
+            if (this.issuerCred.hasCrlConfig() && credCertConfig.hasCrlDistributionUris()) {
+                // noinspection ConstantConditions
+                String credCertConfigCrlDistribUriPath =
+                    (ToolUriUtils.PATH_DELIM + issuerCredName + FilenameUtils.EXTENSION_SEPARATOR + this.issuerCred.getCrlConfig().getCrlType()
+                        .getFileNameExtension());
+                URI[] credCertConfigCrlDistribUris = ToolCollectionUtils.toArray(credCertConfig.getCrlDistributionUris(), URI.class);
+                URI credCertConfigCrlDistribUri;
+
+                // noinspection ConstantConditions
+                for (int a = 0; a < credCertConfigCrlDistribUris.length; a++) {
+                    if (!StringUtils.isEmpty((credCertConfigCrlDistribUri = credCertConfigCrlDistribUris[a]).getPath())) {
+                        continue;
+                    }
+
+                    try {
+                        credCertConfigCrlDistribUris[a] =
+                            new URI(credCertConfigCrlDistribUri.getScheme(), null, credCertConfigCrlDistribUri.getHost(),
+                                credCertConfigCrlDistribUri.getPort(), credCertConfigCrlDistribUriPath, null, null);
+                    } catch (URISyntaxException e) {
+                        throw new ToolBeanRegistryException(String.format("Unable to build Discovery testcase credential (name=%s) CRL distribution URI.",
+                            this.name), e);
+                    }
                 }
 
-                try {
-                    credCertConfigCrlDistribUris[a] =
-                        new URI(credCertConfigCrlDistribUri.getScheme(), null, credCertConfigCrlDistribUri.getHost(), credCertConfigCrlDistribUri.getPort(),
-                            credCertConfigCrlDistribUriPath, null, null);
-                } catch (URISyntaxException e) {
-                    throw new ToolBeanRegistryException(String.format("Unable to build Discovery testcase credential (name=%s) CRL distribution URI.",
-                        this.name), e);
-                }
+                credCertConfig.setCrlDistributionUris(ToolArrayUtils.asSet(credCertConfigCrlDistribUris));
             }
 
-            credCertConfig.setCrlDistributionUris(ToolArrayUtils.asSet(credCertConfigCrlDistribUris));
+            // noinspection ConstantConditions
+            if (credCertConfig.hasIssuerAccessUris()) {
+                // noinspection ConstantConditions
+                String credCertConfigIssuerAccessUriPath =
+                    (ToolUriUtils.PATH_DELIM + issuerCredName + FilenameUtils.EXTENSION_SEPARATOR + this.issuerCred.getCredentialConfig()
+                        .getCertificateDescriptor().getCertificateType().getFileNameExtension());
+
+                URI[] credCertConfigIssuerAccessUris = ToolCollectionUtils.toArray(credCertConfig.getIssuerAccessUris(), URI.class);
+                URI credCertConfigIssuerAccessUri;
+
+                // noinspection ConstantConditions
+                for (int a = 0; a < credCertConfigIssuerAccessUris.length; a++) {
+                    if (!StringUtils.isEmpty((credCertConfigIssuerAccessUri = credCertConfigIssuerAccessUris[a]).getPath())) {
+                        continue;
+                    }
+
+                    try {
+                        credCertConfigIssuerAccessUris[a] =
+                            new URI(credCertConfigIssuerAccessUri.getScheme(), null, credCertConfigIssuerAccessUri.getHost(),
+                                credCertConfigIssuerAccessUri.getPort(), credCertConfigIssuerAccessUriPath, null, null);
+                    } catch (URISyntaxException e) {
+                        throw new ToolBeanRegistryException(String.format("Unable to build Discovery testcase credential (name=%s) issuer access URI.",
+                            this.name), e);
+                    }
+                }
+            }
         }
 
         CertificateInfo credCertInfo;

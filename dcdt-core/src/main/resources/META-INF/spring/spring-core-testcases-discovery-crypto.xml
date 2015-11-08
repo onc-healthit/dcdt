@@ -33,6 +33,12 @@
     </beans:bean>
     
     <beans:bean id="discoveryTestcaseCertConfigCaIntermediate1" parent="certConfigCa">
+        <beans:property name="issuerAccessUris">
+            <beans:set value-type="java.net.URI">
+                <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolUriUtils" parent="uri" factory-method="fromString"
+                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.utils.ToolHttpUtils).HTTP_SCHEME }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
+            </beans:set>
+        </beans:property>
         <beans:property name="subjectDn">
             <beans:bean parent="certDnImpl"
                 p:commonName="#{ instanceConfig.domainName }_ca_intermediate_1"/>
@@ -41,6 +47,12 @@
     
     <beans:bean id="discoveryTestcaseCertConfigLeaf" parent="certConfigImpl" abstract="true">
         <beans:property name="crlDistributionUris">
+            <beans:set value-type="java.net.URI">
+                <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolUriUtils" parent="uri" factory-method="fromString"
+                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.utils.ToolHttpUtils).HTTP_SCHEME }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
+            </beans:set>
+        </beans:property>
+        <beans:property name="issuerAccessUris">
             <beans:set value-type="java.net.URI">
                 <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolUriUtils" parent="uri" factory-method="fromString"
                     c:uriStr="#{ T(gov.hhs.onc.dcdt.http.utils.ToolHttpUtils).HTTP_SCHEME }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>

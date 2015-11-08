@@ -22,4 +22,21 @@
     =====================================================================================================-->
     <beans:bean id="taskExecService" parent="taskExec" abstract="true"
         p:queueCapacity="0"/>
+    
+    <!--====================================================================================================
+    = SERVER CONFIGURATIONS
+    =====================================================================================================-->
+    <beans:bean id="serverConfig" class="gov.hhs.onc.dcdt.service.config.ToolServerConfig" abstract="true"/>
+    
+    <!--====================================================================================================
+    = SERVERS
+    =====================================================================================================-->
+    <beans:bean id="server" class="gov.hhs.onc.dcdt.service.server.ToolServer" abstract="true"/>
+    
+    <beans:bean id="serverChannel" class="gov.hhs.onc.dcdt.service.server.ToolServer" abstract="true"/>
+    
+    <!--====================================================================================================
+    = SERVICES
+    =====================================================================================================-->
+    <beans:bean id="service" class="gov.hhs.onc.dcdt.service.ToolService" abstract="true"/>
 </beans:beans>

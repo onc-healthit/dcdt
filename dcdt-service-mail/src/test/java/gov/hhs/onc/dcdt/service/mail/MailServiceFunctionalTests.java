@@ -5,6 +5,8 @@ import gov.hhs.onc.dcdt.crypto.EncryptionAlgorithm;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
+import gov.hhs.onc.dcdt.service.mail.config.MailServerConfig;
+import gov.hhs.onc.dcdt.service.mail.server.MailServer;
 import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
@@ -15,7 +17,7 @@ import gov.hhs.onc.dcdt.testcases.discovery.mail.sender.DiscoveryTestcaseSubmiss
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
 import gov.hhs.onc.dcdt.utils.ToolDateUtils;
-import java.nio.charset.Charset;
+import io.netty.util.CharsetUtil;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -29,14 +31,10 @@ import org.testng.annotations.Test;
 @ContextConfiguration({ "spring/spring-service-mail.xml", "spring/spring-service-mail-*.xml" })
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.mail" })
-public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTests<MailService> {
+public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTests<MailServerConfig, MailServer<MailServerConfig>, MailService> {
     @Resource(name = "mailSessionPlain")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private Session mailSession;
-
-    @Resource(name = "charsetUtf8")
-    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private Charset mailEnc;
 
     private DiscoveryTestcaseSubmissionSenderService discoveryTestcaseSubmissionSenderService;
     private MailAddress testSubmissionAddr;
@@ -127,7 +125,7 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
     }
 
     private ToolMimeMessageHelper createMessageHelper(MailAddress from, MailAddress to) throws MessagingException {
-        ToolMimeMessageHelper msgHelper = new ToolMimeMessageHelper(this.mailSession, this.mailEnc);
+        ToolMimeMessageHelper msgHelper = new ToolMimeMessageHelper(this.mailSession, CharsetUtil.US_ASCII);
         msgHelper.setFrom(from);
         msgHelper.setTo(to);
         msgHelper.setSubject(String.format("[DCDT Test] %s => %s", from, to));

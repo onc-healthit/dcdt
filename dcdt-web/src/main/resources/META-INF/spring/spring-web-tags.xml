@@ -19,7 +19,7 @@
     = HTMLCLEANER PROPERTIES
     =====================================================================================================-->
     <beans:bean id="cleanerProps" class="org.htmlcleaner.CleanerProperties"
-        p:charset="#{ charsetUtf8.name() }"
+        p:charset="#{ T(io.netty.util.CharsetUtil).UTF_8.name() }"
         p:keepWhitespaceAndCommentsInHead="false"
         p:omitCdataOutsideScriptAndStyle="true"
         p:omitComments="true"

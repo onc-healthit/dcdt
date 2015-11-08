@@ -1,2 +1,5 @@
+gov.hhs.onc.dcdt.context.MetadataInitializer=\
+    gov.hhs.onc.dcdt.service.mail.context.impl.MailServiceMetadataInitializer
+
 gov.hhs.onc.dcdt.logging.LoggingInitializer=\
     gov.hhs.onc.dcdt.service.mail.logging.impl.MailServiceLoggingInitializer

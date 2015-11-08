@@ -56,4 +56,20 @@
             </util:list>
         </beans:property>
     </beans:bean>
+    
+    <!--====================================================================================================
+    = REGISTRATION BEANS: SERVLET
+    =====================================================================================================-->
+    <beans:bean id="regBeanServletDispatcher" parent="regBeanServlet"
+        p:loadOnStartup="1"
+        p:name="dispatcherServlet">
+        <beans:property name="servlet">
+            <beans:bean class="org.springframework.web.servlet.DispatcherServlet" parent="servletHttp"/>
+        </beans:property>
+        <beans:property name="urlMappings">
+            <beans:list>
+                <beans:value>/</beans:value>
+            </beans:list>
+        </beans:property>
+    </beans:bean>
 </beans:beans>

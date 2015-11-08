@@ -92,6 +92,7 @@
     <beans:bean id="crlDesc" class="gov.hhs.onc.dcdt.crypto.crl.CrlDescriptor" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="crlConfig" class="gov.hhs.onc.dcdt.crypto.crl.CrlConfig" parent="crlDesc" abstract="true"/>
     <beans:bean id="crlConfigImpl" class="gov.hhs.onc.dcdt.crypto.crl.impl.CrlConfigImpl" parent="crlConfig" abstract="true"
+        p:crlType="X509"
         p:signatureAlgorithm="SHA256_WITH_RSA_ENCRYPTION"/>
     
     <beans:bean id="crlEntryDesc" class="gov.hhs.onc.dcdt.crypto.crl.CrlEntryDescriptor" parent="cryptoDesc" abstract="true"/>

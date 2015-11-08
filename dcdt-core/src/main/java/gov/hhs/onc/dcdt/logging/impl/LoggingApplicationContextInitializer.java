@@ -27,7 +27,7 @@ import org.springframework.core.annotation.Order;
 
 @Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class LoggingApplicationContextInitializer extends AbstractToolApplicationContextInitializer implements LoggerContextListener {
-    private static class DefaultLoggingInitializer extends AbstractLoggingInitializer<AbstractRefreshableConfigApplicationContext> {
+    private static class DefaultLoggingInitializer extends AbstractLoggingInitializer {
         public DefaultLoggingInitializer(AbstractRefreshableConfigApplicationContext appContext) {
             super(appContext);
         }
@@ -59,9 +59,9 @@ public class LoggingApplicationContextInitializer extends AbstractToolApplicatio
     protected void initializeInternal(AbstractRefreshableConfigApplicationContext appContext) throws Exception {
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-        
+
         LoggerContext loggerContext = ContextSelectorStaticBinder.getSingleton().getContextSelector().getDefaultLoggerContext();
-        
+
         loggerContext.stop();
         loggerContext.reset();
 
@@ -71,11 +71,10 @@ public class LoggingApplicationContextInitializer extends AbstractToolApplicatio
         lvlChangePropagator.setContext(loggerContext);
         lvlChangePropagator.setResetJUL(true);
         loggerContext.addListener(lvlChangePropagator);
-        
-        LoggingInitializer<?> loggingInit =
-            ToolContextUtils.buildComponent(LoggingInitializer.class, () -> new DefaultLoggingInitializer(appContext), appContext);
 
-        //loggerContext.setName(loggingInit.buildLogContextName());
+        LoggingInitializer loggingInit = ToolContextUtils.buildComponent(LoggingInitializer.class, () -> new DefaultLoggingInitializer(appContext), appContext);
+
+        loggerContext.setName(loggingInit.buildLogContextName());
 
         loggerContext.putProperty(ToolProperties.LOG_CONSOLE_TERM_NAME, Boolean.toString(loggingInit.buildLogConsoleTerminal()));
         loggerContext.putProperty(ToolProperties.LOG_DIR_NAME, loggingInit.buildLogDirectory().getPath());

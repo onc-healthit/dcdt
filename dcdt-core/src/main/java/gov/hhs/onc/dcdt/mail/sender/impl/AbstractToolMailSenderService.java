@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.mail.sender.impl;
 
-
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
@@ -87,10 +86,9 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
         this.send(subjModelMap, textModelMap, to, null, null, null, attachmentResources);
     }
 
-    protected void
-        send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable CredentialInfo signerCredInfo,
-            @Nullable CertificateInfo encryptionCertInfo, @Nullable EncryptionAlgorithm encryptionAlg,
-            @Nullable MimeAttachmentResource ... attachmentResources) throws Exception {
+    protected void send(@Nullable ModelMap subjModelMap, @Nullable ModelMap textModelMap, MailAddress to, @Nullable CredentialInfo signerCredInfo,
+        @Nullable CertificateInfo encryptionCertInfo, @Nullable EncryptionAlgorithm encryptionAlg, @Nullable MimeAttachmentResource ... attachmentResources)
+        throws Exception {
         this.send(subjModelMap, textModelMap, to, signerCredInfo, encryptionCertInfo, encryptionAlg, ToolArrayUtils.asList(attachmentResources));
     }
 
@@ -101,6 +99,7 @@ public abstract class AbstractToolMailSenderService extends AbstractToolBean imp
         MailGatewayCredentialConfig mailGatewayCredConfig = fromConfig.getGatewayCredentialConfig();
 
         Session mailSession = mailGatewayConfig.getSession();
+        // noinspection ConstantConditions
         mailSession.getProperties().put(JavaMailProperties.FROM, this.fromConfig.getMailAddress().toAddress());
 
         ToolMailSender mailSender = new ToolMailSender();

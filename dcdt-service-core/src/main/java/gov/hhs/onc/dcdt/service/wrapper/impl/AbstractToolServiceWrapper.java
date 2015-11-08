@@ -2,21 +2,19 @@ package gov.hhs.onc.dcdt.service.wrapper.impl;
 
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.context.ToolApplicationContextException;
-import gov.hhs.onc.dcdt.context.ToolContextLoader;
-import gov.hhs.onc.dcdt.context.impl.ToolContextLoaderImpl;
+import gov.hhs.onc.dcdt.context.impl.ClassPathContextLoader;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.ToolService;
+import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
+import gov.hhs.onc.dcdt.service.server.ToolServer;
 import gov.hhs.onc.dcdt.service.wrapper.ToolServiceWrapper;
 import gov.hhs.onc.dcdt.utils.ToolAnnotationUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
-import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolDateUtils;
-import gov.hhs.onc.dcdt.utils.ToolIteratorUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.collections4.IteratorUtils;
+import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
@@ -25,30 +23,16 @@ import org.tanukisoftware.wrapper.event.WrapperControlEvent;
 import org.tanukisoftware.wrapper.event.WrapperEvent;
 import org.tanukisoftware.wrapper.event.WrapperEventListener;
 
-public abstract class AbstractToolServiceWrapper<T extends ToolService> implements ToolServiceWrapper<T> {
-    protected class ToolServiceWrapperShutdownHook implements Runnable {
-        @Override
-        public void run() {
-            try {
-                AbstractToolServiceWrapper.this.stop();
-            } finally {
-                try {
-                    Runtime.getRuntime().removeShutdownHook(AbstractToolServiceWrapper.this.shutdownHookThread);
-                } catch (IllegalStateException ignored) {
-                }
-            }
-        }
-    }
-
+public abstract class AbstractToolServiceWrapper<T extends ToolServerConfig, U extends ToolServer<T>, V extends ToolService<T, U>> implements
+    ToolServiceWrapper<T, U, V> {
     protected AbstractApplicationContext appContext;
-    protected Class<T> serviceClass;
-    protected Class<? extends T> serviceImplClass;
+    protected Class<V> serviceClass;
+    protected Class<? extends V> serviceImplClass;
     protected String[] args;
-    protected Thread shutdownHookThread;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolServiceWrapper.class);
 
-    protected AbstractToolServiceWrapper(Class<T> serviceClass, Class<? extends T> serviceImplClass, String ... args) {
+    protected AbstractToolServiceWrapper(Class<V> serviceClass, Class<? extends V> serviceImplClass, String ... args) {
         this.serviceClass = serviceClass;
         this.serviceImplClass = serviceImplClass;
         this.args = args;
@@ -110,18 +94,19 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
     protected void startInternal() {
         WrapperManager.addWrapperEventListener(this, WrapperEventListener.EVENT_FLAG_CONTROL);
 
-        Runtime.getRuntime().addShutdownHook((this.shutdownHookThread = new Thread(new ToolServiceWrapperShutdownHook())));
-
-        ToolContextLoader contextLoader = new ToolContextLoaderImpl();
+        ClassPathContextLoader contextLoader = new ClassPathContextLoader();
         // noinspection ConstantConditions
-        List<String> contextConfigLocs =
-            contextLoader.processLocations(ToolCollectionUtils.addAll(new ArrayList<String>(), IteratorUtils.asIterable(ToolIteratorUtils
-                .chainedArrayIterator(ToolAnnotationUtils.getValues(ServiceContextConfiguration.class, String[].class,
-                    ToolListUtils.reverse(new ArrayList<>(ToolClassUtils.getHierarchy(this.serviceImplClass))))))));
+        String[] contextConfigLocs =
+            contextLoader.processLocations(ToolListUtils
+                .reverse(new ArrayList<>(ToolClassUtils.getHierarchy(this.serviceImplClass)))
+                .stream()
+                .flatMap(
+                    serviceHierarchyClass -> ToolAnnotationUtils.findAnnotations(ServiceContextConfiguration.class).stream()
+                        .flatMap(serviceContextConfigAnno -> Stream.of(serviceContextConfigAnno.value()))).toArray(String[]::new));
 
         try {
             try {
-                while (!(this.appContext = (AbstractApplicationContext) contextLoader.loadContext(contextConfigLocs)).isActive()) {
+                while (!(this.appContext = contextLoader.loadContext(contextConfigLocs)).isActive()) {
                     Thread.sleep(ToolDateUtils.MS_IN_SEC);
                 }
 
@@ -129,6 +114,7 @@ public abstract class AbstractToolServiceWrapper<T extends ToolService> implemen
                     ToolClassUtils.getName(this.serviceClass), ToolClassUtils.getName(this.serviceImplClass), ToolClassUtils.getName(this),
                     ToolClassUtils.getName(this.appContext), ToolStringUtils.joinDelimit(contextConfigLocs, ", ")));
 
+                // noinspection ConstantConditions
                 ToolBeanFactoryUtils.getBeanOfType(this.appContext, this.serviceClass).start();
             } catch (InterruptedException ignored) {
             }

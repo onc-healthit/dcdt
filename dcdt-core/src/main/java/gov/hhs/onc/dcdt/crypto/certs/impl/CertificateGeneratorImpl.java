@@ -23,6 +23,7 @@ import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import gov.hhs.onc.dcdt.utils.ToolValidationUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -30,6 +31,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.Nullable;
+import org.bouncycastle.asn1.ASN1EncodableVector;
+import org.bouncycastle.asn1.DERSequence;
+import org.bouncycastle.asn1.x509.AccessDescription;
+import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.BasicConstraints;
 import org.bouncycastle.asn1.x509.CRLDistPoint;
 import org.bouncycastle.asn1.x509.DistributionPoint;
@@ -86,19 +91,22 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
                     .build(PrivateKeyFactory.createKey(certConfig.isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo
                         .getKeyDescriptor().getPrivateKeyInfo())));
 
-            CertificateInfo certInfo =
-                new CertificateInfoImpl((X509Certificate) CertificateUtils.getCertificateFactory(certType).generateCertificate(
-                    new ByteArrayInputStream(certHolder.getEncoded())));
+            CertificateInfo certInfo;
 
-            LOGGER.info(String.format("Generated certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}).", certInfo.getSubjectDn(), certInfo.getSerialNumber(),
-                certInfo.getIssuerDn()));
+            try (InputStream certInStream = new ByteArrayInputStream(certHolder.getEncoded())) {
+                certInfo = new CertificateInfoImpl((X509Certificate) CertificateUtils.getCertificateFactory(certType).generateCertificate(certInStream));
+            }
+
+            // noinspection ConstantConditions
+            LOGGER.info(String.format("Generated certificate (type=%s, subjDn={%s}, serialNum=%s, issuerDn={%s}).", certInfo.getCertificateType().name(),
+                certInfo.getSubjectDn(), certInfo.getSerialNumber(), certInfo.getIssuerDn()));
 
             return certInfo;
         } catch (CertificateException | IOException | OperatorCreationException e) {
             // noinspection ConstantConditions
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException(String.format(
-                "Unable to generate certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}).", certConfig.getSubjectDn(), certConfig.getSerialNumber(),
-                issuerCertDesc.getSubjectDn()), e);
+                "Unable to generate certificate (type=%s, subjDn={%s}, serialNum=%s, issuerDn={%s}).", certType.name(), certConfig.getSubjectDn(),
+                certConfig.getSerialNumber(), issuerCertDesc.getSubjectDn()), e);
         }
     }
 
@@ -166,6 +174,21 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
                             crlDistribUri -> new DistributionPoint(new DistributionPointName(new GeneralNames(new GeneralName(
                                 GeneralNameType.UNIFORM_RESOURCE_IDENTIFIER.getTag(), crlDistribUri.toString()))), null, null))
                         .toArray(DistributionPoint[]::new)));
+            }
+
+            if (certConfig.hasIssuerAccessUris()) {
+                ASN1EncodableVector certIssuerAccessDescVector = new ASN1EncodableVector();
+
+                // noinspection ConstantConditions
+                certConfig
+                    .getIssuerAccessUris()
+                    .stream()
+                    .forEach(
+                        certIssuerAccessUri -> certIssuerAccessDescVector.add(new AccessDescription(AccessDescription.id_ad_caIssuers, new GeneralName(
+                            GeneralNameType.UNIFORM_RESOURCE_IDENTIFIER.getTag(), certIssuerAccessUri.toString()))));
+
+                certBuilder.addExtension(Extension.authorityInfoAccess, false,
+                    AuthorityInformationAccess.getInstance(new DERSequence(certIssuerAccessDescVector)));
             }
         } catch (CertIOException e) {
             throw new gov.hhs.onc.dcdt.crypto.certs.CertificateException("Unable to set certificate X509v3 extension.", e);

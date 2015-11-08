@@ -17,6 +17,7 @@ import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.EnumerablePropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MutablePropertySources;
+import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
 import org.springframework.core.env.PropertySources;
 import org.springframework.core.env.PropertySourcesPropertyResolver;
@@ -97,9 +98,11 @@ public class ToolPropertySourcesPlaceholderConfigurer extends PropertySourcesPla
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         MutablePropertySources propSources = new MutablePropertySources();
+        
+        this.env.getPropertySources().forEach(propSources::addLast);
 
         try {
-            PropertySource<?> localPropSource = new CompositePropertySource(LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, this.mergeProperties());
+            PropertySource<?> localPropSource = new PropertiesPropertySource(LOCAL_PROPERTIES_PROPERTY_SOURCE_NAME, this.mergeProperties());
 
             if (this.localOverride) {
                 propSources.addFirst(localPropSource);

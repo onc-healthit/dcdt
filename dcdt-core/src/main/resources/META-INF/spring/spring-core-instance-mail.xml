@@ -66,7 +66,7 @@
         <beans:property name="gatewayConfig">
             <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="mailGatewayConfigImpl"
-                p:port="${dcdt.instance.mail.james.smtp.1.port}"/>
+                p:port="${dcdt.instance.mail.server.smtp.1.port}"/>
         </beans:property>
         <beans:property name="gatewayCredentialConfig">
             <beans:bean parent="mailGatewayCredConfigImpl"/>

@@ -1,9 +1,9 @@
 package gov.hhs.onc.dcdt.service.dns.config.impl;
 
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.config.instance.impl.InstanceDnsConfigImpl.AuthoritativeDnsConfigPredicate;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
+import gov.hhs.onc.dcdt.service.config.impl.AbstractToolServerConfig;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.util.ArrayList;
@@ -14,9 +14,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.xbill.DNS.Name;
 import org.xbill.DNS.Record;
 
-public class DnsServerConfigImpl extends AbstractToolConnectionBean implements DnsServerConfig {
+public class DnsServerConfigImpl extends AbstractToolServerConfig implements DnsServerConfig {
     @Autowired(required = false)
     private List<InstanceDnsConfig> configs;
+
+    public DnsServerConfigImpl() {
+        super("DNS");
+    }
 
     @Override
     public List<InstanceDnsConfig> findAuthoritativeConfigs(Record questionRecord) {

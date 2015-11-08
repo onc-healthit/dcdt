@@ -85,7 +85,7 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
         }
 
         @Override
-        protected void onPostDone(boolean status, @Nullable Void result, @Nullable Throwable th) {
+        protected void onPostDone(@Nullable Void result, @Nullable Throwable th) {
             AbstractSocketListener.this.reqDaemonTasks.remove(this.task);
             AbstractSocketListener.this.reqSocketAdapters.remove(this.reqSocketAdapter);
         }

@@ -7,11 +7,11 @@ import org.springframework.context.support.AbstractRefreshableConfigApplicationC
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class ServiceLoggingInitializer<T extends AbstractRefreshableConfigApplicationContext> extends AbstractLoggingInitializer<T> {
+@Order(Ordered.HIGHEST_PRECEDENCE + 2)
+public class ServiceLoggingInitializer extends AbstractLoggingInitializer {
     private final static String LOG_DIR_PATH_DEFAULT = SystemUtils.USER_DIR + "/logs";
 
-    public ServiceLoggingInitializer(T appContext) {
+    public ServiceLoggingInitializer(AbstractRefreshableConfigApplicationContext appContext) {
         super(appContext);
     }
 

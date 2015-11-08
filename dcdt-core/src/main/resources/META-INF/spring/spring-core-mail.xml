@@ -46,7 +46,7 @@
             <beans:props merge="true">
                 <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).SSL_ENABLE }">true</beans:prop>
                 <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).SSL_TRUST }">*</beans:prop>
-                <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).SSL_STARTTLS_ENABLE }">true</beans:prop>
+                <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).STARTTLS_ENABLE }">true</beans:prop>
             </beans:props>
         </beans:constructor-arg>
     </beans:bean>
@@ -72,7 +72,7 @@
     <beans:bean id="mailGatewayCredConfig" class="gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig" abstract="true"/>
     <beans:bean id="mailGatewayCredConfigImpl" class="gov.hhs.onc.dcdt.mail.config.impl.MailGatewayCredentialConfigImpl" parent="mailGatewayCredConfig"
         abstract="true"
-        p:generatedPasswordLength="5"
+        p:generatedPasswordLength="10"
         p:generateSecret="true"/>
     
     <!--====================================================================================================

@@ -65,4 +65,10 @@
             </beans:array>
         </beans:property>
     </beans:bean>
+    
+    <!--====================================================================================================
+    = REGISTRATION BEANS
+    =====================================================================================================-->
+    <beans:bean id="regBean" class="org.springframework.boot.context.embedded.RegistrationBean" abstract="true"
+        p:order="#{ T(org.springframework.core.Ordered).LOWEST_PRECEDENCE }"/>
 </beans:beans>

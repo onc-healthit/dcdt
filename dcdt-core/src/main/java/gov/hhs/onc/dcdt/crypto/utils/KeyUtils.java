@@ -8,14 +8,6 @@ import gov.hhs.onc.dcdt.crypto.keys.KeyException;
 import gov.hhs.onc.dcdt.crypto.keys.KeyType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Reader;
-import java.io.Writer;
 import java.security.Key;
 import java.security.KeyFactory;
 import java.security.KeyPairGenerator;
@@ -23,24 +15,10 @@ import java.security.KeyRep;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.EncodedKeySpec;
 import java.security.spec.InvalidKeySpecException;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.SerializationException;
 import org.apache.commons.lang3.SerializationUtils;
 
 public abstract class KeyUtils {
-    public static Key readKey(KeyType keyType, InputStream inStream, KeyAlgorithm keyAlg, DataEncoding dataEnc) throws CryptographyException {
-        return readKey(keyType, new InputStreamReader(inStream), keyAlg, dataEnc);
-    }
-
-    public static Key readKey(KeyType keyType, Reader reader, KeyAlgorithm keyAlg, DataEncoding dataEnc) throws CryptographyException {
-        try {
-            return readKey(keyType, IOUtils.toByteArray(reader), keyAlg, dataEnc);
-        } catch (IOException e) {
-            throw new KeyException(String.format("Unable to read key (type=%s, algId=%s, format=%s, providerName=%s) from reader (class=%s).", keyType.getId(),
-                keyAlg.getId(), keyAlg.getFormat(keyType), CryptographyUtils.PROVIDER_NAME, ToolClassUtils.getName(reader)), e);
-        }
-    }
-
     public static Key readKey(KeyType keyType, byte[] data, KeyAlgorithm keyAlg, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
@@ -56,18 +34,6 @@ public abstract class KeyUtils {
     }
 
     public static <T extends Key> byte[] writeKey(T key, DataEncoding dataEnc) throws CryptographyException {
-        ByteArrayOutputStream outStream = new ByteArrayOutputStream();
-
-        writeKey(outStream, key, dataEnc);
-
-        return outStream.toByteArray();
-    }
-
-    public static <T extends Key> void writeKey(OutputStream outStream, T key, DataEncoding dataEnc) throws CryptographyException {
-        writeKey(new OutputStreamWriter(outStream), key, dataEnc);
-    }
-
-    public static <T extends Key> void writeKey(Writer writer, T key, DataEncoding dataEnc) throws CryptographyException {
         Class<? extends Key> keyClass = key.getClass();
         KeyType keyType = CryptographyUtils.findByType(KeyType.class, keyClass);
         KeyAlgorithm keyAlg = ToolEnumUtils.findById(KeyAlgorithm.class, key.getAlgorithm());
@@ -78,18 +44,11 @@ public abstract class KeyUtils {
             // noinspection ConstantConditions
             byte[] data = keySpecClass.cast(getKeyFactory(keyAlg).getKeySpec(key, keySpecClass)).getEncoded();
 
-            if (dataEnc == DataEncoding.PEM) {
-                PemUtils.writePemContent(writer, CryptographyUtils.findByType(PemType.class, keyClass), data);
-            } else {
-                IOUtils.write(data, writer);
-            }
-
-            writer.flush();
-        } catch (InvalidKeySpecException | IOException e) {
-            throw new KeyException(String.format(
-                "Unable to write key (type=%s, algId=%s, format=%s, keySpecClass=%s, class=%s, providerName=%s) to writer (class=%s).", keyType,
-                keyAlg.getId(), keyAlg.getFormat(keyType), ToolClassUtils.getName(keySpecClass), ToolClassUtils.getName(keyClass),
-                CryptographyUtils.PROVIDER_NAME, ToolClassUtils.getName(writer)), e);
+            return ((dataEnc == DataEncoding.PEM) ? PemUtils.writePemContent(CryptographyUtils.findByType(PemType.class, keyClass), data) : data);
+        } catch (InvalidKeySpecException e) {
+            throw new KeyException(String.format("Unable to write key (type=%s, algId=%s, format=%s, keySpecClass=%s, class=%s, providerName=%s) to data.",
+                keyType, keyAlg.getId(), keyAlg.getFormat(keyType), ToolClassUtils.getName(keySpecClass), ToolClassUtils.getName(keyClass),
+                CryptographyUtils.PROVIDER_NAME), e);
         }
     }
 

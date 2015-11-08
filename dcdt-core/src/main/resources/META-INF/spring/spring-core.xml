@@ -56,20 +56,10 @@
     </beans:bean>
     
     <!--====================================================================================================
-    = CHARACTER SET
-    =====================================================================================================-->
-    <beans:bean id="charset" class="java.nio.charset.Charset" abstract="true"/>
-    
-    <beans:bean id="charsetUtf8" parent="charset" factory-method="forName">
-        <beans:constructor-arg index="0" value="UTF-8"/>
-    </beans:bean>
-    
-    <!--====================================================================================================
     = PROPERTY SOURCES PLACEHOLDER CONFIGURER
     =====================================================================================================-->
-    <beans:bean id="propSourcesPlaceholderConfigurerBase" class="gov.hhs.onc.dcdt.context.impl.ToolPropertySourcesPlaceholderConfigurer" abstract="true"
-        p:environmentOverride="true"
-        p:fileEncoding="#{ charsetUtf8.name() }"
+    <beans:bean id="propSourcesPlaceholderConfigurerBase" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" abstract="true"
+        p:fileEncoding="#{ T(io.netty.util.CharsetUtil).UTF_8.name() }"
         p:ignoreResourceNotFound="true"
         p:localOverride="true">
         <beans:property name="locations">
@@ -95,7 +85,7 @@
     <beans:bean id="toolMsgSource" class="gov.hhs.onc.dcdt.context.ToolMessageSource" abstract="true"/>
     <beans:bean id="toolMsgSourceImpl" class="gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl" parent="toolMsgSource" abstract="true"
         p:cacheSeconds="30"
-        p:defaultEncoding="#{ charsetUtf8.name() }"
+        p:defaultEncoding="#{ T(io.netty.util.CharsetUtil).UTF_8.name() }"
         p:fallbackToSystemLocale="false"/>
     
     <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true" depends-on="setLocale">
@@ -155,4 +145,9 @@
             </beans:list>
         </beans:property>
     </beans:bean>
+    
+    <!--====================================================================================================
+    = EVENT LISTENERS
+    =====================================================================================================-->
+    <beans:bean id="eventListener" class="java.util.EventListener" abstract="true"/>
 </beans:beans>

@@ -8,7 +8,7 @@
     <parent>
         <groupId>gov.hhs.onc.dcdt</groupId>
         <artifactId>dcdt-parent</artifactId>
-        <version>3.0.5-SNAPSHOT</version>
+        <version>3.1.0-SNAPSHOT</version>
         <relativePath>../dcdt-parent</relativePath>
     </parent>
     
@@ -116,6 +116,29 @@
                 </exclusions>
             </dependency>
             <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>1.2.7.RELEASE</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.tomcat.embed</groupId>
+                        <artifactId>tomcat-embed-core</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.tomcat.embed</groupId>
+                        <artifactId>tomcat-embed-el</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.tomcat.embed</groupId>
+                        <artifactId>tomcat-embed-logging-juli</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>org.apache.tomcat.embed</groupId>
+                        <artifactId>tomcat-embed-websocket</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-bom</artifactId>
                 <version>4.0.2.RELEASE</version>
@@ -135,24 +158,6 @@
             </dependency>
             <!-- Test dependencies -->
             <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-core</artifactId>
-                <version>8.0.28</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-el</artifactId>
-                <version>8.0.28</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.tomcat.embed</groupId>
-                <artifactId>tomcat-embed-logging-log4j</artifactId>
-                <version>8.0.28</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
                 <groupId>org.seleniumhq.selenium</groupId>
                 <artifactId>selenium-java</artifactId>
                 <version>2.45.0</version>
@@ -163,36 +168,8 @@
                         <artifactId>commons-logging</artifactId>
                     </exclusion>
                     <exclusion>
-                        <groupId>io.netty</groupId>
-                        <artifactId>netty</artifactId>
-                    </exclusion>
-                    <exclusion>
                         <groupId>xerces</groupId>
                         <artifactId>xercesImpl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-tomcat</artifactId>
-                <version>1.2.5.RELEASE</version>
-                <scope>test</scope>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.apache.tomcat.embed</groupId>
-                        <artifactId>tomcat-embed-core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.tomcat.embed</groupId>
-                        <artifactId>tomcat-embed-el</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.tomcat.embed</groupId>
-                        <artifactId>tomcat-embed-logging-juli</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.tomcat.embed</groupId>
-                        <artifactId>tomcat-embed-websocket</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>
@@ -274,7 +251,6 @@
                                         <filtering>true</filtering>
                                         <includes>
                                             <include>views/**/*.jsp</include>
-                                            <include>web.xml</include>
                                         </includes>
                                     </resource>
                                 </resources>
@@ -342,6 +318,7 @@
                     <inherited>true</inherited>
                     <configuration>
                         <archiveClasses>true</archiveClasses>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
                     </configuration>
                     <executions>
                         <execution>
@@ -349,7 +326,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <warSourceDirectory>${project.build.webappSourceDirectory}</warSourceDirectory>
-                                <warSourceExcludes>WEB-INF/views/**/*.jsp,WEB-INF/web.xml</warSourceExcludes>
+                                <warSourceExcludes>WEB-INF/views/**/*.jsp</warSourceExcludes>
                                 <webappDirectory>${project.build.webappDirectory}</webappDirectory>
                             </configuration>
                         </execution>

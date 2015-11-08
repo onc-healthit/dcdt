@@ -5,7 +5,7 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateValidator.CertificateValidatorCo
 import gov.hhs.onc.dcdt.mail.MailAddress;
 
 @CertificateActiveInterval(groups = { CertificateValidatorConstraintGroup.class })
-// @CertificatePath(groups = { CertificateValidatorConstraintGroup.class })
+@CertificateRevocationStatus(groups = { CertificateValidatorConstraintGroup.class })
 @CertificateSubjectAltNames(groups = { CertificateValidatorConstraintGroup.class })
 @CertificateSubjectDn(groups = { CertificateValidatorConstraintGroup.class })
 public interface CertificateValidatorContext extends ToolResultBean {

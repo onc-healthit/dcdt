@@ -20,11 +20,11 @@ public abstract class ToolStringUtils {
             super(str);
         }
 
-        public <T> StrBuilder appendWithDelimiters(@Nullable T[] objs, @Nullable String delim) {
+        public <T> ToolStrBuilder appendWithDelimiters(@Nullable T[] objs, @Nullable String delim) {
             return this.appendWithDelimiters(ToolArrayUtils.asList(objs), delim);
         }
 
-        public <T> StrBuilder appendWithDelimiters(@Nullable Iterable<T> objs, @Nullable String delim) {
+        public <T> ToolStrBuilder appendWithDelimiters(@Nullable Iterable<T> objs, @Nullable String delim) {
             if (objs != null) {
                 for (T obj : objs) {
                     this.appendWithDelimiter(obj, delim);
@@ -34,21 +34,24 @@ public abstract class ToolStringUtils {
             return this;
         }
 
-        public StrBuilder appendWithDelimiter(@Nullable Object obj, @Nullable String delim) {
+        public ToolStrBuilder appendWithDelimiter(@Nullable Object obj, @Nullable String delim) {
             String objStr = StringUtils.removeStart(Objects.toString(obj, this.getNullText()), delim);
 
-            return (objStr != null) ? this.appendDelimiter(delim).append(objStr) : this;
+            return (objStr != null) ? ((ToolStrBuilder) this.appendDelimiter(delim).append(objStr)) : this;
         }
 
-        public StrBuilder appendDelimiter(@Nullable String delim) {
-            return !this.endsWith(delim) ? this.appendSeparator(delim) : this;
+        public ToolStrBuilder appendDelimiter(@Nullable String delim) {
+            return !this.endsWith(delim) ? ((ToolStrBuilder) this.appendSeparator(delim)) : this;
         }
     }
+
+    public final static String HYPHEN = "-";
 
     public final static String QUOTE_SINGLE = "'";
     public final static String QUOTE_DBL = "\"";
 
-    public final static String DELIM_CHARS_NEWLINE = StringUtils.CR + StringUtils.LF;
+    public final static String CRLF = StringUtils.CR + StringUtils.LF;
+    public final static byte[] CRLF_BYTES = new byte[] { '\r', '\n' };
 
     @Nullable
     public static String joinLines(@Nullable String ... lines) {
@@ -67,7 +70,7 @@ public abstract class ToolStringUtils {
 
     @Nullable
     public static String[] splitLines(@Nullable String str, int limit) {
-        return StringUtils.split(str, DELIM_CHARS_NEWLINE, limit);
+        return StringUtils.split(str, CRLF, limit);
     }
 
     @Nullable

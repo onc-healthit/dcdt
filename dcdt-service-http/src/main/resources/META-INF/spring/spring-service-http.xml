@@ -28,27 +28,28 @@
         p:corePoolSize="#{ taskExecServiceHttp.corePoolSize }"
         p:maxPoolSize="#{ taskExecServiceHttp.maxPoolSize }"/>
     
-    <beans:bean id="taskExecServiceHttpServerReq" parent="taskExecService" lazy-init="true" scope="prototype"
+    <beans:bean id="taskExecServiceHttpReq" parent="taskExecService" lazy-init="true" scope="prototype"
         p:allowCoreThreadTimeOut="true"
         p:corePoolSize="#{ taskExecServiceHttpServer.corePoolSize * 10 }"
         p:keepAliveSeconds="15"
         p:maxPoolSize="#{ taskExecServiceHttpServer.maxPoolSize * 50 }"/>
     
     <!--====================================================================================================
-    = HTTP SERVER CONFIG
+    = HTTP SERVER CONFIGURATIONS
     =====================================================================================================-->
-    <beans:bean id="httpServerConfig" class="gov.hhs.onc.dcdt.service.http.config.HttpServerConfig" abstract="true"/>
+    <beans:bean id="httpServerConfig" class="gov.hhs.onc.dcdt.service.http.config.HttpServerConfig" parent="serverConfig" abstract="true"/>
     
     <beans:bean id="httpServerConfigImpl" class="gov.hhs.onc.dcdt.service.http.config.impl.HttpServerConfigImpl" parent="httpServerConfig" abstract="true"
+        p:backlog="1000"
         p:connectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
         p:maxContentLength="#{ T(org.apache.commons.io.FileUtils).ONE_MB * 5 }"
         p:readTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"
         p:writeTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"/>
     
     <!--====================================================================================================
-    = HTTP SERVER
+    = HTTP SERVERS
     =====================================================================================================-->
-    <beans:bean id="httpServer" class="gov.hhs.onc.dcdt.service.http.server.HttpServer" abstract="true"/>
+    <beans:bean id="httpServer" class="gov.hhs.onc.dcdt.service.http.server.HttpServer" parent="server" abstract="true"/>
     
     <beans:bean id="httpServerImpl" class="gov.hhs.onc.dcdt.service.http.server.impl.HttpServerImpl" parent="httpServer" abstract="true"/>
     

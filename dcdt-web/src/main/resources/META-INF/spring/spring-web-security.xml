@@ -16,7 +16,7 @@
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
         http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-
+    
     <!--====================================================================================================
     = AUTHENTICATION PROVIDERS
     =====================================================================================================-->
@@ -31,6 +31,7 @@
     <sec:authentication-manager id="authManager">
         <sec:authentication-provider>
             <sec:user-service id="userService">
+                <!--suppress SpringPlaceholdersInspection -->
                 <sec:user name="${dcdt.web.user.admin.name}" authorities="#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }"
                     password="${dcdt.web.user.admin.secret}"/>
             </sec:user-service>
@@ -59,6 +60,9 @@
     =====================================================================================================-->
     <sec:http authentication-manager-ref="authManager" use-expressions="true">
         <sec:csrf disabled="true"/>
+        <sec:headers>
+            <sec:frame-options policy="SAMEORIGIN"/>
+        </sec:headers>
         <sec:intercept-url pattern="/admin/login**" access="permitAll"/>
         <sec:intercept-url pattern="/admin/logout**" access="permitAll"/>
         <sec:intercept-url pattern="/admin**" access="hasAuthority('#{ T(gov.hhs.onc.dcdt.web.security.WebSecurityRoles).ADMIN }')"/>
@@ -77,4 +81,21 @@
     = GLOBAL METHOD SECURITY
     =====================================================================================================-->
     <sec:global-method-security authentication-manager-ref="authManager" pre-post-annotations="enabled" secured-annotations="enabled"/>
+    
+    <!--====================================================================================================
+    = REGISTRATION BEANS: FILTER
+    =====================================================================================================-->
+    <!--suppress SpringModelInspection -->
+    <beans:bean id="regBeanFilterSecurity" parent="regBeanFilter"
+        p:filter-ref="springSecurityFilterChain"
+        p:name="filterSec"
+        p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }">
+        <beans:property name="dispatcherTypes">
+            <beans:array>
+                <beans:value>ASYNC</beans:value>
+                <beans:value>ERROR</beans:value>
+                <beans:value>REQUEST</beans:value>
+            </beans:array>
+        </beans:property>
+    </beans:bean>
 </beans:beans>

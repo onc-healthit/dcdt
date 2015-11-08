@@ -7,8 +7,6 @@ import gov.hhs.onc.dcdt.service.http.server.HttpServer;
 import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
 import java.net.URI;
 import javax.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
@@ -17,9 +15,7 @@ import org.testng.annotations.Test;
 @ContextConfiguration({ "spring/spring-service-http.xml", "spring/spring-service-http-*.xml" })
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.http" })
-public class HttpServiceFunctionalTests extends AbstractToolServiceFunctionalTests<HttpService> {
-    private final static Logger LOGGER = LoggerFactory.getLogger(HttpServiceFunctionalTests.class);
-
+public class HttpServiceFunctionalTests extends AbstractToolServiceFunctionalTests<HttpServerConfig, HttpServer, HttpService> {
     @Resource(name = "httpLookupServiceLocal")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private HttpLookupService lookupService;

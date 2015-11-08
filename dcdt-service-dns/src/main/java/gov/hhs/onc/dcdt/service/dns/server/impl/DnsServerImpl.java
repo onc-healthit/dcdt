@@ -1,34 +1,22 @@
 package gov.hhs.onc.dcdt.service.dns.server.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
-import gov.hhs.onc.dcdt.beans.impl.AbstractToolLifecycleBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
-import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServer;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketListener;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerUdpSocketListener;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.service.server.impl.AbstractToolServer;
 import javax.annotation.Resource;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
-import org.springframework.core.task.AsyncListenableTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-@AutoStartup(false)
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST)
-public class DnsServerImpl extends AbstractToolLifecycleBean implements DnsServer {
-    private AbstractApplicationContext appContext;
-    private DnsServerConfig config;
+public class DnsServerImpl extends AbstractToolServer<DnsServerConfig> implements DnsServer {
     private DnsServerUdpSocketListener udpSocketListener;
     private DnsServerTcpSocketListener tcpSocketListener;
 
-    private final static Logger LOGGER = LoggerFactory.getLogger(DnsServerImpl.class);
-
     public DnsServerImpl(DnsServerConfig config) {
-        this.config = config;
+        super(config);
     }
 
     @Override
@@ -47,8 +35,7 @@ public class DnsServerImpl extends AbstractToolLifecycleBean implements DnsServe
             this.tcpSocketListener.stop();
         }
 
-        LOGGER.info(String.format("Stopped DNS server (class=%s, name=%s, host=%s, port=%d).", ToolClassUtils.getName(this), this.config.getName(),
-            this.config.getHost(), this.config.getPort()));
+        super.stopInternal();
     }
 
     @Override
@@ -61,23 +48,12 @@ public class DnsServerImpl extends AbstractToolLifecycleBean implements DnsServe
         // noinspection ConstantConditions
         this.tcpSocketListener.start();
 
-        LOGGER.info(String.format("Started DNS server (class=%s, name=%s, host=%s, port=%d).", ToolClassUtils.getName(this), this.config.getName(),
-            this.config.getHost(), this.config.getPort()));
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
-        this.appContext = ((AbstractApplicationContext) appContext);
-    }
-
-    @Override
-    public DnsServerConfig getConfig() {
-        return this.config;
+        super.startInternal();
     }
 
     @Override
     @Resource(name = "taskExecServiceDnsServer")
-    protected void setTaskExecutor(AsyncListenableTaskExecutor taskExec) {
+    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
         super.setTaskExecutor(taskExec);
     }
 }

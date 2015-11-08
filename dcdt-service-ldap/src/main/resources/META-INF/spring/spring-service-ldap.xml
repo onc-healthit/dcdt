@@ -22,6 +22,10 @@
         p:corePoolSize="1"
         p:maxPoolSize="5"/>
     
+    <beans:bean id="taskExecServiceLdapServer" parent="taskExecService" lazy-init="true" scope="prototype"
+        p:corePoolSize="#{ taskExecServiceLdap.corePoolSize }"
+        p:maxPoolSize="#{ taskExecServiceLdap.maxPoolSize }"/>
+    
     <!--====================================================================================================
     = CACHE SERVICE
     =====================================================================================================-->
@@ -29,6 +33,7 @@
         <beans:constructor-arg name="cacheManager">
             <!--suppress SpringModelInspection -->
             <beans:bean class="org.springframework.cache.ehcache.EhCacheManagerFactoryBean"
+                p:cacheManagerName="cacheManagerLdap-#{ T(java.util.UUID).randomUUID().toString() }"
                 p:configLocation="classpath:META-INF/ehcache/ehcache-service-ldap.xml"/>
         </beans:constructor-arg>
         <beans:constructor-arg name="disabledCacheNames">
@@ -215,33 +220,61 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="dirServiceBean1" parent="dirServiceBean"
-        p:directoryServiceId="ds1"
-        p:ldapConfig-ref="instanceLdapConfig1">
-        <beans:property name="instanceLayout">
-            <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="instanceLayout"
-                c:instanceDirectory="${dcdt.service.ldap.1.dir}"/>
-        </beans:property>
-    </beans:bean>
+    <!--====================================================================================================
+    = LDAP SERVER CONFIGURATIONS
+    =====================================================================================================-->
+    <beans:bean id="ldapServerConfig" class="gov.hhs.onc.dcdt.service.ldap.config.LdapServerConfig" parent="serverConfig" abstract="true"/>
     
-    <beans:bean id="dirServiceBean2" parent="dirServiceBean"
-        p:directoryServiceId="ds2"
-        p:ldapConfig-ref="instanceLdapConfig2">
-        <beans:property name="instanceLayout">
-            <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="instanceLayout"
-                c:instanceDirectory="${dcdt.service.ldap.2.dir}"/>
-        </beans:property>
-    </beans:bean>
+    <beans:bean id="ldapServerConfigImpl" class="gov.hhs.onc.dcdt.service.ldap.config.impl.LdapServerConfigImpl" parent="ldapServerConfig" abstract="true"
+        p:backlog="1000"
+        p:connectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
+        p:readTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"
+        p:writeTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"/>
     
-    <beans:bean id="dirServiceBean3" parent="dirServiceBean"
-        p:directoryServiceId="ds3"
-        p:ldapConfig-ref="instanceLdapConfig3">
-        <beans:property name="instanceLayout">
+    <!--====================================================================================================
+    = LDAP SERVERS
+    =====================================================================================================-->
+    <beans:bean id="ldapServer" class="gov.hhs.onc.dcdt.service.ldap.server.LdapServer" parent="server" abstract="true"/>
+    
+    <beans:bean id="ldapServerImpl" class="gov.hhs.onc.dcdt.service.ldap.server.impl.LdapServerImpl" parent="ldapServer" abstract="true"/>
+    
+    <beans:bean id="ldapServer1" parent="ldapServerImpl">
+        <beans:constructor-arg name="config">
             <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="instanceLayout"
-                c:instanceDirectory="${dcdt.service.ldap.3.dir}"/>
+            <beans:bean parent="ldapServerConfigImpl"
+                p:name="ldapServer1"
+                p:nameDisplay="LDAP Server 1"/>
+        </beans:constructor-arg>
+        <beans:property name="directoryServiceBeans">
+            <beans:list>
+                <beans:bean parent="dirServiceBean"
+                    p:directoryServiceId="ds1"
+                    p:ldapConfig-ref="instanceLdapConfig1">
+                    <beans:property name="instanceLayout">
+                        <!--suppress SpringPlaceholdersInspection -->
+                        <beans:bean parent="instanceLayout"
+                            c:instanceDirectory="${dcdt.service.ldap.1.dir}"/>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="dirServiceBean"
+                    p:directoryServiceId="ds2"
+                    p:ldapConfig-ref="instanceLdapConfig2">
+                    <beans:property name="instanceLayout">
+                        <!--suppress SpringPlaceholdersInspection -->
+                        <beans:bean parent="instanceLayout"
+                            c:instanceDirectory="${dcdt.service.ldap.2.dir}"/>
+                    </beans:property>
+                </beans:bean>
+                <beans:bean parent="dirServiceBean"
+                    p:directoryServiceId="ds3"
+                    p:ldapConfig-ref="instanceLdapConfig3">
+                    <beans:property name="instanceLayout">
+                        <!--suppress SpringPlaceholdersInspection -->
+                        <beans:bean parent="instanceLayout"
+                            c:instanceDirectory="${dcdt.service.ldap.3.dir}"/>
+                    </beans:property>
+                </beans:bean>
+            </beans:list>
         </beans:property>
     </beans:bean>
 </beans:beans>

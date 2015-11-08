@@ -19,10 +19,14 @@ import org.bouncycastle.cert.X509v2CRLBuilder;
 import org.bouncycastle.crypto.util.PrivateKeyFactory;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.bc.BcRSAContentSignerBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component("crlGenImpl")
 public class CrlGeneratorImpl extends AbstractCryptographyGenerator<CrlConfig, CrlInfo> implements CrlGenerator {
+    private final static Logger LOGGER = LoggerFactory.getLogger(CrlGeneratorImpl.class);
+
     @Resource(name = "secureRandomSha1")
     private SecureRandom secureRandom;
 
@@ -43,9 +47,14 @@ public class CrlGeneratorImpl extends AbstractCryptographyGenerator<CrlConfig, C
 
         try {
             // noinspection ConstantConditions
-            return new CrlInfoImpl(new ToolX509Crl(builder.build(
-                new BcRSAContentSignerBuilder(sigAlg.getAlgorithmId(), sigAlg.getDigestAlgorithm().getAlgorithmId()).setSecureRandom(this.secureRandom).build(
-                    PrivateKeyFactory.createKey(issuerPrivateKeyInfo))).toASN1Structure()));
+            CrlInfo crlInfo =
+                new CrlInfoImpl(new ToolX509Crl(builder.build(
+                    new BcRSAContentSignerBuilder(sigAlg.getAlgorithmId(), sigAlg.getDigestAlgorithm().getAlgorithmId()).setSecureRandom(this.secureRandom)
+                        .build(PrivateKeyFactory.createKey(issuerPrivateKeyInfo))).toASN1Structure()));
+
+            LOGGER.info(String.format("Generated CRL (issuerDn={%s}, sigAlg=%s).", issuerDn, sigAlg.name()));
+
+            return crlInfo;
         } catch (CRLException | IOException | OperatorCreationException e) {
             throw new CrlException(String.format("Unable to generate CRL (issuerDn={%s}).", issuerDn), e);
         }

@@ -6,6 +6,7 @@ import java.nio.file.Paths;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.ApplicationContextException;
+import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
@@ -13,13 +14,13 @@ import org.springframework.core.annotation.Order;
 public class WebLoggingInitializer extends AbstractLoggingInitializer {
     private final static String TOMCAT_LOG_DIR_PATH = "logs";
 
-    public WebLoggingInitializer() {
-        super("dcdt-web", "web");
+    public WebLoggingInitializer(AbstractRefreshableConfigApplicationContext appContext) {
+        super(appContext);
     }
 
     @Nullable
     @Override
-    protected String buildLogDirectoryPath() {
+    public String buildLogDirectoryPath() {
         String logDirPath = super.buildLogDirectoryPath();
 
         if (logDirPath == null) {

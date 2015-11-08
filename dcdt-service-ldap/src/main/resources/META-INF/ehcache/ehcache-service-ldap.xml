@@ -2,7 +2,6 @@
 <ehcache
     dynamicConfig="true"
     monitoring="off"
-    name="cacheServiceLdap"
     updateCheck="false"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="http://ehcache.org/ehcache.xsd">

@@ -18,4 +18,8 @@ public class ToolException extends Exception {
     public ToolException(String msg, Throwable cause) {
         super(msg, cause);
     }
+
+    public boolean hasCause() {
+        return (this.getCause() != null);
+    }
 }

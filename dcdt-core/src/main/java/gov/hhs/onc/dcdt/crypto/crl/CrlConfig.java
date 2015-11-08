@@ -6,6 +6,8 @@ import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import javax.annotation.Nullable;
 
 public interface CrlConfig extends CrlDescriptor<CrlEntryConfig>, CryptographyConfig {
+    public void setCrlType(@Nullable CrlType crlType);
+
     public void setEntries(@Nullable CrlEntryConfig ... entries);
 
     public void setIssuerDn(@Nullable CertificateDn issuerDn);

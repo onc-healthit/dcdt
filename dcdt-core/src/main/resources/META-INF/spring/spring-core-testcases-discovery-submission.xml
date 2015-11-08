@@ -42,7 +42,7 @@
         class="gov.hhs.onc.dcdt.testcases.discovery.mail.sender.impl.DiscoveryTestcaseSubmissionSenderServiceImpl"
         parent="discoveryTestcaseSubmissionSenderService"
         c:fromConfig-ref="instanceMailAddrConfigSubmission"
-        c:mailEnc-ref="charsetUtf8"
+        c:mailEnc="#{ T(io.netty.util.CharsetUtil).UTF_8 }"
         c:replyToConfig-ref="instanceMailAddrConfigNoReply">
         <beans:constructor-arg name="mimeMailMsgBeanName">
             <beans:idref bean="discoveryTestcaseSubmissionMimeMailMsg"/>

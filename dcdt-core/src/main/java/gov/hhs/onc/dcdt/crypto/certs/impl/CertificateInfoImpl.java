@@ -13,6 +13,7 @@ import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.crypto.utils.GeneralNameUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolMapUtils.ToolMultiValueMap;
+import java.io.IOException;
 import java.security.cert.CertificateEncodingException;
 import java.security.cert.X509Certificate;
 import java.util.Comparator;
@@ -27,6 +28,7 @@ import javax.persistence.Transient;
 import org.apache.commons.collections4.MapUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.ASN1Primitive;
 import org.bouncycastle.asn1.x509.AccessDescription;
 import org.bouncycastle.asn1.x509.AuthorityInformationAccess;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -91,8 +93,18 @@ public class CertificateInfoImpl extends AbstractCertificateDescriptor<Certifica
             }
 
             if (this.hasExtension(Extension.authorityInfoAccess)) {
-                Stream.of(AuthorityInformationAccess.getInstance(this.getExtension(Extension.authorityInfoAccess)).getAccessDescriptions()).filter(
-                    accessDesc -> accessDesc.getAccessMethod().equals(AccessDescription.id_ad_caIssuers));
+                try {
+                    // noinspection ConstantConditions
+                    Stream.of(
+                        AuthorityInformationAccess.getInstance(
+                            ASN1Primitive.fromByteArray(this.getExtension(Extension.authorityInfoAccess).getExtnValue().getOctets())).getAccessDescriptions())
+                        .filter(accessDesc -> accessDesc.getAccessMethod().equals(AccessDescription.id_ad_caIssuers));
+                } catch (IOException e) {
+                    throw new CertificateException(
+                        String.format(
+                            "Unable to build BouncyCastle X509v3 certificate (subjDn={%s}, serialNum=%d, issuerDn={%s}) Authority Information Access (AIA) extension.",
+                            this.cert.getSubjectX500Principal().getName(), this.cert.getSerialNumber(), this.cert.getIssuerX500Principal().getName()), e);
+                }
             }
 
             if (this.hasExtension(Extension.keyUsage)) {

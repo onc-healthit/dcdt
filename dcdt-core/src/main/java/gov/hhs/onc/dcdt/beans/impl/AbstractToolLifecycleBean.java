@@ -11,10 +11,10 @@ import javax.annotation.Nullable;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.task.AsyncListenableTaskExecutor;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public abstract class AbstractToolLifecycleBean extends AbstractToolBean implements ToolLifecycleBean {
-    protected AsyncListenableTaskExecutor taskExec;
+    protected ThreadPoolTaskExecutor taskExec;
     protected boolean autoStartup;
     protected int phase = Phase.PHASE_PRECEDENCE_LOWEST;
     protected LifecycleStatusType lifecycleStatus = LifecycleStatusType.STOPPED;
@@ -142,7 +142,7 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
         this.phase = phase;
     }
 
-    protected void setTaskExecutor(AsyncListenableTaskExecutor taskExec) {
+    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
         this.taskExec = taskExec;
     }
 }

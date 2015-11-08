@@ -7,7 +7,7 @@
     
     <groupId>gov.hhs.onc.dcdt</groupId>
     <artifactId>dcdt-parent</artifactId>
-    <version>3.0.5-SNAPSHOT</version>
+    <version>3.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     
     <name>${project.artifactId}</name>
@@ -202,6 +202,17 @@
                 <version>3.0.0</version>
             </dependency>
             <dependency>
+                <groupId>com.icegreen</groupId>
+                <artifactId>greenmail</artifactId>
+                <version>1.4.2-SNAPSHOT</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>junit</groupId>
+                        <artifactId>junit</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
                 <groupId>com.mchange</groupId>
                 <artifactId>c3p0</artifactId>
                 <version>0.9.5</version>
@@ -250,32 +261,27 @@
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-buffer</artifactId>
-                <version>4.0.32.Final</version>
+                <version>4.0.33.Final</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-codec-http</artifactId>
-                <version>4.0.32.Final</version>
-            </dependency>
-            <dependency>
-                <groupId>io.netty</groupId>
-                <artifactId>netty-codec-socks</artifactId>
-                <version>4.0.32.Final</version>
+                <version>4.0.33.Final</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-common</artifactId>
-                <version>4.0.32.Final</version>
+                <version>4.0.33.Final</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-handler</artifactId>
-                <version>4.0.32.Final</version>
+                <version>4.0.33.Final</version>
             </dependency>
             <dependency>
                 <groupId>io.netty</groupId>
                 <artifactId>netty-transport</artifactId>
-                <version>4.0.32.Final</version>
+                <version>4.0.33.Final</version>
             </dependency>
             <dependency>
                 <groupId>javax.el</groupId>
@@ -512,6 +518,13 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
                 <version>4.2.1.RELEASE</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>1.2.7.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
             <!-- Test dependencies -->
             <!--

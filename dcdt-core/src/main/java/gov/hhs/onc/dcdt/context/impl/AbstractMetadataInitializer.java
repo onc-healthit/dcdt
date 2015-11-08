@@ -6,12 +6,11 @@ import java.io.File;
 import org.apache.commons.lang3.SystemUtils;
 import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 
-public abstract class AbstractMetadataInitializer<T extends AbstractRefreshableConfigApplicationContext> extends AbstractToolInitializer<T> implements
-    MetadataInitializer<T> {
+public abstract class AbstractMetadataInitializer extends AbstractToolInitializer implements MetadataInitializer {
     protected String name;
     protected String nameDisplay;
 
-    protected AbstractMetadataInitializer(T appContext, String name, String nameDisplay) {
+    protected AbstractMetadataInitializer(AbstractRefreshableConfigApplicationContext appContext, String name, String nameDisplay) {
         super(appContext);
 
         this.name = name;

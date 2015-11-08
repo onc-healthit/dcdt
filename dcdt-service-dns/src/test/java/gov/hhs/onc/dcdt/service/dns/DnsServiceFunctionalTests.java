@@ -36,7 +36,7 @@ import org.xbill.DNS.Record;
 @ContextConfiguration({ "spring/spring-service-dns.xml", "spring/spring-service-dns-*.xml" })
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.dns" })
-public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTests<DnsService> {
+public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTests<DnsServerConfig, DnsServer, DnsService> {
     private final static Logger LOGGER = LoggerFactory.getLogger(DnsServiceFunctionalTests.class);
 
     @Value("${dcdt.test.func.service.dns.lookup.concurrent.threads}")

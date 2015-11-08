@@ -5,8 +5,8 @@ import org.springframework.context.support.AbstractRefreshableConfigApplicationC
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 
-@Order(Ordered.HIGHEST_PRECEDENCE)
-public class ServiceMetadataInitializer extends AbstractMetadataInitializer<AbstractRefreshableConfigApplicationContext> {
+@Order(Ordered.HIGHEST_PRECEDENCE + 2)
+public class ServiceMetadataInitializer extends AbstractMetadataInitializer {
     public ServiceMetadataInitializer(AbstractRefreshableConfigApplicationContext appContext) {
         super(appContext, "service", "dcdt-service-core");
     }

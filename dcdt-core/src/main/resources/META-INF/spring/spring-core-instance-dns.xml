@@ -483,9 +483,9 @@
     </beans:bean>
     
     <beans:bean id="instanceDnsConfig9" parent="instanceDnsConfigImpl"
-        p:domainName="#{ instanceDnsConfig9.domainName }"
-        p:name="#{ instanceDnsConfig9.name }Dns"
-        p:nameDisplay="#{ instanceDnsConfig9.nameDisplay } DNS">
+        p:domainName="#{ instanceDomainConfig9.domainName }"
+        p:name="#{ instanceDomainConfig9.name }Dns"
+        p:nameDisplay="#{ instanceDomainConfig9.nameDisplay } DNS">
         <beans:property name="ARecordConfigs">
             <util:list>
                 <beans:bean parent="instanceDnsARecordConfig"/>
@@ -513,9 +513,9 @@
     </beans:bean>
     
     <beans:bean id="instanceDnsConfig10" parent="instanceDnsConfigImpl"
-        p:domainName="#{ instanceDnsConfig10.domainName }"
-        p:name="#{ instanceDnsConfig10.name }Dns"
-        p:nameDisplay="#{ instanceDnsConfig10.nameDisplay } DNS">
+        p:domainName="#{ instanceDomainConfig10.domainName }"
+        p:name="#{ instanceDomainConfig10.name }Dns"
+        p:nameDisplay="#{ instanceDomainConfig10.nameDisplay } DNS">
         <beans:property name="ARecordConfigs">
             <util:list>
                 <beans:bean parent="instanceDnsARecordConfig"/>

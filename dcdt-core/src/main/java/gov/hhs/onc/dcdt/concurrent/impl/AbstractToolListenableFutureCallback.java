@@ -9,6 +9,10 @@ import org.springframework.core.Ordered;
 public abstract class AbstractToolListenableFutureCallback<T, U extends ToolListenableFutureTask<T>> implements ToolListenableFutureCallback<T, U> {
     protected int order = Ordered.LOWEST_PRECEDENCE;
     protected U task;
+    protected boolean done;
+    protected boolean status;
+    protected T result;
+    protected Exception exception;
 
     protected AbstractToolListenableFutureCallback() {
         this(null);
@@ -20,28 +24,52 @@ public abstract class AbstractToolListenableFutureCallback<T, U extends ToolList
 
     @Override
     public void onSuccess(@Nullable T result) {
-        this.onPreDone(true, result, null);
+        this.result = result;
+        this.status = true;
+        this.done = true;
+
+        this.onPreDone(result, null);
         this.onSuccessInternal(result);
-        this.onPostDone(true, result, null);
+        this.onPostDone(result, null);
     }
 
     @Override
-    public void onFailure(Throwable th) {
-        this.onPreDone(false, null, th);
-        this.onFailureInternal(th);
-        this.onPostDone(false, null, th);
+    public void onFailure(Throwable exception) {
+        this.exception = ((Exception) exception);
+        this.status = false;
+        this.done = true;
+
+        this.onPreDone(null, exception);
+        this.onFailureInternal(exception);
+        this.onPostDone(null, exception);
+    }
+
+    @Override
+    public boolean isDone() {
+        return this.done;
     }
 
     protected void onSuccessInternal(@Nullable T result) {
     }
 
-    protected void onFailureInternal(Throwable th) {
+    protected void onFailureInternal(Throwable exception) {
     }
 
-    protected void onPostDone(boolean status, @Nullable T result, @Nullable Throwable th) {
+    protected void onPostDone(@Nullable T result, @Nullable Throwable exception) {
     }
 
-    protected void onPreDone(boolean status, @Nullable T result, @Nullable Throwable th) {
+    protected void onPreDone(@Nullable T result, @Nullable Throwable exception) {
+    }
+
+    @Override
+    public boolean hasException() {
+        return (this.exception != null);
+    }
+
+    @Nullable
+    @Override
+    public Exception getException() {
+        return this.exception;
     }
 
     @Override
@@ -52,6 +80,22 @@ public abstract class AbstractToolListenableFutureCallback<T, U extends ToolList
     @Override
     public void setOrder(int order) {
         this.order = order;
+    }
+
+    @Override
+    public boolean hasResult() {
+        return (this.result != null);
+    }
+
+    @Nullable
+    @Override
+    public T getResult() {
+        return this.result;
+    }
+
+    @Override
+    public boolean getStatus() {
+        return this.status;
     }
 
     @Override

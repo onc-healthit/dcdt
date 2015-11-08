@@ -21,6 +21,29 @@
     <beans:bean id="filter" class="javax.servlet.Filter" abstract="true"/>
     
     <!--====================================================================================================
+    = REGISTRATION BEANS: FILTER
+    =====================================================================================================-->
+    <beans:bean id="regBeanFilter" class="org.springframework.boot.context.embedded.FilterRegistrationBean" parent="regBean" abstract="true"/>
+    
+    <beans:bean id="regBeanFilterUrlRewrite" parent="regBeanFilter"
+        p:name="filterUrlRewrite"
+        p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE + 1 }">
+        <beans:property name="dispatcherTypes">
+            <beans:array>
+                <beans:value>FORWARD</beans:value>
+                <beans:value>REQUEST</beans:value>
+            </beans:array>
+        </beans:property>
+        <beans:property name="filter">
+            <beans:bean class="gov.hhs.onc.dcdt.web.filter.impl.ToolUrlRewriteFilter" parent="filter"
+                p:confPath="/WEB-INF/urlrewrite/urlrewrite-web.xml"
+                p:confReloadCheckInterval="30"
+                p:statusPath="/urlrewrite/status">
+            </beans:bean>
+        </beans:property>
+    </beans:bean>
+    
+    <!--====================================================================================================
     = URL REWRITE FILTER
     =====================================================================================================-->
     <beans:bean id="filterUrlRewrite" class="gov.hhs.onc.dcdt.web.filter.impl.ToolUrlRewriteFilter"
