@@ -3,7 +3,6 @@ package gov.hhs.onc.dcdt.web.context.impl;
 import gov.hhs.onc.dcdt.context.impl.AbstractToolContextLoader;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletContextEvent;
-import org.springframework.boot.context.web.ServletContextApplicationContextInitializer;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.support.XmlWebApplicationContext;
 
@@ -26,7 +25,7 @@ public class WebContextLoader extends AbstractToolContextLoader<XmlWebApplicatio
 
     @Override
     protected void initializeContext() throws Exception {
-        new ServletContextApplicationContextInitializer(this.servletContext).initialize(this.appContext);
+        appContext.setServletContext(this.servletContext);
 
         super.initializeContext();
     }

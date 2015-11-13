@@ -12,19 +12,12 @@ import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpServerSocketAdapter;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketAdapter;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketListener;
 import java.io.IOException;
+import java.net.ServerSocket;
 import java.nio.ByteBuffer;
-import javax.annotation.Resource;
 import org.apache.commons.lang3.ArrayUtils;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Scope;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
-import org.springframework.stereotype.Component;
 
 @AutoStartup(false)
-@Component("dnsServerSocketListenerTcp")
-@Lazy
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST)
-@Scope("prototype")
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 1)
 public class DnsServerTcpSocketListenerImpl extends
     AbstractTcpSocketListener<DnsServerTcpServerSocketAdapter, DnsServerTcpSocketAdapter, DnsServerRequest, DnsServerRequestProcessor> implements
     DnsServerTcpSocketListener {
@@ -63,14 +56,10 @@ public class DnsServerTcpSocketListenerImpl extends
     }
 
     @Override
-    @Resource(name = "taskExecServiceDnsServerReq")
-    protected void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
-        super.setRequestTaskExecutor(reqTaskExec);
-    }
+    protected DnsServerTcpServerSocketAdapter createListenSocketAdapter(ServerSocket listenSocket) throws IOException {
+        DnsServerTcpServerSocketAdapter listenSocketAdapter = super.createListenSocketAdapter(listenSocket);
+        listenSocketAdapter.setBacklog(this.serverConfig.getBacklog());
 
-    @Override
-    @Resource(name = "taskExecServiceDnsServer")
-    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
-        super.setTaskExecutor(taskExec);
+        return listenSocketAdapter;
     }
 }

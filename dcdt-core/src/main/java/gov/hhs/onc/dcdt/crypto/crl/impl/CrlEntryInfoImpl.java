@@ -37,13 +37,6 @@ public class CrlEntryInfoImpl extends AbstractCrlEntryDescriptor implements CrlE
         return (this.hasCrlEntry() ? this.crlEntry.hashCode() : super.hashCode());
     }
 
-    @Override
-    protected void reset() {
-        super.reset();
-
-        this.crlEntry = null;
-    }
-
     private void processCrlEntry() throws CrlException {
         this.reset();
 

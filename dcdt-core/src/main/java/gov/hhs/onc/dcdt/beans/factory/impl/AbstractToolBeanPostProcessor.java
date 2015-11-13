@@ -8,10 +8,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolOrderedBean implements ToolBeanPostProcessor<T> {
-    protected ApplicationContext appContext;
+    protected AbstractRefreshableConfigApplicationContext appContext;
     protected Class<T> beanClass;
     protected boolean postProcBeforeInit;
     protected boolean postProcAfterInit;
@@ -90,6 +91,6 @@ public abstract class AbstractToolBeanPostProcessor<T> extends AbstractToolOrder
 
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
-        this.appContext = appContext;
+        this.appContext = ((AbstractRefreshableConfigApplicationContext) appContext);
     }
 }

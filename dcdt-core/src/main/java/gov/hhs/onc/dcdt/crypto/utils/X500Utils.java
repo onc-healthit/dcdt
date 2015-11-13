@@ -13,15 +13,12 @@ import org.bouncycastle.asn1.x500.AttributeTypeAndValue;
 import org.bouncycastle.asn1.x500.RDN;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.X500NameBuilder;
-import org.bouncycastle.asn1.x500.X500NameStyle;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x500.style.IETFUtils;
 
 public abstract class X500Utils {
-    public final static X500NameStyle BC_X500_NAME_STYLE = BCStyle.INSTANCE;
-
     public static X500Name buildName(Map<ASN1ObjectIdentifier, ASN1Encodable> attrMap) {
-        X500NameBuilder builder = new X500NameBuilder(BC_X500_NAME_STYLE);
+        X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
 
         attrMap.forEach(builder::addRDN);
 
@@ -39,7 +36,7 @@ public abstract class X500Utils {
 
     @Nullable
     public static ASN1Encodable toEncodableValue(ASN1ObjectIdentifier oid, @Nullable String strValue) {
-        return (strValue != null) ? BC_X500_NAME_STYLE.stringToValue(oid, strValue) : null;
+        return (strValue != null) ? BCStyle.INSTANCE.stringToValue(oid, strValue) : null;
     }
 
     @Nullable

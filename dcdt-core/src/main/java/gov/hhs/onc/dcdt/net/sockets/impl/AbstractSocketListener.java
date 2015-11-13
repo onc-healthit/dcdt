@@ -250,7 +250,13 @@ public abstract class AbstractSocketListener<T extends Closeable, U extends Sock
         this.appContext = ((AbstractApplicationContext) appContext);
     }
 
-    protected void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
+    @Override
+    public ThreadPoolTaskExecutor getRequestTaskExecutor() {
+        return this.reqTaskExec;
+    }
+
+    @Override
+    public void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
         this.reqTaskExec = reqTaskExec;
     }
 }

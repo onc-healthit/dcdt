@@ -78,18 +78,17 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
         }
 
         boolean hasIssuerCredInfo = (issuerCredInfo != null);
+        KeyInfo issuerKeyPairInfo = (hasIssuerCredInfo ? issuerCredInfo.getKeyDescriptor() : keyPairInfo);
         CertificateType certType = certConfig.getCertificateType();
         CertificateDescriptor<?> issuerCertDesc = (hasIssuerCredInfo ? issuerCredInfo.getCertificateDescriptor() : certConfig);
-        X509v3CertificateBuilder certBuilder =
-            this.generateCertificateBuilder((hasIssuerCredInfo ? issuerCredInfo.getKeyDescriptor() : keyPairInfo), issuerCertDesc, keyPairInfo, certConfig);
+        X509v3CertificateBuilder certBuilder = this.generateCertificateBuilder(issuerKeyPairInfo, issuerCertDesc, keyPairInfo, certConfig);
 
         try {
             SignatureAlgorithm certSigAlg = certConfig.getSignatureAlgorithm();
             // noinspection ConstantConditions
             X509CertificateHolder certHolder =
                 certBuilder.build(new BcRSAContentSignerBuilder(certSigAlg.getAlgorithmId(), certSigAlg.getDigestAlgorithm().getAlgorithmId())
-                    .build(PrivateKeyFactory.createKey(certConfig.isCertificateAuthority() ? keyPairInfo.getPrivateKeyInfo() : issuerCredInfo
-                        .getKeyDescriptor().getPrivateKeyInfo())));
+                    .build(PrivateKeyFactory.createKey(issuerKeyPairInfo.getPrivateKeyInfo())));
 
             CertificateInfo certInfo;
 
@@ -132,7 +131,7 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
 
         // noinspection ConstantConditions
         X509v3CertificateBuilder certBuilder =
-            new X509v3CertificateBuilder((certCa ? certConfig : issuerCertDesc).getSubjectDn().toX500Name(), certConfig.getSerialNumber().getValue(), new Date(
+            new X509v3CertificateBuilder(issuerCertDesc.getSubjectDn().toX500Name(), certConfig.getSerialNumber().getValue(), new Date(
                 certIntervalNotBeforeTime), new Date((certIntervalNotBeforeTime + certIntervalConfig.getDuration())), certConfig.getSubjectDn().toX500Name(),
                 keyPairInfo.getSubjectPublicKeyInfo());
 

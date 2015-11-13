@@ -70,12 +70,10 @@ public class DiscoveryTestcaseCredentialRegistryImpl extends
 
         for (DiscoveryTestcaseCredential discoveryTestcaseIssuerCred : discoveryTestcaseIssuerCreds) {
             if (!discoveryTestcaseIssuerCred.hasCredentialInfo()) {
-                CredentialConfig discoveryTestcaseIssuerCredConfig = discoveryTestcaseIssuerCred.getCredentialConfig();
-
                 try {
                     // noinspection ConstantConditions
                     discoveryTestcaseIssuerCred.setCredentialInfo(this.generateDiscoveryTestcaseCredential((discoveryTestcaseIssuerCred.hasIssuerCredential()
-                        ? discoveryTestcaseIssuerCred.getIssuerCredential().getCredentialInfo() : null), discoveryTestcaseIssuerCredConfig));
+                        ? discoveryTestcaseIssuerCred.getIssuerCredential().getCredentialInfo() : null), discoveryTestcaseIssuerCred.getCredentialConfig()));
 
                     LOGGER.info(String.format("Generated Discovery testcase issuer credential (name=%s).", discoveryTestcaseIssuerCred.getName()));
                 } catch (CryptographyException e) {

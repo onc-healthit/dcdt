@@ -2,13 +2,13 @@ package gov.hhs.onc.dcdt.crypto.crl;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyContentTypes;
 import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
-import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
+import gov.hhs.onc.dcdt.beans.ToolTypeIdentifier;
 import java.security.cert.X509CRL;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.springframework.util.MimeType;
 
-public enum CrlType implements CryptographyObjectIdentifier, CryptographyTypeIdentifier {
+public enum CrlType implements CryptographyObjectIdentifier, ToolTypeIdentifier {
     X509("X.509", PKCSObjectIdentifiers.x509Crl, X509CRL.class, CryptographyContentTypes.APP_PKIX_CRL, CryptographyContentTypes.APP_PKCS7_MIME, "crl", "p7c");
 
     private final String id;

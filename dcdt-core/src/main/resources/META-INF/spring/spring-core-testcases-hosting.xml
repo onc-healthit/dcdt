@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <!--====================================================================================================
     = HOSTING TESTCASE DESCRIPTIONS
@@ -61,10 +55,10 @@
             </beans:bean>
         </beans:property>
         <beans:property name="steps">
-            <util:list>
+            <beans:list>
                 <beans:ref bean="lookupStepDnsCertAddr"/>
                 <beans:ref bean="certValidationStepImpl"/>
-            </util:list>
+            </beans:list>
         </beans:property>
     </beans:bean>
 
@@ -92,10 +86,10 @@
             </beans:bean>
         </beans:property>
         <beans:property name="steps">
-            <util:list>
+            <beans:list>
                 <beans:ref bean="lookupStepDnsCertDomain"/>
                 <beans:ref bean="certValidationStepImpl"/>
-            </util:list>
+            </beans:list>
         </beans:property>
     </beans:bean>
 
@@ -123,12 +117,12 @@
             </beans:bean>
         </beans:property>
         <beans:property name="steps">
-            <util:list>
+            <beans:list>
                 <beans:ref bean="lookupStepDnsSrvImpl"/>
                 <beans:ref bean="lookupStepLdapBaseDnImpl"/>
                 <beans:ref bean="lookupStepLdapCertAddr"/>
                 <beans:ref bean="certValidationStepImpl"/>
-            </util:list>
+            </beans:list>
         </beans:property>
     </beans:bean>
 
@@ -148,9 +142,9 @@
                     </dcdt:normalized-string>
                 </beans:property>
                 <beans:property name="specifications">
-                    <util:list>
+                    <beans:list>
                         <dcdt:normalized-string>RFC 2798: Section 9.1.2</dcdt:normalized-string>
-                    </util:list>
+                    </beans:list>
                 </beans:property>
                 <beans:property name="text">
                     <dcdt:normalized-string>
@@ -160,12 +154,12 @@
             </beans:bean>
         </beans:property>
         <beans:property name="steps">
-            <util:list>
+            <beans:list>
                 <beans:ref bean="lookupStepDnsSrvImpl"/>
                 <beans:ref bean="lookupStepLdapBaseDnImpl"/>
                 <beans:ref bean="lookupStepLdapCertDomain"/>
                 <beans:ref bean="certValidationStepImpl"/>
-            </util:list>
+            </beans:list>
         </beans:property>
     </beans:bean>
 </beans:beans>

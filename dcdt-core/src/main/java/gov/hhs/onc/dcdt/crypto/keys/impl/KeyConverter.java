@@ -6,8 +6,8 @@ import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyType;
-import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.security.Key;
 import org.springframework.core.convert.TypeDescriptor;
 import org.springframework.stereotype.Component;
@@ -20,6 +20,6 @@ public class KeyConverter extends AbstractToolConverter {
     @Override
     protected Object convertInternal(Object src, TypeDescriptor srcType, TypeDescriptor targetType, ConvertiblePair convPair) throws Exception {
         return (srcType.isAssignableTo(TYPE_DESC_KEY)) ? KeyUtils.writeKey(((Key) src), DataEncoding.PEM) : KeyUtils.readKey(
-            CryptographyUtils.findByType(KeyType.class, srcType.getObjectType()), ((byte[]) src), KeyAlgorithm.RSA, DataEncoding.PEM);
+            ToolEnumUtils.findByType(KeyType.class, srcType.getObjectType()), ((byte[]) src), KeyAlgorithm.RSA, DataEncoding.PEM);
     }
 }

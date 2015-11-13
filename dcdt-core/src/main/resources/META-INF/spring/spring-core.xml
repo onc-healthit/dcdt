@@ -1,59 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
     xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
+    xmlns:lang="http://www.springframework.org/schema/lang"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:task="http://www.springframework.org/schema/task"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/lang http://www.springframework.org/schema/lang/spring-lang.xsd">
     
-    <aop:aspectj-autoproxy/>
-    
+    <!--====================================================================================================
+    = CONTEXT
+    =====================================================================================================-->
     <context:component-scan base-package="gov.hhs.onc.dcdt"/>
+    
     <context:spring-configured/>
-    
-    <!--====================================================================================================
-    = METHOD INVOCATIONS
-    =====================================================================================================-->
-    <beans:bean id="methodInvoke" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean" abstract="true"/>
-    
-    <!--====================================================================================================
-    = SYSTEM PROPERTIES
-    =====================================================================================================-->
-    <beans:bean id="setSysProps" parent="methodInvoke" abstract="true"
-        p:targetObject="#{ T(java.lang.System).properties }"
-        p:targetMethod="putAll"/>
     
     <!--====================================================================================================
     = LOCALES
     =====================================================================================================-->
-    <beans:bean id="locale" class="java.util.Locale" abstract="true"/>
+    <lang:groovy id="localeRoot">
+        <lang:inline-script><![CDATA[
+        return Locale.ROOT
+        ]]></lang:inline-script>
+    </lang:groovy>
     
-    <beans:bean id="localeRoot" class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" parent="locale" autowire-candidate="false"
-        p:targetClass="java.util.Locale"
-        p:targetField="ROOT"/>
-    
-    <beans:bean id="setLocale" parent="methodInvoke"
-        p:targetClass="org.springframework.context.i18n.LocaleContextHolder"
-        p:targetMethod="setLocaleContext">
-        <beans:property name="arguments">
-            <util:list>
-                <beans:bean class="org.springframework.context.i18n.SimpleLocaleContext"
-                    c:locale-ref="localeRoot"/>
-                <beans:value>true</beans:value>
-            </util:list>
-        </beans:property>
-    </beans:bean>
+    <lang:groovy id="setLocaleRoot">
+        <lang:inline-script><![CDATA[
+        import org.springframework.context.i18n.LocaleContext
+        import org.springframework.context.i18n.LocaleContextHolder
+        import org.springframework.context.i18n.SimpleLocaleContext
+        
+        LocaleContext localeContext = new SimpleLocaleContext(Locale.ROOT)
+        
+        LocaleContextHolder.setLocaleContext(localeContext)
+        
+        return localeContext
+        ]]></lang:inline-script>
+    </lang:groovy>
     
     <!--====================================================================================================
     = PROPERTY SOURCES PLACEHOLDER CONFIGURER
@@ -61,7 +49,7 @@
     <beans:bean id="propSourcesPlaceholderConfigurerBase" class="org.springframework.context.support.PropertySourcesPlaceholderConfigurer" abstract="true"
         p:fileEncoding="#{ T(io.netty.util.CharsetUtil).UTF_8.name() }"
         p:ignoreResourceNotFound="true"
-        p:localOverride="true">
+        p:ignoreUnresolvablePlaceholders="true">
         <beans:property name="locations">
             <beans:array>
                 <!--suppress SpringModelInspection -->
@@ -88,7 +76,7 @@
         p:defaultEncoding="#{ T(io.netty.util.CharsetUtil).UTF_8.name() }"
         p:fallbackToSystemLocale="false"/>
     
-    <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true" depends-on="setLocale">
+    <beans:bean id="messageSourceBase" parent="toolMsgSourceImpl" abstract="true" depends-on="setLocaleRoot">
         <beans:property name="basenames">
             <beans:array>
                 <!--suppress SpringModelInspection -->
@@ -98,7 +86,7 @@
     </beans:bean>
     <beans:bean id="messageSource" parent="messageSourceBase" primary="true"/>
     
-    <beans:bean id="messageSourceValidationBase" parent="toolMsgSourceImpl" abstract="true" depends-on="setLocale">
+    <beans:bean id="messageSourceValidationBase" parent="toolMsgSourceImpl" abstract="true" depends-on="setLocaleRoot">
         <beans:property name="basenames">
             <beans:array>
                 <beans:value>org/hibernate/validator/ValidationMessages</beans:value>
@@ -128,15 +116,30 @@
         p:validatorFactory-ref="validatorFactory"/>
     
     <!--====================================================================================================
-    = TASK EXECUTION
+    = THREAD GROUPS
     =====================================================================================================-->
-    <beans:bean id="taskExec" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" abstract="true"
-        p:daemon="true"/>
+    <beans:bean id="threadGroup" class="java.lang.ThreadGroup">
+        <beans:constructor-arg index="0" type="java.lang.String" value="dcdt"/>
+    </beans:bean>
+    
+    <!--====================================================================================================
+    = TASK EXECUTORS
+    =====================================================================================================-->
+    <beans:bean id="taskExec" class="org.springframework.core.task.TaskExecutor" abstract="true"/>
+    
+    <beans:bean id="taskExecThreadPool" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor" parent="taskExec" abstract="true"
+        p:daemon="true"
+        p:queueCapacity="0"
+        p:threadGroup-ref="threadGroup"/>
+    
+    <beans:bean id="taskExecThreadPoolDynamic" parent="taskExecThreadPool" abstract="true"
+        p:allowCoreThreadTimeOut="true"
+        p:corePoolSize="0"/>
     
     <!--====================================================================================================
     = VELOCITY ENGINE
     =====================================================================================================-->
-    <beans:bean id="velocityEngine" class="gov.hhs.onc.dcdt.velocity.impl.ToolVelocityEngineFactoryBean" abstract="true"  depends-on="setLocale"
+    <beans:bean id="velocityEngine" class="gov.hhs.onc.dcdt.velocity.impl.ToolVelocityEngineFactoryBean" abstract="true"  depends-on="setLocaleRoot"
         p:preferFileSystemAccess="false"
         p:resourceLoaderPath="core/velocity">
         <beans:property name="velocimacroLibraries">

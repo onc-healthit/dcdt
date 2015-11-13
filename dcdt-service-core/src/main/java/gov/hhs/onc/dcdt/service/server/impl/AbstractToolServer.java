@@ -9,10 +9,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public abstract class AbstractToolServer<T extends ToolServerConfig> extends AbstractToolLifecycleBean implements ToolServer<T> {
     protected T config;
     protected AbstractApplicationContext appContext;
+    protected ThreadPoolTaskExecutor reqTaskExec;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolServer.class);
 
@@ -40,5 +42,15 @@ public abstract class AbstractToolServer<T extends ToolServerConfig> extends Abs
     @Override
     public T getConfig() {
         return this.config;
+    }
+
+    @Override
+    public ThreadPoolTaskExecutor getRequestTaskExecutor() {
+        return this.reqTaskExec;
+    }
+
+    @Override
+    public void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
+        this.reqTaskExec = reqTaskExec;
     }
 }

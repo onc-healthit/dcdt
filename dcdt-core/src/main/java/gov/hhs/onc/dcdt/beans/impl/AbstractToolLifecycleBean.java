@@ -35,6 +35,11 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
 
             try {
                 this.stopInternal();
+
+                this.lifecycleStatus = LifecycleStatusType.STOPPED;
+
+                LOGGER.debug(String.format("Stopped lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d).", ToolClassUtils.getName(this),
+                    this.getBeanName(), this.isAutoStartup(), this.getPhase()));
             } catch (Exception e) {
                 this.lifecycleStatus = lifecycleStatusPrev;
 
@@ -42,24 +47,10 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
                     "Unable to stop lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d, lifecycleStatus=%s).", ToolClassUtils.getName(this),
                     this.getBeanName(), this.isAutoStartup(), this.getPhase(), this.lifecycleStatus.name()), e);
             }
+        }
 
-            this.lifecycleStatus = LifecycleStatusType.STOPPED;
-
-            LOGGER.debug(String.format("Stopped lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d).", ToolClassUtils.getName(this),
-                this.getBeanName(), this.isAutoStartup(), this.getPhase()));
-
-            if (stopCallback != null) {
-                try {
-                    this.executeStopCallback(stopCallback);
-                } catch (Exception e) {
-                    this.lifecycleStatus = lifecycleStatusPrev;
-
-                    throw new ToolLifecycleException(String.format(
-                        "Unable to execute lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d, lifecycleStatus=%s) stop callback (class=%s).",
-                        ToolClassUtils.getName(this), this.getBeanName(), this.isAutoStartup(), this.getPhase(), this.lifecycleStatus.name(),
-                        ToolClassUtils.getName(stopCallback)), e);
-                }
-            }
+        if (stopCallback != null) {
+            stopCallback.run();
         }
     }
 
@@ -72,6 +63,11 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
 
             try {
                 this.startInternal();
+
+                this.lifecycleStatus = LifecycleStatusType.STARTED;
+
+                LOGGER.debug(String.format("Started lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d).", ToolClassUtils.getName(this),
+                    this.getBeanName(), this.isAutoStartup(), this.getPhase()));
             } catch (Exception e) {
                 this.lifecycleStatus = lifecycleStatusPrev;
 
@@ -79,11 +75,6 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
                     "Unable to start lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d, lifecycleStatus=%s).", ToolClassUtils.getName(this),
                     this.getBeanName(), this.isAutoStartup(), this.getPhase(), this.lifecycleStatus.name()), e);
             }
-
-            this.lifecycleStatus = LifecycleStatusType.STARTED;
-
-            LOGGER.debug(String.format("Started lifecycle bean (class=%s, beanName=%s, autoStartup=%s, phase=%d).", ToolClassUtils.getName(this),
-                this.getBeanName(), this.isAutoStartup(), this.getPhase()));
         }
     }
 
@@ -105,10 +96,6 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
     @Override
     public void destroy() throws Exception {
         this.stop();
-    }
-
-    protected void executeStopCallback(Runnable stopCallback) throws Exception {
-        stopCallback.run();
     }
 
     protected void stopInternal() throws Exception {
@@ -142,7 +129,13 @@ public abstract class AbstractToolLifecycleBean extends AbstractToolBean impleme
         this.phase = phase;
     }
 
-    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
+    @Override
+    public ThreadPoolTaskExecutor getTaskExecutor() {
+        return this.taskExec;
+    }
+
+    @Override
+    public void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
         this.taskExec = taskExec;
     }
 }

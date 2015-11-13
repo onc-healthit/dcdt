@@ -22,7 +22,7 @@ public abstract class KeyUtils {
     public static Key readKey(KeyType keyType, byte[] data, KeyAlgorithm keyAlg, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.writePemContent(CryptographyUtils.findByType(PemType.class, keyType.getType()), data);
+                data = PemUtils.writePemContent(ToolEnumUtils.findByType(PemType.class, keyType.getType()), data);
             }
 
             return ((Key) SerializationUtils.deserialize(SerializationUtils.serialize(new KeyRep(keyType.getKeyRepType(), keyAlg.getId(), keyAlg
@@ -35,7 +35,7 @@ public abstract class KeyUtils {
 
     public static <T extends Key> byte[] writeKey(T key, DataEncoding dataEnc) throws CryptographyException {
         Class<? extends Key> keyClass = key.getClass();
-        KeyType keyType = CryptographyUtils.findByType(KeyType.class, keyClass);
+        KeyType keyType = ToolEnumUtils.findByType(KeyType.class, keyClass);
         KeyAlgorithm keyAlg = ToolEnumUtils.findById(KeyAlgorithm.class, key.getAlgorithm());
         // noinspection ConstantConditions
         Class<? extends EncodedKeySpec> keySpecClass = keyAlg.getKeySpecClass(keyType);
@@ -44,7 +44,7 @@ public abstract class KeyUtils {
             // noinspection ConstantConditions
             byte[] data = keySpecClass.cast(getKeyFactory(keyAlg).getKeySpec(key, keySpecClass)).getEncoded();
 
-            return ((dataEnc == DataEncoding.PEM) ? PemUtils.writePemContent(CryptographyUtils.findByType(PemType.class, keyClass), data) : data);
+            return ((dataEnc == DataEncoding.PEM) ? PemUtils.writePemContent(ToolEnumUtils.findByType(PemType.class, keyClass), data) : data);
         } catch (InvalidKeySpecException e) {
             throw new KeyException(String.format("Unable to write key (type=%s, algId=%s, format=%s, keySpecClass=%s, class=%s, providerName=%s) to data.",
                 keyType, keyAlg.getId(), keyAlg.getFormat(keyType), ToolClassUtils.getName(keySpecClass), ToolClassUtils.getName(keyClass),

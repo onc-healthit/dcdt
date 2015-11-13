@@ -1,58 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:task="http://www.springframework.org/schema/task"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
-    
-    <!--====================================================================================================
-    = CONVERTERS
-    =====================================================================================================-->
-    <util:set id="convs">
-        <beans:ref bean="convCert"/>
-        <beans:ref bean="convDn"/>
-        <beans:ref bean="convDnsName"/>
-        <beans:ref bean="convInetAddr"/>
-        <beans:ref bean="convKey"/>
-        <beans:ref bean="convLdif"/>
-        <beans:ref bean="convMailAddr"/>
-        <beans:ref bean="convPath"/>
-        <beans:ref bean="convRdn"/>
-    </util:set>
-    
-    <!--====================================================================================================
-    = FORMATTERS
-    =====================================================================================================-->
-    <util:set id="formatters">
-        <beans:ref bean="formatterCert"/>
-        <beans:ref bean="formatterDn"/>
-        <beans:ref bean="formatterDnsMsg"/>
-        <beans:ref bean="formatterDnsName"/>
-        <beans:ref bean="formatterInetAddr"/>
-        <beans:ref bean="formatterLdapAttr"/>
-        <beans:ref bean="formatterLdapFilter"/>
-        <beans:ref bean="formatterLdif"/>
-        <beans:ref bean="formatterMailAddr"/>
-        <beans:ref bean="formatterMimeType"/>
-        <beans:ref bean="formatterNamedBean"/>
-        <beans:ref bean="formatterPath"/>
-        <beans:ref bean="formatterRdn"/>
-        <beans:ref bean="formatterUri"/>
-        <beans:ref bean="formatterUrl"/>
-        <beans:ref bean="formatterX500Name"/>
-    </util:set>
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <!--====================================================================================================
     = FORMATTER REGISTRARS
@@ -64,13 +19,45 @@
     <!--====================================================================================================
     = CONVERSION SERVICE
     =====================================================================================================-->
-    <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" primary="true"
-        p:converters-ref="convs">
+    <beans:bean id="conversionService" class="org.springframework.format.support.FormattingConversionServiceFactoryBean" primary="true">
+        <beans:property name="converters">
+            <beans:set>
+                <beans:ref bean="convCert"/>
+                <beans:ref bean="convDn"/>
+                <beans:ref bean="convDnsName"/>
+                <beans:ref bean="convInetAddr"/>
+                <beans:ref bean="convKey"/>
+                <beans:ref bean="convLdif"/>
+                <beans:ref bean="convMailAddr"/>
+                <beans:ref bean="convPath"/>
+                <beans:ref bean="convRdn"/>
+            </beans:set>
+        </beans:property>
         <beans:property name="formatterRegistrars">
-            <util:set>
-                <beans:bean parent="formatterRegistrarImpl"
-                    c:formatters-ref="formatters"/>
-            </util:set>
+            <beans:set>
+                <beans:bean parent="formatterRegistrarImpl">
+                    <beans:constructor-arg name="formatters">
+                        <beans:set>
+                            <beans:ref bean="formatterCert"/>
+                            <beans:ref bean="formatterDn"/>
+                            <beans:ref bean="formatterDnsMsg"/>
+                            <beans:ref bean="formatterDnsName"/>
+                            <beans:ref bean="formatterInetAddr"/>
+                            <beans:ref bean="formatterLdapAttr"/>
+                            <beans:ref bean="formatterLdapFilter"/>
+                            <beans:ref bean="formatterLdif"/>
+                            <beans:ref bean="formatterMailAddr"/>
+                            <beans:ref bean="formatterMimeType"/>
+                            <beans:ref bean="formatterNamedBean"/>
+                            <beans:ref bean="formatterPath"/>
+                            <beans:ref bean="formatterRdn"/>
+                            <beans:ref bean="formatterUri"/>
+                            <beans:ref bean="formatterUrl"/>
+                            <beans:ref bean="formatterX500Name"/>
+                        </beans:set>
+                    </beans:constructor-arg>
+                </beans:bean>
+            </beans:set>
         </beans:property>
     </beans:bean>
 </beans:beans>

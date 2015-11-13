@@ -1,19 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <!--====================================================================================================
     = JSON DESERIALIZERS
@@ -43,15 +37,15 @@
     <beans:bean id="objMapper" class="gov.hhs.onc.dcdt.json.impl.ToolObjectMapper"
         p:annotationIntrospector-ref="toolAnnoInspector">
         <beans:property name="configFeatures">
-            <util:map>
+            <beans:map>
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.DeserializationFeature).READ_ENUMS_USING_TO_STRING }" value="true"/>
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.SerializationFeature).FAIL_ON_EMPTY_BEANS }" value="false"/>
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.SerializationFeature).INDENT_OUTPUT }" value="true"/>
                 <beans:entry key="#{ T(com.fasterxml.jackson.databind.SerializationFeature).WRITE_ENUMS_USING_TO_STRING }" value="true"/>
-            </util:map>
+            </beans:map>
         </beans:property>
         <beans:property name="jsonDeserializers">
-            <util:set>
+            <beans:set>
                 <beans:bean parent="jsonDeserializerConvStr"
                     c:targetClass="org.apache.directory.api.ldap.model.name.Dn"/>
                 <beans:bean parent="jsonDeserializerConvStr"
@@ -78,10 +72,10 @@
                     c:targetClass="java.net.URL"/>
                 <beans:bean parent="jsonDeserializerConvStr"
                     c:targetClass="org.bouncycastle.asn1.x500.X500Name"/>
-            </util:set>
+            </beans:set>
         </beans:property>
         <beans:property name="jsonSerializers">
-            <util:set>
+            <beans:set>
                 <beans:bean parent="jsonSerializerConvStr"
                     c:srcClass="java.security.cert.X509Certificate"/>
                 <beans:bean parent="jsonSerializerConvStr"
@@ -108,7 +102,7 @@
                     c:srcClass="java.net.URL"/>
                 <beans:bean parent="jsonSerializerConvStr"
                     c:srcClass="org.bouncycastle.asn1.x500.X500Name"/>
-            </util:set>
+            </beans:set>
         </beans:property>
     </beans:bean>
 </beans:beans>

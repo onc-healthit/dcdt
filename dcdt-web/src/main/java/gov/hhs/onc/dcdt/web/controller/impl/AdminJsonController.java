@@ -34,9 +34,6 @@ public class AdminJsonController extends AbstractToolController {
     @Autowired
     private InstanceConfigRegistry instanceConfigRegistry;
 
-    @Autowired
-    private ToolServiceHub serviceHub;
-
     @JsonRequest
     @RequestMapping(value = { "/admin/mail/mappings" }, method = { RequestMethod.GET })
     public ResponseJsonWrapper<DiscoveryTestcaseMailMapping, DiscoveryTestcaseMailMappingJsonDto> getMailMappings() throws Exception {
@@ -47,7 +44,8 @@ public class AdminJsonController extends AbstractToolController {
     @JsonRequest
     @RequestMapping(value = { "/admin/service/hub" }, method = { RequestMethod.GET })
     public ResponseJsonWrapper<ToolServiceHub, ToolServiceHubJsonDto> getServiceHub() throws Exception {
-        return new ResponseJsonWrapperBuilder<ToolServiceHub, ToolServiceHubJsonDto>().addItems(this.createServiceHubJsonDto()).build();
+        return new ResponseJsonWrapperBuilder<ToolServiceHub, ToolServiceHubJsonDto>().addItems(
+            this.createServiceHubJsonDto(ToolBeanFactoryUtils.getBeanOfType(this.appContext, ToolServiceHub.class))).build();
     }
 
     @JsonRequest
@@ -108,10 +106,10 @@ public class AdminJsonController extends AbstractToolController {
         return mailMappingsJsonDtos;
     }
 
-    private ToolServiceHubJsonDto createServiceHubJsonDto() throws Exception {
+    private ToolServiceHubJsonDto createServiceHubJsonDto(ToolServiceHub serviceHub) throws Exception {
         ToolServiceHubJsonDto serviceHubJsonDto = ToolBeanFactoryUtils.createBeanOfType(this.appContext, ToolServiceHubJsonDto.class);
         // noinspection ConstantConditions
-        serviceHubJsonDto.fromBean(this.convService, this.serviceHub);
+        serviceHubJsonDto.fromBean(this.convService, serviceHub);
 
         return serviceHubJsonDto;
     }

@@ -19,14 +19,13 @@ import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.util.AttributeKey;
 import java.net.ConnectException;
 import java.net.SocketAddress;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractToolChannelServer<T extends ToolServerConfig> extends AbstractToolServer<T> implements ToolChannelServer<T> {
     protected abstract class AbstractToolServerRequestHandler<U> extends SimpleChannelInboundHandler<U> {
         @Override
         public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-            context.close();
-
             String protocol = AbstractToolChannelServer.this.config.getProtocol();
             SocketChannel channel = ((SocketChannel) context.channel());
             SocketAddress bindSocketAddr = AbstractToolChannelServer.this.config.toSocketAddress(), localSocketAddr = channel.localAddress(), remoteSocketAddr =
@@ -65,7 +64,8 @@ public abstract class AbstractToolChannelServer<T extends ToolServerConfig> exte
 
     public final static AttributeKey<ToolServerConfig> CONFIG_ATTR_KEY = AttributeKey.valueOf("config");
 
-    protected ThreadPoolTaskExecutor reqTaskExec;
+    protected EventLoopGroup acceptorEventLoopGroup;
+    protected EventLoopGroup workerEventLoopGroup;
     protected Channel serverChannel;
 
     protected AbstractToolChannelServer(T config) {
@@ -74,37 +74,55 @@ public abstract class AbstractToolChannelServer<T extends ToolServerConfig> exte
 
     @Override
     public boolean isRunning() {
-        return (super.isRunning() && (this.serverChannel != null) && this.serverChannel.isActive());
+        return (super.isRunning() && ((this.acceptorEventLoopGroup != null) || (this.workerEventLoopGroup != null) || (this.serverChannel != null)));
     }
 
     @Override
     protected void stopInternal() throws Exception {
-        this.serverChannel.close().sync();
+        this.stopChannel();
 
         super.stopInternal();
     }
 
+    protected void stopChannel() throws InterruptedException {
+        CountDownLatch shutdownLatch = new CountDownLatch(4);
+
+        if ((this.serverChannel != null) && this.serverChannel.isActive()) {
+            this.serverChannel.close().addListener(serverChannelCloseFuture -> shutdownLatch.countDown());
+        } else {
+            shutdownLatch.countDown();
+        }
+
+        if (this.acceptorEventLoopGroup != null) {
+            this.acceptorEventLoopGroup.shutdownGracefully().addListener(eventLoopGroupShutdownFuture -> shutdownLatch.countDown());
+        } else {
+            shutdownLatch.countDown();
+        }
+
+        if (this.workerEventLoopGroup != null) {
+            this.workerEventLoopGroup.shutdownGracefully().addListener(eventLoopGroupShutdownFuture -> shutdownLatch.countDown());
+        } else {
+            shutdownLatch.countDown();
+        }
+
+        shutdownLatch.await(5, TimeUnit.SECONDS);
+    }
+
     @Override
     protected void startInternal() throws Exception {
-        EventLoopGroup acceptorEventLoopGroup = new NioEventLoopGroup(1, this.taskExec), workerEventLoopGroup =
-            new NioEventLoopGroup(this.reqTaskExec.getMaxPoolSize(), this.reqTaskExec);
+        this.acceptorEventLoopGroup = new NioEventLoopGroup(1, this.reqTaskExec);
+        this.workerEventLoopGroup = new NioEventLoopGroup(this.reqTaskExec.getMaxPoolSize(), this.reqTaskExec);
 
         try {
             // noinspection ConstantConditions
             this.serverChannel =
                 this.initializeBootstrap(
-                    new ServerBootstrap().option(ChannelOption.SO_REUSEADDR, true).group(acceptorEventLoopGroup, workerEventLoopGroup)
+                    new ServerBootstrap().option(ChannelOption.SO_REUSEADDR, true).group(this.acceptorEventLoopGroup, this.workerEventLoopGroup)
                         .channel(NioServerSocketChannel.class)).bind(this.config.toSocketAddress()).sync().channel();
 
             super.startInternal();
-
-            this.serverChannel.closeFuture().addListener(future -> {
-                acceptorEventLoopGroup.shutdownGracefully();
-                workerEventLoopGroup.shutdownGracefully();
-            });
         } catch (Exception e) {
-            acceptorEventLoopGroup.shutdownGracefully();
-            workerEventLoopGroup.shutdownGracefully();
+            this.stopChannel();
 
             throw e;
         }
@@ -114,9 +132,5 @@ public abstract class AbstractToolChannelServer<T extends ToolServerConfig> exte
         bootstrap.option(ChannelOption.SO_BACKLOG, this.config.getBacklog());
 
         return bootstrap;
-    }
-
-    protected void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
-        this.reqTaskExec = reqTaskExec;
     }
 }

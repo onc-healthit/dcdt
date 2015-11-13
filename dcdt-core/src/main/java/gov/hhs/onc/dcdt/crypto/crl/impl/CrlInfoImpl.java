@@ -14,6 +14,7 @@ import java.util.Date;
 import javax.annotation.Nullable;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.Extension;
 import org.bouncycastle.asn1.x509.Extensions;
 import org.bouncycastle.asn1.x509.TBSCertList.CRLEntry;
@@ -48,7 +49,6 @@ public class CrlInfoImpl extends AbstractCrlDescriptor<CrlEntryInfo> implements 
     protected void reset() {
         super.reset();
 
-        this.crl = null;
         this.nextUpdate = null;
         this.thisUpdate = null;
     }
@@ -70,7 +70,7 @@ public class CrlInfoImpl extends AbstractCrlDescriptor<CrlEntryInfo> implements 
 
         try {
             this.crlType = CrlType.X509;
-            this.issuerDn = new CertificateDnImpl(((X500Name) this.crl.getIssuerDN()));
+            this.issuerDn = new CertificateDnImpl(new X500Name(BCStyle.INSTANCE, this.crl.getIssuerX500Principal().getName()));
             this.nextUpdate = this.crl.getNextUpdate();
             this.sigAlg = CryptographyUtils.findByOid(SignatureAlgorithm.class, new ASN1ObjectIdentifier(this.crl.getSigAlgOID()));
             this.thisUpdate = this.crl.getThisUpdate();

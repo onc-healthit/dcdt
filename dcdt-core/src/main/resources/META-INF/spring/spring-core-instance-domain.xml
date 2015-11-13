@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:task="http://www.springframework.org/schema/task"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <!--====================================================================================================
     = INSTANCE DOMAIN CONFIG
@@ -24,67 +16,67 @@
     <beans:bean id="instanceDomainConfigImpl" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceDomainConfigImpl" parent="instanceDomainConfig" abstract="true"/>
     
     <beans:bean id="instanceDomainConfigBase" parent="instanceDomainConfigImpl"
-        p:domainName="#{ instanceConfig.domainName }"
+        p:domainName="#{ instanceConfigMain.domainName }"
         p:name="base"
         p:nameDisplay="Base Domain"/>
     
     <beans:bean id="instanceDomainConfigLdap" parent="instanceDomainConfigImpl"
-        p:domainName="ldap.#{ instanceConfig.domainName }"
+        p:domainName="ldap.#{ instanceConfigMain.domainName }"
         p:name="ldap"
         p:nameDisplay="LDAP Domain"/>
     
     <beans:bean id="instanceDomainConfigPki" parent="instanceDomainConfigImpl"
-        p:domainName="pki.#{ instanceConfig.domainName }"
+        p:domainName="pki.#{ instanceConfigMain.domainName }"
         p:name="pki"
         p:nameDisplay="PKI Domain"/>
     
     <beans:bean id="instanceDomainConfig1" parent="instanceDomainConfigImpl"
-        p:domainName="domain1.#{ instanceConfig.domainName }"
+        p:domainName="domain1.#{ instanceConfigMain.domainName }"
         p:name="domain1"
         p:nameDisplay="Domain 1"/>
     
     <beans:bean id="instanceDomainConfig2" parent="instanceDomainConfigImpl"
-        p:domainName="domain2.#{ instanceConfig.domainName }"
+        p:domainName="domain2.#{ instanceConfigMain.domainName }"
         p:name="domain2"
         p:nameDisplay="Domain 2"/>
     
     <beans:bean id="instanceDomainConfig3" parent="instanceDomainConfigImpl"
-        p:domainName="domain3.#{ instanceConfig.domainName }"
+        p:domainName="domain3.#{ instanceConfigMain.domainName }"
         p:name="domain3"
         p:nameDisplay="Domain 3"/>
     
     <beans:bean id="instanceDomainConfig4" parent="instanceDomainConfigImpl"
-        p:domainName="domain4.#{ instanceConfig.domainName }"
+        p:domainName="domain4.#{ instanceConfigMain.domainName }"
         p:name="domain4"
         p:nameDisplay="Domain 4"/>
     
     <beans:bean id="instanceDomainConfig5" parent="instanceDomainConfigImpl"
-        p:domainName="domain5.#{ instanceConfig.domainName }"
+        p:domainName="domain5.#{ instanceConfigMain.domainName }"
         p:name="domain5"
         p:nameDisplay="Domain 5"/>
     
     <beans:bean id="instanceDomainConfig6" parent="instanceDomainConfigImpl"
-        p:domainName="domain6.#{ instanceConfig.domainName }"
+        p:domainName="domain6.#{ instanceConfigMain.domainName }"
         p:name="domain6"
         p:nameDisplay="Domain 6"/>
     
     <beans:bean id="instanceDomainConfig7" parent="instanceDomainConfigImpl"
-        p:domainName="domain7.#{ instanceConfig.domainName }"
+        p:domainName="domain7.#{ instanceConfigMain.domainName }"
         p:name="domain7"
         p:nameDisplay="Domain 7"/>
     
     <beans:bean id="instanceDomainConfig8" parent="instanceDomainConfigImpl"
-        p:domainName="domain8.#{ instanceConfig.domainName }"
+        p:domainName="domain8.#{ instanceConfigMain.domainName }"
         p:name="domain8"
         p:nameDisplay="Domain 8"/>
     
     <beans:bean id="instanceDomainConfig9" parent="instanceDomainConfigImpl"
-        p:domainName="domain9.#{ instanceConfig.domainName }"
+        p:domainName="domain9.#{ instanceConfigMain.domainName }"
         p:name="domain9"
         p:nameDisplay="Domain 9"/>
     
     <beans:bean id="instanceDomainConfig10" parent="instanceDomainConfigImpl"
-        p:domainName="domain10.#{ instanceConfig.domainName }"
+        p:domainName="domain10.#{ instanceConfigMain.domainName }"
         p:name="domain10"
         p:nameDisplay="Domain 10"/>
 </beans:beans>

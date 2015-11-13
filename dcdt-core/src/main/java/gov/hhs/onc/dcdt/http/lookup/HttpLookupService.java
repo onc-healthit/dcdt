@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.dns.lookup.DnsNameService;
 import io.netty.handler.codec.http.HttpMethod;
 import java.net.URI;
 import javax.annotation.Nonnegative;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public interface HttpLookupService extends ToolBean {
     public HttpLookupResult getUri(URI reqUri);
@@ -29,4 +30,8 @@ public interface HttpLookupService extends ToolBean {
     public int getReadTimeout();
 
     public void setReadTimeout(@Nonnegative int readTimeout);
+
+    public ThreadPoolTaskExecutor getTaskExecutor();
+
+    public void setTaskExecutor(ThreadPoolTaskExecutor taskExec);
 }

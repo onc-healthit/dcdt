@@ -32,9 +32,9 @@ import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.utils.ToolListUtils;
 import gov.hhs.onc.dcdt.utils.ToolMapUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
+import io.netty.util.CharsetUtil;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.charset.Charset;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
@@ -65,10 +65,6 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     @Resource(name = "mailSessionPlain")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private Session mailSession;
-
-    @Resource(name = "charsetUtf8")
-    @SuppressWarnings({ "SpringJavaAutowiringInspection" })
-    private Charset mailEnc;
 
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
@@ -151,7 +147,8 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
 
     @Test
     public void testDecryptMailInvalidMimeType() throws IOException, MessagingException {
-        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(this.createMimeMessage(this.testToAddr, this.testFromAddr), this.mailEnc);
+        ToolMimeMessageHelper unencryptedMsgHelper =
+            new ToolMimeMessageHelper(this.createMimeMessage(this.testToAddr, this.testFromAddr), CharsetUtil.US_ASCII);
         this.assertDiscoveryTestcaseResultProperties(this.processDiscoveryTestcaseSubmission(unencryptedMsgHelper), false, null);
     }
 
@@ -256,7 +253,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
     private ToolMimeMessageHelper createSignedAndEncryptedMessage(MailAddress to, MailAddress from, CredentialInfo signerCredInfo,
         CertificateInfo encryptionCertInfo, EncryptionAlgorithm encryptionAlg) throws MessagingException, IOException {
         MimeMessage msg = this.createMimeMessage(to, from);
-        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);
+        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, CharsetUtil.US_ASCII);
         ToolMimeMessageHelper encryptedMsgHelper = ToolSmimeUtils.signAndEncrypt(unencryptedMsgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg);
 
         this.assertMessageHeadersMatch(unencryptedMsgHelper, encryptedMsgHelper);
@@ -268,7 +265,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
         CertificateInfo encryptionCertInfo, EncryptionAlgorithm encryptionAlg, String sigBaseType, String envBaseType, boolean reorderParams)
         throws MessagingException, IOException {
         MimeMessage msg = this.createMimeMessage(to, from);
-        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, this.mailEnc);
+        ToolMimeMessageHelper unencryptedMsgHelper = new ToolMimeMessageHelper(msg, CharsetUtil.US_ASCII);
         ToolMimeMessageHelper encryptedMsgHelper =
             signAndEncrypt(unencryptedMsgHelper, signerCredInfo, encryptionCertInfo, encryptionAlg, sigBaseType, envBaseType, reorderParams);
 

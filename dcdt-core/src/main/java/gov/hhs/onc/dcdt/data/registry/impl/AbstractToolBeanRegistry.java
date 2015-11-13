@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.support.AbstractRefreshableApplicationContext;
 import org.springframework.core.convert.ConversionService;
 
@@ -25,6 +26,7 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
     protected ConversionService convService;
 
     protected AbstractRefreshableApplicationContext appContext;
+    protected ApplicationEventPublisher eventPublisher;
     protected Class<T> beanClass;
     protected Class<V> beanServiceClass;
 
@@ -126,5 +128,10 @@ public abstract class AbstractToolBeanRegistry<T extends ToolBean, U extends Too
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
         this.appContext = (AbstractRefreshableApplicationContext) appContext;
+    }
+
+    @Override
+    public void setApplicationEventPublisher(ApplicationEventPublisher eventPublisher) {
+        this.eventPublisher = eventPublisher;
     }
 }

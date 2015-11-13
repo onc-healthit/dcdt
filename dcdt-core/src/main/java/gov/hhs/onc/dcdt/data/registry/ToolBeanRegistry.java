@@ -5,8 +5,10 @@ import gov.hhs.onc.dcdt.data.dao.ToolBeanDao;
 import gov.hhs.onc.dcdt.data.tx.services.ToolBeanService;
 import java.util.List;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEventPublisherAware;
 
-public interface ToolBeanRegistry<T extends ToolBean, U extends ToolBeanDao<T>, V extends ToolBeanService<T, U>> extends ApplicationContextAware {
+public interface ToolBeanRegistry<T extends ToolBean, U extends ToolBeanDao<T>, V extends ToolBeanService<T, U>> extends ApplicationContextAware,
+    ApplicationEventPublisherAware {
     public void registerAllBeans() throws ToolBeanRegistryException;
 
     @SuppressWarnings({ "unchecked" })

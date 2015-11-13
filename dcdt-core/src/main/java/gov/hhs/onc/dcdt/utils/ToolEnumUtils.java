@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.utils;
 
 import gov.hhs.onc.dcdt.beans.ToolCodeIdentifier;
 import gov.hhs.onc.dcdt.beans.ToolIdentifier;
+import gov.hhs.onc.dcdt.beans.ToolTypeIdentifier;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -25,6 +26,11 @@ public abstract class ToolEnumUtils {
     @Nullable
     public static <T extends Enum<T> & ToolIdentifier> T findById(Class<T> enumClass, String id) {
         return findByPredicate(enumClass, enumItem -> enumItem.getId().equals(id));
+    }
+
+    @Nullable
+    public static <T extends Enum<T> & ToolTypeIdentifier> T findByType(Class<T> enumClass, Class<?> type) {
+        return findByPredicate(enumClass, enumItem -> enumItem.getType().isAssignableFrom(type));
     }
 
     @Nullable

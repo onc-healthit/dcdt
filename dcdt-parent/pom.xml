@@ -202,17 +202,6 @@
                 <version>3.0.0</version>
             </dependency>
             <dependency>
-                <groupId>com.icegreen</groupId>
-                <artifactId>greenmail</artifactId>
-                <version>1.4.2-SNAPSHOT</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>junit</groupId>
-                        <artifactId>junit</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
                 <groupId>com.mchange</groupId>
                 <artifactId>c3p0</artifactId>
                 <version>0.9.5</version>
@@ -343,7 +332,7 @@
             <dependency>
                 <groupId>org.apache.derby</groupId>
                 <artifactId>derby</artifactId>
-                <version>10.11.1.1</version>
+                <version>10.12.1.1</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.directory.api</groupId>
@@ -364,11 +353,6 @@
                 <groupId>org.apache.directory.server</groupId>
                 <artifactId>apacheds-core-api</artifactId>
                 <version>2.0.0-M15</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>apache-mime4j-core</artifactId>
-                <version>0.7.2</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.velocity</groupId>
@@ -460,32 +444,32 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aop</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-aspects</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-beans</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -500,24 +484,24 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-framework-bom</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-jdbc</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-orm</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-tx</artifactId>
-                <version>4.2.1.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -908,7 +892,7 @@
                     <inherited>true</inherited>
                     <configuration>
                         <additionalClasspathElements combine.children="append"/>
-                        <argLine>-Xms256m -Xmx512m -XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</argLine>
+                        <argLine>-Xms512m -Xmx768m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</argLine>
                         <!--<classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>-->
                         <parallel>all</parallel>
                         <reportFormat>plain</reportFormat>

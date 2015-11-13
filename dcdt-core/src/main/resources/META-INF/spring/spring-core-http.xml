@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    
+    <!--====================================================================================================
+    = TASK EXECUTORS
+    =====================================================================================================-->
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceLookupHttp" parent="taskExecThreadPoolDynamic"
+        p:keepAliveSeconds="${dcdt.service.lookup.http.task.exec.keep.alive}"
+        p:maxPoolSize="${dcdt.service.lookup.http.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-lookup-http-"/>
     
     <!--====================================================================================================
     = HTTP LOOKUP SERVICES
     =====================================================================================================-->
     <beans:bean id="httpLookupService" class="gov.hhs.onc.dcdt.http.lookup.HttpLookupService" abstract="true"/>
     
+    <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="httpLookupServiceImpl" class="gov.hhs.onc.dcdt.http.lookup.impl.HttpLookupServiceImpl" parent="httpLookupService" abstract="true"
-        p:connectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
-        p:maxContentLength="#{ T(org.apache.commons.io.FileUtils).ONE_MB * 5 }"
-        p:readTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"/>
+        p:connectTimeout="${dcdt.service.lookup.http.connect.timeout}"
+        p:maxContentLength="${dcdt.service.lookup.http.content.len.max}"
+        p:readTimeout="${dcdt.service.lookup.http.read.timeout}"
+        p:taskExecutor-ref="taskExecServiceLookupHttp"/>
     
     <beans:bean id="httpLookupServiceLocal" parent="httpLookupServiceImpl"
         p:dnsNameService-ref="dnsNameServiceLocal"/>

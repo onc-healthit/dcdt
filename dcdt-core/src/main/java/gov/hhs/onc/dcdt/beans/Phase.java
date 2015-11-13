@@ -12,8 +12,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ ElementType.TYPE })
 public @interface Phase {
-    public final static int PHASE_PRECEDENCE_HIGHEST = 0;
+    public final static int PHASE_PRECEDENCE_HIGHEST = Integer.MIN_VALUE;
     public final static int PHASE_PRECEDENCE_LOWEST = Integer.MAX_VALUE;
-    
+
     int value();
 }

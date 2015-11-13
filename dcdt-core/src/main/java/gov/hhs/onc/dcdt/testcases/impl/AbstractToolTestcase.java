@@ -6,12 +6,7 @@ import gov.hhs.onc.dcdt.testcases.ToolTestcase;
 import gov.hhs.onc.dcdt.testcases.ToolTestcaseDescription;
 import java.util.List;
 import javax.annotation.Nullable;
-import javax.persistence.Column;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.Transient;
 
-@MappedSuperclass
 public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription> extends AbstractToolNamedBean implements ToolTestcase<T> {
     protected T desc;
     protected boolean neg;
@@ -25,7 +20,6 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription> ex
 
     @Nullable
     @Override
-    @Transient
     public T getDescription() {
         return this.desc;
     }
@@ -35,8 +29,6 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription> ex
         this.desc = desc;
     }
 
-    @Column(name = "name", nullable = false)
-    @Id
     @Nullable
     @Override
     public String getName() {
@@ -44,7 +36,6 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription> ex
     }
 
     @Override
-    @Transient
     public boolean isNegative() {
         return this.neg;
     }
@@ -55,7 +46,6 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription> ex
     }
 
     @Override
-    @Transient
     public boolean isOptional() {
         return this.optional;
     }
@@ -71,7 +61,6 @@ public abstract class AbstractToolTestcase<T extends ToolTestcaseDescription> ex
     }
 
     @Override
-    @Transient
     public List<CertificateDiscoveryStep> getSteps() {
         return this.steps;
     }

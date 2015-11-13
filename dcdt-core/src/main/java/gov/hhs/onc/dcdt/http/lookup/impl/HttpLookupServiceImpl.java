@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nonnegative;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 public class HttpLookupServiceImpl extends AbstractToolBean implements HttpLookupService {
     private class HttpLookupClientResponseHandler extends SimpleChannelInboundHandler<FullHttpResponse> {
@@ -127,6 +128,7 @@ public class HttpLookupServiceImpl extends AbstractToolBean implements HttpLooku
     private DnsNameService dnsNameService;
     private int maxContentLen;
     private int readTimeout;
+    private ThreadPoolTaskExecutor taskExec;
 
     @Override
     public HttpLookupResult getUri(URI reqUri) {
@@ -156,7 +158,7 @@ public class HttpLookupServiceImpl extends AbstractToolBean implements HttpLooku
         InetSocketAddress remoteSocketAddr = new InetSocketAddress(remoteAddr, remotePort);
         result.setRemoteSocketAddress(remoteSocketAddr);
 
-        EventLoopGroup clientEventLoopGroup = new NioEventLoopGroup(1);
+        EventLoopGroup clientEventLoopGroup = new NioEventLoopGroup(1, this.taskExec);
         ChannelFuture connFuture;
 
         try {
@@ -267,5 +269,15 @@ public class HttpLookupServiceImpl extends AbstractToolBean implements HttpLooku
     @Override
     public void setReadTimeout(@Nonnegative int readTimeout) {
         this.readTimeout = readTimeout;
+    }
+
+    @Override
+    public ThreadPoolTaskExecutor getTaskExecutor() {
+        return this.taskExec;
+    }
+
+    @Override
+    public void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
+        this.taskExec = taskExec;
     }
 }

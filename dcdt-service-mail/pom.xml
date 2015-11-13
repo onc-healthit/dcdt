@@ -24,7 +24,6 @@
         <!-- Project service properties -->
         <project.service.name.display>DCDT Mail Service</project.service.name.display>
         <project.service.standalone.java.class.main>gov.hhs.onc.dcdt.service.mail.wrapper.impl.MailServiceWrapperImpl</project.service.standalone.java.class.main>
-        <project.service.standalone.spring.profiles.active>serviceStandalone,serviceMailStandalone</project.service.standalone.spring.profiles.active>
     </properties>
     
     <dependencies>
@@ -55,10 +54,6 @@
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.icegreen</groupId>
-            <artifactId>greenmail</artifactId>
         </dependency>
         <dependency>
             <groupId>com.mchange</groupId>
@@ -126,14 +121,6 @@
             <artifactId>ant</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-spring</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-collections4</artifactId>
         </dependency>
@@ -164,50 +151,6 @@
         <dependency>
             <groupId>org.apache.directory.server</groupId>
             <artifactId>apacheds-core-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>apache-james-mailbox-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>apache-mime4j-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-container-spring</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-data-file</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-dnsservice-dnsjava</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-mailetcontainer-camel</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-mailets</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-protocols-imap4</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-protocols-smtp</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.james</groupId>
-            <artifactId>james-server-queue-activemq</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.velocity</groupId>

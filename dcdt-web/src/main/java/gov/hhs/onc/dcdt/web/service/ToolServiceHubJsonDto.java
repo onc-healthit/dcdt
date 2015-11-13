@@ -12,9 +12,9 @@ import java.util.Map;
 @JsonSubTypes({ @Type(ToolServiceHubJsonDtoImpl.class) })
 public interface ToolServiceHubJsonDto extends ToolBeanJsonDto<ToolServiceHub> {
     @JsonProperty("serviceMap")
-    public Map<ToolServiceType, ToolService> getServiceMap();
+    public Map<ToolServiceType, ToolService<?, ?>> getServiceMap();
 
-    public void setServiceMap(Map<ToolServiceType, ToolService> serviceMap);
+    public void setServiceMap(Map<ToolServiceType, ToolService<?, ?>> serviceMap);
 
     @JsonProperty("serviceMsgsMap")
     public Map<ToolServiceType, List<String>> getServiceMessagesMap();

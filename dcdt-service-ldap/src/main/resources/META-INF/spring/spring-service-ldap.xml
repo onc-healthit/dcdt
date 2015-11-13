@@ -1,30 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <!--====================================================================================================
-    = TASK EXECUTION
+    = TASK EXECUTORS
     =====================================================================================================-->
-    <beans:bean id="taskExecServiceLdap" parent="taskExecService"
-        p:corePoolSize="1"
-        p:maxPoolSize="5"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceLdap" parent="taskExecThreadPool"
+        p:corePoolSize="${dcdt.service.ldap.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.service.ldap.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-ldap-"/>
     
-    <beans:bean id="taskExecServiceLdapServer" parent="taskExecService" lazy-init="true" scope="prototype"
-        p:corePoolSize="#{ taskExecServiceLdap.corePoolSize }"
-        p:maxPoolSize="#{ taskExecServiceLdap.maxPoolSize }"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceLdapServer" parent="taskExecThreadPool"
+        p:corePoolSize="${dcdt.service.ldap.server.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.service.ldap.server.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-ldap-server-"/>
     
     <!--====================================================================================================
     = CACHE SERVICE
@@ -37,9 +35,9 @@
                 p:configLocation="classpath:META-INF/ehcache/ehcache-service-ldap.xml"/>
         </beans:constructor-arg>
         <beans:constructor-arg name="disabledCacheNames">
-            <util:set>
+            <beans:set>
                 <beans:value>dnCache</beans:value>
-            </util:set>
+            </beans:set>
         </beans:constructor-arg>
     </beans:bean>
     
@@ -180,20 +178,20 @@
         p:dsAccessControlEnabled="false"
         p:dsAllowAnonymousAccess="true">
         <beans:property name="interceptors">
-            <util:list>
+            <beans:list>
                 <beans:bean parent="interceptorBeanNormalization"/>
                 <beans:bean parent="interceptorBeanAuth">
                     <beans:property name="authenticators">
-                        <util:list>
+                        <beans:list>
                             <beans:bean parent="authenticatorBeanAnon"/>
                             <beans:bean parent="authenticatorBeanSimple"/>
                             <beans:bean parent="authenticatorBeanStrong"/>
-                        </util:list>
+                        </beans:list>
                     </beans:property>
                     <beans:property name="passwordPolicies">
-                        <util:list>
+                        <beans:list>
                             <beans:bean parent="passPolicyBeanDisabled"/>
-                        </util:list>
+                        </beans:list>
                     </beans:property>
                 </beans:bean>
                 <beans:bean parent="interceptorBeanReferral"/>
@@ -208,12 +206,12 @@
                 <beans:bean parent="interceptorBeanTrigger"/>
                 <beans:bean parent="interceptorBeanChangeLog"/>
                 <beans:bean parent="interceptorBeanJournal"/>
-            </util:list>
+            </beans:list>
         </beans:property>
         <beans:property name="partitions">
-            <util:list>
+            <beans:list>
                 <beans:bean parent="partitionBeanSys"/>
-            </util:list>
+            </beans:list>
         </beans:property>
         <beans:property name="schemaManager">
             <beans:bean parent="schemaManagerDefault"/>
@@ -225,18 +223,15 @@
     =====================================================================================================-->
     <beans:bean id="ldapServerConfig" class="gov.hhs.onc.dcdt.service.ldap.config.LdapServerConfig" parent="serverConfig" abstract="true"/>
     
-    <beans:bean id="ldapServerConfigImpl" class="gov.hhs.onc.dcdt.service.ldap.config.impl.LdapServerConfigImpl" parent="ldapServerConfig" abstract="true"
-        p:backlog="1000"
-        p:connectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
-        p:readTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"
-        p:writeTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"/>
+    <beans:bean id="ldapServerConfigImpl" class="gov.hhs.onc.dcdt.service.ldap.config.impl.LdapServerConfigImpl" parent="ldapServerConfig" abstract="true"/>
     
     <!--====================================================================================================
     = LDAP SERVERS
     =====================================================================================================-->
     <beans:bean id="ldapServer" class="gov.hhs.onc.dcdt.service.ldap.server.LdapServer" parent="server" abstract="true"/>
     
-    <beans:bean id="ldapServerImpl" class="gov.hhs.onc.dcdt.service.ldap.server.impl.LdapServerImpl" parent="ldapServer" abstract="true"/>
+    <beans:bean id="ldapServerImpl" class="gov.hhs.onc.dcdt.service.ldap.server.impl.LdapServerImpl" parent="ldapServer" abstract="true"
+        p:taskExecutor-ref="taskExecServiceLdapServer"/>
     
     <beans:bean id="ldapServer1" parent="ldapServerImpl">
         <beans:constructor-arg name="config">

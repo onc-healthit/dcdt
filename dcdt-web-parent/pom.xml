@@ -183,9 +183,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-dependency-plugin</artifactId>
                     <executions>
-                        <execution>
-                            <id>unpack-dependency-resources</id>
-                        </execution>
                         <!-- Copying test web dependencies -->
                         <execution>
                             <id>copy-test-dependencies-web</id>
@@ -198,9 +195,6 @@
                                 <includeScope>test</includeScope>
                                 <outputDirectory>${project.build.testWebappLibDirectory}</outputDirectory>
                             </configuration>
-                        </execution>
-                        <execution>
-                            <id>unpack-test-dependency-resources</id>
                         </execution>
                     </executions>
                 </plugin>

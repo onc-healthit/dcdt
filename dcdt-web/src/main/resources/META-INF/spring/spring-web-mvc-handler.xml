@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     
     <mvc:default-servlet-handler/>
     
@@ -24,9 +18,9 @@
     =====================================================================================================-->
     <beans:bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
         <beans:property name="mediaTypes">
-            <util:properties>
+            <beans:props>
                 <beans:prop key="json">#{ T(org.springframework.http.MediaType).APPLICATION_JSON_VALUE }</beans:prop>
-            </util:properties>
+            </beans:props>
         </beans:property>
     </beans:bean>
     
@@ -57,7 +51,7 @@
     <beans:bean id="handlerExceptionResolver" class="gov.hhs.onc.dcdt.web.handler.impl.OrderedHandlerExceptionResolverComposite"
         p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }">
         <beans:property name="handlerComponents">
-            <util:list>
+            <beans:list>
                 <beans:bean class="gov.hhs.onc.dcdt.web.handler.impl.ToolExceptionHandlerExceptionResolver"
                     p:contentNegotiationManager-ref="contentNegotiationManager"
                     p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE }"/>
@@ -65,7 +59,7 @@
                     p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE + 1 }"/>
                 <beans:bean class="org.springframework.web.servlet.mvc.support.DefaultHandlerExceptionResolver"
                     p:order="#{ T(org.springframework.core.Ordered).HIGHEST_PRECEDENCE + 2 }"/>
-            </util:list>
+            </beans:list>
         </beans:property>
     </beans:bean>
     

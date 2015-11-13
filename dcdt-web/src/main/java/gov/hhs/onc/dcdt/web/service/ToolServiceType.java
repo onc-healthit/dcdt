@@ -1,21 +1,31 @@
 package gov.hhs.onc.dcdt.web.service;
 
+import gov.hhs.onc.dcdt.beans.ToolIdentifier;
+import gov.hhs.onc.dcdt.beans.ToolTypeIdentifier;
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.dns.DnsService;
 import gov.hhs.onc.dcdt.service.http.HttpService;
 import gov.hhs.onc.dcdt.service.ldap.LdapService;
 import gov.hhs.onc.dcdt.service.mail.MailService;
 
-public enum ToolServiceType {
+public enum ToolServiceType implements ToolIdentifier, ToolTypeIdentifier {
     DNS(DnsService.class), HTTP(HttpService.class), LDAP(LdapService.class), MAIL(MailService.class);
 
-    private final Class<? extends ToolService> serviceClass;
+    private final String id;
+    private final Class<? extends ToolService<?, ?>> type;
 
-    private ToolServiceType(Class<? extends ToolService> serviceClass) {
-        this.serviceClass = serviceClass;
+    private ToolServiceType(Class<? extends ToolService<?, ?>> type) {
+        this.id = this.name();
+        this.type = type;
     }
 
-    public Class<? extends ToolService> getServiceClass() {
-        return this.serviceClass;
+    @Override
+    public String getId() {
+        return this.id;
+    }
+
+    @Override
+    public Class<? extends ToolService<?, ?>> getType() {
+        return this.type;
     }
 }

@@ -1,38 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:task="http://www.springframework.org/schema/task"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <!--====================================================================================================
-    = TASK EXECUTION
+    = TASK EXECUTORS
     =====================================================================================================-->
-    <beans:bean id="taskExecServiceDns" parent="taskExecService"
-        p:corePoolSize="1"
-        p:maxPoolSize="5"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceDns" parent="taskExecThreadPool"
+        p:corePoolSize="${dcdt.service.dns.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.service.dns.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-dns-"/>
     
-    <beans:bean id="taskExecServiceDnsServer" parent="taskExecService" lazy-init="true" scope="prototype"
-        p:corePoolSize="#{ taskExecServiceDns.corePoolSize }"
-        p:maxPoolSize="#{ taskExecServiceDns.maxPoolSize }"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceDnsServer" parent="taskExecThreadPool"
+        p:corePoolSize="${dcdt.service.dns.server.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.service.dns.server.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-dns-server-"/>
     
-    <beans:bean id="taskExecServiceDnsServerReq" parent="taskExecService" lazy-init="true" scope="prototype"
-        p:allowCoreThreadTimeOut="true"
-        p:corePoolSize="#{ taskExecServiceDnsServer.corePoolSize * 10 }"
-        p:keepAliveSeconds="15"
-        p:maxPoolSize="#{ taskExecServiceDnsServer.maxPoolSize * 50 }"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceDnsServerReq" parent="taskExecThreadPoolDynamic"
+        p:keepAliveSeconds="${dcdt.service.dns.server.req.task.exec.keep.alive}"
+        p:maxPoolSize="${dcdt.service.dns.server.req.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-dns-server-req-"/>
     
     <!--====================================================================================================
     = DNS UDP SOCKET ADAPTERS
@@ -60,8 +56,6 @@
         parent="socketAdapterTcpServerDnsServer" lazy-init="true" scope="prototype">
         <beans:property name="options">
             <beans:map>
-                <beans:entry key="#{ T(gov.hhs.onc.dcdt.net.sockets.SocketAdapterOptions).BACKLOG }" value="#{ taskExecServiceDnsServerReq.maxPoolSize }"
-                    value-type="java.lang.Integer"/>
                 <beans:entry key="#{ T(java.net.StandardSocketOptions).SO_REUSEADDR }" value="true" value-type="java.lang.Boolean"/>
             </beans:map>
         </beans:property>
@@ -83,25 +77,61 @@
     </beans:bean>
     
     <!--====================================================================================================
+    = DNS UDP SOCKET LISTENER
+    =====================================================================================================-->
+    <beans:bean id="socketListenerUdpDnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServerUdpSocketListener" parent="socketListenerUdp"
+        abstract="true"/>
+    
+    <beans:bean id="socketListenerUdpDnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerUdpSocketListenerImpl"
+        parent="socketListenerUdpDnsServer" abstract="true"
+        p:requestTaskExecutor-ref="taskExecServiceDnsServerReq"
+        p:taskExecutor-ref="taskExecServiceDnsServer"/>
+    
+    <!--====================================================================================================
+    = DNS TCP SOCKET LISTENER
+    =====================================================================================================-->
+    <beans:bean id="socketListenerTcpDnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketListener" parent="socketListenerTcp"
+        abstract="true"/>
+    
+    <beans:bean id="socketListenerTcpDnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerTcpSocketListenerImpl"
+        parent="socketListenerTcpDnsServer" abstract="true"
+        p:requestTaskExecutor-ref="taskExecServiceDnsServerReq"
+        p:taskExecutor-ref="taskExecServiceDnsServer"/>
+    
+    <!--====================================================================================================
     = DNS SERVER CONFIG
     =====================================================================================================-->
     <beans:bean id="dnsServerConfig" class="gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig" parent="serverConfig" abstract="true"/>
-    <beans:bean id="dnsServerConfigImpl" class="gov.hhs.onc.dcdt.service.dns.config.impl.DnsServerConfigImpl" parent="dnsServerConfig" abstract="true"/>
+    
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="dnsServerConfigImpl" class="gov.hhs.onc.dcdt.service.dns.config.impl.DnsServerConfigImpl" parent="dnsServerConfig" abstract="true"
+        p:backlog="${dcdt.service.dns.server.backlog}"/>
+    
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="dnsServerConfig1" parent="dnsServerConfigImpl"
+        p:host-ref="ipAddrLocalAny"
+        p:port="${dcdt.instance.dns.server.1.port}"
+        p:name="dnsServer1"
+        p:nameDisplay="DNS Server 1"/>
     
     <!--====================================================================================================
     = DNS SERVER
     =====================================================================================================-->
     <beans:bean id="dnsServer" class="gov.hhs.onc.dcdt.service.dns.server.DnsServer" parent="server" abstract="true"/>
-    <beans:bean id="dnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerImpl" parent="dnsServer" abstract="true"/>
     
-    <beans:bean id="dnsServer1" parent="dnsServerImpl">
-        <beans:constructor-arg name="config">
-            <!--suppress SpringPlaceholdersInspection -->
-            <beans:bean parent="dnsServerConfigImpl"
-                p:host-ref="ipAddrLocalAny"
-                p:port="${dcdt.instance.dns.server.1.port}"
-                p:name="dnsServer1"
-                p:nameDisplay="DNS Server 1"/>
-        </beans:constructor-arg>
+    <beans:bean id="dnsServerImpl" class="gov.hhs.onc.dcdt.service.dns.server.impl.DnsServerImpl" parent="dnsServer" abstract="true"
+        p:requestTaskExecutor-ref="taskExecServiceDnsServerReq"
+        p:taskExecutor-ref="taskExecServiceDnsServer"/>
+    
+    <beans:bean id="dnsServer1" parent="dnsServerImpl"
+        c:config-ref="dnsServerConfig1">
+        <beans:property name="tcpSocketListener">
+            <beans:bean parent="socketListenerTcpDnsServerImpl"
+                c:serverConfig-ref="dnsServerConfig1"/>
+        </beans:property>
+        <beans:property name="udpSocketListener">
+            <beans:bean parent="socketListenerUdpDnsServerImpl"
+                c:serverConfig-ref="dnsServerConfig1"/>
+        </beans:property>
     </beans:bean>
 </beans:beans>

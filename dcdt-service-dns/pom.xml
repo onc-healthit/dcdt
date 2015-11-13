@@ -24,7 +24,6 @@
         <!-- Project service properties -->
         <project.service.name.display>DCDT DNS Service</project.service.name.display>
         <project.service.standalone.java.class.main>gov.hhs.onc.dcdt.service.dns.wrapper.impl.DnsServiceWrapperImpl</project.service.standalone.java.class.main>
-        <project.service.standalone.spring.profiles.active>serviceStandalone,serviceDnsStandalone</project.service.standalone.spring.profiles.active>
     </properties>
     
     <dependencies>

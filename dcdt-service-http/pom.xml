@@ -24,7 +24,6 @@
         <!-- Project service properties -->
         <project.service.name.display>DCDT HTTP Service</project.service.name.display>
         <project.service.standalone.java.class.main>gov.hhs.onc.dcdt.service.http.wrapper.impl.HttpServiceWrapperImpl</project.service.standalone.java.class.main>
-        <project.service.standalone.spring.profiles.active>serviceStandalone,serviceHttpStandalone</project.service.standalone.spring.profiles.active>
     </properties>
     
     <dependencies>

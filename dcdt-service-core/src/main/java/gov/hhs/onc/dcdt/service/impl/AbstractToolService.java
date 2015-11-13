@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.concurrent.impl.AbstractToolListenableFutureCallback;
 import gov.hhs.onc.dcdt.concurrent.impl.AbstractToolListenableFutureTask;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
+import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
 import gov.hhs.onc.dcdt.service.server.ToolServer;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.BeansException;
@@ -19,6 +21,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.Lifecycle;
 import org.springframework.context.support.AbstractApplicationContext;
 
+@ServiceContextConfiguration({ "spring/spring-core.xml", "spring/spring-core*.xml", "spring/spring-service.xml", "spring/spring-service-embedded.xml",
+    "spring/spring-service-standalone.xml" })
 public abstract class AbstractToolService<T extends ToolServerConfig, U extends ToolServer<T>> extends AbstractToolLifecycleBean implements ToolService<T, U> {
     protected static class ToolServerLifecycleTask extends AbstractToolListenableFutureTask<Void> {
         public ToolServerLifecycleTask(Callable<Void> callable) {
@@ -53,19 +57,11 @@ public abstract class AbstractToolService<T extends ToolServerConfig, U extends 
 
     @Override
     protected void stopInternal() throws Exception {
-        if (!this.hasServers()) {
-            return;
-        }
-
         this.executeServerLifecycle(Lifecycle::stop);
     }
 
     @Override
     protected void startInternal() throws Exception {
-        if (!this.hasServers()) {
-            return;
-        }
-
         this.executeServerLifecycle(Lifecycle::start);
     }
 
@@ -86,7 +82,12 @@ public abstract class AbstractToolService<T extends ToolServerConfig, U extends 
             return callback;
         }).toArray(ToolServerLifecycleCallback[]::new);
 
-        latch.await();
+        try {
+            latch.await();
+        } catch (InterruptedException ignored) {
+            // noinspection ConstantConditions
+            Stream.of(callbacks).forEach(callback -> callback.getTask().cancel(true));
+        }
 
         for (ToolServerLifecycleCallback callback : callbacks) {
             if (callback.hasException()) {
@@ -96,19 +97,19 @@ public abstract class AbstractToolService<T extends ToolServerConfig, U extends 
     }
 
     @Override
+    public boolean canStop() {
+        return (super.canStop() && this.hasServers());
+    }
+
+    @Override
     public boolean canStart() {
         // noinspection ConstantConditions
-        return (super.canStart() && ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfig.class).isConfigured());
+        return (super.canStart() && this.hasServers() && ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfig.class).isConfigured());
     }
 
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
         this.appContext = (AbstractApplicationContext) appContext;
-    }
-
-    @Override
-    public int getOrder() {
-        return this.getPhase();
     }
 
     @Override

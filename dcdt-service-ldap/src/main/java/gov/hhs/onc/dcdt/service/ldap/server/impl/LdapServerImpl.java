@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapCredentialConfig;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.service.ldap.LdapServiceException;
 import gov.hhs.onc.dcdt.service.ldap.config.LdapServerConfig;
@@ -16,7 +17,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import javax.annotation.Nullable;
-import javax.annotation.Resource;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
@@ -33,9 +33,9 @@ import org.apache.directory.server.core.api.DirectoryService;
 import org.apache.directory.server.protocol.shared.DirectoryBackedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
+@AutoStartup(false)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 3)
 public class LdapServerImpl extends AbstractToolServer<LdapServerConfig> implements LdapServer {
     private final static Logger LOGGER = LoggerFactory.getLogger(LdapServerImpl.class);
 
@@ -212,11 +212,5 @@ public class LdapServerImpl extends AbstractToolServer<LdapServerConfig> impleme
     @Override
     public void setDirectoryServiceBeans(List<ToolDirectoryServiceBean> dirServiceBeans) {
         this.dirServiceBeans = dirServiceBeans;
-    }
-
-    @Override
-    @Resource(name = "taskExecServiceLdapServer")
-    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
-        super.setTaskExecutor(taskExec);
     }
 }

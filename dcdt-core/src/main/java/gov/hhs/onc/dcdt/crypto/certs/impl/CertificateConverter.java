@@ -6,7 +6,7 @@ import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
-import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.security.cert.X509Certificate;
 import javax.annotation.Nullable;
 import org.springframework.core.convert.TypeDescriptor;
@@ -21,6 +21,6 @@ public class CertificateConverter extends AbstractToolConverter {
     @Override
     protected Object convertInternal(Object src, TypeDescriptor srcType, TypeDescriptor targetType, ConvertiblePair convPair) throws Exception {
         return (srcType.isAssignableTo(TYPE_DESC_CERT) ? CertificateUtils.writeCertificate(((X509Certificate) src), DataEncoding.PEM) : CertificateUtils
-            .readCertificate(((byte[]) src), CryptographyUtils.findByType(CertificateType.class, targetType.getObjectType()), DataEncoding.PEM));
+            .readCertificate(((byte[]) src), ToolEnumUtils.findByType(CertificateType.class, targetType.getObjectType()), DataEncoding.PEM));
     }
 }

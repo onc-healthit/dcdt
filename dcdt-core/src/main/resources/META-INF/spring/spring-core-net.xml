@@ -1,21 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:task="http://www.springframework.org/schema/task"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <!--====================================================================================================
     = IP ADDRESSES
@@ -76,6 +68,21 @@
     = TCP SOCKET ADAPTERS
     =====================================================================================================-->
     <beans:bean id="socketAdapterTcp" class="gov.hhs.onc.dcdt.net.sockets.TcpSocketAdapter" parent="socketAdapterClient" abstract="true"/>
+    
+    <!--====================================================================================================
+    = SOCKET LISTENERS
+    =====================================================================================================-->
+    <beans:bean id="socketListener" class="gov.hhs.onc.dcdt.net.sockets.SocketListener" abstract="true"/>
+    
+    <!--====================================================================================================
+    = UDP SOCKET LISTENERS
+    =====================================================================================================-->
+    <beans:bean id="socketListenerUdp" class="gov.hhs.onc.dcdt.net.sockets.UdpSocketListener" parent="socketListener" abstract="true"/>
+    
+    <!--====================================================================================================
+    = TCP SOCKET LISTENERS
+    =====================================================================================================-->
+    <beans:bean id="socketListenerTcp" class="gov.hhs.onc.dcdt.net.sockets.TcpSocketListener" parent="socketListener" abstract="true"/>
     
     <!--====================================================================================================
     = URI

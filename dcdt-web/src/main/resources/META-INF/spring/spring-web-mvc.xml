@@ -1,21 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:mvc="http://www.springframework.org/schema/mvc"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
         http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd">
     
     <!--====================================================================================================
     = RESOURCES
@@ -50,10 +44,10 @@
         p:checkRefresh="true"
         p:useMutableTilesContainer="true">
         <beans:property name="definitions">
-            <util:list>
+            <beans:list>
                 <beans:value>/WEB-INF/tiles/tiles-web-components.xml</beans:value>
                 <beans:value>/WEB-INF/tiles/tiles-web.xml</beans:value>
-            </util:list>
+            </beans:list>
         </beans:property>
     </beans:bean>
     
@@ -63,13 +57,13 @@
     <beans:bean id="regBeanServletDispatcher" parent="regBeanServlet"
         p:loadOnStartup="1"
         p:name="dispatcherServlet">
-        <beans:property name="servlet">
+        <beans:constructor-arg index="0" name="servlet">
             <beans:bean class="org.springframework.web.servlet.DispatcherServlet" parent="servletHttp"/>
-        </beans:property>
-        <beans:property name="urlMappings">
+        </beans:constructor-arg>
+        <beans:constructor-arg index="2" name="urlMappings">
             <beans:list>
                 <beans:value>/</beans:value>
             </beans:list>
-        </beans:property>
+        </beans:constructor-arg>
     </beans:bean>
 </beans:beans>

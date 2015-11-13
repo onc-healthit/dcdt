@@ -23,6 +23,7 @@
         <!-- Project service properties -->
         <project.service.description>${project.description}</project.service.description>
         <project.service.name>${project.artifactId}</project.service.name>
+        <project.service.standalone.spring.profiles.active>serviceStandalone</project.service.standalone.spring.profiles.active>
         <!-- Project build service properties -->
         <project.build.serviceDirectory>${project.build.directory}/${project.artifactId}</project.build.serviceDirectory>
         <project.build.serviceBinDirectory>${project.build.serviceDirectory}/bin</project.build.serviceBinDirectory>
@@ -41,28 +42,6 @@
     
     <dependencyManagement>
         <dependencies>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-core</artifactId>
-                <version>2.14.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-impl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-spring</artifactId>
-                <version>2.14.1</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.sun.xml.bind</groupId>
-                        <artifactId>jaxb-impl</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
             <dependency>
                 <groupId>org.apache.directory.jdbm</groupId>
                 <artifactId>apacheds-jdbm2</artifactId>
@@ -112,180 +91,6 @@
                     <exclusion>
                         <groupId>org.apache.directory.server</groupId>
                         <artifactId>apacheds-protocol-dns</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>apache-james-mailbox-spring</artifactId>
-                <version>0.4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-dbcp</groupId>
-                        <artifactId>commons-dbcp</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.jcr</groupId>
-                        <artifactId>jcr</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.james</groupId>
-                        <artifactId>apache-james-mailbox-hbase</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.james</groupId>
-                        <artifactId>apache-james-mailbox-jpa</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.james</groupId>
-                        <artifactId>apache-james-mailbox-lucene</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.james</groupId>
-                        <artifactId>apache-james-mailbox-maildir</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.james</groupId>
-                        <artifactId>apache-james-mailbox-tool</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server</artifactId>
-                <version>3.0-beta4</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-container-spring</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.servlet</groupId>
-                        <artifactId>servlet-api</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>log4j</groupId>
-                        <artifactId>log4j</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.geronimo.specs</groupId>
-                        <artifactId>geronimo-jpa_2.0_spec</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.james</groupId>
-                        <artifactId>apache-james-mailbox-tool</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.osgi</groupId>
-                        <artifactId>org.osgi.core</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework</groupId>
-                        <artifactId>spring-web</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.springframework.osgi</groupId>
-                        <artifactId>spring-osgi-extender</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-core</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-data-file</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-mailetcontainer-camel</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-mailets</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-protocols-imap4</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-protocols-smtp</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                </exclusions>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.james</groupId>
-                <artifactId>james-server-queue-activemq</artifactId>
-                <version>3.0-beta4</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>commons-logging</groupId>
-                        <artifactId>commons-logging</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>javax.mail</groupId>
-                        <artifactId>mail</artifactId>
-                    </exclusion>
-                    <exclusion>
-                        <groupId>org.apache.activemq</groupId>
-                        <artifactId>activemq-core</artifactId>
                     </exclusion>
                 </exclusions>
             </dependency>

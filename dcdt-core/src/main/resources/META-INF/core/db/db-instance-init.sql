@@ -3,10 +3,6 @@ create table instance_configs (
     ip_address varchar(15) not null
 );
 
-create table discovery_testcases (
-    name varchar(100) not null primary key
-);
-
 create table discovery_testcase_creds (
     name varchar(100) not null primary key,
     private_key_data blob(8192) not null,

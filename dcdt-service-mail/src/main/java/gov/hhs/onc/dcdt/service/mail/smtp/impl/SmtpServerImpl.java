@@ -1,7 +1,9 @@
 package gov.hhs.onc.dcdt.service.mail.smtp.impl;
 
+import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
 import gov.hhs.onc.dcdt.service.mail.server.impl.AbstractMailServer;
@@ -64,6 +66,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@AutoStartup(false)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 4)
 public class SmtpServerImpl extends AbstractMailServer<SmtpServerConfig> implements SmtpServer {
     private class SmtpServerRequestDecoder extends DelimiterBasedFrameDecoder {
         private boolean decodeData;
@@ -338,11 +342,11 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpServerConfig> impleme
         }
     }
 
-    private void writeResponse(Channel channel, SmtpServerSession serverSession, SmtpReply resp) throws Exception {
-        this.writeResponse(channel, serverSession, false, resp);
+    private ChannelFuture writeResponse(Channel channel, SmtpServerSession serverSession, SmtpReply resp) throws Exception {
+        return this.writeResponse(channel, serverSession, false, resp);
     }
 
-    private void writeResponse(Channel channel, SmtpServerSession serverSession, boolean close, SmtpReply resp) throws Exception {
+    private ChannelFuture writeResponse(Channel channel, SmtpServerSession serverSession, boolean close, SmtpReply resp) throws Exception {
         LinkedList<SmtpCommand> cmds = serverSession.getCommands();
         boolean quit = (!cmds.isEmpty() && (cmds.getLast() instanceof QuitCommand));
 
@@ -360,6 +364,6 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpServerConfig> impleme
             future.addListener(ChannelFutureListener.CLOSE);
         }
 
-        future.sync();
+        return future;
     }
 }

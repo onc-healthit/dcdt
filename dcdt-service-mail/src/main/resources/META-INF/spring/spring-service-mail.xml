@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans:beans
-    xmlns:aop="http://www.springframework.org/schema/aop"
     xmlns:beans="http://www.springframework.org/schema/beans"
     xmlns:c="http://www.springframework.org/schema/c"
-    xmlns:context="http://www.springframework.org/schema/context"
     xmlns:dcdt="http://direct-test.com/spring/schema/spring-dcdt"
     xmlns:p="http://www.springframework.org/schema/p"
-    xmlns:util="http://www.springframework.org/schema/util"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="
         http://direct-test.com/spring/schema/spring-dcdt http://direct-test.com/spring/schema/spring-dcdt.xsd
-        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
-        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
-        http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     
     <!--====================================================================================================
-    = TASK EXECUTION
+    = TASK EXECUTORS
     =====================================================================================================-->
-    <beans:bean id="taskExecServiceMail" parent="taskExecService"
-        p:corePoolSize="1"
-        p:maxPoolSize="5"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceMail" parent="taskExecThreadPool"
+        p:corePoolSize="${dcdt.service.mail.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.service.mail.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-mail-"/>
     
-    <beans:bean id="taskExecServiceMailServer" parent="taskExecService" lazy-init="true" scope="prototype"
-        p:corePoolSize="#{ taskExecServiceMail.corePoolSize }"
-        p:maxPoolSize="#{ taskExecServiceMail.maxPoolSize }"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceMailServerSmtp" parent="taskExecThreadPool"
+        p:corePoolSize="${dcdt.service.mail.server.smtp.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.service.mail.server.smtp.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-mail-server-smtp-"/>
     
-    <beans:bean id="taskExecServiceMailReq" parent="taskExecService"
-        p:allowCoreThreadTimeOut="true"
-        p:corePoolSize="#{ taskExecServiceMailServer.corePoolSize * 10 }"
-        p:keepAliveSeconds="15"
-        p:maxPoolSize="#{ taskExecServiceMailServer.maxPoolSize * 50 }"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="taskExecServiceMailServerSmtpReq" parent="taskExecThreadPoolDynamic"
+        p:keepAliveSeconds="${dcdt.service.mail.server.smtp.req.task.exec.keep.alive}"
+        p:maxPoolSize="${dcdt.service.mail.server.smtp.req.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-service-mail-server-smtp-req-"/>
     
     <!--====================================================================================================
     = MAIL SERVER CONFIGURATIONS
@@ -42,25 +40,28 @@
     =====================================================================================================-->
     <beans:bean id="smtpServerConfig" class="gov.hhs.onc.dcdt.service.mail.smtp.SmtpServerConfig" parent="mailServerConfig" abstract="true"/>
     
+    <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="smtpServerConfigImpl" class="gov.hhs.onc.dcdt.service.mail.smtp.impl.SmtpServerConfigImpl" parent="smtpServerConfig" abstract="true"
-        p:backlog="1000"
-        p:commandReadTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"
-        p:connectTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 5 }"
-        p:dataReadTimeout="#{ T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_SEC * 15 }"
-        p:maxCommandFrameLength="#{ T(gov.hhs.onc.dcdt.utils.ToolDataUtils).BYTES_IN_KB / 2 }"
-        p:maxDataFrameLength="#{ T(gov.hhs.onc.dcdt.utils.ToolDataUtils).BYTES_IN_MB * 5 }"/>
+        p:backlog="${dcdt.service.mail.server.smtp.backlog}"
+        p:commandReadTimeout="${dcdt.service.mail.server.smtp.command.read.timeout}"
+        p:connectTimeout="${dcdt.service.mail.server.smtp.connect.timeout}"
+        p:dataReadTimeout="${dcdt.service.mail.server.smtp.data.read.timeout}"
+        p:maxCommandFrameLength="${dcdt.service.mail.server.smtp.command.frame.size.max}"
+        p:maxDataFrameLength="${dcdt.service.mail.server.smtp.data.frame.size.max}"/>
     
     <!--====================================================================================================
     = MAIL SERVERS
     =====================================================================================================-->
-    <beans:bean id="mailServer" class="gov.hhs.onc.dcdt.service.mail.server.MailServer" parent="server" abstract="true"/>
+    <beans:bean id="mailServer" class="gov.hhs.onc.dcdt.service.mail.server.MailServer" parent="serverChannel" abstract="true"/>
     
     <!--====================================================================================================
     = SMTP SERVERS
     =====================================================================================================-->
     <beans:bean id="smtpServer" class="gov.hhs.onc.dcdt.service.mail.smtp.SmtpServer" parent="mailServer" abstract="true"/>
     
-    <beans:bean id="smtpServerImpl" class="gov.hhs.onc.dcdt.service.mail.smtp.impl.SmtpServerImpl" parent="smtpServer" abstract="true">
+    <beans:bean id="smtpServerImpl" class="gov.hhs.onc.dcdt.service.mail.smtp.impl.SmtpServerImpl" parent="smtpServer" abstract="true"
+        p:requestTaskExecutor-ref="taskExecServiceMailServerSmtpReq"
+        p:taskExecutor-ref="taskExecServiceMailServerSmtp">
         <beans:constructor-arg name="mailSessionPlainBeanName">
             <beans:idref bean="mailSessionPlain"/>
         </beans:constructor-arg>
@@ -74,14 +75,15 @@
     =====================================================================================================-->
     <beans:bean id="mailService" class="gov.hhs.onc.dcdt.service.mail.MailService" parent="service" abstract="true"/>
     
-    <beans:bean id="mailServiceImpl" class="gov.hhs.onc.dcdt.service.mail.impl.MailServiceImpl" parent="mailService">
+    <beans:bean id="mailServiceImpl" class="gov.hhs.onc.dcdt.service.mail.impl.MailServiceImpl" parent="mailService"
+        p:taskExecutor-ref="taskExecServiceMail">
         <beans:property name="servers">
             <beans:list>
                 <beans:bean parent="smtpServerImpl">
                     <beans:constructor-arg name="config">
                         <!--suppress SpringPlaceholdersInspection -->
                         <beans:bean parent="smtpServerConfigImpl"
-                            p:heloName="#{ instanceConfig.domainName }"
+                            p:heloName="#{ instanceConfigMain.domainName }"
                             p:host-ref="ipAddrLocalAny"
                             p:port="${dcdt.instance.mail.server.smtp.1.port}"
                             p:name="smtpServer1"

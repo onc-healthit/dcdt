@@ -2,13 +2,13 @@ package gov.hhs.onc.dcdt.crypto.certs;
 
 import gov.hhs.onc.dcdt.crypto.CryptographyContentTypes;
 import gov.hhs.onc.dcdt.crypto.CryptographyObjectIdentifier;
-import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
+import gov.hhs.onc.dcdt.beans.ToolTypeIdentifier;
 import java.security.cert.X509Certificate;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.springframework.util.MimeType;
 
-public enum CertificateType implements CryptographyObjectIdentifier, CryptographyTypeIdentifier {
+public enum CertificateType implements CryptographyObjectIdentifier, ToolTypeIdentifier {
     X509("X.509", PKCSObjectIdentifiers.x509Certificate, X509Certificate.class, CryptographyContentTypes.APP_PKIX_CERT,
         CryptographyContentTypes.APP_PKCS7_MIME, "cer", "p7c");
 

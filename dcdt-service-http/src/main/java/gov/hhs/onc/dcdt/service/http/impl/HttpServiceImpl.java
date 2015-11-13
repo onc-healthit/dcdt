@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.service.http.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.http.HttpService;
 import gov.hhs.onc.dcdt.service.http.config.HttpServerConfig;
@@ -12,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
+@AutoStartup(false)
 @Component("httpServiceImpl")
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 1)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
 @ServiceContextConfiguration({ "spring/spring-service-http.xml", "spring/spring-service-http-*.xml" })
 public class HttpServiceImpl extends AbstractToolService<HttpServerConfig, HttpServer> implements HttpService {
     public HttpServiceImpl() {
@@ -28,7 +30,7 @@ public class HttpServiceImpl extends AbstractToolService<HttpServerConfig, HttpS
 
     @Override
     @Resource(name = "taskExecServiceHttp")
-    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
+    public void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
         super.setTaskExecutor(taskExec);
     }
 }

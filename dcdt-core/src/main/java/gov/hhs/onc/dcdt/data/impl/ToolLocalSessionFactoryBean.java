@@ -7,9 +7,10 @@ import gov.hhs.onc.dcdt.data.types.ToolUserType;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.sql.SQLException;
 import java.util.LinkedHashSet;
-import java.util.Objects;
 import java.util.Properties;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.ArrayUtils;
@@ -28,7 +29,8 @@ public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean {
         new Properties(),
         ArrayUtils.toArray(ArrayUtils.toArray(Attribute.SHUTDOWN_ATTR, Boolean.toString(true)),
             ArrayUtils.toArray(Attribute.DEREGISTER_ATTR, Boolean.toString(true))));
-    private final static String SQL_STATE_SHUTDOWN = StringUtils.split(SQLState.SHUTDOWN_DATABASE, ".", 2)[0];
+    private final static Set<String> SHUTDOWN_SQL_STATES_IGNORE = Stream.of(SQLState.DATABASE_NOT_FOUND, SQLState.SHUTDOWN_DATABASE)
+        .map(sqlState -> StringUtils.split(sqlState, ".", 2)[0]).collect(Collectors.toSet());
 
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolLocalSessionFactoryBean.class);
 
@@ -55,7 +57,7 @@ public class ToolLocalSessionFactoryBean extends LocalSessionFactoryBean {
 
             LOGGER.info(String.format("Shutdown and de-registered Derby database (url=%s).", dataSourceUrl));
         } catch (SQLException e) {
-            if (!Objects.equals(e.getSQLState(), SQL_STATE_SHUTDOWN)) {
+            if (!SHUTDOWN_SQL_STATES_IGNORE.contains(e.getSQLState())) {
                 LOGGER.warn(String.format("Unable to shutdown Derby database (url=%s).", dataSourceUrl), e);
             }
         }

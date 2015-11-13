@@ -20,6 +20,7 @@ public final class ToolProperties {
     public final static String CATALINA_BASE_NAME = CATALINA_PREFIX + "base";
 
     public final static String LOG_CONTEXT_NAME_NAME = LOG_CONTEXT_PREFIX + NAME_SUFFIX;
+    public final static String LOG_CONTEXT_INITIALIZED_NAME = LOG_CONTEXT_PREFIX + "initialized";
 
     public final static String LOG_CONSOLE_PATTERN_NAME = LOG_CONSOLE_PREFIX + PATTERN_SUFFIX;
     public final static String LOG_CONSOLE_TARGET_NAME = LOG_CONSOLE_PREFIX + "target";

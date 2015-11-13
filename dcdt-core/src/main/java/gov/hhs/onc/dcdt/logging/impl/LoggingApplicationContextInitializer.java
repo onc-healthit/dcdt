@@ -20,6 +20,7 @@ import gov.hhs.onc.dcdt.logging.LoggingInitializer;
 import java.io.IOException;
 import java.net.URL;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.bridge.SLF4JBridgeHandler;
 import org.springframework.context.support.AbstractRefreshableConfigApplicationContext;
 import org.springframework.core.Ordered;
@@ -57,10 +58,16 @@ public class LoggingApplicationContextInitializer extends AbstractToolApplicatio
 
     @Override
     protected void initializeInternal(AbstractRefreshableConfigApplicationContext appContext) throws Exception {
+        LoggerContext loggerContext = ContextSelectorStaticBinder.getSingleton().getContextSelector().getDefaultLoggerContext();
+
+        if (ObjectUtils.defaultIfNull(((Boolean) loggerContext.getObject(ToolProperties.LOG_CONTEXT_INITIALIZED_NAME)), Boolean.FALSE)) {
+            loggerContext.getLogger(LoggingApplicationContextInitializer.class).info("Skipping logging initialization.");
+
+            return;
+        }
+
         SLF4JBridgeHandler.removeHandlersForRootLogger();
         SLF4JBridgeHandler.install();
-
-        LoggerContext loggerContext = ContextSelectorStaticBinder.getSingleton().getContextSelector().getDefaultLoggerContext();
 
         loggerContext.stop();
         loggerContext.reset();
@@ -101,6 +108,8 @@ public class LoggingApplicationContextInitializer extends AbstractToolApplicatio
 
             throw new ToolApplicationContextException(String.format("Unable to initialize Logback using configuration file (path=%s).", configFileUrl));
         }
+
+        loggerContext.putObject(ToolProperties.LOG_CONTEXT_INITIALIZED_NAME, Boolean.TRUE);
 
         loggerContext.getLogger(LoggingApplicationContextInitializer.class).info(
             String.format("Logging initialized (initializerClass=%s, configFileUrl=%s).", loggingInit.getClass().getName(), configFileUrl.toString()));

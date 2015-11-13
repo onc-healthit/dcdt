@@ -5,8 +5,9 @@ import javax.annotation.Nullable;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import org.apache.directory.server.core.api.CacheService;
+import org.springframework.beans.factory.DisposableBean;
 
-public class ToolCacheService extends CacheService {
+public class ToolCacheService extends CacheService implements DisposableBean {
     private Set<String> disabledCacheNames;
 
     public ToolCacheService(CacheManager cacheManager, Set<String> disabledCacheNames) {

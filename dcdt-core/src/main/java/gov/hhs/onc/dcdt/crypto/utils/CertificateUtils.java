@@ -6,6 +6,7 @@ import gov.hhs.onc.dcdt.crypto.PemType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils.ToolProviderJcaJceHelper;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -48,7 +49,7 @@ public abstract class CertificateUtils {
         throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.writePemContent(CryptographyUtils.findByType(PemType.class, certType.getType()), data);
+                data = PemUtils.writePemContent(ToolEnumUtils.findByType(PemType.class, certType.getType()), data);
             }
 
             try (InputStream certInStream = new ByteArrayInputStream(data)) {

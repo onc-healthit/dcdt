@@ -1,16 +1,15 @@
 package gov.hhs.onc.dcdt.service.dns.server.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServer;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketListener;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerUdpSocketListener;
 import gov.hhs.onc.dcdt.service.server.impl.AbstractToolServer;
-import javax.annotation.Resource;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST)
+@AutoStartup(false)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 1)
 public class DnsServerImpl extends AbstractToolServer<DnsServerConfig> implements DnsServer {
     private DnsServerUdpSocketListener udpSocketListener;
     private DnsServerTcpSocketListener tcpSocketListener;
@@ -27,33 +26,37 @@ public class DnsServerImpl extends AbstractToolServer<DnsServerConfig> implement
 
     @Override
     protected void stopInternal() throws Exception {
-        if (this.udpSocketListener != null) {
-            this.udpSocketListener.stop();
-        }
-
-        if (this.tcpSocketListener != null) {
-            this.tcpSocketListener.stop();
-        }
+        this.tcpSocketListener.stop();
+        this.udpSocketListener.stop();
 
         super.stopInternal();
     }
 
     @Override
     protected void startInternal() throws Exception {
-        this.udpSocketListener = ToolBeanFactoryUtils.createBeanOfType(this.appContext, DnsServerUdpSocketListener.class, this.config);
-        // noinspection ConstantConditions
-        this.udpSocketListener.start();
-
-        this.tcpSocketListener = ToolBeanFactoryUtils.createBeanOfType(this.appContext, DnsServerTcpSocketListener.class, this.config);
-        // noinspection ConstantConditions
         this.tcpSocketListener.start();
+        this.udpSocketListener.start();
 
         super.startInternal();
     }
 
     @Override
-    @Resource(name = "taskExecServiceDnsServer")
-    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
-        super.setTaskExecutor(taskExec);
+    public DnsServerTcpSocketListener getTcpSocketListener() {
+        return this.tcpSocketListener;
+    }
+
+    @Override
+    public void setTcpSocketListener(DnsServerTcpSocketListener tcpSocketListener) {
+        this.tcpSocketListener = tcpSocketListener;
+    }
+
+    @Override
+    public DnsServerUdpSocketListener getUdpSocketListener() {
+        return this.udpSocketListener;
+    }
+
+    @Override
+    public void setUdpSocketListener(DnsServerUdpSocketListener udpSocketListener) {
+        this.udpSocketListener = udpSocketListener;
     }
 }

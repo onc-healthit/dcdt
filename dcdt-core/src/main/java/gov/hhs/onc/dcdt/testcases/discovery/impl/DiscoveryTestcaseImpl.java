@@ -1,6 +1,5 @@
 package gov.hhs.onc.dcdt.testcases.discovery.impl;
 
-import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.crypto.GeneralNameType;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateConfig;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateDn;
@@ -20,16 +19,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
-import javax.persistence.Transient;
 import org.apache.commons.collections4.CollectionUtils;
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.DERIA5String;
 
-@Entity(name = "discovery_testcase")
-@JsonTypeName("discoveryTestcase")
-@Table(name = "discovery_testcases")
 public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcaseDescription> implements DiscoveryTestcase {
     private List<DiscoveryTestcaseCredential> creds;
     private MailAddress mailAddr;
@@ -80,7 +73,6 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     }
 
     @Override
-    @Transient
     public Collection<DiscoveryTestcaseCredential> getTargetCredentials() {
         return (this.hasCredentials() ? this.creds.stream().filter(cred -> (cred.getType() == DiscoveryTestcaseCredentialType.TARGET))
             .collect(Collectors.toList()) : ToolArrayUtils.asList());
@@ -92,7 +84,6 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
     }
 
     @Override
-    @Transient
     public Collection<DiscoveryTestcaseCredential> getBackgroundCredentials() {
         return (this.hasCredentials() ? this.creds.stream().filter(cred -> (cred.getType() == DiscoveryTestcaseCredentialType.BACKGROUND))
             .collect(Collectors.toList()) : ToolArrayUtils.asList());
@@ -105,7 +96,6 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
 
     @Nullable
     @Override
-    @Transient
     public List<DiscoveryTestcaseCredential> getCredentials() {
         return this.creds;
     }
@@ -122,7 +112,6 @@ public class DiscoveryTestcaseImpl extends AbstractToolTestcase<DiscoveryTestcas
 
     @Nullable
     @Override
-    @Transient
     public MailAddress getMailAddress() {
         return this.mailAddr;
     }

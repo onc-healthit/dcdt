@@ -39,7 +39,7 @@ public class LdapServiceConfiguration {
         return ServiceBuilder.createLdapServer(ldapServerBean, dirService);
     }
 
-    @Bean(name = "dirService")
+    @Bean(name = "dirService", destroyMethod = "shutdown")
     @Lazy
     @Scope("prototype")
     public DirectoryService createDirectoryService(ToolDirectoryServiceBean dirServiceBean) throws Exception {
@@ -48,6 +48,7 @@ public class LdapServiceConfiguration {
 
         DirectoryService dirService = ServiceBuilder.createDirectoryService(dirServiceBean, instanceLayout, schemaManager);
         dirService.setCacheService(dirServiceBean.getCacheService());
+        dirService.setExitVmOnShutdown(false);
 
         Partition partition;
 

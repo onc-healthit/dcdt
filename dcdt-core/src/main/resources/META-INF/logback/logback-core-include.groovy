@@ -4,6 +4,7 @@ import ch.qos.logback.core.rolling.RollingFileAppender
 import ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP
 import ch.qos.logback.core.rolling.TimeBasedRollingPolicy
 import ch.qos.logback.core.status.NopStatusListener
+import gov.hhs.onc.dcdt.beans.factory.impl.AbstractToolBeanPostProcessor
 import gov.hhs.onc.dcdt.context.ToolProperties
 import gov.hhs.onc.dcdt.context.impl.ToolMessageSourceImpl
 import gov.hhs.onc.dcdt.convert.impl.AbstractToolConverter
@@ -15,7 +16,6 @@ import gov.hhs.onc.dcdt.velocity.impl.ToolVelocityEngineFactoryBean
 import org.apache.commons.io.FilenameUtils
 import org.apache.commons.lang3.ObjectUtils
 import org.springframework.beans.factory.support.DefaultListableBeanFactory
-
 /*====================================================================================================
 = PROPERTIES: CONSOLE
 =====================================================================================================*/
@@ -82,6 +82,8 @@ appender("file", RollingFileAppender) {
 logger("gov.hhs.onc.dcdt", ALL, [ "console", "file" ], false)
 
 logger(ToolMessageSourceImpl.name, INFO, [ "console", "file" ], false)
+
+logger(AbstractToolBeanPostProcessor.name, INFO, ["console", "file" ], false)
 
 logger(AbstractToolConverter.name, DEBUG, [ "console", "file" ], false)
 

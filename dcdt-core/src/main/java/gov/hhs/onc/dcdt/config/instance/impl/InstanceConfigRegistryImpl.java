@@ -7,8 +7,12 @@ import gov.hhs.onc.dcdt.config.instance.InstanceConfigRegistry;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigService;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
 import gov.hhs.onc.dcdt.data.registry.impl.AbstractToolBeanRegistry;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseRegistry;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialRegistry;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.springframework.stereotype.Component;
 
 @Component("instanceConfigRegistryImpl")
@@ -19,15 +23,17 @@ public class InstanceConfigRegistryImpl extends AbstractToolBeanRegistry<Instanc
     }
 
     @Override
-    protected void preRemoveBeans(List<InstanceConfig> beans) throws ToolBeanRegistryException {
-        this.getDiscoveryTestcaseRegistry().removeAllBeans();
-    }
-
-    @Override
     protected void postRegisterBeans(List<InstanceConfig> beans) throws ToolBeanRegistryException {
         this.appContext.refresh();
 
-        this.getDiscoveryTestcaseRegistry().registerAllBeans();
+        this.getDiscoveryTestcaseCredentialRegistry().registerBeans(this.extractDiscoveryTestcaseCredentials());
+
+        this.appContext.refresh();
+    }
+
+    @Override
+    protected void preRemoveBeans(List<InstanceConfig> beans) throws ToolBeanRegistryException {
+        this.getDiscoveryTestcaseCredentialRegistry().removeBeans(this.extractDiscoveryTestcaseCredentials());
     }
 
     @Override
@@ -35,7 +41,14 @@ public class InstanceConfigRegistryImpl extends AbstractToolBeanRegistry<Instanc
         this.appContext.refresh();
     }
 
-    protected DiscoveryTestcaseRegistry getDiscoveryTestcaseRegistry() {
-        return ToolBeanFactoryUtils.getBeanOfType(this.appContext.getBeanFactory(), DiscoveryTestcaseRegistry.class);
+    protected List<DiscoveryTestcaseCredential> extractDiscoveryTestcaseCredentials() {
+        // noinspection ConstantConditions
+        return ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class).stream()
+            .flatMap(bean -> (bean.hasCredentials() ? bean.getCredentials().stream() : Stream.<DiscoveryTestcaseCredential>empty()))
+            .collect(Collectors.toList());
+    }
+
+    protected DiscoveryTestcaseCredentialRegistry getDiscoveryTestcaseCredentialRegistry() {
+        return ToolBeanFactoryUtils.getBeanOfType(this.appContext, DiscoveryTestcaseCredentialRegistry.class);
     }
 }

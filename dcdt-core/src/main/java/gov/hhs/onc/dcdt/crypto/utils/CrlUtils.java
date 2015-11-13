@@ -8,6 +8,7 @@ import gov.hhs.onc.dcdt.crypto.crl.CrlException;
 import gov.hhs.onc.dcdt.crypto.crl.CrlType;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils.ToolProviderJcaJceHelper;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -82,7 +83,7 @@ public final class CrlUtils {
     public static ToolX509Crl readCrl(byte[] data, CrlType crlType, DataEncoding dataEnc) throws CryptographyException {
         try {
             if (dataEnc == DataEncoding.PEM) {
-                data = PemUtils.writePemContent(CryptographyUtils.findByType(PemType.class, crlType.getType()), data);
+                data = PemUtils.writePemContent(ToolEnumUtils.findByType(PemType.class, crlType.getType()), data);
             }
 
             return new ToolX509Crl(CertificateList.getInstance(data));

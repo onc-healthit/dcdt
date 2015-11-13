@@ -1,11 +1,12 @@
 package gov.hhs.onc.dcdt.web.service.impl;
 
+import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLifecycleBean;
-import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.web.service.ToolServiceHub;
 import gov.hhs.onc.dcdt.web.service.ToolServiceType;
 import java.util.EnumMap;
@@ -13,17 +14,18 @@ import java.util.List;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.AbstractApplicationContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @AutoStartup
 @Component("toolServiceHubImpl")
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 5)
 public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements ToolServiceHub {
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolServiceHubImpl.class);
 
-    private AbstractApplicationContext appContext;
+    @Autowired
+    private List<ToolService<?, ?>> services;
+
     private Map<ToolServiceType, ToolService<?, ?>> serviceMap = new EnumMap<>(ToolServiceType.class);
     private Map<ToolServiceType, List<String>> serviceMsgsMap = new EnumMap<>(ToolServiceType.class);
 
@@ -46,7 +48,7 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
                 this.serviceMsgsMap.put(serviceType, ToolArrayUtils.asList(String.format("Unable to stop service (class=%s, type=%s, status=%s): %s",
                     ToolClassUtils.getName(service), serviceType.name(), service.getLifecycleStatus().name(), e.getMessage())));
 
-                LOGGER.error(String.format("Unable to stop service (class=%s, type=%s, status=%s).", ToolClassUtils.getName(service), serviceType.name(),
+                LOGGER.error(String.format("Unable to stop service (class=%s, type=%s, status=%s).", ToolClassUtils.getName(service), serviceType.getId(),
                     service.getLifecycleStatus().name()), e);
             }
         }
@@ -57,7 +59,7 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
         ToolService<?, ?> service;
 
         for (ToolServiceType serviceType : ToolServiceType.class.getEnumConstants()) {
-            this.serviceMap.put(serviceType, (service = ToolBeanFactoryUtils.getBeanOfType(this.appContext, serviceType.getServiceClass())));
+            this.serviceMap.put(serviceType, (service = this.services.stream().filter(ToolStreamUtils.instances(serviceType.getType())).findFirst().get()));
 
             try {
                 // noinspection ConstantConditions
@@ -67,15 +69,10 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
                 this.serviceMsgsMap.put(serviceType, ToolArrayUtils.asList(String.format("Unable to start service (class=%s, type=%s, status=%s): %s",
                     ToolClassUtils.getName(service), serviceType.name(), service.getLifecycleStatus().name(), e.getMessage())));
 
-                LOGGER.error(String.format("Unable to start service (class=%s, type=%s, status=%s).", ToolClassUtils.getName(service), serviceType.name(),
+                LOGGER.error(String.format("Unable to start service (class=%s, type=%s, status=%s).", ToolClassUtils.getName(service), serviceType.getId(),
                     service.getLifecycleStatus().name()), e);
             }
         }
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext appContext) throws BeansException {
-        this.appContext = ((AbstractApplicationContext) appContext);
     }
 
     @Override

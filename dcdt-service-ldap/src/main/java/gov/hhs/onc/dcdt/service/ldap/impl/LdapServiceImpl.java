@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.service.ldap.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.impl.AbstractToolService;
 import gov.hhs.onc.dcdt.service.ldap.LdapService;
@@ -12,8 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Component;
 
+@AutoStartup(false)
 @Component("ldapServiceImpl")
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 3)
 @ServiceContextConfiguration({ "spring/spring-service-ldap.xml", "spring/spring-service-ldap-*.xml" })
 public class LdapServiceImpl extends AbstractToolService<LdapServerConfig, LdapServer> implements LdapService {
     public LdapServiceImpl() {
@@ -28,7 +30,7 @@ public class LdapServiceImpl extends AbstractToolService<LdapServerConfig, LdapS
 
     @Override
     @Resource(name = "taskExecServiceLdap")
-    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
+    public void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
         super.setTaskExecutor(taskExec);
     }
 }

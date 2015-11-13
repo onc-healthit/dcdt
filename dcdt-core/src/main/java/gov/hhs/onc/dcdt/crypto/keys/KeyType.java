@@ -1,11 +1,12 @@
 package gov.hhs.onc.dcdt.crypto.keys;
 
-import gov.hhs.onc.dcdt.crypto.CryptographyTypeIdentifier;
+import gov.hhs.onc.dcdt.beans.ToolIdentifier;
+import gov.hhs.onc.dcdt.beans.ToolTypeIdentifier;
 import java.security.KeyRep.Type;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 
-public enum KeyType implements CryptographyTypeIdentifier {
+public enum KeyType implements ToolIdentifier, ToolTypeIdentifier {
     PUBLIC(Type.PUBLIC.name(), PublicKey.class), PRIVATE(Type.PRIVATE.name(), PrivateKey.class);
 
     private final String id;

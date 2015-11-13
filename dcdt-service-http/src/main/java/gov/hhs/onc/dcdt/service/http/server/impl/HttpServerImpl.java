@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.service.http.server.impl;
 import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.beans.ToolNamedBean;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
+import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
@@ -14,7 +15,6 @@ import gov.hhs.onc.dcdt.net.utils.ToolUriUtils;
 import gov.hhs.onc.dcdt.service.http.config.HttpServerConfig;
 import gov.hhs.onc.dcdt.service.http.server.HttpServer;
 import gov.hhs.onc.dcdt.service.server.impl.AbstractToolChannelServer;
-import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredentialType;
 import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
@@ -43,16 +43,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.util.MimeType;
 
-@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 1)
+@AutoStartup(false)
+@Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
 public class HttpServerImpl extends AbstractToolChannelServer<HttpServerConfig> implements HttpServer {
     private class HttpServerRequestHandler extends AbstractToolServerRequestHandler<FullHttpRequest> {
         @Override
@@ -216,9 +216,8 @@ public class HttpServerImpl extends AbstractToolChannelServer<HttpServerConfig> 
         // noinspection ConstantConditions
         Map<String, DiscoveryTestcaseCredential> discoveryTestcaseIssuerCreds =
             ToolBeanFactoryUtils
-                .getBeansOfType(this.appContext, DiscoveryTestcase.class)
+                .getBeansOfType(this.appContext, DiscoveryTestcaseCredential.class)
                 .stream()
-                .flatMap(discoveryTestcase -> (discoveryTestcase.hasCredentials() ? discoveryTestcase.getCredentials().stream() : Stream.empty()))
                 .filter(
                     discoveryTestcaseCred -> ((discoveryTestcaseCred.getType() == DiscoveryTestcaseCredentialType.CA) && discoveryTestcaseCred.hasCrlConfig() && discoveryTestcaseCred
                         .hasCredentialInfo()))
@@ -230,14 +229,18 @@ public class HttpServerImpl extends AbstractToolChannelServer<HttpServerConfig> 
 
         discoveryTestcaseIssuerCreds.forEach((discoveryTestcaseIssuerCredName, discoveryTestcaseIssuerCred) -> {
             // noinspection ConstantConditions
-            this.discoveryTestcaseIssuerCredCertPaths.put(
+            String discoveryTestcaseIssuerCredCertPath =
                 (ToolUriUtils.PATH_DELIM + discoveryTestcaseIssuerCredName + FilenameUtils.EXTENSION_SEPARATOR + discoveryTestcaseIssuerCred
-                    .getCredentialConfig().getCertificateDescriptor().getCertificateType().getFileNameExtension()), discoveryTestcaseIssuerCred);
-
-            // noinspection ConstantConditions
-            this.discoveryTestcaseIssuerCredCrlPaths.put(
+                    .getCredentialConfig().getCertificateDescriptor().getCertificateType().getFileNameExtension()), discoveryTestcaseIssuerCredCrlPath =
                 (ToolUriUtils.PATH_DELIM + discoveryTestcaseIssuerCredName + FilenameUtils.EXTENSION_SEPARATOR + discoveryTestcaseIssuerCred.getCrlConfig()
-                    .getCrlType().getFileNameExtension()), discoveryTestcaseIssuerCred);
+                    .getCrlType().getFileNameExtension());
+
+            this.discoveryTestcaseIssuerCredCertPaths.put(discoveryTestcaseIssuerCredCertPath, discoveryTestcaseIssuerCred);
+            this.discoveryTestcaseIssuerCredCrlPaths.put(discoveryTestcaseIssuerCredCrlPath, discoveryTestcaseIssuerCred);
+
+            LOGGER.debug(String.format("HTTP server (host={%s}, port=%d) Discovery testcase issuer credential (name=%s) hosted: certPath=%s, crlPath=%s",
+                this.config.getHost(), this.config.getPort(), discoveryTestcaseIssuerCredName, discoveryTestcaseIssuerCredCertPath,
+                discoveryTestcaseIssuerCredCrlPath));
         });
     }
 
@@ -247,14 +250,24 @@ public class HttpServerImpl extends AbstractToolChannelServer<HttpServerConfig> 
     }
 
     @Override
-    @Resource(name = "taskExecServiceHttpReq")
-    protected void setRequestTaskExecutor(ThreadPoolTaskExecutor reqTaskExec) {
-        super.setRequestTaskExecutor(reqTaskExec);
+    public boolean hasDiscoveryTestcaseIssuerCredentialCertificatePaths() {
+        return !MapUtils.isEmpty(this.discoveryTestcaseIssuerCredCertPaths);
+    }
+
+    @Nullable
+    @Override
+    public Map<String, DiscoveryTestcaseCredential> getDiscoveryTestcaseIssuerCredentialCertificatePaths() {
+        return this.discoveryTestcaseIssuerCredCertPaths;
     }
 
     @Override
-    @Resource(name = "taskExecServiceHttpServer")
-    protected void setTaskExecutor(ThreadPoolTaskExecutor taskExec) {
-        super.setTaskExecutor(taskExec);
+    public boolean hasDiscoveryTestcaseIssuerCredentialCrlPaths() {
+        return !MapUtils.isEmpty(this.discoveryTestcaseIssuerCredCrlPaths);
+    }
+
+    @Nullable
+    @Override
+    public Map<String, DiscoveryTestcaseCredential> getDiscoveryTestcaseIssuerCredentialCrlPaths() {
+        return this.discoveryTestcaseIssuerCredCrlPaths;
     }
 }

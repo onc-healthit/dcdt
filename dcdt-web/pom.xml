@@ -99,10 +99,6 @@
             <artifactId>annotations</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.icegreen</groupId>
-            <artifactId>greenmail</artifactId>
-        </dependency>
-        <dependency>
             <groupId>com.mchange</groupId>
             <artifactId>c3p0</artifactId>
         </dependency>
