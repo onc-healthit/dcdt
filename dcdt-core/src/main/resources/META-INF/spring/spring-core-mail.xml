@@ -18,30 +18,9 @@
     <!--====================================================================================================
     = MAIL SESSION
     =====================================================================================================-->
-    <beans:bean id="mailSession" class="javax.mail.Session" abstract="true" factory-method="getInstance">
-        <beans:constructor-arg index="0">
-            <beans:props>
-                <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailMimeProperties).CACHE_MULTIPART }">false</beans:prop>
-            </beans:props>
-        </beans:constructor-arg>
-        <beans:constructor-arg index="1">
-            <beans:null/>
-        </beans:constructor-arg>
-    </beans:bean>
+    <beans:bean id="mailSession" class="javax.mail.Session" abstract="true"/>
     
-    <beans:bean id="mailSessionDefault" parent="mailSession" factory-method="getDefaultInstance" primary="true"/>
-    
-    <beans:bean id="mailSessionPlain" parent="mailSession" lazy-init="true" scope="prototype"/>
-    
-    <beans:bean id="mailSessionSsl" parent="mailSession" lazy-init="true" scope="prototype">
-        <beans:constructor-arg index="0">
-            <beans:props merge="true">
-                <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).SSL_ENABLE }">true</beans:prop>
-                <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).SSL_TRUST }">*</beans:prop>
-                <beans:prop key="#{ T(gov.hhs.onc.dcdt.mail.JavaMailSmtpProperties).STARTTLS_ENABLE }">true</beans:prop>
-            </beans:props>
-        </beans:constructor-arg>
-    </beans:bean>
+    <beans:bean id="mailSessionDefault" class="gov.hhs.onc.dcdt.mail.utils.ToolMailSessionUtils" parent="mailSession" factory-method="buildSession"/>
     
     <!--====================================================================================================
     = MAIL GATEWAY CONFIG
@@ -49,14 +28,7 @@
     <beans:bean id="mailGatewayConfig" class="gov.hhs.onc.dcdt.mail.config.MailGatewayConfig" abstract="true"/>
     <beans:bean id="mailGatewayConfigImpl" class="gov.hhs.onc.dcdt.mail.config.impl.MailGatewayConfigImpl" parent="mailGatewayConfig" abstract="true"
         p:host-ref="ipAddrLocalAny"
-        p:transportProtocol="SMTP">
-        <beans:constructor-arg name="mailSessionPlainBeanName">
-            <beans:idref bean="mailSessionPlain"/>
-        </beans:constructor-arg>
-        <beans:constructor-arg name="mailSessionSslBeanName">
-            <beans:idref bean="mailSessionSsl"/>
-        </beans:constructor-arg>
-    </beans:bean>
+        p:transportProtocol="SMTP"/>
     
     <!--====================================================================================================
     = MAIL GATEWAY CREDENTIAL CONFIG
@@ -68,18 +40,15 @@
         p:generateSecret="true"/>
     
     <!--====================================================================================================
-    = MAIL VELOCITY ENGINE
-    =====================================================================================================-->
-    <beans:bean id="velocityEngineMail" parent="velocityEngine"/>
-    
-    <!--====================================================================================================
-    = MAIL MESSAGE
-    =====================================================================================================-->
-    <beans:bean id="mimeMailMsg" class="gov.hhs.onc.dcdt.mail.sender.ToolMimeMailMessage" abstract="true"/>
-    <beans:bean id="mimeMailMsgImpl" class="gov.hhs.onc.dcdt.mail.sender.impl.ToolMimeMailMessageImpl" parent="mimeMailMsg" abstract="true"/>
-    
-    <!--====================================================================================================
     = MAIL SENDER SERVICE
     =====================================================================================================-->
-    <beans:bean id="mailSenderService" class="gov.hhs.onc.dcdt.mail.sender.ToolMailSenderService" abstract="true"/>
+    <!--suppress SpringPlaceholdersInspection -->
+    <beans:bean id="mailSenderService" class="gov.hhs.onc.dcdt.mail.sender.MailSenderService" abstract="true"
+        p:connectTimeout="${dcdt.mail.service.sender.connect.timeout}"
+        p:encoding="UTF_8"
+        p:readTimeout="${dcdt.mail.service.sender.read.timeout}"/>
+    
+    <beans:bean id="mailSenderServiceTemplate" class="gov.hhs.onc.dcdt.mail.sender.TemplateMailSenderService" parent="mailSenderService" abstract="true"
+        p:dnsNameService-ref="dnsNameServiceLocal"
+        p:replyToConfig-ref="instanceMailAddrConfigNoReply"/>
 </beans:beans>

@@ -72,6 +72,7 @@
         p:certificateAuthority="true">
         <beans:property name="keyUsages">
             <beans:set merge="true">
+                <beans:value>CRL_SIGN</beans:value>
                 <beans:value>KEY_CERT_SIGN</beans:value>
             </beans:set>
         </beans:property>
@@ -87,6 +88,7 @@
     <beans:bean id="crlConfig" class="gov.hhs.onc.dcdt.crypto.crl.CrlConfig" parent="crlDesc" abstract="true"/>
     <beans:bean id="crlConfigImpl" class="gov.hhs.onc.dcdt.crypto.crl.impl.CrlConfigImpl" parent="crlConfig" abstract="true"
         p:crlType="X509"
+        p:number="0"
         p:signatureAlgorithm="SHA256_WITH_RSA_ENCRYPTION"/>
     
     <beans:bean id="crlEntryDesc" class="gov.hhs.onc.dcdt.crypto.crl.CrlEntryDescriptor" parent="cryptoDesc" abstract="true"/>

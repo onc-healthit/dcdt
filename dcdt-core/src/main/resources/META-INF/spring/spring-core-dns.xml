@@ -48,7 +48,7 @@
     = DNS SERVER SOCKET ADDRESSES
     =====================================================================================================-->
     <beans:bean id="socketAddrDnsServer" parent="socketAddr" abstract="true">
-        <beans:constructor-arg index="1" value="#{ T(org.xbill.DNS.SimpleResolver).DEFAULT_PORT }"/>
+        <beans:constructor-arg index="1" value="#{ T(gov.hhs.onc.dcdt.dns.DnsTransportProtocol).DNS.defaultPort }"/>
     </beans:bean>
     
     <!--====================================================================================================

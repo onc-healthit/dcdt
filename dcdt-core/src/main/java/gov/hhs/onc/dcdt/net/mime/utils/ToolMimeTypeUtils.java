@@ -1,7 +1,6 @@
 package gov.hhs.onc.dcdt.net.mime.utils;
 
 import gov.hhs.onc.dcdt.collections.impl.AbstractToolPredicate;
-import gov.hhs.onc.dcdt.collections.impl.AbstractToolTransformer;
 import gov.hhs.onc.dcdt.net.mime.CoreContentTypes;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolMapUtils;
@@ -10,23 +9,9 @@ import java.util.Map.Entry;
 import javax.annotation.Nullable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.springframework.util.MimeType;
 
 public abstract class ToolMimeTypeUtils {
-    public static class MimeTypeParameterEntryTransformer extends AbstractToolTransformer<String, Entry<String, String>> {
-        private String paramName;
-
-        public MimeTypeParameterEntryTransformer(String paramName) {
-            this.paramName = paramName;
-        }
-
-        @Override
-        protected Entry<String, String> transformInternal(String paramValue) throws Exception {
-            return new MutablePair<>(this.paramName, paramValue);
-        }
-    }
-
     public static class MimeTypeComparator implements Comparator<MimeType> {
         public final static MimeTypeComparator INSTANCE = new MimeTypeComparator(true);
         public final static MimeTypeComparator INSTANCE_BASE_TYPE = new MimeTypeComparator(false);

@@ -1,10 +1,11 @@
 package gov.hhs.onc.dcdt.service.config.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
 import javax.annotation.Nonnegative;
 
-public abstract class AbstractToolServerConfig extends AbstractToolConnectionBean implements ToolServerConfig {
+public abstract class AbstractToolServerConfig<T extends TransportProtocol> extends AbstractToolConnectionBean<T> implements ToolServerConfig<T> {
     protected String protocol;
     protected int backlog;
     protected int connTimeout;

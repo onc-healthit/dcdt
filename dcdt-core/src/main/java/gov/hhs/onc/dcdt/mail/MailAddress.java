@@ -17,10 +17,10 @@ public interface MailAddress extends Serializable, ToolBean {
     public BindingType getBindingType();
 
     @Nullable
-    public InternetAddress toInternetAddress() throws ToolMailAddressException;
+    public InternetAddress toInternetAddress(MailEncoding enc) throws ToolMailAddressException;
 
     @Nullable
-    public InternetAddress toInternetAddress(boolean includePersonalPart) throws ToolMailAddressException;
+    public InternetAddress toInternetAddress(MailEncoding enc, boolean includePersonalPart) throws ToolMailAddressException;
 
     public boolean hasAddressName();
 

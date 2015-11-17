@@ -1,6 +1,7 @@
 package gov.hhs.onc.dcdt.service.server.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolLifecycleBean;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
 import gov.hhs.onc.dcdt.service.server.ToolServer;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
@@ -11,14 +12,15 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-public abstract class AbstractToolServer<T extends ToolServerConfig> extends AbstractToolLifecycleBean implements ToolServer<T> {
-    protected T config;
+public abstract class AbstractToolServer<T extends TransportProtocol, U extends ToolServerConfig<T>> extends AbstractToolLifecycleBean implements
+    ToolServer<T, U> {
+    protected U config;
     protected AbstractApplicationContext appContext;
     protected ThreadPoolTaskExecutor reqTaskExec;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolServer.class);
 
-    protected AbstractToolServer(T config) {
+    protected AbstractToolServer(U config) {
         this.config = config;
     }
 
@@ -40,7 +42,7 @@ public abstract class AbstractToolServer<T extends ToolServerConfig> extends Abs
     }
 
     @Override
-    public T getConfig() {
+    public U getConfig() {
         return this.config;
     }
 

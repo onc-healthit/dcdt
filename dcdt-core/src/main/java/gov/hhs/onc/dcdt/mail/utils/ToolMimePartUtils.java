@@ -2,16 +2,13 @@ package gov.hhs.onc.dcdt.mail.utils;
 
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.ToolMailException;
-import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils;
-import gov.hhs.onc.dcdt.net.mime.utils.ToolMimeTypeUtils.MimeTypeComparator;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
+import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.TreeMap;
 import javax.annotation.Nullable;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeBodyPart;
@@ -24,18 +21,12 @@ import org.springframework.util.MimeTypeUtils;
 public abstract class ToolMimePartUtils {
     public final static String DELIM_HEADER = ":";
 
-    public static Map<String, MimeBodyPart> mapAttachmentPartFileNames(MimeMultipart multipart) throws MessagingException {
-        int numBodyParts = multipart.getCount();
-        Map<String, MimeBodyPart> attachmentPartFileNameMap = new LinkedHashMap<>(numBodyParts);
-        MimeBodyPart bodyPart;
+    public static byte[] write(MimePart part) throws IOException, MessagingException {
+        try (ByteArrayOutputStream contentOutStream = new ByteArrayOutputStream()) {
+            part.writeTo(contentOutStream);
 
-        for (int a = 0; a < numBodyParts; a++) {
-            if (isAttachment((bodyPart = ((MimeBodyPart) multipart.getBodyPart(a))))) {
-                attachmentPartFileNameMap.put(bodyPart.getFileName(), bodyPart);
-            }
+            return contentOutStream.toByteArray();
         }
-
-        return attachmentPartFileNameMap;
     }
 
     public static List<MimeBodyPart> getAttachmentParts(MimeMultipart multipart) throws MessagingException {
@@ -64,52 +55,33 @@ public abstract class ToolMimePartUtils {
         return (Objects.equals(bodyPart.getDisposition(), MimeBodyPart.ATTACHMENT) && (!requireFileName || (bodyPart.getFileName() != null)));
     }
 
-    public static Map<MimeType, List<MimeBodyPart>> mapBodyPartContentTypes(MimeMultipart multipart) throws MessagingException {
-        return mapBodyPartContentTypes(multipart, true);
-    }
-
-    public static Map<MimeType, List<MimeBodyPart>> mapBodyPartContentTypes(MimeMultipart multipart, boolean compareContentBaseType) throws MessagingException {
-        Map<MimeType, List<MimeBodyPart>> bodyPartContentTypeMap =
-            new TreeMap<>((compareContentBaseType ? MimeTypeComparator.INSTANCE_BASE_TYPE : MimeTypeComparator.INSTANCE));
-        MimeBodyPart bodyPart;
-        MimeType bodyPartContentType;
-
-        for (int a = 0; a < multipart.getCount(); a++) {
-            if (!bodyPartContentTypeMap.containsKey((bodyPartContentType = getContentType((bodyPart = ((MimeBodyPart) multipart.getBodyPart(a))))))) {
-                bodyPartContentTypeMap.put((compareContentBaseType ? ToolMimeTypeUtils.forBaseType(bodyPartContentType) : bodyPartContentType),
-                    new ArrayList<MimeBodyPart>());
-            }
-
-            bodyPartContentTypeMap.get(bodyPartContentType).add(bodyPart);
-        }
-
-        return bodyPartContentTypeMap;
-    }
-
-    public static List<MimeBodyPart> getBodyParts(MimeMultipart multipart) throws MessagingException {
+    public static MimeBodyPart[] getBodyParts(MimeMultipart multipart) throws MessagingException {
         int numBodyParts = multipart.getCount();
-        List<MimeBodyPart> bodyParts = new ArrayList<>(numBodyParts);
+        MimeBodyPart[] bodyParts = new MimeBodyPart[numBodyParts];
 
         for (int a = 0; a < numBodyParts; a++) {
-            bodyParts.add(((MimeBodyPart) multipart.getBodyPart(a)));
+            bodyParts[a] = ((MimeBodyPart) multipart.getBodyPart(a));
         }
 
         return bodyParts;
     }
 
     @Nullable
-    public static MailContentTransferEncoding getContentXferEncoding(MimePart part) throws MessagingException {
+    public static MailContentTransferEncoding getContentTransferEncoding(MimePart part) throws MessagingException {
         String contentXferEncStr = part.getEncoding();
 
-        if (contentXferEncStr != null) {
-            for (MailContentTransferEncoding contentXferEnc : EnumSet.allOf(MailContentTransferEncoding.class)) {
-                if (contentXferEnc.getValue().equals(contentXferEncStr)) {
-                    return contentXferEnc;
-                }
-            }
+        if (contentXferEncStr == null) {
+            return null;
         }
 
-        return null;
+        MailContentTransferEncoding contentXferEnc = ToolEnumUtils.findById(MailContentTransferEncoding.class, contentXferEncStr);
+
+        if (contentXferEnc == null) {
+            throw new ToolMailException(String.format("Unable to parse MIME part (class=%s, desc=%s) content transfer encoding: %s",
+                ToolClassUtils.getName(part), part.getDescription(), contentXferEncStr));
+        }
+
+        return contentXferEnc;
     }
 
     @Nullable

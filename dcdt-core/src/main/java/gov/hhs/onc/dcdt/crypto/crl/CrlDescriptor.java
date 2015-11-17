@@ -22,6 +22,11 @@ public interface CrlDescriptor<T extends CrlEntryDescriptor> extends Cryptograph
     @Nullable
     public CertificateDn getIssuerDn();
 
+    public boolean hasNumber();
+
+    @Nullable
+    public BigInteger getNumber();
+
     public boolean hasSignatureAlgorithm();
 
     @Nullable

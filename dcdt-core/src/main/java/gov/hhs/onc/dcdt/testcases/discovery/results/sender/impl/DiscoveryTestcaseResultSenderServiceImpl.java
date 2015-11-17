@@ -1,33 +1,90 @@
 package gov.hhs.onc.dcdt.testcases.discovery.results.sender.impl;
 
-import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.crypto.DataEncoding;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
+import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.impl.MimeAttachmentResource;
-import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
-import gov.hhs.onc.dcdt.mail.sender.impl.AbstractToolMailSenderService;
+import gov.hhs.onc.dcdt.mail.sender.impl.AbstractTemplateMailSenderService;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResultCredentialType;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
-import java.nio.charset.Charset;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import javax.annotation.Nullable;
+import javax.mail.MessagingException;
 import org.apache.commons.io.FilenameUtils;
-import org.apache.velocity.app.VelocityEngine;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.springframework.ui.ModelMap;
 
-public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSenderService implements DiscoveryTestcaseResultSenderService {
+public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractTemplateMailSenderService implements DiscoveryTestcaseResultSenderService {
+    @Order(Ordered.HIGHEST_PRECEDENCE + 2)
+    private class DiscoveryTestcaseResultMailPreparator implements MailPreparator {
+        private DiscoveryTestcaseResult discoveryTestcaseResult;
+
+        public DiscoveryTestcaseResultMailPreparator(DiscoveryTestcaseResult discoveryTestcaseResult) {
+            this.discoveryTestcaseResult = discoveryTestcaseResult;
+        }
+
+        @Override
+        public MailInfo prepareMail(MailInfo mailInfo) throws Exception {
+            DiscoveryTestcaseSubmission discoveryTestcaseSubmission = discoveryTestcaseResult.getSubmission();
+            DiscoveryTestcase discoveryTestcase = discoveryTestcaseSubmission.getTestcase();
+            // noinspection ConstantConditions
+            String discoveryTestcaseName = discoveryTestcase.getName();
+
+            // noinspection ConstantConditions
+            List<MimeAttachmentResource> attachments = new ArrayList<>(DiscoveryTestcaseResultCredentialType.values().length + 1);
+
+            if (!discoveryTestcaseResult.isSuccess() && discoveryTestcaseResult.hasExpectedDecryptionCredential()) {
+                DiscoveryTestcaseCredential expectedDecryptCred = discoveryTestcaseResult.getExpectedDecryptionCredential();
+                // noinspection ConstantConditions
+                CertificateInfo expectedDecryptCredCertInfo = expectedDecryptCred.getCredentialInfo().getCertificateDescriptor();
+
+                // noinspection ConstantConditions
+                attachments
+                    .add(new MimeAttachmentResource(CertificateUtils.writeCertificate(expectedDecryptCredCertInfo.getCertificate(), DataEncoding.DER),
+                        expectedDecryptCred.getName(), MailContentTransferEncoding.BASE64, expectedDecryptCredCertInfo.getCertificateType().getContentType(),
+                        discoveryTestcaseName + DiscoveryTestcaseResultCredentialType.EXPECTED.getAttachmentFileNameSuffix()
+                            + DataEncoding.DER.getFileExtension()));
+            }
+
+            if (discoveryTestcaseResult.hasDecryptionCredential()) {
+                DiscoveryTestcaseCredential decryptCred = discoveryTestcaseResult.getDecryptionCredential();
+                // noinspection ConstantConditions
+                CertificateInfo decryptCredCertInfo = decryptCred.getCredentialInfo().getCertificateDescriptor();
+
+                // noinspection ConstantConditions
+                attachments.add(new MimeAttachmentResource(CertificateUtils.writeCertificate(decryptCredCertInfo.getCertificate(), DataEncoding.DER),
+                    decryptCred.getName(), MailContentTransferEncoding.BASE64, decryptCredCertInfo.getCertificateType().getContentType(), discoveryTestcaseName
+                        + DiscoveryTestcaseResultCredentialType.DISCOVERED.getAttachmentFileNameSuffix() + DataEncoding.DER.getFileExtension()));
+            }
+
+            Date msgProcDate = new Date();
+
+            // noinspection ConstantConditions
+            attachments.add(new MimeAttachmentResource(discoveryTestcaseSubmission.getMailInfo().write(), (discoveryTestcaseName
+                + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgProcDate)),
+                MailContentTransferEncoding.QUOTED_PRINTABLE, MailContentTypes.MSG_RFC822, (discoveryTestcaseName.toLowerCase()
+                    + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgProcDate)
+                    + FilenameUtils.EXTENSION_SEPARATOR + FILE_EXT_MAIL)));
+
+            mailInfo.setAttachments(attachments);
+
+            return mailInfo;
+        }
+    }
+
     private final static DateFormat ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");
     private final static String ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL = " mail processed at ";
 
@@ -36,58 +93,13 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractToolMailSe
 
     private final static String MODEL_ATTR_NAME_TESTCASE_DISCOVERY_RESULT = "discoveryTestcaseResult";
 
-    public DiscoveryTestcaseResultSenderServiceImpl(Charset mailEnc, VelocityEngine velocityEngine, InstanceMailAddressConfig fromConfig,
-        @Nullable InstanceMailAddressConfig replyToConfig, String mimeMailMsgBeanName) {
-        super(mailEnc, velocityEngine, fromConfig, replyToConfig, mimeMailMsgBeanName);
-    }
+    private final static String FILE_EXT_MAIL = "eml";
 
     @Override
-    public void send(DiscoveryTestcaseResult discoveryTestcaseResult, MailAddress to) throws Exception {
-        DiscoveryTestcaseSubmission discoveryTestcaseSubmission = discoveryTestcaseResult.getSubmission();
-        DiscoveryTestcase discoveryTestcase = discoveryTestcaseSubmission.getTestcase();
-        // noinspection ConstantConditions
-        String discoveryTestcaseName = discoveryTestcase.getName();
+    public void send(DiscoveryTestcaseResult discoveryTestcaseResult, MailAddress toAddr) throws MessagingException {
+        ModelMap model = new ModelMap();
+        model.addAttribute(MODEL_ATTR_NAME_TESTCASE_DISCOVERY_RESULT, discoveryTestcaseResult);
 
-        ModelMap modelMap = new ModelMap();
-        modelMap.addAttribute(MODEL_ATTR_NAME_TESTCASE_DISCOVERY_RESULT, discoveryTestcaseResult);
-
-        // noinspection ConstantConditions
-        List<MimeAttachmentResource> attachmentResources = new ArrayList<>(DiscoveryTestcaseResultCredentialType.values().length + 1);
-
-        if (!discoveryTestcaseResult.isSuccess() && discoveryTestcaseResult.hasExpectedDecryptionCredential()) {
-            DiscoveryTestcaseCredential expectedDecryptCred = discoveryTestcaseResult.getExpectedDecryptionCredential();
-            // noinspection ConstantConditions
-            CertificateInfo expectedDecryptCredCertInfo = expectedDecryptCred.getCredentialInfo().getCertificateDescriptor();
-
-            // noinspection ConstantConditions
-            attachmentResources.add(new MimeAttachmentResource(
-                CertificateUtils.writeCertificate(expectedDecryptCredCertInfo.getCertificate(), DataEncoding.DER), expectedDecryptCred.getName(),
-                expectedDecryptCredCertInfo.getCertificateType().getContentType(), MailContentTransferEncoding.BASE64, discoveryTestcaseName
-                    + DiscoveryTestcaseResultCredentialType.EXPECTED.getAttachmentFileNameSuffix() + DataEncoding.DER.getFileExtension()));
-        }
-
-        if (discoveryTestcaseResult.hasDecryptionCredential()) {
-            DiscoveryTestcaseCredential decryptCred = discoveryTestcaseResult.getDecryptionCredential();
-            // noinspection ConstantConditions
-            CertificateInfo decryptCredCertInfo = decryptCred.getCredentialInfo().getCertificateDescriptor();
-
-            // noinspection ConstantConditions
-            attachmentResources.add(new MimeAttachmentResource(CertificateUtils.writeCertificate(decryptCredCertInfo.getCertificate(), DataEncoding.DER),
-                decryptCred.getName(), decryptCredCertInfo.getCertificateType().getContentType(), MailContentTransferEncoding.BASE64, discoveryTestcaseName
-                    + DiscoveryTestcaseResultCredentialType.DISCOVERED.getAttachmentFileNameSuffix() + DataEncoding.DER.getFileExtension()));
-        }
-
-        ToolMimeMessageHelper msgHelper = discoveryTestcaseSubmission.getMessageHelper();
-        Date msgProcDate = new Date();
-
-        // noinspection ConstantConditions
-        attachmentResources
-            .add(new MimeAttachmentResource(msgHelper.write(),
-                (discoveryTestcaseName + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgProcDate)),
-                MailContentTypes.MSG_RFC822, MailContentTransferEncoding.QUOTED, (discoveryTestcaseName.toLowerCase()
-                    + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgProcDate)
-                    + FilenameUtils.EXTENSION_SEPARATOR + ToolMimeMessageHelper.FILE_EXT_MAIL)));
-
-        this.send(modelMap, modelMap, to, attachmentResources);
+        this.send(toAddr, model, model, ToolArrayUtils.asList(new DiscoveryTestcaseResultMailPreparator(discoveryTestcaseResult)));
     }
 }

@@ -5,13 +5,13 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonSubTypes.Type;
 import gov.hhs.onc.dcdt.beans.ToolConnectionBean;
 import gov.hhs.onc.dcdt.config.instance.impl.InstanceLdapConfigImpl;
-import gov.hhs.onc.dcdt.ldap.LdapSslType;
+import gov.hhs.onc.dcdt.ldap.LdapTransportProtocol;
 import org.apache.directory.api.ldap.model.entry.Entry;
 import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
 @JsonSubTypes({ @Type(InstanceLdapConfigImpl.class) })
-public interface InstanceLdapConfig extends ToolConnectionBean {
+public interface InstanceLdapConfig extends ToolConnectionBean<LdapTransportProtocol> {
     public LdapConnectionConfig toConnectionConfigAdmin();
 
     public LdapConnectionConfig toConnectionConfigAnonymous();
@@ -40,8 +40,7 @@ public interface InstanceLdapConfig extends ToolConnectionBean {
 
     public void setServerId(String serverId);
 
-    @JsonProperty("sslType")
-    public LdapSslType getSslType();
-
-    public void setSslType(LdapSslType sslType);
+    @JsonProperty("transportProtocol")
+    @Override
+    public LdapTransportProtocol getTransportProtocol();
 }

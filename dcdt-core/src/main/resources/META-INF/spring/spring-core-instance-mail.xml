@@ -58,6 +58,7 @@
         <beans:property name="gatewayConfig">
             <!--suppress SpringPlaceholdersInspection -->
             <beans:bean parent="mailGatewayConfigImpl"
+                p:heloName="#{ instanceConfigMain.domainName }"
                 p:port="${dcdt.instance.mail.server.smtp.1.port}"/>
         </beans:property>
         <beans:property name="gatewayCredentialConfig">
@@ -76,7 +77,7 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="instanceMailAddrConfigResults" parent="instanceMailAddrConfigImpl"
+    <beans:bean id="instanceMailAddrConfigResults" parent="instanceMailAddrConfigNotProcessed"
         p:name="results"
         p:nameDisplay="DCDT Results">
         <beans:property name="mailAddress">
@@ -84,7 +85,7 @@
         </beans:property>
     </beans:bean>
 
-    <beans:bean id="instanceMailAddrConfigSubmission" parent="instanceMailAddrConfigImpl"
+    <beans:bean id="instanceMailAddrConfigSubmission" parent="instanceMailAddrConfigNotProcessed"
         p:name="submission"
         p:nameDisplay="DCDT Discovery Testcase Submission">
         <beans:property name="mailAddress">

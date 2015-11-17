@@ -17,32 +17,21 @@
     <!--suppress SpringBeanConstructorArgInspection -->
     <beans:bean id="discoveryTestcaseSubmissionImpl" class="gov.hhs.onc.dcdt.testcases.discovery.impl.DiscoveryTestcaseSubmissionImpl"
         parent="discoveryTestcaseSubmission" lazy-init="true" scope="prototype"/>
-    
-    <!--====================================================================================================
-    = DISCOVERY TESTCASE SUBMISSION MAIL MESSAGES
-    =====================================================================================================-->
-    <!--suppress SpringBeanConstructorArgInspection -->
-    <beans:bean id="discoveryTestcaseSubmissionMimeMailMsg" parent="mimeMailMsgImpl" lazy-init="true" scope="prototype"
-        p:subjectTemplateLocation="mail-subj-testcase-discovery-submission"
-        p:textTemplateLocation="mail-testcase-discovery-submission"/>
 
     <!--====================================================================================================
     = DISCOVERY TESTCASE SUBMISSION SENDER SERVICE
     =====================================================================================================-->
     <beans:bean id="discoveryTestcaseSubmissionSenderService" class="gov.hhs.onc.dcdt.testcases.discovery.mail.sender.DiscoveryTestcaseSubmissionSenderService"
-        parent="mailSenderService" abstract="true"/>
+        parent="mailSenderServiceTemplate" abstract="true"/>
 
     <beans:bean id="discoveryTestcaseSubmissionSenderServiceImpl"
         class="gov.hhs.onc.dcdt.testcases.discovery.mail.sender.impl.DiscoveryTestcaseSubmissionSenderServiceImpl"
         parent="discoveryTestcaseSubmissionSenderService"
-        c:fromConfig-ref="instanceMailAddrConfigSubmission"
-        c:mailEnc="#{ T(io.netty.util.CharsetUtil).UTF_8 }"
-        c:replyToConfig-ref="instanceMailAddrConfigNoReply">
-        <beans:constructor-arg name="mimeMailMsgBeanName">
-            <beans:idref bean="discoveryTestcaseSubmissionMimeMailMsg"/>
-        </beans:constructor-arg>
-        <beans:constructor-arg name="velocityEngine">
-            <beans:bean parent="velocityEngineMail"/>
-        </beans:constructor-arg>
+        p:fromConfig-ref="instanceMailAddrConfigSubmission"
+        p:subjectTemplateLocation="mail-subj-testcase-discovery-submission"
+        p:textTemplateLocation="mail-testcase-discovery-submission">
+        <beans:property name="velocityEngine">
+            <beans:bean parent="velocityEngine"/>
+        </beans:property>
     </beans:bean>
 </beans:beans>

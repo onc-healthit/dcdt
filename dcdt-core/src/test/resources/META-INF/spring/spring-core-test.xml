@@ -12,7 +12,7 @@
     <!--====================================================================================================
     = MESSAGE SOURCES
     =====================================================================================================-->
-    <beans:bean id="messageSource" parent="messageSourceBase" primary="true">
+    <beans:bean id="messageSource" parent="messageSourceBase" depends-on="setLocaleRoot" primary="true">
         <beans:property name="basenames">
             <beans:array merge="true">
                 <!--suppress SpringModelInspection -->
@@ -21,7 +21,7 @@
         </beans:property>
     </beans:bean>
     
-    <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase">
+    <beans:bean id="messageSourceValidation" parent="messageSourceValidationBase" depends-on="setLocaleRoot">
         <beans:property name="basenames">
             <beans:array merge="true">
                 <!--suppress SpringModelInspection -->

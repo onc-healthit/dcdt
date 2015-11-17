@@ -29,7 +29,7 @@
     <beans:bean id="instanceLdapConfig" class="gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig" abstract="true"/>
     <beans:bean id="instanceLdapConfigImpl" class="gov.hhs.onc.dcdt.config.instance.impl.InstanceLdapConfigImpl" parent="instanceLdapConfig" abstract="true"
         p:host-ref="ipAddrLocalAny"
-        p:sslType="NONE">
+        p:transportProtocol="LDAP">
         <beans:property name="credentialConfigAnonymous">
             <beans:bean parent="instanceLdapCredConfigAnon"/>
         </beans:property>

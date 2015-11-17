@@ -1,10 +1,11 @@
 package gov.hhs.onc.dcdt.service.http.config.impl;
 
+import gov.hhs.onc.dcdt.http.HttpTransportProtocol;
 import gov.hhs.onc.dcdt.service.config.impl.AbstractToolServerConfig;
 import gov.hhs.onc.dcdt.service.http.config.HttpServerConfig;
 import javax.annotation.Nonnegative;
 
-public class HttpServerConfigImpl extends AbstractToolServerConfig implements HttpServerConfig {
+public class HttpServerConfigImpl extends AbstractToolServerConfig<HttpTransportProtocol> implements HttpServerConfig {
     private int maxContentLen;
     private int readTimeout;
     private int writeTimeout;

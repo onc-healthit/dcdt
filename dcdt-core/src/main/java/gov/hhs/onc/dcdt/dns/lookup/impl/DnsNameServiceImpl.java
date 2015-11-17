@@ -63,8 +63,8 @@ public class DnsNameServiceImpl extends AbstractToolBean implements DnsNameServi
     }
 
     @Nullable
-    protected <T extends Record> List<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, String hostNameStr, int limit)
-        throws UnknownHostException {
+    @Override
+    public <T extends Record> List<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, String hostNameStr, int limit) throws UnknownHostException {
 
         try {
             return this.lookupRecords(recordType, recordClass, Name.fromString(hostNameStr), limit);
@@ -74,7 +74,8 @@ public class DnsNameServiceImpl extends AbstractToolBean implements DnsNameServi
     }
 
     @Nullable
-    protected <T extends Record> List<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name hostName, int limit) {
+    @Override
+    public <T extends Record> List<T> lookupRecords(DnsRecordType recordType, Class<T> recordClass, Name hostName, int limit) {
         DnsLookupResult<T> result;
 
         for (DnsLookupService lookupService : this.lookupServices) {

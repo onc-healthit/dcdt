@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.server.impl;
 
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import gov.hhs.onc.dcdt.service.ToolServiceException;
 import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
 import gov.hhs.onc.dcdt.service.server.ToolChannelServer;
@@ -22,8 +23,9 @@ import java.net.SocketAddress;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
-public abstract class AbstractToolChannelServer<T extends ToolServerConfig> extends AbstractToolServer<T> implements ToolChannelServer<T> {
-    protected abstract class AbstractToolServerRequestHandler<U> extends SimpleChannelInboundHandler<U> {
+public abstract class AbstractToolChannelServer<T extends TransportProtocol, U extends ToolServerConfig<T>> extends AbstractToolServer<T, U> implements
+    ToolChannelServer<T, U> {
+    protected abstract class AbstractToolServerRequestHandler<V> extends SimpleChannelInboundHandler<V> {
         @Override
         public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
             String protocol = AbstractToolChannelServer.this.config.getProtocol();
@@ -62,13 +64,13 @@ public abstract class AbstractToolChannelServer<T extends ToolServerConfig> exte
         }
     }
 
-    public final static AttributeKey<ToolServerConfig> CONFIG_ATTR_KEY = AttributeKey.valueOf("config");
+    public final static AttributeKey<ToolServerConfig<?>> CONFIG_ATTR_KEY = AttributeKey.valueOf("config");
 
     protected EventLoopGroup acceptorEventLoopGroup;
     protected EventLoopGroup workerEventLoopGroup;
     protected Channel serverChannel;
 
-    protected AbstractToolChannelServer(T config) {
+    protected AbstractToolChannelServer(U config) {
         super(config);
     }
 

@@ -58,7 +58,7 @@ public abstract class ToolDnsRecordOrderUtils {
             }
 
             List<SRVRecord> records = this.recordPriorityEntry.getValue();
-            List<Integer> recordWeights = CollectionUtils.collect(records, SrvRecordWeightExtractor.INSTANCE, new ArrayList<Integer>(records.size()));
+            List<Integer> recordWeights = CollectionUtils.collect(records, SrvRecordWeightExtractor.INSTANCE, new ArrayList<>(records.size()));
             int recordWeightSum = 0;
 
             for (Integer recordWeight : recordWeights) {

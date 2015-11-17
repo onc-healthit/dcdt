@@ -1,9 +1,10 @@
 package gov.hhs.onc.dcdt.service.http.config;
 
+import gov.hhs.onc.dcdt.http.HttpTransportProtocol;
 import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
 import javax.annotation.Nonnegative;
 
-public interface HttpServerConfig extends ToolServerConfig {
+public interface HttpServerConfig extends ToolServerConfig<HttpTransportProtocol> {
     @Nonnegative
     public int getMaxContentLength();
 

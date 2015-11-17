@@ -1,15 +1,18 @@
 package gov.hhs.onc.dcdt.mail;
 
-public enum MailContentTransferEncoding {
-    SEVEN_BIT("7bit"), BASE64("base64"), QUOTED("quoted-printable");
+import gov.hhs.onc.dcdt.beans.ToolIdentifier;
 
-    private final String value;
+public enum MailContentTransferEncoding implements ToolIdentifier {
+    SEVEN_BIT("7bit"), EIGHT_BIT("8bit"), BASE64("base64"), BINARY("binary"), QUOTED_PRINTABLE("quoted-printable");
 
-    private MailContentTransferEncoding(String value) {
-        this.value = value;
+    private final String id;
+
+    private MailContentTransferEncoding(String id) {
+        this.id = id;
     }
 
-    public String getValue() {
-        return this.value;
+    @Override
+    public String getId() {
+        return this.id;
     }
 }

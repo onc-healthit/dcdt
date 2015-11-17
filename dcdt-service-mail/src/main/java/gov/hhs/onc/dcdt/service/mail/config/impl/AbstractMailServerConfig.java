@@ -1,12 +1,13 @@
 package gov.hhs.onc.dcdt.service.mail.config.impl;
 
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import gov.hhs.onc.dcdt.service.config.impl.AbstractToolServerConfig;
 import gov.hhs.onc.dcdt.service.mail.config.MailServerConfig;
 import org.apache.commons.lang3.ObjectUtils;
 import org.xbill.DNS.Name;
 
-public abstract class AbstractMailServerConfig extends AbstractToolServerConfig implements MailServerConfig {
+public abstract class AbstractMailServerConfig<T extends Enum<T> & TransportProtocol> extends AbstractToolServerConfig<T> implements MailServerConfig<T> {
     protected String greeting;
     protected Name heloName;
 

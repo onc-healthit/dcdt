@@ -1,10 +1,11 @@
 package gov.hhs.onc.dcdt.service.mail.smtp.impl;
 
+import gov.hhs.onc.dcdt.mail.smtp.SmtpTransportProtocol;
 import gov.hhs.onc.dcdt.service.mail.config.impl.AbstractMailServerConfig;
 import gov.hhs.onc.dcdt.service.mail.smtp.SmtpServerConfig;
 import javax.annotation.Nonnegative;
 
-public class SmtpServerConfigImpl extends AbstractMailServerConfig implements SmtpServerConfig {
+public class SmtpServerConfigImpl extends AbstractMailServerConfig<SmtpTransportProtocol> implements SmtpServerConfig {
     private int cmdReadTimeout;
     private int dataReadTimeout;
     private int maxCmdFrameLen;

@@ -6,6 +6,7 @@ import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapCredentialConfig;
 import gov.hhs.onc.dcdt.context.AutoStartup;
 import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
+import gov.hhs.onc.dcdt.ldap.LdapTransportProtocol;
 import gov.hhs.onc.dcdt.service.ldap.LdapServiceException;
 import gov.hhs.onc.dcdt.service.ldap.config.LdapServerConfig;
 import gov.hhs.onc.dcdt.service.ldap.config.impl.ToolDirectoryServiceBean;
@@ -36,7 +37,7 @@ import org.slf4j.LoggerFactory;
 
 @AutoStartup(false)
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 3)
-public class LdapServerImpl extends AbstractToolServer<LdapServerConfig> implements LdapServer {
+public class LdapServerImpl extends AbstractToolServer<LdapTransportProtocol, LdapServerConfig> implements LdapServer {
     private final static Logger LOGGER = LoggerFactory.getLogger(LdapServerImpl.class);
 
     private List<ToolDirectoryServiceBean> dirServiceBeans;

@@ -45,8 +45,8 @@ public abstract class ToolStringUtils {
         }
     }
 
+    public final static String COMMA = ",";
     public final static String HYPHEN = "-";
-
     public final static String QUOTE_SINGLE = "'";
     public final static String QUOTE_DBL = "\"";
 

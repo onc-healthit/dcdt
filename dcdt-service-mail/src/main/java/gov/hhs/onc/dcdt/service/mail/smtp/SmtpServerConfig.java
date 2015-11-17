@@ -1,9 +1,10 @@
 package gov.hhs.onc.dcdt.service.mail.smtp;
 
+import gov.hhs.onc.dcdt.mail.smtp.SmtpTransportProtocol;
 import gov.hhs.onc.dcdt.service.mail.config.MailServerConfig;
 import javax.annotation.Nonnegative;
 
-public interface SmtpServerConfig extends MailServerConfig {
+public interface SmtpServerConfig extends MailServerConfig<SmtpTransportProtocol> {
     @Nonnegative
     public int getCommandReadTimeout();
 

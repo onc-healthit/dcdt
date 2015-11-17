@@ -27,10 +27,16 @@
     </beans:bean>
     
     <beans:bean id="discoveryTestcaseCertConfigCaIntermediate1" parent="certConfigCa">
+        <beans:property name="crlDistributionUris">
+            <beans:set value-type="java.net.URI">
+                <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolUriUtils" parent="uri" factory-method="fromString"
+                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.HttpTransportProtocol).HTTP.scheme }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
+            </beans:set>
+        </beans:property>
         <beans:property name="issuerAccessUris">
             <beans:set value-type="java.net.URI">
                 <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolUriUtils" parent="uri" factory-method="fromString"
-                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.utils.ToolHttpUtils).HTTP_SCHEME }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
+                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.HttpTransportProtocol).HTTP.scheme }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
             </beans:set>
         </beans:property>
         <beans:property name="subjectDn">
@@ -43,13 +49,13 @@
         <beans:property name="crlDistributionUris">
             <beans:set value-type="java.net.URI">
                 <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolUriUtils" parent="uri" factory-method="fromString"
-                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.utils.ToolHttpUtils).HTTP_SCHEME }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
+                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.HttpTransportProtocol).HTTP.scheme }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
             </beans:set>
         </beans:property>
         <beans:property name="issuerAccessUris">
             <beans:set value-type="java.net.URI">
                 <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolUriUtils" parent="uri" factory-method="fromString"
-                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.utils.ToolHttpUtils).HTTP_SCHEME }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
+                    c:uriStr="#{ T(gov.hhs.onc.dcdt.http.HttpTransportProtocol).HTTP.scheme }://#{ instanceDomainConfigPki.domainName }:${dcdt.instance.http.server.1.port}"/>
             </beans:set>
         </beans:property>
     </beans:bean>
@@ -158,11 +164,7 @@
     
     <beans:bean id="discoveryTestcaseCredCa" parent="discoveryTestcaseCredImpl" abstract="true"
         p:bindingType="NONE"
-        p:type="CA">
-        <beans:property name="crlConfig">
-            <beans:bean parent="crlConfigImpl"/>
-        </beans:property>
-    </beans:bean>
+        p:type="CA"/>
     
     <beans:bean id="discoveryTestcaseCredCaRoot" parent="discoveryTestcaseCredCa"
         p:name="#{ instanceConfigMain.domainName }_ca_root"
@@ -175,6 +177,9 @@
                     <beans:bean parent="discoveryTestcaseKeyConfigCa"/>
                 </beans:property>
             </beans:bean>
+        </beans:property>
+        <beans:property name="crlConfig">
+            <beans:bean parent="crlConfigImpl"/>
         </beans:property>
     </beans:bean>
     
@@ -193,6 +198,9 @@
                 </beans:property>
             </beans:bean>
         </beans:property>
+        <beans:property name="crlConfig">
+            <beans:bean parent="crlConfigImpl"/>
+        </beans:property>
     </beans:bean>
     
     <beans:bean id="discoveryTestcaseCredConfigLeaf" parent="credConfigImpl" abstract="true">
@@ -208,12 +216,6 @@
         p:type="BACKGROUND"/>
     <beans:bean id="discoveryTestcaseCredLeafBackgroundInvalid" parent="discoveryTestcaseCredLeafBackground" abstract="true"
         p:valid="false"/>
-    <beans:bean id="discoveryTestcaseCredLeafBackgroundRevoked" parent="discoveryTestcaseCredLeafBackground" abstract="true"
-        p:valid="false">
-        <beans:property name="crlEntryConfig">
-            <beans:bean parent="crlEntryConfigKeyCompromise"/>
-        </beans:property>
-    </beans:bean>
     <beans:bean id="discoveryTestcaseCredLeafTarget" parent="discoveryTestcaseCredLeaf" abstract="true"
         p:type="TARGET"/>
     <beans:bean id="discoveryTestcaseCredLeafTargetInvalid" parent="discoveryTestcaseCredLeafTarget" abstract="true"

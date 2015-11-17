@@ -1,11 +1,13 @@
 package gov.hhs.onc.dcdt.beans;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import javax.annotation.Nonnegative;
 import javax.annotation.Nullable;
 
-public interface ToolConnectionBean extends ToolNamedBean {
+public interface ToolConnectionBean<T extends TransportProtocol> extends ToolNamedBean {
     @Nullable
     public InetSocketAddress toSocketAddress();
 
@@ -23,13 +25,16 @@ public interface ToolConnectionBean extends ToolNamedBean {
 
     public void setHost(@Nullable InetAddress host);
 
-    public boolean hasPort();
-
     @JsonProperty("port")
+    @Nonnegative
     public int getPort();
 
-    public void setPort(int port);
+    @Nonnegative
+    public int getPort(boolean useDefault);
 
-    @JsonProperty("ssl")
-    public boolean isSsl();
+    public void setPort(@Nonnegative int port);
+
+    public T getTransportProtocol();
+
+    public void setTransportProtocol(T transportProtocol);
 }

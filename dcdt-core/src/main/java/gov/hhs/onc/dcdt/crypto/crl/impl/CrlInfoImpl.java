@@ -12,6 +12,7 @@ import gov.hhs.onc.dcdt.crypto.utils.CryptographyUtils;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.util.Date;
 import javax.annotation.Nullable;
+import org.bouncycastle.asn1.ASN1Integer;
 import org.bouncycastle.asn1.ASN1ObjectIdentifier;
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x500.style.BCStyle;
@@ -71,6 +72,9 @@ public class CrlInfoImpl extends AbstractCrlDescriptor<CrlEntryInfo> implements 
         try {
             this.crlType = CrlType.X509;
             this.issuerDn = new CertificateDnImpl(new X500Name(BCStyle.INSTANCE, this.crl.getIssuerX500Principal().getName()));
+            // noinspection ConstantConditions
+            this.num =
+                (this.hasExtension(Extension.cRLNumber) ? ASN1Integer.getInstance(this.getExtension(Extension.cRLNumber).getParsedValue()).getValue() : null);
             this.nextUpdate = this.crl.getNextUpdate();
             this.sigAlg = CryptographyUtils.findByOid(SignatureAlgorithm.class, new ASN1ObjectIdentifier(this.crl.getSigAlgOID()));
             this.thisUpdate = this.crl.getThisUpdate();

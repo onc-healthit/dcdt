@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonTypeName;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolConnectionBean;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceLdapCredentialConfig;
-import gov.hhs.onc.dcdt.ldap.LdapSslType;
+import gov.hhs.onc.dcdt.ldap.LdapTransportProtocol;
+import gov.hhs.onc.dcdt.net.SslType;
 import java.util.Objects;
 import org.apache.directory.api.ldap.model.constants.SchemaConstants;
 import org.apache.directory.api.ldap.model.entry.DefaultEntry;
@@ -13,14 +14,13 @@ import org.apache.directory.api.ldap.model.name.Dn;
 import org.apache.directory.ldap.client.api.LdapConnectionConfig;
 
 @JsonTypeName("instanceLdapConfig")
-public class InstanceLdapConfigImpl extends AbstractToolConnectionBean implements InstanceLdapConfig {
+public class InstanceLdapConfigImpl extends AbstractToolConnectionBean<LdapTransportProtocol> implements InstanceLdapConfig {
     private InstanceLdapCredentialConfig credConfigAdmin;
     private InstanceLdapCredentialConfig credConfigAnon;
     private Entry dataPartitionContextEntry;
     private String dataPartitionId;
     private Dn dataPartitionSuffix;
     private String serverId;
-    private LdapSslType sslType = LdapSslType.NONE;
 
     @Override
     public LdapConnectionConfig toConnectionConfigAdmin() {
@@ -42,12 +42,14 @@ public class InstanceLdapConfigImpl extends AbstractToolConnectionBean implement
     }
 
     private LdapConnectionConfig toConnectionConfig(InstanceLdapCredentialConfig credConfig) {
+        SslType sslType = this.transportProtocol.getSslType();
+
         LdapConnectionConfig ldapConnConfig = new LdapConnectionConfig();
         // noinspection ConstantConditions
         ldapConnConfig.setLdapHost(this.getHost(true).getHostAddress());
         ldapConnConfig.setLdapPort(this.port);
-        ldapConnConfig.setUseSsl(this.isSsl());
-        ldapConnConfig.setUseTls((this.sslType == LdapSslType.TLS));
+        ldapConnConfig.setUseSsl((sslType == SslType.SSL));
+        ldapConnConfig.setUseTls((sslType == SslType.STARTTLS));
         ldapConnConfig.setName(Objects.toString(credConfig.getId(), null));
         ldapConnConfig.setCredentials(credConfig.getSecret());
 
@@ -110,20 +112,5 @@ public class InstanceLdapConfigImpl extends AbstractToolConnectionBean implement
     @Override
     public void setServerId(String serverId) {
         this.serverId = serverId;
-    }
-
-    @Override
-    public boolean isSsl() {
-        return this.sslType.isSsl();
-    }
-
-    @Override
-    public LdapSslType getSslType() {
-        return this.sslType;
-    }
-
-    @Override
-    public void setSslType(LdapSslType sslType) {
-        this.sslType = sslType;
     }
 }

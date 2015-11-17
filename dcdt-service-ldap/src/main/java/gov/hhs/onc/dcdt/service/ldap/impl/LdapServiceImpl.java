@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.service.ldap.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.context.AutoStartup;
+import gov.hhs.onc.dcdt.ldap.LdapTransportProtocol;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.impl.AbstractToolService;
 import gov.hhs.onc.dcdt.service.ldap.LdapService;
@@ -17,9 +18,9 @@ import org.springframework.stereotype.Component;
 @Component("ldapServiceImpl")
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 3)
 @ServiceContextConfiguration({ "spring/spring-service-ldap.xml", "spring/spring-service-ldap-*.xml" })
-public class LdapServiceImpl extends AbstractToolService<LdapServerConfig, LdapServer> implements LdapService {
+public class LdapServiceImpl extends AbstractToolService<LdapTransportProtocol, LdapServerConfig, LdapServer> implements LdapService {
     public LdapServiceImpl() {
-        super(LdapServerConfig.class, LdapServer.class);
+        super(LdapServer.class);
     }
 
     @Autowired(required = false)

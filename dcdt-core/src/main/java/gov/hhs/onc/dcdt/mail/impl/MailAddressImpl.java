@@ -6,6 +6,7 @@ import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
 import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailAddressPart;
+import gov.hhs.onc.dcdt.mail.MailEncoding;
 import gov.hhs.onc.dcdt.mail.ToolMailAddressException;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
@@ -82,13 +83,13 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
 
     @Nullable
     @Override
-    public InternetAddress toInternetAddress() throws ToolMailAddressException {
-        return this.toInternetAddress(true);
+    public InternetAddress toInternetAddress(MailEncoding enc) throws ToolMailAddressException {
+        return this.toInternetAddress(enc, true);
     }
 
     @Nullable
     @Override
-    public InternetAddress toInternetAddress(boolean includePersonalPart) throws ToolMailAddressException {
+    public InternetAddress toInternetAddress(MailEncoding enc, boolean includePersonalPart) throws ToolMailAddressException {
         String addr = this.toAddress();
 
         if (StringUtils.isBlank(addr)) {
@@ -99,7 +100,7 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
             InternetAddress internetAddr = new InternetAddress(addr, true);
 
             if (includePersonalPart && this.hasPersonalPart()) {
-                internetAddr.setPersonal(this.getPersonalPart());
+                internetAddr.setPersonal(this.getPersonalPart(), enc.getMimeCharset().name());
             }
 
             return internetAddr;

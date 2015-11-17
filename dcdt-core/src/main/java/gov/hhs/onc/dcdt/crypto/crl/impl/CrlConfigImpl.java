@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.crypto.certs.SignatureAlgorithm;
 import gov.hhs.onc.dcdt.crypto.crl.CrlConfig;
 import gov.hhs.onc.dcdt.crypto.crl.CrlEntryConfig;
 import gov.hhs.onc.dcdt.crypto.crl.CrlType;
+import java.math.BigInteger;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
 
@@ -27,6 +28,11 @@ public class CrlConfigImpl extends AbstractCrlDescriptor<CrlEntryConfig> impleme
     @Override
     public void setIssuerDn(@Nullable CertificateDn issuerDn) {
         this.issuerDn = issuerDn;
+    }
+
+    @Override
+    public void setNumber(@Nullable BigInteger num) {
+        this.num = num;
     }
 
     @Override

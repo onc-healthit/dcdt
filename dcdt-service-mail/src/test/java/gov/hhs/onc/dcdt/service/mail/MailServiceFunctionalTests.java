@@ -4,7 +4,10 @@ import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.crypto.EncryptionAlgorithm;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
+import gov.hhs.onc.dcdt.mail.MailEncoding;
+import gov.hhs.onc.dcdt.mail.MailInfo;
+import gov.hhs.onc.dcdt.mail.impl.MailInfoImpl;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import gov.hhs.onc.dcdt.service.mail.config.MailServerConfig;
 import gov.hhs.onc.dcdt.service.mail.server.MailServer;
 import gov.hhs.onc.dcdt.service.test.impl.AbstractToolServiceFunctionalTests;
@@ -17,7 +20,6 @@ import gov.hhs.onc.dcdt.testcases.discovery.mail.sender.DiscoveryTestcaseSubmiss
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
 import gov.hhs.onc.dcdt.utils.ToolDateUtils;
-import io.netty.util.CharsetUtil;
 import java.util.Date;
 import java.util.List;
 import javax.annotation.Resource;
@@ -31,8 +33,10 @@ import org.testng.annotations.Test;
 @ContextConfiguration({ "spring/spring-service-mail.xml", "spring/spring-service-mail-*.xml" })
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.mail" })
-public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTests<MailServerConfig, MailServer<MailServerConfig>, MailService> {
-    @Resource(name = "mailSessionPlain")
+public class MailServiceFunctionalTests
+    extends
+    AbstractToolServiceFunctionalTests<TransportProtocol, MailServerConfig<TransportProtocol>, MailServer<TransportProtocol, MailServerConfig<TransportProtocol>>, MailService> {
+    @Resource(name = "mailSessionDefault")
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private Session mailSession;
 
@@ -63,7 +67,7 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
             // noinspection ConstantConditions
             discoveryTestcaseSubmission =
                 ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class, discoveryTestcase,
-                    this.createMessageHelper(this.testSubmissionAddr, (to = discoveryTestcase.getMailAddress())));
+                    this.buildMailInfo(this.testSubmissionAddr, (to = discoveryTestcase.getMailAddress())));
 
             // noinspection ConstantConditions
             this.discoveryTestcaseSubmissionSenderService.send(discoveryTestcaseSubmission, to, (discoveryTestcaseCredInfo =
@@ -82,7 +86,7 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
 
         DiscoveryTestcaseSubmission testDiscoveryTestcaseSubmission =
             ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseSubmission.class, testDiscoveryTestcase,
-                this.createMessageHelper(this.testSubmissionAddr, this.testResultsAddr));
+                this.buildMailInfo(this.testSubmissionAddr, this.testResultsAddr));
 
         DiscoveryTestcaseResult testDiscoveryTestcaseResult =
             ToolBeanFactoryUtils.createBeanOfType(this.applicationContext, DiscoveryTestcaseResult.class, testDiscoveryTestcaseSubmission, null);
@@ -124,15 +128,15 @@ public class MailServiceFunctionalTests extends AbstractToolServiceFunctionalTes
         super.startService();
     }
 
-    private ToolMimeMessageHelper createMessageHelper(MailAddress from, MailAddress to) throws MessagingException {
-        ToolMimeMessageHelper msgHelper = new ToolMimeMessageHelper(this.mailSession, CharsetUtil.US_ASCII);
-        msgHelper.setFrom(from);
-        msgHelper.setTo(to);
-        msgHelper.setSubject(String.format("[DCDT Test] %s => %s", from, to));
-        msgHelper.setText(String.format("From: %s\nTo: %s", from, to));
-        msgHelper.setSentDate(new Date());
-        msgHelper.getMimeMessage().saveChanges();
+    private MailInfo buildMailInfo(MailAddress fromAddr, MailAddress toAddr) throws MessagingException {
+        MailInfo mailInfo = new MailInfoImpl(this.mailSession, MailEncoding.UTF_8);
+        mailInfo.setFrom(fromAddr);
+        mailInfo.setTo(toAddr);
+        mailInfo.setSubject(String.format("[DCDT Test] %s => %s", fromAddr, toAddr));
+        mailInfo.setText(String.format("From: %s\nTo: %s", fromAddr, toAddr));
+        mailInfo.setSentDate(new Date());
+        mailInfo.getMessage().saveChanges();
 
-        return msgHelper;
+        return mailInfo;
     }
 }

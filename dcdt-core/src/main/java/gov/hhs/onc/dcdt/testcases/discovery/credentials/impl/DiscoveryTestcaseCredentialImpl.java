@@ -113,6 +113,8 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
                             this.name), e);
                     }
                 }
+
+                credCertConfig.setIssuerAccessUris(ToolArrayUtils.asSet(credCertConfigIssuerAccessUris));
             }
         }
 

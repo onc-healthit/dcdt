@@ -2,25 +2,23 @@ package gov.hhs.onc.dcdt.service.mail.smtp;
 
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
-import gov.hhs.onc.dcdt.service.mail.smtp.command.SmtpCommand;
+import gov.hhs.onc.dcdt.mail.MailInfo;
+import gov.hhs.onc.dcdt.mail.smtp.command.SmtpCommand;
 import java.util.LinkedList;
 import javax.annotation.Nullable;
 import org.xbill.DNS.Name;
 
-public interface SmtpServerSession extends Cloneable {
+public interface SmtpServerSession {
     public void reset();
 
     public void resetAuthentication();
 
-    public SmtpServerSession clone() throws CloneNotSupportedException;
-
-    public boolean hasAuthenticatedConfig();
+    public boolean hasAuthenticatedAddressConfig();
 
     @Nullable
-    public InstanceMailAddressConfig getAuthenticatedConfig();
+    public InstanceMailAddressConfig getAuthenticatedAddressConfig();
 
-    public void setAuthenticatedConfig(@Nullable InstanceMailAddressConfig authConfig);
+    public void setAuthenticatedAddressConfig(@Nullable InstanceMailAddressConfig authAddrConfig);
 
     public boolean hasAuthenticationId();
 
@@ -45,7 +43,14 @@ public interface SmtpServerSession extends Cloneable {
     @Nullable
     public MailAddress getFrom();
 
-    public void setFrom(@Nullable MailAddress from);
+    public void setFrom(@Nullable MailAddress fromAddr);
+
+    public boolean hasFromConfig();
+
+    @Nullable
+    public InstanceMailAddressConfig getFromConfig();
+
+    public void setFromConfig(@Nullable InstanceMailAddressConfig fromConfig);
 
     public boolean hasHeloName();
 
@@ -54,17 +59,24 @@ public interface SmtpServerSession extends Cloneable {
 
     public void setHeloName(@Nullable Name heloName);
 
-    public boolean hasMimeMessageHelper();
+    public boolean hasMailInfo();
 
     @Nullable
-    public ToolMimeMessageHelper geMimeMessageHelper();
+    public MailInfo getMailInfo();
 
-    public void setMimeMessageHelper(@Nullable ToolMimeMessageHelper mimeMsgHelper);
+    public void setMailInfo(@Nullable MailInfo mailInfo);
 
     public boolean hasTo();
 
     @Nullable
     public MailAddress getTo();
 
-    public void setTo(@Nullable MailAddress to);
+    public void setTo(@Nullable MailAddress toAddr);
+
+    public boolean hasToConfig();
+
+    @Nullable
+    public InstanceMailAddressConfig getToConfig();
+
+    public void setToConfig(@Nullable InstanceMailAddressConfig toConfig);
 }

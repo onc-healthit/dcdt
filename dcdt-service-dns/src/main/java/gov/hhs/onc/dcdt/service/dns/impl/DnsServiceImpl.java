@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.service.dns.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.context.AutoStartup;
+import gov.hhs.onc.dcdt.dns.DnsTransportProtocol;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.dns.DnsService;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
@@ -17,9 +18,9 @@ import org.springframework.stereotype.Component;
 @Component("dnsServiceImpl")
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 1)
 @ServiceContextConfiguration({ "spring/spring-service-dns.xml", "spring/spring-service-dns-*.xml" })
-public class DnsServiceImpl extends AbstractToolService<DnsServerConfig, DnsServer> implements DnsService {
+public class DnsServiceImpl extends AbstractToolService<DnsTransportProtocol, DnsServerConfig, DnsServer> implements DnsService {
     public DnsServiceImpl() {
-        super(DnsServerConfig.class, DnsServer.class);
+        super(DnsServer.class);
     }
 
     @Autowired(required = false)

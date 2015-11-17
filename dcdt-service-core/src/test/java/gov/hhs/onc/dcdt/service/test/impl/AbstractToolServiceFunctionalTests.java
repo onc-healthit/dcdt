@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.service.test.impl;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfigRegistry;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
 import gov.hhs.onc.dcdt.service.server.ToolServer;
@@ -20,8 +21,8 @@ import org.xbill.DNS.Name;
 @ContextConfiguration({ "spring/spring-service.xml", "spring/spring-service-standalone.xml" })
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.all" })
-public abstract class AbstractToolServiceFunctionalTests<T extends ToolServerConfig, U extends ToolServer<T>, V extends ToolService<T, U>> extends
-    AbstractToolFunctionalTests {
+public abstract class AbstractToolServiceFunctionalTests<T extends TransportProtocol, U extends ToolServerConfig<T>, V extends ToolServer<T, U>, W extends ToolService<T, U, V>>
+    extends AbstractToolFunctionalTests {
     protected static boolean testServiceInstanceConfigRegistered;
 
     @Autowired
@@ -34,10 +35,10 @@ public abstract class AbstractToolServiceFunctionalTests<T extends ToolServerCon
     @Value("${dcdt.test.service.instance.ip.addr}")
     protected InetAddress testServiceInstanceConfigIpAddr;
 
-    protected Class<V> serviceClass;
-    protected V service;
+    protected Class<W> serviceClass;
+    protected W service;
 
-    protected AbstractToolServiceFunctionalTests(Class<V> serviceClass) {
+    protected AbstractToolServiceFunctionalTests(Class<W> serviceClass) {
         this.serviceClass = serviceClass;
     }
 

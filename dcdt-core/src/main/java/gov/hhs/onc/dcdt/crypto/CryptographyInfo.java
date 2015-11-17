@@ -1,4 +1,6 @@
 package gov.hhs.onc.dcdt.crypto;
 
-public interface CryptographyInfo extends CryptographyDescriptor {
+import gov.hhs.onc.dcdt.beans.ToolInfoBean;
+
+public interface CryptographyInfo extends CryptographyDescriptor, ToolInfoBean {
 }

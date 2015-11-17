@@ -1,6 +1,8 @@
 package gov.hhs.onc.dcdt.crypto;
 
-public interface CryptographyConfig extends CryptographyDescriptor {
+import gov.hhs.onc.dcdt.beans.ToolConfigBean;
+
+public interface CryptographyConfig extends CryptographyDescriptor, ToolConfigBean {
     interface GenerateConstraintGroup {
     }
 }

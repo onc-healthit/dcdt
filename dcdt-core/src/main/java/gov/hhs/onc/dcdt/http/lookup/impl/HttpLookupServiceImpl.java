@@ -4,9 +4,9 @@ import gov.hhs.onc.dcdt.beans.ToolMessageLevel;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
 import gov.hhs.onc.dcdt.beans.impl.ToolMessageImpl;
 import gov.hhs.onc.dcdt.dns.lookup.DnsNameService;
+import gov.hhs.onc.dcdt.http.HttpTransportProtocol;
 import gov.hhs.onc.dcdt.http.lookup.HttpLookupResult;
 import gov.hhs.onc.dcdt.http.lookup.HttpLookupService;
-import gov.hhs.onc.dcdt.http.utils.ToolHttpUtils;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -152,7 +152,7 @@ public class HttpLookupServiceImpl extends AbstractToolBean implements HttpLooku
         int remotePort = reqUri.getPort();
 
         if (remotePort < 0) {
-            remotePort = ToolHttpUtils.HTTP_PORT_DEFAULT;
+            remotePort = HttpTransportProtocol.HTTP.getDefaultPort();
         }
 
         InetSocketAddress remoteSocketAddr = new InetSocketAddress(remoteAddr, remotePort);

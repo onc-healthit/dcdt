@@ -1,5 +1,6 @@
 package gov.hhs.onc.dcdt.service.ldap;
 
+import gov.hhs.onc.dcdt.ldap.LdapTransportProtocol;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapEntryLookupResult;
 import gov.hhs.onc.dcdt.ldap.lookup.LdapLookupService;
 import gov.hhs.onc.dcdt.service.ldap.config.LdapServerConfig;
@@ -23,7 +24,7 @@ import org.testng.annotations.Test;
 @ContextConfiguration({ "spring/spring-service-ldap.xml", "spring/spring-service-ldap-*.xml" })
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.ldap" })
-public class LdapServiceFunctionalTests extends AbstractToolServiceFunctionalTests<LdapServerConfig, LdapServer, LdapService> {
+public class LdapServiceFunctionalTests extends AbstractToolServiceFunctionalTests<LdapTransportProtocol, LdapServerConfig, LdapServer, LdapService> {
     @Autowired
     @SuppressWarnings({ "SpringJavaAutowiringInspection" })
     private LdapLookupService ldapLookupService;

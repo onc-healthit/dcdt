@@ -19,35 +19,24 @@
         parent="discoveryTestcaseResult" lazy-init="true" scope="prototype"/>
     
     <!--====================================================================================================
-    = DISCOVERY TESTCASE RESULT MAIL MESSAGES
-    =====================================================================================================-->
-    <!--suppress SpringBeanConstructorArgInspection -->
-    <beans:bean id="discoveryTestcaseResultMimeMailMsg" parent="mimeMailMsgImpl" lazy-init="true" scope="prototype"
-        p:subjectTemplateLocation="mail-subj-testcase-discovery-result"
-        p:textTemplateLocation="mail-testcase-discovery-result"/>
-    
-    <!--====================================================================================================
     = DISCOVERY TESTCASE RESULT SENDER SERVICE
     =====================================================================================================-->
     <beans:bean id="discoveryTestcaseResultSenderService" class="gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService"
-        parent="mailSenderService" abstract="true"/>
+        parent="mailSenderServiceTemplate" abstract="true"/>
     
     <beans:bean id="discoveryTestcaseResultSenderServiceImpl"
         class="gov.hhs.onc.dcdt.testcases.discovery.results.sender.impl.DiscoveryTestcaseResultSenderServiceImpl" parent="discoveryTestcaseResultSenderService"
-        c:fromConfig-ref="instanceMailAddrConfigResults"
-        c:replyToConfig-ref="instanceMailAddrConfigNoReply">
-        <beans:constructor-arg name="mailEnc" value="#{ T(io.netty.util.CharsetUtil).UTF_8 }"/>
-        <beans:constructor-arg name="mimeMailMsgBeanName">
-            <beans:idref bean="discoveryTestcaseResultMimeMailMsg"/>
-        </beans:constructor-arg>
-        <beans:constructor-arg name="velocityEngine">
-            <beans:bean parent="velocityEngineMail">
+        p:fromConfig-ref="instanceMailAddrConfigResults"
+        p:subjectTemplateLocation="mail-subj-testcase-discovery-result"
+        p:textTemplateLocation="mail-testcase-discovery-result">
+        <beans:property name="velocityEngine">
+            <beans:bean parent="velocityEngine">
                 <beans:property name="velocimacroLibraries">
                     <beans:list merge="true">
                         <beans:value>lib/core-testcases-discovery-results</beans:value>
                     </beans:list>
                 </beans:property>
             </beans:bean>
-        </beans:constructor-arg>
+        </beans:property>
     </beans:bean>
 </beans:beans>

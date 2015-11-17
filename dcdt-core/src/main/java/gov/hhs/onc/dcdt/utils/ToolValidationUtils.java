@@ -11,6 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.DataBinder;
@@ -28,8 +29,9 @@ public abstract class ToolValidationUtils {
 
     private final static Pattern PATTERN_MSG_MACRO_AFFIX = Pattern.compile(PATTERN_STR_MSG_MACRO_AFFIX);
 
-    public static String escapeMessageMacros(String msg) {
-        return PATTERN_MSG_MACRO_AFFIX.matcher(msg).replaceAll(REPLACEMENT_STR_MSG_MACRO_ESCAPE);
+    @Nullable
+    public static String escapeMessageMacros(@Nullable String msg) {
+        return (StringUtils.isEmpty(msg) ? msg : PATTERN_MSG_MACRO_AFFIX.matcher(msg).replaceAll(REPLACEMENT_STR_MSG_MACRO_ESCAPE));
     }
 
     public static Map<String, List<ToolMessage>> mapErrorMessages(MessageSource msgSource, Errors errors) {

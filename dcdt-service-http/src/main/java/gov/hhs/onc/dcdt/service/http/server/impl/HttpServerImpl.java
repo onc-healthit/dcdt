@@ -9,8 +9,10 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateType;
 import gov.hhs.onc.dcdt.crypto.crl.CrlConfig;
 import gov.hhs.onc.dcdt.crypto.crl.CrlGenerator;
+import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.crypto.utils.CertificateUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CrlUtils;
+import gov.hhs.onc.dcdt.http.HttpTransportProtocol;
 import gov.hhs.onc.dcdt.net.utils.ToolUriUtils;
 import gov.hhs.onc.dcdt.service.http.config.HttpServerConfig;
 import gov.hhs.onc.dcdt.service.http.server.HttpServer;
@@ -53,7 +55,7 @@ import org.springframework.util.MimeType;
 
 @AutoStartup(false)
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
-public class HttpServerImpl extends AbstractToolChannelServer<HttpServerConfig> implements HttpServer {
+public class HttpServerImpl extends AbstractToolChannelServer<HttpTransportProtocol, HttpServerConfig> implements HttpServer {
     private class HttpServerRequestHandler extends AbstractToolServerRequestHandler<FullHttpRequest> {
         @Override
         public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
@@ -105,14 +107,16 @@ public class HttpServerImpl extends AbstractToolChannelServer<HttpServerConfig> 
             } else if (HttpServerImpl.this.discoveryTestcaseIssuerCredCrlPaths.containsKey(reqPath)) {
                 DiscoveryTestcaseCredential discoveryTestcaseCred = HttpServerImpl.this.discoveryTestcaseIssuerCredCrlPaths.get(reqPath);
                 CrlConfig discoveryTestcaseIssuerCredCrlConfig = discoveryTestcaseCred.getCrlConfig();
+                // noinspection ConstantConditions
+                KeyInfo discoveryTestcaseIssuerCredKeyInfo = discoveryTestcaseCred.getCredentialInfo().getKeyDescriptor();
 
                 // noinspection ConstantConditions
                 this.writeResponse(
                     context,
                     discoveryTestcaseIssuerCredCrlConfig.getCrlType().getContentType(),
                     CrlUtils.writeCrl(
-                        HttpServerImpl.this.crlGen.generateCrl(discoveryTestcaseCred.getCredentialInfo().getKeyDescriptor().getPrivateKeyInfo(),
-                            discoveryTestcaseIssuerCredCrlConfig).getCrl(), DataEncoding.DER));
+                        HttpServerImpl.this.crlGen.generateCrl(discoveryTestcaseIssuerCredKeyInfo.getPrivateKeyInfo(),
+                            discoveryTestcaseIssuerCredKeyInfo.getAuthorityKeyId(), discoveryTestcaseIssuerCredCrlConfig).getCrl(), DataEncoding.DER));
 
                 LOGGER.info(String.format("Processed HTTP server (host={%s}, port=%d) CRL (issuerDn={%s}) request (version=%s, method=%s, uri=%s).",
                     HttpServerImpl.this.config.getHost(), HttpServerImpl.this.config.getPort(), discoveryTestcaseIssuerCredCrlConfig.getIssuerDn(),

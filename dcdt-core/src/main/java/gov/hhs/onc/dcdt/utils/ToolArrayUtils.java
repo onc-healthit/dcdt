@@ -1,10 +1,13 @@
 package gov.hhs.onc.dcdt.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.IntFunction;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.ArrayUtils;
 
@@ -55,12 +58,18 @@ public abstract class ToolArrayUtils {
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T> List<T> asList(@Nullable T ... items) {
-        return (items != null) ? new ArrayList<>(Arrays.asList(items)) : new ArrayList<T>();
+        return asCollection(ArrayList::new, items);
     }
 
     @SafeVarargs
     @SuppressWarnings({ "varargs" })
     public static <T> Set<T> asSet(@Nullable T ... items) {
-        return (items != null) ? new HashSet<>(Arrays.asList(items)) : new HashSet<T>();
+        return asCollection(HashSet::new, items);
+    }
+
+    @SafeVarargs
+    @SuppressWarnings({ "varargs" })
+    public static <T, U extends Collection<T>> U asCollection(IntFunction<U> collSupplier, @Nullable T ... items) {
+        return (ArrayUtils.isEmpty(items) ? collSupplier.apply(0) : Stream.of(items).collect(Collectors.toCollection(() -> collSupplier.apply(items.length))));
     }
 }

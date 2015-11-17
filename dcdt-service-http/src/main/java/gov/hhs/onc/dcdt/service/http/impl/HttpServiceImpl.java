@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.service.http.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.context.AutoStartup;
+import gov.hhs.onc.dcdt.http.HttpTransportProtocol;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.http.HttpService;
 import gov.hhs.onc.dcdt.service.http.config.HttpServerConfig;
@@ -17,9 +18,9 @@ import org.springframework.stereotype.Component;
 @Component("httpServiceImpl")
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 2)
 @ServiceContextConfiguration({ "spring/spring-service-http.xml", "spring/spring-service-http-*.xml" })
-public class HttpServiceImpl extends AbstractToolService<HttpServerConfig, HttpServer> implements HttpService {
+public class HttpServiceImpl extends AbstractToolService<HttpTransportProtocol, HttpServerConfig, HttpServer> implements HttpService {
     public HttpServiceImpl() {
-        super(HttpServerConfig.class, HttpServer.class);
+        super(HttpServer.class);
     }
 
     @Autowired(required = false)

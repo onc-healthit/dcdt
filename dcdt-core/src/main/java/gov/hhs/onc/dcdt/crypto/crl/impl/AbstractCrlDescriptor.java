@@ -15,6 +15,7 @@ public abstract class AbstractCrlDescriptor<T extends CrlEntryDescriptor> extend
     protected CrlType crlType;
     protected Map<BigInteger, T> entries = new TreeMap<>();
     protected CertificateDn issuerDn;
+    protected BigInteger num;
     protected SignatureAlgorithm sigAlg;
 
     @Override
@@ -22,6 +23,7 @@ public abstract class AbstractCrlDescriptor<T extends CrlEntryDescriptor> extend
         this.crlType = null;
         this.entries.clear();
         this.issuerDn = null;
+        this.num = null;
         this.sigAlg = null;
     }
 
@@ -55,6 +57,17 @@ public abstract class AbstractCrlDescriptor<T extends CrlEntryDescriptor> extend
     @Override
     public CertificateDn getIssuerDn() {
         return this.issuerDn;
+    }
+
+    @Override
+    public boolean hasNumber() {
+        return (this.num != null);
+    }
+
+    @Nullable
+    @Override
+    public BigInteger getNumber() {
+        return this.num;
     }
 
     @Override

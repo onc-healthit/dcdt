@@ -1130,7 +1130,7 @@
         </beans:property>
         <beans:property name="credentials">
             <beans:list>
-                <beans:bean parent="discoveryTestcaseCredLeafBackgroundRevoked"
+                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="ADDRESS"
                     p:name="D17_invB"
                     p:nameDisplay="D17_invB">
@@ -1146,6 +1146,9 @@
                             </beans:property>
                         </beans:bean>
                     </beans:property>
+                    <beans:property name="crlEntryConfig">
+                        <beans:bean parent="crlEntryConfigKeyCompromise"/>
+                    </beans:property>
                     <beans:property name="description">
                         <beans:bean parent="discoveryTestcaseCredDescImpl">
                             <beans:property name="text">
@@ -1159,7 +1162,7 @@
                         <beans:bean parent="discoveryTestcaseCredLoc9Dns"/>
                     </beans:property>
                 </beans:bean>
-                <beans:bean parent="discoveryTestcaseCredLeafBackgroundRevoked"
+                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="ADDRESS"
                     p:name="D17_invC"
                     p:nameDisplay="D17_invC">
@@ -1174,6 +1177,9 @@
                                 </beans:bean>
                             </beans:property>
                         </beans:bean>
+                    </beans:property>
+                    <beans:property name="crlEntryConfig">
+                        <beans:bean parent="crlEntryConfigKeyCompromise"/>
                     </beans:property>
                     <beans:property name="description">
                         <beans:bean parent="discoveryTestcaseCredDescImpl">
@@ -1217,7 +1223,7 @@
                         <beans:bean parent="discoveryTestcaseCredLoc9Dns"/>
                     </beans:property>
                 </beans:bean>
-                <beans:bean parent="discoveryTestcaseCredLeafBackgroundRevoked"
+                <beans:bean parent="discoveryTestcaseCredLeafBackgroundInvalid"
                     p:bindingType="DOMAIN"
                     p:name="D17_invD"
                     p:nameDisplay="D17_invD">

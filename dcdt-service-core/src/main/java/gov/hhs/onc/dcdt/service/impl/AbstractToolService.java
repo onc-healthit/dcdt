@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.concurrent.impl.AbstractToolListenableFutureCallback;
 import gov.hhs.onc.dcdt.concurrent.impl.AbstractToolListenableFutureTask;
 import gov.hhs.onc.dcdt.config.instance.InstanceConfig;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
@@ -23,7 +24,8 @@ import org.springframework.context.support.AbstractApplicationContext;
 
 @ServiceContextConfiguration({ "spring/spring-core.xml", "spring/spring-core*.xml", "spring/spring-service.xml", "spring/spring-service-embedded.xml",
     "spring/spring-service-standalone.xml" })
-public abstract class AbstractToolService<T extends ToolServerConfig, U extends ToolServer<T>> extends AbstractToolLifecycleBean implements ToolService<T, U> {
+public abstract class AbstractToolService<T extends TransportProtocol, U extends ToolServerConfig<T>, V extends ToolServer<T, U>> extends
+    AbstractToolLifecycleBean implements ToolService<T, U, V> {
     protected static class ToolServerLifecycleTask extends AbstractToolListenableFutureTask<Void> {
         public ToolServerLifecycleTask(Callable<Void> callable) {
             super(callable);
@@ -45,13 +47,11 @@ public abstract class AbstractToolService<T extends ToolServerConfig, U extends 
         }
     }
 
-    protected Class<T> serverConfigClass;
-    protected Class<U> serverClass;
+    protected Class<V> serverClass;
     protected AbstractApplicationContext appContext;
-    protected List<U> servers;
+    protected List<V> servers;
 
-    protected AbstractToolService(Class<T> serverConfigClass, Class<U> serverClass) {
-        this.serverConfigClass = serverConfigClass;
+    protected AbstractToolService(Class<V> serverClass) {
         this.serverClass = serverClass;
     }
 
@@ -65,7 +65,7 @@ public abstract class AbstractToolService<T extends ToolServerConfig, U extends 
         this.executeServerLifecycle(Lifecycle::start);
     }
 
-    protected void executeServerLifecycle(Consumer<U> method) throws Exception {
+    protected void executeServerLifecycle(Consumer<V> method) throws Exception {
         CountDownLatch latch = new CountDownLatch(this.servers.size());
         ToolServerLifecycleCallback[] callbacks = this.servers.stream().map(server -> {
             ToolServerLifecycleTask task = new ToolServerLifecycleTask(() -> {
@@ -118,12 +118,12 @@ public abstract class AbstractToolService<T extends ToolServerConfig, U extends 
     }
 
     @Override
-    public List<U> getServers() {
+    public List<V> getServers() {
         return this.servers;
     }
 
     @Override
-    public void setServers(List<U> servers) {
+    public void setServers(List<V> servers) {
         this.servers = servers;
     }
 }

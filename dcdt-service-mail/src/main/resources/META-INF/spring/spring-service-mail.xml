@@ -47,7 +47,8 @@
         p:connectTimeout="${dcdt.service.mail.server.smtp.connect.timeout}"
         p:dataReadTimeout="${dcdt.service.mail.server.smtp.data.read.timeout}"
         p:maxCommandFrameLength="${dcdt.service.mail.server.smtp.command.frame.size.max}"
-        p:maxDataFrameLength="${dcdt.service.mail.server.smtp.data.frame.size.max}"/>
+        p:maxDataFrameLength="${dcdt.service.mail.server.smtp.data.frame.size.max}"
+        p:transportProtocol="SMTP"/>
     
     <!--====================================================================================================
     = MAIL SERVERS
@@ -61,14 +62,7 @@
     
     <beans:bean id="smtpServerImpl" class="gov.hhs.onc.dcdt.service.mail.smtp.impl.SmtpServerImpl" parent="smtpServer" abstract="true"
         p:requestTaskExecutor-ref="taskExecServiceMailServerSmtpReq"
-        p:taskExecutor-ref="taskExecServiceMailServerSmtp">
-        <beans:constructor-arg name="mailSessionPlainBeanName">
-            <beans:idref bean="mailSessionPlain"/>
-        </beans:constructor-arg>
-        <beans:constructor-arg name="mailSessionSslBeanName">
-            <beans:idref bean="mailSessionSsl"/>
-        </beans:constructor-arg>
-    </beans:bean>
+        p:taskExecutor-ref="taskExecServiceMailServerSmtp"/>
     
     <!--====================================================================================================
     = SERVICES

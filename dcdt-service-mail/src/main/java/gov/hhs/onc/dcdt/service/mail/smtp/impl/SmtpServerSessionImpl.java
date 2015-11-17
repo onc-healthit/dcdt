@@ -2,70 +2,59 @@ package gov.hhs.onc.dcdt.service.mail.smtp.impl;
 
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessageHelper;
+import gov.hhs.onc.dcdt.mail.MailInfo;
+import gov.hhs.onc.dcdt.mail.smtp.command.SmtpCommand;
 import gov.hhs.onc.dcdt.service.mail.smtp.SmtpServerSession;
-import gov.hhs.onc.dcdt.service.mail.smtp.command.SmtpCommand;
 import java.util.LinkedList;
 import javax.annotation.Nullable;
 import org.xbill.DNS.Name;
 
 public class SmtpServerSessionImpl implements SmtpServerSession {
-    private InstanceMailAddressConfig authConfig;
+    private InstanceMailAddressConfig authAddrConfig;
     private String authId;
     private String authSecret;
     private LinkedList<SmtpCommand> cmds = new LinkedList<>();
-    private MailAddress from;
+    private MailAddress fromAddr;
+    private InstanceMailAddressConfig fromConfig;
     private Name heloName;
-    private ToolMimeMessageHelper mimeMsgHelper;
-    private MailAddress to;
+    private MailInfo mailInfo;
+    private MailAddress toAddr;
+    private InstanceMailAddressConfig toConfig;
 
     @Override
     public void reset() {
         this.resetAuthentication();
 
         this.cmds.clear();
-        this.from = null;
+        this.fromAddr = null;
+        this.fromConfig = null;
         this.heloName = null;
-        this.mimeMsgHelper = null;
-        this.to = null;
+        this.mailInfo = null;
+        this.toAddr = null;
+        this.toConfig = null;
     }
 
     @Override
     public void resetAuthentication() {
-        this.authConfig = null;
+        this.authAddrConfig = null;
         this.authId = null;
         this.authSecret = null;
     }
 
     @Override
-    @SuppressWarnings({ "CloneDoesntCallSuperClone" })
-    public SmtpServerSession clone() throws CloneNotSupportedException {
-        SmtpServerSession serverSession = new SmtpServerSessionImpl();
-        serverSession.setAuthenticatedConfig(this.authConfig);
-        serverSession.setAuthenticationId(this.authId);
-        serverSession.setAuthenticationSecret(this.authSecret);
-        serverSession.setFrom(this.from);
-        serverSession.setHeloName(this.heloName);
-        serverSession.setMimeMessageHelper(this.mimeMsgHelper);
-        serverSession.setTo(this.to);
-
-        return serverSession;
-    }
-
-    @Override
-    public boolean hasAuthenticatedConfig() {
-        return (this.authConfig != null);
+    public boolean hasAuthenticatedAddressConfig() {
+        return (this.authAddrConfig != null);
     }
 
     @Nullable
     @Override
-    public InstanceMailAddressConfig getAuthenticatedConfig() {
-        return this.authConfig;
+    public InstanceMailAddressConfig getAuthenticatedAddressConfig() {
+        return this.authAddrConfig;
     }
 
     @Override
-    public void setAuthenticatedConfig(@Nullable InstanceMailAddressConfig authConfig) {
-        this.authConfig = authConfig;
+    public void setAuthenticatedAddressConfig(@Nullable InstanceMailAddressConfig authAddrConfig) {
+        this.authAddrConfig = authAddrConfig;
     }
 
     @Override
@@ -112,18 +101,34 @@ public class SmtpServerSessionImpl implements SmtpServerSession {
 
     @Override
     public boolean hasFrom() {
-        return (this.from != null);
+        return (this.fromAddr != null);
     }
 
     @Nullable
     @Override
     public MailAddress getFrom() {
-        return this.from;
+        return this.fromAddr;
     }
 
     @Override
-    public void setFrom(@Nullable MailAddress from) {
-        this.from = from;
+    public void setFrom(@Nullable MailAddress fromAddr) {
+        this.fromAddr = fromAddr;
+    }
+
+    @Override
+    public boolean hasFromConfig() {
+        return (this.fromConfig != null);
+    }
+
+    @Nullable
+    @Override
+    public InstanceMailAddressConfig getFromConfig() {
+        return this.fromConfig;
+    }
+
+    @Override
+    public void setFromConfig(@Nullable InstanceMailAddressConfig fromConfig) {
+        this.fromConfig = fromConfig;
     }
 
     @Override
@@ -143,34 +148,50 @@ public class SmtpServerSessionImpl implements SmtpServerSession {
     }
 
     @Override
-    public boolean hasMimeMessageHelper() {
-        return (this.mimeMsgHelper != null);
+    public boolean hasMailInfo() {
+        return (this.mailInfo != null);
     }
 
     @Nullable
     @Override
-    public ToolMimeMessageHelper geMimeMessageHelper() {
-        return this.mimeMsgHelper;
+    public MailInfo getMailInfo() {
+        return this.mailInfo;
     }
 
     @Override
-    public void setMimeMessageHelper(@Nullable ToolMimeMessageHelper mimeMsgHelper) {
-        this.mimeMsgHelper = mimeMsgHelper;
+    public void setMailInfo(@Nullable MailInfo mailInfo) {
+        this.mailInfo = mailInfo;
     }
 
     @Override
     public boolean hasTo() {
-        return (this.to != null);
+        return (this.toAddr != null);
     }
 
     @Nullable
     @Override
     public MailAddress getTo() {
-        return this.to;
+        return this.toAddr;
     }
 
     @Override
-    public void setTo(@Nullable MailAddress to) {
-        this.to = to;
+    public void setTo(@Nullable MailAddress toAddr) {
+        this.toAddr = toAddr;
+    }
+
+    @Override
+    public boolean hasToConfig() {
+        return (this.toConfig != null);
+    }
+
+    @Nullable
+    @Override
+    public InstanceMailAddressConfig getToConfig() {
+        return this.toConfig;
+    }
+
+    @Override
+    public void setToConfig(@Nullable InstanceMailAddressConfig toConfig) {
+        this.toConfig = toConfig;
     }
 }

@@ -10,13 +10,14 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateValidatorContext;
 import gov.hhs.onc.dcdt.crypto.crl.CrlEntryInfo;
 import gov.hhs.onc.dcdt.crypto.crl.CrlException;
 import gov.hhs.onc.dcdt.crypto.crl.CrlInfo;
+import gov.hhs.onc.dcdt.crypto.crl.CrlReasonType;
 import gov.hhs.onc.dcdt.crypto.crl.CrlType;
 import gov.hhs.onc.dcdt.crypto.crl.impl.CrlInfoImpl;
 import gov.hhs.onc.dcdt.crypto.utils.CrlUtils;
 import gov.hhs.onc.dcdt.crypto.utils.CrlUtils.ToolX509Crl;
+import gov.hhs.onc.dcdt.http.HttpTransportProtocol;
 import gov.hhs.onc.dcdt.http.lookup.HttpLookupResult;
 import gov.hhs.onc.dcdt.http.lookup.HttpLookupService;
-import gov.hhs.onc.dcdt.http.utils.ToolHttpUtils;
 import java.math.BigInteger;
 import java.net.URI;
 import java.text.DateFormat;
@@ -51,7 +52,7 @@ public class CertificateRevocationStatusConstraintValidator extends AbstractCert
         // noinspection ConstantConditions
         URI[] certCrlDistribUris =
             certInfo.getCrlDistributionUris().stream()
-                .filter(certCrlDistribUri -> StringUtils.equalsIgnoreCase(certCrlDistribUri.getScheme(), ToolHttpUtils.HTTP_SCHEME)).toArray(URI[]::new);
+                .filter(certCrlDistribUri -> StringUtils.equalsIgnoreCase(certCrlDistribUri.getScheme(), HttpTransportProtocol.HTTP.getScheme())).toArray(URI[]::new);
         List<CrlInfo> certCrlInfos = new ArrayList<>(certCrlDistribUris.length);
         HttpLookupResult certCrlLookupResult;
 
@@ -139,15 +140,35 @@ public class CertificateRevocationStatusConstraintValidator extends AbstractCert
             }
 
             CrlEntryInfo certCrlEntryInfo = certCrlEntryInfos.get(certSerialNum);
+            boolean certCrlReasonAvailable = certCrlEntryInfo.hasRevocationReason();
+            CrlReasonType certCrlReason = null;
 
             // noinspection ConstantConditions
-            throw new CrlException(
-                String
-                    .format(
-                        "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) CRL instance (thisUpdate={%s}, nextUpdate={%s}) entry is revoked (reason=%s, date={%s}).",
-                        certSubjDn, certInfo.getSerialNumber(), certIssuerDn, CERT_CRL_DATE_FORMAT.format(certCrlInfo.getThisUpdate()), (certCrlInfo
-                            .hasNextUpdate() ? CERT_CRL_DATE_FORMAT.format(certCrlInfo.getNextUpdate()) : null), certCrlEntryInfo.getRevocationReason().name(),
-                        (certCrlEntryInfo.hasRevocationDate() ? CERT_CRL_DATE_FORMAT.format(certCrlEntryInfo.getRevocationDate()) : null)));
+            if (!certCrlReasonAvailable || (certCrlReason = certCrlEntryInfo.getRevocationReason()).isRevoked()) {
+                // noinspection ConstantConditions
+                throw new CrlException(
+                    String
+                        .format(
+                            "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) CRL instance (thisUpdate={%s}, nextUpdate={%s}) entry is revoked (reason=%s, date={%s}).",
+                            certSubjDn, certInfo.getSerialNumber(), certIssuerDn, CERT_CRL_DATE_FORMAT.format(certCrlInfo.getThisUpdate()), (certCrlInfo
+                                .hasNextUpdate() ? CERT_CRL_DATE_FORMAT.format(certCrlInfo.getNextUpdate()) : null),
+                            (certCrlReasonAvailable ? certCrlReason.name() : null),
+                            (certCrlEntryInfo.hasRevocationDate() ? CERT_CRL_DATE_FORMAT.format(certCrlEntryInfo.getRevocationDate()) : null)));
+            } else {
+                certValidatorContext
+                    .getMessages()
+                    .add(
+                        new ToolMessageImpl(
+                            ToolMessageLevel.INFO,
+                            String
+                                .format(
+                                    "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) CRL instance (thisUpdate={%s}, nextUpdate={%s}) entry is not revoked (reason=%s, date={%s}).",
+                                    certSubjDn, certInfo.getSerialNumber(), certIssuerDn, CERT_CRL_DATE_FORMAT.format(certCrlInfo.getThisUpdate()),
+                                    (certCrlInfo.hasNextUpdate() ? CERT_CRL_DATE_FORMAT.format(certCrlInfo.getNextUpdate()) : null), certCrlReason.name(),
+                                    (certCrlEntryInfo.hasRevocationDate() ? CERT_CRL_DATE_FORMAT.format(certCrlEntryInfo.getRevocationDate()) : null))));
+
+                return true;
+            }
         }
 
         // noinspection ConstantConditions

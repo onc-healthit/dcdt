@@ -2,6 +2,7 @@ package gov.hhs.onc.dcdt.service.dns.server.impl;
 
 import gov.hhs.onc.dcdt.beans.Phase;
 import gov.hhs.onc.dcdt.context.AutoStartup;
+import gov.hhs.onc.dcdt.dns.DnsTransportProtocol;
 import gov.hhs.onc.dcdt.service.dns.config.DnsServerConfig;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServer;
 import gov.hhs.onc.dcdt.service.dns.server.DnsServerTcpSocketListener;
@@ -10,7 +11,7 @@ import gov.hhs.onc.dcdt.service.server.impl.AbstractToolServer;
 
 @AutoStartup(false)
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 1)
-public class DnsServerImpl extends AbstractToolServer<DnsServerConfig> implements DnsServer {
+public class DnsServerImpl extends AbstractToolServer<DnsTransportProtocol, DnsServerConfig> implements DnsServer {
     private DnsServerUdpSocketListener udpSocketListener;
     private DnsServerTcpSocketListener tcpSocketListener;
 

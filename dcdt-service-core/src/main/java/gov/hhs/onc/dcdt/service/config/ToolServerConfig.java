@@ -1,9 +1,10 @@
 package gov.hhs.onc.dcdt.service.config;
 
 import gov.hhs.onc.dcdt.beans.ToolConnectionBean;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import javax.annotation.Nonnegative;
 
-public interface ToolServerConfig extends ToolConnectionBean {
+public interface ToolServerConfig<T extends TransportProtocol> extends ToolConnectionBean<T> {
     @Nonnegative
     public int getBacklog();
 

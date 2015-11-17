@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.service.wrapper.impl;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.context.ToolApplicationContextException;
 import gov.hhs.onc.dcdt.context.impl.ClassPathContextLoader;
+import gov.hhs.onc.dcdt.net.TransportProtocol;
 import gov.hhs.onc.dcdt.service.ServiceContextConfiguration;
 import gov.hhs.onc.dcdt.service.ToolService;
 import gov.hhs.onc.dcdt.service.config.ToolServerConfig;
@@ -23,16 +24,16 @@ import org.tanukisoftware.wrapper.event.WrapperControlEvent;
 import org.tanukisoftware.wrapper.event.WrapperEvent;
 import org.tanukisoftware.wrapper.event.WrapperEventListener;
 
-public abstract class AbstractToolServiceWrapper<T extends ToolServerConfig, U extends ToolServer<T>, V extends ToolService<T, U>> implements
-    ToolServiceWrapper<T, U, V> {
+public abstract class AbstractToolServiceWrapper<T extends TransportProtocol, U extends ToolServerConfig<T>, V extends ToolServer<T, U>, W extends ToolService<T, U, V>>
+    implements ToolServiceWrapper<T, U, V, W> {
     protected AbstractApplicationContext appContext;
-    protected Class<V> serviceClass;
-    protected Class<? extends V> serviceImplClass;
+    protected Class<W> serviceClass;
+    protected Class<? extends W> serviceImplClass;
     protected String[] args;
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractToolServiceWrapper.class);
 
-    protected AbstractToolServiceWrapper(Class<V> serviceClass, Class<? extends V> serviceImplClass, String ... args) {
+    protected AbstractToolServiceWrapper(Class<W> serviceClass, Class<? extends W> serviceImplClass, String ... args) {
         this.serviceClass = serviceClass;
         this.serviceImplClass = serviceImplClass;
         this.args = args;

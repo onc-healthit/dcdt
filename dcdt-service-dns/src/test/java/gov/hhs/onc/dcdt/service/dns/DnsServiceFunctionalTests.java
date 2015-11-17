@@ -4,6 +4,7 @@ import gov.hhs.onc.dcdt.ToolRuntimeException;
 import gov.hhs.onc.dcdt.beans.utils.ToolBeanFactoryUtils;
 import gov.hhs.onc.dcdt.config.instance.InstanceDnsConfig;
 import gov.hhs.onc.dcdt.dns.DnsRecordType;
+import gov.hhs.onc.dcdt.dns.DnsTransportProtocol;
 import gov.hhs.onc.dcdt.dns.config.DnsRecordConfig;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupResult;
 import gov.hhs.onc.dcdt.dns.lookup.DnsLookupService;
@@ -36,7 +37,7 @@ import org.xbill.DNS.Record;
 @ContextConfiguration({ "spring/spring-service-dns.xml", "spring/spring-service-dns-*.xml" })
 @SuppressWarnings({ "SpringContextConfigurationInspection" })
 @Test(groups = { "dcdt.test.func.service.dns" })
-public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTests<DnsServerConfig, DnsServer, DnsService> {
+public class DnsServiceFunctionalTests extends AbstractToolServiceFunctionalTests<DnsTransportProtocol, DnsServerConfig, DnsServer, DnsService> {
     private final static Logger LOGGER = LoggerFactory.getLogger(DnsServiceFunctionalTests.class);
 
     @Value("${dcdt.test.func.service.dns.lookup.concurrent.threads}")

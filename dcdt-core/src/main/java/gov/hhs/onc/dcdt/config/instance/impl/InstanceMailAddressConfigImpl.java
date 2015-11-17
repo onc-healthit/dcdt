@@ -51,12 +51,10 @@ public class InstanceMailAddressConfigImpl extends AbstractToolNamedBean impleme
         }
     }
 
-    @Override
     public MailGatewayConfig getGatewayConfig() {
         return this.gatewayConfig;
     }
 
-    @Override
     public void setGatewayConfig(MailGatewayConfig gatewayConfig) {
         this.gatewayConfig = gatewayConfig;
     }
