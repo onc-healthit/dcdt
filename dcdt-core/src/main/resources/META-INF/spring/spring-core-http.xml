@@ -14,9 +14,9 @@
     =====================================================================================================-->
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceLookupHttp" parent="taskExecThreadPoolDynamic"
-        p:keepAliveSeconds="${dcdt.service.lookup.http.task.exec.keep.alive}"
-        p:maxPoolSize="${dcdt.service.lookup.http.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-lookup-http-"/>
+        p:keepAliveSeconds="${dcdt.http.service.lookup.task.exec.keep.alive}"
+        p:maxPoolSize="${dcdt.http.service.lookup.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-http-service-lookup-"/>
     
     <!--====================================================================================================
     = HTTP LOOKUP SERVICES
@@ -25,9 +25,9 @@
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="httpLookupServiceImpl" class="gov.hhs.onc.dcdt.http.lookup.impl.HttpLookupServiceImpl" parent="httpLookupService" abstract="true"
-        p:connectTimeout="${dcdt.service.lookup.http.connect.timeout}"
-        p:maxContentLength="${dcdt.service.lookup.http.content.len.max}"
-        p:readTimeout="${dcdt.service.lookup.http.read.timeout}"
+        p:connectTimeout="${dcdt.http.service.lookup.connect.timeout}"
+        p:maxContentLength="${dcdt.http.service.lookup.content.len.max}"
+        p:readTimeout="${dcdt.http.service.lookup.read.timeout}"
         p:taskExecutor-ref="taskExecServiceLookupHttp"/>
     
     <beans:bean id="httpLookupServiceLocal" parent="httpLookupServiceImpl"

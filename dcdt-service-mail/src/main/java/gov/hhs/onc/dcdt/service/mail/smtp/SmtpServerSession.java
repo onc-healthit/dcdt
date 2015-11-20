@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.service.mail.smtp;
 
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.smtp.command.SmtpCommand;
 import java.util.LinkedList;
 import javax.annotation.Nullable;
@@ -58,13 +57,6 @@ public interface SmtpServerSession {
     public Name getHeloName();
 
     public void setHeloName(@Nullable Name heloName);
-
-    public boolean hasMailInfo();
-
-    @Nullable
-    public MailInfo getMailInfo();
-
-    public void setMailInfo(@Nullable MailInfo mailInfo);
 
     public boolean hasTo();
 

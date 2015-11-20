@@ -2,7 +2,6 @@ package gov.hhs.onc.dcdt.service.mail.smtp.impl;
 
 import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.smtp.command.SmtpCommand;
 import gov.hhs.onc.dcdt.service.mail.smtp.SmtpServerSession;
 import java.util.LinkedList;
@@ -17,7 +16,6 @@ public class SmtpServerSessionImpl implements SmtpServerSession {
     private MailAddress fromAddr;
     private InstanceMailAddressConfig fromConfig;
     private Name heloName;
-    private MailInfo mailInfo;
     private MailAddress toAddr;
     private InstanceMailAddressConfig toConfig;
 
@@ -29,7 +27,6 @@ public class SmtpServerSessionImpl implements SmtpServerSession {
         this.fromAddr = null;
         this.fromConfig = null;
         this.heloName = null;
-        this.mailInfo = null;
         this.toAddr = null;
         this.toConfig = null;
     }
@@ -145,22 +142,6 @@ public class SmtpServerSessionImpl implements SmtpServerSession {
     @Override
     public void setHeloName(@Nullable Name heloName) {
         this.heloName = heloName;
-    }
-
-    @Override
-    public boolean hasMailInfo() {
-        return (this.mailInfo != null);
-    }
-
-    @Nullable
-    @Override
-    public MailInfo getMailInfo() {
-        return this.mailInfo;
-    }
-
-    @Override
-    public void setMailInfo(@Nullable MailInfo mailInfo) {
-        this.mailInfo = mailInfo;
     }
 
     @Override

@@ -52,7 +52,8 @@ public class CertificateRevocationStatusConstraintValidator extends AbstractCert
         // noinspection ConstantConditions
         URI[] certCrlDistribUris =
             certInfo.getCrlDistributionUris().stream()
-                .filter(certCrlDistribUri -> StringUtils.equalsIgnoreCase(certCrlDistribUri.getScheme(), HttpTransportProtocol.HTTP.getScheme())).toArray(URI[]::new);
+                .filter(certCrlDistribUri -> StringUtils.equalsIgnoreCase(certCrlDistribUri.getScheme(), HttpTransportProtocol.HTTP.getScheme()))
+                .toArray(URI[]::new);
         List<CrlInfo> certCrlInfos = new ArrayList<>(certCrlDistribUris.length);
         HttpLookupResult certCrlLookupResult;
 
@@ -67,8 +68,9 @@ public class CertificateRevocationStatusConstraintValidator extends AbstractCert
                             String
                                 .format(
                                     "Certificate (subjDn={%s}, serialNum=%s, issuerDn={%s}) CRL distribution point HTTP URI (%s) lookup response (status=%d, headers=[%s]) was not successful: [%s]",
-                                    certSubjDn, certInfo.getSerialNumber(), certIssuerDn, certCrlDistribUri, certCrlLookupResult.getResponseStatus().code(),
-                                    StringUtils.join(certCrlLookupResult.getResponseHeaders(), "; "), StringUtils.join(certCrlLookupResult.getMessages(), "; "))));
+                                    certSubjDn, certInfo.getSerialNumber(), certIssuerDn, certCrlDistribUri, (certCrlLookupResult.hasResponseStatus()
+                                        ? certCrlLookupResult.getResponseStatus().code() : -1), StringUtils
+                                        .join(certCrlLookupResult.getResponseHeaders(), "; "), StringUtils.join(certCrlLookupResult.getMessages(), "; "))));
 
                 continue;
             }

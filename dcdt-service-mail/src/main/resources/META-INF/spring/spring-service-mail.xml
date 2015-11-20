@@ -14,21 +14,29 @@
     =====================================================================================================-->
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceMail" parent="taskExecThreadPool"
-        p:corePoolSize="${dcdt.service.mail.task.exec.pool.size.core}"
-        p:maxPoolSize="${dcdt.service.mail.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-mail-"/>
+        p:corePoolSize="${dcdt.mail.service.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.mail.service.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-mail-service-"/>
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceMailServerSmtp" parent="taskExecThreadPool"
-        p:corePoolSize="${dcdt.service.mail.server.smtp.task.exec.pool.size.core}"
-        p:maxPoolSize="${dcdt.service.mail.server.smtp.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-mail-server-smtp-"/>
+        p:corePoolSize="${dcdt.mail.service.server.smtp.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.mail.service.server.smtp.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-mail-service-server-smtp-"/>
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceMailServerSmtpReq" parent="taskExecThreadPoolDynamic"
-        p:keepAliveSeconds="${dcdt.service.mail.server.smtp.req.task.exec.keep.alive}"
-        p:maxPoolSize="${dcdt.service.mail.server.smtp.req.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-mail-server-smtp-req-"/>
+        p:keepAliveSeconds="${dcdt.mail.service.server.smtp.req.task.exec.keep.alive}"
+        p:maxPoolSize="${dcdt.mail.service.server.smtp.req.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-mail-service-server-smtp-req-"/>
+    
+    <!--====================================================================================================
+    = REMOTE MAIL SENDER SERVICE
+    =====================================================================================================-->
+    <beans:bean id="remoteMailSenderService" class="gov.hhs.onc.dcdt.service.mail.server.RemoteMailSenderService" parent="mailSenderService" abstract="true"/>
+    
+    <beans:bean id="remoteMailSenderServiceImpl" class="gov.hhs.onc.dcdt.service.mail.server.impl.RemoteMailSenderServiceImpl" parent="remoteMailSenderService"
+        p:dnsNameService-ref="dnsNameServiceCombined"/>
     
     <!--====================================================================================================
     = MAIL SERVER CONFIGURATIONS
@@ -42,12 +50,12 @@
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="smtpServerConfigImpl" class="gov.hhs.onc.dcdt.service.mail.smtp.impl.SmtpServerConfigImpl" parent="smtpServerConfig" abstract="true"
-        p:backlog="${dcdt.service.mail.server.smtp.backlog}"
-        p:commandReadTimeout="${dcdt.service.mail.server.smtp.command.read.timeout}"
-        p:connectTimeout="${dcdt.service.mail.server.smtp.connect.timeout}"
-        p:dataReadTimeout="${dcdt.service.mail.server.smtp.data.read.timeout}"
-        p:maxCommandFrameLength="${dcdt.service.mail.server.smtp.command.frame.size.max}"
-        p:maxDataFrameLength="${dcdt.service.mail.server.smtp.data.frame.size.max}"
+        p:backlog="${dcdt.mail.service.server.smtp.backlog}"
+        p:commandReadTimeout="${dcdt.mail.service.server.smtp.command.read.timeout}"
+        p:connectTimeout="${dcdt.mail.service.server.smtp.connect.timeout}"
+        p:dataReadTimeout="${dcdt.mail.service.server.smtp.data.read.timeout}"
+        p:maxCommandFrameLength="${dcdt.mail.service.server.smtp.command.frame.size.max}"
+        p:maxDataFrameLength="${dcdt.mail.service.server.smtp.data.frame.size.max}"
         p:transportProtocol="SMTP"/>
     
     <!--====================================================================================================

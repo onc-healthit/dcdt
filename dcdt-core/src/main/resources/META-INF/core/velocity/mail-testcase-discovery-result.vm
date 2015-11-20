@@ -15,10 +15,10 @@
         <li><strong>Optional</strong>: $discoveryTestcase.optional</li>
         <li><strong>Description</strong>: $discoveryTestcase.description.text</li>
         
-        #set ($discoveryTestcaseMsgHelper = $discoveryTestcaseSubmission.messageHelper)
+        #set ($discoveryTestcaseMailInfo = $discoveryTestcaseSubmission.mailInfo)
         
-        <li><strong>From</strong>: $discoveryTestcaseMsgHelper.from</li>
-        <li><strong>To</strong>: $discoveryTestcaseMsgHelper.to</li>
+        <li><strong>From</strong>: $discoveryTestcaseMailInfo.from</li>
+        <li><strong>To</strong>: $discoveryTestcaseMailInfo.to</li>
         
         <li>
             <strong>Processing Message(s)</strong>:

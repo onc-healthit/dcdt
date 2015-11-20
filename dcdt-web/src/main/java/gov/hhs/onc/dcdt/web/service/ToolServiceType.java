@@ -12,9 +12,9 @@ public enum ToolServiceType implements ToolIdentifier, ToolTypeIdentifier {
     DNS(DnsService.class), HTTP(HttpService.class), LDAP(LdapService.class), MAIL(MailService.class);
 
     private final String id;
-    private final Class<? extends ToolService<?, ?>> type;
+    private final Class<? extends ToolService<?, ?, ?>> type;
 
-    private ToolServiceType(Class<? extends ToolService<?, ?>> type) {
+    private ToolServiceType(Class<? extends ToolService<?, ?, ?>> type) {
         this.id = this.name();
         this.type = type;
     }
@@ -25,7 +25,7 @@ public enum ToolServiceType implements ToolIdentifier, ToolTypeIdentifier {
     }
 
     @Override
-    public Class<? extends ToolService<?, ?>> getType() {
+    public Class<? extends ToolService<?, ?, ?>> getType() {
         return this.type;
     }
 }

@@ -4,7 +4,7 @@ import gov.hhs.onc.dcdt.config.instance.InstanceMailAddressConfig;
 import javax.annotation.Nullable;
 import org.apache.velocity.app.VelocityEngine;
 
-public interface TemplateMailSenderService extends MailSenderService {
+public interface MailTemplateSenderService extends MailSenderService {
     public InstanceMailAddressConfig getFromConfig();
 
     public void setFromConfig(InstanceMailAddressConfig fromConfig);

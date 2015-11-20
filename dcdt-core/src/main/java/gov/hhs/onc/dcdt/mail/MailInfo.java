@@ -11,8 +11,6 @@ import javax.mail.MessagingException;
 import org.springframework.util.MimeType;
 
 public interface MailInfo extends ToolInfoBean {
-    public byte[] write() throws MessagingException;
-
     public boolean hasAttachments();
 
     @Nullable
@@ -45,6 +43,20 @@ public interface MailInfo extends ToolInfoBean {
 
     @Nullable
     public String getMessageId();
+
+    public boolean hasOrigDate();
+
+    @Nullable
+    public Date getOrigDate();
+
+    public void setOrigDate(@Nullable Date origDate) throws MessagingException;
+
+    public boolean hasReferences();
+
+    @Nullable
+    public String getReferences();
+
+    public void setReferences(@Nullable String refs) throws MessagingException;
 
     public boolean hasReplyTo();
 

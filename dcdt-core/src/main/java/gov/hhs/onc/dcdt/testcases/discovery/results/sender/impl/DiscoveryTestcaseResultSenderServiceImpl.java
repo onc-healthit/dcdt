@@ -8,7 +8,7 @@ import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.impl.MimeAttachmentResource;
-import gov.hhs.onc.dcdt.mail.sender.impl.AbstractTemplateMailSenderService;
+import gov.hhs.onc.dcdt.mail.sender.impl.AbstractMailTemplateSenderService;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
@@ -27,7 +27,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.ui.ModelMap;
 
-public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractTemplateMailSenderService implements DiscoveryTestcaseResultSenderService {
+public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractMailTemplateSenderService implements DiscoveryTestcaseResultSenderService {
     @Order(Ordered.HIGHEST_PRECEDENCE + 2)
     private class DiscoveryTestcaseResultMailPreparator implements MailPreparator {
         private DiscoveryTestcaseResult discoveryTestcaseResult;
@@ -42,6 +42,8 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractTemplateMa
             DiscoveryTestcase discoveryTestcase = discoveryTestcaseSubmission.getTestcase();
             // noinspection ConstantConditions
             String discoveryTestcaseName = discoveryTestcase.getName();
+
+            mailInfo.setReferences(discoveryTestcaseSubmission.getMailInfo().getMessageId());
 
             // noinspection ConstantConditions
             List<MimeAttachmentResource> attachments = new ArrayList<>(DiscoveryTestcaseResultCredentialType.values().length + 1);
@@ -73,7 +75,7 @@ public class DiscoveryTestcaseResultSenderServiceImpl extends AbstractTemplateMa
             Date msgProcDate = new Date();
 
             // noinspection ConstantConditions
-            attachments.add(new MimeAttachmentResource(discoveryTestcaseSubmission.getMailInfo().write(), (discoveryTestcaseName
+            attachments.add(new MimeAttachmentResource(discoveryTestcaseSubmission.getMailInfo().getMessage().getData(), (discoveryTestcaseName
                 + ATTACHMENT_RESOURCE_DESC_SUFFIX_MAIL + ATTACHMENT_RESOURCE_DESC_SUFFIX_DATE_FORMAT.format(msgProcDate)),
                 MailContentTransferEncoding.QUOTED_PRINTABLE, MailContentTypes.MSG_RFC822, (discoveryTestcaseName.toLowerCase()
                     + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_MAIL + ATTACHMENT_RESOURCE_FILE_NAME_SUFFIX_DATE_FORMAT.format(msgProcDate)

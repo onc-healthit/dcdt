@@ -19,7 +19,7 @@ import gov.hhs.onc.dcdt.crypto.utils.KeyUtils;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailContentTypes;
 import gov.hhs.onc.dcdt.mail.MailEncoding;
-import gov.hhs.onc.dcdt.mail.MailHeaderNames;
+import gov.hhs.onc.dcdt.mail.MailHeaders;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.impl.MailInfoImpl;
 import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessage;
@@ -204,7 +204,7 @@ public class ToolSmimeUtilsFunctionalTests extends AbstractToolFunctionalTests {
 
     private static MimeMultipart getSignedMultipartForBaseType(MimeMultipart signedMultipart, String sigBaseType) throws MessagingException {
         MimeBodyPart sigPart = (MimeBodyPart) signedMultipart.getBodyPart(1);
-        sigPart.setHeader(MailHeaderNames.CONTENT_TYPE,
+        sigPart.setHeader(MailHeaders.CONTENT_TYPE_NAME,
             sigPart.getContentType().replace(ToolMimeTypeUtils.getBaseType(ToolMimePartUtils.getContentType(sigPart)), sigBaseType));
 
         // noinspection ConstantConditions

@@ -6,9 +6,11 @@ import gov.hhs.onc.dcdt.utils.ToolValidationUtils;
 import gov.hhs.onc.dcdt.validation.constraints.ToolConstraintValidator;
 import gov.hhs.onc.dcdt.validation.impl.ToolValidatorFactory;
 import java.lang.annotation.Annotation;
+import java.util.Objects;
 import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import javax.validation.ConstraintValidatorContext;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 
 public abstract class AbstractToolConstraintValidator<T extends Annotation, U> extends AbstractToolBean implements ToolConstraintValidator<T, U> {
@@ -35,7 +37,8 @@ public abstract class AbstractToolConstraintValidator<T extends Annotation, U> e
             return this.isValidInternal(value, validatorContext);
         } catch (Exception e) {
             validatorContext.disableDefaultConstraintViolation();
-            validatorContext.buildConstraintViolationWithTemplate(ToolValidationUtils.escapeMessageMacros(e.getMessage())).addConstraintViolation();
+            validatorContext.buildConstraintViolationWithTemplate(ToolValidationUtils.escapeMessageMacros(Objects.toString(e.getMessage(), StringUtils.EMPTY)))
+                .addConstraintViolation();
 
             return false;
         }

@@ -2,7 +2,7 @@ package gov.hhs.onc.dcdt.mail.impl;
 
 import gov.hhs.onc.dcdt.mail.MailContentTransferEncoding;
 import gov.hhs.onc.dcdt.mail.MailEncoding;
-import gov.hhs.onc.dcdt.mail.MailHeaderNames;
+import gov.hhs.onc.dcdt.mail.MailHeaders;
 import gov.hhs.onc.dcdt.mail.ToolMailException;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import java.io.IOException;
@@ -68,7 +68,7 @@ public class MimeAttachmentResource extends ByteArrayResource {
 
     public MimeBodyPart toBodyPart(MailEncoding enc) throws MessagingException {
         boolean descAvailable = this.hasDescription(), filenameAvailable = this.hasFilename();
-        String mimeCharsetName = enc.getMimeCharset().name(), encName = ObjectUtils.identityToString(this), encDesc = null, encFilename = null;
+        String mimeCharsetName = enc.getMimeCharsetName(), encName = ObjectUtils.identityToString(this), encDesc = null, encFilename = null;
 
         if (descAvailable) {
             try {
@@ -100,7 +100,7 @@ public class MimeAttachmentResource extends ByteArrayResource {
         }
 
         if (this.hasContentTransferEncoding()) {
-            bodyPart.setHeader(MailHeaderNames.CONTENT_TRANSFER_ENCODING, this.contentXferEnc.getId());
+            bodyPart.setHeader(MailHeaders.CONTENT_TRANSFER_ENCODING_NAME, this.contentXferEnc.getId());
         }
 
         return bodyPart;

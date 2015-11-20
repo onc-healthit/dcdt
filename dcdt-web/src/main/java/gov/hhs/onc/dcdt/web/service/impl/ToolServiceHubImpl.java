@@ -24,16 +24,16 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
     private final static Logger LOGGER = LoggerFactory.getLogger(ToolServiceHubImpl.class);
 
     @Autowired
-    private List<ToolService<?, ?>> services;
+    private List<ToolService<?, ?, ?>> services;
 
-    private Map<ToolServiceType, ToolService<?, ?>> serviceMap = new EnumMap<>(ToolServiceType.class);
+    private Map<ToolServiceType, ToolService<?, ?, ?>> serviceMap = new EnumMap<>(ToolServiceType.class);
     private Map<ToolServiceType, List<String>> serviceMsgsMap = new EnumMap<>(ToolServiceType.class);
 
     @Override
     protected void stopInternal() throws Exception {
         this.serviceMsgsMap.clear();
 
-        ToolService<?, ?> service;
+        ToolService<?, ?, ?> service;
 
         for (ToolServiceType serviceType : ToolServiceType.class.getEnumConstants()) {
             if (!this.serviceMap.containsKey(serviceType) || ((service = this.serviceMap.get(serviceType)) == null)) {
@@ -56,7 +56,7 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
 
     @Override
     protected void startInternal() throws Exception {
-        ToolService<?, ?> service;
+        ToolService<?, ?, ?> service;
 
         for (ToolServiceType serviceType : ToolServiceType.class.getEnumConstants()) {
             this.serviceMap.put(serviceType, (service = this.services.stream().filter(ToolStreamUtils.instances(serviceType.getType())).findFirst().get()));
@@ -76,7 +76,7 @@ public class ToolServiceHubImpl extends AbstractToolLifecycleBean implements Too
     }
 
     @Override
-    public Map<ToolServiceType, ToolService<?, ?>> getServiceMap() {
+    public Map<ToolServiceType, ToolService<?, ?, ?>> getServiceMap() {
         return this.serviceMap;
     }
 

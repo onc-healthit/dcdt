@@ -14,21 +14,21 @@
     =====================================================================================================-->
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceDns" parent="taskExecThreadPool"
-        p:corePoolSize="${dcdt.service.dns.task.exec.pool.size.core}"
-        p:maxPoolSize="${dcdt.service.dns.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-dns-"/>
+        p:corePoolSize="${dcdt.dns.service.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.dns.service.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-dns-service-"/>
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceDnsServer" parent="taskExecThreadPool"
-        p:corePoolSize="${dcdt.service.dns.server.task.exec.pool.size.core}"
-        p:maxPoolSize="${dcdt.service.dns.server.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-dns-server-"/>
+        p:corePoolSize="${dcdt.dns.service.server.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.dns.service.server.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-dns-service-server-"/>
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceDnsServerReq" parent="taskExecThreadPoolDynamic"
-        p:keepAliveSeconds="${dcdt.service.dns.server.req.task.exec.keep.alive}"
-        p:maxPoolSize="${dcdt.service.dns.server.req.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-dns-server-req-"/>
+        p:keepAliveSeconds="${dcdt.dns.service.server.req.task.exec.keep.alive}"
+        p:maxPoolSize="${dcdt.dns.service.server.req.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-dns-service-server-req-"/>
     
     <!--====================================================================================================
     = DNS UDP SOCKET ADAPTERS
@@ -105,7 +105,7 @@
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="dnsServerConfigImpl" class="gov.hhs.onc.dcdt.service.dns.config.impl.DnsServerConfigImpl" parent="dnsServerConfig" abstract="true"
-        p:backlog="${dcdt.service.dns.server.backlog}"/>
+        p:backlog="${dcdt.dns.service.server.backlog}"/>
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="dnsServerConfig1" parent="dnsServerConfigImpl"

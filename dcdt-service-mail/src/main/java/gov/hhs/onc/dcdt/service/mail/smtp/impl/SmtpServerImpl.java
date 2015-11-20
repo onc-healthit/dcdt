@@ -9,6 +9,7 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailEncoding;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.impl.MailInfoImpl;
+import gov.hhs.onc.dcdt.mail.impl.ToolMimeMessage;
 import gov.hhs.onc.dcdt.mail.smtp.SmtpCommandException;
 import gov.hhs.onc.dcdt.mail.smtp.SmtpReply;
 import gov.hhs.onc.dcdt.mail.smtp.SmtpReplyCode;
@@ -26,6 +27,7 @@ import gov.hhs.onc.dcdt.mail.smtp.command.impl.QuitCommand;
 import gov.hhs.onc.dcdt.mail.smtp.command.impl.RcptCommand;
 import gov.hhs.onc.dcdt.mail.smtp.command.impl.RsetCommand;
 import gov.hhs.onc.dcdt.mail.smtp.impl.SmtpReplyImpl;
+import gov.hhs.onc.dcdt.service.mail.server.RemoteMailSenderService;
 import gov.hhs.onc.dcdt.service.mail.server.impl.AbstractMailServer;
 import gov.hhs.onc.dcdt.service.mail.smtp.SmtpServer;
 import gov.hhs.onc.dcdt.service.mail.smtp.SmtpServerConfig;
@@ -36,9 +38,7 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseProcessor;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMapping;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.DiscoveryTestcaseMailMappingService;
-import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService;
-import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
@@ -54,20 +54,19 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.DelimiterBasedFrameDecoder;
 import io.netty.handler.codec.TooLongFrameException;
-import io.netty.handler.codec.string.StringDecoder;
 import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.util.AttributeKey;
 import io.netty.util.CharsetUtil;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import javax.annotation.Nullable;
+import javax.annotation.Resource;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -77,33 +76,117 @@ import org.springframework.beans.factory.annotation.Autowired;
 @AutoStartup(false)
 @Phase(Phase.PHASE_PRECEDENCE_HIGHEST + 4)
 public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, SmtpServerConfig> implements SmtpServer {
-    private class SmtpServerRequestDecoder extends DelimiterBasedFrameDecoder {
-        private boolean decodeData;
-        private CompositeByteBuf reqBuffer;
-        private String req;
+    private class SmtpServerMailDeliveryTask implements Runnable {
+        private MailInfo mailInfo;
+        private MailAddress fromAddr;
+        private MailAddress toAddr;
+        private InstanceMailAddressConfig toConfig;
+        private boolean toLocal;
 
-        public SmtpServerRequestDecoder(boolean decodeData) {
-            super((decodeData ? SmtpServerImpl.this.config.getMaxDataFrameLength() : SmtpServerImpl.this.config.getMaxCommandFrameLength()), (decodeData
-                ? DATA_DELIM_BUFFER : CMD_DELIM_BUFFER));
-
-            this.setSingleDecode((this.decodeData = decodeData));
+        public SmtpServerMailDeliveryTask(MailInfo mailInfo, MailAddress fromAddr, MailAddress toAddr, @Nullable InstanceMailAddressConfig toConfig,
+            boolean toLocal) {
+            this.mailInfo = mailInfo;
+            this.fromAddr = fromAddr;
+            this.toAddr = toAddr;
+            this.toConfig = toConfig;
+            this.toLocal = toLocal;
         }
 
         @Override
-        protected void decodeLast(ChannelHandlerContext context, ByteBuf decodeBuffer, List<Object> reqObjs) throws Exception {
-            super.decodeLast(context, decodeBuffer, reqObjs);
-
-            if (this.reqBuffer != null) {
-                this.req = this.reqBuffer.toString(CharsetUtil.US_ASCII);
-                this.reqBuffer.clear();
+        public void run() {
+            if (this.toLocal) {
+                this.processLocalDelivery();
+            } else {
+                this.processRemoteDelivery();
             }
+        }
+
+        private void processRemoteDelivery() {
+            try {
+                SmtpServerImpl.this.remoteMailSenderService.send(this.mailInfo, this.fromAddr, this.toAddr,
+                    SmtpServerImpl.this.config.getHeloName().toString(true));
+
+                LOGGER.info(String.format("Mail MIME message (id=%s, from=%s, to=%s) remote delivery (from=%s, to=%s) was successful:\n%s",
+                    this.mailInfo.getMessageId(), this.mailInfo.getFrom(), this.mailInfo.getTo(), this.fromAddr, this.toAddr, this.mailInfo.getMessage()));
+            } catch (Exception e) {
+                LOGGER.error(String.format("Mail MIME message (id=%s, from=%s, to=%s) remote delivery (from=%s, to=%s) failed:\n%s",
+                    this.mailInfo.getMessageId(), this.mailInfo.getFrom(), this.mailInfo.getTo(), this.fromAddr, this.toAddr, this.mailInfo.getMessage()), e);
+            }
+        }
+
+        private void processLocalDelivery() {
+            if (!this.toConfig.isProcessed()) {
+                LOGGER.error(String.format("Locally delivered (from=%s, to=%s) mail MIME message (id=%s, from=%s, to=%s) to a non-processed address:\n%s",
+                    this.fromAddr, this.toAddr, this.mailInfo.getMessageId(), this.mailInfo.getFrom(), this.mailInfo.getTo(), this.mailInfo.getMessage()));
+
+                return;
+            }
+
+            // noinspection ConstantConditions
+            DiscoveryTestcase discoveryTestcase =
+                (SmtpServerImpl.this.gateway.hasDiscoveryTestcaseAddresses()
+                    ? SmtpServerImpl.this.gateway.getDiscoveryTestcaseAddresses().get(this.toAddr) : null);
+
+            if (discoveryTestcase == null) {
+                LOGGER.error(String.format(
+                    "Locally delivered (from=%s, to=%s) mail MIME message (id=%s, from=%s, to=%s) does not have an associated Discovery testcase:\n%s",
+                    this.fromAddr, this.toAddr, this.mailInfo.getMessageId(), this.mailInfo.getFrom(), this.mailInfo.getTo(), this.mailInfo.getMessage()));
+
+                return;
+            }
+
+            DiscoveryTestcaseMailMapping mailMapping =
+                SmtpServerImpl.this.discoveryTestcaseMailMappingService.getBeans().stream()
+                    .filter(discoveryTestcaseMailMapping -> Objects.equals(discoveryTestcaseMailMapping.getDirectAddress(), this.fromAddr)).findFirst()
+                    .orElse(null);
+
+            if (mailMapping == null) {
+                LOGGER
+                    .error(String
+                        .format(
+                            "Locally delivered (from=%s, to=%s) mail MIME message (id=%s, from=%s, to=%s) does not have an associated Discovery testcase result mail mapping:\n%s",
+                            this.fromAddr, this.toAddr, this.mailInfo.getMessageId(), this.mailInfo.getFrom(), this.mailInfo.getTo(),
+                            this.mailInfo.getMessage()));
+
+                return;
+            }
+
+            MailAddress resultsAddr = mailMapping.getResultsAddress();
+
+            try {
+                SmtpServerImpl.this.discoveryTestcaseResultSenderService.send(SmtpServerImpl.this.discoveryTestcaseProc.process(ToolBeanFactoryUtils
+                    .createBeanOfType(SmtpServerImpl.this.appContext, DiscoveryTestcaseSubmission.class, discoveryTestcase, this.mailInfo)), resultsAddr);
+
+                LOGGER.info(String.format(
+                    "Sent Discovery testcase results (resultsAddr=%s) for locally delivered (from=%s, to=%s) mail MIME message (id=%s, from=%s, to=%s):\n%s",
+                    resultsAddr, this.fromAddr, this.toAddr, this.mailInfo.getMessageId(), this.mailInfo.getFrom(), this.mailInfo.getTo(),
+                    this.mailInfo.getMessage()));
+            } catch (Exception e) {
+                LOGGER
+                    .error(
+                        String
+                            .format(
+                                "Unable to send Discovery testcase results (resultsAddr=%s) for locally delivered (from=%s, to=%s) mail MIME message (id=%s, from=%s, to=%s):\n%s",
+                                resultsAddr, this.fromAddr, this.toAddr, this.mailInfo.getMessageId(), this.mailInfo.getFrom(), this.mailInfo.getTo(),
+                                this.mailInfo.getMessage()), e);
+            }
+        }
+    }
+
+    private class SmtpServerRequestDecoder extends DelimiterBasedFrameDecoder {
+        private boolean decodeData;
+        private CompositeByteBuf reqBuffer;
+
+        public SmtpServerRequestDecoder(boolean decodeData) {
+            super((decodeData ? SmtpServerImpl.this.config.getMaxDataFrameLength() : SmtpServerImpl.this.config.getMaxCommandFrameLength()), true, false,
+                (decodeData ? DATA_DELIM_BUFFER : CMD_DELIM_BUFFER));
+
+            this.setSingleDecode((this.decodeData = decodeData));
         }
 
         @Nullable
         @Override
         protected Object decode(ChannelHandlerContext context, ByteBuf decodeBuffer) throws Exception {
-            this.req = null;
-
             if ((decodeBuffer = ((ByteBuf) super.decode(context, decodeBuffer))) != null) {
                 ((this.reqBuffer != null) ? this.reqBuffer : (this.reqBuffer = new CompositeByteBuf(context.alloc(), false, Integer.MAX_VALUE)))
                     .addComponent(decodeBuffer.copy());
@@ -116,30 +199,45 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
             return this.decodeData;
         }
 
+        public boolean hasRequestBuffer() {
+            return (this.reqBuffer != null);
+        }
+
         @Nullable
-        public String getRequest() {
-            return this.req;
+        public CompositeByteBuf getRequestBuffer() {
+            return this.reqBuffer;
         }
     }
 
-    private class SmtpServerRequestHandler extends AbstractToolServerRequestHandler<String> {
+    private class SmtpServerRequestHandler extends AbstractToolServerRequestHandler<ByteBuf> {
         @Override
         public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
             Channel channel = context.channel();
+            ChannelPipeline pipeline = channel.pipeline();
             SmtpServerRequestDecoder reqDecoder = context.pipeline().get(SmtpServerRequestDecoder.class);
-            String req = reqDecoder.getRequest();
+            SmtpServerSession session = context.channel().attr(SESSION_ATTR_KEY).get();
+
+            pipeline.remove(ReadTimeoutHandler.class);
+
+            // noinspection ConstantConditions
+            String req = (reqDecoder.hasRequestBuffer() ? reqDecoder.getRequestBuffer().toString(CharsetUtil.US_ASCII) : null);
 
             try {
                 super.exceptionCaught(context, cause);
             } catch (Exception e) {
-                LOGGER.error(String.format("Unable to process SMTP server request: %s", req), e);
+                LOGGER.error(String.format("Unable to process SMTP server session (from=%s, to=%s) request: %s", session.getFrom(), session.getTo(), req), e);
+
+                boolean decodeData = reqDecoder.isDecodeData();
 
                 if ((cause = e.getCause()) instanceof ReadTimeoutException) {
                     SmtpServerImpl.this.writeResponse(channel, channel.attr(SESSION_ATTR_KEY).get(), new SmtpReplyImpl(SmtpReplyCode.SERVICE_UNAVAILABLE,
-                        String.format("%s read timeout.", (reqDecoder.isDecodeData() ? "Data" : "Command"))));
+                        String.format("%s read timeout.", (decodeData ? "Data" : "Command"))));
                 } else if (cause instanceof TooLongFrameException) {
-                    SmtpServerImpl.this.writeResponse(channel, channel.attr(SESSION_ATTR_KEY).get(), new SmtpReplyImpl(SmtpReplyCode.SERVICE_UNAVAILABLE,
-                        String.format("%s content was too long.", (reqDecoder.isDecodeData() ? "Data" : "Command"))));
+                    SmtpServerImpl.this.writeResponse(
+                        channel,
+                        channel.attr(SESSION_ATTR_KEY).get(),
+                        new SmtpReplyImpl((decodeData ? SmtpReplyCode.SYSTEM_STORAGE_ERROR : SmtpReplyCode.SYNTAX_ERROR_COMMAND), String.format(
+                            "%s content was too long.", (decodeData ? "Data" : "Command"))));
                 } else {
                     SmtpServerImpl.this.writeResponse(channel, channel.attr(SESSION_ATTR_KEY).get(), true, new SmtpReplyImpl(SmtpReplyCode.SERVICE_UNAVAILABLE,
                         "Internal server error"));
@@ -149,7 +247,7 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
 
         @Override
         @SuppressWarnings({ CompilerWarnings.UNCHECKED })
-        protected void channelRead0(ChannelHandlerContext context, String req) throws Exception {
+        protected void channelRead0(ChannelHandlerContext context, ByteBuf reqBuffer) throws Exception {
             Channel channel = context.channel();
             ChannelPipeline pipeline = channel.pipeline();
             boolean decodeData = pipeline.get(SmtpServerRequestDecoder.class).isDecodeData();
@@ -158,15 +256,45 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
 
             pipeline.remove(ReadTimeoutHandler.class);
 
-            if (decodeData) {
-                MailInfo mailInfo = new MailInfoImpl(SmtpServerImpl.this.mailSession, MailEncoding.UTF_8);
-                session.setMailInfo(mailInfo);
+            byte[] reqContent = new byte[reqBuffer.readableBytes()];
+            reqBuffer.readBytes(reqContent);
 
+            String req = new String(reqContent, CharsetUtil.US_ASCII);
+
+            if (decodeData) {
                 pipeline.replace(REQ_DECODER_NAME, REQ_DECODER_NAME, new SmtpServerRequestDecoder(false));
 
-                this.processData(mailInfo);
+                boolean toLocal = session.hasToConfig();
 
-                SmtpServerImpl.this.writeResponse(channel, session, new SmtpReplyImpl(SmtpReplyCode.MAIL_OK, SmtpReplyParameters.OK));
+                if (toLocal || (session.hasAuthenticatedAddressConfig() && session.hasFromConfig())) {
+                    MailInfo mailInfo = null;
+
+                    try {
+                        mailInfo = new MailInfoImpl(new ToolMimeMessage(SmtpServerImpl.this.mailSession, reqContent), MailEncoding.UTF_8);
+                    } catch (Exception e) {
+                        LOGGER.error(String.format("Unable to process SMTP server session (from=%s, to=%s) mail MIME message:\n%s", session.getFrom(),
+                            session.getTo(), req), e);
+
+                        SmtpServerImpl.this.writeResponse(
+                            channel,
+                            session,
+                            new SmtpReplyImpl(SmtpReplyCode.MAILBOX_PERM_UNAVAILABLE, String.format("Malformed mail MIME message: from=%s, to=%s",
+                                session.getFrom(), session.getTo())));
+                    }
+
+                    if (mailInfo != null) {
+                        SmtpServerImpl.this.reqTaskExec.submit(new SmtpServerMailDeliveryTask(mailInfo, session.getFrom(), session.getTo(), session
+                            .getToConfig(), toLocal));
+
+                        SmtpServerImpl.this.writeResponse(channel, session, new SmtpReplyImpl(SmtpReplyCode.MAIL_OK, SmtpReplyParameters.OK));
+                    }
+                } else {
+                    SmtpServerImpl.this.writeResponse(
+                        channel,
+                        session,
+                        new SmtpReplyImpl(SmtpReplyCode.MAILBOX_PERM_UNAVAILABLE, String.format("Unable to deliver mail MIME message: from=%s, to=%s",
+                            session.getFrom(), session.getTo())));
+                }
 
                 return;
             }
@@ -182,7 +310,7 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
                     String authSecret = new String(Base64.decodeBase64(req), CharsetUtil.UTF_8);
                     session.setAuthenticationSecret(authSecret);
 
-                    InstanceMailAddressConfig authenticatedConfig = SmtpServerImpl.this.mailGateway.authenticate(session.getAuthenticationId(), authSecret);
+                    InstanceMailAddressConfig authenticatedConfig = SmtpServerImpl.this.gateway.authenticate(session.getAuthenticationId(), authSecret);
 
                     if (authenticatedConfig != null) {
                         session.setAuthenticatedAddressConfig(authenticatedConfig);
@@ -202,8 +330,7 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
             SmtpCommandType cmdType = ToolEnumUtils.findById(SmtpCommandType.class, reqParts[0].toUpperCase());
 
             if (cmdType == null) {
-                SmtpServerImpl.this.writeResponse(channel, session,
-                    new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_COMMAND_UNRECOGNIZED, "Command not recognized"));
+                SmtpServerImpl.this.writeResponse(channel, session, new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_COMMAND, "Command not recognized"));
 
                 return;
             }
@@ -211,7 +338,7 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
             try {
                 SmtpCommand cmd = parseCommand(cmdType, ((reqParts.length == 2) ? StringUtils.stripEnd(reqParts[1], StringUtils.SPACE) : StringUtils.EMPTY));
                 SmtpReply resp =
-                    ((SmtpCommandProcessor<SmtpCommand>) SmtpServerImpl.this.cmdProcs.get(cmdType)).process(channel, SmtpServerImpl.this.mailGateway,
+                    ((SmtpCommandProcessor<SmtpCommand>) SmtpServerImpl.this.cmdProcs.get(cmdType)).process(channel, SmtpServerImpl.this.gateway,
                         SmtpServerImpl.this.config, session, cmd);
 
                 if (cmd instanceof DataCommand) {
@@ -227,51 +354,6 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
                 SmtpServerImpl.this.writeResponse(channel, session, e.getResponse());
             }
         }
-
-        private void processData(MailInfo mailInfo) throws Exception {
-            MailAddress toAddr = mailInfo.getTo(), fromAddr = mailInfo.getFrom();
-            DiscoveryTestcase discoveryTestcase =
-                ToolBeanFactoryUtils.getBeansOfType(SmtpServerImpl.this.appContext, DiscoveryTestcase.class).stream()
-                    .filter(discoveryTestcaseSearch -> Objects.equals(discoveryTestcaseSearch.getMailAddress(), toAddr)).findFirst().orElse(null);
-
-            if (discoveryTestcase == null) {
-                LOGGER.error(String.format("Unable to find associated Discovery testcase for mail (from=%s, to=%s).", fromAddr, toAddr));
-
-                return;
-            }
-
-            // noinspection ConstantConditions
-            DiscoveryTestcaseMailMapping mailMapping =
-                ToolBeanFactoryUtils.getBeanOfType(SmtpServerImpl.this.appContext, DiscoveryTestcaseMailMappingService.class).getBeans().stream()
-                    .filter(discoveryTestcaseMailMapping -> Objects.equals(discoveryTestcaseMailMapping.getDirectAddress(), fromAddr)).findFirst().orElse(null);
-
-            if (mailMapping != null) {
-                // noinspection ConstantConditions
-                this.sendResultMail(
-                    toAddr,
-                    discoveryTestcase,
-                    ToolBeanFactoryUtils.getBeanOfType(SmtpServerImpl.this.appContext, DiscoveryTestcaseProcessor.class).process(
-                        ToolBeanFactoryUtils.createBeanOfType(SmtpServerImpl.this.appContext, DiscoveryTestcaseSubmission.class, discoveryTestcase, mailInfo)),
-                    mailMapping);
-            } else {
-                LOGGER.error(String.format(
-                    "Unable to find mail address for sending results associated with Discovery testcase (name=%s, mailAddr=%s) mail (from=%s).",
-                    discoveryTestcase.getName(), toAddr, fromAddr));
-            }
-        }
-
-        private void sendResultMail(MailAddress to, DiscoveryTestcase discoveryTestcase, DiscoveryTestcaseResult discoveryTestcaseResult,
-            DiscoveryTestcaseMailMapping mailMapping) throws Exception {
-            DiscoveryTestcaseResultSenderService discoveryTestcaseResultSenderService =
-                ToolBeanFactoryUtils.getBeanOfType(SmtpServerImpl.this.appContext, DiscoveryTestcaseResultSenderService.class);
-            MailAddress resultsAddr = mailMapping.getResultsAddress();
-            // noinspection ConstantConditions
-            discoveryTestcaseResultSenderService.send(discoveryTestcaseResult, resultsAddr);
-
-            LOGGER.info(String.format(
-                "Sent Discovery testcase result mail (to=%s) for Discovery testcase (name=%s, mailAddr=%s) from sender service (class=%s).", resultsAddr,
-                discoveryTestcase.getName(), to, ToolClassUtils.getName(DiscoveryTestcaseResultSenderService.class)));
-        }
     }
 
     private class SmtpServerChannelInitializer extends AbstractMailServerChannelInitializer {
@@ -284,7 +366,6 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
 
             ChannelPipeline channelPipeline = channel.pipeline();
             channelPipeline.addLast(REQ_DECODER_NAME, new SmtpServerRequestDecoder(false));
-            channelPipeline.addLast(STR_DECODER);
             channelPipeline.addLast(new SmtpServerRequestHandler());
 
             SmtpServerImpl.this.writeResponse(channel, session, new SmtpReplyImpl(SmtpReplyCode.SERVICE_READY, (SmtpServerImpl.this.config.getGreeting()
@@ -299,9 +380,19 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
 
     private final static String REQ_DECODER_NAME = "reqDecoder";
 
-    private final static StringDecoder STR_DECODER = new StringDecoder(CharsetUtil.US_ASCII);
-
     private final static Logger LOGGER = LoggerFactory.getLogger(SmtpServerImpl.class);
+
+    @Autowired
+    private DiscoveryTestcaseMailMappingService discoveryTestcaseMailMappingService;
+
+    @Autowired
+    private DiscoveryTestcaseProcessor discoveryTestcaseProc;
+
+    @Resource(name = "discoveryTestcaseResultSenderServiceImpl")
+    private DiscoveryTestcaseResultSenderService discoveryTestcaseResultSenderService;
+
+    @Resource(name = "remoteMailSenderServiceImpl")
+    private RemoteMailSenderService remoteMailSenderService;
 
     private Map<SmtpCommandType, SmtpCommandProcessor<?>> cmdProcs;
 
@@ -358,7 +449,9 @@ public class SmtpServerImpl extends AbstractMailServer<SmtpTransportProtocol, Sm
 
         if (quit) {
             close = true;
-        } else {
+        }
+
+        if (!close) {
             ChannelPipeline pipeline = channel.pipeline();
             pipeline.addLast(new ReadTimeoutHandler((pipeline.get(SmtpServerRequestDecoder.class).isDecodeData()
                 ? this.config.getDataReadTimeout() : this.config.getCommandReadTimeout()), TimeUnit.MILLISECONDS));

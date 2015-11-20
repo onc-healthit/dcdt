@@ -6,9 +6,10 @@ import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayConfig;
 import gov.hhs.onc.dcdt.mail.config.MailGatewayCredentialConfig;
 import gov.hhs.onc.dcdt.mail.impl.MailInfoImpl;
-import gov.hhs.onc.dcdt.mail.sender.TemplateMailSenderService;
+import gov.hhs.onc.dcdt.mail.sender.MailTemplateSenderService;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import gov.hhs.onc.dcdt.velocity.utils.ToolVelocityUtils;
+import java.util.Date;
 import java.util.List;
 import javax.annotation.Nullable;
 import javax.mail.MessagingException;
@@ -19,7 +20,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.ui.ModelMap;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
-public abstract class AbstractTemplateMailSenderService extends AbstractMailSenderService implements TemplateMailSenderService {
+public abstract class AbstractMailTemplateSenderService extends AbstractMailSenderService implements MailTemplateSenderService {
     @Order(Ordered.HIGHEST_PRECEDENCE + 1)
     protected class TemplateMailPreparator implements MailPreparator {
         private ModelMap subjModel;
@@ -32,22 +33,24 @@ public abstract class AbstractTemplateMailSenderService extends AbstractMailSend
 
         @Override
         public MailInfo prepareMail(MailInfo mailInfo) throws Exception {
-            String charsetName = mailInfo.getEncoding().getCharset().name();
+            mailInfo.setOrigDate(new Date());
 
-            mailInfo.setFrom(AbstractTemplateMailSenderService.this.fromConfig.getMailAddress());
+            String charsetName = mailInfo.getEncoding().getCharsetName();
 
-            if (AbstractTemplateMailSenderService.this.hasReplyToConfig()) {
-                mailInfo.setReplyTo(AbstractTemplateMailSenderService.this.replyToConfig.getMailAddress());
+            mailInfo.setFrom(AbstractMailTemplateSenderService.this.fromConfig.getMailAddress());
+
+            if (AbstractMailTemplateSenderService.this.hasReplyToConfig()) {
+                mailInfo.setReplyTo(AbstractMailTemplateSenderService.this.replyToConfig.getMailAddress());
             }
 
-            mailInfo.setSubject(this.processTemplate(charsetName, AbstractTemplateMailSenderService.this.subjTemplateLoc, this.subjModel));
-            mailInfo.setText(this.processTemplate(charsetName, AbstractTemplateMailSenderService.this.textTemplateLoc, this.textModel));
+            mailInfo.setSubject(this.processTemplate(charsetName, AbstractMailTemplateSenderService.this.subjTemplateLoc, this.subjModel));
+            mailInfo.setText(this.processTemplate(charsetName, AbstractMailTemplateSenderService.this.textTemplateLoc, this.textModel));
 
             return mailInfo;
         }
 
         private String processTemplate(String encName, String templateLoc, @Nullable ModelMap modelMap) {
-            return StringUtils.trim(VelocityEngineUtils.mergeTemplateIntoString(AbstractTemplateMailSenderService.this.velocityEngine,
+            return StringUtils.trim(VelocityEngineUtils.mergeTemplateIntoString(AbstractMailTemplateSenderService.this.velocityEngine,
                 StringUtils.appendIfMissing(templateLoc, ToolVelocityUtils.FILE_EXT_VM), encName, modelMap));
         }
     }
@@ -60,18 +63,19 @@ public abstract class AbstractTemplateMailSenderService extends AbstractMailSend
 
     protected void send(MailAddress toAddr, @Nullable ModelMap subjModel, @Nullable ModelMap textModel, List<MailPreparator> mailPreps)
         throws MessagingException {
-        super.send(new MailInfoImpl(this.session, this.enc), toAddr, ToolCollectionUtils.add(mailPreps, new TemplateMailPreparator(subjModel, textModel)));
+        super.send(new MailInfoImpl(this.session, this.enc), this.fromConfig.getMailAddress(), toAddr, this.fromConfig.getGatewayConfig().getHeloName()
+            .toString(true), ToolCollectionUtils.add(mailPreps, new TemplateMailPreparator(subjModel, textModel)));
     }
 
     @Nullable
     @Override
-    protected ToolSmtpTransport buildTransport(MailInfo mailInfo, MailAddress toAddr) throws MessagingException {
+    protected ToolSmtpTransport buildTransport(MailInfo mailInfo, MailAddress fromAddr, MailAddress toAddr, String heloName) throws MessagingException {
         MailGatewayConfig gatewayConfig = this.fromConfig.getGatewayConfig();
         MailGatewayCredentialConfig gatewayCredConfig = fromConfig.getGatewayCredentialConfig();
 
         // noinspection ConstantConditions
         return this.buildTransport(mailInfo, gatewayConfig.getTransportProtocol(), gatewayConfig.getHost(true).getHostAddress(), gatewayConfig.getPort(),
-            gatewayCredConfig.getId().toAddress(), gatewayCredConfig.getSecret(), gatewayConfig.getHeloName().toString(true));
+            gatewayCredConfig.getId().toAddress(), gatewayCredConfig.getSecret(), fromAddr, toAddr, heloName);
     }
 
     @Override

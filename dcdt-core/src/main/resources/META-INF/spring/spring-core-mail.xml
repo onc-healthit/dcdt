@@ -48,7 +48,7 @@
         p:encoding="UTF_8"
         p:readTimeout="${dcdt.mail.service.sender.read.timeout}"/>
     
-    <beans:bean id="mailSenderServiceTemplate" class="gov.hhs.onc.dcdt.mail.sender.TemplateMailSenderService" parent="mailSenderService" abstract="true"
+    <beans:bean id="mailTemplateSenderService" class="gov.hhs.onc.dcdt.mail.sender.MailTemplateSenderService" parent="mailSenderService" abstract="true"
         p:dnsNameService-ref="dnsNameServiceLocal"
         p:replyToConfig-ref="instanceMailAddrConfigNoReply"/>
 </beans:beans>

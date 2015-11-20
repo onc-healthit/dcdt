@@ -59,7 +59,7 @@
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="dnsResolverExtended" class="org.xbill.DNS.ExtendedResolver" parent="dnsResolver" abstract="true"
         p:retries="0"
-        p:timeout="${dcdt.service.lookup.dns.resolver.timeout}"/>
+        p:timeout="${dcdt.dns.service.lookup.resolver.timeout}"/>
     
     <beans:bean id="dnsResolverExtendedLocal" class="gov.hhs.onc.dcdt.dns.utils.ToolDnsResolverUtils" parent="dnsResolverExtended" depends-on="setDnsJavaOpts"
         factory-method="fromSocketAddresses">
@@ -81,14 +81,14 @@
                     <beans:constructor-arg index="0">
                         <!--suppress SpringPlaceholdersInspection -->
                         <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress"
-                            c:str="${dcdt.service.lookup.dns.resolver.external.1.host.addr}"/>
+                            c:str="${dcdt.dns.service.lookup.resolver.external.1.host.addr}"/>
                     </beans:constructor-arg>
                 </beans:bean>
                 <beans:bean parent="socketAddrDnsServer">
                     <beans:constructor-arg index="0">
                         <!--suppress SpringPlaceholdersInspection -->
                         <beans:bean class="gov.hhs.onc.dcdt.net.utils.ToolInetAddressUtils" parent="ipAddr" factory-method="getByAddress"
-                            c:str="${dcdt.service.lookup.dns.resolver.external.2.host.addr}"/>
+                            c:str="${dcdt.dns.service.lookup.resolver.external.2.host.addr}"/>
                     </beans:constructor-arg>
                 </beans:bean>
             </beans:list>

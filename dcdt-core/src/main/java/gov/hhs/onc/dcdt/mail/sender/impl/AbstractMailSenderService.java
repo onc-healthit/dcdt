@@ -4,6 +4,7 @@ import com.sun.mail.smtp.SMTPSendFailedException;
 import com.sun.mail.smtp.SMTPTransport;
 import com.sun.mail.util.MailConnectException;
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.dns.lookup.DnsNameService;
 import gov.hhs.onc.dcdt.mail.JavaMailProperties;
 import gov.hhs.onc.dcdt.mail.MailAddress;
@@ -15,9 +16,11 @@ import gov.hhs.onc.dcdt.mail.sender.MailSenderService;
 import gov.hhs.onc.dcdt.mail.smtp.SmtpTransportProtocol;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailSessionUtils;
 import gov.hhs.onc.dcdt.net.SslType;
+import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
 import gov.hhs.onc.dcdt.utils.ToolCollectionUtils;
 import java.net.SocketTimeoutException;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
@@ -35,7 +38,8 @@ import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.core.annotation.Order;
 
 public abstract class AbstractMailSenderService extends AbstractToolBean implements MailSenderService {
-    protected static interface MailPreparator {
+    @FunctionalInterface
+    protected interface MailPreparator {
         public MailInfo prepareMail(MailInfo mailInfo) throws Exception;
     }
 
@@ -91,6 +95,16 @@ public abstract class AbstractMailSenderService extends AbstractToolBean impleme
         }
     }
 
+    @Order(Ordered.LOWEST_PRECEDENCE)
+    protected class SentDateMailPreparator implements MailPreparator {
+        @Override
+        public MailInfo prepareMail(MailInfo mailInfo) throws Exception {
+            mailInfo.setSentDate(new Date());
+
+            return mailInfo;
+        }
+    }
+
     @Resource(name = "mailSessionDefault")
     protected Session session;
 
@@ -101,9 +115,13 @@ public abstract class AbstractMailSenderService extends AbstractToolBean impleme
 
     private final static Logger LOGGER = LoggerFactory.getLogger(AbstractMailSenderService.class);
 
-    protected void send(MailInfo mailInfo, MailAddress toAddr, List<MailPreparator> mailPreps) throws MessagingException {
+    protected void send(MailInfo mailInfo, MailAddress fromAddr, MailAddress toAddr, String heloName, List<MailPreparator> mailPreps) throws MessagingException {
         ToolSmtpTransport transport =
-            this.buildTransport((mailInfo = this.prepareMail(mailInfo, ToolCollectionUtils.add(mailPreps, new RecipientMailPreparator(toAddr)))), toAddr);
+            this.buildTransport(
+                (mailInfo =
+                    this.prepareMail(mailInfo,
+                        ToolCollectionUtils.addAll(mailPreps, ToolArrayUtils.asList(new RecipientMailPreparator(toAddr), new SentDateMailPreparator())))),
+                fromAddr, toAddr, heloName);
 
         if (transport == null) {
             throw new ToolMailException(String.format("Unable to build transport for mail MIME message (id=%s, from=%s, to=%s).", mailInfo.getMessageId(),
@@ -115,43 +133,44 @@ public abstract class AbstractMailSenderService extends AbstractToolBean impleme
         } catch (SMTPSendFailedException e) {
             throw new ToolMailException(
                 String.format(
-                    "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d) send command (%s) failed (resultCode=%d).",
-                    mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transport.getProtocol().getId(), transport.getLocalHost(),
-                    transport.getHost(), transport.getPort(), e.getCommand(), e.getReturnCode()), e);
+                    "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d, from=%s, to=%s) send command (%s) failed (resultCode=%d).",
+                    mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transport.getProtocol().getId(), heloName, transport.getHost(),
+                    transport.getPort(), fromAddr, toAddr, e.getCommand(), e.getReturnCode()), e);
         } catch (MessagingException e) {
-            throw new ToolMailException(String.format(
-                "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d) send failed.",
-                mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transport.getProtocol().getId(), transport.getLocalHost(), transport.getHost(),
-                transport.getPort()), e);
+            throw new ToolMailException(
+                String.format(
+                    "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d, from=%s, to=%s) send failed.",
+                    mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transport.getProtocol().getId(), heloName, transport.getHost(),
+                    transport.getPort(), fromAddr, toAddr), e);
         } finally {
-            if (transport.isConnected()) {
-                try {
-                    transport.close();
-                } catch (Exception e) {
-                    LOGGER
-                        .error(
-                            String
-                                .format(
-                                    "Unable to close mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d).",
-                                    mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transport.getProtocol().getId(), transport.getLocalHost(),
-                                    transport.getHost(), transport.getPort()), e);
-                }
+            try {
+                transport.close();
+            } catch (Exception e) {
+                LOGGER
+                    .error(
+                        String
+                            .format(
+                                "Unable to close mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d, from=%s, to=%s).",
+                                mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transport.getProtocol().getId(), heloName, transport.getHost(),
+                                transport.getPort(), fromAddr, toAddr), e);
             }
         }
     }
 
     @Nullable
-    protected abstract ToolSmtpTransport buildTransport(MailInfo mailInfo, MailAddress toAddr) throws MessagingException;
+    protected abstract ToolSmtpTransport buildTransport(MailInfo mailInfo, MailAddress fromAddr, MailAddress toAddr, String heloName) throws MessagingException;
 
     @Nullable
     protected ToolSmtpTransport buildTransport(MailInfo mailInfo, SmtpTransportProtocol transportProtocol, String host, @Nonnegative int port,
-        @Nullable String user, @Nullable String pass, String heloName) throws MessagingException {
+        @Nullable String user, @Nullable String pass, MailAddress fromAddr, MailAddress toAddr, String heloName) throws MessagingException {
         SslType sslType = transportProtocol.getSslType();
         boolean ssl = (sslType == SslType.SSL);
         Session transportSession = ToolMailSessionUtils.buildSession(sslType);
 
         Properties transportProps = transportSession.getProperties();
         transportProps.put((ssl ? JavaMailProperties.SMTPS_CONNECTION_TIMEOUT_NAME : JavaMailProperties.SMTP_CONNECTION_TIMEOUT_NAME), this.connTimeout);
+        // noinspection ConstantConditions
+        transportProps.put((ssl ? JavaMailProperties.SMTPS_FROM_NAME : JavaMailProperties.SMTP_FROM_NAME), fromAddr.toAddress(BindingType.ADDRESS));
         transportProps.put((ssl ? JavaMailProperties.SMTPS_LOCALHOST_NAME : JavaMailProperties.SMTP_LOCALHOST_NAME), heloName);
         transportProps.put((ssl ? JavaMailProperties.SMTPS_TIMEOUT_NAME : JavaMailProperties.SMTP_TIMEOUT_NAME), this.readTimeout);
 
@@ -171,22 +190,25 @@ public abstract class AbstractMailSenderService extends AbstractToolBean impleme
                     .warn(
                         String
                             .format(
-                                "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d) attempt timed out.",
-                                mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transportProtocol.getId(), heloName, host, port), e);
+                                "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d, from=%s, to=%s) attempt timed out.",
+                                mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transportProtocol.getId(), heloName, host, port, fromAddr,
+                                toAddr), e);
             } else if (e instanceof AuthenticationFailedException) {
                 LOGGER
                     .warn(
                         String
                             .format(
-                                "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d) authentication (user=%s) attempt failed.",
-                                mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transportProtocol.getId(), heloName, host, port, user), e);
+                                "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d, from=%s, to=%s) authentication (user=%s) attempt failed.",
+                                mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transportProtocol.getId(), heloName, host, port, fromAddr,
+                                toAddr, user), e);
             } else {
                 LOGGER
                     .warn(
                         String
                             .format(
-                                "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d) attempt failed.",
-                                mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transportProtocol.getId(), heloName, host, port), e);
+                                "Mail MIME message (id=%s, from=%s, to=%s) sender service transport (protocol=%s) connection (heloName=%s, host=%s, port=%d, from=%s, to=%s) attempt failed.",
+                                mailInfo.getMessageId(), mailInfo.getFrom(), mailInfo.getTo(), transportProtocol.getId(), heloName, host, port, fromAddr,
+                                toAddr), e);
             }
 
             return null;

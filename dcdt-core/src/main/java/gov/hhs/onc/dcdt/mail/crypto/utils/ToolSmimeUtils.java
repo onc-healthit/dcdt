@@ -423,6 +423,7 @@ public abstract class ToolSmimeUtils {
         MailInfo encryptedMailInfo = new MailInfoImpl(encryptedMsg, mailInfo.getEncoding());
         encryptedMailInfo.setFrom(mailInfo.getFrom());
         encryptedMailInfo.setRecipients(Collections.singletonMap(MailRecipientType.TO, ArrayUtils.toArray(mailInfo.getTo())));
+        encryptedMailInfo.setOrigDate(mailInfo.getOrigDate());
         encryptedMailInfo.setSubject(mailInfo.getSubject());
 
         encryptedMsg.saveChanges();

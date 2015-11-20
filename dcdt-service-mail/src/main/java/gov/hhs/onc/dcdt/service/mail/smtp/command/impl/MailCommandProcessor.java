@@ -39,7 +39,6 @@ public class MailCommandProcessor extends AbstractSmtpCommandProcessor<MailComma
         session.setFromConfig(fromConfig);
         session.setTo(null);
         session.setToConfig(null);
-        session.setMailInfo(null);
 
         return super.process(channel, gateway, config, session, cmd);
     }

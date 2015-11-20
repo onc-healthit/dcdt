@@ -8,6 +8,7 @@ import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.impl.MailAddressImpl;
 import gov.hhs.onc.dcdt.mail.utils.ToolMailAddressUtils;
 import gov.hhs.onc.dcdt.service.mail.server.MailGateway;
+import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcase;
 import gov.hhs.onc.dcdt.utils.ToolStreamUtils;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class MailGatewayImpl extends AbstractToolBean implements MailGateway {
 
     private AbstractApplicationContext appContext;
     private Map<MailAddress, InstanceMailAddressConfig> addrConfigs;
+    private Map<MailAddress, DiscoveryTestcase> discoveryTestcaseAddrs;
     private Map<MailAddress, String> authCreds;
 
     @Nullable
@@ -49,20 +51,26 @@ public class MailGatewayImpl extends AbstractToolBean implements MailGateway {
     @Override
     public void afterPropertiesSet() throws Exception {
         // noinspection ConstantConditions
-        if (ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfig.class).isConfigured()) {
-            this.authCreds =
-                new LinkedHashMap<>((this.addrConfigs =
-                    ToolBeanFactoryUtils.getBeansOfType(this.appContext, InstanceMailAddressConfig.class).stream()
-                        .collect(ToolStreamUtils.toMap(InstanceMailAddressConfig::getMailAddress, Function.identity(), LinkedHashMap::new))).size());
-
-            this.addrConfigs.forEach((addr, addrConfig) -> {
-                String secret = addrConfig.getGatewayCredentialConfig().getSecret();
-
-                this.authCreds.put(addr, secret);
-
-                LOGGER.debug(String.format("Added mail gateway authentication credentials (addr=%s, secret=%s).", addr, secret));
-            });
+        if (!ToolBeanFactoryUtils.getBeanOfType(this.appContext, InstanceConfig.class).isConfigured()) {
+            return;
         }
+
+        this.authCreds =
+            new LinkedHashMap<>((this.addrConfigs =
+                ToolBeanFactoryUtils.getBeansOfType(this.appContext, InstanceMailAddressConfig.class).stream()
+                    .collect(ToolStreamUtils.toMap(InstanceMailAddressConfig::getMailAddress, Function.identity(), LinkedHashMap::new))).size());
+
+        this.addrConfigs.forEach((addr, addrConfig) -> {
+            String secret = addrConfig.getGatewayCredentialConfig().getSecret();
+
+            this.authCreds.put(addr, secret);
+
+            LOGGER.debug(String.format("Added mail gateway authentication credentials (addr=%s, secret=%s).", addr, secret));
+        });
+
+        this.discoveryTestcaseAddrs =
+            ToolBeanFactoryUtils.getBeansOfType(this.appContext, DiscoveryTestcase.class).stream()
+                .collect(ToolStreamUtils.toMap(DiscoveryTestcase::getMailAddress, Function.identity(), LinkedHashMap::new));
     }
 
     @Override
@@ -79,5 +87,16 @@ public class MailGatewayImpl extends AbstractToolBean implements MailGateway {
     @Override
     public void setApplicationContext(ApplicationContext appContext) throws BeansException {
         this.appContext = ((AbstractApplicationContext) appContext);
+    }
+
+    @Override
+    public boolean hasDiscoveryTestcaseAddresses() {
+        return !MapUtils.isEmpty(this.discoveryTestcaseAddrs);
+    }
+
+    @Nullable
+    @Override
+    public Map<MailAddress, DiscoveryTestcase> getDiscoveryTestcaseAddresses() {
+        return this.discoveryTestcaseAddrs;
     }
 }

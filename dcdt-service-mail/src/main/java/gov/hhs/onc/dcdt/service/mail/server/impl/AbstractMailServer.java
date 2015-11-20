@@ -17,14 +17,14 @@ public abstract class AbstractMailServer<T extends Enum<T> & TransportProtocol, 
         protected void initChannel(SocketChannel channel) throws Exception {
             super.initChannel(channel);
 
-            channel.attr(GATEWAY_ATTR_KEY).set(AbstractMailServer.this.mailGateway);
+            channel.attr(GATEWAY_ATTR_KEY).set(AbstractMailServer.this.gateway);
         }
     }
 
     public final static AttributeKey<MailGateway> GATEWAY_ATTR_KEY = AttributeKey.valueOf("gateway");
 
     @Resource(name = "mailGatewayImpl")
-    protected MailGateway mailGateway;
+    protected MailGateway gateway;
 
     @Resource(name = "mailSessionDefault")
     protected Session mailSession;

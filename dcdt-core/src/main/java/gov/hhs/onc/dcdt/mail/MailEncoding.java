@@ -6,17 +6,17 @@ import java.nio.charset.Charset;
 import javax.mail.internet.MimeUtility;
 
 public enum MailEncoding implements ToolIdentifier {
-    US_ASCII(CharsetUtil.US_ASCII), UTF_8(CharsetUtil.UTF_8);
+    UTF_8(CharsetUtil.UTF_8);
 
-    private final Charset charset;
-    private final Charset mimeCharset;
+    private final String charsetName;
+    private final String mimeCharsetName;
 
     private MailEncoding(Charset charset) {
-        this.mimeCharset = Charset.forName(MimeUtility.mimeCharset((this.charset = charset).name()));
+        this.mimeCharsetName = MimeUtility.mimeCharset((this.charsetName = charset.name()));
     }
 
-    public Charset getCharset() {
-        return this.charset;
+    public String getCharsetName() {
+        return this.charsetName;
     }
 
     @Override
@@ -24,7 +24,7 @@ public enum MailEncoding implements ToolIdentifier {
         return this.name();
     }
 
-    public Charset getMimeCharset() {
-        return this.mimeCharset;
+    public String getMimeCharsetName() {
+        return this.mimeCharsetName;
     }
 }

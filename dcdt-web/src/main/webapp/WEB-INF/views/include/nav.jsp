@@ -49,10 +49,9 @@
                         <tiles:putAttribute name="content"><strong>About</strong><span class="caret"></span></tiles:putAttribute>
                     </tiles:insertDefinition>
                     <ul role="menu" class="dropdown-menu">
-                        <li role="presentation" class="dropdown-header">Google Code</li>
                         <li role="presentation">
                             <tiles:insertDefinition name="component-glyph-link">
-                                <tiles:putAttribute name="attrs">role="menuitem" tabindex="-1" target="_blank" href="${urlGoogleCodeProject}"</tiles:putAttribute>
+                                <tiles:putAttribute name="attrs">role="menuitem" tabindex="-1" target="_blank" href="${urlProjectSite}"</tiles:putAttribute>
                                 <tiles:putAttribute name="glyph-classes" value="glyphicon-wrench glyphicon-type-info"/>
                                 <tiles:putAttribute name="content">Project Site</tiles:putAttribute>
                             </tiles:insertDefinition>

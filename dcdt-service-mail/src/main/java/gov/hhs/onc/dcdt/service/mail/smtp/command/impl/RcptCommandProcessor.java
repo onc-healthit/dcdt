@@ -45,7 +45,6 @@ public class RcptCommandProcessor extends AbstractSmtpCommandProcessor<RcptComma
 
         session.setTo(toAddr);
         session.setToConfig(toConfig);
-        session.setMailInfo(null);
 
         return super.process(channel, gateway, config, session, cmd);
     }

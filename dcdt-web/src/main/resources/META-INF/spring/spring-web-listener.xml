@@ -25,13 +25,6 @@
     <beans:bean id="regBeanServletListenerDriverManager" parent="regBeanServletListener"
         c:listener-ref="servletContextListenerDriverManager"/>
     
-    <beans:bean id="regBeanServletListenerHttpSessionPublisher" parent="regBeanServletListener">
-        <beans:constructor-arg name="listener">
-            <!--suppress InjectionValueTypeInspection -->
-            <beans:bean class="org.springframework.security.web.session.HttpSessionEventPublisher" parent="servletContextListener"/>
-        </beans:constructor-arg>
-    </beans:bean>
-    
     <beans:bean id="regBeanServletListenerReqContext" parent="regBeanServletListener">
         <beans:constructor-arg name="listener">
             <!--suppress InjectionValueTypeInspection -->

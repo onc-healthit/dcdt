@@ -14,21 +14,21 @@
     =====================================================================================================-->
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceHttp" parent="taskExecThreadPool"
-        p:corePoolSize="${dcdt.service.http.task.exec.pool.size.core}"
-        p:maxPoolSize="${dcdt.service.http.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-http-"/>
+        p:corePoolSize="${dcdt.http.service.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.http.service.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-http-service-"/>
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceHttpServer" parent="taskExecThreadPool"
-        p:corePoolSize="${dcdt.service.http.server.task.exec.pool.size.core}"
-        p:maxPoolSize="${dcdt.service.http.server.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-http-server-"/>
+        p:corePoolSize="${dcdt.http.service.server.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.http.service.server.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-http-service-server-"/>
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceHttpServerReq" parent="taskExecThreadPoolDynamic"
-        p:keepAliveSeconds="${dcdt.service.http.server.req.task.exec.keep.alive}"
-        p:maxPoolSize="${dcdt.service.http.server.req.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-http-server-req-"/>
+        p:keepAliveSeconds="${dcdt.http.service.server.req.task.exec.keep.alive}"
+        p:maxPoolSize="${dcdt.http.service.server.req.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-http-service-server-req-"/>
     
     <!--====================================================================================================
     = HTTP SERVER CONFIGURATIONS
@@ -37,11 +37,11 @@
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="httpServerConfigImpl" class="gov.hhs.onc.dcdt.service.http.config.impl.HttpServerConfigImpl" parent="httpServerConfig" abstract="true"
-        p:backlog="${dcdt.service.http.server.backlog}"
-        p:connectTimeout="${dcdt.service.http.server.connect.timeout}"
-        p:maxContentLength="${dcdt.service.http.server.content.len.max}"
-        p:readTimeout="${dcdt.service.http.server.read.timeout}"
-        p:writeTimeout="${dcdt.service.http.server.write.timeout}"/>
+        p:backlog="${dcdt.http.service.server.backlog}"
+        p:connectTimeout="${dcdt.http.service.server.connect.timeout}"
+        p:maxContentLength="${dcdt.http.service.server.content.len.max}"
+        p:readTimeout="${dcdt.http.service.server.read.timeout}"
+        p:writeTimeout="${dcdt.http.service.server.write.timeout}"/>
     
     <!--====================================================================================================
     = HTTP SERVERS

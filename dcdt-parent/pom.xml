@@ -49,7 +49,7 @@
     <scm>
         <connection>scm:git:git://github.com/esacinc/dcdt.git</connection>
         <developerConnection>scm:git:git://github.com/esacinc/dcdt.git</developerConnection>
-        <url>http://github.com/esacinc/dcdt/tree/master/</url>
+        <url>http://github.com/esacinc/dcdt/</url>
     </scm>
     
     <distributionManagement>
@@ -72,15 +72,6 @@
         <project.basedir.parent>${project.basedir}/${project.parent.relativePath}</project.basedir.parent>
         <!-- Project build assembly properties -->
         <project.build.assemblyDirectory>${project.basedir}/src/assembly</project.build.assemblyDirectory>
-        <!-- Project build Clover properties -->
-        <project.build.cloverDirectory>${project.build.directory}/clover</project.build.cloverDirectory>
-        <project.build.cloverDbFile>${project.build.cloverDirectory}/clover.db</project.build.cloverDbFile>
-        <project.build.cloverOutputDirectory>${project.build.cloverDirectory}/classes-instrumented</project.build.cloverOutputDirectory>
-        <project.build.cloverPomPropertiesFile>${project.build.directory}/maven/pom-clover.properties</project.build.cloverPomPropertiesFile>
-        <project.build.cloverSourceDirectory>${project.build.cloverDirectory}/src-instrumented</project.build.cloverSourceDirectory>
-        <!-- Project build FindBugs properties -->
-        <project.build.findbugsResultsFile>${project.build.directory}/findbugs.xml</project.build.findbugsResultsFile>
-        <project.build.findbugsResultsPropertiesFile>${project.build.directory}/findbugs-properties.xml</project.build.findbugsResultsPropertiesFile>
         <!-- Project build Groovy source properties -->
         <project.build.groovyScriptSourceDirectory>${project.build.scriptSourceDirectory}/groovy</project.build.groovyScriptSourceDirectory>
         <!-- Project build module properties -->
@@ -89,9 +80,6 @@
         <project.build.resourcesSourceDirectory>${project.basedir}/src/main/resources</project.build.resourcesSourceDirectory>
         <!-- Project build source properties -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Project build test Clover properties -->
-        <project.build.cloverTestOutputDirectory>${project.build.cloverDirectory}/test-classes-instrumented</project.build.cloverTestOutputDirectory>
-        <project.build.cloverTestSourceDirectory>${project.build.cloverDirectory}/test-src-instrumented</project.build.cloverTestSourceDirectory>
         <!-- Project build test resources source properties -->
         <project.build.testResourcesSourceDirectory>${project.basedir}/src/test/resources</project.build.testResourcesSourceDirectory>
         <!-- Project build test script source properties -->
@@ -112,30 +100,6 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </repository>
-        <repository>
-            <id>spring-milestone</id>
-            <name>Spring Milestone Repository</name>
-            <url>http://repo.springsource.org/milestone</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </repository>
-        <repository>
-            <id>DCDT Public Repositories</id>
-            <url>http://maven.direct-test.com/content/groups/public</url>
-            <snapshots>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
         </repository>
     </repositories>
     
@@ -147,19 +111,6 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-        </pluginRepository>
-        <pluginRepository>
-            <id>DCDT Public Repositories</id>
-            <url>http://maven.direct-test.com/content/groups/public</url>
-            <snapshots>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-            <releases>
-                <updatePolicy>never</updatePolicy>
-            </releases>
         </pluginRepository>
     </pluginRepositories>
     
@@ -511,14 +462,6 @@
                 <scope>import</scope>
             </dependency>
             <!-- Test dependencies -->
-            <!--
-            <dependency>
-                <groupId>com.atlassian.clover</groupId>
-                <artifactId>clover</artifactId>
-                <version>4.0.6</version>
-                <scope>test</scope>
-            </dependency>
-            -->
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -841,28 +784,6 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!--
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-site-plugin</artifactId>
-                    <version>3.4</version>
-                    <inherited>true</inherited>
-                    <configuration>
-                        <relativizeDecorationLinks>false</relativizeDecorationLinks>
-                        <siteDirectory>${project.reporting.siteDirectory}</siteDirectory>
-                        <stagingSiteURL>file://${project.build.directory}/staging-deploy/${project.artifactId}/${project.version}</stagingSiteURL>
-                        <validate>true</validate>
-                    </configuration>
-                    <executions>
-                        <execution>
-                            <id>attach-descriptor</id>
-                            <goals>
-                                <goal>attach-descriptor</goal>
-                            </goals>
-                        </execution>
-                    </executions>
-                </plugin>
-                -->
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
@@ -893,7 +814,6 @@
                     <configuration>
                         <additionalClasspathElements combine.children="append"/>
                         <argLine>-Xms512m -Xmx768m -XX:MetaspaceSize=256m -XX:MaxMetaspaceSize=512m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</argLine>
-                        <!--<classesDirectory>${project.build.cloverOutputDirectory}</classesDirectory>-->
                         <parallel>all</parallel>
                         <reportFormat>plain</reportFormat>
                         <systemPropertyVariables combine.children="append">
@@ -904,8 +824,6 @@
                             <java.net.preferIPv4Addresses>true</java.net.preferIPv4Addresses>
                             <java.net.preferIPv4Stack>true</java.net.preferIPv4Stack>
                         </systemPropertyVariables>
-                        <!--<testClassesDirectory>${project.build.cloverTestOutputDirectory}</testClassesDirectory>-->
-                        <!--<testSourceDirectory>${project.build.cloverTestSourceDirectory}</testSourceDirectory>-->
                         <threadCount>8</threadCount>
                         <trimStackTrace>false</trimStackTrace>
                         <workingDirectory>${project.build.directory}</workingDirectory>
@@ -1138,19 +1056,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-site-plugin</artifactId>
-                <inherited>false</inherited>
-                <executions>
-                    <execution>
-                        <id>attach-descriptor</id>
-                        <inherited>false</inherited>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -1186,29 +1091,6 @@
             </plugin>
         </plugins>
     </build>
-    
-    <!--
-    <reporting>
-        <excludeDefaults>true</excludeDefaults>
-        
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jxr-plugin</artifactId>
-                <version>2.5</version>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-                <version>2.8.1</version>
-                <configuration>
-                    <dependencyDetailsEnabled>false</dependencyDetailsEnabled>
-                    <dependencyLocationsEnabled>false</dependencyLocationsEnabled>
-                </configuration>
-            </plugin>
-        </plugins>
-    </reporting>
-    -->
     
     <profiles>
         <!-- Set properties specific to the operating system -->
@@ -1267,392 +1149,6 @@
                 <project.build.sourceDirectoryNotExists>true</project.build.sourceDirectoryNotExists>
             </properties>
         </profile>
-        <!-- Check if a Clover license is available -->
-        <!--
-        <profile>
-            <id>clover-license</id>
-            <activation>
-                <property>
-                    <name>!skipChecks</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>clover-license</id>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-license"
-                                            inheritRefs="true" useNativeBasedir="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.kuali.maven.plugins</groupId>
-                        <artifactId>properties-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>read-pom-properties-clover</id>
-                                <phase>initialize</phase>
-                                <goals>
-                                    <goal>read-project-properties</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <locations>
-                                        <location>${project.build.cloverPomPropertiesFile}</location>
-                                    </locations>
-                                    <quiet>true</quiet>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        -->
-        <!-- Configure code checking / verification oriented reporting plugins -->
-        <!--
-        <profile>
-            <id>site-check</id>
-            <activation>
-                <property>
-                    <name>!skipChecks</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-antrun-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>clover-instrument</id>
-                                <phase>generate-sources</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-instrument"
-                                            inheritRefs="true" useNativeBasedir="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>clover-compile</id>
-                                <phase>compile</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-compile"
-                                            inheritRefs="true" useNativeBasedir="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>clover-test-compile</id>
-                                <phase>test-compile</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-clover.xml" target="clover-test-compile"
-                                            inheritRefs="true" useNativeBasedir="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                            <execution>
-                                <id>findbugs-check</id>
-                                <phase>verify</phase>
-                                <goals>
-                                    <goal>run</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <target>
-                                        <ant antfile="${project.basedir.all}/dcdt-core/src/main/scripts/ant-findbugs.xml" target="findbugs-check"
-                                            inheritRefs="true" useNativeBasedir="true"/>
-                                    </target>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <version>3.5</version>
-                        <inherited>true</inherited>
-                        <executions>
-                            <execution>
-                                <id>pmd-check</id>
-                                <goals>
-                                    <goal>check</goal>
-                                    <goal>cpd-check</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                                <configuration>
-                                    <printFailingErrors>true</printFailingErrors>
-                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
-                                    <targetDirectory>${project.reporting.outputDirectory}</targetDirectory>
-                                    <verbose>true</verbose>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-            <reporting>
-                <plugins>
-                    <plugin>
-                        <groupId>com.atlassian.maven.plugins</groupId>
-                        <artifactId>maven-clover2-plugin</artifactId>
-                        <version>4.0.6</version>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-checkstyle-plugin</artifactId>
-                        <version>2.16</version>
-                        <configuration>
-                            <consoleOutput>true</consoleOutput>
-                            <failsOnError>true</failsOnError>
-                            <includeTestSourceDirectory>true</includeTestSourceDirectory>
-                            <logViolationsToConsole>true</logViolationsToConsole>
-                            <suppressionsLocation>${project.basedir.all}/dcdt-core/src/checkstyle/checkstyle-suppressions.xml</suppressionsLocation>
-                        </configuration>
-                        <reportSets>
-                            <reportSet>
-                                <id>default</id>
-                                <reports>
-                                    <report>checkstyle</report>
-                                </reports>
-                                <configuration>
-                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
-                                </configuration>
-                            </reportSet>
-                        </reportSets>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-pmd-plugin</artifactId>
-                        <version>3.5</version>
-                        <configuration>
-                            <includeTests>true</includeTests>
-                            <includeXmlInSite>true</includeXmlInSite>
-                            <minimumTokens>200</minimumTokens>
-                            <skipEmptyReport>false</skipEmptyReport>
-                            <skipPmdError>false</skipPmdError>
-                            <targetJdk>${project.java.version}</targetJdk>
-                            <typeResolution>true</typeResolution>
-                        </configuration>
-                        <reportSets>
-                            <reportSet>
-                                <id>default</id>
-                                <reports>
-                                    <report>pmd</report>
-                                    <report>cpd</report>
-                                </reports>
-                                <configuration>
-                                    <rulesets>
-                                        <ruleset>${project.basedir.all}/dcdt-core/src/pmd/ruleset-java-core.xml</ruleset>
-                                    </rulesets>
-                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
-                                </configuration>
-                            </reportSet>
-                        </reportSets>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>findbugs-maven-plugin</artifactId>
-                        <version>3.0.2</version>
-                        <configuration>
-                            <effort>Max</effort>
-                            <excludeFilterFile>${project.basedir.all}/dcdt-core/src/findbugs/filter-exclude-core.xml</excludeFilterFile>
-                            <includeTests>true</includeTests>
-                            <jvmArgs>-XX:MetaspaceSize=128m -XX:MaxMetaspaceSize=256m -XX:+UseG1GC -XX:MaxGCPauseMillis=50</jvmArgs>
-                            <threshold>Low</threshold>
-                            <xmlOutput>true</xmlOutput>
-                        </configuration>
-                        <reportSets>
-                            <reportSet>
-                                <id>default</id>
-                                <reports>
-                                    <report>findbugs</report>
-                                </reports>
-                                <configuration>
-                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
-                                </configuration>
-                            </reportSet>
-                        </reportSets>
-                    </plugin>
-                </plugins>
-            </reporting>
-        </profile>
-        -->
-        <!-- Configure documentation-oriented reporting plugins -->
-        <!--
-        <profile>
-            <id>site-doc</id>
-            <properties>
-                <skipDoc>false</skipDoc>
-            </properties>
-            <reporting>
-                <excludeDefaults>false</excludeDefaults>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-changes-plugin</artifactId>
-                        <version>2.11</version>
-                        <configuration>
-                            <addActionDate>true</addActionDate>
-                            <useJql>true</useJql>
-                        </configuration>
-                        <reportSets>
-                            <reportSet>
-                                <id>default</id>
-                                <reports>
-                                    <report>changes-report</report>
-                                    <report>jira-report</report>
-                                </reports>
-                            </reportSet>
-                        </reportSets>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-javadoc-plugin</artifactId>
-                        <version>2.10.3</version>
-                        <configuration>
-                            <additionalJOptions>
-                                <additionalJOption>-J-XX:MetaspaceSize=128m</additionalJOption>
-                                <additionalJOption>-J-XX:MaxMetaspaceSize=256m</additionalJOption>
-                                <additionalJOption>-J-XX:+UseG1GC</additionalJOption>
-                                <additionalJOption>-J-XX:MaxGCPauseMillis=50</additionalJOption>
-                            </additionalJOptions>
-                            <maxmemory>512m</maxmemory>
-                            <minmemory>256m</minmemory>
-                            <quiet>true</quiet>
-                            <show>private</show>
-                        </configuration>
-                        <reportSets>
-                            <reportSet>
-                                <id>default</id>
-                                <reports>
-                                    <report>javadoc</report>
-                                    <report>test-javadoc</report>
-                                </reports>
-                                <configuration>
-                                    <skip>${project.build.sourceDirectoryNotExists}</skip>
-                                </configuration>
-                            </reportSet>
-                        </reportSets>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>taglist-maven-plugin</artifactId>
-                        <version>2.4</version>
-                        <configuration>
-                            <tagListOptions>
-                                <tagClasses>
-                                    <tagClass>
-                                        <displayName>TEMP</displayName>
-                                        <tags>
-                                            <tag>
-                                                <matchString>temp</matchString>
-                                                <matchType>ignoreCase</matchType>
-                                            </tag>
-                                        </tags>
-                                    </tagClass>
-                                    <tagClass>
-                                        <displayName>TODO</displayName>
-                                        <tags>
-                                            <tag>
-                                                <matchString>todo</matchString>
-                                                <matchType>ignoreCase</matchType>
-                                            </tag>
-                                        </tags>
-                                    </tagClass>
-                                </tagClasses>
-                            </tagListOptions>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </reporting>
-        </profile>
-        -->
-        <!-- Configure testing-oriented reporting plugins -->
-        <!--
-        <profile>
-            <id>site-test</id>
-            <activation>
-                <property>
-                    <name>!skipTests</name>
-                </property>
-            </activation>
-            <reporting>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-surefire-report-plugin</artifactId>
-                        <version>2.18.1</version>
-                        <reportSets>
-                            <reportSet>
-                                <id>default</id>
-                                <reports>
-                                    <report>report-only</report>
-                                </reports>
-                            </reportSet>
-                        </reportSets>
-                    </plugin>
-                </plugins>
-            </reporting>
-        </profile>
-        -->
-        <!-- Configuring reporting -->
-        <!--
-        <profile>
-            <id>site</id>
-            <activation>
-                <property>
-                    <name>!skipSite</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-site-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>site</id>
-                                <phase>post-integration-test</phase>
-                                <goals>
-                                    <goal>site</goal>
-                                </goals>
-                                <inherited>true</inherited>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        -->
         <!-- Set tier properties if a tier is not defined already -->
         <profile>
             <id>default-tier</id>
@@ -1668,19 +1164,5 @@
                 <project.google.analytics.url/>
             </properties>
         </profile>
-        <!-- Set Clover license location property if not defined already -->
-        <!--
-        <profile>
-            <id>default-maven.clover.licenseLocation</id>
-            <activation>
-                <property>
-                    <name>!maven.clover.licenseLocation</name>
-                </property>
-            </activation>
-            <properties>
-                <maven.clover.licenseLocation>${project.basedir.all}/clover.license</maven.clover.licenseLocation>
-            </properties>
-        </profile>
-        -->
     </profiles>
 </project>

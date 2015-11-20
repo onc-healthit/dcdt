@@ -4,11 +4,11 @@ import gov.hhs.onc.dcdt.crypto.EncryptionAlgorithm;
 import gov.hhs.onc.dcdt.crypto.certs.CertificateInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
-import gov.hhs.onc.dcdt.mail.sender.TemplateMailSenderService;
+import gov.hhs.onc.dcdt.mail.sender.MailTemplateSenderService;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import javax.annotation.Nullable;
 
-public interface DiscoveryTestcaseSubmissionSenderService extends TemplateMailSenderService {
+public interface DiscoveryTestcaseSubmissionSenderService extends MailTemplateSenderService {
     public void send(DiscoveryTestcaseSubmission submission, MailAddress toAddr) throws Exception;
 
     public void send(DiscoveryTestcaseSubmission submission, MailAddress toAddr, @Nullable CredentialInfo signerCredInfo,

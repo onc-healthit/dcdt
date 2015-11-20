@@ -1,9 +1,9 @@
 package gov.hhs.onc.dcdt.mail.impl;
 
 import gov.hhs.onc.dcdt.beans.impl.AbstractToolBean;
+import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.dns.DnsNameException;
 import gov.hhs.onc.dcdt.dns.utils.ToolDnsNameUtils;
-import gov.hhs.onc.dcdt.discovery.BindingType;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailAddressPart;
 import gov.hhs.onc.dcdt.mail.MailEncoding;
@@ -14,7 +14,6 @@ import java.io.UnsupportedEncodingException;
 import java.util.EnumMap;
 import java.util.Objects;
 import javax.annotation.Nullable;
-import javax.mail.Address;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import org.apache.commons.lang3.ArrayUtils;
@@ -29,8 +28,10 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
         this(null, null);
     }
 
-    public MailAddressImpl(@Nullable Address addr) {
-        this(Objects.toString(addr, null));
+    public MailAddressImpl(InternetAddress addr) {
+        this(addr.getAddress());
+
+        this.setPersonalPart(addr.getPersonal());
     }
 
     public MailAddressImpl(@Nullable String addr) {
@@ -100,7 +101,7 @@ public class MailAddressImpl extends AbstractToolBean implements MailAddress {
             InternetAddress internetAddr = new InternetAddress(addr, true);
 
             if (includePersonalPart && this.hasPersonalPart()) {
-                internetAddr.setPersonal(this.getPersonalPart(), enc.getMimeCharset().name());
+                internetAddr.setPersonal(this.getPersonalPart(), enc.getMimeCharsetName());
             }
 
             return internetAddr;

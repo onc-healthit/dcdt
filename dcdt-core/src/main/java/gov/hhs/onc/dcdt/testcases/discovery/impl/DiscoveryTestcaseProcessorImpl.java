@@ -67,8 +67,7 @@ public class DiscoveryTestcaseProcessorImpl extends
 
             MimeBodyPart decryptedBodyPart = this.decrypt(mailInfo, msgId, msgFromAddr, msgToAddr, testcase, result);
 
-            this.verifySender(msgId, msgFromAddr, msgToAddr, result, decryptedBodyPart,
-                this.verifySigners(mailInfo, msgId, msgFromAddr, msgToAddr, decryptedBodyPart));
+            result.setSignerCertificateInfos(this.verifySigners(mailInfo, msgId, msgFromAddr, msgToAddr, decryptedBodyPart));
         } catch (Exception e) {
             procMsgs.add(new ToolMessageImpl(ToolMessageLevel.ERROR, e.getMessage()));
             procSuccess = false;
@@ -82,30 +81,6 @@ public class DiscoveryTestcaseProcessorImpl extends
             ToolStringUtils.joinDelimit(result.getMessages(), "; ")));
 
         return result;
-    }
-
-    private void verifySender(String msgId, MailAddress msgFrom, MailAddress msgTo, DiscoveryTestcaseResult result, MimeBodyPart decryptedBodyPart,
-        Map<SignerId, CertificateInfo> signerCertMap) throws Exception {
-        result.getProcessedSteps().addAll(this.certDiscoveryService.discoverCertificates(msgFrom));
-
-        if (!result.isSuccess() || !result.hasDiscoveredCertificateInfo()) {
-            throw new ToolSmimeException(String.format("Unable to discover mail MIME message (id=%s, from=%s, to=%s) sender certificate.", msgId, msgFrom,
-                msgTo));
-        }
-
-        CertificateInfo senderCertInfo = result.getDiscoveredCertificateInfo();
-
-        if (!signerCertMap.containsValue(senderCertInfo)) {
-            // noinspection ConstantConditions
-            throw new ToolSmimeException(
-                String
-                    .format(
-                        "Mail MIME message (id=%s, from=%s, to=%s) signed content (type=%s) was not signed by the discovered sender certificate (subjDn={%s}, issuerDn={%s}, serialNum=%s).",
-                        msgId, msgFrom, msgTo, ToolMimePartUtils.getContentType(decryptedBodyPart), senderCertInfo.getSubjectDn(),
-                        senderCertInfo.getIssuerDn(), senderCertInfo.getSerialNumber()));
-        }
-
-        result.setSignerCertificateInfo(senderCertInfo);
     }
 
     private Map<SignerId, CertificateInfo> verifySigners(MailInfo mailInfo, String msgId, MailAddress msgFromAddr, MailAddress msgToAddr,

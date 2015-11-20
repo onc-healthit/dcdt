@@ -9,13 +9,16 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import gov.hhs.onc.dcdt.testcases.discovery.results.DiscoveryTestcaseResult;
 import gov.hhs.onc.dcdt.testcases.results.impl.AbstractToolTestcaseResult;
 import java.util.List;
+import java.util.Map;
 import javax.annotation.Nullable;
+import org.apache.commons.collections4.MapUtils;
+import org.bouncycastle.cms.SignerId;
 
 public class DiscoveryTestcaseResultImpl extends AbstractToolTestcaseResult<DiscoveryTestcaseDescription, DiscoveryTestcase, DiscoveryTestcaseSubmission>
     implements DiscoveryTestcaseResult {
     private DiscoveryTestcaseCredential decryptCred;
     private DiscoveryTestcaseCredential expectedDecryptCred;
-    private CertificateInfo signerCertInfo;
+    private Map<SignerId, CertificateInfo> signerCertInfos;
 
     public DiscoveryTestcaseResultImpl(DiscoveryTestcaseSubmission submission, @Nullable List<CertificateDiscoveryStep> procSteps) {
         super(submission, procSteps);
@@ -54,18 +57,18 @@ public class DiscoveryTestcaseResultImpl extends AbstractToolTestcaseResult<Disc
     }
 
     @Override
-    public boolean hasSignerCertificateInfo() {
-        return (this.signerCertInfo != null);
+    public boolean hasSignerCertificateInfos() {
+        return !MapUtils.isEmpty(this.signerCertInfos);
     }
 
     @Nullable
     @Override
-    public CertificateInfo getSignerCertificateInfo() {
-        return this.signerCertInfo;
+    public Map<SignerId, CertificateInfo> getSignerCertificateInfos() {
+        return this.signerCertInfos;
     }
 
     @Override
-    public void setSignerCertificateInfo(CertificateInfo signerCertInfo) {
-        this.signerCertInfo = signerCertInfo;
+    public void setSignerCertificateInfos(Map<SignerId, CertificateInfo> signerCertInfos) {
+        this.signerCertInfos = signerCertInfos;
     }
 }

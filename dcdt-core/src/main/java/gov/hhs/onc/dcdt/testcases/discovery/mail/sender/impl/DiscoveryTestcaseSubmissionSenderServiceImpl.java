@@ -6,7 +6,7 @@ import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.mail.MailAddress;
 import gov.hhs.onc.dcdt.mail.MailInfo;
 import gov.hhs.onc.dcdt.mail.crypto.utils.ToolSmimeUtils;
-import gov.hhs.onc.dcdt.mail.sender.impl.AbstractTemplateMailSenderService;
+import gov.hhs.onc.dcdt.mail.sender.impl.AbstractMailTemplateSenderService;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.mail.sender.DiscoveryTestcaseSubmissionSenderService;
 import gov.hhs.onc.dcdt.utils.ToolArrayUtils;
@@ -15,7 +15,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.ui.ModelMap;
 
-public class DiscoveryTestcaseSubmissionSenderServiceImpl extends AbstractTemplateMailSenderService implements DiscoveryTestcaseSubmissionSenderService {
+public class DiscoveryTestcaseSubmissionSenderServiceImpl extends AbstractMailTemplateSenderService implements DiscoveryTestcaseSubmissionSenderService {
     @Order(Ordered.HIGHEST_PRECEDENCE + 2)
     private class DiscoveryTestcaseSubmissionMailPreparator implements MailPreparator {
         private CredentialInfo signerCredInfo;

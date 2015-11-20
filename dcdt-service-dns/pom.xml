@@ -266,13 +266,6 @@
             <scope>test</scope>
         </dependency>
         <!-- Test dependencies (inherited) -->
-        <!--
-        <dependency>
-            <groupId>com.atlassian.clover</groupId>
-            <artifactId>clover</artifactId>
-            <scope>test</scope>
-        </dependency>
-        -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>

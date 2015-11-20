@@ -5,7 +5,6 @@ import gov.hhs.onc.dcdt.mail.ToolMailException;
 import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -21,11 +20,14 @@ import org.springframework.util.MimeTypeUtils;
 public abstract class ToolMimePartUtils {
     public final static String DELIM_HEADER = ":";
 
-    public static byte[] write(MimePart part) throws IOException, MessagingException {
-        try (ByteArrayOutputStream contentOutStream = new ByteArrayOutputStream()) {
-            part.writeTo(contentOutStream);
+    public static byte[] write(MimePart part) throws MessagingException {
+        try (ByteArrayOutputStream dataOutStream = new ByteArrayOutputStream()) {
+            part.writeTo(dataOutStream);
 
-            return contentOutStream.toByteArray();
+            return dataOutStream.toByteArray();
+        } catch (Exception e) {
+            throw new ToolMailException(String.format("Unable to write MIME part (class=%s, desc=%s) data.", ToolClassUtils.getName(part),
+                part.getDescription()), e);
         }
     }
 

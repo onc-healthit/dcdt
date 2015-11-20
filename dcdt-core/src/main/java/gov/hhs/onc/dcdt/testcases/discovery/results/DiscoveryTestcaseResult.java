@@ -6,7 +6,9 @@ import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseDescription;
 import gov.hhs.onc.dcdt.testcases.discovery.DiscoveryTestcaseSubmission;
 import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredential;
 import gov.hhs.onc.dcdt.testcases.results.ToolTestcaseResult;
+import java.util.Map;
 import javax.annotation.Nullable;
+import org.bouncycastle.cms.SignerId;
 
 public interface DiscoveryTestcaseResult extends ToolTestcaseResult<DiscoveryTestcaseDescription, DiscoveryTestcase, DiscoveryTestcaseSubmission> {
     public boolean hasDecryptionCredential();
@@ -23,10 +25,10 @@ public interface DiscoveryTestcaseResult extends ToolTestcaseResult<DiscoveryTes
 
     public void setExpectedDecryptionCredential(DiscoveryTestcaseCredential expectedDecryptCred);
 
-    public boolean hasSignerCertificateInfo();
+    public boolean hasSignerCertificateInfos();
 
     @Nullable
-    public CertificateInfo getSignerCertificateInfo();
+    public Map<SignerId, CertificateInfo> getSignerCertificateInfos();
 
-    public void setSignerCertificateInfo(CertificateInfo signerCertInfo);
+    public void setSignerCertificateInfos(Map<SignerId, CertificateInfo> signerCertInfos);
 }

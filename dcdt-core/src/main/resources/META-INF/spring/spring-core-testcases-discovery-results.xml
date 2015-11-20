@@ -22,7 +22,7 @@
     = DISCOVERY TESTCASE RESULT SENDER SERVICE
     =====================================================================================================-->
     <beans:bean id="discoveryTestcaseResultSenderService" class="gov.hhs.onc.dcdt.testcases.discovery.results.sender.DiscoveryTestcaseResultSenderService"
-        parent="mailSenderServiceTemplate" abstract="true"/>
+        parent="mailTemplateSenderService" abstract="true"/>
     
     <beans:bean id="discoveryTestcaseResultSenderServiceImpl"
         class="gov.hhs.onc.dcdt.testcases.discovery.results.sender.impl.DiscoveryTestcaseResultSenderServiceImpl" parent="discoveryTestcaseResultSenderService"

@@ -14,15 +14,15 @@
     =====================================================================================================-->
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceLdap" parent="taskExecThreadPool"
-        p:corePoolSize="${dcdt.service.ldap.task.exec.pool.size.core}"
-        p:maxPoolSize="${dcdt.service.ldap.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-ldap-"/>
+        p:corePoolSize="${dcdt.ldap.service.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.ldap.service.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-ldap-service-"/>
     
     <!--suppress SpringPlaceholdersInspection -->
     <beans:bean id="taskExecServiceLdapServer" parent="taskExecThreadPool"
-        p:corePoolSize="${dcdt.service.ldap.server.task.exec.pool.size.core}"
-        p:maxPoolSize="${dcdt.service.ldap.server.task.exec.pool.size.max}"
-        p:threadNamePrefix="#{ threadGroup.name }-service-ldap-server-"/>
+        p:corePoolSize="${dcdt.ldap.service.server.task.exec.pool.size.core}"
+        p:maxPoolSize="${dcdt.ldap.service.server.task.exec.pool.size.max}"
+        p:threadNamePrefix="#{ threadGroup.name }-ldap-service-server-"/>
     
     <!--====================================================================================================
     = CACHE SERVICE
@@ -248,7 +248,7 @@
                     <beans:property name="instanceLayout">
                         <!--suppress SpringPlaceholdersInspection -->
                         <beans:bean parent="instanceLayout"
-                            c:instanceDirectory="${dcdt.service.ldap.1.dir}"/>
+                            c:instanceDirectory="${dcdt.ldap.service.server.directory.service.1.dir}"/>
                     </beans:property>
                 </beans:bean>
                 <beans:bean parent="dirServiceBean"
@@ -257,7 +257,7 @@
                     <beans:property name="instanceLayout">
                         <!--suppress SpringPlaceholdersInspection -->
                         <beans:bean parent="instanceLayout"
-                            c:instanceDirectory="${dcdt.service.ldap.2.dir}"/>
+                            c:instanceDirectory="${dcdt.ldap.service.server.directory.service.2.dir}"/>
                     </beans:property>
                 </beans:bean>
                 <beans:bean parent="dirServiceBean"
@@ -266,7 +266,7 @@
                     <beans:property name="instanceLayout">
                         <!--suppress SpringPlaceholdersInspection -->
                         <beans:bean parent="instanceLayout"
-                            c:instanceDirectory="${dcdt.service.ldap.3.dir}"/>
+                            c:instanceDirectory="${dcdt.ldap.service.server.directory.service.3.dir}"/>
                     </beans:property>
                 </beans:bean>
             </beans:list>

@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 @SuppressWarnings({ "SpringJavaAutowiringInspection" })
 public class ToolServiceHubJsonDtoImpl extends AbstractToolBeanJsonDto<ToolServiceHub> implements ToolServiceHubJsonDto {
-    private Map<ToolServiceType, ToolService<?, ?>> serviceMap;
+    private Map<ToolServiceType, ToolService<?, ?, ?>> serviceMap;
     private Map<ToolServiceType, List<String>> serviceMsgsMap;
 
     public ToolServiceHubJsonDtoImpl() {
@@ -26,12 +26,12 @@ public class ToolServiceHubJsonDtoImpl extends AbstractToolBeanJsonDto<ToolServi
     }
 
     @Override
-    public Map<ToolServiceType, ToolService<?, ?>> getServiceMap() {
+    public Map<ToolServiceType, ToolService<?, ?, ?>> getServiceMap() {
         return this.serviceMap;
     }
 
     @Override
-    public void setServiceMap(Map<ToolServiceType, ToolService<?, ?>> serviceMap) {
+    public void setServiceMap(Map<ToolServiceType, ToolService<?, ?, ?>> serviceMap) {
         this.serviceMap = serviceMap;
     }
 
