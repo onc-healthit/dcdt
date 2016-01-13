@@ -71,7 +71,7 @@ public class CrlInfoImpl extends AbstractCrlDescriptor<CrlEntryInfo> implements 
 
         try {
             this.crlType = CrlType.X509;
-            this.issuerDn = new CertificateDnImpl(new X500Name(BCStyle.INSTANCE, this.crl.getIssuerX500Principal().getName()));
+            this.issuerDn = new CertificateDnImpl(X500Name.getInstance(BCStyle.INSTANCE, this.crl.getIssuerX500Principal().getEncoded()));
             // noinspection ConstantConditions
             this.num =
                 (this.hasExtension(Extension.cRLNumber) ? ASN1Integer.getInstance(this.getExtension(Extension.cRLNumber).getParsedValue()).getValue() : null);

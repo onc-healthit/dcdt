@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.utils;
 import com.github.sebhoss.warnings.CompilerWarnings;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import org.apache.commons.collections4.list.SetUniqueList;
 
 public final class ToolComparatorUtils {
@@ -22,7 +23,7 @@ public final class ToolComparatorUtils {
             } else if (objIndex2 != -1) {
                 return 1;
             } else {
-                return 0;
+                return Objects.equals(obj1, obj2) ? 0 : 1;
             }
         }
     }
