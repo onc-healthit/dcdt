@@ -90,13 +90,21 @@
         p:crlType="X509"
         p:number="0"
         p:signatureAlgorithm="SHA256_WITH_RSA_ENCRYPTION"/>
-    
+    <beans:bean id="crlConfigInstant" class="java.time.Instant" factory-method="now"/>
+    <beans:bean id="crlConfigRevocationDate" class="java.util.Date" abstract="true"/>
+
     <beans:bean id="crlEntryDesc" class="gov.hhs.onc.dcdt.crypto.crl.CrlEntryDescriptor" parent="cryptoDesc" abstract="true"/>
     <beans:bean id="crlEntryConfig" class="gov.hhs.onc.dcdt.crypto.crl.CrlEntryConfig" parent="crlEntryDesc" abstract="true"/>
     <beans:bean id="crlEntryConfigImpl" class="gov.hhs.onc.dcdt.crypto.crl.impl.CrlEntryConfigImpl" parent="crlEntryConfig" abstract="true"/>
-    
+
+    <beans:bean id="crlEntryConfigRevocationDate" parent="crlConfigRevocationDate" factory-method="from" lazy-init="true" scope="prototype">
+        <beans:constructor-arg value="#{ crlConfigInstant.minusMillis(T(gov.hhs.onc.dcdt.utils.ToolDateUtils).MS_IN_YEAR) }"/>
+    </beans:bean>
+
     <beans:bean id="crlEntryConfigKeyCompromise" parent="crlEntryConfigImpl" abstract="true"
-        p:revocationReason="KEY_COMPROMISE"/>
+        p:revocationDate-ref="crlEntryConfigRevocationDate"
+        p:revocationReason="KEY_COMPROMISE">
+    </beans:bean>
     
     <!--====================================================================================================
     = CREDENTIALS
