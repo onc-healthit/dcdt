@@ -53,7 +53,7 @@ public class CrlGeneratorImpl extends AbstractCryptographyGenerator<CrlConfig, C
             Date updateDate = new Date();
             // noinspection ConstantConditions
             X509v2CRLBuilder builder = new X509v2CRLBuilder(issuerDn.toX500Name(), updateDate);
-            builder.setNextUpdate(new Date(updateDate.getTime() + 1));
+            builder.setNextUpdate(new Date(updateDate.getTime() + 1000 * 60 * 60 * 24));
             builder.addExtension(Extension.authorityKeyIdentifier, false, issuerAuthKeyId);
             builder.addExtension(Extension.cRLNumber, false, new CRLNumber(crlConfig.getNumber()));
 
