@@ -417,7 +417,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <scripts>
-                                    <script>file://${project.basedir.all}/dcdt-service-core/src/main/scripts/groovy/process-service-executable-files.groovy</script>
+                                    <script>file:\\\C:\Users\Sandeep Savarala\Documents\GitHub\DCDT\dcdt\dcdt-service-core\src\main\scripts\groovy\process-service-executable-files.groovy</script>
                                 </scripts>
                             </configuration>
                         </execution>

@@ -53,8 +53,12 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
 
     protected static MailAddress parsePath(int maxNumParams, String prefix, String str) throws SmtpCommandException {
         String[] params = parseParameters(1, maxNumParams, str);
-
-        if (!StringUtils.startsWith(params[0], prefix) || !StringUtils.endsWith(params[0], ToolMailAddressUtils.MAIL_ADDR_PART_PERSONAL_ADDR_SUFFIX)) {
+        
+        for (int j=0; j<params.length;j++){
+        	System.out.println("Params"+ j+": "+params[0]);
+        }
+        
+        if (!(StringUtils.startsWith(params[0].toUpperCase(), prefix) || !StringUtils.endsWith(params[0].toUpperCase(), ToolMailAddressUtils.MAIL_ADDR_PART_PERSONAL_ADDR_SUFFIX))) {
             throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Required syntax: '%slocal@domain%s'", prefix,
                 ToolMailAddressUtils.MAIL_ADDR_PART_PERSONAL_ADDR_SUFFIX)));
         }
@@ -66,13 +70,19 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
             throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Path too long: %d > %d", pathLen,
                 MAX_PATH_LEN)));
         }
-
-        Matcher pathMatcher = PATTERN_PATH.matcher(params[0]);
-
-        if (!pathMatcher.matches()) {
-            throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Malformed email address: %s", params[0])));
+        String paramsU = params[0].toUpperCase();
+        if (paramsU.contains("FROM")){
+        paramsU = paramsU.replace("FROM:<", "");
         }
-
+        if (paramsU.contains("TO")){
+            paramsU = paramsU.replace("TO:<", "");
+            }
+        Matcher pathMatcher = PATTERN_PATH.matcher(paramsU);
+        System.out.println("111111  :" + paramsU);
+        if (!pathMatcher.matches()) {
+            throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Malformed email address: %s", params[0].toUpperCase())));
+        }
+        System.out.println("2222222   "+new MailAddressImpl(pathMatcher.group(1)));
         return new MailAddressImpl(pathMatcher.group(1));
     }
 
