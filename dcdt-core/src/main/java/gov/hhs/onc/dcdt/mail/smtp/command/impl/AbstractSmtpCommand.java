@@ -52,6 +52,7 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
     }
 
     protected static MailAddress parsePath(int maxNumParams, String prefix, String str) throws SmtpCommandException {
+    	
         str = str.toUpperCase();
         String[] params = parseParameters(1, maxNumParams, str);
         
@@ -71,20 +72,13 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
             throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Path too long: %d > %d", pathLen,
                 MAX_PATH_LEN)));
         }
-        String paramsU = params[0].toUpperCase();
-        if (paramsU.contains("FROM")){
-        paramsU = paramsU.replace("FROM:<", "");
-        }
-        if (paramsU.contains("TO")){
-            paramsU = paramsU.replace("TO:<", "");
-            }
-        Matcher pathMatcher = PATTERN_PATH.matcher(paramsU);
-        System.out.println("111111  :" + paramsU);
+        Matcher pathMatcher = PATTERN_PATH.matcher(params[0]);
+        System.out.println("111111  :" + params[0]);
         if (!pathMatcher.matches()) {
-            throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Malformed email address: %s", params[0].toUpperCase())));
+            throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Malformed email address: %s", params[0])));
         }
-        System.out.println("2222222   "+new MailAddressImpl(pathMatcher.group(1)));
-        return new MailAddressImpl(pathMatcher.group(1));
+        System.out.println("2222222   "+new MailAddressImpl(pathMatcher.group(1).toLowerCase()));
+        return new MailAddressImpl(pathMatcher.group(1).toLowerCase());
     }
 
     protected static String[] parseParameters(int numParams, String str) throws SmtpCommandException {
