@@ -52,6 +52,7 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
     }
 
     protected static MailAddress parsePath(int maxNumParams, String prefix, String str) throws SmtpCommandException {
+        str = str.toUpperCase();
         String[] params = parseParameters(1, maxNumParams, str);
         
         for (int j=0; j<params.length;j++){
