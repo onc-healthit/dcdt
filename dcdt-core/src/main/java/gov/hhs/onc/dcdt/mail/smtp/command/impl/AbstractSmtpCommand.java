@@ -52,9 +52,11 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
     }
 
     protected static MailAddress parsePath(int maxNumParams, String prefix, String str) throws SmtpCommandException {
+    	
+        str = str.toUpperCase();
         String[] params = parseParameters(1, maxNumParams, str);
-
-        if (!StringUtils.startsWith(params[0], prefix) || !StringUtils.endsWith(params[0], ToolMailAddressUtils.MAIL_ADDR_PART_PERSONAL_ADDR_SUFFIX)) {
+         
+        if (!(StringUtils.startsWith(params[0], prefix) || !StringUtils.endsWith(params[0], ToolMailAddressUtils.MAIL_ADDR_PART_PERSONAL_ADDR_SUFFIX))) {
             throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Required syntax: '%slocal@domain%s'", prefix,
                 ToolMailAddressUtils.MAIL_ADDR_PART_PERSONAL_ADDR_SUFFIX)));
         }
@@ -66,14 +68,11 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
             throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Path too long: %d > %d", pathLen,
                 MAX_PATH_LEN)));
         }
-
         Matcher pathMatcher = PATTERN_PATH.matcher(params[0]);
-
         if (!pathMatcher.matches()) {
             throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Malformed email address: %s", params[0])));
         }
-
-        return new MailAddressImpl(pathMatcher.group(1));
+        return new MailAddressImpl(pathMatcher.group(1).toLowerCase());
     }
 
     protected static String[] parseParameters(int numParams, String str) throws SmtpCommandException {
