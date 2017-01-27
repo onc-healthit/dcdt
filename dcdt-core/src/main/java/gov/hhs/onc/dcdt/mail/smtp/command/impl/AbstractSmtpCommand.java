@@ -53,7 +53,8 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
 
     protected static MailAddress parsePath(int maxNumParams, String prefix, String str) throws SmtpCommandException {
     	
-        str = str.toUpperCase();
+    	str=str.replace("from:<","FROM:<");
+		str=str.replace("to:<", "TO:<");
         String[] params = parseParameters(1, maxNumParams, str);
          
         if (!(StringUtils.startsWith(params[0], prefix) || !StringUtils.endsWith(params[0], ToolMailAddressUtils.MAIL_ADDR_PART_PERSONAL_ADDR_SUFFIX))) {
@@ -72,7 +73,7 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
         if (!pathMatcher.matches()) {
             throw new SmtpCommandException(new SmtpReplyImpl(SmtpReplyCode.SYNTAX_ERROR_ARGUMENTS, String.format("Malformed email address: %s", params[0])));
         }
-        return new MailAddressImpl(pathMatcher.group(1).toLowerCase());
+        return new MailAddressImpl(pathMatcher.group(1));
     }
 
     protected static String[] parseParameters(int numParams, String str) throws SmtpCommandException {
