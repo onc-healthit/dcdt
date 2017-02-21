@@ -53,8 +53,11 @@ public abstract class AbstractSmtpCommand extends AbstractSmtpMessage<SmtpComman
 
 	protected static MailAddress parsePath(int maxNumParams, String prefix, String str) throws SmtpCommandException {
 
-		str=str.replace("from:<","FROM:<");
-		str=str.replace("to:<", "TO:<");
+		String[] parts = str.split(":");
+		String part1 = parts[0]; 
+		String part2 = parts[1]; 
+		part1 = part1.toUpperCase();
+		str = part1+":"+part2;
 		String[] params = parseParameters(1, maxNumParams, str);
 
 		if (!(StringUtils.startsWith(params[0], prefix) || !StringUtils.endsWith(params[0], ToolMailAddressUtils.MAIL_ADDR_PART_PERSONAL_ADDR_SUFFIX))) {
