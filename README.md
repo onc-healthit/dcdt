@@ -1,3 +1,7 @@
+**Support**
+
+GitHub Issues are not used to manage issues for this repository. Please report any issues you may have on the [ETT Google Group](https://groups.google.com/g/edge-test-tool). Our technical team will address all questions there. Thank you.
+
 # ![DCDT project logo] (https://github.com/esacinc/dcdt/raw/master/dcdt-web/src/main/webapp/static/images/dcdt-logo-48x48.png) Direct Certificate Discovery Tool (DCDT)
 
 ##Welcome
