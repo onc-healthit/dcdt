@@ -10,7 +10,7 @@
     <display-name>DCDT JSP Tag Library</display-name>
     <tlib-version>1.0</tlib-version>
     <short-name>dcdt</short-name>
-    <uri>http://direct-test.com/tags</uri>
+    <uri>/WEB-INF/tag/implicit.tld</uri>
     
     <!--====================================================================================================
     = TAGS
