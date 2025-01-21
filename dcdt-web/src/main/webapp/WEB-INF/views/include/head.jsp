@@ -36,9 +36,9 @@
 <c:set var="templateName" scope="request"><tiles:getAsString name="name"/></c:set>
 <c:set var="templateNameProp" scope="request" value="${fn:replace(templateName, '-', '.')}"/>
 <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-<script type="text/javascript" src="http://code.jquery.com/jquery-2.1.0.min.js"></script>
-<script type="text/javascript" src="http://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
-<script type="text/javascript" src="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.0.min.js"></script>
+<script type="text/javascript" src="https://code.jquery.com/ui/1.10.4/jquery-ui.min.js"></script>
+<script type="text/javascript" src="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/web.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/web-form.js"></script>
 <script type="text/javascript" src="${urlStaticScripts}/web-beans.js"></script>
@@ -49,9 +49,9 @@
     <script type="text/javascript" src="${urlStaticScripts}/ga.js"></script>
 </c:if>
 <link rel="icon" type="image/png" href="${urlStaticImages}/dcdt-logo-16x16.png"/>
-<link rel="stylesheet" type="text/css" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
-<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
-<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
-<link rel="stylesheet" type="text/css" href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css"/>
+<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css"/>
+<link rel="stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css"/>
 <link rel="stylesheet" type="text/css" href="${urlStaticStyles}/web.css"/>
 <title><spring:message code="dcdt.web.title.${templateNameProp}"/></title>
