@@ -140,7 +140,7 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>[2.8.11.1,)</version>
+                <version>2.6.1</version>
             </dependency>
             <dependency>
                 <groupId>com.github.sebhoss</groupId>
@@ -262,7 +262,7 @@
             <dependency>
                 <groupId>org.apache.commons</groupId>
                 <artifactId>commons-compress</artifactId>
-                <version>[1.18,)</version>
+                <version>1.9</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.commons</groupId>
@@ -420,7 +420,7 @@
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-core</artifactId>
-                <version>4.3.17.RELEASE</version>
+                <version>4.2.2.RELEASE</version>
                 <exclusions>
                     <exclusion>
                         <groupId>commons-logging</groupId>
@@ -942,7 +942,7 @@
                         <dependency>
                             <groupId>org.springframework</groupId>
                             <artifactId>spring-core</artifactId>
-                            <version>4.2.1.RELEASE</version>
+                            <version>4.2.2.RELEASE</version>
                             <exclusions>
                                 <exclusion>
                                     <groupId>commons-logging</groupId>
@@ -974,7 +974,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <scripts>
-                                    <script>file:///C:\Users\Sandeep Savarala\Documents\GitHub\DCDT\dcdt\dcdt-core\src\main\scripts\groovy\process-project-properties.groovy</script>
+                                    <script>file:///C:\github\dcdt\dcdt-core\src\main\scripts\groovy\process-project-properties.groovy</script>
                                 </scripts>
                             </configuration>
                         </execution>
