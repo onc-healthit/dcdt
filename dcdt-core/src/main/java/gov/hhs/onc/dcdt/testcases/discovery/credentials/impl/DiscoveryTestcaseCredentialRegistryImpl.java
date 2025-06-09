@@ -5,6 +5,7 @@ import gov.hhs.onc.dcdt.crypto.certs.CertificateGenerator;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialConfig;
 import gov.hhs.onc.dcdt.crypto.credentials.CredentialInfo;
 import gov.hhs.onc.dcdt.crypto.credentials.impl.CredentialInfoImpl;
+import gov.hhs.onc.dcdt.crypto.keys.KeyException;
 import gov.hhs.onc.dcdt.crypto.keys.KeyGenerator;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
 import gov.hhs.onc.dcdt.data.registry.ToolBeanRegistryException;
@@ -112,7 +113,8 @@ public class DiscoveryTestcaseCredentialRegistryImpl extends
         CredentialInfo discoveryTestcaseCredInfo = new CredentialInfoImpl();
         KeyInfo discoveryTestcaseKeyPairInfo;
 
-        discoveryTestcaseCredInfo.setKeyDescriptor(discoveryTestcaseKeyPairInfo = this.keyGen.generateKeys(discoveryTestcaseCredConfig.getKeyDescriptor()));
+        discoveryTestcaseCredInfo.setKeyDescriptor(discoveryTestcaseKeyPairInfo = this.keyGen.generateKeys(discoveryTestcaseCredConfig.getKeyDescriptor(), (discoveryTestcaseIssuerCredInfo != null) ? discoveryTestcaseIssuerCredInfo.getKeyDescriptor().getPublicKey() : null));
+
         discoveryTestcaseCredInfo.setCertificateDescriptor(this.certGen.generateCertificate(discoveryTestcaseIssuerCredInfo, discoveryTestcaseKeyPairInfo,
             discoveryTestcaseCredConfig.getCertificateDescriptor()));
 

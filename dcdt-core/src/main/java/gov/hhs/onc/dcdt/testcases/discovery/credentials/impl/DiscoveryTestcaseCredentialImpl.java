@@ -128,7 +128,7 @@ public class DiscoveryTestcaseCredentialImpl extends AbstractToolNamedBean imple
             if (this.credInfo.hasKeyDescriptor() && !(credKeyInfo = this.credInfo.getKeyDescriptor()).hasPublicKey()) {
                 // noinspection ConstantConditions
                 credKeyInfo.setPublicKey(credCertInfo.getCertificate().getPublicKey());
-            }
+                 }
 
             if (this.hasCrlConfig() && !this.crlConfig.hasIssuerDn()) {
                 this.crlConfig.setIssuerDn(credCertInfo.getSubjectDn());

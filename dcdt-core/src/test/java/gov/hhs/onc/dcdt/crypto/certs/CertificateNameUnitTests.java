@@ -131,7 +131,7 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
 
     @BeforeClass
     public void setupCaCredentialInfo() throws Exception {
-        KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor());
+        KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor(),null);
         this.testCredInfoCa1 =
             new CredentialInfoImpl(testCa1KeyPairInfo, this.certGen.generateCertificate(testCa1KeyPairInfo, this.testCredConfigCa1.getCertificateDescriptor()));
     }
@@ -187,7 +187,7 @@ public class CertificateNameUnitTests extends AbstractToolUnitTests {
     }
 
     private CertificateInfo generateCertificateInfo(CredentialInfo credInfoCa, CredentialConfig credConfig) throws Exception {
-        return this.certGen.generateCertificate(credInfoCa, this.keyGen.generateKeys(credConfig.getKeyDescriptor()), credConfig.getCertificateDescriptor());
+        return this.certGen.generateCertificate(credInfoCa, this.keyGen.generateKeys(credConfig.getKeyDescriptor(),null), credConfig.getCertificateDescriptor());
     }
 
     private static void assertCertificateSubjectsMatch(CertificateConfig testCertConfig, X500Name testCertSubjX500Name) throws Exception {
