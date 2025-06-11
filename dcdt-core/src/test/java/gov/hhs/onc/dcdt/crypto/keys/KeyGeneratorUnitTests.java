@@ -19,7 +19,7 @@ public class KeyGeneratorUnitTests extends AbstractToolUnitTests {
 
     @Test
     public void testGenerateKeys() throws CryptographyException {
-        KeyInfo testKeyInfo = this.keyGen.generateKeys(this.testKeyConfig);
+        KeyInfo testKeyInfo = this.keyGen.generateKeys(this.testKeyConfig,null);
 
         Assert.assertNotNull(testKeyInfo, "Unable to generate key information.");
         Assert.assertEquals(testKeyInfo.getKeyAlgorithm(), testKeyConfig.getKeyAlgorithm(), "Key configuration and information key algorithms do not match.");

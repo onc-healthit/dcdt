@@ -13,7 +13,9 @@ import gov.hhs.onc.dcdt.utils.ToolClassUtils;
 import gov.hhs.onc.dcdt.utils.ToolStringUtils;
 import gov.hhs.onc.dcdt.utils.ToolValidationUtils;
 import java.security.KeyPairGenerator;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import javax.annotation.Nullable;
 import javax.annotation.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,7 +30,7 @@ public class KeyGeneratorImpl extends AbstractCryptographyGenerator<KeyConfig, K
     private SecureRandom secureRandom;
 
     @Override
-    public KeyInfo generateKeys(KeyConfig keyConfig) throws CryptographyException {
+    public KeyInfo generateKeys(KeyConfig keyConfig,@Nullable PublicKey issuerPublicKey) throws CryptographyException {
         BindingResult keyConfigBindingResult = this.validateConfig(keyConfig, GenerateConstraintGroup.class);
 
         if (keyConfigBindingResult.hasErrors()) {
@@ -43,11 +45,11 @@ public class KeyGeneratorImpl extends AbstractCryptographyGenerator<KeyConfig, K
         KeyPairGenerator keyPairGen = KeyUtils.getKeyPairGenerator(keyAlg);
         keyPairGen.initialize(keySize, this.secureRandom);
 
-        KeyInfo keyInfo = new KeyInfoImpl(keyPairGen.generateKeyPair());
+        KeyInfo keyInfo = new KeyInfoImpl(keyPairGen.generateKeyPair(),issuerPublicKey);
 
         // noinspection ConstantConditions
-        LOGGER.info(String.format("Generated key pair (alg=%s, size=%d).", keyAlg.name(), keySize));
-
+        LOGGER.info("Issuer public key in key generator impl{}.", issuerPublicKey);
+        LOGGER.info("Generated key pair (alg={}, size={}).", keyAlg.name(), keySize);
         return keyInfo;
     }
 }
