@@ -3,6 +3,7 @@ package gov.hhs.onc.dcdt.crypto.keys.impl;
 import gov.hhs.onc.dcdt.crypto.keys.KeyAlgorithm;
 import gov.hhs.onc.dcdt.crypto.keys.KeyException;
 import gov.hhs.onc.dcdt.crypto.keys.KeyInfo;
+import gov.hhs.onc.dcdt.testcases.discovery.credentials.impl.DiscoveryTestcaseCredentialRegistryImpl;
 import gov.hhs.onc.dcdt.utils.ToolEnumUtils;
 import java.security.Key;
 import java.security.KeyPair;
@@ -10,6 +11,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.security.interfaces.RSAKey;
+import java.util.Arrays;
 import javax.annotation.Nullable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -17,16 +19,23 @@ import javax.persistence.Lob;
 import javax.persistence.Transient;
 import org.apache.commons.lang3.ObjectUtils;
 import org.bouncycastle.asn1.pkcs.PrivateKeyInfo;
+import org.bouncycastle.asn1.util.ASN1Dump;
 import org.bouncycastle.asn1.x509.AuthorityKeyIdentifier;
+import org.bouncycastle.asn1.x509.SubjectKeyIdentifier;
 import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Embeddable
 public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
     private KeyPair keyPair;
     private AuthorityKeyIdentifier authKeyInfo;
+    private SubjectKeyIdentifier subjKeyInfo;
     private PrivateKeyInfo privateKeyInfo;
     private SubjectPublicKeyInfo subjPublicKeyInfo;
+    private PublicKey issuerPublicKey;
+    private final static Logger LOGGER = LoggerFactory.getLogger(KeyInfoImpl.class);
 
     public KeyInfoImpl() throws KeyException {
         this(null);
@@ -40,6 +49,12 @@ public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
         this.setKeyPair(keyPair);
     }
 
+    public KeyInfoImpl(@Nullable KeyPair keyPair, @Nullable PublicKey issuerPublicKey) throws KeyException {
+        this.issuerPublicKey = issuerPublicKey; // Set issuerPublicKey first
+        this.setKeyPair(keyPair); // Process keys
+    }
+
+
     @Override
     protected void reset() {
         super.reset();
@@ -47,7 +62,28 @@ public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
         this.authKeyInfo = null;
         this.privateKeyInfo = null;
         this.subjPublicKeyInfo = null;
+        this.subjKeyInfo = null;
     }
+
+
+    private static String printSubjectPublicKeyInfo(SubjectPublicKeyInfo subjPublicKeyInfo) {
+        String readableInfo = "";
+        if (subjPublicKeyInfo != null) {
+            // Convert the SubjectPublicKeyInfo to a readable format using ASN1Dump
+            readableInfo = ASN1Dump.dumpAsString(subjPublicKeyInfo, true);
+
+        }
+        return readableInfo;
+    }
+
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder hexBuilder = new StringBuilder();
+        for (byte b : bytes) {
+            hexBuilder.append(String.format("%02X", b));
+        }
+        return hexBuilder.toString();
+    }
+
 
     private void processKeys() throws KeyException {
         this.reset();
@@ -63,18 +99,40 @@ public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
             this.keyAlg = ToolEnumUtils.findById(KeyAlgorithm.class, availableKey.getAlgorithm());
             this.keySize = ((RSAKey) availableKey).getModulus().bitLength();
 
+            // Process Issuer Public Key if present
+            if (this.hasIssuerPublicKey()) {
+                PublicKey issuerPublicKey = this.getIssuerPublicKey();
+                LOGGER.info("Issuer Public Key from KeyInfoImpl: {} ", this.issuerPublicKey);
+                // Convert to SubjectPublicKeyInfo
+                byte[] issuerPublicKeyData = issuerPublicKey.getEncoded();
+                SubjectPublicKeyInfo issuerSubjPublicKeyInfo = SubjectPublicKeyInfo.getInstance(issuerPublicKeyData);
+
+                // Create AuthorityKeyIdentifier from Issuer Public Key
+                try {
+                    this.authKeyInfo = new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(issuerSubjPublicKeyInfo);
+                    LOGGER.info("Authority Key Identifier (Issuer) from KeyInfoImpl: {} ", bytesToHex(this.authKeyInfo.getKeyIdentifier()));
+                } catch (NoSuchAlgorithmException e) {
+                    throw new KeyException("Unable to create Authority Key Identifier from Issuer Public Key.", e);
+                }
+            }
+
             if (this.hasPublicKey()) {
+                PublicKey publicKey = this.getPublicKey();
+                LOGGER.debug("Public Key: {}", publicKey);
                 // noinspection ConstantConditions
-                byte[] publicKeyData = this.getPublicKey().getEncoded();
+                byte[] publicKeyData = publicKey.getEncoded();
 
                 this.subjPublicKeyInfo = SubjectPublicKeyInfo.getInstance(publicKeyData);
+                LOGGER.debug("SubjectPublicKeyInfo: {}", printSubjectPublicKeyInfo(this.subjPublicKeyInfo));
 
-                try {
-                    this.authKeyInfo = new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(this.subjPublicKeyInfo);
+                    try {
+                        this.subjKeyInfo= new JcaX509ExtensionUtils().createSubjectKeyIdentifier(subjPublicKeyInfo);
+                        LOGGER.info("Subject Key Identifier generated from KeyInfoImpl: {} ", bytesToHex(this.subjKeyInfo.getKeyIdentifier()));
+
                 } catch (NoSuchAlgorithmException e) {
-                    throw new KeyException(String.format("Unable to build key (algId=%s, algOid=%s, size=%s) authority key information.", this.keyAlg.getId(),
-                        this.keyAlg.getOid(), this.keySize), e);
-                }
+                        throw new KeyException(String.format("Unable to build key (algId=%s, algOid=%s, size=%s) authority key information.", this.keyAlg.getId(),
+                                this.keyAlg.getOid(), this.keySize), e);
+                    }
             }
 
             if (this.hasPrivateKey()) {
@@ -86,6 +144,24 @@ public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
 
             throw e;
         }
+    }
+
+    @Override
+    public boolean hasIssuerPublicKey() {
+        return (this.issuerPublicKey != null);
+    }
+
+
+    @Nullable
+    @Override
+    @Transient
+    public PublicKey getIssuerPublicKey() {
+        return this.issuerPublicKey;
+    }
+
+    @Override
+    public void setIssuerPublicKey(@Nullable PublicKey issuerPublicKey) throws KeyException {
+        this.issuerPublicKey = issuerPublicKey;
     }
 
     @Override
@@ -188,5 +264,17 @@ public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
     @Transient
     public SubjectPublicKeyInfo getSubjectPublicKeyInfo() {
         return this.subjPublicKeyInfo;
+    }
+
+    @Override
+    public boolean hasSubjectKeyIdentifier() {
+        return (this.subjKeyInfo != null);
+    }
+
+    @Nullable
+    @Transient
+    @Override
+    public SubjectKeyIdentifier getSubjectKeyId() {
+        return this.subjKeyInfo;
     }
 }

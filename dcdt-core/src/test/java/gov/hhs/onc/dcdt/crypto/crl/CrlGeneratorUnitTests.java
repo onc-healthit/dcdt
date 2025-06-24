@@ -39,7 +39,7 @@ public class CrlGeneratorUnitTests extends AbstractToolUnitTests {
 
     @Test
     public void testGenerateCrl() throws Exception {
-        KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor());
+        KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor(),null);
         CredentialInfo testCredInfoCa1 =
             new CredentialInfoImpl(testCa1KeyPairInfo, this.certGen.generateCertificate(testCa1KeyPairInfo, this.testCredConfigCa1.getCertificateDescriptor()));
         Date revocationDate = new Date(((new Date().getTime() / 1000L) * 1000L));

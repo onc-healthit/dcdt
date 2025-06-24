@@ -60,6 +60,13 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
     private final static Logger LOGGER = LoggerFactory.getLogger(CertificateGeneratorImpl.class);
 
     private Map<CertificateDn, BigInteger> issuedSerialNums = new HashMap<>();
+    private String bytesToHex(byte[] bytes) {
+        StringBuilder hexBuilder = new StringBuilder();
+        for (byte b : bytes) {
+            hexBuilder.append(String.format("%02X", b));
+        }
+        return hexBuilder.toString();
+    }
 
     @Override
     public CertificateInfo generateCertificate(KeyInfo keyPairInfo, CertificateConfig certConfig) throws CryptographyException {
@@ -79,8 +86,10 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
 
         boolean hasIssuerCredInfo = (issuerCredInfo != null);
         KeyInfo issuerKeyPairInfo = (hasIssuerCredInfo ? issuerCredInfo.getKeyDescriptor() : keyPairInfo);
+
         CertificateType certType = certConfig.getCertificateType();
         CertificateDescriptor<?> issuerCertDesc = (hasIssuerCredInfo ? issuerCredInfo.getCertificateDescriptor() : certConfig);
+        LOGGER.info("Issuer Cert Desc: {},{},{}", issuerCertDesc.getSerialNumber(), issuerCertDesc.getSubjectDn(),issuerCertDesc.getCertificateType());
         X509v3CertificateBuilder certBuilder = this.generateCertificateBuilder(issuerKeyPairInfo, issuerCertDesc, keyPairInfo, certConfig);
 
         try {
@@ -137,13 +146,15 @@ public class CertificateGeneratorImpl extends AbstractCryptographyGenerator<Cert
 
         try {
             if (!certCa) {
-                certBuilder.addExtension(Extension.authorityKeyIdentifier, false, issuerKeyPairInfo.getAuthorityKeyId());
+
+                certBuilder.addExtension(Extension.authorityKeyIdentifier, false, keyPairInfo.getAuthorityKeyId());
+                LOGGER.info("Authority Key Identifier from CertificateGeneratorImpl: {} ", bytesToHex(keyPairInfo.getAuthorityKeyId().getKeyIdentifier()));
+
             }
 
             // noinspection ConstantConditions
-            certBuilder.addExtension(Extension.subjectKeyIdentifier, false,
-                new SubjectKeyIdentifier(DigestUtils.digest(certConfig.getSignatureAlgorithm().getDigestAlgorithm(), keyPairInfo.getPublicKey().getEncoded())));
-
+           certBuilder.addExtension(Extension.subjectKeyIdentifier, false, keyPairInfo.getSubjectKeyId());
+            LOGGER.info("Subject Key Identifier from CertificateGeneratorImpl: {}", bytesToHex(keyPairInfo.getSubjectKeyId().getKeyIdentifier()));
             certBuilder.addExtension(Extension.basicConstraints, false, new BasicConstraints(certCa));
 
             if (certConfig.hasKeyUsages()) {

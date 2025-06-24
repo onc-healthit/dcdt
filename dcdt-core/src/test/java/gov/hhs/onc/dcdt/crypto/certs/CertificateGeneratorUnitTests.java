@@ -39,7 +39,7 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
 
     @Test(dependsOnMethods = { "testGenerateCaCertificate" })
     public void testGenerateDomainBoundCertificate() throws Exception {
-        KeyInfo testDomain1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigDomain1.getKeyDescriptor());
+        KeyInfo testDomain1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigDomain1.getKeyDescriptor(),null);
 
         CredentialInfo testDomain1CredInfo =
             new CredentialInfoImpl(testDomain1KeyPairInfo, this.certGen.generateCertificate(this.testCredInfoCa1, testDomain1KeyPairInfo,
@@ -50,7 +50,7 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
 
     @Test(dependsOnMethods = { "testGenerateCaCertificate" })
     public void testGenerateAddressBoundCertificate() throws Exception {
-        KeyInfo testAddr1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigAddr1.getKeyDescriptor());
+        KeyInfo testAddr1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigAddr1.getKeyDescriptor(),null);
 
         CredentialInfo testAddr1CredInfo =
             new CredentialInfoImpl(testAddr1KeyPairInfo, this.certGen.generateCertificate(this.testCredInfoCa1, testAddr1KeyPairInfo,
@@ -61,7 +61,7 @@ public class CertificateGeneratorUnitTests extends AbstractToolUnitTests {
 
     @Test
     public void testGenerateCaCertificate() throws Exception {
-        KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor());
+        KeyInfo testCa1KeyPairInfo = this.keyGen.generateKeys(this.testCredConfigCa1.getKeyDescriptor(),null);
 
         this.testCredInfoCa1 =
             new CredentialInfoImpl(testCa1KeyPairInfo, this.certGen.generateCertificate(testCa1KeyPairInfo, this.testCredConfigCa1.getCertificateDescriptor()));

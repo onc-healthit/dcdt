@@ -1,1 +1,3 @@
 clover.license
+**/target/
+/.idea/
