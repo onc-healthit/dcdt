@@ -54,7 +54,12 @@ public class CrlGeneratorImpl extends AbstractCryptographyGenerator<CrlConfig, C
             // noinspection ConstantConditions
             X509v2CRLBuilder builder = new X509v2CRLBuilder(issuerDn.toX500Name(), updateDate);
             builder.setNextUpdate(new Date(updateDate.getTime() + 1000 * 60 * 60 * 24));
-            builder.addExtension(Extension.authorityKeyIdentifier, false, issuerAuthKeyId);
+            // Only add Authority Key Identifier if it's not null (for self-signed certificates, it may be null)
+            if (issuerAuthKeyId != null) 
+            {    
+                builder.addExtension(Extension.authorityKeyIdentifier, false, issuerAuthKeyId);
+            }
+            //builder.addExtension(Extension.authorityKeyIdentifier, false, issuerAuthKeyId);
             builder.addExtension(Extension.cRLNumber, false, new CRLNumber(crlConfig.getNumber()));
 
             for (CrlEntryConfig crlEntryConfig : crlConfig.getEntries().values()) {
