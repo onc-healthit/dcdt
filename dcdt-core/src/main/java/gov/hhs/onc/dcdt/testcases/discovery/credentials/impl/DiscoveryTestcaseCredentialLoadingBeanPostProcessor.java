@@ -13,6 +13,8 @@ import gov.hhs.onc.dcdt.testcases.discovery.credentials.DiscoveryTestcaseCredent
 import javax.annotation.Nullable;
 import org.springframework.stereotype.Component;
 
+import java.security.PublicKey;
+
 @Component("beanLoadingPostProcDiscoveryTestcaseCred")
 public class DiscoveryTestcaseCredentialLoadingBeanPostProcessor extends
     AbstractLoadingBeanPostProcessor<DiscoveryTestcaseCredential, DiscoveryTestcaseCredentialDao, DiscoveryTestcaseCredentialService> {
@@ -34,9 +36,20 @@ public class DiscoveryTestcaseCredentialLoadingBeanPostProcessor extends
             return super.loadBean(bean, persistentBean);
         }
 
+        // Determine issuer public key for proper AuthorityKeyIdentifier generation
+        PublicKey issuerPublicKey = null;
+        if (bean.hasIssuerCredential()) {
+            CredentialInfo issuerCredInfo = bean.getIssuerCredential().getCredentialInfo();
+            if (issuerCredInfo != null && issuerCredInfo.hasKeyDescriptor()) {
+                issuerPublicKey = issuerCredInfo.getKeyDescriptor().getPublicKey();
+            }
+        }
+
         // noinspection ConstantConditions
-        bean.setCredentialInfo(new CredentialInfoImpl(new KeyInfoImpl(persistentDiscoveryTestcaseCredKeyInfo.getKeyPair()), new CertificateInfoImpl(
-            persistentDiscoveryTestcaseCredCertInfo.getCertificate())));
+        bean.setCredentialInfo(new CredentialInfoImpl(
+            new KeyInfoImpl(persistentDiscoveryTestcaseCredKeyInfo.getKeyPair(), issuerPublicKey), 
+            new CertificateInfoImpl(persistentDiscoveryTestcaseCredCertInfo.getCertificate())
+        ));
 
         return super.loadBean(bean, persistentBean);
     }

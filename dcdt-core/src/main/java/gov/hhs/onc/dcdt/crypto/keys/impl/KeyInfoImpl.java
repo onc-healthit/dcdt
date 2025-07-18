@@ -129,6 +129,12 @@ public class KeyInfoImpl extends AbstractKeyDescriptor implements KeyInfo {
                         this.subjKeyInfo= new JcaX509ExtensionUtils().createSubjectKeyIdentifier(subjPublicKeyInfo);
                         LOGGER.info("Subject Key Identifier generated from KeyInfoImpl: {} ", bytesToHex(this.subjKeyInfo.getKeyIdentifier()));
 
+                        // For self-signed certificates (no issuer public key), use SubjectKeyIdentifier as AuthorityKeyIdentifier
+                        if (!this.hasIssuerPublicKey() && this.authKeyInfo == null) {
+                            this.authKeyInfo = new JcaX509ExtensionUtils().createAuthorityKeyIdentifier(subjPublicKeyInfo);
+                            LOGGER.info("Authority Key Identifier (Self-Signed) from KeyInfoImpl: {} ", bytesToHex(this.authKeyInfo.getKeyIdentifier()));
+                        }
+
                 } catch (NoSuchAlgorithmException e) {
                         throw new KeyException(String.format("Unable to build key (algId=%s, algOid=%s, size=%s) authority key information.", this.keyAlg.getId(),
                                 this.keyAlg.getOid(), this.keySize), e);
