@@ -974,7 +974,7 @@
                             <inherited>true</inherited>
                             <configuration>
                                 <scripts>
-                                    <script>file:///${project.basedir.all}\dcdt-core\src\main\scripts\groovy\process-project-properties.groovy</script>
+                                    <script>file:///${project.basedir.all}${file.separator}dcdt-core${file.separator}src${file.separator}main${file.separator}scripts${file.separator}groovy${file.separator}process-project-properties.groovy</script>
                                 </scripts>
                             </configuration>
                         </execution>
